@@ -49,7 +49,7 @@ const features = [
     icon: Infinity,
     title: 'Unlimited & Free',
     description: 'No file limits, no daily restrictions, no hidden fees. Process as many images as you need.',
-    highlight: '100% free forever',
+    highlight: 'Free to use',
     gradient: 'from-blue-500/15 to-indigo-500/5',
     iconGradient: 'from-blue-500/20 to-indigo-500/8',
   },
@@ -64,7 +64,7 @@ const features = [
   {
     icon: Lock,
     title: 'Privacy First',
-    description: 'Files are automatically deleted within 1 hour. We never store, share, or access your content.',
+    description: 'Privacy-focused processing with temporary file handling and automatic cleanup on supported workflows.',
     highlight: 'Zero data retention',
     gradient: 'from-cyan-500/15 to-sky-500/5',
     iconGradient: 'from-cyan-500/20 to-sky-500/8',

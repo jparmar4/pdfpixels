@@ -53,10 +53,16 @@ export async function POST(req: NextRequest) {
 
       gs.on('close', (code) => {
         if (code === 0) resolve(true)
-        else reject(new Error('Ghostscript failed'))
+        else reject(new Error(`Ghostscript failed with exit code ${code}`))
       })
 
-      gs.on('error', reject)
+      gs.on('error', (err: NodeJS.ErrnoException) => {
+        if (err.code === 'ENOENT') {
+          reject(new Error('Ghostscript (gs) is not installed on the server'))
+        } else {
+          reject(err)
+        }
+      })
     })
 
     const compressed = fs.readFileSync(outputPath)
@@ -70,7 +76,9 @@ export async function POST(req: NextRequest) {
 
   } catch (err) {
     console.error(err)
-    return new Response(JSON.stringify({ error: 'Compression failed' }), { status: 500 })
+    const message = err instanceof Error ? err.message : 'Compression failed'
+    const status = message.includes('not installed') ? 503 : 500
+    return new Response(JSON.stringify({ error: message }), { status })
   } finally {
     if (inputPath && fs.existsSync(inputPath)) fs.unlinkSync(inputPath)
     if (outputPath && fs.existsSync(outputPath)) fs.unlinkSync(outputPath)

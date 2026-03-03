@@ -12,7 +12,7 @@ export const toolContentMap: Record<string, ToolContent> = {
     // MOST POPULAR TOOLS
     // ═══════════════════════════════════════════════════════════════════════
     'compress-image': {
-        about: 'Compress Image is a powerful online tool that reduces your image file size to any target — from 5 KB to 2 MB and beyond — without noticeable quality loss. Whether you need to meet strict upload limits for government forms, optimize images for faster website loading speeds, or shrink photos before emailing, this compressor handles JPG, PNG, WebP, and more. The intelligent compression algorithm balances file size reduction with visual quality, giving you full control through an intuitive quality slider. Unlike desktop software, PdfPixels processes your images securely on the server and delivers results in seconds — no installation, no signup, and completely free.',
+        about: 'Compress Image is a powerful online tool that reduces your image file size to any target — from 5 KB to 2 MB and beyond — without noticeable quality loss. Whether you need to meet strict upload limits for government forms, optimize images for faster website loading speeds, or shrink photos before emailing, this compressor handles JPG, PNG, WebP, and more. The intelligent compression algorithm balances file size reduction with visual quality, giving you full control through an intuitive quality slider. Processing happens securely in your browser for maximum privacy, with no installation, no signup, and completely free access.',
         features: [
             'Target any file size from 5 KB to 10 MB+ with precision control',
             'Smart lossy and lossless compression for JPG, PNG, and WebP',
@@ -561,7 +561,7 @@ export const toolContentMap: Record<string, ToolContent> = {
     // ═══════════════════════════════════════════════════════════════════════
     'compress-pdf': {
         about: 'Compress PDF reduces your PDF file size significantly while maintaining readable quality. Upload large PDFs and choose compression levels — low (best quality, moderate reduction), medium (balanced), or high (maximum compression). Perfect for email attachments with size limits, uploading to portals, and reducing storage usage. Handles text-heavy, image-heavy, and mixed PDFs.',
-        features: ['Three compression levels: low, medium, high', 'Handles text-heavy and image-heavy PDFs', 'Maintains readable text quality', 'Significant file size reduction (50-90%)', 'Secure server processing with auto-deletion'],
+        features: ['Three compression levels: low, medium, high', 'Handles text-heavy and image-heavy PDFs', 'Maintains readable text quality', 'Significant file size reduction (50-90%)', 'Secure processing with automatic cleanup'],
         useCases: ['Reducing PDF size for email attachments under 10 MB', 'Compressing scanned documents for upload portals', 'Optimizing large reports for web distribution', 'Reducing storage usage for PDF archives'],
         faqs: [{ question: 'How much can I compress a PDF?', answer: 'Compression depends on content type. Image-heavy PDFs can be reduced by 50-90%. Text-only PDFs have less room for compression. Try different levels to find the best balance.' }, { question: 'Will compressed PDFs still be readable?', answer: 'Yes. Text remains sharp and readable at all compression levels. Images may show slight quality reduction at high compression but remain clear.' }],
         supportedFormats: 'Input/Output: PDF',
@@ -569,7 +569,7 @@ export const toolContentMap: Record<string, ToolContent> = {
     },
     'merge-pdf': {
         about: 'Merge PDF combines multiple PDF files into a single document. Upload PDFs, drag to reorder, and download the merged result. Perfect for combining report sections, merging scanned pages, creating document packages, and organizing multi-part files into one cohesive PDF.',
-        features: ['Combine unlimited PDF files into one', 'Drag and drop to reorder files', 'Preserves original formatting and quality', 'Handles password-protected PDFs (if unlocked)', 'Fast server-side processing'],
+        features: ['Combine unlimited PDF files into one', 'Drag and drop to reorder files', 'Preserves original formatting and quality', 'Handles standard PDF inputs', 'Fast processing'],
         useCases: ['Combining multiple report sections into one document', 'Merging scanned document pages into a single PDF', 'Creating application packages from separate files', 'Organizing invoices and receipts into monthly compilations'],
         faqs: [{ question: 'Is there a limit on the number of PDFs I can merge?', answer: 'There is no strict limit. You can merge dozens of PDF files. For very large batches, we recommend keeping total file size under 50 MB for optimal performance.' }, { question: 'Will the formatting be preserved?', answer: 'Yes, each page retains its original formatting, fonts, images, and layout. The merge simply concatenates pages in your specified order.' }],
         supportedFormats: 'Input/Output: PDF',
@@ -608,18 +608,18 @@ export const toolContentMap: Record<string, ToolContent> = {
         relatedTools: ['protect-pdf', 'compress-pdf', 'merge-pdf'],
     },
     'protect-pdf': {
-        about: 'Protect PDF adds password encryption to your PDF files, preventing unauthorized access. Set a user password (required to open the document) and optionally an owner password (to control permissions like printing, copying, and editing). Uses industry-standard AES encryption for strong security.',
-        features: ['User password to restrict opening', 'Owner password for permission control', 'Control print, copy, and edit permissions', 'Industry-standard AES encryption', 'Works with any PDF file'],
-        useCases: ['Protecting confidential business documents', 'Securing legal contracts and agreements before sharing', 'Restricting printing and copying of proprietary content', 'Password-protecting sensitive financial reports'],
-        faqs: [{ question: 'What encryption is used?', answer: 'We use AES (Advanced Encryption Standard) encryption, the same standard used by governments and financial institutions worldwide.' }, { question: 'Can I set different open and edit passwords?', answer: 'Yes! Set a user password to restrict opening and a separate owner password to control editing, printing, and copying permissions.' }],
+        about: 'Protect PDF is temporarily unavailable while true PDF encryption support is being finalized. The tool page remains listed so users can track feature availability and planned security support updates.',
+        features: ['Status: temporarily unavailable', 'Planned support for true password-based encryption', 'Clear error messaging to avoid false security expectations', 'Feature updates will be reflected on this page'],
+        useCases: ['Checking feature status before relying on password protection', 'Planning secure document workflows with accurate capability information'],
+        faqs: [{ question: 'Is Protect PDF available right now?', answer: 'Not currently. The feature is temporarily disabled until reliable encryption support is fully implemented and validated.' }, { question: 'Why is it disabled?', answer: 'To avoid misleading users about security. The feature will be re-enabled only when true encryption behavior is available end-to-end.' }],
         supportedFormats: 'Input/Output: PDF',
         relatedTools: ['unlock-pdf', 'add-watermark-pdf', 'compress-pdf'],
     },
     'unlock-pdf': {
-        about: 'Unlock PDF removes password protection from PDF files so you can freely open, edit, print, and copy content. If you know the password, enter it to permanently remove the restriction. Essential for accessing your own protected documents when the password is inconvenient, or removing permissions restrictions from PDFs you own.',
-        features: ['Remove user password (open restriction)', 'Remove owner password (permission restrictions)', 'Unlock printing, copying, and editing', 'Preserves all document content and formatting', 'Works with all PDF encryption types'],
-        useCases: ['Unlocking your own password-protected documents', 'Removing print restrictions from PDFs you own', 'Enabling copy-paste from restricted PDFs for accessibility', 'Preparing PDFs for editing in PDF editors'],
-        faqs: [{ question: 'Can I unlock a PDF without knowing the password?', answer: 'For user passwords (open restriction), you must know the password. For owner passwords (permission restrictions), the tool can remove restrictions in most cases without the owner password.' }],
+        about: 'Unlock PDF is temporarily unavailable while reliable decryption support is being finalized. The tool page remains published to communicate current status and upcoming availability.',
+        features: ['Status: temporarily unavailable', 'Planned support for password-based unlock workflows', 'Clear status messaging and safe failure behavior', 'Feature updates will be announced on this page'],
+        useCases: ['Checking unlock feature readiness before document workflows', 'Avoiding failed unlock attempts based on outdated expectations'],
+        faqs: [{ question: 'Is Unlock PDF available right now?', answer: 'Not currently. The feature is temporarily disabled until reliable decryption support is fully implemented and tested.' }],
         supportedFormats: 'Input/Output: PDF',
         relatedTools: ['protect-pdf', 'compress-pdf', 'merge-pdf'],
     },

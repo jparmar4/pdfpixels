@@ -50,8 +50,11 @@ export async function POST(request: NextRequest) {
     // Get metadata ONCE before any transformation
     const metadata = await image.metadata();
 
-    // Set dynamic format based on actual file format
-    params.format = metadata.format || 'jpg';
+    // Respect requested output format; only fallback when missing/invalid
+    const validFormats = new Set(['jpg', 'jpeg', 'png', 'webp', 'avif', 'gif', 'tiff']);
+    if (!params.format || !validFormats.has(params.format)) {
+      params.format = metadata.format || 'jpg';
+    }
 
     if (
       (metadata.width && metadata.width > MAX_DIMENSION) ||

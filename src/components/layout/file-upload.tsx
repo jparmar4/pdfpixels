@@ -165,6 +165,10 @@ export function FileUpload({ accept = 'image/*' }: FileUploadProps) {
                 )}
               </div>
 
+              <div className="text-center mt-3 text-xs text-muted-foreground/90 font-medium z-10 pointer-events-none">
+                Private processing • No signup required • Temporary file handling
+              </div>
+
               <Button size="lg" className="mt-6 gap-2 btn-premium rounded-xl px-10 py-6 font-bold z-10 pointer-events-none" type="button">
                 <Upload className="w-5 h-5 relative z-10" />
                 <span className="relative z-10">Select {isPDFAccept && !isImageAccept ? 'PDF' : 'File'}</span>

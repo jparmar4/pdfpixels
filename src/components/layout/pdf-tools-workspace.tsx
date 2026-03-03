@@ -182,8 +182,7 @@ function ProtectSettings({ password, setPassword, confirmPassword, setConfirmPas
             </div>
             <div className="p-3 rounded-lg bg-amber-500/10 border border-amber-500/20">
                 <p className="text-xs text-amber-600 dark:text-amber-400">
-                    <strong>Note:</strong> PDF password protection is applied at the document level.
-                    Share the password securely with intended recipients.
+                    <strong>Note:</strong> Password protect/unlock is temporarily unavailable while encryption support is being finalized.
                 </p>
             </div>
         </div>
@@ -197,12 +196,12 @@ function UnlockSettings({ password, setPassword }: { password: string; setPasswo
                 <Label>PDF Password (if known)</Label>
                 <Input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Enter PDF password (optional)" />
                 <p className="text-xs text-muted-foreground">
-                    Leave blank to attempt unlocking without a password.
+                    This feature is temporarily unavailable while decryption support is being finalized.
                 </p>
             </div>
             <div className="p-3 rounded-lg bg-blue-500/10 border border-blue-500/20">
                 <p className="text-xs text-blue-600 dark:text-blue-400">
-                    This tool removes restrictions from PDFs. Only use on PDFs you own.
+                    Unlock functionality is currently disabled to avoid misleading security behavior.
                 </p>
             </div>
         </div>
@@ -427,6 +426,12 @@ export function PDFToolsWorkspace() {
     const handleProcess = useCallback(async () => {
         if (!uploadedFile) { toast.error('Please upload a PDF file'); return; }
 
+        const toolId = activeTool?.id || '';
+        if (toolId === 'pdf-protect' || toolId === 'pdf-unlock') {
+            toast.error('Password protect/unlock is temporarily unavailable while proper encryption support is being finalized.');
+            return;
+        }
+
         const formData = buildFormData();
         if (!formData) return;
 
@@ -638,7 +643,7 @@ export function PDFToolsWorkspace() {
                         <ul className="text-sm text-muted-foreground space-y-2">
                             <li className="flex items-start gap-2">
                                 <ChevronRight className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                                <span>Your PDF is processed securely on our servers</span>
+                                <span>Your PDF is processed securely</span>
                             </li>
                             <li className="flex items-start gap-2">
                                 <ChevronRight className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />

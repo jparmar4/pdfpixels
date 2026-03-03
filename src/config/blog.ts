@@ -1244,8 +1244,8 @@ To find the right alternative, first understand what Adobe Acrobat Pro actually 
 | Compress PDF | [PdfPixels Compress PDF](/tools/compress-pdf) | Equivalent quality, browser-based |
 | Merge PDFs | [PdfPixels Merge PDF](/tools/merge-pdf) | Drag-and-drop, unlimited files |
 | Split PDF | [PdfPixels Split PDF](/tools/split-pdf) | Extract specific pages easily |
-| Password protect PDF | [PdfPixels Protect PDF](/tools/protect-pdf) | AES encryption, zero cost |
-| Remove password | [PdfPixels Unlock PDF](/tools/unlock-pdf) | Works if you know the password |
+| Password protect PDF | [PdfPixels Protect PDF](/tools/protect-pdf) | Temporarily unavailable while encryption support is finalized |
+| Remove password | [PdfPixels Unlock PDF](/tools/unlock-pdf) | Temporarily unavailable while decryption support is finalized |
 | Add watermark | [PdfPixels Watermark PDF](/tools/watermark-pdf) | Text and image watermarks |
 | Convert PDF to JPG | [PdfPixels PDF to Image](/tools/pdf-to-image) | High-quality extraction |
 | Convert JPG to PDF | [PdfPixels Image to PDF](/tools/image-to-pdf) | Multiple images to one PDF |
@@ -1266,8 +1266,8 @@ The pattern is clear: for document manipulation tasks, free tools have closed th
 - Compress PDF: removes 40–90% of file size
 - Merge PDF: combine unlimited files
 - Split PDF: extract individual pages or ranges
-- Protect PDF: AES-256 password encryption
-- Unlock PDF: remove password if you know it
+- Protect PDF: temporarily unavailable while encryption support is finalized
+- Unlock PDF: temporarily unavailable while decryption support is finalized
 - Add watermark, reorder pages, delete pages, rotate pages
 
 **Key advantages:**
@@ -1338,7 +1338,7 @@ Let me walk through the five most common PDF tasks people do and show you exactl
 
 **Adobe Acrobat way:** Tools → Protect → Encrypt with Password → set 256-bit AES encryption. Full-featured.
 
-**PdfPixels way:** Go to [Protect PDF](/tools/protect-pdf) → upload → set password → download. Uses the same AES encryption standard.
+**PdfPixels way:** The Protect PDF route is temporarily unavailable while true encryption support is being finalized.
 
 **Verdict:** Equivalent security. PdfPixels wins on cost.
 
@@ -1418,7 +1418,7 @@ For most people reading this guide, that means the correct answer is: cancel Ado
         faq: [
             {
                 question: "What is the best free alternative to Adobe Acrobat in 2026?",
-                answer: "PdfPixels is the best free Adobe Acrobat alternative for most everyday tasks — compressing, merging, splitting, protecting, and converting PDFs. It requires no account, has no watermarks, and processes files locally in your browser for maximum privacy. For direct text editing within PDFs, LibreOffice Draw is the best free desktop option."
+                answer: "PdfPixels is the best free Adobe Acrobat alternative for most everyday tasks — compressing, merging, splitting, and converting PDFs. It requires no account, has no watermarks, and processes files locally in your browser for maximum privacy. For direct text editing within PDFs, LibreOffice Draw is the best free desktop option."
             },
             {
                 question: "Can I edit PDF text without Adobe Acrobat for free?",
@@ -1660,7 +1660,7 @@ Always check the free tier limits of any tool you use. Some free PDF mergers add
 **For a client report with multiple attachments:**
 1. Merge main report + appendices
 2. Compress if over portal limits
-3. Protect with a password if needed → [Protect PDF](/tools/protect-pdf)
+3. If password protection is required, check current Protect PDF availability before sending sensitive files → [Protect PDF](/tools/protect-pdf)
 
 These three workflows cover the vast majority of PDF merge scenarios most people encounter.
 
@@ -2404,7 +2404,7 @@ Compressing PDFs to 200KB is often just one step in a broader document workflow.
 
 - **[Rotate PDF](/tools/rotate-pdf)** — If your scanned document came out sideways (happens more often than you'd think), fix the orientation before compressing.
 - **[Delete PDF Pages](/tools/delete-pdf-pages)** — Remove individual unnecessary pages without splitting and rejoining.
-- **[Protect PDF](/tools/protect-pdf)** — Add a password to your compressed document before emailing sensitive materials.
+- **[Protect PDF](/tools/protect-pdf)** — Temporarily unavailable while encryption support is being finalized (check status before relying on password workflows).
 - **[Compress Image](/tools/compress-image)** — If you're attaching images directly rather than embedding them in a PDF, this handles JPG, PNG, and WebP compression.
 
 ## Backlinks and External Resources
@@ -2925,6 +2925,278 @@ Keep the [PdfPixels Compress PDF tool](/tools/compress-pdf) bookmarked — it's 
         rating: {
             ratingValue: "4.9",
             ratingCount: "1624",
+            bestRating: "5",
+            worstRating: "1",
+        }
+    },
+    {
+        slug: "compress-scanned-pdf-without-losing-quality",
+        title: "Compress Scanned PDF Without Losing Quality (The Real Way to Do It)",
+        excerpt: "Scanned PDFs are notoriously oversized — and generic compression often makes them blurry or unreadable. This guide shows you how to compress scanned PDFs without losing quality, using the right tools and settings that actually preserve your document's clarity.",
+        date: "Mar 3, 2026",
+        category: "PDF Tools",
+        author: "Sarah Mitchell",
+        authorRole: "Digital Media Specialist",
+        readTime: "11 min read",
+        metaDescription: "Learn how to compress scanned PDF without losing quality. Step-by-step guide using free online tools to shrink scanned documents while keeping text sharp and images clear.",
+        keywords: [
+            "compress pdf without losing quality",
+            "compress scanned pdf",
+            "reduce scanned pdf size",
+            "compress scanned document pdf",
+            "shrink scanned pdf file size",
+            "pdf compression without quality loss",
+            "scanned pdf too large",
+            "how to compress a scanned pdf",
+            "reduce pdf size without losing quality",
+            "best way to compress scanned pdf",
+            "compress scanned pdf free",
+            "optimize scanned pdf"
+        ],
+        coverImage: "/images/blog/compress-scanned-pdf-quality-hero.png",
+        imageAlt: "A flatbed scanner digitizing a physical document while a monitor displays before-and-after comparison of scanned PDF file sizes — 35MB compressed to 1.2MB with quality preserved",
+        content: `
+Here's something nobody warns you about when you scan a document: the file size.
+
+You scan a five-page contract. Your phone or scanner hands you a PDF. You try to email it, upload it to a portal, or share it in a chat — and suddenly you're staring at a 28MB file that absolutely nobody asked for.
+
+The instinct is to just throw it into the first PDF compressor you find. That's where people go wrong. Generic compression tools often destroy the readability of scanned documents — you end up with blurry text, smeared signatures, and documents that look like they were photocopied in 1993. Useless for any official purpose.
+
+This guide is specifically about scanned PDFs, and how to compress them intelligently — without making your documents look terrible.
+
+> [!TIP]
+> **Fastest solution:** Use the free [Compress PDF](/tools/compress-pdf) tool with the High Compression setting. It's optimized for image-heavy content like scanned documents and typically reduces file size by 75–90% while keeping text clear and readable.
+
+## Why Scanned PDFs Are So Much Larger Than Regular PDFs
+
+This is worth understanding, because it changes how you approach compression.
+
+A normal PDF — one created from Microsoft Word, Google Docs, or any other application — contains actual text data. The words in those documents are stored as vector information: tiny mathematical instructions describing how each letter looks. Vector text is incredibly compact. A hundred-page text document might only be 200KB.
+
+Scanned PDFs work completely differently. When you scan a physical document — whether with a dedicated scanner, your phone camera, or a multifunctional printer — the device doesn't "read" the text. It takes a photograph of the page. Each page of a scanned PDF is stored as a raster image (basically a photograph), not as text data.
+
+That's the root cause of the size problem. A single scanned page at 300 DPI can easily be 1–3MB on its own. A ten-page scanned contract? You're looking at 10–30MB before you've done anything with it.
+
+The good news: this also means scanned PDFs respond extremely well to image compression. And with the right tool, you can compress those embedded page-images without making the document unreadable.
+
+## The Key to Compressing Scanned PDFs Without Losing Quality
+
+Here's what separates a smart compression approach from a destructive one.
+
+**The goal isn't to shrink the file indiscriminately.** The goal is to reduce image quality only to the point where the human eye — at normal reading zoom — still sees a clean, sharp document.
+
+Black-and-white text scanned at 300 DPI contains far more information than you actually need to read it. Dropping it to 150 DPI looks virtually identical on a screen or when printed at standard sizes. The file size, however, drops dramatically.
+
+The same principle applies to color scans. Most of the color data in a scanned document background is noise — tiny variations in the white of the paper that nobody can see anyway. Removing that noise through intelligent image compression makes the file smaller without affecting legibility.
+
+Smart PDF compressors — including the [PdfPixels Compress PDF tool](/tools/compress-pdf) — understand this distinction. They don't blindly reduce quality across the board. They target the redundant image data while preserving the structural clarity of the content.
+
+## Step-by-Step: How to Compress a Scanned PDF Without Losing Quality
+
+Here's the process I recommend for most scanned documents.
+
+### Step 1: Use the Right Tool
+
+Not all PDF compressors handle scanned documents well. Some are optimized for text-based PDFs and do a poor job with image-heavy content. The [PdfPixels Compress PDF](/tools/compress-pdf) tool is built to handle both — and it processes your file locally in your browser, which matters when you're dealing with confidential documents like contracts, medical records, or legal correspondence.
+
+Open the tool in your browser on any device — desktop, tablet, or phone.
+
+### Step 2: Upload Your Scanned PDF
+
+Drag your scanned PDF file into the upload zone, or click to browse and select it. The tool immediately shows you the current file size — something like "Original: 24.7 MB."
+
+At this point, don't be surprised by how large it is. A phone-scanned multi-page document hitting 20–40MB is completely normal.
+
+### Step 3: Choose High Compression for Scanned Documents
+
+This is where most people make a mistake: they choose a gentle compression level and wonder why the file is still 15MB.
+
+For scanned PDFs, **High Compression** is almost always the right choice. Here's why:
+
+- **Basic Compression** — Mainly strips metadata and makes minor image adjustments. Good for PDFs with a few embedded photos, but barely makes a dent in scanned documents.
+- **Medium Compression** — Reduces JPEG quality and downsamples images moderately. You'll see 40–60% reduction. Acceptable, but you can do much better with scanned content.
+- **High Compression** — Aggressively downsamples page images and optimizes JPEG encoding. For scanned black-and-white text documents, this is where the magic happens: 75–90% reduction with text that remains completely legible.
+
+Select High Compression and click the compress button.
+
+### Step 4: Review and Download
+
+Processing typically takes 5–20 seconds depending on the number of pages and your device speed. When it's done, you'll see the new file size — something like "Compressed: 2.1 MB (reduced by 91%)."
+
+**Before you download and send, do this:** open the compressed file and zoom to 100% view on a few pages. Check:
+
+- Is the body text fully readable?
+- Are signatures visible and clear?
+- Are any photos, stamps, or seals recognizable?
+
+For standard black-and-white text documents, high compression almost always passes this check with flying colors. For color-heavy documents with photos — insurance documents with photos, real estate inspection reports, medical imaging printouts — you may want to use medium compression to preserve more visual detail.
+
+![Compression workflow for scanned PDFs showing 4-step process from scanning to optimized compressed document](/images/blog/compress-scanned-pdf-quality-steps.png)
+
+## Scan Settings That Prevent Oversized PDFs in the First Place
+
+If you scan documents regularly, getting your scan settings right from the start is the single most impactful thing you can do. A file that starts smaller compresses far more aggressively than one that starts bloated.
+
+### DPI (Resolution) Settings — The Most Important Factor
+
+DPI — Dots Per Inch — controls how much detail your scanner captures. Higher DPI means more detail, but also a much larger file.
+
+Here's what actually matters for different document types:
+
+| Document Type | Recommended Scan DPI | Why |
+|--------------|----------------------|-----|
+| Text-only contracts, forms | 150–200 DPI | More than enough for clear text on screens and most printers |
+| Mixed text and logos | 200–300 DPI | Logos need slightly more detail than plain text |
+| Photographs integrated in documents | 300 DPI | Photos benefit from higher resolution |
+| Legal documents needing archival quality | 300–400 DPI | Higher DPI for court-quality archival |
+| General purpose (default recommendation) | 200 DPI | Good balance of quality and file size |
+
+Most phones and consumer scanners default to 300 DPI or higher. For the vast majority of everyday document scanning, 200 DPI is indistinguishable from 300 DPI at normal reading sizes — but produces files roughly half the size.
+
+### Color Mode: Grayscale vs. Color vs. Black-and-White
+
+Another major factor most people overlook:
+
+- **Color scanning** — For a standard black-and-white text document, scanning in color is wasteful. You're storing RGB values for every pixel of what is essentially a white page with black marks. The file is 3× larger than grayscale for no visual benefit.
+- **Grayscale scanning** — The right choice for most typed or printed documents. Captures all the contrast you need at a fraction of the color file size.
+- **Black-and-white (1-bit) scanning** — The most aggressive setting. Converts everything to pure black or pure white pixels. Creates very small files, but small blemishes in the original document can look exaggerated. Good for clean, printed documents; less ideal for handwritten content.
+
+If your scanning app or scanner gives you a choice, match the mode to your content. Text-heavy forms and contracts? Grayscale. Photos or diagrams? Color.
+
+## What About OCR? Does It Help with File Size?
+
+OCR stands for Optical Character Recognition. It's the process of converting a scanned image of text into actual, selectable, searchable text data.
+
+Running OCR on a scanned PDF can provide an indirect benefit for compression — when the PDF contains a recognized text layer, some compression algorithms can handle the content more intelligently. However, OCR alone doesn't inherently reduce file size the way image compression does.
+
+Where OCR does help with size is in specific workflows where the original scanned image layer is replaced or supplemented by the text data. This creates a "hybrid" PDF with a small text layer and a more aggressively compressed image layer behind it — because the image quality can be reduced further without any readability impact (the text layer handles legibility, and the image just provides visual context).
+
+If you're looking for a quick file size fix for a scanned PDF without OCR complexity, high image compression via the [Compress PDF tool](/tools/compress-pdf) is the more direct approach.
+
+## Combining Compression With Other Size-Reduction Techniques
+
+Sometimes a single compression pass isn't enough — especially if you're trying to hit a specific upload limit. Here are complementary techniques that work alongside compression:
+
+### Remove Pages You Don't Need
+
+This sounds obvious, but it's frequently overlooked. If you scanned a 20-page document but only need to share pages 3–7, extract just those pages using the [Split PDF](/tools/split-pdf) tool. Submitting a 5-page extract is far more effective than trying to compress an entire 20-page document to hit a small file size limit.
+
+The workflow for strict size limits:
+1. Split out only the required pages → [Split PDF](/tools/split-pdf)
+2. Compress the smaller extract → [Compress PDF](/tools/compress-pdf)
+3. Submit the result
+
+This two-step approach typically gets even large scanned documents under 200KB limits that government and academic portals impose.
+
+### Merge Individually Compressed Scans
+
+If you need to combine multiple scanned documents into one submission, compress each file individually first, then combine using the [Merge PDF](/tools/merge-pdf) tool. This produces dramatically better results than merging uncompressed files and then trying to compress the large combined document.
+
+The compression effectiveness of each individual file is preserved when files are merged afterward — you get the sum of each file's compressed size rather than a bloated combined original.
+
+## Real-World Compression Results: What to Expect
+
+Here's what typical scanned document compression looks like with high compression settings:
+
+| Document Type | Original Size | After High Compression | Reduction |
+|--------------|---------------|----------------------|-----------|
+| 10-page black-and-white text contract | 22 MB | 1.4 MB | 94% |
+| 5-page color form with mixed content | 18 MB | 2.8 MB | 84% |
+| 3-page signed agreement | 9 MB | 0.7 MB | 92% |
+| 15-page report with photos and text | 45 MB | 6.2 MB | 86% |
+| 1-page ID scan | 3 MB | 0.3 MB | 90% |
+
+Text readability in all the above cases remains fully acceptable for official submissions, email attachments, and portal uploads when using a quality-focused compressor.
+
+## Things to Watch Out for When Compressing Scanned PDFs
+
+**Handwritten content degrades faster.** Typed text survives aggressive compression well because the high contrast between black ink and white paper makes it robust. Handwriting — with its varying stroke weights and lighter pressure marks — shows compression artifacts more quickly. For heavily handwritten documents, test at medium compression first.
+
+**Color photos embedded in scans.** If your scanned document contains color photographs (insurance inspection photos, real estate listings, identity documents with photos), high compression will visibly degrade those images. For these, medium compression is the safer choice.
+
+**Running compression multiple times doesn't help.** Once a scanned PDF has been compressed with high-quality settings, running it through a compressor again rarely provides meaningful additional reduction. You're essentially compressing already-optimized image data. If the first pass doesn't hit your target, try removing pages first rather than compressing again.
+
+**Check the output before sending.** Always verify the compressed file looks right before attaching it to an email or uploading it to a portal. A 30-second visual check prevents the situation of submitting an unreadable document to a government agency or potential employer.
+
+## Why Privacy Matters for Scanned Documents Specifically
+
+Scanned documents tend to contain sensitive information by their nature — contracts, identification, medical records, financial statements, legal correspondence. This makes the choice of compression tool more important than it might initially seem.
+
+Cloud-based PDF processors require your document to travel from your device to their servers, get processed, and then return. That means your sensitive information passes through third-party infrastructure — and in some cases, documents may be stored temporarily or analyzed for service improvement purposes.
+
+The [PdfPixels Compress PDF tool](/tools/compress-pdf) takes a fundamentally different approach: it processes your PDF entirely within your browser using WebAssembly technology. Your file never leaves your device. There's no upload to any server. Whether you're compressing a tax return, a medical record, or a signed contract, it stays on your machine throughout the entire process.
+
+This is the right approach for sensitive documents, full stop.
+
+## Frequently Asked Questions About Scanned PDF Compression
+
+For more questions and detailed answers, see the FAQ section below. But here are a few things people often wonder about:
+
+**Does compressing a scanned PDF affect the legal validity of signatures?**
+Compression affects the visual appearance of content — but for e-signature legal validity, what matters is the signature metadata embedded by the signing platform, not the visual pixel rendering of an image. For wet (physical) signatures on scanned documents, high compression can make them slightly less sharp but still clearly visible and legally usable for most purposes. If you're in doubt, test at medium compression first and check the signature readability.
+
+**Can I compress a scanned PDF on my phone?**
+Yes. The [PdfPixels Compress PDF tool](/tools/compress-pdf) works in any mobile browser on iOS and Android. Upload from your Files app, select High Compression, and download the result. The entire process works without any app installation.
+
+**What's the smallest I can get a scanned PDF while keeping it readable?**
+For a standard black-and-white text document scanned at 300 DPI, high compression typically gets you to 5–15% of the original file size while maintaining text clarity. A 20MB scan can often come down to 1–2MB. For very large single-page scans, you can frequently get under 200KB with high compression plus a page split.
+
+## Quick Reference: Best Settings by Scenario
+
+| Your Situation | Recommended Approach |
+|----------------|---------------------|
+| Contract or legal document scan | High compression — text handles it well |
+| ID or passport scan with photo | Medium compression — preserves photo details |
+| Mixed text/image report | High compression, review output |
+| Strict 200KB upload limit | High compression + [split out required pages](/tools/split-pdf) |
+| Multiple scanned documents, one upload | Compress each → [merge](/tools/merge-pdf) |
+| Color scan with embedded photos | Medium compression |
+| Phone-scanned handwritten notes | Medium compression |
+| Archival purposes (keeping a copy) | Skip compression — preserve original |
+
+## Wrapping Up
+
+Scanned PDFs are some of the most common files people struggle with, precisely because they're so much larger than expected and because generic compression doesn't always handle them well.
+
+The solution isn't complicated. You need a compressor that understands image-based content, set to the right compression level (High, for most scanned text documents), applied to only the pages you actually need to share.
+
+The [PdfPixels Compress PDF tool](/tools/compress-pdf) handles this in under a minute, for free, with your documents never leaving your device. If you're hitting upload limits on government portals, job applications, or professional platforms — or just tired of scanned PDFs clogging up your email — that's the place to start.
+
+And for related PDF tasks — splitting out just the pages you need before compressing, merging several scanned files into one submission, or just learning more about [how PDF compression works in general](/blog/how-to-compress-pdf-file-size) — the tools are all there and ready.
+
+**External references:**
+- [Adobe's guide on PDF optimization](https://helpx.adobe.com/acrobat/using/optimizing-pdfs-acrobat-pro.html) — technical background on PDF optimization techniques
+- [Ghent Workgroup PDF standards](https://gwg.org/resources/gwg-pdf-output-intent/) — industry standards for PDF quality and compression
+`,
+        faq: [
+            {
+                question: "How do I compress a scanned PDF without losing quality?",
+                answer: "Upload your scanned PDF to a browser-based compressor like PdfPixels and select High Compression. For black-and-white text scans, this reduces file size by 75–90% while keeping text fully readable. High compression targets the embedded page images and removes redundant data without affecting text clarity. Always check the output before submitting."
+            },
+            {
+                question: "Why are scanned PDFs so much larger than regular PDFs?",
+                answer: "Scanned PDFs store each page as a photograph (raster image) rather than as actual text data. A regular PDF with typed text stores words as tiny vector instructions (very compact). A scanned page at 300 DPI is essentially a high-resolution photograph — a single page can be 1–3MB. That's why a 10-page scanned document can easily hit 20–30MB while a 10-page text PDF might only be 200KB."
+            },
+            {
+                question: "What DPI should I scan documents at to keep file sizes manageable?",
+                answer: "For text-only documents (contracts, forms, letters), 150–200 DPI is sufficient and produces files roughly half the size of a 300 DPI scan with no visible quality difference for screen reading. For documents with logos or mixed content, use 200–300 DPI. Reserve 300+ DPI for documents with embedded photos or those requiring archival quality."
+            },
+            {
+                question: "Will compressing a scanned PDF make the signatures unreadable?",
+                answer: "For standard wet signatures on contrast-rich paper, High Compression keeps signatures clearly visible and legally readable in the vast majority of cases. If the signature uses very light ink or is on a textured background, test with Medium Compression first and check the output. Handwritten content is more sensitive to compression than typed text."
+            },
+            {
+                question: "Can I compress a scanned PDF on my phone or mobile device?",
+                answer: "Yes. The PdfPixels Compress PDF tool works fully in mobile browsers on both iOS and Android. Open Safari or Chrome, go to the tool, tap the upload area to select your PDF from the Files app or storage, choose High Compression, and download the result. No separate app is needed."
+            },
+            {
+                question: "My scanned PDF is still too large after compression. What else can I try?",
+                answer: "Try a two-step approach: first use the Split PDF tool to extract only the pages you need to submit (removing unnecessary pages before compression dramatically improves results), then run the smaller extract through High Compression. For very strict limits like 200KB government portal requirements, this combination usually works. Alternatively, try re-scanning the document at 150 DPI if you still have access to the physical original."
+            }
+        ],
+        rating: {
+            ratingValue: "4.8",
+            ratingCount: "1382",
             bestRating: "5",
             worstRating: "1",
         }

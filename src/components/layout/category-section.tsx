@@ -13,7 +13,7 @@ export function CategorySection({ category }: CategorySectionProps) {
   const CategoryIcon = category.tools[0]?.icon;
 
   return (
-    <section className="relative rounded-3xl bg-muted/10 border border-border/40 p-5 md:p-8 overflow-hidden">
+    <section className="relative rounded-3xl bg-card/70 border border-border/50 p-5 md:p-8 overflow-hidden shadow-soft">
       {/* Decorative background gradient */}
       <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-primary/5 to-violet-500/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
 
@@ -30,7 +30,7 @@ export function CategorySection({ category }: CategorySectionProps) {
           {/* Title + count */}
           <div>
             <div className="flex items-center gap-3 flex-wrap mb-1.5">
-              <h2 id={`${category.id}-heading`} className="text-2xl md:text-3xl font-extrabold tracking-tight gradient-text">
+              <h2 id={`${category.id}-heading`} className="text-2xl md:text-3xl font-extrabold tracking-tight text-foreground">
                 {category.name}
               </h2>
               <span className="text-[11px] font-bold text-primary bg-gradient-to-r from-primary/15 to-violet-500/10 px-3 py-1 rounded-full border border-primary/20 shadow-sm">

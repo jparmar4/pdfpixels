@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 
 export default function AboutPage() {
   const stats = [
-    { label: 'Free Tools', value: '38+' },
+    { label: 'Free Tools', value: '55+' },
     { label: 'Uptime', value: '99.9%' },
     { label: 'Cost', value: 'Free' },
     { label: 'Registration', value: 'None' },
@@ -31,7 +31,7 @@ export default function AboutPage() {
     {
       icon: Shield,
       title: 'Privacy First',
-      description: 'Your files are automatically deleted within 1 hour. We never store, share, or access your content.',
+      description: 'Privacy-focused processing with secure transport and temporary cleanup on supported workflows.',
     },
     {
       icon: Globe,

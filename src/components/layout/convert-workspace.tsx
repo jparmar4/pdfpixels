@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { useAppStore } from '@/store/app-store';
 import { FileUpload } from './file-upload';
-import Link from 'next/link';
+import { ToolPageHeader } from './tool-page-header';
 import {
   Download,
   RotateCcw,
@@ -18,7 +18,6 @@ import {
   Split,
   Eye,
   ArrowRight,
-  ArrowLeft,
   ArrowLeftRight,
   Zap,
 } from 'lucide-react';
@@ -61,6 +60,8 @@ function ComparisonSlider({ before, after }: { before: string; after: string }) 
     setSliderPos(Math.min(100, Math.max(0, position)));
   };
 
+  const safeSliderPos = Math.max(1, Math.min(99, sliderPos));
+
   return (
     <div
       ref={containerRef}
@@ -74,15 +75,15 @@ function ComparisonSlider({ before, after }: { before: string; after: string }) 
       {/* Before Image (Foreground, Clipped) */}
       <div
         className="absolute inset-0 overflow-hidden"
-        style={{ width: `${sliderPos}%`, borderRight: '2px solid white' }}
+        style={{ width: `${safeSliderPos}%`, borderRight: '2px solid white' }}
       >
-        <img src={before} alt="Before" className="absolute inset-0 w-full h-full object-contain max-w-none" style={{ width: `${10000 / sliderPos}%` }} />
+        <img src={before} alt="Before" className="absolute inset-0 w-full h-full object-contain max-w-none" style={{ width: `${10000 / safeSliderPos}%` }} />
       </div>
 
       {/* Slider Controls */}
       <div
         className="absolute inset-y-0 z-10 w-0.5 bg-white shadow-[0_0_10px_rgba(0,0,0,0.5)] pointer-events-none"
-        style={{ left: `${sliderPos}%` }}
+        style={{ left: `${safeSliderPos}%` }}
       >
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white shadow-lg flex items-center justify-center">
           <Split className="w-4 h-4 text-primary" />
@@ -220,43 +221,27 @@ export function ConvertWorkspace() {
       animate={{ opacity: 1 }}
       className="container mx-auto px-4 lg:px-8 py-8"
     >
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-        <div className="flex items-center gap-4">
-          <Link
-            href="/"
-            onClick={() => reset()}
-            className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 hover:bg-accent hover:text-accent-foreground h-10 w-10 border border-border"
-            aria-label="Back to home"
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </Link>
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center">
-              <ArrowLeftRight className="w-6 h-6 text-primary" />
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold">{activeTool.name}</h1>
-              <p className="text-sm text-muted-foreground">{activeTool.description}</p>
-            </div>
-          </div>
-        </div>
-
+      <ToolPageHeader
+        title={activeTool.name}
+        description={activeTool.description}
+        icon={ArrowLeftRight}
+        onReset={handleReset}
+      >
         {processedImage && (
           <div className="flex items-center gap-2 p-1 rounded-lg bg-muted/50 border">
-            <Tabs value={viewMode} onValueChange={(v) => setViewMode(v as any)}>
+            <Tabs value={viewMode} onValueChange={(v) => setViewMode(v as 'preview' | 'compare')}>
               <TabsList className="h-8 bg-transparent">
-                <TabsTrigger value="preview" className="h-7 text-xs gap-1.5 focus-visible:ring-0">
+                <TabsTrigger value="preview" className="h-7 text-xs gap-1.5">
                   <Eye className="w-3.5 h-3.5" /> Preview
                 </TabsTrigger>
-                <TabsTrigger value="compare" className="h-7 text-xs gap-1.5 focus-visible:ring-0">
+                <TabsTrigger value="compare" className="h-7 text-xs gap-1.5">
                   <Split className="w-3.5 h-3.5" /> Compare
                 </TabsTrigger>
               </TabsList>
             </Tabs>
           </div>
         )}
-      </div>
+      </ToolPageHeader>
 
       {/* Main Content */}
       <div className="grid lg:grid-cols-3 gap-8">

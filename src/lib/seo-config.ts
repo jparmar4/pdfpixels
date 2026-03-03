@@ -68,6 +68,9 @@ export const seoConfig = {
   // Platform information
   credentials: {
     tools: '55+',
+    users: '2M+',
+    imagesProcessed: '50M+',
+    rating: '4.9/5',
     uptime: '99.9%',
   },
 
@@ -95,7 +98,7 @@ export const faqData = [
   },
   {
     question: 'Is PdfPixels free?',
-    answer: 'Yes, PdfPixels is 100% free forever. All 55+ tools, including AI background removal and unlimited PDF merging, are available at no cost. There are no hidden fees, subscriptions, or watermarks.',
+    answer: 'Yes, PdfPixels tools are currently free to use with no signup required. Core image and PDF workflows are available without subscription.',
     keywords: ['free image editor', 'no cost image tools', 'free online editor', 'free pdf tools'],
   },
   {
@@ -120,7 +123,7 @@ export const faqData = [
   },
   {
     question: 'Is PdfPixels safe?',
-    answer: 'Yes. PdfPixels uses enterprise-grade 256-bit SSL encryption for all file transfers. Files are strictly private and are automatically deleted from our servers within one hour of processing.',
+    answer: 'Yes. PdfPixels uses secure transport and privacy-focused processing. File handling and cleanup depend on the specific tool workflow (browser-side or server-side).',
     keywords: ['data security', 'privacy', 'safe image editor', 'secure file processing'],
   },
   {
@@ -155,7 +158,7 @@ export const faqData = [
   },
   {
     question: 'What is the best free online PDF merger?',
-    answer: 'PdfPixels offers a free PDF merger that supports up to 10 files and 500MB total. Drag files to reorder pages, merge instantly, and download with no watermarks or signup. Works on all devices including mobile.',
+    answer: 'PdfPixels offers a free PDF merger for combining multiple files in one flow. Upload, reorder pages, merge, and download directly in your browser.',
     keywords: ['free pdf merger', 'best pdf combiner', 'merge pdf free', 'online pdf merge tool'],
   },
   {

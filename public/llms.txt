@@ -4,7 +4,7 @@
 
 ## About
 
-PdfPixels is a free web-based platform offering 55+ professional tools for image and PDF processing. All tools work directly in the browser with no signup, no watermarks, and no hidden fees. Files are automatically deleted within 1 hour of processing.
+PdfPixels is a free web-based platform offering 55+ professional tools for image and PDF processing. Tools use secure browser/server workflows depending on feature type, with no signup and no hidden fees. Many workflows support temporary file handling with automatic cleanup.
 
 ## Core Tools
 
@@ -62,8 +62,8 @@ PdfPixels is a free web-based platform offering 55+ professional tools for image
 - **Image to PDF**: Convert images to PDF documents.
 - **Rotate PDF**: Rotate PDF pages by 90°, 180°, or 270°.
 - **PDF Watermark**: Add text or image watermarks to PDF pages.
-- **Protect PDF**: Add password protection to PDF files.
-- **Unlock PDF**: Remove password protection from PDFs.
+- **Protect PDF**: Temporarily unavailable while encryption support is being finalized.
+- **Unlock PDF**: Temporarily unavailable while decryption support is being finalized.
 - **Reorder PDF Pages**: Drag and drop to rearrange pages.
 - **Delete PDF Pages**: Remove unwanted pages from PDFs.
 
@@ -71,7 +71,7 @@ PdfPixels is a free web-based platform offering 55+ professional tools for image
 - **URL**: https://www.pdfpixels.com
 - **Pricing**: 100% Free
 - **Registration**: Not required
-- **File Security**: 256-bit SSL encryption, GDPR compliant, auto-delete within 1 hour
+- **File Security**: Secure transport, GDPR-aware handling, and temporary cleanup on supported workflows
 - **Supported Input Formats**: JPG, JPEG, PNG, WebP, HEIC, GIF, BMP, TIFF, PDF
 - **Supported Output Formats**: JPG, PNG, WebP, PDF
 - **API Documentation**: https://www.pdfpixels.com/api-docs

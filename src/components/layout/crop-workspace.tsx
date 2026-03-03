@@ -33,7 +33,11 @@ export function CropWorkspace() {
     const previewRef = useRef<HTMLCanvasElement>(null);
     const imageRef = useRef<HTMLImageElement | null>(null);
 
-    const [cropMode, setCropMode] = useState<CropMode>('rect');
+    const cropMode: CropMode =
+        activeTool?.id === 'circle-crop' ? 'circle'
+            : activeTool?.id === 'square-crop' ? 'square'
+                : activeTool?.id === 'freehand-crop' ? 'freehand'
+                    : 'rect';
     const [aspectRatio, setAspectRatio] = useState('free');
     const [cropX, setCropX] = useState(50);
     const [cropY, setCropY] = useState(50);
@@ -41,14 +45,6 @@ export function CropWorkspace() {
     const [cropH, setCropH] = useState(300);
     const [imageLoaded, setImageLoaded] = useState(false);
 
-    // Detect crop mode from tool ID
-    useEffect(() => {
-        if (!activeTool) return;
-        if (activeTool.id === 'circle-crop') setCropMode('circle');
-        else if (activeTool.id === 'square-crop') { setCropMode('square'); setAspectRatio('1:1'); }
-        else if (activeTool.id === 'freehand-crop') setCropMode('freehand');
-        else setCropMode('rect');
-    }, [activeTool]);
 
     // Load image onto canvas
     useEffect(() => {

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -29,6 +30,7 @@ export function Navigation() {
   const megaTimeout = useRef<NodeJS.Timeout | null>(null);
   const searchRef = useRef<HTMLInputElement>(null);
   const { theme, setTheme } = useTheme();
+  const router = useRouter();
   const setActiveTool = useAppStore((state) => state.setActiveTool);
 
   useEffect(() => {
@@ -62,7 +64,7 @@ export function Navigation() {
 
   const handleToolSelect = (tool: Tool) => {
     setActiveTool({ id: tool.id, name: tool.name, description: tool.description });
-    window.location.href = `/tools/${tool.slug}`;
+    router.push(`/tools/${tool.slug}`);
     setSearchOpen(false);
     setSearchQuery('');
     setSearchResults([]);
@@ -81,7 +83,7 @@ export function Navigation() {
   return (
     <>
       <header
-        className={`sticky top-0 z-50 w-full transition-all duration-400 ${scrolled ? 'bg-background/70 backdrop-blur-xl border-b border-border/40 shadow-sm' : 'bg-background/40 backdrop-blur-md'
+        className={`sticky top-0 z-50 w-full transition-all duration-300 ${scrolled ? 'bg-background/85 backdrop-blur-lg border-b border-border/50 shadow-soft' : 'bg-background/55 backdrop-blur-md'
           }`}
       >
         <nav className="container mx-auto px-4 lg:px-8">
@@ -99,7 +101,7 @@ export function Navigation() {
                 }
               }}
             >
-              <div className="relative w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 via-fuchsia-500 to-cyan-500 flex items-center justify-center shadow-lg shadow-violet-500/25 group-hover:scale-105 transition-all duration-300">
+              <div className="relative w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-600 to-violet-600 flex items-center justify-center shadow-md group-hover:scale-105 transition-all duration-300">
                 <ImageIcon className="w-5 h-5 text-white" />
               </div>
               <span className="text-xl font-extrabold tracking-tight hidden sm:block">
@@ -120,7 +122,7 @@ export function Navigation() {
                     onClick={() => {
                       const el = document.getElementById(cat.id);
                       if (el) el.scrollIntoView({ behavior: 'smooth' });
-                      else window.location.href = `/#${cat.id}`;
+                      else router.push(`/#${cat.id}`);
                     }}
                     className="px-3 py-1.5 text-[13px] font-medium text-muted-foreground hover:text-foreground transition-colors rounded-lg hover:bg-muted/50"
                   >
@@ -146,7 +148,7 @@ export function Navigation() {
                 <Search className="w-4 h-4" />
                 <span className="hidden md:inline">Search tools...</span>
                 <kbd className="hidden md:inline-flex h-5 items-center gap-0.5 rounded border border-border/60 bg-background/50 px-1.5 text-[10px] font-mono text-muted-foreground font-bold">
-                  ⌘K
+                  Ctrl+K
                 </kbd>
               </Button>
 
@@ -234,7 +236,7 @@ export function Navigation() {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -10, scale: 0.97 }}
               transition={{ duration: 0.2 }}
-              className="relative w-full max-w-lg bg-card/90 backdrop-blur-xl border border-border/60 rounded-3xl shadow-premium overflow-hidden rainbow-border"
+              className="relative w-full max-w-lg bg-card/95 backdrop-blur-xl border border-border/60 rounded-3xl shadow-premium overflow-hidden"
             >
               {/* Search input */}
               <div className="flex items-center gap-3 px-5 py-4 border-b border-border/30 bg-background/50">
@@ -245,7 +247,7 @@ export function Navigation() {
                   value={searchQuery}
                   onChange={(e) => handleSearch(e.target.value)}
                   placeholder="Search all tools..."
-                  className="flex-1 bg-transparent text-base font-semibold outline-none placeholder:text-muted-foreground/60 focus:ring-0 border-none"
+                  className="flex-1 bg-transparent text-base font-semibold outline-none placeholder:text-muted-foreground/60 border-none"
                   autoFocus
                 />
                 <kbd className="hidden sm:inline-flex h-6 items-center rounded-md border border-border/60 bg-card px-2 text-[10px] font-mono text-muted-foreground font-bold shadow-sm">

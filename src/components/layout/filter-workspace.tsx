@@ -1,8 +1,7 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Download, RotateCcw, Sparkles, ChevronRight, RefreshCw, Wand2, Sun, Contrast, Droplets, Circle, Palette } from 'lucide-react';
-import Link from 'next/link';
+import { Download, RotateCcw, Sparkles, ChevronRight, RefreshCw, Wand2, Sun, Contrast, Droplets, Circle, Palette } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { useAppStore } from '@/store/app-store';
@@ -12,6 +11,7 @@ import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
 import { Slider } from '@/components/ui/slider';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ToolPageHeader } from './tool-page-header';
 
 interface FilterSettings {
   brightness: number;
@@ -170,51 +170,33 @@ export function FilterWorkspace() {
       animate={{ opacity: 1 }}
       className="container mx-auto px-4 lg:px-8 py-8"
     >
-      {/* Header */}
-      <div className="flex items-center justify-between mb-8">
-        <div className="flex items-center gap-4">
-          <Link 
-            href="/" 
-            onClick={() => reset()}
-            className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 hover:bg-accent hover:text-accent-foreground h-10 w-10"
-            aria-label="Back to home"
+      <ToolPageHeader
+        title={activeTool.name}
+        description={activeTool.description}
+        icon={<span className="text-2xl" aria-hidden>{getToolIcon()}</span>}
+        onReset={handleReset}
+      >
+        {processedImage && (
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="flex gap-2"
           >
-            <ArrowLeft className="w-5 h-5" />
-          </Link>
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center shadow-lg shadow-primary/30 text-2xl">
-              {getToolIcon()}
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold">{activeTool.name}</h1>
-              <p className="text-sm text-muted-foreground">{activeTool.description}</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-2">
-          {processedImage && (
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              className="flex gap-2"
+            <Button
+              variant="outline"
+              onClick={() => setCompareMode(!compareMode)}
+              className="gap-2"
             >
-              <Button
-                variant="outline"
-                onClick={() => setCompareMode(!compareMode)}
-                className="gap-2"
-              >
-                <RefreshCw className="w-4 h-4" />
-                Compare
-              </Button>
-              <Button onClick={handleDownload} className="gap-2 btn-glow">
-                <Download className="w-4 h-4" />
-                Download
-              </Button>
-            </motion.div>
-          )}
-        </div>
-      </div>
+              <RefreshCw className="w-4 h-4" />
+              Compare
+            </Button>
+            <Button onClick={handleDownload} className="gap-2 btn-glow">
+              <Download className="w-4 h-4" />
+              Download
+            </Button>
+          </motion.div>
+        )}
+      </ToolPageHeader>
 
       {/* Main Content */}
       <div className="grid lg:grid-cols-3 gap-8">

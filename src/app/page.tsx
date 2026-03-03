@@ -128,17 +128,17 @@ function ToolsHeader({ search, setSearch }: { search: string, setSearch: (val: s
       <AnimatedMeshBg />
       <FloatingDots />
 
-      <div className="relative z-10 container mx-auto px-4 lg:px-8 py-16 md:py-24 text-center">
+      <div className="relative z-10 container mx-auto px-4 lg:px-8 py-14 md:py-20 text-center">
         <motion.div
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
         >
-          <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-4">
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight mb-4">
             Professional Image & PDF Tools
           </h1>
           <p className="text-muted-foreground text-lg mb-10 max-w-2xl mx-auto font-medium">
-            Fast, secure, and native browser processing.
+            Fast, secure, and thoughtfully designed for a premium editing experience.
           </p>
         </motion.div>
 
@@ -156,7 +156,7 @@ function ToolsHeader({ search, setSearch }: { search: string, setSearch: (val: s
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search 38+ tools (e.g. compress, merge)..."
+            placeholder="Search 55+ tools (e.g. compress, merge)..."
             className="block w-full pl-14 pr-12 py-5 border border-white/10 dark:border-white/5 rounded-2xl leading-5 bg-card/60 dark:bg-card/40 backdrop-blur-xl shadow-2xl shadow-primary/20 placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 transition-all text-base font-medium"
           />
           {search && (
@@ -203,7 +203,7 @@ function ToolsSection() {
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="flex items-center gap-4 p-5 rounded-2xl bg-gradient-to-r from-violet-50/80 via-fuchsia-50/40 to-indigo-50/50 dark:from-violet-500/[0.08] dark:via-fuchsia-500/[0.05] dark:to-indigo-500/[0.05] border border-violet-200/60 dark:border-violet-500/15 shadow-sm"
+            className="flex items-center gap-4 p-5 rounded-2xl bg-gradient-to-r from-indigo-50/80 to-violet-50/40 dark:from-indigo-500/[0.08] dark:to-violet-500/[0.05] border border-indigo-200/60 dark:border-indigo-500/15 shadow-sm"
           >
             <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-violet-500 via-fuchsia-500 to-indigo-600 flex items-center justify-center flex-shrink-0 shadow-lg shadow-violet-500/25">
               <Sparkles className="w-5 h-5 text-white" />
@@ -254,7 +254,7 @@ function ToolsSection() {
 // ─── Stats Banner ───
 function StatsBanner() {
   const stats = [
-    { value: 38, suffix: '+', label: 'Free Tools', icon: Wrench, gradient: 'from-indigo-500 to-violet-500' },
+    { value: 55, suffix: '+', label: 'Free Tools', icon: Wrench, gradient: 'from-indigo-500 to-violet-500' },
     { value: 99, suffix: '.9%', label: 'Uptime', icon: Server, gradient: 'from-emerald-500 to-teal-500' },
     { value: 8, suffix: '+', label: 'File Formats', icon: Files, gradient: 'from-fuchsia-500 to-pink-500' },
     { value: 0, suffix: '₹', label: 'Cost', display: 'Free', icon: DollarSign, gradient: 'from-cyan-500 to-blue-500' },
@@ -280,7 +280,7 @@ function StatsBanner() {
               <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${stat.gradient} flex items-center justify-center mx-auto mb-3 shadow-sm group-hover:scale-110 transition-transform`}>
                 <stat.icon className="w-5 h-5 text-white" />
               </div>
-              <div className="text-3xl md:text-4xl font-extrabold gradient-text mb-1">
+              <div className="text-3xl md:text-4xl font-extrabold text-foreground mb-1">
                 {stat.display ? stat.display : <AnimatedCounter end={stat.value} suffix={stat.suffix} />}
               </div>
               <div className="text-sm text-muted-foreground font-medium">{stat.label}</div>
@@ -316,7 +316,7 @@ function HowItWorks() {
   ];
 
   return (
-    <section className="py-24 bg-muted/20 border-t border-border/50 relative overflow-hidden">
+    <section className="py-16 md:py-20 bg-muted/20 border-t border-border/50 relative overflow-hidden">
       {/* Background pattern */}
       <div className="absolute inset-0 dot-pattern opacity-40" />
 
@@ -329,7 +329,7 @@ function HowItWorks() {
         >
           <span className="inline-flex items-center gap-2 text-xs font-bold text-primary uppercase tracking-[0.2em] px-4 py-1.5 rounded-full bg-primary/8 border border-primary/15 mb-4">Simple Process</span>
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold mt-3 mb-4">
-            How It <span className="gradient-text">Works</span>
+            How It <span className="text-foreground">Works</span>
           </h2>
           <p className="text-muted-foreground max-w-lg mx-auto">
             Three simple steps. No accounts, no installations, no hassle.
@@ -351,7 +351,7 @@ function HowItWorks() {
               transition={{ delay: idx * 0.15 }}
               className="relative text-center group"
             >
-              <div className={`relative w-24 h-24 rounded-3xl bg-gradient-to-br ${step.color} flex items-center justify-center mx-auto mb-6 shadow-xl group-hover:scale-110 transition-all duration-500 glow-ring`}>
+              <div className={`relative w-24 h-24 rounded-3xl bg-gradient-to-br ${step.color} flex items-center justify-center mx-auto mb-6 shadow-lg group-hover:scale-105 transition-all duration-300`}>
                 <step.icon className="w-9 h-9 text-white" />
                 <div className="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-background border-2 border-border flex items-center justify-center text-xs font-extrabold gradient-text shadow-sm">
                   {idx + 1}
@@ -383,9 +383,9 @@ function FeaturesSection() {
           className="text-center mb-20"
         >
           <span className="inline-flex items-center justify-center font-bold text-primary uppercase tracking-[0.2em] mb-4 text-xs">Platform Capabilities</span>
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight mb-6">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight mb-6">
             Everything you need,<br />
-            <span className="text-shimmer">nothing you don't.</span>
+            <span className="text-primary">nothing you don't.</span>
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto font-medium">
             A meticulously crafted suite of tools designed to handle your documents natively, securely, and instantly.
@@ -407,15 +407,15 @@ function FeaturesSection() {
               <div className="w-12 h-12 rounded-xl bg-card border border-border/60 flex items-center justify-center mb-6 shadow-sm">
                 <Shield className="w-5 h-5 text-primary" />
               </div>
-              <h3 className="text-2xl font-bold mb-3 tracking-tight">100% Client-Side Processing</h3>
+              <h3 className="text-2xl font-bold mb-3 tracking-tight">Privacy-First Processing</h3>
               <p className="text-muted-foreground font-medium leading-relaxed max-w-sm">
-                Your files never leave your browser. Zero uploads, zero server processing, infinite privacy compliance by default.
+                Files are processed securely with automatic cleanup and no account required.
               </p>
             </div>
           </SpotlightCard>
 
           {/* Secondary Feature - High */}
-          <SpotlightCard className="md:col-span-1 lg:col-span-2 row-span-1 p-8 group flex items-center gap-8" spotlightColor="rgba(16, 185, 129, 0.3)">
+          <SpotlightCard className="md:col-span-1 lg:col-span-2 row-span-1 p-6 md:p-8 group flex items-center gap-5 md:gap-8" spotlightColor="rgba(16, 185, 129, 0.3)">
             <div className="flex-1">
               <h3 className="text-xl font-bold mb-3 tracking-tight">Lightning Fast</h3>
               <p className="text-sm text-muted-foreground font-medium leading-relaxed">
@@ -434,7 +434,7 @@ function FeaturesSection() {
             </div>
             <div>
               <h3 className="text-lg font-bold mb-2">Beautiful UI</h3>
-              <p className="text-sm text-muted-foreground font-medium">Crafted for focus. No ads, no popups, pure utility.</p>
+              <p className="text-sm text-muted-foreground font-medium">Crafted for focus. No intrusive popups, pure utility.</p>
             </div>
           </SpotlightCard>
 
@@ -450,7 +450,7 @@ function FeaturesSection() {
           </SpotlightCard>
 
           {/* Bottom Wide Feature */}
-          <SpotlightCard className="md:col-span-3 lg:col-span-4 row-span-1 p-8 sm:p-10 flex flex-col sm:flex-row items-center gap-8 group" spotlightColor="rgba(245, 158, 11, 0.3)">
+          <SpotlightCard className="md:col-span-3 lg:col-span-4 row-span-1 p-6 sm:p-8 md:p-10 flex flex-col sm:flex-row items-center gap-5 md:gap-8 group" spotlightColor="rgba(245, 158, 11, 0.3)">
             <div className="flex-1">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-xs font-bold text-amber-500 mb-4">
                 <Cpu className="w-3.5 h-3.5" />
@@ -479,7 +479,7 @@ function FAQSection() {
   const visibleFaqs = faqData.slice(0, 10);
 
   return (
-    <section id="faq-section" className="py-24 bg-muted/20 border-t border-border/50">
+    <section id="faq-section" className="py-16 md:py-20 bg-muted/20 border-t border-border/50">
       <div className="container mx-auto px-4 lg:px-8 max-w-3xl">
         <motion.div
           initial={{ opacity: 0, y: 15 }}
@@ -489,7 +489,7 @@ function FAQSection() {
         >
           <span className="inline-flex items-center gap-2 text-xs font-bold text-primary uppercase tracking-[0.2em] px-4 py-1.5 rounded-full bg-primary/8 border border-primary/15 mb-4">FAQ</span>
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold mt-3 mb-4">
-            Frequently Asked <span className="gradient-text">Questions</span>
+            Frequently Asked <span className="text-foreground">Questions</span>
           </h2>
           <p className="text-muted-foreground max-w-lg mx-auto">
             Quick answers about our free image and PDF processing tools.
@@ -544,14 +544,14 @@ function FAQSection() {
 // ─── CTA Section ───
 function CTASection() {
   return (
-    <section className="py-24 border-t border-border/50">
+    <section className="py-16 md:py-20 border-t border-border/50">
       <div className="container mx-auto px-4 lg:px-8 max-w-3xl text-center">
         <motion.div
           initial={{ opacity: 0, y: 15 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
         >
-          <div className="relative p-12 md:p-16 rounded-3xl overflow-hidden aurora-bg">
+          <div className="relative p-8 md:p-12 rounded-3xl overflow-hidden aurora-bg">
             {/* Noise overlay */}
             <div className="noise-overlay absolute inset-0 pointer-events-none" />
 

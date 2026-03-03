@@ -15,7 +15,7 @@ import {
   Globe
 } from 'lucide-react';
 import { useAppStore } from '@/store/app-store';
-import { toolCategories } from '@/lib/tools-data';
+import { allTools } from '@/lib/tools-data';
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
@@ -23,9 +23,9 @@ export function Footer() {
 
   const toolLinks = [
     { name: 'Compress Image', id: 'compress' },
-    { name: 'Resize Image', id: 'resize-pixel' },
+    { name: 'Resize Image', id: 'resize' },
     { name: 'Convert Format', id: 'png-to-jpg' },
-    { name: 'Remove Background', id: 'background-remover' },
+    { name: 'Remove Background', id: 'remove-background' },
     { name: 'Merge PDF', id: 'pdf-merge' },
     { name: 'Split PDF', id: 'pdf-split' },
   ];
@@ -65,7 +65,7 @@ export function Footer() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="relative rounded-3xl bg-gradient-to-br from-primary/10 via-fuchsia-500/5 to-cyan-500/5 border border-primary/15 p-10 md:p-14 text-center overflow-hidden rainbow-border aurora-bg"
+          className="relative rounded-3xl bg-gradient-to-br from-primary/8 via-violet-500/5 to-cyan-500/4 border border-primary/15 p-10 md:p-14 text-center overflow-hidden aurora-bg"
         >
           <div className="noise-overlay absolute inset-0 pointer-events-none" />
           <div className="relative z-10">
@@ -73,7 +73,7 @@ export function Footer() {
               Ready to <span className="gradient-text">Get Started</span>?
             </h2>
             <p className="text-muted-foreground max-w-xl mx-auto mb-10 leading-relaxed text-lg">
-              Compress, resize, convert, and edit your images and PDFs with our suite of 38+ professional tools.
+              Compress, resize, convert, and edit your images and PDFs with our suite of {allTools.length}+ professional tools.
               Completely free, no signup required.
             </p>
             <button
@@ -97,9 +97,9 @@ export function Footer() {
             {/* Brand */}
             <div className="col-span-2 md:col-span-4 lg:col-span-2">
               <Link href="/" className="flex items-center gap-3 mb-6 group" onClick={() => setActiveTool(null)}>
-                <div className="relative w-11 h-11 rounded-xl bg-gradient-to-br from-indigo-500 via-fuchsia-500 to-cyan-500 flex items-center justify-center shadow-lg shadow-violet-500/25 group-hover:scale-105 transition-all duration-300 glow-ring">
+                <div className="relative w-11 h-11 rounded-xl bg-gradient-to-br from-indigo-600 to-violet-600 flex items-center justify-center shadow-md group-hover:scale-105 transition-all duration-300">
                   <ImageIcon className="w-5 h-5 text-white" />
-                  <Sparkles className="absolute -top-1 -right-1 w-3 h-3 text-white animate-pulse-soft" />
+                  <Sparkles className="absolute -top-1 -right-1 w-3 h-3 text-white/90" />
                 </div>
                 <div className="flex flex-col">
                   <span className="text-xl font-extrabold tracking-tight leading-none bg-clip-text text-transparent bg-gradient-to-r from-foreground to-foreground/70">
@@ -133,7 +133,7 @@ export function Footer() {
                     href={link.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    whileHover={{ scale: 1.1, y: -2 }}
+                    whileHover={{ scale: 1.05, y: -1 }}
                     whileTap={{ scale: 0.95 }}
                     className="w-10 h-10 rounded-xl bg-card border border-border/60 flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/40 hover:bg-primary/5 hover:shadow-premium transition-all duration-300"
                     aria-label={link.label}

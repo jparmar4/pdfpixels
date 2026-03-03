@@ -298,7 +298,7 @@ export function TrustSection() {
           <p className="text-muted-foreground leading-relaxed">
             <strong className="text-foreground">PdfPixels</strong> is committed to providing
             the highest quality image and PDF processing tools. Our platform serves millions of users
-            worldwide with enterprise-grade security, instant processing, and a 100% free forever promise.
+            worldwide with enterprise-grade security, instant processing, and free-to-use core workflows.
           </p>
           <div className="flex flex-wrap justify-center gap-6 mt-6">
             {seoConfig.trustSignals.slice(0, 4).map((signal) => (

@@ -4,13 +4,13 @@
 
 ## Platform Overview
 
-PdfPixels is a free, web-based image and PDF processing platform available at https://www.pdfpixels.com. The platform provides 55+ professional tools that work directly in the browser. No software installation is required, and no registration or account creation is needed.
+PdfPixels is a free, web-based image and PDF processing platform available at https://www.pdfpixels.com. The platform provides 55+ professional tools using browser/server workflows depending on feature type. No software installation is required, and no registration or account creation is needed.
 
 Key features:
 - **100% free** with no hidden costs or subscriptions
 - **No watermarks** on any output files
 - **No registration** required to use any tool
-- **Privacy-first**: All files automatically deleted within 1 hour
+- **Privacy-first**: Temporary file handling with automatic cleanup on supported workflows
 - **Secure**: 256-bit SSL encryption for all transfers
 - **GDPR compliant**: Full data protection compliance
 - **Cross-platform**: Works on desktop, tablet, and mobile browsers
@@ -148,9 +148,9 @@ Key features:
   - URL: https://www.pdfpixels.com/tools/reorder-pdf-pages
 - **Delete PDF Pages** — Remove specific pages from a PDF.
   - URL: https://www.pdfpixels.com/tools/delete-pdf-pages
-- **Protect PDF** — Add password protection to PDF files.
+- **Protect PDF** — Temporarily unavailable while encryption support is being finalized.
   - URL: https://www.pdfpixels.com/tools/protect-pdf
-- **Unlock PDF** — Remove password protection from PDF files.
+- **Unlock PDF** — Temporarily unavailable while decryption support is being finalized.
   - URL: https://www.pdfpixels.com/tools/unlock-pdf
 
 ## File Format Support
@@ -192,7 +192,7 @@ A: Go to https://www.pdfpixels.com/tools/compress-image, upload your image (JPG,
 A: Visit https://www.pdfpixels.com/tools/merge-pdf, upload multiple PDF files, drag to reorder if needed, click merge, and download the combined PDF.
 
 **Q: Is my data safe?**
-A: Yes. Files are processed with 256-bit SSL encryption and automatically deleted within 1 hour. We never store, share, or access your content.
+A: Yes. PdfPixels uses secure transport and privacy-focused processing. File handling depends on the specific tool workflow, with temporary cleanup on supported server-side flows.
 
 **Q: What file formats are supported?**
 A: We support JPG, JPEG, PNG, WebP, HEIC, GIF, BMP, TIFF, AVIF for images and PDF for documents.

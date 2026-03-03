@@ -1,6 +1,8 @@
 import { MetadataRoute } from 'next';
 import { allTools } from '@/lib/tools-data';
 import { getAllBlogPosts } from '@/config/blog';
+import { useCasePages } from '@/lib/use-cases';
+import { comparisonPages } from '@/lib/comparisons';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://www.pdfpixels.com';
@@ -87,5 +89,35 @@ export default function sitemap(): MetadataRoute.Sitemap {
     })),
   ];
 
-  return [...corePages, ...toolPages, ...blogPages, ...legalPages];
+  const useCaseEntries: MetadataRoute.Sitemap = [
+    {
+      url: `${baseUrl}/use-cases`,
+      lastModified: now,
+      changeFrequency: 'weekly',
+      priority: 0.75,
+    },
+    ...useCasePages.map((u) => ({
+      url: `${baseUrl}/use-cases/${u.slug}`,
+      lastModified: now,
+      changeFrequency: 'weekly' as const,
+      priority: 0.72,
+    })),
+  ];
+
+  const comparisonEntries: MetadataRoute.Sitemap = [
+    {
+      url: `${baseUrl}/compare`,
+      lastModified: now,
+      changeFrequency: 'weekly',
+      priority: 0.7,
+    },
+    ...comparisonPages.map((c) => ({
+      url: `${baseUrl}/compare/${c.slug}`,
+      lastModified: now,
+      changeFrequency: 'weekly' as const,
+      priority: 0.68,
+    })),
+  ];
+
+  return [...corePages, ...toolPages, ...useCaseEntries, ...comparisonEntries, ...blogPages, ...legalPages];
 }

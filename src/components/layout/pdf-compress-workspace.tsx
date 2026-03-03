@@ -1,14 +1,14 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Download, Minimize2, Sparkles, RefreshCw, Zap, FileText } from 'lucide-react';
-import Link from 'next/link';
+import { Download, Minimize2, Sparkles, RefreshCw, Zap, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAppStore } from '@/store/app-store';
 import { FileUpload } from './file-upload';
 import { useState, useCallback } from 'react';
 import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
+import { ToolPageHeader } from './tool-page-header';
 
 interface CompressionResult {
     pdfUrl: string;
@@ -84,28 +84,12 @@ export function CompressPDFWorkspace() {
             animate={{ opacity: 1 }}
             className="container mx-auto px-4 lg:px-8 py-8 md:py-12 max-w-4xl"
         >
-            {/* Header */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4 bg-card/40 backdrop-blur-xl p-6 rounded-3xl border border-border/50 shadow-sm">
-                <div className="flex items-center gap-4">
-                    <Link
-                        href="/"
-                        onClick={() => reset()}
-                        className="inline-flex items-center justify-center rounded-xl text-sm font-medium transition-colors hover:bg-white/60 dark:hover:bg-white/10 h-11 w-11 shadow-sm border border-border/40"
-                        aria-label="Back to home"
-                    >
-                        <ArrowLeft className="w-5 h-5 text-muted-foreground" />
-                    </Link>
-                    <div className="flex items-center gap-4">
-                        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-red-500 to-orange-600 flex items-center justify-center shadow-lg shadow-red-500/20 border border-red-500/20">
-                            <Minimize2 className="w-7 h-7 text-white" />
-                        </div>
-                        <div>
-                            <h1 className="text-2xl md:text-3xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-foreground to-foreground/70">{activeTool.name}</h1>
-                            <p className="text-sm font-medium text-muted-foreground mt-1">{activeTool.description}</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <ToolPageHeader
+                title={activeTool.name}
+                description={activeTool.description}
+                icon={Minimize2}
+                onReset={handleReset}
+            />
 
             {/* Main Content */}
             <div className="space-y-6">

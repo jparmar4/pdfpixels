@@ -1,8 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { ArrowLeft, Download, RotateCcw, Maximize2, Link2, Unlink, ChevronRight, Sparkles, Ruler, Settings2 } from 'lucide-react';
-import Link from 'next/link';
+import { Download, RotateCcw, Maximize2, Link2, Unlink, ChevronRight, Sparkles, Ruler, Settings2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -20,6 +19,7 @@ import {
 } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Slider } from '@/components/ui/slider';
+import { ToolPageHeader } from './tool-page-header';
 
 interface ResizeResult {
   imageUrl: string;
@@ -178,28 +178,12 @@ export function ResizeWorkspace() {
       animate={{ opacity: 1 }}
       className="container mx-auto px-4 lg:px-8 py-8"
     >
-      {/* Header */}
-      <div className="flex items-center justify-between mb-8">
-        <div className="flex items-center gap-4">
-          <Link 
-            href="/" 
-            onClick={() => reset()}
-            className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 hover:bg-accent hover:text-accent-foreground h-10 w-10"
-            aria-label="Back to home"
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </Link>
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center shadow-lg shadow-primary/30">
-              <Maximize2 className="w-6 h-6 text-primary-foreground" />
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold">{activeTool.name}</h1>
-              <p className="text-sm text-muted-foreground">{activeTool.description}</p>
-            </div>
-          </div>
-        </div>
-
+      <ToolPageHeader
+        title={activeTool.name}
+        description={activeTool.description}
+        icon={Maximize2}
+        onReset={handleReset}
+      >
         {processedImage && (
           <motion.div
             initial={{ opacity: 0, x: 20 }}
@@ -211,7 +195,7 @@ export function ResizeWorkspace() {
             </Button>
           </motion.div>
         )}
-      </div>
+      </ToolPageHeader>
 
       {/* Main Content */}
       <div className="grid lg:grid-cols-3 gap-8">

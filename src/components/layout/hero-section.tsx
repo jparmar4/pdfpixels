@@ -74,8 +74,8 @@ export function HeroSection({
                             type="text"
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
-                            placeholder="Search 38+ tools — compress, resize, merge PDF, blur..."
-                            className="w-full bg-transparent border-none text-base font-medium placeholder:text-muted-foreground/60 focus:outline-none focus:ring-0 py-3 h-12"
+                            placeholder="Search 55+ tools — compress, resize, merge PDF, blur..."
+                            className="w-full bg-transparent border-none text-base font-medium placeholder:text-muted-foreground/60 focus:outline-none py-3 h-12"
                         />
                         {search && (
                             <button onClick={() => setSearch('')} className="mr-3 text-muted-foreground hover:text-foreground transition-colors p-1 bg-muted rounded-full">

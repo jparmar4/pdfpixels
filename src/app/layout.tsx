@@ -55,6 +55,10 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   alternates: {
     canonical: '/',
+    languages: {
+      'en-US': '/',
+      'x-default': '/',
+    },
     types: {
       'application/rss+xml': '/feed',
     },
@@ -198,6 +202,9 @@ export default function RootLayout({
         {/* Preconnect for Google AdSense */}
         <link rel="preconnect" href="https://pagead2.googlesyndication.com" />
         <link rel="preconnect" href="https://adservice.google.com" />
+
+        {/* Discovery */}
+        <link rel="search" type="application/opensearchdescription+xml" title="PdfPixels" href="/opensearch.xml" />
 
         {/* Explicit Favicon Links - Critical for Google Search logo */}
         <link rel="shortcut icon" href="/favicon.ico" />

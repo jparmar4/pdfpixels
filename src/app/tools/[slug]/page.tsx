@@ -3,9 +3,12 @@ import { notFound } from 'next/navigation';
 import { allTools, getToolBySlug } from '@/lib/tools-data';
 import { siteConfig } from '@/lib/seo-config';
 import { Suspense } from 'react';
+import Link from 'next/link';
 import { ToolPageClient } from '@/components/layout/tool-page-client';
 import { ToolContentSection } from '@/components/layout/tool-content-section';
 import { toolContentMap } from '@/lib/tool-content-data';
+import { useCasePages } from '@/lib/use-cases';
+import { comparisonPages } from '@/lib/comparisons';
 
 function WorkspaceLoading() {
   return (
@@ -47,9 +50,14 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   }
 
   const isAI = tool.isAI;
+  const isTemporarilyUnavailable = tool.id === 'pdf-protect' || tool.id === 'pdf-unlock';
   const aiLabel = isAI ? 'AI-Powered ' : '';
-  const title = `${aiLabel}${tool.name} — Free Online Tool | PdfPixels`;
-  const description = `${tool.description} Free online ${tool.name.toLowerCase()} tool. ${isAI ? 'Powered by OpenAI. ' : ''}No registration required. Fast, secure, and private. Works on JPG, PNG, WebP, HEIC.`;
+  const title = isTemporarilyUnavailable
+    ? `${tool.name} (Temporarily Unavailable) | PdfPixels`
+    : `${aiLabel}${tool.name} — Free Online Tool | PdfPixels`;
+  const description = isTemporarilyUnavailable
+    ? `${tool.name} is temporarily unavailable while secure encryption/decryption support is being finalized.`
+    : `${tool.description} Free online ${tool.name.toLowerCase()} tool. ${isAI ? 'Powered by OpenAI. ' : ''}No registration required. Fast, secure, and private. Works on JPG, PNG, WebP, HEIC.`;
 
   return {
     title,
@@ -84,11 +92,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       canonical: `/tools/${tool.slug}`,
     },
     robots: {
-      index: true,
-      follow: true,
+      index: !isTemporarilyUnavailable,
+      follow: !isTemporarilyUnavailable,
       googleBot: {
-        index: true,
-        follow: true,
+        index: !isTemporarilyUnavailable,
+        follow: !isTemporarilyUnavailable,
         'max-image-preview': 'large',
         'max-snippet': -1,
         'max-video-preview': -1,
@@ -115,17 +123,13 @@ function getToolJsonLd(tool: ReturnType<typeof getToolBySlug>) {
     url,
     applicationCategory: 'MultimediaApplication',
     operatingSystem: 'Web',
+    isAccessibleForFree: true,
+    inLanguage: 'en-US',
     offers: {
       '@type': 'Offer',
       price: '0',
       priceCurrency: 'USD',
-    },
-    aggregateRating: {
-      '@type': 'AggregateRating',
-      ratingValue: '4.8',
-      ratingCount: '1250',
-      bestRating: '5',
-      worstRating: '1',
+      availability: 'https://schema.org/InStock',
     },
     ...(isAI && {
       additionalType: 'https://schema.org/AIApplication',
@@ -192,6 +196,31 @@ function getToolJsonLd(tool: ReturnType<typeof getToolBySlug>) {
     mainEntity: faqEntities,
   });
 
+  schemas.push({
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: 'https://www.pdfpixels.com',
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Tools',
+        item: 'https://www.pdfpixels.com/tools',
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: tool.name,
+        item: url,
+      },
+    ],
+  });
+
   return schemas;
 }
 
@@ -204,6 +233,9 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
   }
 
   const schemas = getToolJsonLd(tool);
+  const relatedTools = allTools.filter((t) => t.category === tool.category && t.slug !== tool.slug).slice(0, 6);
+  const relatedUseCases = useCasePages.filter((u) => u.targetToolSlug === tool.slug).slice(0, 4);
+  const relatedComparisons = comparisonPages.filter((c) => c.primaryToolSlug === tool.slug).slice(0, 3);
 
   return (
     <>
@@ -231,6 +263,64 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
         isAI={tool.isAI}
         processing={tool.processing}
       />
+
+      {(relatedTools.length > 0 || relatedUseCases.length > 0 || relatedComparisons.length > 0) && (
+        <section className="container mx-auto px-4 lg:px-8 pb-10">
+          <div className="rounded-2xl border border-border/50 bg-card/70 p-6 space-y-6">
+            {relatedTools.length > 0 && (
+              <div>
+                <h2 className="text-xl font-bold mb-2">Related tools</h2>
+                <p className="text-sm text-muted-foreground mb-4">Explore similar tools to complete your workflow faster.</p>
+                <div className="flex flex-wrap gap-2">
+                  {relatedTools.map((rt) => (
+                    <Link
+                      key={rt.slug}
+                      href={`/tools/${rt.slug}`}
+                      className="px-3 py-1.5 rounded-lg border border-border/60 bg-background/70 text-sm font-medium hover:border-primary/50 hover:text-primary transition-colors"
+                    >
+                      {rt.name}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {relatedUseCases.length > 0 && (
+              <div>
+                <h3 className="text-lg font-bold mb-2">Popular use cases</h3>
+                <div className="flex flex-wrap gap-2">
+                  {relatedUseCases.map((u) => (
+                    <Link
+                      key={u.slug}
+                      href={`/use-cases/${u.slug}`}
+                      className="px-3 py-1.5 rounded-lg border border-border/60 bg-background/70 text-sm font-medium hover:border-primary/50 hover:text-primary transition-colors"
+                    >
+                      {u.title}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {relatedComparisons.length > 0 && (
+              <div>
+                <h3 className="text-lg font-bold mb-2">Comparison guides</h3>
+                <div className="flex flex-wrap gap-2">
+                  {relatedComparisons.map((c) => (
+                    <Link
+                      key={c.slug}
+                      href={`/compare/${c.slug}`}
+                      className="px-3 py-1.5 rounded-lg border border-border/60 bg-background/70 text-sm font-medium hover:border-primary/50 hover:text-primary transition-colors"
+                    >
+                      {c.title}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </section>
+      )}
     </>
   );
 }
