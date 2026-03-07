@@ -1,25 +1,37 @@
-'use client';
+﻿'use client';
 
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Download, RotateCcw, Maximize2, Link2, Unlink, ChevronRight, Sparkles, Ruler, Settings2 } from 'lucide-react';
+import {
+  ChevronRight,
+  Download,
+  Link2,
+  Maximize2,
+  RefreshCw,
+  Ruler,
+  Settings2,
+  Sparkles,
+  Unlink,
+} from 'lucide-react';
+import { toast } from 'sonner';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Slider } from '@/components/ui/slider';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAppStore } from '@/store/app-store';
 import { FileUpload } from './file-upload';
-import { useState, useCallback, useEffect } from 'react';
-import { toast } from 'sonner';
-import { Badge } from '@/components/ui/badge';
+import { ResultCard } from './result-card';
+import { ToolLimitNotice } from './tool-limit-notice';
+import { ToolPageHeader } from './tool-page-header';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue
+  SelectValue,
 } from '@/components/ui/select';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Slider } from '@/components/ui/slider';
-import { ToolPageHeader } from './tool-page-header';
 
 interface ResizeResult {
   imageUrl: string;
@@ -27,9 +39,21 @@ interface ResizeResult {
   newDimensions: { width: number; height: number };
 }
 
+const presetSizes = [
+  { name: 'Passport 3.5 x 4.5 cm', width: 3.5, height: 4.5, unit: 'cm' as const, dpi: 300 },
+  { name: 'Passport 35 x 45 mm', width: 3.5, height: 4.5, unit: 'cm' as const, dpi: 300 },
+  { name: '2 x 2 inch passport', width: 2, height: 2, unit: 'inch' as const, dpi: 300 },
+  { name: '4 x 6 inch print', width: 4, height: 6, unit: 'inch' as const, dpi: 300 },
+  { name: 'HD 1920 x 1080', width: 1920, height: 1080, unit: 'px' as const },
+  { name: 'Square 1000 x 1000', width: 1000, height: 1000, unit: 'px' as const },
+  { name: 'Instagram post', width: 1080, height: 1080, unit: 'px' as const },
+  { name: 'Instagram story', width: 1080, height: 1920, unit: 'px' as const },
+  { name: 'YouTube thumbnail', width: 1280, height: 720, unit: 'px' as const },
+  { name: 'LinkedIn banner', width: 1584, height: 396, unit: 'px' as const },
+];
+
 export function ResizeWorkspace() {
   const { activeTool, uploadedFile, processedImage, isProcessing, reset, setIsProcessing, setProcessedImage, setProgress } = useAppStore();
-
   const [width, setWidth] = useState(800);
   const [height, setHeight] = useState(600);
   const [maintainRatio, setMaintainRatio] = useState(true);
@@ -40,35 +64,42 @@ export function ResizeWorkspace() {
   const [scalePercent, setScalePercent] = useState(100);
   const [result, setResult] = useState<ResizeResult | null>(null);
 
-  // Calculate aspect ratio
   const aspectRatio = originalDimensions.width / originalDimensions.height || 1;
 
-  // Update original dimensions when file is uploaded
   useEffect(() => {
-    if (uploadedFile && uploadedFile.type.startsWith('image/')) {
-      const img = new Image();
-      img.onload = () => {
-        setOriginalDimensions({ width: img.width, height: img.height });
-        setWidth(img.width);
-        setHeight(img.height);
-      };
-      img.src = URL.createObjectURL(uploadedFile);
+    if (!uploadedFile || !uploadedFile.type.startsWith('image/')) {
+      setOriginalDimensions({ width: 0, height: 0 });
+      return;
     }
+
+    const image = new Image();
+    const objectUrl = URL.createObjectURL(uploadedFile);
+    image.onload = () => {
+      setOriginalDimensions({ width: image.width, height: image.height });
+      setWidth(image.width);
+      setHeight(image.height);
+      setScalePercent(100);
+      URL.revokeObjectURL(objectUrl);
+    };
+    image.onerror = () => URL.revokeObjectURL(objectUrl);
+    image.src = objectUrl;
+
+    return () => URL.revokeObjectURL(objectUrl);
   }, [uploadedFile]);
 
-  const handleWidthChange = useCallback((newWidth: number) => {
-    setWidth(newWidth);
-    if (maintainRatio && newWidth > 0) {
-      setHeight(Math.round(newWidth / aspectRatio));
+  const handleWidthChange = useCallback((nextWidth: number) => {
+    setWidth(nextWidth);
+    if (maintainRatio && nextWidth > 0) {
+      setHeight(Math.round(nextWidth / aspectRatio));
     }
-  }, [maintainRatio, aspectRatio]);
+  }, [aspectRatio, maintainRatio]);
 
-  const handleHeightChange = useCallback((newHeight: number) => {
-    setHeight(newHeight);
-    if (maintainRatio && newHeight > 0) {
-      setWidth(Math.round(newHeight * aspectRatio));
+  const handleHeightChange = useCallback((nextHeight: number) => {
+    setHeight(nextHeight);
+    if (maintainRatio && nextHeight > 0) {
+      setWidth(Math.round(nextHeight * aspectRatio));
     }
-  }, [maintainRatio, aspectRatio]);
+  }, [aspectRatio, maintainRatio]);
 
   const handleScaleChange = useCallback((percent: number) => {
     setScalePercent(percent);
@@ -77,6 +108,24 @@ export function ResizeWorkspace() {
       setHeight(Math.round(originalDimensions.height * percent / 100));
     }
   }, [originalDimensions]);
+
+  const pixelDimensions = useMemo(() => {
+    if (unit === 'cm') {
+      return {
+        width: Math.round((width / 2.54) * dpi),
+        height: Math.round((height / 2.54) * dpi),
+      };
+    }
+
+    if (unit === 'inch') {
+      return {
+        width: Math.round(width * dpi),
+        height: Math.round(height * dpi),
+      };
+    }
+
+    return { width, height };
+  }, [dpi, height, unit, width]);
 
   const handleProcess = useCallback(async () => {
     if (!uploadedFile) {
@@ -87,22 +136,10 @@ export function ResizeWorkspace() {
     setIsProcessing(true);
     setProgress(0);
 
-    // Convert cm/inch to pixels if needed
-    let pixelWidth = width;
-    let pixelHeight = height;
-
-    if (unit === 'cm') {
-      pixelWidth = Math.round((width / 2.54) * dpi);
-      pixelHeight = Math.round((height / 2.54) * dpi);
-    } else if (unit === 'inch') {
-      pixelWidth = Math.round(width * dpi);
-      pixelHeight = Math.round(height * dpi);
-    }
-
     const formData = new FormData();
     formData.append('image', uploadedFile);
-    formData.append('width', pixelWidth.toString());
-    formData.append('height', pixelHeight.toString());
+    formData.append('width', pixelDimensions.width.toString());
+    formData.append('height', pixelDimensions.height.toString());
 
     try {
       const progressInterval = setInterval(() => {
@@ -118,365 +155,275 @@ export function ResizeWorkspace() {
       setProgress(100);
 
       if (!response.ok) {
-        throw new Error('Processing failed');
+        let message = 'Processing failed';
+        try {
+          const errorJson = await response.json();
+          message = errorJson?.error || message;
+        } catch {
+          // Keep default message.
+        }
+        throw new Error(message);
       }
 
       const data = await response.json();
-
       setResult({
         imageUrl: data.imageUrl,
         originalDimensions: data.originalDimensions,
-        newDimensions: { width: pixelWidth, height: pixelHeight }
+        newDimensions: { width: pixelDimensions.width, height: pixelDimensions.height },
       });
-
       setProcessedImage(data.imageUrl);
-      toast.success(`Image resized to ${pixelWidth}×${pixelHeight} pixels!`);
-    } catch {
-      toast.error('Failed to resize image. Please try again.');
+      toast.success(`Image resized to ${pixelDimensions.width} x ${pixelDimensions.height} pixels.`);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Failed to resize image. Please try again.');
     } finally {
       setIsProcessing(false);
     }
-  }, [uploadedFile, width, height, unit, dpi, setIsProcessing, setProcessedImage, setProgress]);
+  }, [pixelDimensions.height, pixelDimensions.width, setIsProcessing, setProcessedImage, setProgress, uploadedFile]);
 
   const handleDownload = useCallback(() => {
-    if (processedImage) {
-      const link = document.createElement('a');
-      link.href = processedImage;
-      link.download = `resized-${width}x${height}-${Date.now()}.jpg`;
-      link.click();
-    }
-  }, [processedImage, width, height]);
+    if (!processedImage) return;
+
+    const link = document.createElement('a');
+    link.href = processedImage;
+    link.download = `resized-${pixelDimensions.width}x${pixelDimensions.height}-${Date.now()}.jpg`;
+    link.click();
+  }, [pixelDimensions.height, pixelDimensions.width, processedImage]);
 
   const handleReset = useCallback(() => {
     reset();
-    window.history.pushState({}, '', window.location.pathname);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
     setResult(null);
+    setScalePercent(100);
   }, [reset]);
 
   if (!activeTool) return null;
 
-  // Preset sizes for common formats
-  const presetSizes = [
-    { name: 'Passport 3.5×4.5 cm', width: 3.5, height: 4.5, unit: 'cm' as const, dpi: 300 },
-    { name: 'Passport 35×45 mm', width: 3.5, height: 4.5, unit: 'cm' as const, dpi: 300 },
-    { name: '2×2 Inch (US Passport)', width: 2, height: 2, unit: 'inch' as const, dpi: 300 },
-    { name: '4×6 Inch (Photo Print)', width: 4, height: 6, unit: 'inch' as const, dpi: 300 },
-    { name: 'HD 1920×1080', width: 1920, height: 1080, unit: 'px' as const },
-    { name: 'Full HD 1920×1080', width: 1920, height: 1080, unit: 'px' as const },
-    { name: 'Square 1000×1000', width: 1000, height: 1000, unit: 'px' as const },
-    { name: 'Instagram Post', width: 1080, height: 1080, unit: 'px' as const },
-    { name: 'Instagram Story', width: 1080, height: 1920, unit: 'px' as const },
-    { name: 'YouTube Thumbnail', width: 1280, height: 720, unit: 'px' as const },
-    { name: 'Facebook Cover', width: 820, height: 312, unit: 'px' as const },
-    { name: 'LinkedIn Banner', width: 1584, height: 396, unit: 'px' as const },
-  ];
-
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className="container mx-auto px-4 lg:px-8 py-8"
-    >
-      <ToolPageHeader
-        title={activeTool.name}
-        description={activeTool.description}
-        icon={Maximize2}
-        onReset={handleReset}
-      >
-        {processedImage && (
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-          >
-            <Button onClick={handleDownload} className="gap-2 btn-glow">
-              <Download className="w-4 h-4" />
-              Download
-            </Button>
-          </motion.div>
-        )}
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="container mx-auto px-4 py-8 lg:px-8">
+      <ToolPageHeader title={activeTool.name} description={activeTool.description} icon={Maximize2} onReset={handleReset}>
+        {processedImage ? (
+          <Button onClick={handleDownload} className="btn-premium rounded-2xl">
+            <Download className="h-4 w-4" />
+            Download
+          </Button>
+        ) : null}
       </ToolPageHeader>
 
-      {/* Main Content */}
-      <div className="grid lg:grid-cols-3 gap-8">
-        {/* Left Panel - Upload & Preview */}
-        <div className="lg:col-span-2 space-y-6">
+      <div className="grid gap-8 lg:grid-cols-3">
+        <div className="space-y-6 lg:col-span-2">
           <FileUpload />
+          <ToolLimitNotice limits={['Image input only', 'Use pixels for digital delivery', 'Use cm or inch with DPI for print sizing']} />
 
-          {originalDimensions.width > 0 && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="grid md:grid-cols-2 gap-4"
-            >
-              {/* Original Size */}
-              <div className="p-4 rounded-2xl border border-border bg-card">
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center">
-                    <Ruler className="w-4 h-4" />
+          {originalDimensions.width > 0 ? (
+            <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} className="grid gap-4 md:grid-cols-2">
+              <div className="rounded-[1.5rem] border border-border/60 bg-card/75 p-5 shadow-soft backdrop-blur-xl">
+                <div className="mb-2 flex items-center gap-3">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-muted text-muted-foreground">
+                    <Ruler className="h-4 w-4" />
                   </div>
-                  <span className="text-sm font-medium">Original Size</span>
+                  <span className="text-sm font-semibold text-foreground">Original size</span>
                 </div>
-                <div className="text-2xl font-bold">
-                  {originalDimensions.width} × {originalDimensions.height}
-                  <span className="text-sm font-normal text-muted-foreground ml-1">px</span>
-                </div>
+                <p className="text-2xl font-bold text-foreground">
+                  {originalDimensions.width} x {originalDimensions.height}
+                  <span className="ml-1 text-sm font-normal text-muted-foreground">px</span>
+                </p>
               </div>
 
-              {/* New Size */}
-              <div className="p-4 rounded-2xl border border-primary/30 bg-primary/5">
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center">
-                    <Maximize2 className="w-4 h-4 text-primary" />
+              <div className="rounded-[1.5rem] border border-primary/20 bg-primary/6 p-5 shadow-soft">
+                <div className="mb-2 flex items-center gap-3">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/15 text-primary">
+                    <Maximize2 className="h-4 w-4" />
                   </div>
-                  <span className="text-sm font-medium text-primary">New Size</span>
+                  <span className="text-sm font-semibold text-primary">Output size</span>
                 </div>
-                <div className="text-2xl font-bold text-primary">
-                  {width} × {height}
-                  <span className="text-sm font-normal text-primary/70 ml-1">{unit}</span>
-                </div>
+                <p className="text-2xl font-bold text-primary">
+                  {width} x {height}
+                  <span className="ml-1 text-sm font-normal text-primary/70">{unit}</span>
+                </p>
+                <p className="mt-2 text-xs uppercase tracking-[0.16em] text-primary/70">
+                  {pixelDimensions.width} x {pixelDimensions.height} px effective output
+                </p>
               </div>
             </motion.div>
-          )}
+          ) : null}
 
-          {result && processedImage && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="rounded-2xl border border-border overflow-hidden bg-card"
-            >
-              <div className="p-4 border-b border-border flex items-center justify-between">
-                <h3 className="font-medium">Resized Image</h3>
-                <Badge className="bg-green-500/10 text-green-600 dark:text-green-400 hover:bg-green-500/20">
-                  {result.newDimensions.width}×{result.newDimensions.height} px
-                </Badge>
+          {result && processedImage ? (
+            <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
+              <div className="overflow-hidden rounded-[1.75rem] border border-border/60 bg-card/75 shadow-premium backdrop-blur-xl">
+                <div className="flex items-center justify-between gap-3 border-b border-border/40 bg-background/75 px-5 py-4">
+                  <h3 className="font-semibold text-foreground">Resized preview</h3>
+                  <Badge className="bg-emerald-500/10 text-emerald-700 hover:bg-emerald-500/15 dark:text-emerald-300">
+                    {result.newDimensions.width} x {result.newDimensions.height} px
+                  </Badge>
+                </div>
+                <div className="flex aspect-video items-center justify-center bg-muted/30 p-4">
+                  <img src={processedImage} alt="Resized" className="max-h-full max-w-full object-contain" />
+                </div>
               </div>
-              <div className="aspect-video bg-muted/50 flex items-center justify-center">
-                <img
-                  src={processedImage}
-                  alt="Resized"
-                  className="max-w-full max-h-full object-contain"
-                />
-              </div>
+
+              <ResultCard
+                title="Resize complete"
+                description="Your image now matches the target dimensions and is ready for export."
+                onDownload={handleDownload}
+                downloadLabel="Download resized image"
+                primaryMeta={`${result.originalDimensions.width} x ${result.originalDimensions.height} px -> ${result.newDimensions.width} x ${result.newDimensions.height} px`}
+                nextActions={[
+                  { label: 'Compress image', href: '/tools/compress-image' },
+                  { label: 'Convert format', href: '/tools/png-to-jpeg' },
+                ]}
+              />
             </motion.div>
-          )}
+          ) : null}
         </div>
 
-        {/* Right Panel - Settings */}
         <div className="space-y-6">
-          <div className="rounded-2xl border border-border bg-card overflow-hidden">
-            <div className="p-4 border-b border-border bg-gradient-to-r from-primary/5 to-transparent">
-              <h3 className="font-semibold flex items-center gap-2">
-                <Settings2 className="w-4 h-4 text-primary" />
-                Resize Settings
-              </h3>
+          <div className="rounded-[1.75rem] border border-border/60 bg-card/75 p-5 shadow-premium backdrop-blur-xl">
+            <div className="mb-5 flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                <Settings2 className="h-4 w-4" />
+              </div>
+              <div>
+                <h3 className="font-bold text-foreground">Resize settings</h3>
+                <p className="text-sm text-muted-foreground">Control dimensions, presets, and scaling.</p>
+              </div>
             </div>
 
-            <div className="p-4 space-y-6">
-              <Tabs value={activeTab} onValueChange={setActiveTab}>
-                <TabsList className="w-full grid grid-cols-3">
-                  <TabsTrigger value="dimensions">Size</TabsTrigger>
-                  <TabsTrigger value="presets">Presets</TabsTrigger>
-                  <TabsTrigger value="scale">Scale</TabsTrigger>
-                </TabsList>
+            <Tabs value={activeTab} onValueChange={setActiveTab}>
+              <TabsList className="grid w-full grid-cols-3 rounded-2xl">
+                <TabsTrigger value="dimensions">Size</TabsTrigger>
+                <TabsTrigger value="presets">Presets</TabsTrigger>
+                <TabsTrigger value="scale">Scale</TabsTrigger>
+              </TabsList>
 
-                <TabsContent value="dimensions" className="space-y-4 mt-4">
-                  {/* Unit Selection */}
+              <TabsContent value="dimensions" className="mt-5 space-y-4">
+                <div className="space-y-2">
+                  <Label>Unit</Label>
+                  <Select value={unit} onValueChange={(value) => setUnit(value as typeof unit)}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="px">Pixels (px)</SelectItem>
+                      <SelectItem value="cm">Centimeters (cm)</SelectItem>
+                      <SelectItem value="inch">Inches</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {unit === 'cm' || unit === 'inch' ? (
                   <div className="space-y-2">
-                    <Label>Unit</Label>
-                    <Select value={unit} onValueChange={(v) => setUnit(v as typeof unit)}>
+                    <Label>DPI</Label>
+                    <Select value={dpi.toString()} onValueChange={(value) => setDpi(Number.parseInt(value, 10))}>
                       <SelectTrigger>
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="px">Pixels (px)</SelectItem>
-                        <SelectItem value="cm">Centimeters (cm)</SelectItem>
-                        <SelectItem value="inch">Inches</SelectItem>
+                        <SelectItem value="72">72 DPI (Web)</SelectItem>
+                        <SelectItem value="96">96 DPI (Screen)</SelectItem>
+                        <SelectItem value="150">150 DPI</SelectItem>
+                        <SelectItem value="300">300 DPI (Print)</SelectItem>
+                        <SelectItem value="600">600 DPI (High quality)</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
+                ) : null}
 
-                  {/* DPI for cm/inch */}
-                  {(unit === 'cm' || unit === 'inch') && (
-                    <div className="space-y-2">
-                      <Label>DPI (Resolution)</Label>
-                      <Select value={dpi.toString()} onValueChange={(v) => setDpi(parseInt(v))}>
-                        <SelectTrigger>
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="72">72 DPI (Web)</SelectItem>
-                          <SelectItem value="96">96 DPI (Screen)</SelectItem>
-                          <SelectItem value="150">150 DPI</SelectItem>
-                          <SelectItem value="300">300 DPI (Print)</SelectItem>
-                          <SelectItem value="600">600 DPI (High Quality)</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  )}
-
-                  {/* Dimensions */}
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label>Width</Label>
-                      <div className="relative">
-                        <Input
-                          type="number"
-                          value={width}
-                          onChange={(e) => handleWidthChange(parseInt(e.target.value) || 0)}
-                          className="pr-12"
-                        />
-                        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
-                          {unit}
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label>Height</Label>
-                      <div className="relative">
-                        <Input
-                          type="number"
-                          value={height}
-                          onChange={(e) => handleHeightChange(parseInt(e.target.value) || 0)}
-                          className="pr-12"
-                        />
-                        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
-                          {unit}
-                        </span>
-                      </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label>Width</Label>
+                    <div className="relative">
+                      <Input type="number" value={width} onChange={(event) => handleWidthChange(Number.parseFloat(event.target.value) || 0)} className="pr-12" />
+                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">{unit}</span>
                     </div>
                   </div>
+                  <div className="space-y-2">
+                    <Label>Height</Label>
+                    <div className="relative">
+                      <Input type="number" value={height} onChange={(event) => handleHeightChange(Number.parseFloat(event.target.value) || 0)} className="pr-12" />
+                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">{unit}</span>
+                    </div>
+                  </div>
+                </div>
 
-                  {/* Maintain Ratio */}
-                  <Button
-                    variant={maintainRatio ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setMaintainRatio(!maintainRatio)}
-                    className="w-full gap-2"
+                <Button variant={maintainRatio ? 'default' : 'outline'} size="sm" className="w-full rounded-2xl" onClick={() => setMaintainRatio((current) => !current)}>
+                  {maintainRatio ? <Link2 className="mr-2 h-4 w-4" /> : <Unlink className="mr-2 h-4 w-4" />}
+                  Maintain aspect ratio
+                </Button>
+              </TabsContent>
+
+              <TabsContent value="presets" className="mt-5 space-y-3 max-h-80 overflow-y-auto">
+                {presetSizes.map((preset) => (
+                  <button
+                    key={preset.name}
+                    type="button"
+                    onClick={() => {
+                      setWidth(preset.width);
+                      setHeight(preset.height);
+                      setUnit(preset.unit);
+                      if (preset.dpi) setDpi(preset.dpi);
+                    }}
+                    className="flex w-full items-center justify-between rounded-2xl border border-border/60 bg-background/75 p-3 text-left transition-colors hover:border-primary/20"
                   >
-                    {maintainRatio ? <Link2 className="w-4 h-4" /> : <Unlink className="w-4 h-4" />}
-                    Maintain Aspect Ratio
-                  </Button>
-                </TabsContent>
+                    <div>
+                      <p className="text-sm font-semibold text-foreground">{preset.name}</p>
+                      <p className="text-sm text-muted-foreground">{preset.width} x {preset.height} {preset.unit}</p>
+                    </div>
+                    <Maximize2 className="h-4 w-4 text-primary" />
+                  </button>
+                ))}
+              </TabsContent>
 
-                <TabsContent value="presets" className="space-y-3 mt-4 max-h-80 overflow-y-auto">
-                  {presetSizes.map((preset) => (
-                    <button
-                      key={preset.name}
-                      onClick={() => {
-                        setWidth(preset.width);
-                        setHeight(preset.height);
-                        setUnit(preset.unit);
-                        if (preset.dpi) setDpi(preset.dpi);
-                      }}
-                      className="w-full flex items-center justify-between p-3 rounded-xl border border-border hover:border-primary/50 hover:bg-accent transition-colors text-left"
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                          <Maximize2 className="w-4 h-4 text-primary" />
-                        </div>
-                        <span className="font-medium text-sm">{preset.name}</span>
-                      </div>
-                      <span className="text-sm text-muted-foreground">
-                        {preset.width}×{preset.height} {preset.unit}
-                      </span>
-                    </button>
+              <TabsContent value="scale" className="mt-5 space-y-4">
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <Label>Scale percentage</Label>
+                    <span className="rounded-full bg-primary/10 px-2.5 py-1 text-sm font-mono text-primary">{scalePercent}%</span>
+                  </div>
+                  <Slider value={[scalePercent]} onValueChange={([value]) => handleScaleChange(value)} min={10} max={200} step={5} />
+                  <div className="flex justify-between text-xs text-muted-foreground">
+                    <span>10%</span>
+                    <span>Original</span>
+                    <span>200%</span>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-4 gap-2">
+                  {[25, 50, 75, 100, 125, 150, 175, 200].map((percent) => (
+                    <Button key={percent} variant={scalePercent === percent ? 'default' : 'outline'} size="sm" className="text-xs" onClick={() => handleScaleChange(percent)}>
+                      {percent}%
+                    </Button>
                   ))}
-                </TabsContent>
+                </div>
+              </TabsContent>
+            </Tabs>
 
-                <TabsContent value="scale" className="space-y-4 mt-4">
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <Label>Scale Percentage</Label>
-                      <span className="text-sm font-mono text-primary bg-primary/10 px-2 py-0.5 rounded">{scalePercent}%</span>
-                    </div>
-                    <Slider
-                      value={[scalePercent]}
-                      onValueChange={([v]) => handleScaleChange(v)}
-                      min={10}
-                      max={200}
-                      step={5}
-                    />
-                    <div className="flex justify-between text-xs text-muted-foreground">
-                      <span>10%</span>
-                      <span>Original</span>
-                      <span>200%</span>
-                    </div>
-                  </div>
+            <div className="mt-6 space-y-3">
+              <Button className="btn-premium h-12 w-full rounded-2xl" onClick={handleProcess} disabled={!uploadedFile || isProcessing}>
+                {isProcessing ? (
+                  <>
+                    <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: 'linear' }} className="mr-2 h-4 w-4 rounded-full border-2 border-primary-foreground/30 border-t-primary-foreground" />
+                    Resizing...
+                  </>
+                ) : (
+                  <>
+                    <Maximize2 className="mr-2 h-4 w-4" />
+                    Resize image
+                  </>
+                )}
+              </Button>
 
-                  <div className="grid grid-cols-4 gap-2">
-                    {[25, 50, 75, 100, 125, 150, 175, 200].map((pct) => (
-                      <Button
-                        key={pct}
-                        variant={scalePercent === pct ? 'default' : 'outline'}
-                        size="sm"
-                        onClick={() => handleScaleChange(pct)}
-                        className="text-xs"
-                      >
-                        {pct}%
-                      </Button>
-                    ))}
-                  </div>
-                </TabsContent>
-              </Tabs>
-
-              {/* Action Buttons */}
-              <div className="pt-4 space-y-3">
-                <Button
-                  className="w-full btn-glow"
-                  onClick={handleProcess}
-                  disabled={!uploadedFile || isProcessing}
-                  size="lg"
-                >
-                  {isProcessing ? (
-                    <>
-                      <motion.div
-                        animate={{ rotate: 360 }}
-                        transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-                        className="w-4 h-4 border-2 border-primary-foreground border-t-transparent rounded-full mr-2"
-                      />
-                      Resizing...
-                    </>
-                  ) : (
-                    <>
-                      <Maximize2 className="w-4 h-4 mr-2" />
-                      Resize Image
-                    </>
-                  )}
-                </Button>
-
-                <Button
-                  variant="outline"
-                  className="w-full gap-2"
-                  onClick={handleReset}
-                >
-                  <RotateCcw className="w-4 h-4" />
-                  Start Over
-                </Button>
-              </div>
+              <Button variant="outline" className="h-11 w-full rounded-2xl" onClick={handleReset}>
+                <RefreshCw className="mr-2 h-4 w-4" />
+                Start over
+              </Button>
             </div>
           </div>
 
-          {/* Info Card */}
-          <div className="rounded-2xl border border-border bg-gradient-to-br from-primary/5 to-transparent p-4 space-y-3">
-            <h4 className="font-semibold flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-primary" />
-              Resize Tips
-            </h4>
-            <ul className="text-sm text-muted-foreground space-y-2">
-              <li className="flex items-start gap-2">
-                <ChevronRight className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                <span>Use pixels for web and digital images</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <ChevronRight className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                <span>Use cm/inch with 300 DPI for print</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <ChevronRight className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                <span>Upscaling may reduce image quality</span>
-              </li>
+          <div className="rounded-[1.75rem] border border-border/60 bg-card/75 p-5 shadow-soft backdrop-blur-xl">
+            <h4 className="font-bold text-foreground">Resize tips</h4>
+            <ul className="mt-3 space-y-2 text-sm leading-6 text-muted-foreground">
+              <li className="flex items-start gap-2"><ChevronRight className="mt-1 h-4 w-4 shrink-0 text-primary" />Use pixels for digital delivery and app uploads.</li>
+              <li className="flex items-start gap-2"><ChevronRight className="mt-1 h-4 w-4 shrink-0 text-primary" />Use centimeters or inches with 300 DPI for print workflows.</li>
+              <li className="flex items-start gap-2"><ChevronRight className="mt-1 h-4 w-4 shrink-0 text-primary" />Upscaling can soften detail if the source image is small.</li>
             </ul>
           </div>
         </div>

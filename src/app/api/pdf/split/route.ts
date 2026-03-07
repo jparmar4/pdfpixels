@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PDFDocument } from 'pdf-lib';
 
+const MAX_FILE_SIZE = 25 * 1024 * 1024;
+const MAX_SPLIT_PAGES = 20;
+
 export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
@@ -12,6 +15,20 @@ export async function POST(request: NextRequest) {
     if (!file) {
       return NextResponse.json(
         { error: 'No PDF file provided' },
+        { status: 400 }
+      );
+    }
+
+    if (file.size > MAX_FILE_SIZE) {
+      return NextResponse.json(
+        { error: 'File too large (25MB max).' },
+        { status: 400 }
+      );
+    }
+
+    if (file.type && file.type !== 'application/pdf') {
+      return NextResponse.json(
+        { error: 'Only PDF files are supported.' },
         { status: 400 }
       );
     }
@@ -45,9 +62,10 @@ export async function POST(request: NextRequest) {
         }
       }
     } else {
-      // Extract all pages individually
+      // Extract all pages individually (capped for payload safety)
       const results: { pageNumber: number; pdfUrl: string; fileName: string }[] = [];
-      for (let i = 0; i < totalPages; i++) {
+      const pagesToReturn = Math.min(totalPages, MAX_SPLIT_PAGES);
+      for (let i = 0; i < pagesToReturn; i++) {
         const newPdf = await PDFDocument.create();
         const [copiedPage] = await newPdf.copyPages(pdf, [i]);
         newPdf.addPage(copiedPage);
@@ -65,7 +83,17 @@ export async function POST(request: NextRequest) {
         mode: 'split-all',
         totalPages,
         pages: results,
+        truncated: totalPages > pagesToReturn,
       });
+    }
+
+    pagesToExtract = Array.from(new Set(pagesToExtract)).slice(0, MAX_SPLIT_PAGES);
+
+    if (pagesToExtract.length === 0) {
+      return NextResponse.json(
+        { error: 'No valid pages selected.' },
+        { status: 400 }
+      );
     }
 
     // Create PDF with selected pages
@@ -77,16 +105,18 @@ export async function POST(request: NextRequest) {
     }
 
     const newPdfBytes = await newPdf.save();
-    const base64 = Buffer.from(newPdfBytes).toString('base64');
-    const dataUrl = `data:application/pdf;base64,${base64}`;
+    const fileName = `extracted-pages-${Date.now()}.pdf`;
 
-    return NextResponse.json({
-      success: true,
-      mode: 'extract',
-      totalPages,
-      extractedPages: pagesToExtract.map(p => p + 1),
-      pdfUrl: dataUrl,
-      fileName: `extracted-pages-${Date.now()}.pdf`,
+    return new NextResponse(Buffer.from(newPdfBytes), {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/pdf',
+        'Content-Disposition': `attachment; filename="${fileName}"`,
+        'Cache-Control': 'no-store, max-age=0',
+        'X-Mode': 'extract',
+        'X-Total-Pages': String(totalPages),
+        'X-Extracted-Pages': pagesToExtract.map(p => p + 1).join(','),
+      },
     });
   } catch (error) {
     console.error('PDF split error:', error);

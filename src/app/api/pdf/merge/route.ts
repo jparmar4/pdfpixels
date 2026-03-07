@@ -1,5 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PDFDocument, degrees } from 'pdf-lib';
+import { PDFDocument } from 'pdf-lib';
+
+const MAX_FILES = 20;
+const MAX_FILE_SIZE = 25 * 1024 * 1024;
+const MAX_TOTAL_SIZE = 100 * 1024 * 1024;
 
 export async function POST(request: NextRequest) {
   try {
@@ -13,11 +17,36 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    if (files.length > MAX_FILES) {
+      return NextResponse.json(
+        { error: `Too many files. Maximum ${MAX_FILES} PDFs allowed per request.` },
+        { status: 400 }
+      );
+    }
+
+    const totalSize = files.reduce((sum, file) => sum + file.size, 0);
+    if (totalSize > MAX_TOTAL_SIZE) {
+      return NextResponse.json(
+        { error: 'Total upload size too large (100MB max).' },
+        { status: 400 }
+      );
+    }
+
     // Create a new PDF document
     const mergedPdf = await PDFDocument.create();
 
+    let addedPages = 0;
+
     for (const file of files) {
-      if (!file.name.toLowerCase().endsWith('.pdf')) {
+      if (file.size > MAX_FILE_SIZE) {
+        return NextResponse.json(
+          { error: `File \"${file.name}\" is too large (25MB max per file).` },
+          { status: 400 }
+        );
+      }
+
+      const looksLikePdf = file.name.toLowerCase().endsWith('.pdf') || file.type === 'application/pdf';
+      if (!looksLikePdf) {
         continue;
       }
 
@@ -30,6 +59,7 @@ export async function POST(request: NextRequest) {
         
         for (const page of copiedPages) {
           mergedPdf.addPage(page);
+          addedPages += 1;
         }
       } catch (e) {
         console.error(`Error loading PDF ${file.name}:`, e);
@@ -37,17 +67,25 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    const mergedPdfBytes = await mergedPdf.save();
-    
-    // Convert to base64
-    const base64 = Buffer.from(mergedPdfBytes).toString('base64');
-    const dataUrl = `data:application/pdf;base64,${base64}`;
+    if (addedPages === 0) {
+      return NextResponse.json(
+        { error: 'No valid PDF pages found to merge.' },
+        { status: 400 }
+      );
+    }
 
-    return NextResponse.json({
-      success: true,
-      pdfUrl: dataUrl,
-      pageCount: mergedPdf.getPageCount(),
-      fileName: `merged-${Date.now()}.pdf`,
+    const mergedPdfBytes = await mergedPdf.save();
+    const fileName = `merged-${Date.now()}.pdf`;
+    const pageCount = mergedPdf.getPageCount();
+
+    return new NextResponse(Buffer.from(mergedPdfBytes), {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/pdf',
+        'Content-Disposition': `attachment; filename="${fileName}"`,
+        'Cache-Control': 'no-store, max-age=0',
+        'X-Page-Count': String(pageCount),
+      },
     });
   } catch (error) {
     console.error('PDF merge error:', error);

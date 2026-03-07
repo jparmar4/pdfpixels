@@ -1,24 +1,25 @@
-'use client';
+﻿'use client';
 
-import { useState, useEffect, useRef } from 'react';
-import { useRouter } from 'next/navigation';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useRouter } from 'next/navigation';
+import { AnimatePresence, motion } from 'framer-motion';
 import {
-  Menu,
-  X,
-  Search,
-  ChevronDown,
-  Moon,
-  Sun,
-  Image as ImageIcon,
-  Sparkles,
   ArrowRight,
+  Command,
+  Menu,
+  Search,
+  ShieldCheck,
+  Sparkles,
+  Upload,
+  X,
+  Zap,
+  Image as ImageIcon,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useTheme } from 'next-themes';
-import { toolCategories, searchTools, type Tool } from '@/lib/tools-data';
+import { allTools, searchTools, toolCategories, type Tool } from '@/lib/tools-data';
 import { useAppStore } from '@/store/app-store';
+import { normalizeDisplayText } from '@/lib/display-text';
 
 export function Navigation() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -26,12 +27,14 @@ export function Navigation() {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<Tool[]>([]);
   const [scrolled, setScrolled] = useState(false);
-  const [megaOpen, setMegaOpen] = useState(false);
-  const megaTimeout = useRef<NodeJS.Timeout | null>(null);
+  const [activeMegaCategory, setActiveMegaCategory] = useState<string | null>(null);
+  const megaTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const searchRef = useRef<HTMLInputElement>(null);
-  const { theme, setTheme } = useTheme();
   const router = useRouter();
   const setActiveTool = useAppStore((state) => state.setActiveTool);
+
+  const featuredTools = useMemo(() => allTools.filter((tool) => tool.popular).slice(0, 6), []);
+  const activeCategory = toolCategories.find((category) => category.id === activeMegaCategory) ?? null;
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 10);
@@ -39,23 +42,34 @@ export function Navigation() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Keyboard shortcut: Ctrl+K or / to open search
   useEffect(() => {
-    const handleKey = (e: KeyboardEvent) => {
-      if ((e.ctrlKey && e.key === 'k') || (e.key === '/' && !['INPUT', 'TEXTAREA'].includes((e.target as HTMLElement).tagName))) {
-        e.preventDefault();
+    const handleKey = (event: KeyboardEvent) => {
+      const targetTag = (event.target as HTMLElement).tagName;
+      const isTypingTarget = ['INPUT', 'TEXTAREA'].includes(targetTag);
+
+      if ((event.ctrlKey && event.key.toLowerCase() === 'k') || (event.key === '/' && !isTypingTarget)) {
+        event.preventDefault();
         setSearchOpen(true);
         setTimeout(() => searchRef.current?.focus(), 50);
       }
-      if (e.key === 'Escape') {
+
+      if (event.key === 'Escape') {
         setSearchOpen(false);
         setSearchQuery('');
         setSearchResults([]);
+        setActiveMegaCategory(null);
       }
     };
+
     window.addEventListener('keydown', handleKey);
     return () => window.removeEventListener('keydown', handleKey);
   }, []);
+
+  const closeSearch = () => {
+    setSearchOpen(false);
+    setSearchQuery('');
+    setSearchResults([]);
+  };
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
@@ -63,149 +77,253 @@ export function Navigation() {
   };
 
   const handleToolSelect = (tool: Tool) => {
-    setActiveTool({ id: tool.id, name: tool.name, description: tool.description });
+    setActiveTool({
+      id: tool.id,
+      name: normalizeDisplayText(tool.name),
+      description: normalizeDisplayText(tool.description),
+    });
     router.push(`/tools/${tool.slug}`);
-    setSearchOpen(false);
-    setSearchQuery('');
-    setSearchResults([]);
+    closeSearch();
     setMobileMenuOpen(false);
-    setMegaOpen(false);
+    setActiveMegaCategory(null);
   };
 
-  const openMega = () => {
+  const openMega = (categoryId: string) => {
     if (megaTimeout.current) clearTimeout(megaTimeout.current);
-    setMegaOpen(true);
+    setActiveMegaCategory(categoryId);
   };
+
   const closeMega = () => {
-    megaTimeout.current = setTimeout(() => setMegaOpen(false), 200);
+    megaTimeout.current = setTimeout(() => setActiveMegaCategory(null), 140);
+  };
+
+  const handleHomeLink = (categoryId?: string) => {
+    if (window.location.pathname !== '/') {
+      router.push(categoryId ? `/#${categoryId}` : '/');
+      return;
+    }
+
+    if (!categoryId) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    const element = document.getElementById(categoryId);
+    element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
   return (
     <>
-      <header
-        className={`sticky top-0 z-50 w-full transition-all duration-300 ${scrolled ? 'bg-background/85 backdrop-blur-lg border-b border-border/50 shadow-soft' : 'bg-background/55 backdrop-blur-md'
-          }`}
-      >
-        <nav className="container mx-auto px-4 lg:px-8">
-          <div className="flex h-16 items-center justify-between gap-4">
+      <header className={`sticky top-0 z-50 w-full transition-all duration-300 ${scrolled ? 'border-b border-border/50 bg-background/88 shadow-soft backdrop-blur-2xl' : 'bg-background/72 backdrop-blur-xl'}`}>
+        <div className="border-b border-border/30 bg-[linear-gradient(90deg,rgba(59,130,246,0.08),rgba(16,185,129,0.06),rgba(59,130,246,0.08))]">
+          <div className="container mx-auto flex min-h-10 items-center justify-between gap-4 px-4 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground lg:px-8">
+            <div className="hidden items-center gap-3 md:flex">
+              <span className="inline-flex items-center gap-2">
+                <ShieldCheck className="h-3.5 w-3.5 text-emerald-500" />
+                Private workflows
+              </span>
+              <span className="inline-flex items-center gap-2">
+                <Zap className="h-3.5 w-3.5 text-sky-500" />
+                Built for speed
+              </span>
+            </div>
+            <div className="flex items-center gap-2 text-foreground/80">
+              <Sparkles className="h-3.5 w-3.5 text-primary" />
+              Premium PDF and image tooling
+            </div>
+          </div>
+        </div>
 
-            {/* ── Logo ── */}
+        <nav className="container mx-auto px-4 lg:px-8">
+          <div className="flex min-h-[4.5rem] items-center justify-between gap-4">
             <Link
               href="/"
-              className="flex items-center gap-2.5 group shrink-0"
-              onClick={(e) => {
+              className="group flex shrink-0 items-center gap-3"
+              onClick={(event) => {
                 if (window.location.pathname === '/') {
-                  e.preventDefault();
+                  event.preventDefault();
                   useAppStore.getState().reset();
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                  handleHomeLink();
                 }
               }}
             >
-              <div className="relative w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-600 to-violet-600 flex items-center justify-center shadow-md group-hover:scale-105 transition-all duration-300">
-                <ImageIcon className="w-5 h-5 text-white" />
+              <div className="relative flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-sky-500 text-white shadow-lg shadow-primary/20 transition-transform duration-300 group-hover:scale-[1.03]">
+                <ImageIcon className="h-5 w-5" />
+                <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-white text-[9px] font-black text-primary">P</span>
               </div>
-              <span className="text-xl font-extrabold tracking-tight hidden sm:block">
-                <span className="text-shimmer">Pdf</span>Pixels
-              </span>
+              <div className="hidden sm:block">
+                <div className="text-xl font-extrabold tracking-tight text-foreground">
+                  PdfPixels
+                </div>
+                <div className="text-[10px] font-semibold uppercase tracking-[0.22em] text-muted-foreground">
+                  Pro document suite
+                </div>
+              </div>
             </Link>
 
-            {/* ── Desktop: Category nav ── */}
-            <div className="hidden lg:flex items-center gap-0.5 flex-1 justify-center">
-              {toolCategories.map((cat) => (
-                <div
-                  key={cat.id}
-                  className="relative group"
-                  onMouseEnter={openMega}
-                  onMouseLeave={closeMega}
-                >
-                  <button
-                    onClick={() => {
-                      const el = document.getElementById(cat.id);
-                      if (el) el.scrollIntoView({ behavior: 'smooth' });
-                      else router.push(`/#${cat.id}`);
-                    }}
-                    className="px-3 py-1.5 text-[13px] font-medium text-muted-foreground hover:text-foreground transition-colors rounded-lg hover:bg-muted/50"
+            <div className="hidden xl:flex items-center gap-1 rounded-full border border-border/50 bg-card/65 p-1 shadow-soft backdrop-blur-xl">
+              <Button variant="ghost" size="sm" className="rounded-full px-4 text-sm" onClick={() => handleHomeLink()}>
+                All tools
+              </Button>
+              {toolCategories.map((category) => {
+                const CategoryIcon = category.icon;
+                return (
+                  <div
+                    key={category.id}
+                    className="relative"
+                    onMouseEnter={() => openMega(category.id)}
+                    onMouseLeave={closeMega}
                   >
-                    {cat.name}
-                  </button>
-                </div>
-              ))}
+                    <button
+                      type="button"
+                      onClick={() => handleHomeLink(category.id)}
+                      className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-colors ${activeMegaCategory === category.id ? 'bg-background text-foreground shadow-soft' : 'text-muted-foreground hover:text-foreground'}`}
+                    >
+                      <CategoryIcon className="h-4 w-4" />
+                      {normalizeDisplayText(category.name)}
+                    </button>
+                  </div>
+                );
+              })}
             </div>
 
-            {/* ── Right side: Search + Theme + Mobile ── */}
-            <div className="flex items-center gap-1.5 shrink-0">
-
-              {/* Search trigger */}
+            <div className="flex items-center gap-2">
               <Button
                 variant="ghost"
                 size="sm"
-                className="h-9 gap-2 text-muted-foreground hover:text-foreground text-sm font-medium px-4 rounded-xl bg-muted/40 hover:bg-muted/60 border border-transparent hover:border-border/50 transition-all"
+                className="h-10 rounded-full border border-border/50 bg-card/60 px-4 text-sm text-muted-foreground shadow-soft transition-colors hover:bg-card hover:text-foreground"
                 onClick={() => {
                   setSearchOpen(true);
                   setTimeout(() => searchRef.current?.focus(), 50);
                 }}
               >
-                <Search className="w-4 h-4" />
-                <span className="hidden md:inline">Search tools...</span>
-                <kbd className="hidden md:inline-flex h-5 items-center gap-0.5 rounded border border-border/60 bg-background/50 px-1.5 text-[10px] font-mono text-muted-foreground font-bold">
-                  Ctrl+K
-                </kbd>
+                <Search className="h-4 w-4" />
+                <span className="hidden md:inline">Search tools</span>
+                <span className="hidden items-center gap-1 rounded-full border border-border/60 bg-background/80 px-2 py-0.5 text-[10px] font-bold md:inline-flex">
+                  <Command className="h-3 w-3" />K
+                </span>
               </Button>
 
-              {/* Theme toggle */}
+              <Button asChild size="sm" className="hidden h-10 rounded-full px-4 lg:inline-flex btn-premium">
+                <Link href="/tools/compress-pdf">Start with PDF</Link>
+              </Button>
+
               <Button
                 variant="ghost"
                 size="icon"
-                className="w-8 h-8 hover:bg-muted/50 rounded-lg"
-                onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                className="h-10 w-10 rounded-full lg:hidden"
+                onClick={() => setMobileMenuOpen((current) => !current)}
+                aria-label="Toggle menu"
               >
-                <Sun className="h-3.5 w-3.5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-                <Moon className="absolute h-3.5 w-3.5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-              </Button>
-
-              {/* Mobile hamburger */}
-              <Button
-                variant="ghost"
-                size="icon"
-                className="w-8 h-8 lg:hidden hover:bg-muted/50 rounded-lg"
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              >
-                {mobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
+                {mobileMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
               </Button>
             </div>
           </div>
 
-          {/* ── Mobile Menu ── */}
           <AnimatePresence>
-            {mobileMenuOpen && (
+            {activeCategory ? (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.18 }}
+                onMouseEnter={() => openMega(activeCategory.id)}
+                onMouseLeave={closeMega}
+                className="hidden xl:block pb-4"
+              >
+                <div className="rounded-[1.75rem] border border-border/50 bg-card/80 p-6 shadow-premium backdrop-blur-2xl">
+                  <div className="grid gap-6 lg:grid-cols-[300px_minmax(0,1fr)]">
+                    <div className="rounded-[1.5rem] border border-border/50 bg-background/75 p-5">
+                      <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-primary/15 to-sky-500/10 text-primary">
+                        <activeCategory.icon className="h-5 w-5" />
+                      </div>
+                      <h3 className="text-xl font-bold text-foreground">{normalizeDisplayText(activeCategory.name)}</h3>
+                      <p className="mt-2 text-sm leading-6 text-muted-foreground">{normalizeDisplayText(activeCategory.description)}</p>
+                      <div className="mt-5 flex flex-wrap gap-2 text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+                        <span className="rounded-full border border-border/60 bg-card px-3 py-1.5">{activeCategory.tools.length} tools</span>
+                        <span className="rounded-full border border-border/60 bg-card px-3 py-1.5">Curated workflows</span>
+                      </div>
+                    </div>
+
+                    <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+                      {activeCategory.tools.slice(0, 6).map((tool) => {
+                        const Icon = tool.icon;
+                        return (
+                          <button
+                            key={tool.id}
+                            type="button"
+                            onClick={() => handleToolSelect(tool)}
+                            className="group rounded-[1.35rem] border border-border/50 bg-background/75 p-4 text-left transition-all duration-200 hover:border-primary/30 hover:bg-background hover:shadow-soft"
+                          >
+                            <div className="mb-3 flex items-start justify-between gap-3">
+                              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                                <Icon className="h-4 w-4" />
+                              </div>
+                              {tool.badge ? <span className="rounded-full border border-border/60 px-2 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-muted-foreground">{tool.badge}</span> : null}
+                            </div>
+                            <p className="text-sm font-semibold text-foreground group-hover:text-primary">{normalizeDisplayText(tool.name)}</p>
+                            <p className="mt-1 line-clamp-2 text-sm leading-5 text-muted-foreground">{normalizeDisplayText(tool.description)}</p>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            ) : null}
+          </AnimatePresence>
+
+          <AnimatePresence>
+            {mobileMenuOpen ? (
               <motion.div
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: 'auto' }}
                 exit={{ opacity: 0, height: 0 }}
-                className="lg:hidden border-t border-border/20 overflow-hidden"
+                className="overflow-hidden border-t border-border/30 lg:hidden"
               >
-                <div className="py-4 space-y-4 max-h-[70vh] overflow-y-auto">
+                <div className="space-y-5 py-4">
+                  <div className="grid gap-2 sm:grid-cols-2">
+                    <Button asChild className="btn-premium h-11 rounded-2xl">
+                      <Link href="/tools/compress-pdf" onClick={() => setMobileMenuOpen(false)}>Open PDF tools</Link>
+                    </Button>
+                    <Button variant="outline" className="h-11 rounded-2xl" onClick={() => handleHomeLink()}>
+                      Browse all categories
+                    </Button>
+                  </div>
+
                   {toolCategories.map((category) => (
-                    <div key={category.id}>
-                      <h3 className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider mb-2 px-1 flex items-center gap-2">
-                        <div className="w-1 h-3 rounded-full bg-primary/60" />
-                        {category.name}
-                        <span className="text-primary/60 font-normal normal-case tracking-normal">({category.tools.length})</span>
-                      </h3>
-                      <div className="grid grid-cols-2 gap-1">
-                        {category.tools.map((tool) => (
+                    <div key={category.id} className="rounded-[1.4rem] border border-border/50 bg-card/65 p-4 shadow-soft">
+                      <div className="mb-3 flex items-center justify-between gap-3">
+                        <div>
+                          <p className="text-sm font-bold text-foreground">{normalizeDisplayText(category.name)}</p>
+                          <p className="text-xs text-muted-foreground">{category.tools.length} tools</p>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setMobileMenuOpen(false);
+                            handleHomeLink(category.id);
+                          }}
+                          className="text-xs font-semibold uppercase tracking-[0.16em] text-primary"
+                        >
+                          View
+                        </button>
+                      </div>
+                      <div className="grid gap-2 sm:grid-cols-2">
+                        {category.tools.slice(0, 4).map((tool) => (
                           <button
                             key={tool.id}
+                            type="button"
                             onClick={() => handleToolSelect(tool)}
-                            className="flex items-center gap-2 px-2.5 py-2 rounded-lg hover:bg-muted/50 text-left text-sm transition-colors"
+                            className="flex items-center gap-3 rounded-2xl border border-border/50 bg-background/75 px-3 py-3 text-left"
                           >
-                            <div className="w-6 h-6 rounded-md bg-primary/10 flex items-center justify-center flex-shrink-0">
-                              <tool.icon className="w-3 h-3 text-primary" />
+                            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                              <tool.icon className="h-4 w-4" />
                             </div>
-                            <span className="truncate text-xs font-medium">{tool.name}</span>
-                            {tool.badge === 'AI' && (
-                              <span className="text-[9px] font-bold text-violet-500 ml-auto shrink-0">AI</span>
-                            )}
+                            <div className="min-w-0">
+                              <p className="truncate text-sm font-semibold text-foreground">{normalizeDisplayText(tool.name)}</p>
+                              <p className="truncate text-xs text-muted-foreground">{normalizeDisplayText(tool.description)}</p>
+                            </div>
                           </button>
                         ))}
                       </div>
@@ -213,101 +331,136 @@ export function Navigation() {
                   ))}
                 </div>
               </motion.div>
-            )}
+            ) : null}
           </AnimatePresence>
         </nav>
       </header>
 
-      {/* ── Search Modal (full-screen overlay) ── */}
       <AnimatePresence>
-        {searchOpen && (
+        {searchOpen ? (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[60] flex items-start justify-center pt-[15vh] px-4"
+            className="fixed inset-0 z-[60] flex items-start justify-center px-4 pt-[12vh]"
           >
-            {/* Backdrop */}
-            <div className="absolute inset-0 bg-background/80 backdrop-blur-sm" onClick={() => { setSearchOpen(false); setSearchQuery(''); setSearchResults([]); }} />
+            <button type="button" className="absolute inset-0 bg-background/80 backdrop-blur-md" onClick={closeSearch} aria-label="Close search" />
 
-            {/* Search panel */}
             <motion.div
-              initial={{ opacity: 0, y: -20, scale: 0.97 }}
+              initial={{ opacity: 0, y: -18, scale: 0.985 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: -10, scale: 0.97 }}
+              exit={{ opacity: 0, y: -10, scale: 0.985 }}
               transition={{ duration: 0.2 }}
-              className="relative w-full max-w-lg bg-card/95 backdrop-blur-xl border border-border/60 rounded-3xl shadow-premium overflow-hidden"
+              className="relative w-full max-w-3xl overflow-hidden rounded-[2rem] border border-border/50 bg-card/92 shadow-premium backdrop-blur-2xl"
             >
-              {/* Search input */}
-              <div className="flex items-center gap-3 px-5 py-4 border-b border-border/30 bg-background/50">
-                <Search className="w-5 h-5 text-primary shrink-0" />
-                <input
-                  ref={searchRef}
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => handleSearch(e.target.value)}
-                  placeholder="Search all tools..."
-                  className="flex-1 bg-transparent text-base font-semibold outline-none placeholder:text-muted-foreground/60 border-none"
-                  autoFocus
-                />
-                <kbd className="hidden sm:inline-flex h-6 items-center rounded-md border border-border/60 bg-card px-2 text-[10px] font-mono text-muted-foreground font-bold shadow-sm">
-                  ESC
-                </kbd>
+              <div className="border-b border-border/40 bg-background/70 px-5 py-4">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                    <Search className="h-4 w-4" />
+                  </div>
+                  <input
+                    ref={searchRef}
+                    type="text"
+                    value={searchQuery}
+                    onChange={(event) => handleSearch(event.target.value)}
+                    placeholder="Search PDF and image tools"
+                    className="flex-1 border-none bg-transparent text-base font-semibold outline-none placeholder:text-muted-foreground/70"
+                    autoFocus
+                  />
+                  <span className="hidden rounded-full border border-border/60 bg-background/80 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground sm:inline-flex">
+                    ESC
+                  </span>
+                </div>
               </div>
 
-              {/* Results */}
-              {searchResults.length > 0 ? (
-                <div className="p-2 max-h-[50vh] overflow-y-auto">
-                  {searchResults.map((tool, i) => (
-                    <button
-                      key={tool.id}
-                      onClick={() => handleToolSelect(tool)}
-                      className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-primary/5 text-left transition-colors"
-                    >
-                      <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-                        <tool.icon className="w-4 h-4 text-primary" />
+              <div className="grid gap-0 lg:grid-cols-[minmax(0,1fr)_280px]">
+                <div className="max-h-[60vh] overflow-y-auto p-3">
+                  {searchResults.length > 0 ? (
+                    <div className="space-y-2">
+                      {searchResults.map((tool) => (
+                        <button
+                          key={tool.id}
+                          type="button"
+                          onClick={() => handleToolSelect(tool)}
+                          className="flex w-full items-center gap-3 rounded-[1.35rem] border border-transparent px-3 py-3 text-left transition-colors hover:border-primary/20 hover:bg-primary/5"
+                        >
+                          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                            <tool.icon className="h-4 w-4" />
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <div className="flex items-center gap-2">
+                              <p className="truncate text-sm font-semibold text-foreground">{normalizeDisplayText(tool.name)}</p>
+                              {tool.badge ? <span className="rounded-full border border-border/60 px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.14em] text-muted-foreground">{tool.badge}</span> : null}
+                            </div>
+                            <p className="truncate text-sm text-muted-foreground">{normalizeDisplayText(tool.description)}</p>
+                          </div>
+                          <ArrowRight className="h-4 w-4 text-muted-foreground/60" />
+                        </button>
+                      ))}
+                    </div>
+                  ) : searchQuery.length > 0 ? (
+                    <div className="flex min-h-48 flex-col items-center justify-center gap-3 text-center">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-muted text-muted-foreground">
+                        <Search className="h-5 w-5" />
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="text-sm font-semibold flex items-center gap-2">
-                          {tool.name}
-                          {tool.badge && (
-                            <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded ${tool.badge === 'AI' ? 'bg-violet-500/15 text-violet-500' : 'bg-primary/10 text-primary'}`}>
-                              {tool.badge}
-                            </span>
-                          )}
-                        </div>
-                        <div className="text-xs text-muted-foreground truncate">{tool.description}</div>
+                      <div>
+                        <p className="text-sm font-semibold text-foreground">No tools found</p>
+                        <p className="text-sm text-muted-foreground">Try a broader keyword like compress, convert, resize, or merge.</p>
                       </div>
-                      <ArrowRight className="w-3.5 h-3.5 text-muted-foreground/40 shrink-0" />
-                    </button>
-                  ))}
-                </div>
-              ) : searchQuery.length > 0 ? (
-                <div className="p-6 text-center">
-                  <p className="text-sm text-muted-foreground">No tools found for &quot;{searchQuery}&quot;</p>
-                </div>
-              ) : (
-                <div className="p-3">
-                  <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider mb-2 px-2">Popular tools</p>
-                  <div className="grid grid-cols-2 gap-1">
-                    {toolCategories.flatMap(c => c.tools).filter(t => t.popular).slice(0, 6).map((tool) => (
-                      <button
-                        key={tool.id}
-                        onClick={() => handleToolSelect(tool)}
-                        className="flex items-center gap-2 px-2.5 py-2 rounded-lg hover:bg-muted/50 text-left transition-colors"
-                      >
-                        <div className="w-6 h-6 rounded-md bg-primary/10 flex items-center justify-center shrink-0">
-                          <tool.icon className="w-3 h-3 text-primary" />
+                    </div>
+                  ) : (
+                    <div className="space-y-5 p-2">
+                      <div>
+                        <p className="mb-2 text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Popular starts</p>
+                        <div className="grid gap-2 sm:grid-cols-2">
+                          {featuredTools.map((tool) => (
+                            <button
+                              key={tool.id}
+                              type="button"
+                              onClick={() => handleToolSelect(tool)}
+                              className="flex items-center gap-3 rounded-[1.2rem] border border-border/50 bg-background/75 px-3 py-3 text-left"
+                            >
+                              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                                <tool.icon className="h-4 w-4" />
+                              </div>
+                              <div className="min-w-0">
+                                <p className="truncate text-sm font-semibold text-foreground">{normalizeDisplayText(tool.name)}</p>
+                                <p className="truncate text-xs text-muted-foreground">{normalizeDisplayText(tool.description)}</p>
+                              </div>
+                            </button>
+                          ))}
                         </div>
-                        <span className="text-xs font-medium truncate">{tool.name}</span>
-                      </button>
-                    ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                <div className="border-t border-border/40 bg-background/65 p-4 lg:border-l lg:border-t-0">
+                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Quick actions</p>
+                  <div className="mt-3 space-y-2">
+                    <Link href="/tools/compress-pdf" onClick={closeSearch} className="flex items-center justify-between rounded-[1.2rem] border border-border/50 bg-card/75 px-4 py-3 text-sm font-semibold text-foreground transition-colors hover:border-primary/30 hover:text-primary">
+                      Compress PDF
+                      <ArrowRight className="h-4 w-4" />
+                    </Link>
+                    <Link href="/tools/image-to-pdf" onClick={closeSearch} className="flex items-center justify-between rounded-[1.2rem] border border-border/50 bg-card/75 px-4 py-3 text-sm font-semibold text-foreground transition-colors hover:border-primary/30 hover:text-primary">
+                      Image to PDF
+                      <Upload className="h-4 w-4" />
+                    </Link>
+                  </div>
+
+                  <div className="mt-5 rounded-[1.35rem] border border-border/50 bg-card/75 p-4">
+                    <p className="text-sm font-semibold text-foreground">Why teams choose PdfPixels</p>
+                    <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
+                      <li>Consistent output quality across mobile and desktop.</li>
+                      <li>Fast upload, preview, and download loops.</li>
+                      <li>Clean UI without account friction.</li>
+                    </ul>
                   </div>
                 </div>
-              )}
+              </div>
             </motion.div>
           </motion.div>
-        )}
+        ) : null}
       </AnimatePresence>
     </>
   );

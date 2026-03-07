@@ -1,4 +1,4 @@
-import { Metadata } from "next";
+﻿import { Metadata } from "next";
 import Link from "next/link";
 import NextImage from "next/image";
 import Script from "next/script";
@@ -48,7 +48,7 @@ export const metadata: Metadata = {
                 url: `${siteConfig.url}/opengraph-image`,
                 width: 1200,
                 height: 630,
-                alt: "PdfPixels Blog – Image & PDF Tips and Guides",
+                alt: "PdfPixels Blog - Image & PDF Tips and Guides",
             },
         ],
     },
@@ -126,7 +126,7 @@ export default function BlogPage() {
                             The <span className="gradient-text">PdfPixels</span> Blog
                         </h1>
                         <p className="text-lg md:text-xl text-muted-foreground font-medium max-w-2xl mx-auto leading-relaxed">
-                            Practical guides, expert tips, and in-depth tutorials to help you get the most from your images and PDFs. No fluff — just actionable knowledge.
+                            Practical guides, expert tips, and in-depth tutorials to help you get the most from your images and PDFs. No fluff - just actionable knowledge.
                         </p>
                     </div>
                 </section>
@@ -317,3 +317,4 @@ export default function BlogPage() {
         </>
     );
 }
+

@@ -2,7 +2,7 @@
 builder = "NIXPACKS"
 
 [phases.setup]
-nixPkgs = ["ghostscript"]
+aptPkgs = ["ghostscript", "qpdf"]
 
 [start]
-cmd = "npm run start"
+cmd = "npm start"

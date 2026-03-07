@@ -1,4 +1,4 @@
-import { Metadata } from "next";
+﻿import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import NextImage from "next/image";
 import Link from "next/link";
@@ -309,7 +309,7 @@ export default async function BlogPostPage({
                                 {post.faq && post.faq.length > 0 && (
                                     <div className="mt-16 p-6 md:p-8 bg-muted/50 rounded-2xl border border-border">
                                         <h2 className="text-2xl font-bold text-foreground mb-8 flex items-center gap-3">
-                                            <span className="text-2xl">❓</span>
+                                            <span className="text-2xl">FAQ</span>
                                             Frequently Asked Questions
                                         </h2>
                                         <div className="space-y-5">
@@ -365,7 +365,7 @@ export default async function BlogPostPage({
 
                             <div className="relative z-10">
                                 <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-5">
-                                    Try It Yourself — Free
+                                    Try It Yourself - Free
                                 </h2>
                                 <p className="text-muted-foreground mb-8 max-w-lg mx-auto">
                                     Put these tips into action with our free image and PDF tools. No sign-up needed, no watermarks.
@@ -387,3 +387,4 @@ export default async function BlogPostPage({
         </>
     );
 }
+

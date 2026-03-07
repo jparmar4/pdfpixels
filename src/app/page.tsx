@@ -1,59 +1,21 @@
 'use client';
 
-/* eslint-disable react/no-unescaped-entities */
-
 import { AnimatePresence, motion } from 'framer-motion';
 import { Navigation } from '@/components/layout/navigation';
 import { CategorySection } from '@/components/layout/category-section';
 import { Footer } from '@/components/layout/footer';
 import { AnimatedMeshBg } from '@/components/ui/animated-mesh-bg';
-import { SpotlightCard } from '@/components/ui/spotlight-card';
 import { toolCategories } from '@/lib/tools-data';
 import { faqData } from '@/lib/seo-config';
 import { HomePageSchemas } from '@/components/seo/json-ld';
 import {
   ArrowUp, Search, X, ChevronDown, Upload, Sliders,
-  Download, Shield, Zap, Globe, Lock, FileImage,
-  Sparkles, ArrowRight, CheckCircle2, Star, Wrench,
+  Download, Zap, Sparkles, ArrowRight, CheckCircle2, Wrench,
   Server, Files, DollarSign, Image as ImageIcon, FileText,
-  MousePointerClick, Cpu, LineChart
+  Minimize2, ShieldCheck
 } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-
-// ─── Magnetic Button Component ───
-function MagneticButton({ children, href, className = '' }: { children: React.ReactNode, href: string, className?: string }) {
-  const ref = useRef<HTMLAnchorElement>(null);
-  const [position, setPosition] = useState({ x: 0, y: 0 });
-
-  const handleMouse = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    const { clientX, clientY } = e;
-    const { height, width, left, top } = ref.current!.getBoundingClientRect();
-    const middleX = clientX - (left + width / 2);
-    const middleY = clientY - (top + height / 2);
-    setPosition({ x: middleX * 0.2, y: middleY * 0.2 });
-  };
-
-  const reset = () => {
-    setPosition({ x: 0, y: 0 });
-  };
-
-  return (
-    <motion.a
-      href={href}
-      ref={ref}
-      onMouseMove={handleMouse}
-      onMouseLeave={reset}
-      animate={{ x: position.x, y: position.y }}
-      transition={{ type: "spring", stiffness: 150, damping: 15, mass: 0.1 }}
-      className={`relative ${className}`}
-    >
-      {children}
-    </motion.a>
-  );
-}
-
-// ─── Animated Counter ───
 function AnimatedCounter({ end, suffix = '', duration = 2000 }: { end: number; suffix?: string; duration?: number }) {
   const [count, setCount] = useState(0);
   const ref = useRef<HTMLDivElement>(null);
@@ -77,6 +39,7 @@ function AnimatedCounter({ end, suffix = '', duration = 2000 }: { end: number; s
       },
       { threshold: 0.5 }
     );
+
     if (ref.current) observer.observe(ref.current);
     return () => observer.disconnect();
   }, [end, duration]);
@@ -84,62 +47,41 @@ function AnimatedCounter({ end, suffix = '', duration = 2000 }: { end: number; s
   return <div ref={ref}>{count}{suffix}</div>;
 }
 
-// ─── Floating Decorative Dots ───
-function FloatingDots() {
-  return (
-    <>
-      {/* Decorative gradient orbs */}
-      <div className="absolute top-20 left-[10%] w-3 h-3 rounded-full bg-gradient-to-r from-indigo-400 to-violet-400 opacity-40 animate-float" style={{ animationDelay: '0s' }} />
-      <div className="absolute top-40 right-[15%] w-2 h-2 rounded-full bg-gradient-to-r from-fuchsia-400 to-pink-400 opacity-30 animate-float" style={{ animationDelay: '1.5s' }} />
-      <div className="absolute bottom-32 left-[20%] w-2.5 h-2.5 rounded-full bg-gradient-to-r from-cyan-400 to-teal-400 opacity-35 animate-float" style={{ animationDelay: '3s' }} />
-      <div className="absolute top-60 right-[8%] w-2 h-2 rounded-full bg-gradient-to-r from-violet-400 to-purple-400 opacity-25 animate-float" style={{ animationDelay: '2s' }} />
-      <div className="absolute bottom-20 right-[25%] w-1.5 h-1.5 rounded-full bg-gradient-to-r from-indigo-300 to-blue-400 opacity-30 animate-float" style={{ animationDelay: '4s' }} />
-      {/* Floating tool icons */}
-      <motion.div
-        animate={{ y: [-8, 8, -8], rotate: [-3, 3, -3] }}
-        transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-        className="absolute top-28 left-[8%] md:left-[15%] w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500/10 to-violet-500/10 backdrop-blur-sm border border-indigo-200/30 dark:border-indigo-500/20 flex items-center justify-center opacity-60"
-      >
-        <ImageIcon className="w-4 h-4 text-indigo-500 dark:text-indigo-400" />
-      </motion.div>
-      <motion.div
-        animate={{ y: [6, -10, 6], rotate: [2, -2, 2] }}
-        transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
-        className="absolute top-36 right-[6%] md:right-[12%] w-10 h-10 rounded-xl bg-gradient-to-br from-fuchsia-500/10 to-pink-500/10 backdrop-blur-sm border border-fuchsia-200/30 dark:border-fuchsia-500/20 flex items-center justify-center opacity-60"
-      >
-        <FileText className="w-4 h-4 text-fuchsia-500 dark:text-fuchsia-400" />
-      </motion.div>
-      <motion.div
-        animate={{ y: [-5, 12, -5], rotate: [-2, 4, -2] }}
-        transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
-        className="absolute bottom-28 left-[5%] md:left-[18%] w-9 h-9 rounded-xl bg-gradient-to-br from-cyan-500/10 to-teal-500/10 backdrop-blur-sm border border-cyan-200/30 dark:border-cyan-500/20 flex items-center justify-center opacity-50"
-      >
-        <Sparkles className="w-4 h-4 text-cyan-500 dark:text-cyan-400" />
-      </motion.div>
-    </>
-  );
-}
-
-// ─── Compact Premium Header + Search ───
+// ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ Compact Premium Header + Search ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬
 function ToolsHeader({ search, setSearch }: { search: string, setSearch: (val: string) => void }) {
   return (
-    <section className="relative overflow-hidden border-b border-border/40 min-h-[40vh] flex flex-col justify-center">
+    <section className="relative overflow-hidden border-b border-border/40 min-h-[54vh] flex flex-col justify-center bg-gradient-to-b from-background via-background to-muted/20">
       {/* SaaS Tier Fluid Background */}
       <AnimatedMeshBg />
-      <FloatingDots />
 
-      <div className="relative z-10 container mx-auto px-4 lg:px-8 py-14 md:py-20 text-center">
+      <div className="relative z-10 container mx-auto px-4 lg:px-8 py-16 md:py-24 text-center">
+        <div className="max-w-4xl mx-auto rounded-3xl border border-border/60 bg-card/60 backdrop-blur-2xl shadow-[0_24px_80px_-32px_rgba(99,102,241,.5)] px-6 md:px-10 py-10 md:py-14">
         <motion.div
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
         >
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight mb-4">
-            Professional Image & PDF Tools
-          </h1>
-          <p className="text-muted-foreground text-lg mb-10 max-w-2xl mx-auto font-medium">
-            Fast, secure, and thoughtfully designed for a premium editing experience.
+          <p className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold border border-primary/20 bg-primary/10 text-primary mb-5">
+            Fast Ã¢â‚¬Â¢ Secure Ã¢â‚¬Â¢ No signup
           </p>
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight mb-4 leading-[1.05]">
+            Premium PDF & Image Tools
+          </h1>
+          <p className="text-muted-foreground text-lg md:text-xl mb-7 max-w-2xl mx-auto font-medium leading-relaxed">
+            Compress, convert, and edit files in seconds with a clean, professional workflow.
+          </p>
+
+          <div className="flex flex-wrap items-center justify-center gap-3 mb-6">
+            <Link href="/tools/compress-pdf" className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 text-white text-sm font-semibold shadow-lg shadow-indigo-500/30 hover:opacity-95 transition-opacity">
+              Start with Compress PDF
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+            <Link href="/tools" className="inline-flex items-center gap-2 px-5 py-3 rounded-xl border border-border/70 bg-background/80 text-sm font-semibold hover:border-primary/40 hover:text-primary transition-colors">
+              Browse All Tools
+            </Link>
+          </div>
+
+          <p className="text-xs text-muted-foreground">55+ tools Ã¢â‚¬Â¢ Free forever Ã¢â‚¬Â¢ Works on mobile and desktop</p>
         </motion.div>
 
         {/* Search Bar - Lifted into the mesh header for premium feel */}
@@ -156,8 +98,9 @@ function ToolsHeader({ search, setSearch }: { search: string, setSearch: (val: s
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search 55+ tools (e.g. compress, merge)..."
-            className="block w-full pl-14 pr-12 py-5 border border-white/10 dark:border-white/5 rounded-2xl leading-5 bg-card/60 dark:bg-card/40 backdrop-blur-xl shadow-2xl shadow-primary/20 placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 transition-all text-base font-medium"
+            placeholder="Search tools: compress pdf, merge pdf, resize image..."
+            aria-label="Search tools"
+            className="block w-full pl-14 pr-12 py-5 border border-white/20 rounded-2xl leading-5 bg-background/85 backdrop-blur-2xl shadow-[0_16px_45px_-22px_rgba(99,102,241,.45)] placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 transition-all text-base font-medium"
           />
           {search && (
             <button
@@ -168,12 +111,44 @@ function ToolsHeader({ search, setSearch }: { search: string, setSearch: (val: s
             </button>
           )}
         </motion.div>
+        </div>
       </div>
     </section>
   );
 }
 
-// ─── Search + Tools Section ───
+// ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ Popular Tools Mini Grid ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬
+function PopularToolsMiniGrid() {
+  const items = [
+    { title: 'Compress PDF', href: '/tools/compress-pdf', desc: 'Reduce file size fast', icon: Minimize2 },
+    { title: 'Merge PDF', href: '/tools/merge-pdf', desc: 'Combine multiple PDFs', icon: Files },
+    { title: 'Split PDF', href: '/tools/split-pdf', desc: 'Extract selected pages', icon: FileText },
+    { title: 'Image to PDF', href: '/tools/image-to-pdf', desc: 'Convert JPG/PNG to PDF', icon: ImageIcon },
+  ];
+
+  return (
+    <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mt-6 md:mt-8">
+      {items.map((item) => (
+        <Link
+          key={item.href}
+          href={item.href}
+          className="group rounded-2xl border border-border/60 bg-gradient-to-b from-card/80 to-card/40 backdrop-blur-xl p-4 hover:border-primary/40 hover:shadow-[0_12px_30px_-20px_rgba(99,102,241,.65)] transition-all"
+        >
+          <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-primary/20 to-violet-500/20 text-primary flex items-center justify-center mb-3">
+            <item.icon className="w-4 h-4" />
+          </div>
+          <p className="font-semibold text-sm flex items-center gap-1.5">
+            {item.title}
+            <ArrowRight className="w-3.5 h-3.5 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
+          </p>
+          <p className="text-xs text-muted-foreground mt-1">{item.desc}</p>
+        </Link>
+      ))}
+    </div>
+  );
+}
+
+// ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ Search + Tools Section ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬
 function ToolsSection() {
   const [search, setSearch] = useState('');
   const filteredCategories = search.trim()
@@ -190,6 +165,17 @@ function ToolsSection() {
   return (
     <section className="bg-background">
       <ToolsHeader search={search} setSearch={setSearch} />
+      <div className="container mx-auto px-4 lg:px-8 pt-6 md:pt-8">
+        {!search && (
+          <>
+            <div className="flex items-center justify-between gap-3">
+              <h2 className="text-lg md:text-xl font-bold tracking-tight">Popular right now</h2>
+              <Link href="/tools" className="text-sm font-medium text-primary hover:underline underline-offset-4">View all tools</Link>
+            </div>
+            <PopularToolsMiniGrid />
+          </>
+        )}
+      </div>
       {/* Tool Grid */}
       <div className="container mx-auto px-4 lg:px-8 py-12 space-y-6">
         {search && (
@@ -198,27 +184,6 @@ function ToolsSection() {
           </p>
         )}
 
-        {/* AI Tools Highlight */}
-        {!search && (
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="flex items-center gap-4 p-5 rounded-2xl bg-gradient-to-r from-indigo-50/80 to-violet-50/40 dark:from-indigo-500/[0.08] dark:to-violet-500/[0.05] border border-indigo-200/60 dark:border-indigo-500/15 shadow-sm"
-          >
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-violet-500 via-fuchsia-500 to-indigo-600 flex items-center justify-center flex-shrink-0 shadow-lg shadow-violet-500/25">
-              <Sparkles className="w-5 h-5 text-white" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 mb-0.5">
-                <span className="text-sm font-bold text-violet-700 dark:text-violet-300">AI-Powered Tools</span>
-                <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-gradient-to-r from-violet-500/15 to-fuchsia-500/15 text-violet-600 dark:text-violet-400 border border-violet-200/60 dark:border-violet-500/25">
-                  OpenAI
-                </span>
-              </div>
-              <p className="text-xs text-muted-foreground">Remove backgrounds, enhance photos, upscale images, blur faces — all powered by advanced AI.</p>
-            </div>
-          </motion.div>
-        )}
 
         {/* Categories */}
         {filteredCategories.map((category, idx) => (
@@ -243,7 +208,12 @@ function ToolsSection() {
               <Search className="w-7 h-7 text-muted-foreground" />
             </div>
             <p className="text-lg font-semibold text-muted-foreground">No tools found for &quot;{search}&quot;</p>
-            <p className="text-sm text-muted-foreground mt-1">Try a different search term</p>
+            <p className="text-sm text-muted-foreground mt-1">Try a different keyword or open a popular tool below.</p>
+            <div className="mt-5 flex flex-wrap items-center justify-center gap-2.5">
+              <Link href="/tools/compress-pdf" className="px-3.5 py-2 rounded-lg border border-border/70 text-sm font-medium hover:border-primary/40 hover:text-primary transition-colors">Compress PDF</Link>
+              <Link href="/tools/merge-pdf" className="px-3.5 py-2 rounded-lg border border-border/70 text-sm font-medium hover:border-primary/40 hover:text-primary transition-colors">Merge PDF</Link>
+              <Link href="/tools/resize-image" className="px-3.5 py-2 rounded-lg border border-border/70 text-sm font-medium hover:border-primary/40 hover:text-primary transition-colors">Resize Image</Link>
+            </div>
           </div>
         )}
       </div>
@@ -251,13 +221,13 @@ function ToolsSection() {
   );
 }
 
-// ─── Stats Banner ───
+// ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ Stats Banner ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬
 function StatsBanner() {
   const stats = [
     { value: 55, suffix: '+', label: 'Free Tools', icon: Wrench, gradient: 'from-indigo-500 to-violet-500' },
     { value: 99, suffix: '.9%', label: 'Uptime', icon: Server, gradient: 'from-emerald-500 to-teal-500' },
     { value: 8, suffix: '+', label: 'File Formats', icon: Files, gradient: 'from-fuchsia-500 to-pink-500' },
-    { value: 0, suffix: '₹', label: 'Cost', display: 'Free', icon: DollarSign, gradient: 'from-cyan-500 to-blue-500' },
+    { value: 0, suffix: '', label: 'Cost', display: 'Free', icon: DollarSign, gradient: 'from-cyan-500 to-blue-500' },
   ];
 
   return (
@@ -292,7 +262,7 @@ function StatsBanner() {
   );
 }
 
-// ─── How It Works ───
+// ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ How It Works ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬
 function HowItWorks() {
   const steps = [
     {
@@ -367,113 +337,166 @@ function HowItWorks() {
   );
 }
 
-// ─── Bento Box Features Section ───
+// ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ Bento Box Features Section ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬
 function FeaturesSection() {
-  return (
-    <section className="py-32 border-t border-border/30 relative overflow-hidden bg-muted/10">
-      {/* Decorative background glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/5 rounded-full blur-[120px] pointer-events-none" />
+  const trustBullets = [
+    {
+      title: 'Private processing',
+      description: 'Clear upload, processing, and download states keep sensitive document work predictable.',
+      icon: ShieldCheck,
+      tone: 'text-emerald-500',
+      bg: 'from-emerald-500/15 to-teal-500/10',
+    },
+    {
+      title: 'Reliable results',
+      description: 'Professional defaults, clean export surfaces, and fewer dead ends across PDF and image flows.',
+      icon: CheckCircle2,
+      tone: 'text-sky-500',
+      bg: 'from-sky-500/15 to-cyan-500/10',
+    },
+    {
+      title: 'No signup friction',
+      description: 'Users can move from upload to final file without account walls or unnecessary distractions.',
+      icon: Sparkles,
+      tone: 'text-violet-500',
+      bg: 'from-violet-500/15 to-fuchsia-500/10',
+    },
+  ];
 
-      <div className="container mx-auto px-4 lg:px-8 max-w-6xl relative z-10">
+  const valueCards = [
+    {
+      value: '55+',
+      label: 'Tools ready',
+      description: 'Broad coverage for compression, conversion, editing, and PDF workflows.',
+      icon: Files,
+      tone: 'text-primary',
+      gradient: 'from-primary/18 to-sky-500/10',
+    },
+    {
+      value: 'PDF + Image',
+      label: 'One platform',
+      description: 'A single polished experience for the document and image jobs users actually need.',
+      icon: Server,
+      tone: 'text-cyan-500',
+      gradient: 'from-cyan-500/18 to-blue-500/10',
+    },
+    {
+      value: 'Fast',
+      label: 'Professional output',
+      description: 'High-quality exports, strong defaults, and a cleaner finish from upload to download.',
+      icon: Zap,
+      tone: 'text-amber-500',
+      gradient: 'from-amber-500/18 to-orange-500/10',
+    },
+  ];
+
+  return (
+    <section className="relative overflow-hidden border-t border-border/40 bg-muted/10 py-18 md:py-22 lg:py-24">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(14,76,181,0.08),transparent_28%),radial-gradient(circle_at_bottom_right,rgba(14,165,170,0.08),transparent_22%),radial-gradient(circle_at_center,rgba(168,85,247,0.06),transparent_32%)]" />
+      <div className="pointer-events-none absolute left-1/2 top-8 h-56 w-56 -translate-x-1/2 rounded-full bg-primary/8 blur-3xl" />
+
+      <div className="container mx-auto max-w-6xl px-4 lg:px-8 relative z-10">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-          className="text-center mb-20"
+          viewport={{ once: true, margin: '-100px' }}
+          transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+          className="mb-10 text-center md:mb-12"
         >
-          <span className="inline-flex items-center justify-center font-bold text-primary uppercase tracking-[0.2em] mb-4 text-xs">Platform Capabilities</span>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight mb-6">
-            Everything you need,<br />
-            <span className="text-primary">nothing you don't.</span>
+          <span className="inline-flex items-center gap-2 rounded-full border border-primary/15 bg-primary/8 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.2em] text-primary">
+            Trust and quality
+          </span>
+          <h2 className="mt-4 text-3xl font-extrabold tracking-tight text-foreground md:text-4xl lg:text-5xl">
+            Premium workflows built for
+            <span className="block text-primary">documents that need to feel dependable.</span>
           </h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto font-medium">
-            A meticulously crafted suite of tools designed to handle your documents natively, securely, and instantly.
+          <p className="mx-auto mt-4 max-w-2xl text-base font-medium leading-7 text-muted-foreground md:text-lg">
+            PdfPixels is designed to look polished, stay clear under pressure, and deliver professional output without turning simple file work into a messy utility experience.
           </p>
         </motion.div>
 
-        {/* Bento Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 auto-rows-[280px]">
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,1.2fr)_minmax(320px,0.8fr)] lg:items-stretch">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-80px' }}
+            transition={{ duration: 0.5 }}
+            className="relative overflow-hidden rounded-[2rem] border border-border/60 bg-card/80 p-7 shadow-premium backdrop-blur-xl md:p-9"
+          >
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(14,76,181,0.12),transparent_28%),radial-gradient(circle_at_bottom_right,rgba(14,165,170,0.1),transparent_24%)] pointer-events-none" />
+            <div className="absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
 
-          {/* Main Feature - Large Col Span */}
-          <SpotlightCard className="md:col-span-2 lg:col-span-2 row-span-2 flex flex-col justify-end p-8 sm:p-10 group" spotlightColor="rgba(99, 102, 241, 0.4)">
-            <div className="absolute inset-x-8 top-8 bottom-48 rounded-2xl border border-border/50 bg-background/50 overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 to-fuchsia-500/10 flex items-center justify-center group-hover:scale-105 transition-transform duration-700">
-                <Lock className="w-24 h-24 text-primary/40 drop-shadow-2xl" strokeWidth={1} />
+            <div className="relative z-10 flex h-full flex-col">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-background/80 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-muted-foreground">
+                  <ShieldCheck className="h-3.5 w-3.5 text-emerald-500" />
+                  Built for trust
+                </span>
+                <span className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-background/80 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-muted-foreground">
+                  <Zap className="h-3.5 w-3.5 text-sky-500" />
+                  Fast completion
+                </span>
+              </div>
+
+              <div className="mt-6 max-w-2xl">
+                <h3 className="text-2xl font-bold tracking-tight text-foreground md:text-3xl">
+                  Clean, premium tooling for image and PDF work that still needs to feel professional.
+                </h3>
+                <p className="mt-4 text-sm leading-7 text-muted-foreground md:text-base">
+                  The homepage should communicate confidence, not clutter. This section now reinforces the core product promise: reliable workflows, stronger output quality, and a premium experience without signup friction.
+                </p>
+              </div>
+
+              <div className="mt-8 grid gap-4 md:grid-cols-3">
+                {trustBullets.map((bullet) => (
+                  <div key={bullet.title} className="rounded-[1.4rem] border border-border/60 bg-background/75 p-4 shadow-soft">
+                    <div className={`mb-4 flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br ${bullet.bg}`}>
+                      <bullet.icon className={`h-5 w-5 ${bullet.tone}`} />
+                    </div>
+                    <h4 className="text-base font-bold text-foreground">{bullet.title}</h4>
+                    <p className="mt-2 text-sm leading-6 text-muted-foreground">{bullet.description}</p>
+                  </div>
+                ))}
               </div>
             </div>
+          </motion.div>
 
-            <div className="relative z-10 mt-auto">
-              <div className="w-12 h-12 rounded-xl bg-card border border-border/60 flex items-center justify-center mb-6 shadow-sm">
-                <Shield className="w-5 h-5 text-primary" />
-              </div>
-              <h3 className="text-2xl font-bold mb-3 tracking-tight">Privacy-First Processing</h3>
-              <p className="text-muted-foreground font-medium leading-relaxed max-w-sm">
-                Files are processed securely with automatic cleanup and no account required.
-              </p>
-            </div>
-          </SpotlightCard>
-
-          {/* Secondary Feature - High */}
-          <SpotlightCard className="md:col-span-1 lg:col-span-2 row-span-1 p-6 md:p-8 group flex items-center gap-5 md:gap-8" spotlightColor="rgba(16, 185, 129, 0.3)">
-            <div className="flex-1">
-              <h3 className="text-xl font-bold mb-3 tracking-tight">Lightning Fast</h3>
-              <p className="text-sm text-muted-foreground font-medium leading-relaxed">
-                Powered by WebAssembly for near-native speeds. Resize 50 images before traditional cloud services finish uploading one.
-              </p>
-            </div>
-            <div className="hidden sm:flex w-24 h-24 rounded-full bg-emerald-500/10 items-center justify-center shrink-0 border border-emerald-500/20 group-hover:scale-110 transition-transform duration-500">
-              <Zap className="w-10 h-10 text-emerald-500" />
-            </div>
-          </SpotlightCard>
-
-          {/* Small Feature 1 */}
-          <SpotlightCard className="md:col-span-1 lg:col-span-1 row-span-1 p-8 flex flex-col group" spotlightColor="rgba(217, 70, 239, 0.3)">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-fuchsia-500/20 to-pink-500/10 flex items-center justify-center mb-auto border border-fuchsia-500/20 group-hover:-translate-y-2 transition-transform duration-300">
-              <Sparkles className="w-5 h-5 text-fuchsia-500" />
-            </div>
-            <div>
-              <h3 className="text-lg font-bold mb-2">Beautiful UI</h3>
-              <p className="text-sm text-muted-foreground font-medium">Crafted for focus. No intrusive popups, pure utility.</p>
-            </div>
-          </SpotlightCard>
-
-          {/* Small Feature 2 */}
-          <SpotlightCard className="md:col-span-1 lg:col-span-1 row-span-1 p-8 flex flex-col group" spotlightColor="rgba(6, 182, 212, 0.3)">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500/20 to-blue-500/10 flex items-center justify-center mb-auto border border-cyan-500/20 group-hover:-translate-y-2 transition-transform duration-300">
-              <Globe className="w-5 h-5 text-cyan-500" />
-            </div>
-            <div>
-              <h3 className="text-lg font-bold mb-2">Free Forever</h3>
-              <p className="text-sm text-muted-foreground font-medium">No paywalls or premium tiers. Every tool is unlocked.</p>
-            </div>
-          </SpotlightCard>
-
-          {/* Bottom Wide Feature */}
-          <SpotlightCard className="md:col-span-3 lg:col-span-4 row-span-1 p-6 sm:p-8 md:p-10 flex flex-col sm:flex-row items-center gap-5 md:gap-8 group" spotlightColor="rgba(245, 158, 11, 0.3)">
-            <div className="flex-1">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-xs font-bold text-amber-500 mb-4">
-                <Cpu className="w-3.5 h-3.5" />
-                No Cloud Required
-              </div>
-              <h3 className="text-2xl font-bold mb-3 tracking-tight">Works Offline</h3>
-              <p className="text-muted-foreground font-medium leading-relaxed max-w-2xl">
-                Once loaded, PdfPixels can run entirely without internet connection. Perfect for handling confidential documents while traveling or in secure environments.
-              </p>
-            </div>
-            <div className="w-full sm:w-1/3 h-full min-h-[120px] rounded-xl border border-border/50 bg-background/50 relative overflow-hidden flex items-center justify-center">
-              <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay"></div>
-              <LineChart className="w-16 h-16 text-muted-foreground/30 group-hover:text-amber-500/50 transition-colors duration-500" />
-            </div>
-          </SpotlightCard>
-
+          <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-1">
+            {valueCards.map((card, idx) => (
+              <motion.div
+                key={card.label}
+                initial={{ opacity: 0, y: 18 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-80px' }}
+                transition={{ duration: 0.45, delay: idx * 0.06 }}
+                className="group relative overflow-hidden rounded-[1.75rem] border border-border/60 bg-card/80 p-5 shadow-premium backdrop-blur-xl"
+              >
+                <div className={`absolute inset-0 bg-gradient-to-br ${card.gradient} opacity-80 pointer-events-none`} />
+                <div className="absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-primary/35 to-transparent" />
+                <div className="relative z-10 flex h-full flex-col">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className={`flex h-11 w-11 items-center justify-center rounded-2xl bg-background/85 ${card.tone} shadow-soft`}>
+                      <card.icon className="h-5 w-5" />
+                    </div>
+                    <span className="rounded-full border border-border/60 bg-background/80 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground">
+                      Value
+                    </span>
+                  </div>
+                  <div className="mt-5">
+                    <p className="text-2xl font-extrabold tracking-tight text-foreground">{card.value}</p>
+                    <p className="mt-1 text-sm font-semibold uppercase tracking-[0.16em] text-muted-foreground">{card.label}</p>
+                  </div>
+                  <p className="mt-4 text-sm leading-6 text-muted-foreground">{card.description}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </div>
     </section>
   );
 }
 
-// ─── FAQ Section ───
 function FAQSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const visibleFaqs = faqData.slice(0, 10);
@@ -541,7 +564,7 @@ function FAQSection() {
   );
 }
 
-// ─── CTA Section ───
+// ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ CTA Section ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬
 function CTASection() {
   return (
     <section className="py-16 md:py-20 border-t border-border/50">
@@ -593,7 +616,7 @@ function CTASection() {
   );
 }
 
-// ─── Main Page ───
+// ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ Main Page ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬
 export default function Home() {
   const [showScrollTop, setShowScrollTop] = useState(false);
 
@@ -638,3 +661,4 @@ export default function Home() {
     </div>
   );
 }
+

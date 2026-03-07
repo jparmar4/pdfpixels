@@ -1,63 +1,66 @@
-'use client';
+﻿'use client';
 
 import { motion } from 'framer-motion';
+import { ArrowRight, ShieldCheck, Sparkles } from 'lucide-react';
 import type { ToolCategory } from '@/lib/tools-data';
 import { ToolCard } from './tool-card';
-import { ArrowRight } from 'lucide-react';
+import { normalizeDisplayText } from '@/lib/display-text';
 
 type CategorySectionProps = {
   category: ToolCategory;
 };
 
 export function CategorySection({ category }: CategorySectionProps) {
-  const CategoryIcon = category.tools[0]?.icon;
+  const CategoryIcon = category.icon;
+  const aiCount = category.tools.filter((tool) => tool.isAI).length;
+  const clientCount = category.tools.filter((tool) => tool.processing === 'client').length;
 
   return (
-    <section className="relative rounded-3xl bg-card/70 border border-border/50 p-5 md:p-8 overflow-hidden shadow-soft">
-      {/* Decorative background gradient */}
-      <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-primary/5 to-violet-500/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+    <section className="relative overflow-hidden rounded-[2rem] border border-border/50 bg-card/75 p-5 shadow-premium md:p-8">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(59,130,246,0.08),transparent_32%),radial-gradient(circle_at_bottom_left,rgba(16,185,129,0.08),transparent_28%)] pointer-events-none" />
+      <div className="absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
 
-      {/* Gradient header band */}
-      <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-5 mb-8 pb-6 border-b border-border/40">
-        <div className="flex items-start sm:items-center gap-5">
-          {/* Icon */}
-          {CategoryIcon && (
-            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary/10 to-violet-500/10 flex items-center justify-center flex-shrink-0 shadow-sm border border-primary/20 backdrop-blur-sm">
-              <CategoryIcon className="w-6 h-6 text-primary" />
-            </div>
-          )}
+      <div className="relative z-10 mb-8 flex flex-col gap-5 border-b border-border/40 pb-6 lg:flex-row lg:items-end lg:justify-between">
+        <div className="flex items-start gap-4 md:gap-5">
+          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border border-primary/15 bg-gradient-to-br from-primary/12 to-sky-500/10 shadow-sm">
+            <CategoryIcon className="h-6 w-6 text-primary" />
+          </div>
 
-          {/* Title + count */}
-          <div>
-            <div className="flex items-center gap-3 flex-wrap mb-1.5">
-              <h2 id={`${category.id}-heading`} className="text-2xl md:text-3xl font-extrabold tracking-tight text-foreground">
-                {category.name}
+          <div className="space-y-3">
+            <div className="flex flex-wrap items-center gap-2.5">
+              <h2 id={`${category.id}-heading`} className="text-2xl font-extrabold tracking-tight text-foreground md:text-3xl">
+                {normalizeDisplayText(category.name)}
               </h2>
-              <span className="text-[11px] font-bold text-primary bg-gradient-to-r from-primary/15 to-violet-500/10 px-3 py-1 rounded-full border border-primary/20 shadow-sm">
-                {category.tools.length} Tools
+              <span className="rounded-full border border-primary/15 bg-primary/8 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em] text-primary">
+                {category.tools.length} tools
               </span>
             </div>
-            <p className="text-sm text-muted-foreground leading-relaxed max-w-2xl font-medium">
-              {category.description}
+
+            <p className="max-w-2xl text-sm font-medium leading-6 text-muted-foreground md:text-base">
+              {normalizeDisplayText(category.description)}
             </p>
+
+            <div className="flex flex-wrap gap-2.5 text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+              <span className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-background/70 px-3 py-1.5">
+                <ShieldCheck className="h-3.5 w-3.5 text-emerald-500" />
+                {clientCount > 0 ? `${clientCount} browser-native flows` : 'Optimized processing'}
+              </span>
+              <span className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-background/70 px-3 py-1.5">
+                <Sparkles className="h-3.5 w-3.5 text-violet-500" />
+                {aiCount > 0 ? `${aiCount} AI-enhanced tools` : 'Production-ready UX'}
+              </span>
+            </div>
           </div>
         </div>
 
-        {/* View all link */}
-        <button
-          onClick={() => {
-            const el = document.getElementById(category.id);
-            el?.scrollIntoView({ behavior: 'smooth' });
-          }}
-          className="hidden sm:flex items-center gap-2 text-sm font-bold text-primary hover:text-primary/80 transition-colors flex-shrink-0 group px-4 py-2 rounded-xl hover:bg-primary/5"
-        >
-          View all
-          <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-        </button>
+        <div className="inline-flex items-center gap-2 rounded-2xl border border-border/60 bg-background/70 px-4 py-3 text-sm font-medium text-muted-foreground">
+          <span className="text-foreground">Best fit for:</span>
+          <span>{normalizeDisplayText(category.description)}</span>
+          <ArrowRight className="h-4 w-4 text-primary" />
+        </div>
       </div>
 
-      {/* Tools Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 relative z-10">
+      <div className="relative z-10 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {category.tools.map((tool, index) => (
           <ToolCard key={tool.id} tool={tool} index={index} />
         ))}

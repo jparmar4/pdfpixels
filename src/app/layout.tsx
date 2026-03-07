@@ -1,5 +1,4 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Outfit, DM_Sans } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "next-themes";
@@ -7,32 +6,6 @@ import { JsonLdSchemas } from "@/components/seo/json-ld";
 import { seoConfig, siteConfig } from "@/lib/seo-config";
 import { AdSenseScript } from "@/components/ads/adsense-script";
 import { CookieConsentBanner } from "@/components/ads/cookie-consent";
-
-// Inter - Modern, highly readable sans-serif font
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-  display: "swap",
-  preload: true,
-  fallback: ["system-ui", "sans-serif"],
-});
-
-const dmSans = DM_Sans({
-  variable: "--font-dm-sans",
-  subsets: ["latin"],
-  display: "swap",
-  preload: true,
-  weight: ["300", "400", "500", "600", "700"],
-  fallback: ["system-ui", "sans-serif"],
-});
-
-const outfit = Outfit({
-  variable: "--font-outfit",
-  subsets: ["latin"],
-  display: "swap",
-  preload: true,
-  fallback: ["system-ui", "sans-serif"],
-});
 
 // Comprehensive SEO Metadata
 export const metadata: Metadata = {
@@ -192,9 +165,6 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning className="scroll-smooth">
       <head>
         {/* Preconnect to important origins */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-
         {/* DNS Prefetch for external resources */}
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
         <link rel="dns-prefetch" href="https://www.google-analytics.com" />
@@ -216,12 +186,13 @@ export default function RootLayout({
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
 
       </head>
-      <body className={`${inter.variable} ${dmSans.variable} ${outfit.variable} antialiased bg-background text-foreground`}>
+      <body className="antialiased bg-background text-foreground">
         <JsonLdSchemas />
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
-          enableSystem
+          defaultTheme="light"
+          enableSystem={false}
+          forcedTheme="light"
           disableTransitionOnChange
         >
           {children}

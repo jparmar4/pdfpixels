@@ -25,8 +25,10 @@ function parseImageMetadata(file: File): Promise<MetadataEntry[]> {
             { key: 'Last Modified', value: new Date(file.lastModified).toLocaleString(), category: 'File' },
         ];
 
+        const objectUrl = URL.createObjectURL(file);
         const img = new Image();
         img.onload = () => {
+            URL.revokeObjectURL(objectUrl); // Free memory after load
             entries.push(
                 { key: 'Width', value: `${img.width} px`, category: 'Dimensions' },
                 { key: 'Height', value: `${img.height} px`, category: 'Dimensions' },
@@ -47,8 +49,8 @@ function parseImageMetadata(file: File): Promise<MetadataEntry[]> {
             reader.onerror = () => resolve(entries);
             reader.readAsArrayBuffer(file);
         };
-        img.onerror = () => resolve(entries);
-        img.src = URL.createObjectURL(file);
+        img.onerror = () => { URL.revokeObjectURL(objectUrl); resolve(entries); };
+        img.src = objectUrl;
     });
 }
 
@@ -111,8 +113,10 @@ export function MetadataWorkspace() {
 
     const handleRemoveMetadata = useCallback(() => {
         if (!uploadedFile) return;
+        const objectUrl = URL.createObjectURL(uploadedFile);
         const img = new Image();
         img.onload = () => {
+            URL.revokeObjectURL(objectUrl); // Free memory
             const canvas = document.createElement('canvas');
             canvas.width = img.width;
             canvas.height = img.height;
@@ -123,7 +127,8 @@ export function MetadataWorkspace() {
             setProcessedImage(cleanData);
             toast.success('All metadata removed!');
         };
-        img.src = URL.createObjectURL(uploadedFile);
+        img.onerror = () => { URL.revokeObjectURL(objectUrl); toast.error('Failed to load image'); };
+        img.src = objectUrl;
     }, [uploadedFile]);
 
     const handleDownload = useCallback(() => {

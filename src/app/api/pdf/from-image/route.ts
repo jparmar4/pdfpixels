@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import { PDFDocument } from 'pdf-lib';
 import sharp from 'sharp';
 
+const MAX_FILES = 30;
+const MAX_FILE_SIZE = 15 * 1024 * 1024;
+const MAX_TOTAL_SIZE = 120 * 1024 * 1024;
+
 export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
@@ -18,6 +22,21 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    if (files.length > MAX_FILES) {
+      return NextResponse.json(
+        { error: `Too many images. Maximum ${MAX_FILES} files allowed.` },
+        { status: 400 }
+      );
+    }
+
+    const totalSize = files.reduce((sum, file) => sum + file.size, 0);
+    if (totalSize > MAX_TOTAL_SIZE) {
+      return NextResponse.json(
+        { error: 'Total upload size too large (120MB max).' },
+        { status: 400 }
+      );
+    }
+
     // Page sizes in points (1 inch = 72 points)
     const pageSizes: Record<string, { width: number; height: number }> = {
       'a4': { width: 595.28, height: 841.89 },
@@ -30,6 +49,13 @@ export async function POST(request: NextRequest) {
     const pdfDoc = await PDFDocument.create();
     
     for (const file of files) {
+      if (file.size > MAX_FILE_SIZE) {
+        return NextResponse.json(
+          { error: `File "${file.name}" is too large (15MB max per image).` },
+          { status: 400 }
+        );
+      }
+
       if (!file.type.startsWith('image/')) {
         continue;
       }
@@ -120,17 +146,25 @@ export async function POST(request: NextRequest) {
       });
     }
     
-    const pdfBytes = await pdfDoc.save();
-    
-    // Convert to base64
-    const base64 = Buffer.from(pdfBytes).toString('base64');
-    const dataUrl = `data:application/pdf;base64,${base64}`;
+    const pageCount = pdfDoc.getPageCount();
+    if (pageCount === 0) {
+      return NextResponse.json(
+        { error: 'No valid images found to convert.' },
+        { status: 400 }
+      );
+    }
 
-    return NextResponse.json({
-      success: true,
-      pdfUrl: dataUrl,
-      fileName: `images-to-pdf-${Date.now()}.pdf`,
-      pageCount: pdfDoc.getPageCount(),
+    const pdfBytes = await pdfDoc.save();
+    const fileName = `images-to-pdf-${Date.now()}.pdf`;
+
+    return new NextResponse(Buffer.from(pdfBytes), {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/pdf',
+        'Content-Disposition': `attachment; filename="${fileName}"`,
+        'Cache-Control': 'no-store, max-age=0',
+        'X-Page-Count': String(pageCount),
+      },
     });
   } catch (error) {
     console.error('Image to PDF error:', error);

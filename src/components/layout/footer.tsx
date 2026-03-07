@@ -1,47 +1,55 @@
-'use client';
+﻿'use client';
 
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import {
   Github,
-  Twitter,
   Linkedin,
   Mail,
-  Heart,
-  Image as ImageIcon,
+  ShieldCheck,
   Sparkles,
+  Twitter,
   Zap,
-  Shield,
-  Globe
+  Globe,
+  ArrowRight,
+  Image as ImageIcon,
 } from 'lucide-react';
-import { useAppStore } from '@/store/app-store';
 import { allTools } from '@/lib/tools-data';
+import { useAppStore } from '@/store/app-store';
+
+const toolLinkIds = ['compress', 'resize', 'remove-background', 'image-to-pdf', 'pdf-merge', 'pdf-split'];
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
   const setActiveTool = useAppStore((state) => state.setActiveTool);
 
-  const toolLinks = [
-    { name: 'Compress Image', id: 'compress' },
-    { name: 'Resize Image', id: 'resize' },
-    { name: 'Convert Format', id: 'png-to-jpg' },
-    { name: 'Remove Background', id: 'remove-background' },
-    { name: 'Merge PDF', id: 'pdf-merge' },
-    { name: 'Split PDF', id: 'pdf-split' },
-  ];
+  const toolLinks = toolLinkIds
+    .map((id) => allTools.find((tool) => tool.id === id))
+    .filter(Boolean)
+    .map((tool) => ({
+      name: tool!.name,
+      href: `/tools/${tool!.slug}`,
+    }));
 
   const companyLinks = [
-    { name: 'About Us', href: '/about' },
+    { name: 'About', href: '/about' },
     { name: 'Blog', href: '/blog' },
     { name: 'Contact', href: '/contact' },
-    { name: 'API Documentation', href: '/api-docs' },
+    { name: 'Compare tools', href: '/compare' },
+  ];
+
+  const platformLinks = [
+    { name: 'All tools', href: '/' },
+    { name: 'Use cases', href: '/use-cases' },
+    { name: 'Compress PDF', href: '/tools/compress-pdf' },
+    { name: 'Image to PDF', href: '/tools/image-to-pdf' },
   ];
 
   const legalLinks = [
-    { name: 'Privacy Policy', href: '/privacy' },
-    { name: 'Terms of Service', href: '/terms' },
+    { name: 'Privacy', href: '/privacy' },
+    { name: 'Terms', href: '/terms' },
     { name: 'Disclaimer', href: '/disclaimer' },
-    { name: 'DMCA Policy', href: '/dmca' },
+    { name: 'DMCA', href: '/dmca' },
   ];
 
   const socialLinks = [
@@ -52,80 +60,79 @@ export function Footer() {
   ];
 
   const trustFeatures = [
-    { icon: Shield, label: 'Secure' },
-    { icon: Zap, label: 'Fast' },
-    { icon: Globe, label: 'Free' },
+    { icon: ShieldCheck, label: 'Secure-by-default' },
+    { icon: Zap, label: 'Fast output' },
+    { icon: Globe, label: 'Global access' },
   ];
 
   return (
-    <footer className="relative mt-auto border-t border-border/40">
-      {/* CTA Banner */}
-      <div className="container mx-auto px-4 lg:px-8 py-12">
+    <footer className="relative mt-auto border-t border-border/40 bg-[linear-gradient(180deg,rgba(255,255,255,0),rgba(59,130,246,0.03))]">
+      <div className="container mx-auto px-4 py-12 lg:px-8 lg:py-14">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="relative rounded-3xl bg-gradient-to-br from-primary/8 via-violet-500/5 to-cyan-500/4 border border-primary/15 p-10 md:p-14 text-center overflow-hidden aurora-bg"
+          className="relative overflow-hidden rounded-[2rem] border border-border/50 bg-card/80 p-8 shadow-premium backdrop-blur-xl md:p-10"
         >
-          <div className="noise-overlay absolute inset-0 pointer-events-none" />
-          <div className="relative z-10">
-            <h2 className="text-3xl md:text-4xl font-extrabold mb-5">
-              Ready to <span className="gradient-text">Get Started</span>?
-            </h2>
-            <p className="text-muted-foreground max-w-xl mx-auto mb-10 leading-relaxed text-lg">
-              Compress, resize, convert, and edit your images and PDFs with our suite of {allTools.length}+ professional tools.
-              Completely free, no signup required.
-            </p>
-            <button
-              onClick={() => {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-              }}
-              className="group inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-2xl btn-premium font-semibold text-sm relative z-10"
-            >
-              <span className="relative z-10">Try Our Tools Free</span>
-              <Zap className="w-4 h-4 group-hover:scale-110 transition-transform relative z-10" />
-            </button>
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(59,130,246,0.1),transparent_28%),radial-gradient(circle_at_bottom_right,rgba(16,185,129,0.08),transparent_28%)] pointer-events-none" />
+          <div className="relative z-10 flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
+            <div className="max-w-2xl space-y-4">
+              <p className="inline-flex items-center gap-2 rounded-full border border-primary/15 bg-primary/8 px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] text-primary">
+                <Sparkles className="h-3.5 w-3.5" />
+                Premium web workflow
+              </p>
+              <h2 className="text-3xl font-extrabold tracking-tight text-foreground md:text-4xl">
+                A faster front door for PDF and image workflows.
+              </h2>
+              <p className="text-base leading-7 text-muted-foreground">
+                PdfPixels gives you {allTools.length}+ tools with cleaner UX, reliable output, and a deployment-friendly Next.js stack that is ready for production hosting.
+              </p>
+            </div>
+
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <Link href="/tools/compress-pdf" className="btn-premium inline-flex h-12 items-center justify-center gap-2 rounded-2xl px-6 text-sm font-semibold">
+                Launch PDF workflow
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+              <button
+                type="button"
+                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                className="inline-flex h-12 items-center justify-center gap-2 rounded-2xl border border-border/60 bg-background/80 px-6 text-sm font-semibold text-foreground transition-colors hover:border-primary/30 hover:text-primary"
+              >
+                Explore homepage
+              </button>
+            </div>
           </div>
         </motion.div>
       </div>
 
-      {/* Gradient top border element removed as it's part of the new border-t above */}
-
-      <div className="bg-muted/15 border-t border-border/20">
-        <div className="container mx-auto px-4 lg:px-8 py-14 lg:py-16">
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-10">
-            {/* Brand */}
-            <div className="col-span-2 md:col-span-4 lg:col-span-2">
-              <Link href="/" className="flex items-center gap-3 mb-6 group" onClick={() => setActiveTool(null)}>
-                <div className="relative w-11 h-11 rounded-xl bg-gradient-to-br from-indigo-600 to-violet-600 flex items-center justify-center shadow-md group-hover:scale-105 transition-all duration-300">
-                  <ImageIcon className="w-5 h-5 text-white" />
-                  <Sparkles className="absolute -top-1 -right-1 w-3 h-3 text-white/90" />
+      <div className="border-t border-border/30 bg-muted/15">
+        <div className="container mx-auto px-4 py-14 lg:px-8">
+          <div className="grid gap-10 lg:grid-cols-[minmax(0,1.45fr)_repeat(4,minmax(0,1fr))]">
+            <div className="space-y-6">
+              <Link href="/" className="flex items-center gap-3" onClick={() => setActiveTool(null)}>
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-sky-500 text-white shadow-lg shadow-primary/20">
+                  <ImageIcon className="h-5 w-5" />
                 </div>
-                <div className="flex flex-col">
-                  <span className="text-xl font-extrabold tracking-tight leading-none bg-clip-text text-transparent bg-gradient-to-r from-foreground to-foreground/70">
-                    <span className="text-shimmer">Pdf</span>Pixels
-                  </span>
-                  <span className="text-[10px] text-muted-foreground tracking-[0.2em] uppercase font-bold mt-1">Professional Suite</span>
+                <div>
+                  <p className="text-xl font-extrabold tracking-tight text-foreground">PdfPixels</p>
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-muted-foreground">Professional suite</p>
                 </div>
               </Link>
 
-              <p className="text-sm text-muted-foreground mb-8 max-w-[280px] leading-relaxed font-medium">
-                Free online image and PDF tools for everyone. Fast, secure, and easy to use. No signup required.
+              <p className="max-w-sm text-sm leading-7 text-muted-foreground">
+                Modern PDF and image tooling for users who want premium polish, dependable processing, and a workflow that feels fast from upload to download.
               </p>
 
-              {/* Trust features */}
-              <div className="flex items-center gap-5 mb-8">
+              <div className="flex flex-wrap gap-3">
                 {trustFeatures.map((feature) => (
-                  <div key={feature.label} className="flex flex-col items-center gap-1.5 text-xs text-muted-foreground">
-                    <div className="w-8 h-8 rounded-xl bg-card border border-border/60 flex items-center justify-center shadow-sm">
-                      <feature.icon className="w-4 h-4 text-primary" />
-                    </div>
-                    <span className="font-semibold text-[10px] uppercase tracking-wider">{feature.label}</span>
+                  <div key={feature.label} className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-card/80 px-3 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+                    <feature.icon className="h-3.5 w-3.5 text-primary" />
+                    {feature.label}
                   </div>
                 ))}
               </div>
 
-              {/* Social links */}
               <div className="flex items-center gap-3">
                 {socialLinks.map((link) => (
                   <motion.a
@@ -133,89 +140,48 @@ export function Footer() {
                     href={link.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    whileHover={{ scale: 1.05, y: -1 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="w-10 h-10 rounded-xl bg-card border border-border/60 flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/40 hover:bg-primary/5 hover:shadow-premium transition-all duration-300"
+                    whileHover={{ scale: 1.04, y: -1 }}
+                    whileTap={{ scale: 0.96 }}
+                    className="flex h-10 w-10 items-center justify-center rounded-2xl border border-border/60 bg-card/80 text-muted-foreground transition-colors hover:border-primary/30 hover:text-primary"
                     aria-label={link.label}
                   >
-                    <link.icon className="w-4 h-4" />
+                    <link.icon className="h-4 w-4" />
                   </motion.a>
                 ))}
               </div>
             </div>
 
-            {/* Tools */}
-            <div>
-              <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-5">Tools</h4>
-              <ul className="space-y-3">
-                {toolLinks.map((tool) => (
-                  <li key={tool.name}>
-                    <Link
-                      href={`/?tool=${tool.id}`}
-                      className="text-sm text-muted-foreground hover:text-primary transition-colors duration-200 font-medium"
-                    >
-                      {tool.name}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Company */}
-            <div>
-              <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-5">Company</h4>
-              <ul className="space-y-3">
-                {companyLinks.map((link) => (
-                  <li key={link.name}>
-                    <Link
-                      href={link.href}
-                      className="text-sm text-muted-foreground hover:text-primary transition-colors duration-200 font-medium"
-                    >
-                      {link.name}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Legal */}
-            <div>
-              <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-5">Legal</h4>
-              <ul className="space-y-3">
-                {legalLinks.map((link) => (
-                  <li key={link.name}>
-                    <Link
-                      href={link.href}
-                      className="text-sm text-muted-foreground hover:text-primary transition-colors duration-200 font-medium"
-                    >
-                      {link.name}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
+            <FooterColumn title="Popular tools" links={toolLinks} />
+            <FooterColumn title="Platform" links={platformLinks} />
+            <FooterColumn title="Company" links={companyLinks} />
+            <FooterColumn title="Legal" links={legalLinks} />
           </div>
         </div>
 
-        {/* Bottom bar */}
-        <div className="border-t border-border/20">
-          <div className="container mx-auto px-4 lg:px-8 py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
-            <p className="text-xs text-muted-foreground font-medium">
-              © {currentYear} PdfPixels. All rights reserved.
-            </p>
-            <p className="text-xs text-muted-foreground flex items-center gap-1.5 font-medium">
-              Made with{' '}
-              <motion.span
-                animate={{ scale: [1, 1.2, 1] }}
-                transition={{ duration: 0.6, repeat: Infinity, repeatDelay: 2.5 }}
-              >
-                <Heart className="w-3.5 h-3.5 text-red-500 fill-red-500" />
-              </motion.span>
-              {' '}for everyone
-            </p>
+        <div className="border-t border-border/30">
+          <div className="container mx-auto flex flex-col items-center justify-between gap-3 px-4 py-5 text-xs text-muted-foreground sm:flex-row lg:px-8">
+            <p>© {currentYear} PdfPixels. All rights reserved.</p>
+            <p>Built for clean UX, reliable output, and production deployment.</p>
           </div>
         </div>
       </div>
     </footer>
+  );
+}
+
+function FooterColumn({ title, links }: { title: string; links: Array<{ name: string; href: string }> }) {
+  return (
+    <div>
+      <h3 className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-muted-foreground">{title}</h3>
+      <ul className="space-y-3">
+        {links.map((link) => (
+          <li key={`${title}-${link.href}`}>
+            <Link href={link.href} className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary">
+              {link.name}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }

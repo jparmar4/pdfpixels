@@ -1,232 +1,184 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Mail, MessageSquare, Send, MapPin, Clock, CheckCircle2 } from 'lucide-react';
+import { CheckCircle2, Clock, Mail, MapPin, MessageSquare, Send } from 'lucide-react';
+import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { toast } from 'sonner';
-import Link from 'next/link';
-import { Navigation } from '@/components/layout/navigation';
-import { Footer } from '@/components/layout/footer';
+import { SitePageShell } from '@/components/layout/site-page-shell';
 
 export default function ContactPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
     setIsSubmitting(true);
-
-    // Simulate form submission
-    await new Promise(resolve => setTimeout(resolve, 1500));
-
+    await new Promise((resolve) => setTimeout(resolve, 1500));
     setIsSubmitting(false);
     setSubmitted(true);
-    toast.success('Message sent successfully! We\'ll get back to you soon.');
+    toast.success("Message sent successfully. We'll get back to you soon.");
   };
 
   const contactMethods = [
     {
       icon: Mail,
-      title: 'Email Us',
-      description: 'For general inquiries and support',
+      title: 'Support',
+      description: 'Questions about tools, bugs, or workflow issues.',
       value: 'support@pdfpixels.com',
       href: 'mailto:support@pdfpixels.com',
     },
     {
       icon: MessageSquare,
-      title: 'Business Inquiries',
-      description: 'For partnerships and business opportunities',
+      title: 'Business',
+      description: 'Partnerships, integrations, and commercial discussions.',
       value: 'business@pdfpixels.com',
       href: 'mailto:business@pdfpixels.com',
     },
     {
       icon: MapPin,
-      title: 'Location',
-      description: 'We operate globally',
-      value: 'United States',
+      title: 'Coverage',
+      description: 'The product is built for global users and distributed teams.',
+      value: 'Worldwide',
       href: '#',
     },
     {
       icon: Clock,
-      title: 'Response Time',
-      description: 'We aim to respond within',
-      value: '24-48 hours',
+      title: 'Response window',
+      description: 'Typical turnaround for non-urgent inquiries.',
+      value: '24 to 48 hours',
       href: '#',
     },
   ];
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
-      <Navigation />
-      <main className="flex-1">
-        {/* Header */}
-        <section className="py-16 bg-gradient-to-b from-primary/5 to-transparent">
-          <div className="container mx-auto px-4 lg:px-8 max-w-4xl text-center">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-            >
-              <h1 className="text-4xl md:text-5xl font-bold mb-4">Contact Us</h1>
-              <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                Have a question, suggestion, or need help? We&apos;d love to hear from you.
-                Send us a message and we&apos;ll respond as soon as possible.
-              </p>
-            </motion.div>
-          </div>
-        </section>
-
-        {/* Contact Methods */}
-        <section className="py-12">
-          <div className="container mx-auto px-4 lg:px-8 max-w-4xl">
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {contactMethods.map((method, i) => (
-                <motion.a
-                  key={method.title}
-                  href={method.href}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.1 }}
-                  className="p-6 rounded-2xl bg-card border border-border hover:border-primary/30 transition-colors text-center"
-                >
-                  <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
-                    <method.icon className="w-6 h-6 text-primary" />
-                  </div>
-                  <h3 className="font-semibold mb-1">{method.title}</h3>
-                  <p className="text-sm text-muted-foreground mb-2">{method.description}</p>
-                  <p className="text-primary font-medium">{method.value}</p>
-                </motion.a>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Contact Form */}
-        <section className="py-12">
-          <div className="container mx-auto px-4 lg:px-8 max-w-2xl">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="p-8 rounded-2xl bg-card border border-border"
-            >
-              {submitted ? (
-                <div className="text-center py-8">
-                  <div className="w-16 h-16 rounded-full bg-green-500/10 flex items-center justify-center mx-auto mb-4">
-                    <CheckCircle2 className="w-8 h-8 text-green-500" />
-                  </div>
-                  <h2 className="text-2xl font-bold mb-2">Message Sent!</h2>
-                  <p className="text-muted-foreground mb-6">
-                    Thank you for reaching out. We&apos;ll get back to you within 24-48 hours.
-                  </p>
-                  <Button onClick={() => setSubmitted(false)} variant="outline">
-                    Send Another Message
-                  </Button>
+    <SitePageShell
+      eyebrow="Contact"
+      title="Talk to the team behind PdfPixels."
+      description="Use this page for support, product feedback, business conversations, or anything that helps improve the platform."
+      iconName="mail"
+      align="center"
+      stats={[
+        { label: 'Primary inboxes', value: '2' },
+        { label: 'Response target', value: '24-48h' },
+        { label: 'Coverage', value: 'Global' },
+        { label: 'Best for', value: 'Support + business' },
+      ]}
+      contentClassName="max-w-6xl"
+    >
+      <section className="grid gap-8 lg:grid-cols-[0.95fr_1.05fr]">
+        <div className="space-y-6">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
+            {contactMethods.map((method, index) => (
+              <motion.a
+                key={method.title}
+                href={method.href}
+                initial={{ opacity: 0, y: 14 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.05 }}
+                className="section-panel rounded-[1.75rem] p-5 transition-colors hover:border-primary/25"
+              >
+                <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                  <method.icon className="h-5 w-5" />
                 </div>
-              ) : (
-                <>
-                  <h2 className="text-2xl font-bold mb-6">Send Us a Message</h2>
-                  <form onSubmit={handleSubmit} className="space-y-6">
-                    <div className="grid sm:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="name">Name</Label>
-                        <Input
-                          id="name"
-                          placeholder="Your name"
-                          required
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="email">Email</Label>
-                        <Input
-                          id="email"
-                          type="email"
-                          placeholder="your@email.com"
-                          required
-                        />
-                      </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="subject">Subject</Label>
-                      <Input
-                        id="subject"
-                        placeholder="What is this about?"
-                        required
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="message">Message</Label>
-                      <textarea
-                        id="message"
-                        className="w-full min-h-[150px] px-3 py-2 text-sm rounded-md border border-input bg-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring resize-none"
-                        placeholder="Tell us more about your inquiry..."
-                        required
-                      />
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                      <input
-                        type="checkbox"
-                        id="privacy"
-                        required
-                        className="rounded border-input"
-                      />
-                      <Label htmlFor="privacy" className="text-sm text-muted-foreground">
-                        I agree to the{' '}
-                        <Link href="/privacy" className="text-primary hover:underline">
-                          Privacy Policy
-                        </Link>
-                      </Label>
-                    </div>
-
-                    <Button
-                      type="submit"
-                      className="w-full gap-2"
-                      size="lg"
-                      disabled={isSubmitting}
-                    >
-                      {isSubmitting ? (
-                        <>
-                          <motion.div
-                            animate={{ rotate: 360 }}
-                            transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-                            className="w-4 h-4 border-2 border-primary-foreground border-t-transparent rounded-full"
-                          />
-                          Sending...
-                        </>
-                      ) : (
-                        <>
-                          <Send className="w-4 h-4" />
-                          Send Message
-                        </>
-                      )}
-                    </Button>
-                  </form>
-                </>
-              )}
-            </motion.div>
+                <h3 className="mt-4 text-lg font-bold text-foreground">{method.title}</h3>
+                <p className="mt-2 text-sm leading-6 text-muted-foreground">{method.description}</p>
+                <p className="mt-3 text-sm font-semibold text-primary">{method.value}</p>
+              </motion.a>
+            ))}
           </div>
-        </section>
 
-        {/* FAQ Teaser */}
-        <section className="py-12 bg-muted/30">
-          <div className="container mx-auto px-4 lg:px-8 max-w-2xl text-center">
-            <h2 className="text-2xl font-bold mb-4">Looking for Quick Answers?</h2>
-            <p className="text-muted-foreground mb-6">
-              Check out our FAQ section for answers to common questions about our tools and services.
-            </p>
-            <Link href="/#faq-section">
-              <Button variant="outline" size="lg">
-                View FAQ
+          <div className="section-panel rounded-[1.75rem] p-6">
+            <h2 className="text-xl font-bold text-foreground">When to contact us</h2>
+            <ul className="mt-4 space-y-2 text-sm leading-7 text-muted-foreground">
+              <li>Report broken tools, output issues, or reliability problems.</li>
+              <li>Suggest premium UI improvements or workflow ideas.</li>
+              <li>Ask about partnerships, integrations, or business opportunities.</li>
+              <li>Request clarification on policy or product behavior.</li>
+            </ul>
+          </div>
+        </div>
+
+        <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} className="section-panel rounded-[2rem] p-6 md:p-8">
+          {submitted ? (
+            <div className="flex min-h-[420px] flex-col items-center justify-center text-center">
+              <div className="flex h-18 w-18 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-500">
+                <CheckCircle2 className="h-9 w-9" />
+              </div>
+              <h2 className="mt-6 text-3xl font-bold text-foreground">Message sent</h2>
+              <p className="mt-3 max-w-md text-sm leading-7 text-muted-foreground">
+                Thank you for reaching out. We will review your message and respond as soon as possible.
+              </p>
+              <Button onClick={() => setSubmitted(false)} variant="outline" className="mt-6 rounded-2xl px-6">
+                Send another message
               </Button>
-            </Link>
-          </div>
-        </section>
-      </main>
-      <Footer />
-    </div>
+            </div>
+          ) : (
+            <>
+              <h2 className="text-2xl font-bold text-foreground">Send a message</h2>
+              <p className="mt-2 text-sm leading-7 text-muted-foreground">
+                Share enough detail for us to reproduce the issue or understand the business context. Clear messages help us respond faster.
+              </p>
+
+              <form onSubmit={handleSubmit} className="mt-8 space-y-6">
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label htmlFor="name">Name</Label>
+                    <Input id="name" placeholder="Your name" required className="rounded-xl" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="email">Email</Label>
+                    <Input id="email" type="email" placeholder="your@email.com" required className="rounded-xl" />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="subject">Subject</Label>
+                  <Input id="subject" placeholder="What is this about?" required className="rounded-xl" />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="message">Message</Label>
+                  <textarea
+                    id="message"
+                    className="min-h-[160px] w-full resize-none rounded-[1.25rem] border border-input bg-background px-4 py-3 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    placeholder="Tell us what you need, what tool is involved, and what happened."
+                    required
+                  />
+                </div>
+
+                <div className="flex items-start gap-3 rounded-[1.25rem] border border-border/60 bg-background/70 p-4">
+                  <input type="checkbox" id="privacy" required className="mt-1 rounded border-input" />
+                  <Label htmlFor="privacy" className="text-sm leading-6 text-muted-foreground">
+                    I agree to the <Link href="/privacy" className="text-primary hover:underline">Privacy Policy</Link> and understand this form is for website communication only.
+                  </Label>
+                </div>
+
+                <Button type="submit" className="btn-premium h-12 w-full rounded-2xl" size="lg" disabled={isSubmitting}>
+                  {isSubmitting ? (
+                    <>
+                      <motion.div
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+                        className="h-4 w-4 rounded-full border-2 border-primary-foreground border-t-transparent"
+                      />
+                      Sending...
+                    </>
+                  ) : (
+                    <>
+                      <Send className="h-4 w-4" />
+                      Send message
+                    </>
+                  )}
+                </Button>
+              </form>
+            </>
+          )}
+        </motion.div>
+      </section>
+    </SitePageShell>
   );
 }

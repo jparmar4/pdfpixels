@@ -1,14 +1,16 @@
-'use client';
+﻿'use client';
 
-import { motion, AnimatePresence } from 'framer-motion';
-import { Download, Minimize2, Sparkles, ArrowRight, RefreshCw, Zap } from 'lucide-react';
+import { useCallback, useEffect, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { ArrowRight, Download, Minimize2, RefreshCw, Sparkles, Zap } from 'lucide-react';
+import { toast } from 'sonner';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAppStore } from '@/store/app-store';
 import { FileUpload } from './file-upload';
-import { useState, useCallback, useEffect } from 'react';
-import { toast } from 'sonner';
-import { Badge } from '@/components/ui/badge';
+import { ResultCard } from './result-card';
+import { ToolLimitNotice } from './tool-limit-notice';
 import { ToolPageHeader } from './tool-page-header';
 
 interface CompressionResult {
@@ -27,13 +29,17 @@ const PRESETS = [
   { label: '1 MB', value: '1024' },
 ];
 
+function formatSize(bytes: number) {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
+}
+
 export function CompressWorkspace() {
   const { activeTool, uploadedFile, processedImage, isProcessing, reset, setIsProcessing, setProcessedImage, setProgress } = useAppStore();
-
-  const [targetSize, setTargetSize] = useState<string>('100');
+  const [targetSize, setTargetSize] = useState('100');
   const [result, setResult] = useState<CompressionResult | null>(null);
 
-  // Get preset size from tool ID if matching
   useEffect(() => {
     const toolId = activeTool?.id || '';
     const sizeMatch = toolId.match(/(\d+)kb/);
@@ -48,7 +54,7 @@ export function CompressWorkspace() {
       return;
     }
 
-    if (!targetSize || parseInt(targetSize) <= 0) {
+    if (!targetSize || Number.parseInt(targetSize, 10) <= 0) {
       toast.error('Please enter a valid target size');
       return;
     }
@@ -74,64 +80,57 @@ export function CompressWorkspace() {
       setProgress(100);
 
       if (!response.ok) {
-        throw new Error('Processing failed');
+        let message = 'Processing failed';
+        try {
+          const errorJson = await response.json();
+          message = errorJson?.error || message;
+        } catch {
+          // Keep default message.
+        }
+        throw new Error(message);
       }
 
       const data = await response.json();
-
-      const savedPercent = Math.round((1 - data.processedSize / data.originalSize) * 100);
-      const newResult: CompressionResult = {
+      const savedPercent = Math.max(0, Math.round((1 - data.processedSize / data.originalSize) * 100));
+      const nextResult: CompressionResult = {
         imageUrl: data.imageUrl,
         originalSize: data.originalSize,
         processedSize: data.processedSize,
-        savedPercent: savedPercent,
+        savedPercent,
         format: data.format,
       };
 
-      setResult(newResult);
+      setResult(nextResult);
       setProcessedImage(data.imageUrl);
-
-      toast.success(`Compressed! Saved ${savedPercent}% file size.`);
-    } catch {
-      toast.error('Failed to compress image. Please try again.');
+      toast.success(`Compressed successfully. Saved ${savedPercent}% file size.`);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Failed to compress image. Please try again.');
     } finally {
       setIsProcessing(false);
     }
-  }, [uploadedFile, targetSize, setIsProcessing, setProcessedImage, setProgress]);
+  }, [setIsProcessing, setProcessedImage, setProgress, targetSize, uploadedFile]);
 
   const handleDownload = useCallback(() => {
-    if (processedImage && uploadedFile && result) {
-      const link = document.createElement('a');
-      link.href = processedImage;
-      const originalName = uploadedFile.name;
-      const baseName = originalName.includes('.') ? originalName.substring(0, originalName.lastIndexOf('.')) : originalName;
-      const extension = result.format || 'jpg';
-      link.download = `${baseName}-compressed.${extension}`;
-      link.click();
-    }
-  }, [processedImage, uploadedFile, result]);
+    if (!processedImage || !uploadedFile || !result) return;
+
+    const link = document.createElement('a');
+    const originalName = uploadedFile.name;
+    const baseName = originalName.includes('.') ? originalName.substring(0, originalName.lastIndexOf('.')) : originalName;
+    const extension = result.format || 'jpg';
+    link.href = processedImage;
+    link.download = `${baseName}-compressed.${extension}`;
+    link.click();
+  }, [processedImage, result, uploadedFile]);
 
   const handleReset = useCallback(() => {
     reset();
-    window.history.pushState({}, '', window.location.pathname);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
     setResult(null);
   }, [reset]);
-
-  const formatSize = (bytes: number) => {
-    if (bytes < 1024) return `${bytes} B`;
-    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-    return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
-  };
 
   if (!activeTool) return null;
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className="container mx-auto px-4 lg:px-8 py-8 md:py-12 max-w-4xl"
-    >
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="container mx-auto max-w-5xl px-4 py-8 lg:px-8 md:py-12">
       <ToolPageHeader
         title={activeTool.name}
         description={activeTool.description}
@@ -139,164 +138,125 @@ export function CompressWorkspace() {
         onReset={handleReset}
       />
 
-      {/* Main Content */}
       <div className="space-y-6">
-        <FileUpload accept={activeTool?.id.includes('pdf') ? '.pdf' : 'image/*'} />
+        <FileUpload accept="image/*" />
+        <ToolLimitNotice limits={['Images only', 'Custom target size from 5 KB upward', 'Exact result depends on source image complexity']} />
 
-        {/* Action Row — shown when file is uploaded */}
-        {uploadedFile && !result && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 10 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            className="flex flex-col items-center gap-5 mt-8 mb-2 max-w-2xl mx-auto"
-          >
-            {/* Target size pill */}
-            <div className="w-full bg-card/60 backdrop-blur-xl border border-border/60 shadow-xl shadow-primary/5 rounded-2xl p-4 space-y-4">
-              {/* KB Input row */}
-              <div className="flex items-center justify-center gap-3">
-                <span className="text-sm font-bold text-muted-foreground uppercase tracking-wider">Target Size</span>
-                <div className="flex items-center gap-1.5 bg-background/70 border border-border/60 rounded-xl px-3 py-1.5 shadow-inner">
-                  <Input
-                    id="targetSize"
-                    type="number"
-                    min="5"
-                    max="50000"
-                    value={targetSize}
-                    onChange={(e) => setTargetSize(e.target.value)}
-                    className="h-9 w-20 text-center text-lg font-mono font-bold bg-transparent border-none px-0 shadow-none text-foreground"
-                  />
-                  <span className="text-sm font-bold text-primary">KB</span>
+        {uploadedFile && !result ? (
+          <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
+            <div className="rounded-[1.75rem] border border-border/60 bg-card/75 p-6 shadow-premium backdrop-blur-xl">
+              <div className="mb-5 flex items-start gap-3">
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                  <Sparkles className="h-5 w-5" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-foreground">Choose your target size</h3>
+                  <p className="text-sm leading-6 text-muted-foreground">
+                    Aim for an upload requirement or a practical sharing size. Lower targets usually require more aggressive quality reduction.
+                  </p>
                 </div>
               </div>
 
-              {/* Preset chips */}
-              <div className="flex flex-wrap items-center justify-center gap-2">
-                {PRESETS.map((p) => (
-                  <button
-                    key={p.value}
-                    onClick={() => setTargetSize(p.value)}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-all duration-200 ${targetSize === p.value
-                        ? 'bg-primary text-primary-foreground border-primary shadow-md shadow-primary/25 scale-105'
-                        : 'bg-background/50 text-muted-foreground border-border/60 hover:border-primary/50 hover:text-primary hover:bg-primary/5'
-                      }`}
-                  >
-                    {p.label}
-                  </button>
-                ))}
+              <div className="rounded-[1.35rem] border border-border/60 bg-background/75 p-4">
+                <div className="flex flex-col items-center justify-center gap-3 text-center sm:flex-row">
+                  <span className="text-sm font-bold uppercase tracking-[0.16em] text-muted-foreground">Target size</span>
+                  <div className="flex items-center gap-2 rounded-2xl border border-border/60 bg-card px-3 py-2 shadow-soft">
+                    <Input
+                      id="targetSize"
+                      type="number"
+                      min="5"
+                      max="50000"
+                      value={targetSize}
+                      onChange={(event) => setTargetSize(event.target.value)}
+                      className="h-9 w-24 border-none bg-transparent px-0 text-center text-lg font-bold shadow-none"
+                    />
+                    <span className="text-sm font-bold text-primary">KB</span>
+                  </div>
+                </div>
+
+                <div className="mt-4 flex flex-wrap justify-center gap-2">
+                  {PRESETS.map((preset) => (
+                    <button
+                      key={preset.value}
+                      type="button"
+                      onClick={() => setTargetSize(preset.value)}
+                      className={`rounded-full border px-3 py-1.5 text-xs font-bold uppercase tracking-[0.14em] transition-all ${targetSize === preset.value
+                        ? 'border-primary bg-primary text-primary-foreground shadow-soft'
+                        : 'border-border/60 bg-background/80 text-muted-foreground hover:border-primary/30 hover:text-primary'
+                        }`}
+                    >
+                      {preset.label}
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
 
-            {/* Compress button */}
-            <Button
-              className="btn-premium h-14 px-12 rounded-2xl font-bold text-base shadow-lg shadow-violet-500/25 transition-all group w-full max-w-xs"
-              onClick={handleProcess}
-              disabled={isProcessing}
-            >
-              {isProcessing ? (
-                <motion.div
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-                  className="w-5 h-5 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full"
-                />
-              ) : (
-                <>
-                  <Zap className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
-                  Compress Image
-                </>
-              )}
-            </Button>
+            <div className="rounded-[1.75rem] border border-border/60 bg-card/75 p-6 shadow-premium backdrop-blur-xl">
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-primary">Compression summary</p>
+              <h3 className="mt-2 text-xl font-bold text-foreground">Target: {targetSize} KB</h3>
+              <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                Great for portals, forms, messaging apps, or faster delivery on slow connections.
+              </p>
 
-            <p className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-primary animate-pulse-soft" />
-              Smart compression targets your exact KB size
-            </p>
-          </motion.div>
-        )}
+              <Button className="btn-premium mt-6 h-12 w-full rounded-2xl text-sm font-bold" onClick={handleProcess} disabled={isProcessing}>
+                {isProcessing ? (
+                  <>
+                    <motion.div
+                      animate={{ rotate: 360 }}
+                      transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+                      className="mr-2 h-4 w-4 rounded-full border-2 border-primary-foreground/30 border-t-primary-foreground"
+                    />
+                    Compressing...
+                  </>
+                ) : (
+                  <>
+                    <Zap className="mr-2 h-4 w-4" />
+                    Compress image
+                  </>
+                )}
+              </Button>
 
-        {/* Result */}
+              <Button variant="outline" className="mt-3 h-11 w-full rounded-2xl" onClick={handleReset}>
+                <RefreshCw className="mr-2 h-4 w-4" />
+                Start over
+              </Button>
+            </div>
+          </div>
+        ) : null}
+
         <AnimatePresence>
-          {result && processedImage && uploadedFile && (
-            <motion.div
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              className="space-y-6 pt-2"
-            >
-              {/* Savings headline */}
-              <div className="text-center space-y-1">
-                <motion.div
-                  initial={{ scale: 0.8, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  transition={{ delay: 0.15, type: 'spring', stiffness: 300 }}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-green-500/10 border border-green-500/25 text-green-600 dark:text-green-400 font-bold text-lg shadow-sm"
-                >
-                  <span>↓ {result.savedPercent}% smaller</span>
-                  <Badge className="bg-green-500/20 text-green-700 dark:text-green-400 hover:bg-green-500/25 text-sm py-0.5">
-                    Saved {formatSize(result.originalSize - result.processedSize)}
-                  </Badge>
-                </motion.div>
-                <p className="text-sm text-muted-foreground font-medium flex items-center justify-center gap-2 pt-1">
-                  <span className="font-semibold text-foreground">{formatSize(result.originalSize)}</span>
-                  <ArrowRight className="w-3.5 h-3.5 text-primary" />
-                  <span className="font-semibold text-primary">{formatSize(result.processedSize)}</span>
-                </p>
+          {result && processedImage && uploadedFile ? (
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -16 }} className="space-y-4 pt-2">
+              <div className="flex flex-wrap items-center gap-3">
+                <Badge className="rounded-full border border-emerald-500/20 bg-emerald-500/10 px-4 py-2 text-sm font-bold text-emerald-700 hover:bg-emerald-500/15 dark:text-emerald-300">
+                  Saved {result.savedPercent}%
+                </Badge>
+                <Badge variant="secondary" className="rounded-full px-4 py-2 text-sm font-semibold">
+                  {formatSize(result.originalSize)}
+                  <ArrowRight className="mx-2 inline h-3.5 w-3.5" />
+                  {formatSize(result.processedSize)}
+                </Badge>
               </div>
 
-              {/* Before / After preview */}
-              <div className="grid md:grid-cols-2 gap-4">
-                {/* Before */}
-                <div className="rounded-2xl border border-border bg-card/60 overflow-hidden">
-                  <div className="px-4 py-2.5 border-b border-border/60 flex items-center justify-between">
-                    <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Before</span>
-                    <span className="text-xs font-bold text-muted-foreground bg-muted/60 px-2 py-0.5 rounded-md">{formatSize(result.originalSize)}</span>
-                  </div>
-                  <div className="p-3 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiBmaWxsPSIjZjBmMGYwIi8+PHJlY3QgeD0iMTAiIHk9IjEwIiB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIGZpbGw9IiNmMGYwZjAiLz48L3N2Zz4=')] dark:bg-zinc-900 flex items-center justify-center min-h-[200px]">
-                    <img
-                      src={URL.createObjectURL(uploadedFile)}
-                      alt="Original"
-                      className="max-w-full max-h-[220px] object-contain rounded-lg shadow-sm"
-                    />
-                  </div>
-                </div>
+              <ResultCard
+                title="Image compression complete"
+                description="Your optimized image is ready for upload, email, and faster page delivery."
+                onDownload={handleDownload}
+                downloadLabel="Download compressed image"
+                primaryMeta={`${uploadedFile.name} - ${formatSize(result.originalSize)} to ${formatSize(result.processedSize)}`}
+                nextActions={[
+                  { label: 'Resize image', href: '/tools/resize-image' },
+                  { label: 'Convert format', href: '/tools/png-to-jpeg' },
+                ]}
+              />
 
-                {/* After */}
-                <div className="rounded-2xl border border-primary/30 bg-primary/5 overflow-hidden">
-                  <div className="px-4 py-2.5 border-b border-primary/20 flex items-center justify-between">
-                    <span className="text-xs font-bold uppercase tracking-wider text-primary/80">After</span>
-                    <span className="text-xs font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-md">{formatSize(result.processedSize)}</span>
-                  </div>
-                  <div className="p-3 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiBmaWxsPSIjZjBmMGYwIi8+PHJlY3QgeD0iMTAiIHk9IjEwIiB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIGZpbGw9IiNmMGYwZjAiLz48L3N2Zz4=')] dark:bg-zinc-900 flex items-center justify-center min-h-[200px]">
-                    <img
-                      src={result.imageUrl}
-                      alt="Compressed"
-                      className="max-w-full max-h-[220px] object-contain rounded-lg shadow-sm"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Download + Reset row */}
-              <div className="flex flex-col sm:flex-row items-center gap-3 pt-1">
-                <Button
-                  onClick={handleDownload}
-                  className="btn-premium w-full sm:w-auto gap-2 h-13 px-8 rounded-2xl font-bold text-base shadow-lg shadow-primary/25 flex-1"
-                  size="lg"
-                >
-                  <Download className="w-5 h-5" />
-                  Download Compressed Image
-                </Button>
-                <Button
-                  variant="ghost"
-                  onClick={handleReset}
-                  className="w-full sm:w-auto gap-2 h-13 px-6 rounded-2xl font-medium text-muted-foreground hover:text-foreground"
-                  size="lg"
-                >
-                  <RefreshCw className="w-4 h-4" />
-                  Compress Another
-                </Button>
-              </div>
+              <Button variant="outline" onClick={handleReset} className="h-11 rounded-2xl px-5 font-medium">
+                <RefreshCw className="mr-2 h-4 w-4" />
+                Compress another image
+              </Button>
             </motion.div>
-          )}
+          ) : null}
         </AnimatePresence>
       </div>
     </motion.div>

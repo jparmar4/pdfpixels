@@ -43,6 +43,9 @@
 }
 
 :root {
+  --font-inter: "Inter", "Segoe UI", system-ui, sans-serif;
+  --font-dm-sans: "DM Sans", "Inter", "Segoe UI", system-ui, sans-serif;
+  --font-outfit: "Outfit", "Inter", "Segoe UI", system-ui, sans-serif;
   --radius: 0.9rem;
   --background: #f7f8fc;
   --foreground: #111827;
@@ -1516,4 +1519,84 @@ h6 {
 .group:hover .glow-ring::after,
 .glow-ring:hover::after {
   opacity: 1;
+}
+/* ========== PREMIUM PAGE SYSTEM ========== */
+
+.premium-page-bg {
+  background:
+    radial-gradient(circle at top left, rgba(42, 115, 255, 0.08), transparent 26%),
+    radial-gradient(circle at top right, rgba(16, 185, 129, 0.06), transparent 22%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0), rgba(42, 115, 255, 0.02) 45%, rgba(10, 77, 61, 0.04) 100%);
+}
+
+.section-panel {
+  background: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  border: 1px solid rgba(15, 23, 42, 0.06);
+  box-shadow: 0 18px 48px -28px rgba(15, 23, 42, 0.22), 0 1px 2px rgba(15, 23, 42, 0.05);
+}
+
+.dark .section-panel {
+  background: rgba(17, 24, 39, 0.76);
+  border-color: rgba(148, 163, 184, 0.16);
+  box-shadow: 0 18px 48px -28px rgba(0, 0, 0, 0.5), 0 1px 2px rgba(0, 0, 0, 0.35);
+}
+
+.premium-prose {
+  color: var(--foreground);
+}
+
+.premium-prose > * + * {
+  margin-top: 1.25rem;
+}
+
+.premium-prose h2,
+.premium-prose h3,
+.premium-prose h4 {
+  margin-top: 2.25rem;
+  margin-bottom: 0.75rem;
+}
+
+.premium-prose p,
+.premium-prose li {
+  color: var(--muted-foreground);
+  line-height: 1.85;
+}
+
+.premium-prose ul,
+.premium-prose ol {
+  padding-left: 1.25rem;
+}
+
+.premium-prose li + li {
+  margin-top: 0.5rem;
+}
+
+.premium-prose a {
+  color: var(--primary);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.premium-prose a:hover {
+  text-decoration: underline;
+}
+
+.premium-prose strong {
+  color: var(--foreground);
+}
+
+.premium-prose .legal-callout {
+  border: 1px solid rgba(42, 115, 255, 0.12);
+  background: rgba(42, 115, 255, 0.06);
+  border-radius: 1.25rem;
+  padding: 1rem 1.25rem;
+}
+
+.dark .premium-page-bg {
+  background:
+    radial-gradient(circle at top left, rgba(96, 165, 250, 0.12), transparent 28%),
+    radial-gradient(circle at top right, rgba(52, 211, 153, 0.08), transparent 24%),
+    linear-gradient(180deg, rgba(3, 7, 18, 0), rgba(37, 99, 235, 0.06) 45%, rgba(6, 78, 59, 0.08) 100%);
 }

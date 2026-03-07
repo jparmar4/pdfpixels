@@ -7,16 +7,11 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useAppStore } from '@/store/app-store';
 import { ToolPageHeader } from './tool-page-header';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
+import { useReducedMotion } from 'framer-motion';
 import { toast } from 'sonner';
-import { Badge } from '@/components/ui/badge';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from '@/components/ui/select';
+import { ToolLimitNotice } from './tool-limit-notice';
+import { ResultCard } from './result-card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 interface PDFInfo {
@@ -36,10 +31,11 @@ interface SplitResult {
   pdfUrl?: string;
   fileName?: string;
   extractedPages?: number[];
+  truncated?: boolean;
 }
 
 export function PDFSplitWorkspace() {
-  const { activeTool, isProcessing, setIsProcessing, setProgress, reset } = useAppStore();
+  const { activeTool, isProcessing, progress, setIsProcessing, setProgress, reset } = useAppStore();
 
   const [file, setFile] = useState<File | null>(null);
   const [pdfInfo, setPdfInfo] = useState<PDFInfo | null>(null);
@@ -47,6 +43,9 @@ export function PDFSplitWorkspace() {
   const [mode, setMode] = useState<'all' | 'range' | 'single'>('all');
   const [pageRange, setPageRange] = useState('');
   const [singlePage, setSinglePage] = useState('1');
+  const [statusLabel, setStatusLabel] = useState<'Idle' | 'Uploading' | 'Processing' | 'Finalizing'>('Idle');
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const prefersReducedMotion = useReducedMotion();
 
   const handleFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
@@ -88,6 +87,7 @@ export function PDFSplitWorkspace() {
     }
 
     setIsProcessing(true);
+    setStatusLabel('Uploading');
     setProgress(0);
 
     const formData = new FormData();
@@ -102,6 +102,7 @@ export function PDFSplitWorkspace() {
 
     try {
       const progressInterval = setInterval(() => {
+        setStatusLabel('Processing');
         setProgress((prev) => Math.min(prev + 8, 90));
       }, 150);
 
@@ -111,24 +112,58 @@ export function PDFSplitWorkspace() {
       });
 
       clearInterval(progressInterval);
+      setStatusLabel('Finalizing');
       setProgress(100);
 
       if (!response.ok) {
-        throw new Error('Processing failed');
+        let message = 'Processing failed';
+        try {
+          const err = await response.json();
+          message = err?.error || message;
+        } catch {}
+        throw new Error(message);
       }
 
-      const data = await response.json();
-      setResult(data);
+      const contentType = response.headers.get('content-type') || '';
 
-      if (data.pages) {
-        toast.success(`Split into ${data.pages.length} files!`);
+      if (contentType.includes('application/json')) {
+        const data = await response.json();
+        setResult(data);
+
+        if (data.pages) {
+          toast.success(`Split into ${data.pages.length} files!`);
+          if (data.truncated) {
+            toast.info('Showing first 20 pages only for performance. Use range for larger PDFs.');
+          }
+        } else {
+          toast.success(`Extracted ${data.extractedPages?.length || 0} pages!`);
+        }
       } else {
-        toast.success(`Extracted ${data.extractedPages?.length || 0} pages!`);
+        const blob = await response.blob();
+        const pdfUrl = URL.createObjectURL(blob);
+        const disposition = response.headers.get('content-disposition') || '';
+        const fileNameMatch = disposition.match(/filename=\"?([^\";]+)\"?/i);
+        const fileName = fileNameMatch?.[1] || `extracted-pages-${Date.now()}.pdf`;
+        const totalPages = Number(response.headers.get('x-total-pages') || 0);
+        const extractedPagesHeader = response.headers.get('x-extracted-pages') || '';
+        const extractedPages = extractedPagesHeader
+          ? extractedPagesHeader.split(',').map((n) => parseInt(n, 10)).filter((n) => !Number.isNaN(n))
+          : [];
+
+        setResult({
+          mode: 'extract',
+          totalPages,
+          extractedPages,
+          fileName,
+          pdfUrl,
+        });
+        toast.success(`Extracted ${extractedPages.length || 1} pages!`);
       }
-    } catch {
-      toast.error('Failed to split PDF. Please try again.');
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Failed to split PDF. Please try again.');
     } finally {
       setIsProcessing(false);
+      setStatusLabel('Idle');
     }
   }, [file, mode, pageRange, singlePage, setIsProcessing, setProgress]);
 
@@ -144,6 +179,11 @@ export function PDFSplitWorkspace() {
   }, [result]);
 
   const handleReset = useCallback(() => {
+    if (result?.pdfUrl) URL.revokeObjectURL(result.pdfUrl);
+    result?.pages?.forEach((p) => {
+      if (p.pdfUrl.startsWith('blob:')) URL.revokeObjectURL(p.pdfUrl);
+    });
+
     reset();
     window.history.pushState({}, '', window.location.pathname);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -152,7 +192,7 @@ export function PDFSplitWorkspace() {
     setResult(null);
     setPageRange('');
     setSinglePage('1');
-  }, [reset]);
+  }, [reset, result]);
 
   const formatSize = (bytes: number) => {
     if (bytes < 1024) return bytes + ' B';
@@ -166,6 +206,7 @@ export function PDFSplitWorkspace() {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
+      aria-busy={isProcessing}
       className="container mx-auto px-4 lg:px-8 py-8"
     >
       <ToolPageHeader
@@ -191,9 +232,19 @@ export function PDFSplitWorkspace() {
             <motion.div
               onDragOver={(e) => e.preventDefault()}
               onDrop={handleDrop}
-              className="drop-zone relative flex flex-col items-center justify-center p-12 rounded-2xl cursor-pointer"
+              role="button"
+              tabIndex={0}
+              aria-label="Upload PDF file"
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  fileInputRef.current?.click();
+                }
+              }}
+              className="drop-zone relative flex flex-col items-center justify-center p-12 rounded-2xl cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
             >
               <input
+                ref={fileInputRef}
                 type="file"
                 accept=".pdf"
                 onChange={handleFileSelect}
@@ -204,9 +255,9 @@ export function PDFSplitWorkspace() {
                 <FileText className="w-10 h-10 text-primary" />
               </div>
 
-              <p className="text-lg font-semibold">Upload PDF File</p>
+              <p className="text-lg font-semibold">Upload a PDF</p>
               <p className="text-sm text-muted-foreground mt-1">
-                Drag & drop or click to select
+                Drag, drop, or click to choose a file
               </p>
             </motion.div>
           ) : (
@@ -234,6 +285,10 @@ export function PDFSplitWorkspace() {
                   </div>
                 </div>
                 <Button variant="outline" size="sm" onClick={() => {
+                  if (result?.pdfUrl) URL.revokeObjectURL(result.pdfUrl);
+                  result?.pages?.forEach((p) => {
+                    if (p.pdfUrl.startsWith('blob:')) URL.revokeObjectURL(p.pdfUrl);
+                  });
                   setFile(null);
                   setPdfInfo(null);
                   setResult(null);
@@ -244,8 +299,30 @@ export function PDFSplitWorkspace() {
             </motion.div>
           )}
 
+          <ToolLimitNotice limits={['PDF only', 'Max file size: 25MB', 'Split output capped at 20 pages per run']} />
+
           {/* Results */}
           <AnimatePresence>
+            {result?.pdfUrl && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                className="mb-4"
+              >
+                <ResultCard
+                  title="PDF Extract Ready"
+                  description="Selected pages were extracted successfully."
+                  primaryMeta={result.extractedPages?.length ? `${result.extractedPages.length} extracted page(s)` : undefined}
+                  onDownload={() => handleDownload()}
+                  downloadLabel="Download Extracted PDF"
+                  nextActions={[
+                    { label: 'Compress PDF', href: '/tools/compress-pdf' },
+                    { label: 'Merge PDF', href: '/tools/merge-pdf' },
+                  ]}
+                />
+              </motion.div>
+            )}
             {result && result.pages && (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -309,9 +386,10 @@ export function PDFSplitWorkspace() {
                 </TabsList>
 
                 <TabsContent value="all" className="mt-4">
-                  <div className="p-4 rounded-xl bg-muted/50">
+                  <div className="p-4 rounded-xl bg-muted/50 space-y-1">
+                    <p className="text-sm font-medium">Create one file per page</p>
                     <p className="text-sm text-muted-foreground">
-                      Split PDF into individual pages. Each page will be saved as a separate file.
+                      Best for sharing or removing specific pages quickly.
                     </p>
                   </div>
                 </TabsContent>
@@ -356,11 +434,11 @@ export function PDFSplitWorkspace() {
                   {isProcessing ? (
                     <>
                       <motion.div
-                        animate={{ rotate: 360 }}
-                        transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+                        animate={prefersReducedMotion ? undefined : { rotate: 360 }}
+                        transition={prefersReducedMotion ? undefined : { duration: 1, repeat: Infinity, ease: 'linear' }}
                         className="w-5 h-5 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full mr-3"
                       />
-                      Splitting...
+                      {statusLabel}...
                     </>
                   ) : (
                     <>
@@ -369,6 +447,9 @@ export function PDFSplitWorkspace() {
                     </>
                   )}
                 </Button>
+                {isProcessing && (
+                  <p className="text-xs text-muted-foreground" role="status" aria-live="polite">{statusLabel} • {Math.round(progress)}%</p>
+                )}
 
                 <Button
                   variant="outline"
@@ -404,6 +485,18 @@ export function PDFSplitWorkspace() {
           </div>
         </div>
       </div>
+
+      {file && !result && (
+        <div className="fixed bottom-0 inset-x-0 z-40 p-3 bg-background/95 backdrop-blur border-t border-border md:hidden">
+          <Button
+            className="w-full btn-premium h-11"
+            onClick={handleProcess}
+            disabled={isProcessing || (mode === 'range' && !pageRange)}
+          >
+            {isProcessing ? `${statusLabel} • ${Math.round(progress)}%` : 'Split PDF'}
+          </Button>
+        </div>
+      )}
     </motion.div >
   );
 }

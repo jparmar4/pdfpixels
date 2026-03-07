@@ -169,9 +169,7 @@ function parsePositiveInt(value: FormDataEntryValue | null): number | undefined 
 
 // ─── Transformations ───────────────────────────────────────────────────────────
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type SharpInstance = any;
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Metadata = any;
 type Params = ReturnType<typeof parseParams>;
 

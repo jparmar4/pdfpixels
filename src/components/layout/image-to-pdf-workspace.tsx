@@ -136,13 +136,19 @@ export function ImageToPDFWorkspace() {
         throw new Error('Processing failed');
       }
 
-      const data = await response.json();
+      const blob = await response.blob();
+      const pdfUrl = URL.createObjectURL(blob);
+      const disposition = response.headers.get('content-disposition') || '';
+      const fileNameMatch = disposition.match(/filename=\"?([^\";]+)\"?/i);
+      const fileName = fileNameMatch?.[1] || `images-to-pdf-${Date.now()}.pdf`;
+      const pageCount = Number(response.headers.get('x-page-count') || files.length);
+
       setResult({
-        pdfUrl: data.pdfUrl,
-        fileName: data.fileName,
-        pageCount: data.pageCount,
+        pdfUrl,
+        fileName,
+        pageCount,
       });
-      toast.success(`Created PDF with ${data.pageCount} pages!`);
+      toast.success(`Created PDF with ${pageCount} pages!`);
     } catch {
       toast.error('Failed to create PDF. Please try again.');
     } finally {
@@ -164,9 +170,12 @@ export function ImageToPDFWorkspace() {
     window.history.pushState({}, '', window.location.pathname);
     window.scrollTo({ top: 0, behavior: 'smooth' });
     files.forEach(f => URL.revokeObjectURL(f.preview));
+    if (result?.pdfUrl) {
+      URL.revokeObjectURL(result.pdfUrl);
+    }
     setFiles([]);
     setResult(null);
-  }, [reset, files]);
+  }, [reset, files, result]);
 
   const formatSize = (bytes: number) => {
     if (bytes < 1024) return bytes + ' B';

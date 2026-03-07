@@ -182,7 +182,7 @@ function ProtectSettings({ password, setPassword, confirmPassword, setConfirmPas
             </div>
             <div className="p-3 rounded-lg bg-amber-500/10 border border-amber-500/20">
                 <p className="text-xs text-amber-600 dark:text-amber-400">
-                    <strong>Note:</strong> Password protect/unlock is temporarily unavailable while encryption support is being finalized.
+                    <strong>Tip:</strong> Use a strong password you can safely store. You will need the same password later to unlock the PDF.
                 </p>
             </div>
         </div>
@@ -193,15 +193,15 @@ function UnlockSettings({ password, setPassword }: { password: string; setPasswo
     return (
         <div className="space-y-5">
             <div className="space-y-2">
-                <Label>PDF Password (if known)</Label>
-                <Input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Enter PDF password (optional)" />
+                <Label>PDF Password</Label>
+                <Input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Enter the current PDF password" />
                 <p className="text-xs text-muted-foreground">
-                    This feature is temporarily unavailable while decryption support is being finalized.
+                    Enter the existing password to remove encryption and download an unlocked copy.
                 </p>
             </div>
             <div className="p-3 rounded-lg bg-blue-500/10 border border-blue-500/20">
                 <p className="text-xs text-blue-600 dark:text-blue-400">
-                    Unlock functionality is currently disabled to avoid misleading security behavior.
+                    The original PDF is not modified. A separate unlocked file is generated for download after processing.
                 </p>
             </div>
         </div>
@@ -426,12 +426,6 @@ export function PDFToolsWorkspace() {
     const handleProcess = useCallback(async () => {
         if (!uploadedFile) { toast.error('Please upload a PDF file'); return; }
 
-        const toolId = activeTool?.id || '';
-        if (toolId === 'pdf-protect' || toolId === 'pdf-unlock') {
-            toast.error('Password protect/unlock is temporarily unavailable while proper encryption support is being finalized.');
-            return;
-        }
-
         const formData = buildFormData();
         if (!formData) return;
 
@@ -449,19 +443,38 @@ export function PDFToolsWorkspace() {
             setProgress(100);
 
             if (!response.ok) {
-                const err = await response.json();
-                throw new Error(err.error || 'Processing failed');
+                let message = 'Processing failed';
+                try {
+                    const errText = await response.text();
+                    try { const err = JSON.parse(errText); message = err.error || message; } catch { message = errText || message; }
+                } catch { }
+                throw new Error(message);
             }
 
-            const data = await response.json();
-            setResult({ pdfUrl: data.pdfUrl, fileName: data.fileName, pageCount: data.pageCount });
+            const contentType = response.headers.get('content-type') || '';
+
+            if (contentType.includes('application/json')) {
+                // JSON response (watermark, delete-pages, reorder)
+                const data = await response.json();
+                setResult({ pdfUrl: data.pdfUrl, fileName: data.fileName, pageCount: data.pageCount });
+            } else {
+                // Binary PDF response (rotate + others that may return binary)
+                const blob = await response.blob();
+                const pdfUrl = URL.createObjectURL(blob);
+                const disposition = response.headers.get('content-disposition') || '';
+                const fileNameMatch = disposition.match(/filename=["\x27]?([^";\r\n]+)["\x27]?/i);
+                const fileName = fileNameMatch?.[1]?.trim() || `processed-${Date.now()}.pdf`;
+                const pageCount = Number(response.headers.get('x-page-count') || response.headers.get('x-total-pages') || 0);
+                setResult({ pdfUrl, fileName, pageCount: pageCount || undefined });
+            }
+
             toast.success('PDF processed successfully!');
         } catch (error) {
             toast.error(error instanceof Error ? error.message : 'Failed to process PDF');
         } finally {
             setIsProcessing(false);
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+
     }, [uploadedFile, activeTool, angle, rotatePages, wmText, wmOpacity, wmColor, wmFontSize, wmPosition, wmRotation, password, confirmPassword, deletePages, pageOrder]);
 
     const handleDownload = useCallback(() => {
@@ -489,174 +502,173 @@ export function PDFToolsWorkspace() {
         if (toolId === 'pdf-unlock') return FileLock;
         if (toolId === 'pdf-reorder') return Layers;
         if (toolId === 'pdf-delete-pages') return Trash2;
-        return Sparkles;
-    };
+    return Sparkles;
+};
 
-    const renderSettings = () => {
-        const toolId = activeTool?.id || '';
-        if (toolId === 'pdf-rotate') return <RotateSettings angle={angle} setAngle={setAngle} pages={rotatePages} setPages={setRotatePages} totalPages={totalPages} />;
-        if (toolId === 'pdf-watermark') return <WatermarkSettings text={wmText} setText={setWmText} opacity={wmOpacity} setOpacity={setWmOpacity} color={wmColor} setColor={setWmColor} fontSize={wmFontSize} setFontSize={setWmFontSize} position={wmPosition} setPosition={setWmPosition} rotation={wmRotation} setRotation={setWmRotation} />;
-        if (toolId === 'pdf-protect') return <ProtectSettings password={password} setPassword={setPassword} confirmPassword={confirmPassword} setConfirmPassword={setConfirmPassword} />;
-        if (toolId === 'pdf-unlock') return <UnlockSettings password={password} setPassword={setPassword} />;
-        if (toolId === 'pdf-delete-pages') return <DeletePagesSettings pages={deletePages} setPages={setDeletePages} totalPages={totalPages} />;
-        if (toolId === 'pdf-reorder') return <ReorderSettings order={pageOrder} setOrder={setPageOrder} totalPages={totalPages} />;
-        return null;
-    };
+const renderSettings = () => {
+    const toolId = activeTool?.id || '';
+    if (toolId === 'pdf-rotate') return <RotateSettings angle={angle} setAngle={setAngle} pages={rotatePages} setPages={setRotatePages} totalPages={totalPages} />;
+    if (toolId === 'pdf-watermark') return <WatermarkSettings text={wmText} setText={setWmText} opacity={wmOpacity} setOpacity={setWmOpacity} color={wmColor} setColor={setWmColor} fontSize={wmFontSize} setFontSize={setWmFontSize} position={wmPosition} setPosition={setWmPosition} rotation={wmRotation} setRotation={setWmRotation} />;
+    if (toolId === 'pdf-protect') return <ProtectSettings password={password} setPassword={setPassword} confirmPassword={confirmPassword} setConfirmPassword={setConfirmPassword} />;
+    if (toolId === 'pdf-unlock') return <UnlockSettings password={password} setPassword={setPassword} />;
+    if (toolId === 'pdf-delete-pages') return <DeletePagesSettings pages={deletePages} setPages={setDeletePages} totalPages={totalPages} />;
+    if (toolId === 'pdf-reorder') return <ReorderSettings order={pageOrder} setOrder={setPageOrder} totalPages={totalPages} />;
+    return null;
+};
 
-    const getProcessLabel = () => {
-        const toolId = activeTool?.id || '';
-        if (toolId === 'pdf-rotate') return 'Rotate PDF';
-        if (toolId === 'pdf-watermark') return 'Add Watermark';
-        if (toolId === 'pdf-protect') return 'Protect PDF';
-        if (toolId === 'pdf-unlock') return 'Unlock PDF';
-        if (toolId === 'pdf-delete-pages') return 'Delete Pages';
-        if (toolId === 'pdf-reorder') return 'Reorder Pages';
-        return 'Process PDF';
-    };
 
-    const ToolIcon = getToolIcon();
+const getProcessLabel = () => {
+    const toolId = activeTool?.id || '';
+    if (toolId === 'pdf-rotate') return 'Rotate PDF';
+    if (toolId === 'pdf-watermark') return 'Add Watermark';
+    if (toolId === 'pdf-protect') return 'Protect PDF';
+    if (toolId === 'pdf-unlock') return 'Unlock PDF';
+    if (toolId === 'pdf-delete-pages') return 'Delete Pages';
+    if (toolId === 'pdf-reorder') return 'Reorder Pages';
+    return 'Process PDF';
+};
 
-    if (!activeTool) return null;
+const ToolIcon = getToolIcon();
 
-    return (
-        <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="container mx-auto px-4 lg:px-8 py-8"
+if (!activeTool) return null;
+
+return (
+    <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="container mx-auto px-4 lg:px-8 py-8"
+    >
+        <ToolPageHeader
+            title={activeTool.name}
+            description={activeTool.description}
+            icon={ToolIcon}
+            onReset={handleReset}
         >
-            <ToolPageHeader
-                title={activeTool.name}
-                description={activeTool.description}
-                icon={ToolIcon}
-                onReset={handleReset}
-            >
-                {result && (
-                    <Button onClick={handleDownload} className="gap-2 btn-premium rounded-xl">
-                        <Download className="w-4 h-4" />
-                        Download PDF
-                    </Button>
+            {result && (
+                <Button onClick={handleDownload} className="gap-2 btn-premium rounded-xl">
+                    <Download className="w-4 h-4" />
+                    Download PDF
+                </Button>
+            )}
+        </ToolPageHeader>
+
+        {/* Main Content */}
+        <div className="grid lg:grid-cols-3 gap-8">
+            {/* Left Panel */}
+            <div className="lg:col-span-2 space-y-6">
+                <FileUpload accept=".pdf" />
+
+                {/* Page Count Info */}
+                {totalPages > 0 && (
+                    <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="flex items-center gap-3 p-4 rounded-2xl border border-border bg-card"
+                    >
+                        <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                            <Layers className="w-5 h-5 text-primary" />
+                        </div>
+                        <div>
+                            <p className="text-sm font-medium">PDF Loaded</p>
+                            <p className="text-sm text-muted-foreground">{totalPages} page{totalPages !== 1 ? 's' : ''}</p>
+                        </div>
+                        <Badge variant="secondary" className="ml-auto">Ready</Badge>
+                    </motion.div>
                 )}
-            </ToolPageHeader>
 
-            {/* Main Content */}
-            <div className="grid lg:grid-cols-3 gap-8">
-                {/* Left Panel */}
-                <div className="lg:col-span-2 space-y-6">
-                    <FileUpload accept=".pdf" />
-
-                    {/* Page Count Info */}
-                    {totalPages > 0 && (
+                {/* Result */}
+                <AnimatePresence>
+                    {result && (
                         <motion.div
-                            initial={{ opacity: 0, y: 10 }}
+                            initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="flex items-center gap-3 p-4 rounded-2xl border border-border bg-card"
+                            exit={{ opacity: 0, y: -20 }}
+                            className="rounded-2xl border border-primary/30 bg-primary/5 p-6"
                         >
-                            <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                                <Layers className="w-5 h-5 text-primary" />
+                            <div className="flex items-center gap-3 mb-4">
+                                <div className="w-10 h-10 rounded-lg bg-green-500/10 flex items-center justify-center">
+                                    <Check className="w-5 h-5 text-green-500" />
+                                </div>
+                                <div>
+                                    <h3 className="font-semibold text-green-700 dark:text-green-400">Processing Complete!</h3>
+                                    <p className="text-sm text-muted-foreground">
+                                        {result.pageCount} page{result.pageCount !== 1 ? 's' : ''} · {result.fileName}
+                                    </p>
+                                </div>
                             </div>
-                            <div>
-                                <p className="text-sm font-medium">PDF Loaded</p>
-                                <p className="text-sm text-muted-foreground">{totalPages} page{totalPages !== 1 ? 's' : ''}</p>
-                            </div>
-                            <Badge variant="secondary" className="ml-auto">Ready</Badge>
+                            <Button onClick={handleDownload} className="w-full gap-2 btn-premium py-6 rounded-xl font-bold" size="lg">
+                                <Download className="w-4 h-4" />
+                                Download Processed PDF
+                            </Button>
                         </motion.div>
                     )}
+                </AnimatePresence>
+            </div>
 
-                    {/* Result */}
-                    <AnimatePresence>
-                        {result && (
-                            <motion.div
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: -20 }}
-                                className="rounded-2xl border border-primary/30 bg-primary/5 p-6"
+            {/* Right Panel */}
+            <div className="space-y-6">
+                <div className="rounded-2xl border border-border/40 bg-card/60 backdrop-blur-xl overflow-hidden shadow-premium">
+                    <div className="p-5 border-b border-border/40 bg-gradient-to-r from-primary/10 to-transparent">
+                        <h3 className="font-bold flex items-center gap-2.5 tracking-tight text-foreground">
+                            <ToolIcon className="w-4 h-4 text-primary" />
+                            {activeTool.name} Settings
+                        </h3>
+                    </div>
+
+                    <div className="p-5 space-y-6">
+                        {renderSettings()}
+                        <div className="pt-4 space-y-3">
+                            <Button
+                                className="w-full btn-premium py-6 rounded-xl font-bold shadow-xl shadow-primary/20 hover:shadow-primary/40 transition-all"
+                                onClick={handleProcess}
+                                disabled={!uploadedFile || isProcessing}
+                                size="lg"
                             >
-                                <div className="flex items-center gap-3 mb-4">
-                                    <div className="w-10 h-10 rounded-lg bg-green-500/10 flex items-center justify-center">
-                                        <Check className="w-5 h-5 text-green-500" />
-                                    </div>
-                                    <div>
-                                        <h3 className="font-semibold text-green-700 dark:text-green-400">Processing Complete!</h3>
-                                        <p className="text-sm text-muted-foreground">
-                                            {result.pageCount} page{result.pageCount !== 1 ? 's' : ''} · {result.fileName}
-                                        </p>
-                                    </div>
-                                </div>
-                                <Button onClick={handleDownload} className="w-full gap-2 btn-premium py-6 rounded-xl font-bold" size="lg">
-                                    <Download className="w-4 h-4" />
-                                    Download Processed PDF
-                                </Button>
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
+                                {isProcessing ? (
+                                    <>
+                                        <motion.div
+                                            animate={{ rotate: 360 }}
+                                            transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+                                            className="w-5 h-5 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full mr-3"
+                                        />
+                                        Processing...
+                                    </>
+                                ) : (
+                                    <>
+                                        <Sparkles className="w-5 h-5 mr-3" />
+                                        {getProcessLabel()}
+                                    </>
+                                )}
+                            </Button>
+
+                            <Button variant="outline" className="w-full gap-2 rounded-xl py-6 hover:bg-destructive/5 hover:text-destructive hover:border-destructive/30 transition-colors bg-background/50" onClick={handleReset}>
+                                <RotateCcw className="w-4 h-4" />
+                                Start Over
+                            </Button>
+                        </div>
+                    </div>
                 </div>
 
-                {/* Right Panel */}
-                <div className="space-y-6">
-                    <div className="rounded-2xl border border-border/40 bg-card/60 backdrop-blur-xl overflow-hidden shadow-premium">
-                        <div className="p-5 border-b border-border/40 bg-gradient-to-r from-primary/10 to-transparent">
-                            <h3 className="font-bold flex items-center gap-2.5 tracking-tight text-foreground">
-                                <ToolIcon className="w-4 h-4 text-primary" />
-                                {activeTool.name} Settings
-                            </h3>
-                        </div>
-
-                        <div className="p-5 space-y-6">
-                            {renderSettings()}
-                            <div className="pt-4 space-y-3">
-                                <Button
-                                    className="w-full btn-premium py-6 rounded-xl font-bold shadow-xl shadow-primary/20 hover:shadow-primary/40 transition-all"
-                                    onClick={handleProcess}
-                                    disabled={!uploadedFile || isProcessing}
-                                    size="lg"
-                                >
-                                    {isProcessing ? (
-                                        <>
-                                            <motion.div
-                                                animate={{ rotate: 360 }}
-                                                transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-                                                className="w-5 h-5 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full mr-3"
-                                            />
-                                            Processing...
-                                        </>
-                                    ) : (
-                                        <>
-                                            <Sparkles className="w-5 h-5 mr-3" />
-                                            {getProcessLabel()}
-                                        </>
-                                    )}
-                                </Button>
-
-                                <Button variant="outline" className="w-full gap-2 rounded-xl py-6 hover:bg-destructive/5 hover:text-destructive hover:border-destructive/30 transition-colors bg-background/50" onClick={handleReset}>
-                                    <RotateCcw className="w-4 h-4" />
-                                    Start Over
-                                </Button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="rounded-2xl border border-border/40 bg-gradient-to-br from-primary/5 to-transparent p-5 space-y-3">
-                        <h4 className="font-semibold flex items-center gap-2">
-                            <Sparkles className="w-4 h-4 text-primary" />
-                            Tips
-                        </h4>
-                        <ul className="text-sm text-muted-foreground space-y-2">
-                            <li className="flex items-start gap-2">
-                                <ChevronRight className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                                <span>Your PDF is processed securely</span>
-                            </li>
-                            <li className="flex items-start gap-2">
-                                <ChevronRight className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                                <span>Files are deleted immediately after processing</span>
-                            </li>
-                            <li className="flex items-start gap-2">
-                                <ChevronRight className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                                <span>Supports PDFs up to 50MB</span>
-                            </li>
-                        </ul>
-                    </div>
+                <div className="rounded-2xl border border-border/40 bg-gradient-to-br from-primary/5 to-transparent p-5 space-y-3">
+                    <h4 className="font-semibold flex items-center gap-2">
+                        <Sparkles className="w-4 h-4 text-primary" />
+                        Tips
+                    </h4>
+                    <ul className="text-sm text-muted-foreground space-y-2">
+                        <li className="flex items-start gap-2">
+                            <ChevronRight className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                            <span>Rotate, watermark, protect, unlock, reorder, and delete pages run in one workspace</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                            <ChevronRight className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                            <span>Supports PDFs up to 25MB</span>
+                        </li>
+                    </ul>
                 </div>
             </div>
-        </motion.div>
-    );
+        </div>
+    </motion.div>
+);
 }
+
+

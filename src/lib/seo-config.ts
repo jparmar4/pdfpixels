@@ -143,7 +143,7 @@ export const faqData = [
   },
   {
     question: 'What is the upload limit?',
-    answer: 'You can upload images up to 100MB and PDF files up to 500MB. There are no limits on the number of files you can process daily.',
+    answer: 'Upload limits vary by tool. Most image workflows support up to 100MB, while PDF limits depend on the operation (for example, per-file and total limits on merge/compress). If a file exceeds limits, the tool will show the exact maximum.',
     keywords: ['file size limit', 'maximum upload', 'large image processing', 'file limits'],
   },
   {

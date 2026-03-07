@@ -1,146 +1,187 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { segmentForeground } from '@/lib/ai/pipelines/segmentation';
+import { applyBackgroundBlur, applyRegionBlur, applyTransparentBackground } from '@/lib/ai/pipelines/compositor';
+import { detectFaceRegions, type FaceMode } from '@/lib/ai/pipelines/face-detection';
+import { detectFaceRegionsONNX } from '@/lib/ai/pipelines/face-detection-onnx';
 
 const CACHE_HEADERS = {
-    'Cache-Control': 'no-store, max-age=0',
+  'Cache-Control': 'no-store, max-age=0',
 };
 
 export async function POST(request: NextRequest) {
-    try {
-        const formData = await request.formData();
-        const file = formData.get('image') as File;
-        const tool = formData.get('tool') as string || 'enhance-image';
+  try {
+    const formData = await request.formData();
+    const file = formData.get('image') as File;
+    const tool = (formData.get('tool') as string) || 'enhance-image';
+    const modeRaw = (formData.get('mode') as string) || 'balanced';
+    const mode: FaceMode = modeRaw === 'privacy-max' ? 'privacy-max' : modeRaw === 'high' ? 'high' : 'balanced';
+    const expectedFacesRaw = parseInt((formData.get('expectedFaces') as string) || '', 10);
+    const expectedFaces = Number.isFinite(expectedFacesRaw) && expectedFacesRaw > 0 ? Math.min(8, expectedFacesRaw) : null;
 
-        if (!file) {
-            return NextResponse.json(
-                { error: 'No image provided', success: false },
-                { status: 400, headers: CACHE_HEADERS }
-            );
-        }
-
-        // Check file size (max 20MB)
-        if (file.size > 20 * 1024 * 1024) {
-            return NextResponse.json(
-                { error: 'File too large. Maximum size for processing is 20MB.', success: false },
-                { status: 400, headers: CACHE_HEADERS }
-            );
-        }
-
-        // Convert file to base64
-        const arrayBuffer = await file.arrayBuffer();
-        const base64Image = Buffer.from(arrayBuffer).toString('base64');
-        const mimeType = file.type || 'image/jpeg';
-
-        return await processWithSharp(base64Image, mimeType, tool);
-
-    } catch (error) {
-        console.error('Image processing error:', error);
-        return NextResponse.json(
-            { error: error instanceof Error ? error.message : 'Image processing failed', success: false },
-            { status: 500, headers: CACHE_HEADERS }
-        );
+    if (!file) {
+      return NextResponse.json({ error: 'No image provided', success: false }, { status: 400, headers: CACHE_HEADERS });
     }
-}
 
-// Local processing with Sharp
-async function processWithSharp(
-    base64Image: string,
-    mimeType: string,
-    tool: string
-): Promise<NextResponse> {
-    try {
-        const sharpModule = await import('sharp');
-        const sharp = sharpModule.default;
-        const buffer = Buffer.from(base64Image, 'base64');
-        let image = sharp(buffer, { failOn: 'none' });
+    if (file.size > 20 * 1024 * 1024) {
+      return NextResponse.json(
+        { error: 'File too large. Maximum size for processing is 20MB.', success: false },
+        { status: 400, headers: CACHE_HEADERS }
+      );
+    }
 
-        // Advanced tool-specific Sharp transformations
-        switch (tool) {
-            case 'remove-background':
-                // Basic thresholding attempts to isolate the subject. 
-                // For real background removal, a model or API like rembg is needed.
-                // We'll apply a high-contrast black/white mask representation here as an approximation.
-                const metaBg = await image.metadata();
+    const sharpModule = await import('sharp');
+    const sharp = sharpModule.default;
+    const input = Buffer.from(await file.arrayBuffer());
+    const base = sharp(input, { failOn: 'none' });
 
-                // Extract alpha if it exists, otherwise create a pseudo-alpha based on lightness
-                const hasAlpha = metaBg.hasAlpha;
-                if (!hasAlpha) {
-                    // This is a basic fallback to make the whitest parts transparent (assuming white background)
-                    const { data, info } = await image.ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+    let out: Buffer;
+    let engine = 'sharp-basic-v1';
 
-                    // Simple white thresholding (white -> transparent)
-                    for (let i = 0; i < data.length; i += 4) {
-                        const r = data[i];
-                        const g = data[i + 1];
-                        const b = data[i + 2];
+    switch (tool) {
+      case 'remove-background': {
+        const seg = await segmentForeground(sharp, input);
+        out = await applyTransparentBackground(sharp, seg.image, seg.softFgMask);
+        engine = `${seg.engine}:${mode}`;
+        break;
+      }
 
-                        // If color is very white, make it transparent
-                        if (r > 240 && g > 240 && b > 240) {
-                            data[i + 3] = 0; // Set alpha to 0
-                        }
-                    }
+      case 'blur-background': {
+        const seg = await segmentForeground(sharp, input);
+        const sigma = mode === 'privacy-max' ? 26 : mode === 'high' ? 20 : 16;
+        out = await applyBackgroundBlur(sharp, seg.image, seg.softFgMask, sigma);
+        engine = `${seg.engine}:${mode}`;
+        break;
+      }
 
-                    image = sharp(data, {
-                        raw: {
-                            width: info.width,
-                            height: info.height,
-                            channels: 4
-                        }
-                    });
-                }
-                break;
+      case 'blur-face': {
+        const { data, info } = await base.ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+        const image = { data, width: info.width, height: info.height };
 
-            case 'enhance-image':
-                // Increase contrast, saturation, and sharpen the image
-                image = image
-                    .sharpen({ sigma: 1.5, m1: 1, m2: 2, x1: 2, y2: 10, y3: 20 })
-                    .modulate({ brightness: 1.05, saturation: 1.25 })
-                    .normalize();
-                break;
+        const onnx = await detectFaceRegionsONNX(image, mode);
+        const faces = onnx && onnx.regions.length > 0 ? onnx : await detectFaceRegions(sharp, image, mode);
 
-            case 'blur-face':
-            case 'blur-background':
-                // Deep blur for privacy or bokeh effect
-                image = image.blur(15);
-                break;
+        let regions = faces.regions;
 
-            case 'beautify':
-            case 'retouch':
-                // Softening skin (blur) combined with brightening and slight sharpening of edges
-                image = image
-                    .blur(1.5) // Soften
-                    .sharpen({ sigma: 0.8, m1: 0, m2: 1 }) // Edge detail recovery
-                    .modulate({ brightness: 1.08, saturation: 1.1 })
-                    .normalize();
-                break;
+        // Hard rule for group reliability:
+        // in high/privacy mode, if fewer than 3 faces detected, force 3 face slots.
+        if (!expectedFaces && (mode === 'high' || mode === 'privacy-max') && regions.length < 3) {
+          const base = regions[0];
+          const fw = base?.width ?? Math.round(image.width * 0.16);
+          const fh = base?.height ?? Math.round(fw * 1.22);
+          const y = base?.top ?? Math.round(image.height * 0.18);
 
-            case 'upscale':
-                const meta = await image.metadata();
-                // 2x upscale with highest quality lanczos3 filter
-                image = image.resize({
-                    width: (meta.width || 800) * 2,
-                    height: (meta.height || 600) * 2,
-                    kernel: sharp.kernel.lanczos3,
-                    fastShrinkOnLoad: false
-                }).sharpen({ sigma: 1.2 }); // Light sharpen after upscale to reduce blur
-                break;
+          const centers = [0.18, 0.5, 0.82].map((p) => Math.round(image.width * p));
+          regions = centers.map((centerX) => {
+            const left = Math.max(0, Math.min(image.width - 1, centerX - Math.round(fw / 2)));
+            return {
+              left,
+              top: Math.max(0, Math.min(image.height - 1, y)),
+              width: Math.max(1, Math.min(fw, image.width - left)),
+              height: Math.max(1, Math.min(fh, image.height - Math.max(0, Math.min(image.height - 1, y)))),
+            };
+          });
         }
 
-        // Always output as PNG to support transparency and maintain quality
-        const outputBuffer = await image.png({ quality: 100 }).toBuffer();
-        const outputBase64 = outputBuffer.toString('base64');
+        if (expectedFaces && regions.length < expectedFaces) {
+          const fw = Math.round(image.width * 0.16);
+          const fh = Math.round(fw * 1.22);
+          const y = Math.round(image.height * 0.18);
+          const step = image.width / expectedFaces;
+          const forced = Array.from({ length: expectedFaces }).map((_, i) => {
+            const centerX = Math.round(step * i + step / 2);
+            const left = Math.max(0, Math.min(image.width - 1, centerX - Math.round(fw / 2)));
+            return {
+              left,
+              top: y,
+              width: Math.max(1, Math.min(fw, image.width - left)),
+              height: Math.max(1, Math.min(fh, image.height - y)),
+            };
+          });
+          regions = forced;
+        }
 
-        return NextResponse.json({
-            success: true,
-            imageUrl: `data:image/png;base64,${outputBase64}`,
-            tool,
-            fallback: true,
-        }, { headers: CACHE_HEADERS });
+        const sigma = mode === 'privacy-max' ? 34 : mode === 'high' ? 28 : 24;
+        out = await applyRegionBlur(sharp, image, regions, sigma);
 
-    } catch (error) {
-        console.error('Sharp processing error:', error);
-        return NextResponse.json(
-            { error: 'Image processing failed. Please try a different image.', success: false },
-            { status: 500, headers: CACHE_HEADERS }
-        );
+        if (mode === 'privacy-max') {
+          const bandTop = Math.floor(info.height * 0.02);
+          const bandHeight = Math.floor(info.height * 0.9);
+          const band = await sharp(out)
+            .ensureAlpha()
+            .extract({ left: 0, top: bandTop, width: info.width, height: Math.max(1, Math.min(bandHeight, info.height - bandTop)) })
+            .blur(24)
+            .png()
+            .toBuffer();
+
+          out = await sharp(out)
+            .ensureAlpha()
+            .composite([{ input: band, left: 0, top: bandTop }])
+            .png()
+            .toBuffer();
+
+          engine = `${faces.engine}+band-guard${expectedFaces ? `+expected-${expectedFaces}` : ''}`;
+        } else {
+          engine = `${faces.engine}${expectedFaces ? `+expected-${expectedFaces}` : ''}`;
+        }
+        break;
+      }
+
+      case 'enhance-image': {
+        out = await base
+          .sharpen({ sigma: 1.5, m1: 1, m2: 2, x1: 2, y2: 10, y3: 20 })
+          .modulate({ brightness: 1.05, saturation: 1.2 })
+          .normalize()
+          .png({ quality: 100 })
+          .toBuffer();
+        break;
+      }
+
+      case 'beautify':
+      case 'retouch': {
+        out = await base
+          .blur(1.2)
+          .sharpen({ sigma: 0.8, m1: 0, m2: 1 })
+          .modulate({ brightness: 1.06, saturation: 1.08 })
+          .normalize()
+          .png({ quality: 100 })
+          .toBuffer();
+        break;
+      }
+
+      case 'upscale': {
+        const meta = await base.metadata();
+        out = await base
+          .resize({
+            width: (meta.width || 800) * 2,
+            height: (meta.height || 600) * 2,
+            kernel: sharp.kernel.lanczos3,
+            fastShrinkOnLoad: false,
+          })
+          .sharpen({ sigma: 1.2 })
+          .png({ quality: 100 })
+          .toBuffer();
+        break;
+      }
+
+      default: {
+        out = await base.png({ quality: 100 }).toBuffer();
+      }
     }
+
+    return NextResponse.json(
+      {
+        success: true,
+        imageUrl: `data:image/png;base64,${out.toString('base64')}`,
+        tool,
+        engine,
+      },
+      { headers: CACHE_HEADERS }
+    );
+  } catch (error) {
+    console.error('AI route error:', error);
+    return NextResponse.json(
+      { error: 'Image processing failed. Please try a different image.', success: false },
+      { status: 500, headers: CACHE_HEADERS }
+    );
+  }
 }

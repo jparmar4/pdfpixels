@@ -1,14 +1,16 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { Download, RotateCcw, Merge, FileText, Plus, X, ChevronDown, ChevronUp, Trash2, GripVertical, Sparkles, ChevronRight } from 'lucide-react';
+import { Download, RotateCcw, Merge, FileText, Plus, ChevronDown, ChevronUp, Trash2, GripVertical, Sparkles, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAppStore } from '@/store/app-store';
 import { ToolPageHeader } from './tool-page-header';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
+import { useReducedMotion } from 'framer-motion';
 import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
+import { ToolLimitNotice } from './tool-limit-notice';
+import { ResultCard } from './result-card';
 
 interface PDFFile {
   file: File;
@@ -18,10 +20,13 @@ interface PDFFile {
 }
 
 export function PDFMergeWorkspace() {
-  const { activeTool, isProcessing, setIsProcessing, setProgress, reset } = useAppStore();
+  const { activeTool, isProcessing, progress, setIsProcessing, setProgress, reset } = useAppStore();
 
   const [files, setFiles] = useState<PDFFile[]>([]);
   const [result, setResult] = useState<{ pdfUrl: string; fileName: string; pageCount: number } | null>(null);
+  const [statusLabel, setStatusLabel] = useState<'Idle' | 'Uploading' | 'Processing' | 'Finalizing'>('Idle');
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const prefersReducedMotion = useReducedMotion();
 
   const handleFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFiles = e.target.files;
@@ -77,6 +82,7 @@ export function PDFMergeWorkspace() {
     }
 
     setIsProcessing(true);
+    setStatusLabel('Uploading');
     setProgress(0);
 
     const formData = new FormData();
@@ -86,6 +92,7 @@ export function PDFMergeWorkspace() {
 
     try {
       const progressInterval = setInterval(() => {
+        setStatusLabel('Processing');
         setProgress((prev) => Math.min(prev + 8, 90));
       }, 150);
 
@@ -95,23 +102,37 @@ export function PDFMergeWorkspace() {
       });
 
       clearInterval(progressInterval);
+      setStatusLabel('Finalizing');
       setProgress(100);
 
       if (!response.ok) {
-        throw new Error('Processing failed');
+        let message = 'Processing failed';
+        try {
+          const err = await response.json();
+          message = err?.error || message;
+        } catch {}
+        throw new Error(message);
       }
 
-      const data = await response.json();
+      const blob = await response.blob();
+      const pdfUrl = URL.createObjectURL(blob);
+      const disposition = response.headers.get('content-disposition') || '';
+      const fileNameMatch = disposition.match(/filename=\"?([^\";]+)\"?/i);
+      const fileName = fileNameMatch?.[1] || `merged-${Date.now()}.pdf`;
+
+      const pageCount = Number(response.headers.get('x-page-count') || 0);
+
       setResult({
-        pdfUrl: data.pdfUrl,
-        fileName: data.fileName,
-        pageCount: data.pageCount,
+        pdfUrl,
+        fileName,
+        pageCount,
       });
-      toast.success(`Merged ${files.length} PDFs into ${data.pageCount} pages!`);
-    } catch {
-      toast.error('Failed to merge PDFs. Please try again.');
+      toast.success(`Merged ${files.length} PDFs into ${pageCount || 'multiple'} pages!`);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Failed to merge PDFs. Please try again.');
     } finally {
       setIsProcessing(false);
+      setStatusLabel('Idle');
     }
   }, [files, setIsProcessing, setProgress]);
 
@@ -125,12 +146,15 @@ export function PDFMergeWorkspace() {
   }, [result]);
 
   const handleReset = useCallback(() => {
+    if (result?.pdfUrl) {
+      URL.revokeObjectURL(result.pdfUrl);
+    }
     reset();
     window.history.pushState({}, '', window.location.pathname);
     window.scrollTo({ top: 0, behavior: 'smooth' });
     setFiles([]);
     setResult(null);
-  }, [reset]);
+  }, [reset, result]);
 
   const formatSize = (bytes: number) => {
     if (bytes < 1024) return bytes + ' B';
@@ -144,6 +168,7 @@ export function PDFMergeWorkspace() {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
+      aria-busy={isProcessing}
       className="container mx-auto px-4 lg:px-8 py-8"
     >
       <ToolPageHeader
@@ -168,9 +193,19 @@ export function PDFMergeWorkspace() {
           <motion.div
             onDragOver={(e) => e.preventDefault()}
             onDrop={handleDrop}
-            className="drop-zone relative flex flex-col items-center justify-center p-8 rounded-2xl cursor-pointer"
+            role="button"
+            tabIndex={0}
+            aria-label="Add PDF files"
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                fileInputRef.current?.click();
+              }
+            }}
+            className="drop-zone relative flex flex-col items-center justify-center p-8 rounded-2xl cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
           >
             <input
+              ref={fileInputRef}
               type="file"
               accept=".pdf"
               multiple
@@ -182,13 +217,15 @@ export function PDFMergeWorkspace() {
               <Plus className="w-8 h-8 text-primary" />
             </div>
 
-            <p className="text-lg font-semibold">Add PDF Files</p>
+            <p className="text-lg font-semibold">Add PDF files</p>
             <p className="text-sm text-muted-foreground mt-1">
-              Drag & drop or click to select PDFs
+              Drag, drop, or click to choose files in merge order
             </p>
 
             <Badge variant="secondary" className="mt-3">PDF Only</Badge>
           </motion.div>
+
+          <ToolLimitNotice limits={['PDF only', '2–20 files per merge', 'Max 25MB per file', 'Max 100MB total']} />
 
           {/* File List */}
           {files.length > 0 && (
@@ -271,21 +308,18 @@ export function PDFMergeWorkspace() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
-                className="rounded-2xl border border-green-500/30 bg-green-500/5 p-6"
               >
-                <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 rounded-xl bg-green-500/10 flex items-center justify-center">
-                    <FileText className="w-7 h-7 text-green-500" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-green-600 dark:text-green-400">
-                      PDF Merged Successfully!
-                    </h3>
-                    <p className="text-sm text-muted-foreground">
-                      {result.pageCount} pages • Ready for download
-                    </p>
-                  </div>
-                </div>
+                <ResultCard
+                  title="PDF Merged Successfully"
+                  description="Your files have been combined in the selected order."
+                  primaryMeta={`${result.pageCount} page${result.pageCount === 1 ? '' : 's'}`}
+                  onDownload={handleDownload}
+                  downloadLabel="Download Merged PDF"
+                  nextActions={[
+                    { label: 'Compress PDF', href: '/tools/compress-pdf' },
+                    { label: 'Reorder Pages', href: '/tools/reorder-pdf-pages' },
+                  ]}
+                />
               </motion.div>
             )}
           </AnimatePresence>
@@ -315,8 +349,8 @@ export function PDFMergeWorkspace() {
                 </div>
               </div>
 
-              <p className="text-sm text-muted-foreground">
-                Drag files to reorder them. The merged PDF will combine files in the order shown.
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                Reorder files before merging. The final PDF follows the exact order shown above.
               </p>
 
               {/* Action Buttons */}
@@ -330,11 +364,11 @@ export function PDFMergeWorkspace() {
                   {isProcessing ? (
                     <>
                       <motion.div
-                        animate={{ rotate: 360 }}
-                        transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+                        animate={prefersReducedMotion ? undefined : { rotate: 360 }}
+                        transition={prefersReducedMotion ? undefined : { duration: 1, repeat: Infinity, ease: 'linear' }}
                         className="w-5 h-5 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full mr-3"
                       />
-                      Merging...
+                      {statusLabel}...
                     </>
                   ) : (
                     <>
@@ -343,6 +377,9 @@ export function PDFMergeWorkspace() {
                     </>
                   )}
                 </Button>
+                {isProcessing && (
+                  <p className="text-xs text-muted-foreground" role="status" aria-live="polite">{statusLabel} • {Math.round(progress)}%</p>
+                )}
 
                 <Button
                   variant="outline"
@@ -382,6 +419,18 @@ export function PDFMergeWorkspace() {
           </div>
         </div>
       </div>
+
+      {files.length >= 2 && !result && (
+        <div className="fixed bottom-0 inset-x-0 z-40 p-3 bg-background/95 backdrop-blur border-t border-border md:hidden">
+          <Button
+            className="w-full btn-premium h-11"
+            onClick={handleProcess}
+            disabled={isProcessing}
+          >
+            {isProcessing ? `${statusLabel} • ${Math.round(progress)}%` : `Merge ${files.length} PDFs`}
+          </Button>
+        </div>
+      )}
     </motion.div >
   );
 }

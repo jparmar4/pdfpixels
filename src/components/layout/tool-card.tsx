@@ -1,16 +1,18 @@
-'use client';
+﻿'use client';
 
+import Link from 'next/link';
 import { motion } from 'framer-motion';
+import { ArrowRight, Cpu, ShieldCheck, Sparkles } from 'lucide-react';
 import type { Tool } from '@/lib/tools-data';
 import { useAppStore } from '@/store/app-store';
 import { SpotlightCard } from '../ui/spotlight-card';
+import { normalizeDisplayText } from '@/lib/display-text';
 
 type ToolCardProps = {
   tool: Tool;
   index?: number;
 };
 
-// Map tool categories to color classes
 function getIconColorClass(toolId: string): string {
   const id = toolId.toLowerCase();
   if (id.includes('pdf-merge') || id.includes('pdf-split') || id.includes('pdf-compress') || id.includes('pdf-to') || id.includes('image-to-pdf')) {
@@ -34,75 +36,113 @@ function getIconColorClass(toolId: string): string {
   return 'icon-blue';
 }
 
+function getBadgeClasses(badge?: string) {
+  switch (badge) {
+    case 'AI':
+      return 'badge-ai';
+    case 'Popular':
+      return 'badge-popular';
+    case 'Secure':
+      return 'badge-secure';
+    case 'New':
+      return 'bg-sky-500/12 text-sky-600 dark:text-sky-400 border-sky-500/18';
+    default:
+      return 'bg-primary/10 text-primary border-primary/15';
+  }
+}
+
+function getProcessingMeta(tool: Tool) {
+  if (tool.processing === 'ai') {
+    return {
+      label: 'AI powered',
+      icon: Sparkles,
+      className: 'text-violet-600 dark:text-violet-300',
+    };
+  }
+
+  if (tool.processing === 'client') {
+    return {
+      label: 'Browser processing',
+      icon: ShieldCheck,
+      className: 'text-emerald-600 dark:text-emerald-300',
+    };
+  }
+
+  return {
+    label: 'Server optimized',
+    icon: Cpu,
+    className: 'text-sky-600 dark:text-sky-300',
+  };
+}
+
 export function ToolCard({ tool, index = 0 }: ToolCardProps) {
   const setActiveTool = useAppStore((state) => state.setActiveTool);
   const Icon = tool.icon;
   const iconColorClass = getIconColorClass(tool.id);
+  const processingMeta = getProcessingMeta(tool);
+  const ProcessingIcon = processingMeta.icon;
 
   const handleClick = () => {
     setActiveTool({
       id: tool.id,
-      name: tool.name,
-      description: tool.description,
+      name: normalizeDisplayText(tool.name),
+      description: normalizeDisplayText(tool.description),
     });
-    window.location.href = `/tools/${tool.slug}`;
-  };
-
-  const getBadgeClasses = (badge?: string) => {
-    switch (badge) {
-      case 'AI':
-        return 'badge-ai';
-      case 'Popular':
-        return 'badge-popular';
-      case 'Secure':
-        return 'badge-secure';
-      case 'New':
-        return 'bg-sky-500/12 text-sky-600 dark:text-sky-400 border-sky-500/18';
-      default:
-        return 'bg-primary/10 text-primary border-primary/15';
-    }
   };
 
   return (
-    <SpotlightCard className="h-full">
-      <motion.button
-        initial={{ opacity: 0, y: 14 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: index * 0.03, ease: [0.16, 1, 0.3, 1] }}
-        whileHover={{ scale: 1.015, y: -2 }}
-        whileTap={{ scale: 0.98 }}
-        onClick={handleClick}
-        className="group relative flex items-center gap-4 px-5 py-5 rounded-2xl bg-transparent text-left w-full h-full transition-all duration-300"
-      >
-        {/* Color-coded icon */}
-        <div className={`flex-shrink-0 w-12 h-12 rounded-xl ${iconColorClass} bg-secondary/80 flex items-center justify-center transition-all duration-300 group-hover:scale-110 shadow-sm glow-ring`}>
-          <Icon className="w-5 h-5 transition-transform duration-300 group-hover:scale-105" />
-        </div>
+    <motion.div
+      initial={{ opacity: 0, y: 14 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.45, delay: index * 0.03, ease: [0.16, 1, 0.3, 1] }}
+      whileHover={{ y: -3 }}
+      className="h-full"
+    >
+      <SpotlightCard className="h-full rounded-[1.65rem] border border-border/50 bg-background/70 backdrop-blur-xl card-shine">
+        <Link
+          href={`/tools/${tool.slug}`}
+          onClick={handleClick}
+          className="group relative flex h-full flex-col gap-5 rounded-[1.65rem] p-5 text-left transition-all duration-300"
+        >
+          <div className="flex items-start justify-between gap-3">
+            <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl ${iconColorClass} bg-secondary/80 shadow-sm glow-ring transition-all duration-300 group-hover:scale-105`}>
+              <Icon className="h-5 w-5 transition-transform duration-300 group-hover:scale-105" />
+            </div>
 
-        {/* Content */}
-        <div className="flex-1 min-w-0 py-0.5">
-          <div className="flex items-center gap-2 mb-1">
-            <h3 className="text-base font-bold text-foreground group-hover:text-primary transition-colors duration-200 tracking-tight">
-              {tool.name}
-            </h3>
-            {tool.badge && (
-              <span className={`text-[10px] font-bold px-2 py-0.5 rounded border ${getBadgeClasses(tool.badge)}`}>
-                {tool.badge}
-              </span>
-            )}
+            <div className="flex flex-wrap justify-end gap-2">
+              {tool.badge ? (
+                <span className={`rounded-full border px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.16em] ${getBadgeClasses(tool.badge)}`}>
+                  {tool.badge}
+                </span>
+              ) : null}
+              {tool.popular ? (
+                <span className="rounded-full border border-amber-500/20 bg-amber-500/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-amber-700 dark:text-amber-300">
+                  Top flow
+                </span>
+              ) : null}
+            </div>
           </div>
-          <p className="text-sm text-muted-foreground line-clamp-1 leading-relaxed font-medium">
-            {tool.description}
-          </p>
-        </div>
 
-        {/* Arrow indicator */}
-        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/5 flex items-center justify-center opacity-0 -translate-x-3 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
-          <svg className="w-4 h-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-          </svg>
-        </div>
-      </motion.button>
-    </SpotlightCard>
+          <div className="space-y-2.5">
+            <h3 className="text-lg font-bold tracking-tight text-foreground transition-colors duration-200 group-hover:text-primary">
+              {normalizeDisplayText(tool.name)}
+            </h3>
+            <p className="line-clamp-2 text-sm font-medium leading-6 text-muted-foreground">
+              {normalizeDisplayText(tool.description)}
+            </p>
+          </div>
+
+          <div className="mt-auto flex items-center justify-between gap-3 border-t border-border/40 pt-4">
+            <div className={`inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.14em] ${processingMeta.className}`}>
+              <ProcessingIcon className="h-3.5 w-3.5" />
+              {processingMeta.label}
+            </div>
+            <div className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-border/60 bg-background/70 text-muted-foreground transition-all duration-300 group-hover:border-primary/40 group-hover:bg-primary/5 group-hover:text-primary">
+              <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" />
+            </div>
+          </div>
+        </Link>
+      </SpotlightCard>
+    </motion.div>
   );
 }

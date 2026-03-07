@@ -1244,8 +1244,8 @@ To find the right alternative, first understand what Adobe Acrobat Pro actually 
 | Compress PDF | [PdfPixels Compress PDF](/tools/compress-pdf) | Equivalent quality, browser-based |
 | Merge PDFs | [PdfPixels Merge PDF](/tools/merge-pdf) | Drag-and-drop, unlimited files |
 | Split PDF | [PdfPixels Split PDF](/tools/split-pdf) | Extract specific pages easily |
-| Password protect PDF | [PdfPixels Protect PDF](/tools/protect-pdf) | Temporarily unavailable while encryption support is finalized |
-| Remove password | [PdfPixels Unlock PDF](/tools/unlock-pdf) | Temporarily unavailable while decryption support is finalized |
+| Password protect PDF | [PdfPixels Protect PDF](/tools/protect-pdf) | Password-based PDF encryption for secure sharing |
+| Remove password | [PdfPixels Unlock PDF](/tools/unlock-pdf) | Remove a known password and download an unlocked copy |
 | Add watermark | [PdfPixels Watermark PDF](/tools/watermark-pdf) | Text and image watermarks |
 | Convert PDF to JPG | [PdfPixels PDF to Image](/tools/pdf-to-image) | High-quality extraction |
 | Convert JPG to PDF | [PdfPixels Image to PDF](/tools/image-to-pdf) | Multiple images to one PDF |
@@ -1266,8 +1266,8 @@ The pattern is clear: for document manipulation tasks, free tools have closed th
 - Compress PDF: removes 40–90% of file size
 - Merge PDF: combine unlimited files
 - Split PDF: extract individual pages or ranges
-- Protect PDF: temporarily unavailable while encryption support is finalized
-- Unlock PDF: temporarily unavailable while decryption support is finalized
+- Protect PDF: add password-based encryption before sharing sensitive documents
+- Unlock PDF: remove a known password from files you already own
 - Add watermark, reorder pages, delete pages, rotate pages
 
 **Key advantages:**
@@ -1338,7 +1338,7 @@ Let me walk through the five most common PDF tasks people do and show you exactl
 
 **Adobe Acrobat way:** Tools → Protect → Encrypt with Password → set 256-bit AES encryption. Full-featured.
 
-**PdfPixels way:** The Protect PDF route is temporarily unavailable while true encryption support is being finalized.
+**PdfPixels way:** Protect PDF now creates a separate encrypted copy so you can secure files before sharing.
 
 **Verdict:** Equivalent security. PdfPixels wins on cost.
 
@@ -2404,7 +2404,7 @@ Compressing PDFs to 200KB is often just one step in a broader document workflow.
 
 - **[Rotate PDF](/tools/rotate-pdf)** — If your scanned document came out sideways (happens more often than you'd think), fix the orientation before compressing.
 - **[Delete PDF Pages](/tools/delete-pdf-pages)** — Remove individual unnecessary pages without splitting and rejoining.
-- **[Protect PDF](/tools/protect-pdf)** — Temporarily unavailable while encryption support is being finalized (check status before relying on password workflows).
+- **[Protect PDF](/tools/protect-pdf)** — Add password-based encryption before sharing confidential PDF files.
 - **[Compress Image](/tools/compress-image)** — If you're attaching images directly rather than embedding them in a PDF, this handles JPG, PNG, and WebP compression.
 
 ## Backlinks and External Resources

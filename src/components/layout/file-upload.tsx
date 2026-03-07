@@ -1,8 +1,17 @@
 'use client';
 
-import { useCallback, useState, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Upload, X, Image as ImageIcon, FileImage, CheckCircle, FileText } from 'lucide-react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import {
+  CheckCircle2,
+  FileText,
+  Image as ImageIcon,
+  ShieldCheck,
+  Sparkles,
+  Upload,
+  X,
+} from 'lucide-react';
+import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { useAppStore } from '@/store/app-store';
 import { Progress } from '@/components/ui/progress';
@@ -10,63 +19,130 @@ import { Badge } from '@/components/ui/badge';
 
 interface FileUploadProps {
   accept?: string;
+  maxSizeMb?: number;
 }
 
-export function FileUpload({ accept = 'image/*' }: FileUploadProps) {
-  const { uploadedFile, setUploadedFile, isProcessing, progress, processedImage } = useAppStore();
+function formatFileSize(bytes: number) {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
+}
+
+function getFileType(file: File) {
+  if (file.type === 'application/pdf') return 'PDF';
+  const type = file.type.split('/')[1]?.toUpperCase();
+  if (type === 'JPEG') return 'JPG';
+  return type || file.name.split('.').pop()?.toUpperCase() || 'FILE';
+}
+
+export function FileUpload({ accept = 'image/*', maxSizeMb = 25 }: FileUploadProps) {
+  const { uploadedFile, setUploadedFile, isProcessing, progress } = useAppStore();
   const [dragOver, setDragOver] = useState(false);
   const [imageInfo, setImageInfo] = useState<{ width: number; height: number } | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const previewUrlRef = useRef<string | null>(null);
 
-  // Get preview URL and image info from uploaded file
-  const previewUrl = uploadedFile ? URL.createObjectURL(uploadedFile) : null;
+  const acceptTokens = useMemo(() => accept.split(',').map((token) => token.trim()).filter(Boolean), [accept]);
+  const isImageAccept = acceptTokens.some((token) => token.includes('image/'));
+  const isPDFAccept = acceptTokens.some((token) => token.includes('pdf') || token === '.pdf');
   const isPDF = uploadedFile?.type === 'application/pdf' || uploadedFile?.name.toLowerCase().endsWith('.pdf');
+  const maxBytes = maxSizeMb * 1024 * 1024;
 
-  // Get image dimensions when file changes
-  const getImageInfo = useCallback((file: File) => {
-    if (file.type.startsWith('image/')) {
-      const img = new Image();
-      img.onload = () => {
-        setImageInfo({ width: img.width, height: img.height });
-      };
-      img.src = URL.createObjectURL(file);
-    } else {
-      setImageInfo(null);
-    }
+  useEffect(() => {
+    return () => {
+      if (previewUrlRef.current) {
+        URL.revokeObjectURL(previewUrlRef.current);
+      }
+    };
   }, []);
 
-  const handleDrop = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
+  useEffect(() => {
+    if (!uploadedFile && previewUrlRef.current) {
+      URL.revokeObjectURL(previewUrlRef.current);
+      previewUrlRef.current = null;
+    }
+  }, [uploadedFile]);
+
+  const getImageInfo = useCallback((file: File) => {
+    if (!file.type.startsWith('image/')) {
+      setImageInfo(null);
+      return;
+    }
+
+    const objectUrl = URL.createObjectURL(file);
+    const image = new Image();
+
+    image.onload = () => {
+      setImageInfo({ width: image.width, height: image.height });
+      URL.revokeObjectURL(objectUrl);
+    };
+
+    image.onerror = () => {
+      setImageInfo(null);
+      URL.revokeObjectURL(objectUrl);
+    };
+
+    image.src = objectUrl;
+  }, []);
+
+  const matchesAccept = useCallback(
+    (file: File) => acceptTokens.some((token) => {
+      if (token === 'image/*') return file.type.startsWith('image/');
+      if (token.startsWith('.')) return file.name.toLowerCase().endsWith(token.toLowerCase());
+      return file.type === token;
+    }),
+    [acceptTokens],
+  );
+
+  const acceptedLabels = [
+    isPDFAccept ? 'PDF' : null,
+    isImageAccept ? 'JPG' : null,
+    isImageAccept ? 'PNG' : null,
+    isImageAccept ? 'WebP' : null,
+  ].filter(Boolean) as string[];
+
+  const handleSelectedFile = useCallback((file: File | null) => {
+    if (!file) return;
+
+    if (!matchesAccept(file)) {
+      toast.error(`Unsupported file type. Accepted: ${acceptedLabels.join(', ') || accept}.`);
+      return;
+    }
+
+    if (file.size > maxBytes) {
+      toast.error(`File too large. Maximum size is ${maxSizeMb} MB.`);
+      return;
+    }
+
+    if (previewUrlRef.current) {
+      URL.revokeObjectURL(previewUrlRef.current);
+    }
+
+    const nextPreviewUrl = URL.createObjectURL(file);
+    previewUrlRef.current = nextPreviewUrl;
+    setPreviewUrl(nextPreviewUrl);
+    setUploadedFile(file);
+    getImageInfo(file);
+  }, [accept, acceptedLabels, getImageInfo, matchesAccept, maxBytes, maxSizeMb, setUploadedFile]);
+
+  const handleDrop = useCallback((event: React.DragEvent) => {
+    event.preventDefault();
     setDragOver(false);
+    handleSelectedFile(event.dataTransfer.files?.[0] ?? null);
+  }, [handleSelectedFile]);
 
-    const files = e.dataTransfer.files;
-    if (files.length > 0) {
-      const file = files[0];
-      // Basic validation based on accept
-      const acceptedTypes = accept.split(',').map(t => t.trim());
-      const isAccepted = acceptedTypes.some(type => {
-        if (type === 'image/*') return file.type.startsWith('image/');
-        if (type.startsWith('.')) return file.name.toLowerCase().endsWith(type.toLowerCase());
-        return file.type === type;
-      });
-
-      if (isAccepted) {
-        setUploadedFile(file);
-        getImageInfo(file);
-      }
-    }
-  }, [setUploadedFile, getImageInfo, accept]);
-
-  const handleFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (files && files.length > 0) {
-      const file = files[0];
-      setUploadedFile(file);
-      getImageInfo(file);
-    }
-  }, [setUploadedFile, getImageInfo]);
+  const handleFileSelect = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    handleSelectedFile(event.target.files?.[0] ?? null);
+  }, [handleSelectedFile]);
 
   const handleRemove = useCallback(() => {
+    if (previewUrlRef.current) {
+      URL.revokeObjectURL(previewUrlRef.current);
+      previewUrlRef.current = null;
+    }
+
+    setPreviewUrl(null);
     setUploadedFile(null);
     setImageInfo(null);
     if (inputRef.current) {
@@ -74,21 +150,8 @@ export function FileUpload({ accept = 'image/*' }: FileUploadProps) {
     }
   }, [setUploadedFile]);
 
-  const formatFileSize = (bytes: number) => {
-    if (bytes < 1024) return bytes + ' B';
-    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
-    return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
-  };
-
-  const getFileType = (file: File) => {
-    if (file.type === 'application/pdf') return 'PDF';
-    const type = file.type.split('/')[1]?.toUpperCase();
-    if (type === 'JPEG') return 'JPG';
-    return type || file.name.split('.').pop()?.toUpperCase() || 'FILE';
-  };
-
-  const isImageAccept = accept.includes('image/');
-  const isPDFAccept = accept.includes('.pdf') || accept.includes('pdf');
+  const uploadLabel = isPDFAccept && !isImageAccept ? 'Upload PDF' : 'Upload file';
+  const uploadHeading = isPDFAccept && !isImageAccept ? 'Drop your PDF here' : 'Drop your file here';
 
   return (
     <div className="space-y-4">
@@ -96,156 +159,206 @@ export function FileUpload({ accept = 'image/*' }: FileUploadProps) {
         {!uploadedFile ? (
           <motion.div
             key="dropzone"
-            initial={{ opacity: 0, scale: 0.98 }}
+            initial={{ opacity: 0, scale: 0.985 }}
             animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.98 }}
-            onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+            exit={{ opacity: 0, scale: 0.985 }}
+            onDragOver={(event) => {
+              event.preventDefault();
+              setDragOver(true);
+            }}
             onDragLeave={() => setDragOver(false)}
             onDrop={handleDrop}
-            className={`relative flex flex-col items-center justify-center p-8 md:p-16 rounded-[2rem] cursor-pointer overflow-hidden border-2 border-dashed transition-all duration-300
-              ${dragOver
-                ? 'border-primary bg-primary/5 shadow-2xl shadow-primary/20 scale-[1.02]'
-                : 'border-border/60 hover:border-primary/50 bg-card/40 hover:bg-card/60 backdrop-blur-xl shadow-lg'}`}
+            className={`relative overflow-hidden rounded-[2rem] border-2 border-dashed transition-all duration-300 ${dragOver
+              ? 'border-primary bg-primary/6 shadow-[0_18px_60px_-30px_rgba(59,130,246,0.45)]'
+              : 'border-border/60 bg-card/65 shadow-premium backdrop-blur-xl hover:border-primary/35 hover:bg-card/80'
+              }`}
           >
             <input
               ref={inputRef}
               type="file"
               accept={accept}
               onChange={handleFileSelect}
-              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-50"
+              className="absolute inset-0 z-20 h-full w-full cursor-pointer opacity-0"
             />
 
-            {/* Aurora Background Hint on Drag Over */}
-            <motion.div
-              animate={{
-                opacity: dragOver ? 1 : 0,
-              }}
-              className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 via-purple-500/10 to-pink-500/10 pointer-events-none"
-            />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(14,76,181,0.1),transparent_30%),radial-gradient(circle_at_bottom_right,rgba(14,165,170,0.08),transparent_28%),radial-gradient(circle_at_top_right,rgba(184,134,39,0.08),transparent_24%)] pointer-events-none" />
+            <div className="absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
 
-            <motion.div
-              animate={{ y: dragOver ? -8 : 0 }}
-              transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-              className="flex flex-col items-center gap-4 relative"
-            >
+            <div className="relative z-10 flex flex-col items-center px-6 py-10 text-center md:px-10 md:py-14">
               <motion.div
-                animate={{
-                  scale: dragOver ? 1.15 : 1,
-                  rotate: dragOver ? [0, -5, 5, 0] : 0,
-                  y: dragOver ? -10 : 0
-                }}
-                transition={{ duration: 0.4 }}
-                className={`w-24 h-24 rounded-3xl flex items-center justify-center shadow-xl transition-colors duration-300
-                  ${dragOver ? 'bg-gradient-to-br from-indigo-500 to-purple-600' : 'bg-gradient-to-br from-card to-muted border border-border/50 shadow-sm'}`}
+                animate={dragOver ? { y: -6, scale: 1.03 } : { y: 0, scale: 1 }}
+                transition={{ type: 'spring', stiffness: 260, damping: 18 }}
+                className={`mb-6 flex h-24 w-24 items-center justify-center rounded-[1.75rem] border shadow-lg ${dragOver
+                  ? 'border-primary/20 bg-gradient-to-br from-primary to-sky-500 text-white'
+                  : 'border-border/60 bg-background/80 text-primary'
+                  }`}
               >
-                {isPDFAccept && !isImageAccept ? (
-                  <FileText className={`w-10 h-10 ${dragOver ? 'text-white' : 'text-primary/70'}`} />
-                ) : (
-                  <Upload className={`w-10 h-10 ${dragOver ? 'text-white' : 'text-primary/70'}`} />
-                )}
+                {isPDFAccept && !isImageAccept ? <FileText className="h-10 w-10" /> : <Upload className="h-10 w-10" />}
               </motion.div>
 
-              <div className="text-center mt-2 z-10 pointer-events-none">
-                <p className="text-2xl font-bold tracking-tight text-foreground">
-                  {dragOver ? `Drop your ${isPDFAccept && !isImageAccept ? 'PDF' : 'file'} here` : `Drag & drop your ${isPDFAccept && !isImageAccept ? 'PDF' : 'file'}`}
+              <div className="space-y-3">
+                <h2 className="text-2xl font-bold tracking-tight text-foreground md:text-3xl">
+                  {dragOver ? uploadHeading : uploadLabel}
+                </h2>
+                <p className="max-w-2xl text-sm font-medium leading-6 text-muted-foreground md:text-base">
+                  Drag and drop from your device or click anywhere in this panel. The workflow is optimized for fast uploads, clean previews, and reliable output.
                 </p>
-                <p className="text-base text-muted-foreground mt-2 font-medium">
-                  or click to browse from your device
-                </p>
               </div>
 
-              <div className="flex items-center gap-3 text-sm font-medium text-muted-foreground z-10 pointer-events-none mt-2">
-                {isPDFAccept && <Badge variant="secondary" className="font-normal px-3 py-1 bg-background/50 backdrop-blur-sm">PDF</Badge>}
-                {isImageAccept && (
-                  <>
-                    <Badge variant="secondary" className="font-normal px-3 py-1 bg-background/50 backdrop-blur-sm">JPG</Badge>
-                    <Badge variant="secondary" className="font-normal px-3 py-1 bg-background/50 backdrop-blur-sm">PNG</Badge>
-                    <Badge variant="secondary" className="font-normal px-3 py-1 bg-background/50 backdrop-blur-sm">WebP</Badge>
-                  </>
-                )}
+              <div className="mt-6 flex flex-wrap items-center justify-center gap-2.5">
+                {acceptedLabels.map((label) => (
+                  <Badge key={label} variant="secondary" className="rounded-full border border-border/60 bg-background/80 px-3 py-1 font-medium">
+                    {label}
+                  </Badge>
+                ))}
+                <Badge variant="secondary" className="rounded-full border border-border/60 bg-background/80 px-3 py-1 font-medium">
+                  Max {maxSizeMb} MB
+                </Badge>
+                <Badge variant="secondary" className="rounded-full border border-border/60 bg-background/80 px-3 py-1 font-medium">
+                  Single file
+                </Badge>
               </div>
 
-              <div className="text-center mt-3 text-xs text-muted-foreground/90 font-medium z-10 pointer-events-none">
-                Private processing • No signup required • Temporary file handling
+              <div className="mt-6 grid gap-3 text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground sm:grid-cols-3">
+                <span className="inline-flex items-center justify-center gap-2 rounded-full border border-border/60 bg-background/75 px-3 py-1.5">
+                  <ShieldCheck className="h-3.5 w-3.5 text-emerald-500" />
+                  Private processing
+                </span>
+                <span className="inline-flex items-center justify-center gap-2 rounded-full border border-border/60 bg-background/75 px-3 py-1.5">
+                  <Sparkles className="h-3.5 w-3.5 text-primary" />
+                  No signup required
+                </span>
+                <span className="inline-flex items-center justify-center gap-2 rounded-full border border-border/60 bg-background/75 px-3 py-1.5">
+                  <CheckCircle2 className="h-3.5 w-3.5 text-sky-500" />
+                  Preview before export
+                </span>
               </div>
 
-              <Button size="lg" className="mt-6 gap-2 btn-premium rounded-xl px-10 py-6 font-bold z-10 pointer-events-none" type="button">
-                <Upload className="w-5 h-5 relative z-10" />
-                <span className="relative z-10">Select {isPDFAccept && !isImageAccept ? 'PDF' : 'File'}</span>
+              <Button size="lg" className="btn-premium mt-8 h-12 rounded-2xl px-8 font-bold pointer-events-none" type="button">
+                <Upload className="h-4 w-4" />
+                {uploadLabel}
               </Button>
-            </motion.div>
+            </div>
           </motion.div>
         ) : (
           <motion.div
             key="preview"
-            initial={{ opacity: 0, scale: 0.98 }}
+            initial={{ opacity: 0, scale: 0.985 }}
             animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.98 }}
-            className="relative w-full max-w-2xl mx-auto border-2 border-dashed border-primary/40 rounded-2xl p-4 md:p-8 flex items-center justify-center min-h-[300px] bg-card/30 backdrop-blur-sm"
+            exit={{ opacity: 0, scale: 0.985 }}
+            className="relative overflow-hidden rounded-[2rem] border border-border/60 bg-card/75 p-4 shadow-premium backdrop-blur-xl md:p-5"
           >
-            {/* Image/File Preview */}
-            <div className="relative inline-block max-w-full rounded-2xl shadow-lg border border-border/50 overflow-hidden bg-white dark:bg-card min-w-[200px]">
-              {isPDF ? (
-                <div className="flex flex-col items-center justify-center p-12 bg-muted/10">
-                  <FileText className="w-16 h-16 text-red-500 mb-2" />
-                  <div className="text-sm font-semibold max-w-[200px] truncate">{uploadedFile.name}</div>
-                </div>
-              ) : (
-                <img
-                  src={previewUrl || ''}
-                  alt="Preview"
-                  className="max-w-full max-h-[350px] object-contain"
-                />
-              )}
-
-              {/* Close Button Top Right */}
-              <button
-                onClick={handleRemove}
-                disabled={isProcessing}
-                className="absolute top-2 right-2 p-1.5 bg-white/90 dark:bg-card/90 hover:bg-destructive hover:text-white rounded-xl shadow-md border border-border/30 transition-all z-10"
-              >
-                <X className="w-4 h-4" />
-              </button>
-
-              {/* Change Button Top Left */}
-              <div className="absolute top-2 left-2 flex flex-col gap-1 z-10">
-                <button
-                  onClick={() => inputRef.current?.click()}
-                  disabled={isProcessing}
-                  className="px-2.5 py-1.5 bg-primary/90 hover:bg-primary text-white text-[10px] font-bold rounded-lg shadow-md flex items-center gap-1 transition-all backdrop-blur-sm"
-                >
-                  <Upload className="w-3 h-3" />
-                  Change
-                </button>
-              </div>
-
-              {/* Info Box Bottom — Premium Gradient */}
-              <div className="bg-gradient-to-r from-primary/85 to-violet-600/85 backdrop-blur-md text-white text-xs p-3 w-full">
-                <div className="font-bold truncate mb-1 text-[11px] tracking-wide">{uploadedFile.name}</div>
-                <div className="opacity-90 leading-tight font-medium">Size: {formatFileSize(uploadedFile.size)}</div>
-                {imageInfo && (
-                  <>
-                    <div className="opacity-90 leading-tight font-medium">Width: {imageInfo.width} PX</div>
-                    <div className="opacity-90 leading-tight font-medium">Height: {imageInfo.height} PX</div>
-                  </>
-                )}
-              </div>
-
-              {isProcessing && (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="absolute inset-0 bg-background/80 backdrop-blur-[2px] flex flex-col items-center justify-center gap-3 z-20"
-                >
-                  <motion.div
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-                    className="w-10 h-10 border-3 border-primary border-t-transparent rounded-full"
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(14,76,181,0.08),transparent_28%),radial-gradient(circle_at_bottom_right,rgba(14,165,170,0.08),transparent_28%),radial-gradient(circle_at_top_right,rgba(184,134,39,0.06),transparent_24%)] pointer-events-none" />
+            <div className="relative z-10 grid gap-4 lg:grid-cols-[minmax(0,1fr)_280px]">
+              <div className="relative flex min-h-[280px] items-center justify-center overflow-hidden rounded-[1.5rem] border border-border/50 bg-background/70 px-4 py-6">
+                {isPDF ? (
+                  <div className="flex flex-col items-center gap-3 text-center">
+                    <div className="flex h-20 w-20 items-center justify-center rounded-[1.4rem] bg-red-500/10 text-red-500">
+                      <FileText className="h-10 w-10" />
+                    </div>
+                    <div>
+                      <p className="max-w-xs truncate text-base font-semibold text-foreground">{uploadedFile.name}</p>
+                      <p className="text-sm text-muted-foreground">PDF ready for processing</p>
+                    </div>
+                  </div>
+                ) : previewUrl ? (
+                  <img
+                    src={previewUrl}
+                    alt="Preview"
+                    className="max-h-[360px] max-w-full rounded-2xl object-contain shadow-sm"
                   />
-                  <div className="text-xs font-medium">Processing...</div>
-                  <Progress value={progress} className="w-32 h-1.5" />
-                </motion.div>
-              )}
+                ) : (
+                  <div className="flex flex-col items-center gap-2 text-muted-foreground">
+                    <ImageIcon className="h-10 w-10" />
+                    <p className="text-sm font-medium">Preview unavailable</p>
+                  </div>
+                )}
+
+                {isProcessing ? (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="absolute inset-0 z-20 flex flex-col items-center justify-center gap-3 bg-background/84 backdrop-blur-sm"
+                  >
+                    <motion.div
+                      animate={{ rotate: 360 }}
+                      transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+                      className="h-10 w-10 rounded-full border-2 border-primary/25 border-t-primary"
+                    />
+                    <div className="space-y-1 text-center">
+                      <p className="text-sm font-semibold text-foreground">Processing file</p>
+                      <p className="text-xs text-muted-foreground">Preparing a high-quality result</p>
+                    </div>
+                    <Progress value={progress} className="h-1.5 w-40" />
+                  </motion.div>
+                ) : null}
+              </div>
+
+              <div className="flex flex-col gap-3 rounded-[1.5rem] border border-border/50 bg-background/75 p-4">
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Selected file</p>
+                    <p className="mt-1 line-clamp-2 text-sm font-semibold text-foreground">{uploadedFile.name}</p>
+                  </div>
+                  <Badge className="rounded-full bg-primary/10 text-primary hover:bg-primary/15">{getFileType(uploadedFile)}</Badge>
+                </div>
+
+                <div className="grid gap-3 rounded-2xl border border-border/50 bg-card/75 p-3 text-sm text-muted-foreground">
+                  <div className="flex items-center justify-between gap-3">
+                    <span>Size</span>
+                    <span className="font-semibold text-foreground">{formatFileSize(uploadedFile.size)}</span>
+                  </div>
+                  <div className="flex items-center justify-between gap-3">
+                    <span>Limit</span>
+                    <span className="font-semibold text-foreground">{maxSizeMb} MB</span>
+                  </div>
+                  {imageInfo ? (
+                    <>
+                      <div className="flex items-center justify-between gap-3">
+                        <span>Width</span>
+                        <span className="font-semibold text-foreground">{imageInfo.width}px</span>
+                      </div>
+                      <div className="flex items-center justify-between gap-3">
+                        <span>Height</span>
+                        <span className="font-semibold text-foreground">{imageInfo.height}px</span>
+                      </div>
+                    </>
+                  ) : null}
+                </div>
+
+                <div className="space-y-2 rounded-2xl border border-emerald-500/15 bg-emerald-500/5 p-3">
+                  <div className="flex items-center gap-2 text-sm font-semibold text-foreground">
+                    <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+                    Ready for processing
+                  </div>
+                  <p className="text-xs leading-5 text-muted-foreground">
+                    You can replace this file, keep editing settings, or start processing immediately.
+                  </p>
+                </div>
+
+                <div className="mt-auto flex flex-col gap-2 sm:flex-row lg:flex-col">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => inputRef.current?.click()}
+                    disabled={isProcessing}
+                    className="h-11 flex-1 rounded-2xl"
+                  >
+                    <Upload className="h-4 w-4" />
+                    Replace file
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    onClick={handleRemove}
+                    disabled={isProcessing}
+                    className="h-11 flex-1 rounded-2xl text-muted-foreground hover:text-destructive"
+                  >
+                    <X className="h-4 w-4" />
+                    Remove
+                  </Button>
+                </div>
+              </div>
             </div>
           </motion.div>
         )}
