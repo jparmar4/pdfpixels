@@ -7,6 +7,8 @@ import crypto from 'crypto'
 import { PDFDocument } from 'pdf-lib'
 
 export const runtime = 'nodejs'
+// Allow the function to run up to 60 seconds (requires Vercel Pro, fallback to 15s on Hobby)
+export const maxDuration = 60
 
 type CompressionLevel = 'extreme' | 'recommended' | 'less'
 
@@ -234,45 +236,56 @@ export async function POST(req: NextRequest) {
       remoteForm.append('file', new Blob([originalBuffer], { type: 'application/pdf' }), file.name || 'input.pdf')
       remoteForm.append('level', levelStr)
 
-      const remoteResp = await fetch(`${remoteUrl.replace(/\/$/, '')}/compress`, {
-        method: 'POST',
-        headers: { 'x-api-token': remoteToken },
-        body: remoteForm,
-      })
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 58_000);
 
-      if (remoteResp.ok) {
-        const ab = await remoteResp.arrayBuffer()
-        const out = Buffer.from(ab)
-        const savedPercent = toSavedPercent(originalBuffer.length, out.length)
+      try {
+        const remoteResp = await fetch(`${remoteUrl.replace(/\/$/, '')}/compress`, {
+          method: 'POST',
+          headers: { 'x-api-token': remoteToken },
+          body: remoteForm,
+          signal: controller.signal
+        })
+        clearTimeout(timeoutId);
 
-        if (!strict || savedPercent >= profile.minimumReduction * 100) {
-          return new Response(new Uint8Array(out), {
-            headers: {
-              'Content-Type': 'application/pdf',
-              'Content-Disposition': 'attachment; filename="compressed.pdf"',
-              'x-compress-engine': 'railway-gs',
-              'x-size-before': String(originalBuffer.length),
-              'x-size-after': String(out.length),
-              'x-saved-percent': String(savedPercent),
-            },
+        if (remoteResp.ok) {
+          const ab = await remoteResp.arrayBuffer()
+          const out = Buffer.from(ab)
+          const savedPercent = toSavedPercent(originalBuffer.length, out.length)
+
+          if (!strict || savedPercent >= profile.minimumReduction * 100) {
+            return new Response(new Uint8Array(out), {
+              headers: {
+                'Content-Type': 'application/pdf',
+                'Content-Disposition': 'attachment; filename="compressed.pdf"',
+                'x-compress-engine': 'railway-gs',
+                'x-size-before': String(originalBuffer.length),
+                'x-size-after': String(out.length),
+                'x-saved-percent': String(savedPercent),
+              },
+            })
+          }
+
+          return new Response(JSON.stringify({
+            error: savedPercent > 0
+              ? `Compression only reduced this PDF by ${savedPercent}%. It is likely already optimized.`
+              : 'Compression did not reduce this PDF in a meaningful way.',
+            before: originalBuffer.length,
+            after: out.length,
+            savedPercent,
+            engine: 'railway-gs',
+          }), {
+            status: 422,
+            headers: { 'Content-Type': 'application/json' },
           })
         }
 
-        return new Response(JSON.stringify({
-          error: savedPercent > 0
-            ? `Compression only reduced this PDF by ${savedPercent}%. It is likely already optimized.`
-            : 'Compression did not reduce this PDF in a meaningful way.',
-          before: originalBuffer.length,
-          after: out.length,
-          savedPercent,
-          engine: 'railway-gs',
-        }), {
-          status: 422,
-          headers: { 'Content-Type': 'application/json' },
-        })
+        console.error('Remote compressor failed:', await remoteResp.text())
+      } catch (remoteError) {
+        clearTimeout(timeoutId);
+        console.error('Remote compressor error or timeout:', remoteError);
+        // Fallthrough to local compression if remote fails or times out
       }
-
-      console.error('Remote compressor failed:', await remoteResp.text())
     }
 
     const tempDir = os.tmpdir()

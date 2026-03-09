@@ -57,7 +57,7 @@ app.post('/compress', upload.single('file'), async (req, res) => {
       const timeout = setTimeout(() => {
         gs.kill('SIGKILL');
         reject(new Error('Compression timed out'));
-      }, 45_000);
+      }, 110_000);
 
       gs.on('close', (code) => {
         clearTimeout(timeout);
