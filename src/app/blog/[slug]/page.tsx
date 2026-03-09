@@ -110,6 +110,7 @@ export default async function BlogPostPage({
             "@type": "Person",
             name: post.author,
             jobTitle: post.authorRole,
+            url: `${siteConfig.url}/about`,
         },
         publisher: {
             "@type": "Organization",
@@ -126,6 +127,10 @@ export default async function BlogPostPage({
         mainEntityOfPage: `${siteConfig.url}/blog/${slug}`,
         image: post.coverImage ? `${siteConfig.url}${post.coverImage}` : undefined,
         keywords: post.keywords.join(", "),
+        about: post.keywords.map(keyword => ({
+            "@type": "Thing",
+            name: keyword
+        })),
         articleSection: post.category,
         inLanguage: "en",
         wordCount: post.content.split(/\s+/).length,

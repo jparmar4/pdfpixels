@@ -169,6 +169,11 @@ export const organizationData = {
   logo: absoluteUrl('/icon-512.png'),
   description: 'Free online PDF and image processing platform with browser and server workflows.',
   foundingDate: '2024',
+  sameAs: [
+    'https://twitter.com/pdfpixels',
+    'https://www.linkedin.com/company/pdfpixels',
+    'https://www.youtube.com/@pdfpixels'
+  ],
   contactPoint: {
     type: 'CustomerService',
     availableLanguage: ['English'],

@@ -23,6 +23,7 @@ function KnowledgeGraphSchema() {
         },
         description: organizationData.description,
         foundingDate: organizationData.foundingDate,
+        sameAs: organizationData.sameAs,
         contactPoint: {
           '@type': 'ContactPoint',
           contactType: organizationData.contactPoint.contactType,
