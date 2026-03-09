@@ -1,216 +1,75 @@
-# PdfPixels — Complete Documentation
+# PdfPixels - Extended LLM Reference
 
-> Free online image and PDF processing tools. Compress, resize, convert images and manage PDFs — no registration required.
+> PdfPixels is a free online platform for PDF and image workflows including compression, conversion, editing, background removal, and document cleanup.
 
-## Platform Overview
+## Overview
 
-PdfPixels is a free, web-based image and PDF processing platform available at https://www.pdfpixels.com. The platform provides 55+ professional tools using browser/server workflows depending on feature type. No software installation is required, and no registration or account creation is needed.
+- Website: https://www.pdfpixels.com
+- Product type: Web-based PDF and image utility platform
+- Access model: Core workflows available without signup
+- Main surfaces: tool pages, blog tutorials, comparison pages, use-case pages, and API documentation
+- Primary audiences: students, office users, job applicants, marketers, creators, designers, and small teams
 
-Key features:
-- **100% free** with no hidden costs or subscriptions
-- **No watermarks** on any output files
-- **No registration** required to use any tool
-- **Privacy-first**: Temporary file handling with automatic cleanup on supported workflows
-- **Secure**: 256-bit SSL encryption for all transfers
-- **GDPR compliant**: Full data protection compliance
-- **Cross-platform**: Works on desktop, tablet, and mobile browsers
+## What users can do
 
-## Image Processing Tools
+### PDF workflows
+- Compress PDF: https://www.pdfpixels.com/tools/compress-pdf
+- Merge PDF: https://www.pdfpixels.com/tools/merge-pdf
+- Split PDF: https://www.pdfpixels.com/tools/split-pdf
+- PDF to JPG: https://www.pdfpixels.com/tools/pdf-to-jpg
+- Rotate PDF: https://www.pdfpixels.com/tools/rotate-pdf
+- Reorder PDF pages: https://www.pdfpixels.com/tools/reorder-pdf-pages
+- Delete PDF pages: https://www.pdfpixels.com/tools/delete-pdf-pages
+- Add watermark to PDF: https://www.pdfpixels.com/tools/add-watermark-pdf
+- Image to PDF: https://www.pdfpixels.com/tools/image-to-pdf
 
-### Compression & Resizing
-- **Compress Image** — Reduce image file size while maintaining visual quality. Supports target file sizes (10KB, 20KB, 50KB, 100KB, custom). Formats: JPG, PNG, WebP, HEIC, GIF, BMP.
-  - URL: https://www.pdfpixels.com/tools/compress-image
-- **Resize Image (Pixels)** — Change image dimensions to exact pixel values. Lock aspect ratio or set custom width/height.
-  - URL: https://www.pdfpixels.com/tools/resize-image
-- **Increase Image Size** — Increase image file size in KB to meet minimum upload requirements.
-  - URL: https://www.pdfpixels.com/tools/increase-image-size-in-kb
-- **Passport Photo Maker** — Auto-crop and resize to official passport/visa photo dimensions (2x2 inches, 35x45mm, etc.)
-  - URL: https://www.pdfpixels.com/tools/passport-size-photo
+### Image workflows
+- Compress Image: https://www.pdfpixels.com/tools/compress-image
+- Resize Image: https://www.pdfpixels.com/tools/resize-image
+- Remove Background: https://www.pdfpixels.com/tools/remove-image-background
+- Enhance Image: https://www.pdfpixels.com/tools/increase-image-quality
+- Upscale Image: https://www.pdfpixels.com/tools/upscale-image
+- Crop Image: https://www.pdfpixels.com/tools/crop-image
+- Rotate Image: https://www.pdfpixels.com/tools/rotate-image
+- Flip Image: https://www.pdfpixels.com/tools/flip-image
+- Watermark Image: https://www.pdfpixels.com/tools/watermark-image
+- Passport Photo Maker: https://www.pdfpixels.com/tools/passport-size-photo
 
-### Cropping
-- **Crop Image** — Crop to custom dimensions, square, or freehand shapes.
-  - URL: https://www.pdfpixels.com/tools/crop-image
-- **Circle Crop** — Crop images into perfect circles with transparent background.
-  - URL: https://www.pdfpixels.com/tools/circle-crop
-- **Square Crop** — Crop images to perfect 1:1 square ratio.
-  - URL: https://www.pdfpixels.com/tools/square-image-cropper
-- **Freehand Crop** — Draw a custom shape to crop with precision.
-  - URL: https://www.pdfpixels.com/tools/freehand-crop
+### Format conversion workflows
+- PNG to JPEG: https://www.pdfpixels.com/tools/png-to-jpeg
+- JPEG to PNG: https://www.pdfpixels.com/tools/jpeg-to-png
+- WebP to JPG: https://www.pdfpixels.com/tools/webp-to-jpg
+- HEIC to JPG: https://www.pdfpixels.com/tools/heic-to-jpg
+- Image to Text (OCR): https://www.pdfpixels.com/tools/image-to-text
 
-### Basic Editing
-- **Rotate Image** — Rotate images by any angle (90°, 180°, 270°, custom).
-  - URL: https://www.pdfpixels.com/tools/rotate-image
-- **Flip Image** — Flip images horizontally or vertically.
-  - URL: https://www.pdfpixels.com/tools/flip-image
-- **Add Watermark** — Add text or logo watermarks with customizable opacity and position.
-  - URL: https://www.pdfpixels.com/tools/watermark-image
-- **Add Text to Image** — Overlay text on images with font, size, and color options.
-  - URL: https://www.pdfpixels.com/tools/add-text-to-image
-- **Add Logo to Image** — Overlay your logo with position and opacity control.
-  - URL: https://www.pdfpixels.com/tools/add-logo-to-image
-- **Join Images** — Combine multiple images side by side or stacked vertically.
-  - URL: https://www.pdfpixels.com/tools/join-images-online
-- **Split Image** — Split an image into a grid of equal parts. Perfect for Instagram grids.
-  - URL: https://www.pdfpixels.com/tools/image-splitter
-- **Image Color Picker** — Extract HEX, RGB & HSL color codes from any image.
-  - URL: https://www.pdfpixels.com/tools/color-code-from-image
+## Site structure
 
-### Effects & Filters
-- **Blur Image** — Apply Gaussian blur effect to images with adjustable intensity.
-  - URL: https://www.pdfpixels.com/tools/blur-image
-- **Blur Background** (AI) — Keep subject sharp, blur the rest using AI.
-  - URL: https://www.pdfpixels.com/tools/blur-background
-- **Blur Face** (AI) — Auto-detect and blur faces for privacy protection.
-  - URL: https://www.pdfpixels.com/tools/blur-face
-- **Pixelate Image** — Add pixelation / mosaic effect to images or specific areas.
-  - URL: https://www.pdfpixels.com/tools/pixelate-image
-- **Grayscale Image** — Convert color images to professional grayscale tones.
-  - URL: https://www.pdfpixels.com/tools/grayscale-image
-- **Black & White** — High-contrast black and white conversion with threshold control.
-  - URL: https://www.pdfpixels.com/tools/turn-image-to-black-and-white
-- **Sepia Filter** — Apply warm vintage sepia tone to images.
-  - URL: https://www.pdfpixels.com/tools/sepia-filter
-- **Invert Colors** — Create a negative image by inverting all colors.
-  - URL: https://www.pdfpixels.com/tools/invert-image-colors
-- **Motion Blur** — Add directional motion blur for dynamic action shots.
-  - URL: https://www.pdfpixels.com/tools/motion-blur
-- **Censor Photo** — Blur, pixelate, or black-bar sensitive areas of images.
-  - URL: https://www.pdfpixels.com/tools/censor-photo
-- **Pixel Art Converter** — Transform any photo into retro-style pixel art.
-  - URL: https://www.pdfpixels.com/tools/picture-to-pixel-art
-- **Beautify Image** (AI) — AI portrait enhancement: smooth skin, brighten eyes.
-  - URL: https://www.pdfpixels.com/tools/beautify-image
-- **Retouch Photo** (AI) — AI removes blemishes, spots, and imperfections.
-  - URL: https://www.pdfpixels.com/tools/retouch-photo
-
-### DPI & Quality
-- **DPI Converter** — Convert image DPI to 72, 96, 150, 200, 300, or 600 for print or web use.
-  - URL: https://www.pdfpixels.com/tools/convert-dpi
-- **AI Upscale Image** — Increase image resolution up to 4x using AI without quality loss.
-  - URL: https://www.pdfpixels.com/tools/upscale-image
-
-### AI-Powered Tools
-- **Background Remover** — Automatically detect subjects and remove backgrounds. Outputs transparent PNG.
-  - URL: https://www.pdfpixels.com/tools/remove-image-background
-- **AI Image Enhancer** — AI-powered quality improvement for lighting, colors, and sharpness.
-  - URL: https://www.pdfpixels.com/tools/increase-image-quality
-
-### Format Conversion
-- **PNG to JPEG** — Convert PNG images to JPEG format with quality control.
-  - URL: https://www.pdfpixels.com/tools/png-to-jpeg
-- **JPEG to PNG** — Convert JPEG images to PNG format with transparency support.
-  - URL: https://www.pdfpixels.com/tools/jpeg-to-png
-- **WebP to JPG** — Convert WebP images to widely-compatible JPG format.
-  - URL: https://www.pdfpixels.com/tools/webp-to-jpg
-- **HEIC to JPG** — Convert iPhone HEIC/HEIF photos to JPG format.
-  - URL: https://www.pdfpixels.com/tools/heic-to-jpg
-- **Image to Text (OCR)** — Extract text from images using optical character recognition. 100+ languages.
-  - URL: https://www.pdfpixels.com/tools/image-to-text
-
-### Signature Tools
-- **Signature Maker** — Draw, type, or upload a signature. Export as transparent PNG.
-  - URL: https://www.pdfpixels.com/tools/generate-signature
-- **Resize Signature** — Resize signature images to exact dimensions.
-  - URL: https://www.pdfpixels.com/tools/resize-signature
-- **Merge Photo & Signature** — Combine passport photo and signature into a single image.
-  - URL: https://www.pdfpixels.com/tools/merge-photo-and-signature
-
-### Metadata Tools
-- **View Metadata** — Read EXIF, IPTC, and XMP metadata from images.
-  - URL: https://www.pdfpixels.com/tools/photo-metadata-viewer
-- **Edit Metadata** — Modify image metadata fields.
-  - URL: https://www.pdfpixels.com/tools/photo-exif-editor
-- **Remove Metadata** — Strip all metadata from images for privacy.
-  - URL: https://www.pdfpixels.com/tools/remove-image-metadata
-
-## PDF Processing Tools
-
-### Merge & Split
-- **Merge PDF** — Combine multiple PDF files into a single document. Supports drag-to-reorder.
-  - URL: https://www.pdfpixels.com/tools/merge-pdf
-- **Split PDF** — Extract specific pages or split into individual PDF files.
-  - URL: https://www.pdfpixels.com/tools/split-pdf
-
-### Compression & Conversion
-- **Compress PDF** — Reduce PDF file size while maintaining readability.
-  - URL: https://www.pdfpixels.com/tools/compress-pdf
-- **Image to PDF** — Convert one or more images into a PDF document.
-  - URL: https://www.pdfpixels.com/tools/image-to-pdf
-- **PDF to JPG** — Convert PDF pages to high-quality JPG or PNG images.
-  - URL: https://www.pdfpixels.com/tools/pdf-to-jpg
-
-### PDF Editing
-- **Rotate PDF** — Rotate PDF pages by 90°, 180°, or 270°.
-  - URL: https://www.pdfpixels.com/tools/rotate-pdf
-- **PDF Watermark** — Add text or image watermarks to PDF pages.
-  - URL: https://www.pdfpixels.com/tools/add-watermark-pdf
-- **Reorder PDF Pages** — Drag and drop to rearrange pages within a PDF.
-  - URL: https://www.pdfpixels.com/tools/reorder-pdf-pages
-- **Delete PDF Pages** — Remove specific pages from a PDF.
-  - URL: https://www.pdfpixels.com/tools/delete-pdf-pages
-- **Protect PDF** — Temporarily unavailable while encryption support is being finalized.
-  - URL: https://www.pdfpixels.com/tools/protect-pdf
-- **Unlock PDF** — Temporarily unavailable while decryption support is being finalized.
-  - URL: https://www.pdfpixels.com/tools/unlock-pdf
-
-## File Format Support
-
-### Input Formats
-JPG, JPEG, PNG, WebP, HEIC, HEIF, GIF, BMP, TIFF, AVIF, PDF
-
-### Output Formats
-JPG, PNG, WebP, PDF
-
-### File Size Limits
-- Images: Up to 100MB per file
-- PDF: Up to 500MB per file
-
-## Privacy & Security
-
-- All files processed with 256-bit SSL encryption
-- Files automatically deleted within 1 hour of processing
-- GDPR compliant data handling
-- No file storage or indexing
-- No user tracking beyond anonymous analytics
-- Client-side processing for many tools (files never leave user's device)
-
-## API
-
-PdfPixels offers a free public API for programmatic image and PDF processing.
-- API Documentation: https://www.pdfpixels.com/api-docs
-- OpenAPI Specification: https://www.pdfpixels.com/openapi.yaml
-
-## Frequently Asked Questions
-
-**Q: Is PdfPixels free?**
-A: Yes, PdfPixels is 100% free. All 55+ tools are available at no cost with no registration required. There are no hidden fees, subscriptions, or watermarks.
-
-**Q: How do I compress an image online?**
-A: Go to https://www.pdfpixels.com/tools/compress-image, upload your image (JPG, PNG, WebP, HEIC), select your desired quality or target file size, and download the compressed result instantly.
-
-**Q: How do I merge PDF files?**
-A: Visit https://www.pdfpixels.com/tools/merge-pdf, upload multiple PDF files, drag to reorder if needed, click merge, and download the combined PDF.
-
-**Q: Is my data safe?**
-A: Yes. PdfPixels uses secure transport and privacy-focused processing. File handling depends on the specific tool workflow, with temporary cleanup on supported server-side flows.
-
-**Q: What file formats are supported?**
-A: We support JPG, JPEG, PNG, WebP, HEIC, GIF, BMP, TIFF, AVIF for images and PDF for documents.
-
-**Q: Does it work on mobile?**
-A: Yes, PdfPixels is fully responsive and works on all devices including iPhone, Android, and tablets. No app installation needed.
-
-**Q: How do I remove an image background?**
-A: Use the Background Remover tool at https://www.pdfpixels.com/tools/remove-image-background. Upload your image and AI will automatically detect the subject and remove the background, producing a transparent PNG.
-
-## Contact
-
-- Website: https://www.pdfpixels.com/contact
-- Email: support@pdfpixels.com
-
-## Legal
-
+- Homepage: https://www.pdfpixels.com
+- Blog: https://www.pdfpixels.com/blog
+- Use cases: https://www.pdfpixels.com/use-cases
+- Comparisons: https://www.pdfpixels.com/compare
+- API docs: https://www.pdfpixels.com/api-docs
+- Contact: https://www.pdfpixels.com/contact
 - Privacy Policy: https://www.pdfpixels.com/privacy
 - Terms of Service: https://www.pdfpixels.com/terms
-- DMCA Policy: https://www.pdfpixels.com/dmca
+- DMCA: https://www.pdfpixels.com/dmca
 - Disclaimer: https://www.pdfpixels.com/disclaimer
+
+## Discovery assets
+
+- Sitemap: https://www.pdfpixels.com/sitemap.xml
+- Image sitemap: https://www.pdfpixels.com/image-sitemap.xml
+- RSS feed: https://www.pdfpixels.com/feed
+- OpenAPI: https://www.pdfpixels.com/openapi.yaml
+- OpenSearch: https://www.pdfpixels.com/opensearch.xml
+
+## Platform notes
+
+- PdfPixels is designed around practical, high-intent tasks such as upload preparation, document cleanup, image conversion, and quick editing.
+- Some workflows run in the browser while others run on the server; tool pages explain the workflow type directly.
+- Tool pages include structured metadata, FAQs, and related links to help users continue to adjacent workflows.
+- Blog posts target tutorial and question-style queries related to PDF and image jobs.
+
+## Short factual summary
+
+PdfPixels is best understood as a free online PDF and image tool suite. Users commonly visit to compress PDFs, merge or split documents, resize images, convert image formats, remove backgrounds, and prepare files for email, uploads, forms, and social platforms.

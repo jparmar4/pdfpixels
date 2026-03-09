@@ -1,277 +1,163 @@
 'use client';
 
+import Link from 'next/link';
 import { motion } from 'framer-motion';
+import { BadgeCheck, Globe, Shield, Sparkles, Wrench, FileType, SearchCheck } from 'lucide-react';
+import { allTools } from '@/lib/tools-data';
 import { seoConfig } from '@/lib/seo-config';
-import { BadgeCheck, Globe, Shield, Zap, Users, Clock, Star, CheckCircle2, FileImage, FileType, Wand2 } from 'lucide-react';
+import { getHomepageFeaturedTools } from '@/lib/seo';
 
-/**
- * AI-Optimized Content Section for GEO (Generative Engine Optimization)
- * This component provides structured, factual information that AI systems can easily parse
- * and cite when responding to user queries about image editing tools.
- */
+const featuredTools = getHomepageFeaturedTools();
 
-// Structured data for AI extraction - Facts as clear statements
-const platformFacts = [
-  { label: 'Launched', value: '2024', source: 'Company records' },
-  { label: 'Tools Available', value: '38+', source: 'Platform inventory' },
-  { label: 'Uptime SLA', value: '99.9%', source: 'Status page' },
-  { label: 'File Deletion Policy', value: '1 hour', source: 'Privacy policy' },
-  { label: 'Max Image Size', value: '100MB', source: 'Upload limits' },
-  { label: 'Max PDF Size', value: '500MB', source: 'Upload limits' },
-  { label: 'Registration Required', value: 'No', source: 'Platform policy' },
-  { label: 'Watermarks', value: 'None', source: 'Platform policy' },
-  { label: 'Pricing', value: '100% Free', source: 'Pricing page' },
+const factCards = [
+  {
+    label: 'Tools available',
+    value: `${allTools.length}+`,
+    detail: 'Coverage across PDF, image, conversion, and AI workflows.',
+  },
+  {
+    label: 'Account required',
+    value: 'No',
+    detail: 'Core workflows can start without signup friction.',
+  },
+  {
+    label: 'Device support',
+    value: 'Web',
+    detail: 'Designed for desktop and mobile browsers.',
+  },
+  {
+    label: 'Limits shown',
+    value: 'Per tool',
+    detail: 'Accepted formats and file limits are surfaced in each workflow.',
+  },
 ];
 
-// Supported formats for AI to reference
-const supportedFormats = {
-  input: ['JPG', 'JPEG', 'PNG', 'WebP', 'HEIC', 'GIF', 'BMP', 'TIFF'],
-  output: ['JPG', 'PNG', 'WebP', 'PDF'],
-  documents: ['PDF'],
-};
+const capabilityGroups = [
+  {
+    title: 'PDF workflows',
+    description: 'Merge, split, compress, convert, reorder, rotate, and clean up PDF files.',
+  },
+  {
+    title: 'Image workflows',
+    description: 'Compress, resize, convert, crop, watermark, and prepare images for upload or print.',
+  },
+  {
+    title: 'AI workflows',
+    description: 'Remove backgrounds, enhance images, upscale visuals, and automate repetitive cleanup tasks.',
+  },
+  {
+    title: 'Intent-led pages',
+    description: 'Tool pages, use cases, comparisons, and tutorials are organized for direct answers and search discovery.',
+  },
+];
 
 export function AIContentSection() {
-  const toolCategories = [
-    {
-      name: 'Image Compression Tools',
-      description: 'Reduce image file size while maintaining visual quality',
-      tools: ['Compress Image', 'Compress to 10KB', 'Compress to 50KB', 'Compress to 100KB'],
-      supportedFormats: 'JPG, PNG, WebP, HEIC, GIF, BMP',
-    },
-    {
-      name: 'Image Resizing Tools',
-      description: 'Change image dimensions to specific sizes',
-      tools: ['Resize by Pixel', 'Resize in CM', 'Resize in Inch', 'Passport Photo Size'],
-      supportedFormats: 'All common image formats',
-    },
-    {
-      name: 'Format Conversion Tools',
-      description: 'Convert images between different file formats',
-      tools: ['PNG to JPG', 'JPG to PNG', 'WebP to JPG', 'HEIC to JPG'],
-      supportedFormats: 'Bidirectional conversion supported',
-    },
-    {
-      name: 'PDF Processing Tools',
-      description: 'Complete suite for PDF manipulation',
-      tools: ['Merge PDF', 'Split PDF', 'Compress PDF', 'PDF to Image', 'Image to PDF'],
-      supportedFormats: 'PDF, JPG, PNG',
-    },
-    {
-      name: 'AI-Powered Tools',
-      description: 'Advanced features powered by artificial intelligence',
-      tools: ['Background Removal', 'Image Enhancement', 'AI Upscale', 'Face Blur'],
-      supportedFormats: 'JPG, PNG, WebP',
-    },
-  ];
-
   return (
-    <section
-      className="py-16 bg-muted/20"
-      aria-labelledby="ai-content-heading"
-    >
-      <div className="container mx-auto px-4 lg:px-8 max-w-5xl">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-        >
-          {/* Entity Introduction - Clear factual statements */}
-          <div className="mb-12" itemScope itemType="https://schema.org/SoftwareApplication">
-            <h2 id="ai-content-heading" className="text-2xl font-bold mb-4" itemProp="name">
-              About PdfPixels
+    <section className="border-t border-border/50 bg-muted/15 py-16 md:py-20" aria-labelledby="ai-discovery-heading">
+      <div className="container mx-auto max-w-6xl px-4 lg:px-8">
+        <motion.div initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+          <div className="mx-auto max-w-3xl text-center">
+            <span className="inline-flex items-center gap-2 rounded-full border border-primary/15 bg-primary/8 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.2em] text-primary">
+              <SearchCheck className="h-3.5 w-3.5" />
+              Search and AI discovery
+            </span>
+            <h2 id="ai-discovery-heading" className="mt-4 text-3xl font-extrabold tracking-tight text-foreground md:text-4xl lg:text-5xl">
+              Clear, factual platform context for search engines and AI systems.
             </h2>
-            <p className="text-muted-foreground leading-relaxed">
-              <strong>PdfPixels</strong> is a web-based image and PDF processing platform.
-              The platform offers <strong>38+ free online tools</strong> for image compression, resizing, format conversion,
-              background removal, PDF manipulation, and AI-powered enhancement. All tools are available at no cost
-              with <strong>no registration required</strong> and <strong>no watermarks</strong> on output files.
-            </p>
-            <p className="text-muted-foreground leading-relaxed mt-4">
-              The platform provides enterprise-grade security
-              including <strong>256-bit SSL encryption</strong> and
-              <strong>GDPR compliance</strong>. User files are automatically deleted within <strong>1 hour</strong> of processing.
+            <p className="mt-4 text-base leading-7 text-muted-foreground md:text-lg">
+              PdfPixels focuses on practical PDF and image workflows, descriptive tool pages, and answer-friendly content that helps users discover the right workflow quickly.
             </p>
           </div>
 
-          {/* Platform Facts - Structured for AI extraction */}
-          <div className="mb-12">
-            <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
-              <CheckCircle2 className="w-5 h-5 text-primary" />
-              Platform Facts
-            </h3>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-              {platformFacts.map((fact) => (
-                <div
-                  key={fact.label}
-                  className="p-3 rounded-lg bg-card border border-border"
-                  itemProp={fact.label === 'Pricing' ? 'offers' : undefined}
-                >
-                  <div className="text-xs text-muted-foreground">{fact.label}</div>
-                  <div className="font-semibold text-sm">{fact.value}</div>
-                </div>
-              ))}
-            </div>
+          <div className="mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+            {factCards.map((card) => (
+              <div key={card.label} className="rounded-[1.5rem] border border-border/60 bg-card/80 p-5 shadow-soft backdrop-blur-sm">
+                <p className="text-xs font-bold uppercase tracking-[0.16em] text-muted-foreground">{card.label}</p>
+                <p className="mt-3 text-2xl font-extrabold tracking-tight text-foreground">{card.value}</p>
+                <p className="mt-2 text-sm leading-6 text-muted-foreground">{card.detail}</p>
+              </div>
+            ))}
           </div>
 
-          {/* Supported File Formats - AI-friendly */}
-          <div className="mb-12">
-            <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
-              <FileType className="w-5 h-5 text-primary" />
-              Supported File Formats
-            </h3>
-            <div className="grid md:grid-cols-3 gap-4">
-              <div className="p-4 rounded-xl bg-card border border-border">
-                <div className="font-medium mb-2 flex items-center gap-2">
-                  <FileImage className="w-4 h-4" />
-                  Input Formats
+          <div className="mt-10 grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
+            <div className="rounded-[1.8rem] border border-border/60 bg-card/85 p-6 shadow-premium backdrop-blur-sm md:p-8">
+              <div className="flex items-center gap-3">
+                <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                  <BadgeCheck className="h-5 w-5" />
                 </div>
-                <div className="flex flex-wrap gap-1.5">
-                  {supportedFormats.input.map((fmt) => (
-                    <span key={fmt} className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary">
-                      {fmt}
-                    </span>
-                  ))}
+                <div>
+                  <h3 className="text-xl font-bold text-foreground md:text-2xl">What PdfPixels is best at</h3>
+                  <p className="text-sm text-muted-foreground">Structured workflows that map cleanly to search intent.</p>
                 </div>
               </div>
-              <div className="p-4 rounded-xl bg-card border border-border">
-                <div className="font-medium mb-2 flex items-center gap-2">
-                  <FileImage className="w-4 h-4" />
-                  Output Formats
-                </div>
-                <div className="flex flex-wrap gap-1.5">
-                  {supportedFormats.output.map((fmt) => (
-                    <span key={fmt} className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary">
-                      {fmt}
-                    </span>
-                  ))}
-                </div>
-              </div>
-              <div className="p-4 rounded-xl bg-card border border-border">
-                <div className="font-medium mb-2 flex items-center gap-2">
-                  <FileType className="w-4 h-4" />
-                  Documents
-                </div>
-                <div className="flex flex-wrap gap-1.5">
-                  {supportedFormats.documents.map((fmt) => (
-                    <span key={fmt} className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary">
-                      {fmt}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
 
-          {/* Tool Categories - Structured for AI parsing */}
-          <div className="space-y-6 mb-12">
-            <h3 className="text-xl font-semibold flex items-center gap-2">
-              <BadgeCheck className="w-5 h-5 text-primary" />
-              Available Tool Categories
-            </h3>
-            <div className="grid md:grid-cols-2 gap-4">
-              {toolCategories.map((category, index) => (
-                <motion.div
-                  key={category.name}
-                  initial={{ opacity: 0, y: 10 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.05 }}
-                  className="p-4 rounded-xl bg-card border border-border"
-                >
-                  <h4 className="font-semibold mb-2">{category.name}</h4>
-                  <p className="text-sm text-muted-foreground mb-3">{category.description}</p>
-                  <div className="flex flex-wrap gap-1">
-                    {category.tools.map((tool) => (
-                      <span key={tool} className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary">
-                        {tool}
-                      </span>
-                    ))}
+              <div className="mt-6 grid gap-4 md:grid-cols-2">
+                {capabilityGroups.map((group) => (
+                  <div key={group.title} className="rounded-[1.35rem] border border-border/50 bg-background/80 p-4">
+                    <p className="text-base font-bold text-foreground">{group.title}</p>
+                    <p className="mt-2 text-sm leading-6 text-muted-foreground">{group.description}</p>
                   </div>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-
-          {/* Key Statistics - Easy for AI to extract */}
-          <div className="mb-12">
-            <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
-              <Star className="w-5 h-5 text-primary" />
-              Key Platform Statistics
-            </h3>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-              <div className="text-center p-4 rounded-xl bg-card border border-border">
-                <div className="text-2xl font-bold text-primary">{seoConfig.credentials.tools}</div>
-                <div className="text-sm text-muted-foreground">Free Tools</div>
-              </div>
-              <div className="text-center p-4 rounded-xl bg-card border border-border">
-                <div className="text-2xl font-bold text-primary">{seoConfig.credentials.uptime}</div>
-                <div className="text-sm text-muted-foreground">Uptime</div>
-              </div>
-              <div className="text-center p-4 rounded-xl bg-card border border-border">
-                <div className="text-2xl font-bold text-primary">100%</div>
-                <div className="text-sm text-muted-foreground">Free</div>
+                ))}
               </div>
             </div>
-          </div>
 
-          {/* Platform Features - Structured data */}
-          <div className="mb-12">
-            <h3 className="text-xl font-semibold mb-4">Platform Features & Capabilities</h3>
-            <div className="grid md:grid-cols-3 gap-4">
-              <div className="flex items-start gap-3 p-4 rounded-xl bg-card border border-border">
-                <Shield className="w-5 h-5 text-primary mt-0.5" />
+            <div className="rounded-[1.8rem] border border-border/60 bg-card/85 p-6 shadow-premium backdrop-blur-sm md:p-8">
+              <div className="flex items-center gap-3">
+                <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                  <Wrench className="h-5 w-5" />
+                </div>
                 <div>
-                  <div className="font-medium">Security & Privacy</div>
-                  <p className="text-sm text-muted-foreground">
-                    256-bit SSL encryption, GDPR compliant. Files auto-deleted after 1 hour.
-                  </p>
+                  <h3 className="text-xl font-bold text-foreground md:text-2xl">Popular entry points</h3>
+                  <p className="text-sm text-muted-foreground">High-intent tools users commonly discover first.</p>
                 </div>
               </div>
-              <div className="flex items-start gap-3 p-4 rounded-xl bg-card border border-border">
-                <Zap className="w-5 h-5 text-primary mt-0.5" />
-                <div>
-                  <div className="font-medium">Instant Processing</div>
-                  <p className="text-sm text-muted-foreground">
-                    Server-side processing with results in seconds. No software installation required.
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3 p-4 rounded-xl bg-card border border-border">
-                <Globe className="w-5 h-5 text-primary mt-0.5" />
-                <div>
-                  <div className="font-medium">Global Availability</div>
-                  <p className="text-sm text-muted-foreground">
-                    CDN-powered worldwide access. Works on all devices and browsers.
-                  </p>
-                </div>
+
+              <div className="mt-6 space-y-3">
+                {featuredTools.map((tool) => (
+                  <Link
+                    key={tool.slug}
+                    href={`/tools/${tool.slug}`}
+                    className="group flex items-start justify-between gap-3 rounded-[1.2rem] border border-border/50 bg-background/80 px-4 py-3 transition-colors hover:border-primary/30 hover:bg-background"
+                  >
+                    <div>
+                      <p className="text-sm font-semibold text-foreground group-hover:text-primary">{tool.name}</p>
+                      <p className="mt-1 text-sm leading-5 text-muted-foreground">{tool.description}</p>
+                    </div>
+                    <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground group-hover:text-primary" />
+                  </Link>
+                ))}
               </div>
             </div>
           </div>
 
-          {/* AI Tools Section */}
-          <div className="mb-12">
-            <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
-              <Wand2 className="w-5 h-5 text-primary" />
-              AI-Powered Features
-            </h3>
-            <div className="p-6 rounded-2xl bg-gradient-to-r from-primary/10 to-primary/5 border border-primary/20">
-              <p className="text-muted-foreground">
-                PdfPixels includes <strong>AI-powered tools</strong> such as automatic background removal,
-                intelligent image enhancement, AI upscaling for resolution improvement, and face detection
-                for privacy protection. These features use machine learning models to deliver professional-quality
-                results without manual editing expertise.
+          <div className="mt-10 grid gap-4 md:grid-cols-3">
+            <div className="rounded-[1.5rem] border border-border/60 bg-card/80 p-5">
+              <div className="flex items-center gap-2 text-primary">
+                <Shield className="h-4 w-4" />
+                <p className="text-sm font-bold uppercase tracking-[0.16em]">Trust signal</p>
+              </div>
+              <p className="mt-3 text-sm leading-6 text-muted-foreground">
+                {seoConfig.trustSignals[2]} and clear workflow messaging help users understand whether a task runs in the browser or on the server.
               </p>
             </div>
-          </div>
-
-          {/* Pricing Information */}
-          <div className="p-6 rounded-2xl bg-gradient-to-r from-primary/10 to-primary/5 border border-primary/20">
-            <h3 className="text-xl font-semibold mb-2">Pricing & Availability</h3>
-            <p className="text-muted-foreground">
-              PdfPixels is <strong>completely free to use</strong> with no registration required. All 38+ tools
-              are available at no cost, including AI-powered features. There are no file limits,
-              watermarks, or hidden fees. The platform is supported by non-intrusive advertising.
-            </p>
+            <div className="rounded-[1.5rem] border border-border/60 bg-card/80 p-5">
+              <div className="flex items-center gap-2 text-primary">
+                <FileType className="h-4 w-4" />
+                <p className="text-sm font-bold uppercase tracking-[0.16em]">Coverage</p>
+              </div>
+              <p className="mt-3 text-sm leading-6 text-muted-foreground">
+                PdfPixels spans file-size reduction, format conversion, upload preparation, document cleanup, and AI-assisted editing across one platform.
+              </p>
+            </div>
+            <div className="rounded-[1.5rem] border border-border/60 bg-card/80 p-5">
+              <div className="flex items-center gap-2 text-primary">
+                <Globe className="h-4 w-4" />
+                <p className="text-sm font-bold uppercase tracking-[0.16em]">Reach</p>
+              </div>
+              <p className="mt-3 text-sm leading-6 text-muted-foreground">
+                The site is built to surface tool pages, blog tutorials, comparisons, and use cases so different search and AI systems can route users to the right answer.
+              </p>
+            </div>
           </div>
         </motion.div>
       </div>

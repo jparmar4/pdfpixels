@@ -1,18 +1,18 @@
 {
-  "name": "PdfPixels - Free Online Image & PDF Tools",
+  "name": "PdfPixels - Free Online PDF & Image Tools",
   "short_name": "PdfPixels",
-  "description": "Free online image and PDF tools. Compress, resize, convert, and edit images with AI-powered features. No signup required.",
+  "description": "Free online PDF and image tools for compression, conversion, editing, and AI-powered workflows.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#8B5CF6",
+  "theme_color": "#4f46e5",
   "orientation": "any",
   "scope": "/",
-  "lang": "en",
+  "lang": "en-US",
   "categories": [
     "productivity",
     "utilities",
-    "design",
+    "business",
     "photo"
   ],
   "icons": [
@@ -37,46 +37,46 @@
   ],
   "screenshots": [
     {
-      "src": "/og-image.png",
+      "src": "/opengraph-image",
       "sizes": "1200x630",
       "type": "image/png",
-      "label": "PdfPixels Homepage"
+      "label": "PdfPixels homepage"
     }
   ],
   "shortcuts": [
     {
       "name": "Compress Image",
       "short_name": "Compress",
-      "description": "Compress image file size",
+      "description": "Reduce image file size online",
       "url": "/tools/compress-image",
       "icons": [
         {
-          "src": "/logo.svg",
-          "sizes": "any"
-        }
-      ]
-    },
-    {
-      "name": "Resize Image",
-      "short_name": "Resize",
-      "description": "Resize image dimensions",
-      "url": "/tools/resize-image",
-      "icons": [
-        {
-          "src": "/logo.svg",
-          "sizes": "any"
+          "src": "/icon-192.png",
+          "sizes": "192x192"
         }
       ]
     },
     {
       "name": "Merge PDF",
       "short_name": "Merge PDF",
-      "description": "Combine multiple PDFs",
+      "description": "Combine PDF files online",
       "url": "/tools/merge-pdf",
       "icons": [
         {
-          "src": "/logo.svg",
-          "sizes": "any"
+          "src": "/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Remove Background",
+      "short_name": "Background",
+      "description": "Remove image backgrounds with AI",
+      "url": "/tools/remove-image-background",
+      "icons": [
+        {
+          "src": "/icon-192.png",
+          "sizes": "192x192"
         }
       ]
     }

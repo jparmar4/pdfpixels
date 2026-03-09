@@ -1,9 +1,10 @@
-﻿import { Metadata } from "next";
+import { Metadata } from "next";
 import Link from "next/link";
 import NextImage from "next/image";
 import Script from "next/script";
 import { getAllBlogPosts } from "@/config/blog";
 import { siteConfig } from "@/lib/seo-config";
+import { allTools } from "@/lib/tools-data";
 import { Navigation } from "@/components/layout/navigation";
 import { Footer } from "@/components/layout/footer";
 import { Clock, User, ArrowRight, BookOpen, Sparkles, CalendarDays } from "lucide-react";
@@ -256,7 +257,7 @@ export default function BlogPage() {
                                                         <CalendarDays className="w-3.5 h-3.5" />
                                                         {post.date}
                                                     </span>
-                                                    <span>•</span>
+                                                    <span>�</span>
                                                     <span className="flex items-center gap-1.5">
                                                         <Clock className="w-3.5 h-3.5" />
                                                         {post.readTime}
@@ -298,7 +299,7 @@ export default function BlogPage() {
                             Ready to <span className="gradient-text">Get Started</span>?
                         </h2>
                         <p className="text-lg md:text-xl text-muted-foreground font-medium mb-10 mx-auto leading-relaxed">
-                            Put these tips into action with our free suite of 38+ completely free image and PDF professional tools. No sign-ups required.
+                            Put these tips into action with our free suite of {allTools.length}+ image and PDF tools. No sign-ups required.
                         </p>
                         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                             <Link
@@ -317,4 +318,6 @@ export default function BlogPage() {
         </>
     );
 }
+
+
 

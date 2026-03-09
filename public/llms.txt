@@ -1,91 +1,48 @@
 # PdfPixels
 
-> Free online image and PDF processing tools. Compress, resize, convert images and manage PDFs — no registration required.
+> Free online PDF and image tools for compression, conversion, editing, and AI-assisted workflows.
 
 ## About
 
-PdfPixels is a free web-based platform offering 55+ professional tools for image and PDF processing. Tools use secure browser/server workflows depending on feature type, with no signup and no hidden fees. Many workflows support temporary file handling with automatic cleanup.
+PdfPixels is a browser-based platform for PDF and image tasks such as compressing PDFs, merging files, splitting documents, resizing images, converting formats, and removing backgrounds. Core workflows are available without signup.
 
-## Core Tools
+## Core Workflows
 
-### Image Tools
-- **Compress Image**: Reduce image file size (JPG, PNG, WebP, HEIC) while maintaining quality. Target specific sizes like 20KB, 50KB, 100KB.
-- **Resize Image**: Change image dimensions in pixels, centimeters, or inches with DPI control.
-- **PNG to JPEG**: Convert PNG images to JPEG format instantly.
-- **JPEG to PNG**: Convert JPEG images to PNG format with transparency support.
-- **WebP to JPG**: Convert WebP images to widely-compatible JPG format.
-- **HEIC to JPG**: Convert iPhone HEIC photos to JPG format.
-- **Background Remover** (AI): Automatically detect and remove image backgrounds using AI.
-- **AI Image Enhancer** (AI): Improve image quality, lighting, and colors with AI.
-- **AI Upscale Image** (AI): Increase resolution up to 4x with AI, no quality loss.
-- **Crop Image**: Crop images to custom, square, or circle shapes.
-- **Circle Crop**: Crop images into perfect circles with transparent background.
-- **Square Crop**: Crop images to 1:1 square ratio.
-- **Freehand Crop**: Draw custom shapes for precision cropping.
-- **Rotate Image**: Rotate images by any angle.
-- **Flip Image**: Mirror images horizontally or vertically.
-- **Add Watermark**: Add text or logo watermarks to images.
-- **Add Text to Image**: Overlay text with font, size, and color options.
-- **Add Logo to Image**: Overlay logos with position and opacity control.
-- **Join Images**: Combine multiple images side by side or stacked.
-- **Split Image**: Split images into grids (perfect for Instagram).
-- **Image Color Picker**: Extract HEX, RGB & HSL color codes from images.
-- **Blur Image**: Apply Gaussian blur effects.
-- **Blur Background** (AI): AI-powered background blur, keep subject sharp.
-- **Blur Face** (AI): Auto-detect and blur faces for privacy.
-- **Pixelate Image**: Add mosaic/pixelation effects.
-- **Grayscale Image**: Convert to grayscale tones.
-- **Black & White**: High-contrast black and white conversion.
-- **Sepia Filter**: Warm vintage sepia tone effect.
-- **Invert Colors**: Create negative images.
-- **Motion Blur**: Directional motion blur for action shots.
-- **Censor Photo**: Blur, pixelate, or black-bar sensitive areas.
-- **Pixel Art Converter**: Transform photos into retro pixel art.
-- **Beautify Image** (AI): AI portrait enhancement — smooth skin, brighten eyes.
-- **Retouch Photo** (AI): AI removes blemishes and imperfections.
-- **DPI Converter**: Convert image DPI for print or web use.
-- **Increase Image Size**: Increase file size to meet upload requirements.
-- **Passport Photo Maker**: Resize photos to official passport/visa dimensions.
-- **Image to Text (OCR)**: Extract text from images, 100+ languages.
-- **Signature Maker**: Draw, type, or upload signatures.
-- **Resize Signature**: Resize to exact dimensions for documents.
-- **Merge Photo & Signature**: Combine photo and signature in one image.
-- **View Metadata**: Read EXIF, IPTC, and XMP data from images.
-- **Edit Metadata**: Modify image metadata fields.
-- **Remove Metadata**: Strip all metadata for privacy.
-
-### PDF Tools
-- **Compress PDF**: Reduce PDF file size with adjustable compression.
+- **Compress Image**: Reduce JPG, PNG, WebP, and related image file sizes.
+- **Resize Image**: Change image dimensions in pixels, cm, or inches.
+- **Remove Background**: Use AI to isolate subjects and export transparent PNG files.
+- **Compress PDF**: Reduce PDF file size for upload and sharing.
 - **Merge PDF**: Combine multiple PDF files into one document.
-- **Split PDF**: Extract specific pages or split into individual files.
-- **PDF to JPG**: Convert PDF pages to high-quality images.
-- **Image to PDF**: Convert images to PDF documents.
-- **Rotate PDF**: Rotate PDF pages by 90°, 180°, or 270°.
-- **PDF Watermark**: Add text or image watermarks to PDF pages.
-- **Protect PDF**: Temporarily unavailable while encryption support is being finalized.
-- **Unlock PDF**: Temporarily unavailable while decryption support is being finalized.
-- **Reorder PDF Pages**: Drag and drop to rearrange pages.
-- **Delete PDF Pages**: Remove unwanted pages from PDFs.
+- **Split PDF**: Extract selected pages or split a PDF into separate files.
+- **Image to PDF**: Convert one or more images into a PDF.
+- **HEIC to JPG**: Convert iPhone HEIC photos to JPG online.
 
-## Technical Details
-- **URL**: https://www.pdfpixels.com
-- **Pricing**: 100% Free
-- **Registration**: Not required
-- **File Security**: Secure transport, GDPR-aware handling, and temporary cleanup on supported workflows
-- **Supported Input Formats**: JPG, JPEG, PNG, WebP, HEIC, GIF, BMP, TIFF, PDF
-- **Supported Output Formats**: JPG, PNG, WebP, PDF
-- **API Documentation**: https://www.pdfpixels.com/api-docs
+## Technical Notes
 
-## Links
+- **Website**: https://www.pdfpixels.com
+- **Pricing**: Core tools are free to use
+- **Signup**: Not required for core workflows
+- **Platform coverage**: PDF tools, image tools, AI workflows, tutorials, comparisons, and use cases
+- **API docs**: https://www.pdfpixels.com/api-docs
+- **RSS feed**: https://www.pdfpixels.com/feed
+- **Sitemaps**:
+  - https://www.pdfpixels.com/sitemap.xml
+  - https://www.pdfpixels.com/image-sitemap.xml
+
+## Key URLs
+
 - Homepage: https://www.pdfpixels.com
-- Compress Image: https://www.pdfpixels.com/tools/compress-image
-- Resize Image: https://www.pdfpixels.com/tools/resize-image
-- Merge PDF: https://www.pdfpixels.com/tools/merge-pdf
-- All Tools: https://www.pdfpixels.com
 - Blog: https://www.pdfpixels.com/blog
+- Compress Image: https://www.pdfpixels.com/tools/compress-image
+- Compress PDF: https://www.pdfpixels.com/tools/compress-pdf
+- Merge PDF: https://www.pdfpixels.com/tools/merge-pdf
+- Split PDF: https://www.pdfpixels.com/tools/split-pdf
+- Remove Background: https://www.pdfpixels.com/tools/remove-image-background
+- HEIC to JPG: https://www.pdfpixels.com/tools/heic-to-jpg
+- Contact: https://www.pdfpixels.com/contact
 - Privacy Policy: https://www.pdfpixels.com/privacy
 - Terms of Service: https://www.pdfpixels.com/terms
-- Contact: https://www.pdfpixels.com/contact
 
-## Full Documentation
-For comprehensive details, see: https://www.pdfpixels.com/llms-full.txt
+## Full Reference
+
+For a longer crawler-oriented summary, see: https://www.pdfpixels.com/llms-full.txt

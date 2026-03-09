@@ -1,0 +1,18 @@
+
+> nextjs_tailwind_shadcn_ts@0.2.0 dev
+> next dev
+
+▲ Next.js 16.1.5 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.29.69:3000
+- Environments: .env.local
+- Experiments (use with caution):
+  · optimizePackageImports
+
+✓ Starting...
+✓ Ready in 1756ms
+ GET / 200 in 2.0s (compile: 1634ms, render: 414ms)
+ GET / 200 in 180ms (compile: 5ms, render: 175ms)
+ GET / 200 in 173ms (compile: 4ms, render: 169ms)
+ GET / 200 in 175ms (compile: 3ms, render: 173ms)
+✓ Compiled in 110ms

@@ -1,123 +1,113 @@
 import { MetadataRoute } from 'next';
-import { allTools } from '@/lib/tools-data';
 import { getAllBlogPosts } from '@/config/blog';
-import { useCasePages } from '@/lib/use-cases';
 import { comparisonPages } from '@/lib/comparisons';
+import { absoluteUrl } from '@/lib/seo';
+import { allTools } from '@/lib/tools-data';
+import { useCasePages } from '@/lib/use-cases';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://www.pdfpixels.com';
   const now = new Date();
+  const blogPosts = getAllBlogPosts();
 
-  // Core pages — highest priority
   const corePages: MetadataRoute.Sitemap = [
     {
-      url: baseUrl,
+      url: absoluteUrl('/'),
       lastModified: now,
       changeFrequency: 'daily',
-      priority: 1.0,
+      priority: 1,
     },
     {
-      url: `${baseUrl}/about`,
+      url: absoluteUrl('/about'),
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    },
+    {
+      url: absoluteUrl('/blog'),
+      lastModified: blogPosts[0] ? new Date(blogPosts[0].date) : now,
+      changeFrequency: 'daily',
+      priority: 0.85,
+    },
+    {
+      url: absoluteUrl('/use-cases'),
+      lastModified: now,
+      changeFrequency: 'weekly',
+      priority: 0.78,
+    },
+    {
+      url: absoluteUrl('/compare'),
+      lastModified: now,
+      changeFrequency: 'weekly',
+      priority: 0.74,
+    },
+    {
+      url: absoluteUrl('/api-docs'),
       lastModified: now,
       changeFrequency: 'monthly',
       priority: 0.6,
     },
     {
-      url: `${baseUrl}/contact`,
+      url: absoluteUrl('/contact'),
       lastModified: now,
       changeFrequency: 'monthly',
-      priority: 0.5,
-    },
-    {
-      url: `${baseUrl}/api-docs`,
-      lastModified: now,
-      changeFrequency: 'monthly',
-      priority: 0.6,
+      priority: 0.55,
     },
   ];
 
-  // Legal pages
   const legalPages: MetadataRoute.Sitemap = [
     {
-      url: `${baseUrl}/privacy`,
+      url: absoluteUrl('/privacy'),
       lastModified: now,
       changeFrequency: 'yearly',
       priority: 0.3,
     },
     {
-      url: `${baseUrl}/terms`,
+      url: absoluteUrl('/terms'),
       lastModified: now,
       changeFrequency: 'yearly',
       priority: 0.3,
     },
     {
-      url: `${baseUrl}/disclaimer`,
+      url: absoluteUrl('/disclaimer'),
       lastModified: now,
       changeFrequency: 'yearly',
-      priority: 0.3,
+      priority: 0.25,
     },
     {
-      url: `${baseUrl}/dmca`,
+      url: absoluteUrl('/dmca'),
       lastModified: now,
       changeFrequency: 'yearly',
-      priority: 0.3,
+      priority: 0.25,
     },
   ];
 
-  // Tool pages — dynamically generated from tools-data
   const toolPages: MetadataRoute.Sitemap = allTools.map((tool) => ({
-    url: `${baseUrl}/tools/${tool.slug}`,
+    url: absoluteUrl(`/tools/${tool.slug}`),
     lastModified: now,
     changeFrequency: 'weekly' as const,
-    priority: (tool.popular || tool.isAI) ? 0.9 : 0.8,
+    priority: tool.popular || tool.isAI ? 0.9 : 0.8,
   }));
 
-  // Blog pages
-  const blogPosts = getAllBlogPosts();
-  const blogPages: MetadataRoute.Sitemap = [
-    {
-      url: `${baseUrl}/blog`,
-      lastModified: now,
-      changeFrequency: 'daily',
-      priority: 0.8,
-    },
-    ...blogPosts.map((post) => ({
-      url: `${baseUrl}/blog/${post.slug}`,
-      lastModified: now,
-      changeFrequency: 'weekly' as const,
-      priority: 0.7,
-    })),
-  ];
+  const blogPages: MetadataRoute.Sitemap = blogPosts.map((post) => ({
+    url: absoluteUrl(`/blog/${post.slug}`),
+    lastModified: Number.isNaN(Date.parse(post.date)) ? now : new Date(post.date),
+    changeFrequency: 'weekly' as const,
+    priority: 0.78,
+  }));
 
-  const useCaseEntries: MetadataRoute.Sitemap = [
-    {
-      url: `${baseUrl}/use-cases`,
-      lastModified: now,
-      changeFrequency: 'weekly',
-      priority: 0.75,
-    },
-    ...useCasePages.map((u) => ({
-      url: `${baseUrl}/use-cases/${u.slug}`,
-      lastModified: now,
-      changeFrequency: 'weekly' as const,
-      priority: 0.72,
-    })),
-  ];
+  const useCaseEntries: MetadataRoute.Sitemap = useCasePages.map((useCase) => ({
+    url: absoluteUrl(`/use-cases/${useCase.slug}`),
+    lastModified: now,
+    changeFrequency: 'weekly' as const,
+    priority: 0.72,
+  }));
 
-  const comparisonEntries: MetadataRoute.Sitemap = [
-    {
-      url: `${baseUrl}/compare`,
-      lastModified: now,
-      changeFrequency: 'weekly',
-      priority: 0.7,
-    },
-    ...comparisonPages.map((c) => ({
-      url: `${baseUrl}/compare/${c.slug}`,
-      lastModified: now,
-      changeFrequency: 'weekly' as const,
-      priority: 0.68,
-    })),
-  ];
+  const comparisonEntries: MetadataRoute.Sitemap = comparisonPages.map((comparison) => ({
+    url: absoluteUrl(`/compare/${comparison.slug}`),
+    lastModified: now,
+    changeFrequency: 'weekly' as const,
+    priority: 0.7,
+  }));
 
   return [...corePages, ...toolPages, ...useCaseEntries, ...comparisonEntries, ...blogPages, ...legalPages];
 }

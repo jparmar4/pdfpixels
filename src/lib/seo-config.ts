@@ -1,258 +1,201 @@
-// Comprehensive SEO Configuration for PdfPixels
-// Optimized for Search Engines (Google, Bing, Yandex) and AI Search (ChatGPT, Gemini, Perplexity, etc.)
+import { allTools } from '@/lib/tools-data';
+import { DEFAULT_OG_IMAGE_PATH, absoluteUrl } from '@/lib/seo';
+
+const toolCountLabel = `${allTools.length}+`;
 
 export const siteConfig = {
   name: 'PdfPixels',
-  url: 'https://www.pdfpixels.com',
-  ogImage: '/og-image.png',
+  url: absoluteUrl('/'),
+  ogImage: DEFAULT_OG_IMAGE_PATH,
   links: {
-    twitter: 'https://twitter.com/pdfpixels',
-    github: 'https://github.com/pdfpixels',
+    contact: absoluteUrl('/contact'),
+    blog: absoluteUrl('/blog'),
   },
   creator: 'PdfPixels Team',
-  publisher: 'PdfPixels Inc.',
+  publisher: 'PdfPixels',
 };
 
 export const seoConfig = {
-  // Core Site Information
-  siteName: 'PdfPixels - Free Online Image & PDF Tools',
-  tagline: 'Professional Image Editing Made Simple',
-  description: 'Free online image and PDF tools. Compress, resize, convert, and edit images with AI-powered features. No signup required, secure, and instant processing.',
-  longDescription: `PdfPixels is a free online platform for image and PDF processing. Our suite of professional tools includes image compression, resizing, format conversion, background removal, AI enhancement, PDF merging, splitting, and more. We focus on providing fast, secure, and easy-to-use tools with no registration required, no watermarks, and complete privacy protection.`,
-
-  // Keywords for SEO
+  siteName: 'PdfPixels',
+  tagline: 'Free online PDF and image tools',
+  description: 'Free online PDF and image tools for compression, conversion, editing, and AI-powered workflows. No signup required.',
+  longDescription: `PdfPixels is a free online workspace for PDF and image tasks such as compression, conversion, resizing, background removal, and document cleanup. The platform is built around fast, privacy-aware workflows, practical tool pages, and clear guidance for users who need dependable results without signup friction.`,
   primaryKeywords: [
-    'image compressor',
-    'image resizer',
-    'image converter',
-    'online image editor',
-    'free image tools',
-    'PDF tools',
+    'pdf tools',
+    'image tools',
+    'compress pdf',
+    'merge pdf',
+    'compress image',
+    'resize image',
+    'convert image online',
     'background remover',
-    'image optimization',
   ],
-
   secondaryKeywords: [
-    'compress image online',
-    'resize image pixels',
+    'free pdf tools',
+    'free image tools',
+    'pdf compressor online',
+    'pdf merger online',
+    'image compressor online',
+    'resize image online',
     'convert png to jpg',
-    'reduce image size',
-    'crop image online',
-    'rotate image',
-    'add watermark',
-    'merge pdf online',
-    'split pdf',
+    'heic to jpg converter',
+    'image to pdf',
+    'pdf to jpg',
     'passport photo maker',
-    'ai image enhance',
-    'image upscaler',
+    'ai image enhancer',
   ],
-
   longTailKeywords: [
-    'compress image to 50kb online free',
-    'resize image for passport photo',
-    'convert heic to jpg free',
-    'remove background from image ai',
-    'merge multiple pdf into one',
-    'compress pdf without losing quality',
-    'resize image for instagram',
-    'convert image to 300 dpi',
+    'compress pdf online free without signup',
+    'merge pdf files online free',
+    'compress image to target size online',
+    'resize image for passport photo online',
+    'convert heic to jpg free online',
+    'remove background from image online free',
+    'convert image to pdf free online',
+    'split pdf pages online free',
   ],
-
-  // Location/Language targeting
-  targetLanguages: ['en', 'es', 'fr', 'de', 'pt', 'ru', 'zh', 'ja', 'ko', 'ar'],
-  targetCountries: ['US', 'GB', 'CA', 'AU', 'IN', 'DE', 'FR', 'BR', 'RU', 'JP'],
-
-  // Brand colors for social previews
-  brandColor: '#8B5CF6',
-
-  // Platform information
+  targetLanguages: ['en'],
+  targetCountries: ['US', 'GB', 'CA', 'AU', 'IN'],
+  brandColor: '#4f46e5',
   credentials: {
-    tools: '55+',
-    users: '2M+',
-    imagesProcessed: '50M+',
-    rating: '4.9/5',
-    uptime: '99.9%',
+    tools: toolCountLabel,
+    access: 'No signup',
+    workflow: 'Browser + server',
+    coverage: 'PDF + image',
   },
-
-  // Trust signals
   trustSignals: [
-    'GDPR Compliant',
-    '256-bit SSL Encryption',
-    'No Data Storage',
-    'Instant Processing',
-    '100% Free',
+    'No signup required',
+    'Core tools are free to use',
+    'Privacy-aware processing',
+    'Mobile-friendly workflows',
+    'Tool-specific limits are shown clearly',
   ],
 };
 
-// FAQ Data for AEO (Answer Engine Optimization)
 export const faqData = [
   {
     question: 'What is PdfPixels?',
-    answer: 'PdfPixels is a free, secure online platform for editing images and PDFs. It offers 55+ tools for compression, resizing, conversion, and AI enhancements without requiring registration or software installation.',
-    keywords: ['pdfpixels', 'image editing platform', 'online image tools', 'free image editor'],
+    answer: `PdfPixels is a free online platform for PDF and image workflows such as compression, resizing, conversion, background removal, and document editing. It currently offers ${toolCountLabel} tools without requiring account creation for core tasks.`,
+    keywords: ['pdfpixels', 'pdf tools platform', 'image tools platform', 'online file tools'],
   },
   {
     question: 'How do I compress an image online for free?',
-    answer: 'To compress an image on PdfPixels: Upload your JPG, PNG, or WebP file to the "Compress Image" tool, select your desired compression level (Low, Medium, High), and download the optimized file instantly. No signup is required.',
+    answer: 'Open the Compress Image tool on PdfPixels, upload a JPG, PNG, WebP, or related format, choose your quality or target-size settings, and download the optimized result.',
     keywords: ['compress image free', 'reduce image size online', 'image compression tool', 'shrink image file'],
   },
   {
     question: 'Is PdfPixels free?',
-    answer: 'Yes, PdfPixels tools are currently free to use with no signup required. Core image and PDF workflows are available without subscription.',
-    keywords: ['free image editor', 'no cost image tools', 'free online editor', 'free pdf tools'],
+    answer: 'Yes. PdfPixels offers free access to its core PDF and image workflows, including compression, conversion, resizing, and several AI-assisted tools.',
+    keywords: ['free image editor', 'free pdf tools', 'free online editor', 'no cost image tools'],
   },
   {
     question: 'How do I resize an image to pixels, cm, or inches?',
-    answer: 'Use the "Resize Image" tool on PdfPixels. Upload your photo, enter the exact width and height in your preferred unit (pixels, cm, or inches), and download the resized image. You can also lock the aspect ratio or set a specific DPI for printing.',
+    answer: 'Use the Resize Image tool, upload your photo, enter your target dimensions in pixels, centimeters, or inches, and download the resized version.',
     keywords: ['resize image', 'change image dimensions', 'image resizer online', 'photo size changer'],
   },
   {
     question: 'What file formats does PdfPixels support?',
-    answer: 'PdfPixels supports all major image formats including JPG, PNG, WebP, HEIC, GIF, BMP, TIFF, and AVIF. For documents, it supports PDF merging, splitting, and conversion.',
+    answer: 'PdfPixels supports common image formats such as JPG, JPEG, PNG, WebP, HEIC, GIF, BMP, TIFF, and PDF workflows for merge, split, compression, conversion, and page editing.',
     keywords: ['supported formats', 'file types', 'image formats', 'pdf support'],
   },
   {
     question: 'How do I convert PNG to JPG?',
-    answer: 'Upload your PNG file to the "PNG to JPG" converter on PdfPixels. The tool will automatically convert it to a high-quality JPG image that you can download immediately.',
+    answer: 'Upload your PNG image to the PNG to JPEG converter, let the conversion finish, and download the JPG output instantly.',
     keywords: ['png to jpg', 'convert png', 'image format conversion', 'png converter'],
   },
   {
     question: 'How do I merge PDF files?',
-    answer: 'Select the "Merge PDF" tool, upload multiple PDF documents, arrange them in your desired order, and click "Merge". You can then download the single combined PDF file.',
+    answer: 'Open Merge PDF, upload the PDF files you want to combine, reorder them if needed, and download the merged document.',
     keywords: ['merge pdf', 'combine pdf files', 'join pdfs online', 'pdf merger free'],
   },
   {
     question: 'Is PdfPixels safe?',
-    answer: 'Yes. PdfPixels uses secure transport and privacy-focused processing. File handling and cleanup depend on the specific tool workflow (browser-side or server-side).',
+    answer: 'PdfPixels uses privacy-aware processing and clear workflow messaging. Depending on the tool, processing can happen in the browser or on the server, and the platform explains those differences on each page.',
     keywords: ['data security', 'privacy', 'safe image editor', 'secure file processing'],
   },
   {
-    question: 'How to remove image background?',
-    answer: 'Upload your image to the "Background Remover" tool. Our AI technology will automatically detect the subject and remove the background, giving you a transparent PNG in seconds.',
+    question: 'How do I remove an image background?',
+    answer: 'Upload your image to the Remove Background tool and let the AI isolate the subject. You can then download the result as a transparent PNG.',
     keywords: ['remove background', 'background eraser', 'transparent background', 'ai background removal'],
   },
   {
     question: 'Does PdfPixels work on mobile?',
-    answer: 'Yes, PdfPixels is fully responsive and runs in any web browser on iPhone, Android, and tablets. No app installation is needed.',
+    answer: 'Yes. PdfPixels is designed to work on desktop and mobile browsers, including iPhone, Android, and tablet devices.',
     keywords: ['mobile image editor', 'iphone photo editor', 'android image tools', 'responsive'],
   },
   {
-    question: 'How to make a passport photo online?',
-    answer: 'Use the "Passport Photo Maker" on PdfPixels. Upload your photo, select your country or document type, and the tool will automatically crop and resize it to the official requirements (e.g., 2x2 inches or 35x45mm).',
+    question: 'How do I make a passport photo online?',
+    answer: 'Use Passport Photo Maker, upload your image, select the target document format or country preset, and export the resized result.',
     keywords: ['passport photo maker', 'visa photo online', 'id photo creator', 'passport size photo'],
   },
   {
-    question: 'What is the upload limit?',
-    answer: 'Upload limits vary by tool. Most image workflows support up to 100MB, while PDF limits depend on the operation (for example, per-file and total limits on merge/compress). If a file exceeds limits, the tool will show the exact maximum.',
+    question: 'What are the upload limits?',
+    answer: 'Upload limits vary by tool. PdfPixels shows the current file limits and accepted formats inside each workflow before processing starts.',
     keywords: ['file size limit', 'maximum upload', 'large image processing', 'file limits'],
-  },
-  {
-    question: 'How to compress an image to 20KB?',
-    answer: 'Open PdfPixels Compress Image tool, upload your photo, and select "20KB" as the target size. The tool automatically adjusts quality to hit exactly 20KB. Works with JPG, PNG, and WebP files. Download instantly — no signup needed.',
-    keywords: ['compress image 20kb', 'reduce image to 20kb', 'image 20kb online', 'photo compress 20kb'],
-  },
-  {
-    question: 'How to convert HEIC to JPG without software?',
-    answer: 'Visit PdfPixels.com, choose the format converter, upload your iPhone HEIC photos, and download them as JPG files. Works directly in any browser on Windows, Mac, Android, or iOS — no app installation required.',
-    keywords: ['heic to jpg', 'convert heic free', 'iphone photo converter', 'heic converter online'],
-  },
-  {
-    question: 'What is the best free online PDF merger?',
-    answer: 'PdfPixels offers a free PDF merger for combining multiple files in one flow. Upload, reorder pages, merge, and download directly in your browser.',
-    keywords: ['free pdf merger', 'best pdf combiner', 'merge pdf free', 'online pdf merge tool'],
-  },
-  {
-    question: 'How to resize an image for Instagram?',
-    answer: 'Open the PdfPixels Resize Image tool and select the Instagram preset: 1080×1080px for feed posts, 1080×1920px for stories and reels. Upload your photo and download the perfectly sized image instantly.',
-    keywords: ['resize for instagram', 'instagram image size', 'instagram post dimensions', 'instagram story size'],
-  },
-  {
-    question: 'What is the best free background remover?',
-    answer: 'PdfPixels Background Remover uses AI to remove backgrounds from photos in seconds. It handles complex edges like hair and fur, outputs transparent PNG files, and is completely free with no watermarks or registration.',
-    keywords: ['free background remover', 'ai background removal', 'remove bg free', 'transparent background maker'],
   },
 ];
 
-// HowTo structured data for key processes
 export const howToData = [
   {
     name: 'How to Compress an Image',
-    description: 'Learn how to reduce image file size while maintaining quality using PdfPixels',
+    description: 'Reduce image file size while keeping it clear enough for web, email, or form uploads.',
     estimatedTime: 'PT1M',
     steps: [
-      { position: 1, name: 'Select Tool', text: 'Click on "Compress Image" from the tools menu' },
-      { position: 2, name: 'Upload Image', text: 'Drag and drop or click to upload your image file' },
-      { position: 3, name: 'Choose Settings', text: 'Select compression level or target file size' },
-      { position: 4, name: 'Process', text: 'Click the Compress button to start processing' },
-      { position: 5, name: 'Download', text: 'Download your compressed image instantly' },
+      { position: 1, name: 'Open the compressor', text: 'Go to the Compress Image tool on PdfPixels.' },
+      { position: 2, name: 'Upload your image', text: 'Choose a JPG, PNG, WebP, or another supported image file.' },
+      { position: 3, name: 'Adjust compression settings', text: 'Set a quality level or a target file size based on your use case.' },
+      { position: 4, name: 'Process the image', text: 'Start compression and wait for the optimized output.' },
+      { position: 5, name: 'Download the result', text: 'Save the compressed image once the preview and file size look right.' },
     ],
   },
   {
-    name: 'How to Resize an Image',
-    description: 'Change image dimensions to any size with PdfPixels',
+    name: 'How to Merge PDF Files',
+    description: 'Combine multiple PDF files into one document in a few quick steps.',
     estimatedTime: 'PT1M',
     steps: [
-      { position: 1, name: 'Open Resize Tool', text: 'Navigate to Resize Image tool' },
-      { position: 2, name: 'Upload Photo', text: 'Select the image you want to resize' },
-      { position: 3, name: 'Set Dimensions', text: 'Enter width and height in pixels, cm, or inches' },
-      { position: 4, name: 'Choose Options', text: 'Select aspect ratio lock and DPI settings' },
-      { position: 5, name: 'Download Result', text: 'Click Resize and download your new image' },
+      { position: 1, name: 'Open Merge PDF', text: 'Navigate to the Merge PDF tool on PdfPixels.' },
+      { position: 2, name: 'Upload PDF files', text: 'Select the PDF files you want to combine.' },
+      { position: 3, name: 'Reorder pages or files', text: 'Arrange the files in the order you want them to appear.' },
+      { position: 4, name: 'Merge the documents', text: 'Start the merge process to create a single PDF file.' },
+      { position: 5, name: 'Download the merged PDF', text: 'Save the finished document to your device.' },
     ],
   },
 ];
 
-// Organization schema data
 export const organizationData = {
   name: 'PdfPixels',
-  alternateName: 'PdfPixels',
-  url: 'https://www.pdfpixels.com',
-  logo: 'https://www.pdfpixels.com/logo.svg',
-  description: 'Free online image and PDF processing platform with professional tools',
+  alternateName: 'PDF Pixels',
+  url: absoluteUrl('/'),
+  logo: absoluteUrl('/icon-512.png'),
+  description: 'Free online PDF and image processing platform with browser and server workflows.',
   foundingDate: '2024',
-  founders: [
-    { name: 'PdfPixels Team', type: 'Organization' },
-  ],
-  sameAs: [
-    'https://twitter.com/pdfpixels',
-    'https://github.com/pdfpixels',
-  ],
   contactPoint: {
     type: 'CustomerService',
     availableLanguage: ['English'],
-    contactType: 'customer service',
+    contactType: 'customer support',
     email: 'support@pdfpixels.com',
   },
 };
 
-// WebApplication schema data
 export const webAppData = {
   name: 'PdfPixels',
-  description: 'Free online image and PDF processing platform',
-  url: 'https://www.pdfpixels.com',
-  applicationCategory: 'DesignApplication',
+  description: 'Free online PDF and image processing platform',
+  url: absoluteUrl('/'),
+  applicationCategory: 'UtilitiesApplication',
   operatingSystem: 'Any',
-  browserRequirements: 'Requires JavaScript. Requires HTML5.',
+  browserRequirements: 'Requires a modern web browser with JavaScript enabled.',
   offers: {
     price: '0',
     priceCurrency: 'USD',
   },
   featureList: [
-    'Image Compression',
-    'Image Resizing',
-    'Format Conversion',
-    'Background Removal',
-    'PDF Merge & Split',
-    'AI Image Enhancement',
-    'Passport Photo Maker',
-    'Watermark Addition',
-  ],
-};
-
-// Breadcrumb data
-export const breadcrumbData = {
-  items: [
-    { name: 'Home', url: '/' },
-    { name: 'Image Tools', url: '/#image-tools' },
-    { name: 'PDF Tools', url: '/#pdf-tools' },
+    'Compress PDF',
+    'Merge PDF',
+    'Split PDF',
+    'Image compression',
+    'Image resizing',
+    'Format conversion',
+    'Background removal',
+    'Passport photo creation',
   ],
 };

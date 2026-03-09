@@ -3,14 +3,11 @@ import { MetadataRoute } from 'next';
 export default function robots(): MetadataRoute.Robots {
   return {
     rules: [
-      // Default: allow all crawlers
       {
         userAgent: '*',
-        allow: '/',
+        allow: ['/', '/llms.txt', '/llms-full.txt'],
         disallow: ['/api/', '/_next/', '/_static/'],
       },
-
-      // === SEARCH ENGINES ===
       {
         userAgent: 'Googlebot',
         allow: '/',
@@ -31,8 +28,6 @@ export default function robots(): MetadataRoute.Robots {
         allow: '/',
         disallow: ['/api/', '/_next/'],
       },
-
-      // === OPENAI ===
       {
         userAgent: 'GPTBot',
         allow: ['/', '/llms.txt', '/llms-full.txt'],
@@ -45,49 +40,34 @@ export default function robots(): MetadataRoute.Robots {
       },
       {
         userAgent: 'OAI-SearchBot',
-        allow: '/',
+        allow: ['/', '/llms.txt', '/llms-full.txt'],
         disallow: ['/api/'],
       },
-
-      // === GOOGLE AI / GEMINI ===
       {
         userAgent: 'Google-Extended',
         allow: '/',
         disallow: ['/api/'],
       },
       {
-        userAgent: 'Google-CloudVertexBot',
-        allow: '/',
-        disallow: ['/api/'],
-      },
-
-      // === ANTHROPIC / CLAUDE ===
-      {
         userAgent: 'ClaudeBot',
         allow: '/',
         disallow: ['/api/'],
       },
       {
-        userAgent: 'Claude-Web',
-        allow: '/',
-        disallow: ['/api/'],
-      },
-
-      // === PERPLEXITY ===
-      {
         userAgent: 'PerplexityBot',
         allow: '/',
         disallow: ['/api/'],
       },
-
-      // === MICROSOFT / COPILOT ===
       {
-        userAgent: 'Bingbot',
+        userAgent: 'Applebot',
         allow: '/',
         disallow: ['/api/'],
       },
-
-      // === META AI ===
+      {
+        userAgent: 'Applebot-Extended',
+        allow: '/',
+        disallow: ['/api/'],
+      },
       {
         userAgent: 'meta-externalagent',
         allow: '/',
@@ -98,64 +78,43 @@ export default function robots(): MetadataRoute.Robots {
         allow: '/',
         disallow: ['/api/'],
       },
-
-      // === APPLE AI ===
-      {
-        userAgent: 'Applebot-Extended',
-        allow: '/',
-        disallow: ['/api/'],
-      },
-
-      // === AMAZON ===
       {
         userAgent: 'Amazonbot',
         allow: '/',
         disallow: ['/api/'],
       },
-
-      // === YOU.COM ===
       {
         userAgent: 'YouBot',
         allow: '/',
         disallow: ['/api/'],
       },
-
-      // === PHIND ===
       {
         userAgent: 'PhindBot',
         allow: '/',
         disallow: ['/api/'],
       },
-
-      // === IASK ===
       {
         userAgent: 'iaskspider',
         allow: '/',
         disallow: ['/api/'],
       },
-
-      // === COHERE ===
       {
         userAgent: 'cohere-ai',
         allow: '/',
         disallow: ['/api/'],
       },
-
-      // === COMMON CRAWL (AI training) ===
       {
         userAgent: 'CCBot',
         allow: '/',
         disallow: ['/api/'],
       },
-
-      // === BYTEDANCE ===
       {
         userAgent: 'Bytespider',
         allow: '/',
         disallow: ['/api/'],
       },
     ],
-    sitemap: 'https://www.pdfpixels.com/sitemap.xml',
-    host: 'https://www.pdfpixels.com',
+    sitemap: ['https://www.pdfpixels.com/sitemap.xml', 'https://www.pdfpixels.com/image-sitemap.xml'],
+    host: 'www.pdfpixels.com',
   };
 }

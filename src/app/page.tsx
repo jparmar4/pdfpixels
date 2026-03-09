@@ -14,7 +14,7 @@ import {
   Server, Files, DollarSign, Image as ImageIcon, FileText,
   Minimize2, ShieldCheck
 } from 'lucide-react';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, Suspense } from 'react';
 import Link from 'next/link';
 function AnimatedCounter({ end, suffix = '', duration = 2000 }: { end: number; suffix?: string; duration?: number }) {
   const [count, setCount] = useState(0);
@@ -56,61 +56,61 @@ function ToolsHeader({ search, setSearch }: { search: string, setSearch: (val: s
 
       <div className="relative z-10 container mx-auto px-4 lg:px-8 py-16 md:py-24 text-center">
         <div className="max-w-4xl mx-auto rounded-3xl border border-border/60 bg-card/60 backdrop-blur-2xl shadow-[0_24px_80px_-32px_rgba(99,102,241,.5)] px-6 md:px-10 py-10 md:py-14">
-        <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-        >
-          <p className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold border border-primary/20 bg-primary/10 text-primary mb-5">
-            Fast Ã¢â‚¬Â¢ Secure Ã¢â‚¬Â¢ No signup
-          </p>
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight mb-4 leading-[1.05]">
-            Premium PDF & Image Tools
-          </h1>
-          <p className="text-muted-foreground text-lg md:text-xl mb-7 max-w-2xl mx-auto font-medium leading-relaxed">
-            Compress, convert, and edit files in seconds with a clean, professional workflow.
-          </p>
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <p className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold border border-primary/20 bg-primary/10 text-primary mb-5">
+              Fast Ã¢â‚¬Â¢ Secure Ã¢â‚¬Â¢ No signup
+            </p>
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight mb-4 leading-[1.05]">
+              Premium PDF & Image Tools
+            </h1>
+            <p className="text-muted-foreground text-lg md:text-xl mb-7 max-w-2xl mx-auto font-medium leading-relaxed">
+              Compress, convert, and edit files in seconds with a clean, professional workflow.
+            </p>
 
-          <div className="flex flex-wrap items-center justify-center gap-3 mb-6">
-            <Link href="/tools/compress-pdf" className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 text-white text-sm font-semibold shadow-lg shadow-indigo-500/30 hover:opacity-95 transition-opacity">
-              Start with Compress PDF
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-            <Link href="/tools" className="inline-flex items-center gap-2 px-5 py-3 rounded-xl border border-border/70 bg-background/80 text-sm font-semibold hover:border-primary/40 hover:text-primary transition-colors">
-              Browse All Tools
-            </Link>
-          </div>
+            <div className="flex flex-wrap items-center justify-center gap-3 mb-6">
+              <Link href="/tools/compress-pdf" className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 text-white text-sm font-semibold shadow-lg shadow-indigo-500/30 hover:opacity-95 transition-opacity">
+                Start with Compress PDF
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+              <Link href="/tools" className="inline-flex items-center gap-2 px-5 py-3 rounded-xl border border-border/70 bg-background/80 text-sm font-semibold hover:border-primary/40 hover:text-primary transition-colors">
+                Browse All Tools
+              </Link>
+            </div>
 
-          <p className="text-xs text-muted-foreground">55+ tools Ã¢â‚¬Â¢ Free forever Ã¢â‚¬Â¢ Works on mobile and desktop</p>
-        </motion.div>
+            <p className="text-xs text-muted-foreground">55+ tools Ã¢â‚¬Â¢ Free forever Ã¢â‚¬Â¢ Works on mobile and desktop</p>
+          </motion.div>
 
-        {/* Search Bar - Lifted into the mesh header for premium feel */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-          className="relative max-w-2xl mx-auto group z-20"
-        >
-          <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
-            <Search className="h-5 w-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
-          </div>
-          <input
-            type="text"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search tools: compress pdf, merge pdf, resize image..."
-            aria-label="Search tools"
-            className="block w-full pl-14 pr-12 py-5 border border-white/20 rounded-2xl leading-5 bg-background/85 backdrop-blur-2xl shadow-[0_16px_45px_-22px_rgba(99,102,241,.45)] placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 transition-all text-base font-medium"
-          />
-          {search && (
-            <button
-              onClick={() => setSearch('')}
-              className="absolute inset-y-0 right-0 pr-5 flex items-center text-muted-foreground hover:text-foreground"
-            >
-              <X className="h-5 w-5" />
-            </button>
-          )}
-        </motion.div>
+          {/* Search Bar - Lifted into the mesh header for premium feel */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+            className="relative max-w-2xl mx-auto group z-20"
+          >
+            <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
+              <Search className="h-5 w-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
+            </div>
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search tools: compress pdf, merge pdf, resize image..."
+              aria-label="Search tools"
+              className="block w-full pl-14 pr-12 py-5 border border-white/20 rounded-2xl leading-5 bg-background/85 backdrop-blur-2xl shadow-[0_16px_45px_-22px_rgba(99,102,241,.45)] placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 transition-all text-base font-medium"
+            />
+            {search && (
+              <button
+                onClick={() => setSearch('')}
+                className="absolute inset-y-0 right-0 pr-5 flex items-center text-muted-foreground hover:text-foreground"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            )}
+          </motion.div>
         </div>
       </div>
     </section>
@@ -632,7 +632,9 @@ export default function Home() {
 
       <main className="flex-1" role="main">
         <HomePageSchemas />
-        <ToolsSection />
+        <Suspense fallback={<div className="min-h-[400px] flex items-center justify-center">Loading tools...</div>}>
+          <ToolsSection />
+        </Suspense>
         <StatsBanner />
         <HowItWorks />
         <FeaturesSection />

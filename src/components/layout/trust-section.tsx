@@ -111,17 +111,17 @@ const testimonials = [
 
 export function TrustSection() {
   const trustBadges = [
-    { icon: Shield, label: 'GDPR Compliant', desc: 'EU data protection standards' },
-    { icon: Lock, label: '256-bit SSL', desc: 'Bank-level encryption' },
-    { icon: Server, label: 'SOC 2 Certified', desc: 'Enterprise security' },
-    { icon: Scan, label: 'No Data Storage', desc: 'Files auto-deleted in 1 hour' },
+    { icon: Shield, label: 'Privacy-aware', desc: 'Clear processing expectations by workflow' },
+    { icon: Lock, label: 'Secure transport', desc: 'Protected file transfers and modern browser support' },
+    { icon: BadgeCheck, label: 'Clear limits', desc: 'Accepted formats and size limits are surfaced in each tool' },
+    { icon: Globe, label: 'Works on the web', desc: 'Designed for desktop and mobile browsers' },
   ];
 
   const achievements = [
-    { value: seoConfig.credentials.users, label: 'Active Users', icon: Users },
-    { value: seoConfig.credentials.imagesProcessed, label: 'Images Processed', icon: Zap },
-    { value: seoConfig.credentials.rating, label: 'User Rating', icon: Star },
-    { value: seoConfig.credentials.uptime, label: 'Uptime', icon: Clock },
+    { value: seoConfig.credentials.tools, label: 'Available tools', icon: BadgeCheck },
+    { value: seoConfig.credentials.access, label: 'Signup required', icon: Users },
+    { value: seoConfig.credentials.workflow, label: 'Workflow model', icon: Zap },
+    { value: seoConfig.credentials.coverage, label: 'Platform coverage', icon: Globe },
   ];
 
   const awards = [
@@ -149,13 +149,13 @@ export function TrustSection() {
         >
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/8 border border-primary/15 mb-6 shadow-soft">
             <Shield className="w-4 h-4 text-primary" />
-            <span className="text-sm font-semibold">Trusted by Millions</span>
+            <span className="text-sm font-semibold">Built for dependable workflows</span>
           </div>
           <h2 id="trust-heading" className="text-3xl md:text-4xl font-bold mb-5">
-            Enterprise-Grade Security & Trust
+Trust signals users can understand quickly
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-            Your files are protected with bank-level encryption and automatically deleted for your privacy.
+            PdfPixels is designed around privacy-aware processing, transparent workflow messaging, and mobile-friendly access.
           </p>
         </motion.div>
 
@@ -313,3 +313,4 @@ export function TrustSection() {
     </section>
   );
 }
+

@@ -1,54 +1,11 @@
 import { NextResponse } from 'next/server';
 import { getAllBlogPosts } from '@/config/blog';
 
-// RSS Feed for PdfPixels - Blog Posts and Updates
 export async function GET() {
   const baseUrl = 'https://www.pdfpixels.com';
   const currentDate = new Date().toUTCString();
-
-  // Get all blog posts for the feed
   const blogPosts = getAllBlogPosts();
 
-  // Platform updates (recent ones)
-  const updates = [
-    {
-      title: 'New AI Background Remover - Now Faster and More Accurate',
-      description: 'Our AI-powered background removal tool has been upgraded with a new model that handles complex edges like hair and fur with 30% better accuracy.',
-      link: `${baseUrl}/tools/remove-image-background`,
-      pubDate: new Date('2025-01-15').toUTCString(),
-      category: 'AI Tools',
-    },
-    {
-      title: 'HEIC to JPG Converter - Batch Processing Now Available',
-      description: 'Convert multiple iPhone HEIC photos to JPG at once. Upload up to 50 images and download them all as JPG files.',
-      link: `${baseUrl}/tools/heic-to-jpg`,
-      pubDate: new Date('2025-01-10').toUTCString(),
-      category: 'Format Conversion',
-    },
-    {
-      title: 'Passport Photo Maker - New Country Presets Added',
-      description: 'Added support for 20+ new country passport photo sizes including China, Brazil, Australia, and more.',
-      link: `${baseUrl}/tools/passport-size-photo`,
-      pubDate: new Date('2025-01-05').toUTCString(),
-      category: 'Document Tools',
-    },
-    {
-      title: 'PDF Merge - Now Supports Up to 500MB Total',
-      description: 'Increased the total file size limit for PDF merging from 100MB to 500MB. Merge larger documents with ease.',
-      link: `${baseUrl}/tools/merge-pdf`,
-      pubDate: new Date('2024-12-28').toUTCString(),
-      category: 'PDF Tools',
-    },
-    {
-      title: 'AI Image Upscaler - 4x Upscaling Now Available',
-      description: 'New 4x upscaling option for AI image upscaler. Turn small images into high-resolution prints.',
-      link: `${baseUrl}/tools/upscale-image`,
-      pubDate: new Date('2024-12-20').toUTCString(),
-      category: 'AI Tools',
-    },
-  ];
-
-  // Combine blog posts and updates, sorted by date
   const blogItems = blogPosts.map((post) => ({
     title: post.title,
     description: post.metaDescription || post.excerpt,
@@ -59,67 +16,55 @@ export async function GET() {
   }));
 
   const rssFeed = `<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0" 
+<rss version="2.0"
      xmlns:atom="http://www.w3.org/2005/Atom"
      xmlns:content="http://purl.org/rss/1.0/modules/content/"
      xmlns:dc="http://purl.org/dc/elements/1.1/"
      xmlns:sy="http://purl.org/rss/1.0/modules/syndication/">
   <channel>
-    <title>PdfPixels - Blog, Updates and New Features</title>
+    <title>PdfPixels - Blog and Product Guides</title>
     <link>${baseUrl}</link>
     <atom:link href="${baseUrl}/feed" rel="self" type="application/rss+xml"/>
-    <description>Latest blog posts, updates, new tools, and features from PdfPixels - Free Online Image &amp; PDF Tools</description>
+    <description>Latest blog posts, tutorials, and workflow guides from PdfPixels.</description>
     <language>en-us</language>
     <copyright>Copyright ${new Date().getFullYear()} PdfPixels. All rights reserved.</copyright>
     <lastBuildDate>${currentDate}</lastBuildDate>
     <pubDate>${currentDate}</pubDate>
     <generator>PdfPixels RSS Generator</generator>
     <webMaster>support@pdfpixels.com</webMaster>
-    <managingEditor>team@pdfpixels.com</managingEditor>
+    <managingEditor>support@pdfpixels.com</managingEditor>
     <category>Image Processing</category>
     <category>PDF Tools</category>
-    <category>Web Applications</category>
+    <category>Tutorials</category>
     <ttl>60</ttl>
     <sy:updatePeriod>daily</sy:updatePeriod>
     <sy:updateFrequency>1</sy:updateFrequency>
     <image>
-      <url>${baseUrl}/logo.svg</url>
+      <url>${baseUrl}/icon-192.png</url>
       <title>PdfPixels</title>
       <link>${baseUrl}</link>
-      <width>200</width>
-      <height>200</height>
+      <width>192</width>
+      <height>192</height>
     </image>
-    
-    ${blogItems.map((item) => `
+
+    ${blogItems
+      .map(
+        (item) => `
     <item>
       <title>${escapeXml(item.title)}</title>
       <link>${item.link}</link>
       <description>${escapeXml(item.description)}</description>
-      <category>${item.category}</category>
+      <category>${escapeXml(item.category)}</category>
       <pubDate>${item.pubDate}</pubDate>
       <guid isPermaLink="true">${item.link}</guid>
       <dc:creator>${escapeXml(item.author)}</dc:creator>
       <content:encoded><![CDATA[
-        <p>${item.description}</p>
+        <p>${escapeXml(item.description)}</p>
         <p><a href="${item.link}">Read the full article on PdfPixels</a></p>
       ]]></content:encoded>
-    </item>`).join('')}
-
-    ${updates.map((item) => `
-    <item>
-      <title>${escapeXml(item.title)}</title>
-      <link>${item.link}</link>
-      <description>${escapeXml(item.description)}</description>
-      <category>${item.category}</category>
-      <pubDate>${item.pubDate}</pubDate>
-      <guid isPermaLink="true">${item.link}</guid>
-      <dc:creator>PdfPixels Team</dc:creator>
-      <content:encoded><![CDATA[
-        <p>${item.description}</p>
-        <p><a href="${item.link}">Try it now at PdfPixels</a></p>
-      ]]></content:encoded>
-    </item>`).join('')}
-    
+    </item>`
+      )
+      .join('')}
   </channel>
 </rss>`;
 
@@ -139,4 +84,3 @@ function escapeXml(str: string): string {
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&apos;');
 }
-
