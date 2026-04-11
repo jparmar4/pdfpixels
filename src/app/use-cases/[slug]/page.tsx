@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { useCasePages } from '@/lib/use-cases';
-import { getToolBySlug, allTools, toolCategories } from '@/lib/tools-data';
+import { getToolBySlug } from '@/lib/tools-data';
 import { UseCaseDetailContent } from './use-case-detail-content';
 
 export function generateStaticParams() {
@@ -49,22 +49,12 @@ export default async function UseCasePage({ params }: { params: Promise<{ slug: 
     },
   };
 
-  // Find related tools from the same category
-  const relatedTools = allTools
-    .filter((t) => t.category === tool.category && t.slug !== tool.slug)
-    .slice(0, 6);
-
-  // Get the category name
-  const category = toolCategories.find((c) => c.id === tool.category);
-
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
       <UseCaseDetailContent
         entry={entry}
-        tool={tool}
-        relatedTools={relatedTools}
-        categoryName={category?.name || 'Tools'}
+        targetToolSlug={tool.slug}
       />
     </>
   );

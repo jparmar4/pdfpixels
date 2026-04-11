@@ -9,15 +9,13 @@ import { Navigation } from '@/components/layout/navigation';
 import { Footer } from '@/components/layout/footer';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { getToolBySlug, allTools, toolCategories } from '@/lib/tools-data';
 import type { UseCasePage } from '@/lib/use-cases';
-import type { Tool } from '@/lib/tools-data';
 
-/* ─── Props ────────────────────────────────────────────────────────── */
+/* ─── Props (serializable only) ─────────────────────────────────────── */
 interface UseCaseDetailContentProps {
   entry: UseCasePage;
-  tool: Tool;
-  relatedTools: Tool[];
-  categoryName: string;
+  targetToolSlug: string;
 }
 
 /* ─── Steps Data ───────────────────────────────────────────────────── */
@@ -55,10 +53,22 @@ const steps = [
 /* ─── Component ─────────────────────────────────────────────────────── */
 export function UseCaseDetailContent({
   entry,
-  tool,
-  relatedTools,
-  categoryName,
+  targetToolSlug,
 }: UseCaseDetailContentProps) {
+  // Look up tool data on the client side (avoids serializing icon functions)
+  const tool = getToolBySlug(targetToolSlug);
+  const relatedTools = tool
+    ? allTools.filter((t) => t.category === tool.category && t.slug !== tool.slug).slice(0, 6)
+    : [];
+  const category = tool
+    ? toolCategories.find((c) => c.id === tool.category)
+    : undefined;
+
+  if (!tool) return null;
+
+  const ToolIcon = tool.icon;
+  const categoryName = category?.name || 'Tools';
+
   return (
     <div className="premium-page-bg min-h-screen bg-background text-foreground">
       <Navigation />
@@ -120,7 +130,7 @@ export function UseCaseDetailContent({
               >
                 <Button asChild size="lg" className="btn-premium rounded-2xl px-7">
                   <Link href={`/tools/${tool.slug}`} className="inline-flex items-center gap-2">
-                    <tool.icon className="w-4 h-4" />
+                    <ToolIcon className="w-4 h-4" />
                     Open {tool.name}
                     <ArrowRight className="w-4 h-4" />
                   </Link>
@@ -185,29 +195,32 @@ export function UseCaseDetailContent({
                 {/* Vertical connecting line */}
                 <div className="absolute left-6 top-0 bottom-0 w-px bg-gradient-to-b from-primary/40 via-violet-500/30 to-emerald-500/20 hidden md:block" />
 
-                {steps.map((step, idx) => (
-                  <motion.div
-                    key={step.number}
-                    initial={{ opacity: 0, x: -20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: idx * 0.1 }}
-                    className="relative flex gap-5 pb-8 last:pb-0"
-                  >
-                    {/* Numbered circle on the line */}
-                    <div className="relative z-10 shrink-0">
-                      <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${step.color} flex items-center justify-center shadow-md`}>
-                        <step.icon className="w-5 h-5 text-white" />
+                {steps.map((step, idx) => {
+                  const StepIcon = step.icon;
+                  return (
+                    <motion.div
+                      key={step.number}
+                      initial={{ opacity: 0, x: -20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: idx * 0.1 }}
+                      className="relative flex gap-5 pb-8 last:pb-0"
+                    >
+                      {/* Numbered circle on the line */}
+                      <div className="relative z-10 shrink-0">
+                        <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${step.color} flex items-center justify-center shadow-md`}>
+                          <StepIcon className="w-5 h-5 text-white" />
+                        </div>
                       </div>
-                    </div>
 
-                    {/* Content */}
-                    <div className="flex-1 pt-1">
-                      <h3 className="text-base font-bold text-foreground">{step.title}</h3>
-                      <p className="mt-1.5 text-sm leading-7 text-muted-foreground">{step.description}</p>
-                    </div>
-                  </motion.div>
-                ))}
+                      {/* Content */}
+                      <div className="flex-1 pt-1">
+                        <h3 className="text-base font-bold text-foreground">{step.title}</h3>
+                        <p className="mt-1.5 text-sm leading-7 text-muted-foreground">{step.description}</p>
+                      </div>
+                    </motion.div>
+                  );
+                })}
               </div>
             </div>
           </motion.section>
@@ -232,36 +245,39 @@ export function UseCaseDetailContent({
                 </div>
 
                 <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {relatedTools.map((rt, idx) => (
-                    <motion.div
-                      key={rt.slug}
-                      initial={{ opacity: 0, y: 15 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: idx * 0.06 }}
-                    >
-                      <Link
-                        href={`/tools/${rt.slug}`}
-                        className="group flex items-start gap-3 rounded-2xl border border-border/60 bg-background/75 p-4 shadow-soft hover:shadow-premium hover:border-primary/20 hover:-translate-y-0.5 transition-all duration-300"
+                  {relatedTools.map((rt, idx) => {
+                    const RtIcon = rt.icon;
+                    return (
+                      <motion.div
+                        key={rt.slug}
+                        initial={{ opacity: 0, y: 15 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: idx * 0.06 }}
                       >
-                        <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
-                          <rt.icon className="w-4 h-4 text-primary" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="font-semibold text-sm text-foreground group-hover:text-primary transition-colors flex items-center gap-1">
-                            {rt.name}
-                            <ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-                          </p>
-                          <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2">{rt.description}</p>
-                          {rt.badge && (
-                            <span className="inline-flex items-center gap-1 mt-1.5 text-[10px] font-bold uppercase tracking-[0.12em] text-primary">
-                              {rt.badge}
-                            </span>
-                          )}
-                        </div>
-                      </Link>
-                    </motion.div>
-                  ))}
+                        <Link
+                          href={`/tools/${rt.slug}`}
+                          className="group flex items-start gap-3 rounded-2xl border border-border/60 bg-background/75 p-4 shadow-soft hover:shadow-premium hover:border-primary/20 hover:-translate-y-0.5 transition-all duration-300"
+                        >
+                          <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
+                            <RtIcon className="w-4 h-4 text-primary" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="font-semibold text-sm text-foreground group-hover:text-primary transition-colors flex items-center gap-1">
+                              {rt.name}
+                              <ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                            </p>
+                            <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2">{rt.description}</p>
+                            {rt.badge && (
+                              <span className="inline-flex items-center gap-1 mt-1.5 text-[10px] font-bold uppercase tracking-[0.12em] text-primary">
+                                {rt.badge}
+                              </span>
+                            )}
+                          </div>
+                        </Link>
+                      </motion.div>
+                    );
+                  })}
                 </div>
 
                 <div className="mt-6 text-center sm:hidden">
@@ -290,7 +306,7 @@ export function UseCaseDetailContent({
               <div className="mt-6 flex flex-wrap gap-3 justify-center">
                 <Button asChild size="lg" className="btn-premium rounded-2xl px-8 py-6 text-base">
                   <Link href={`/tools/${tool.slug}`} className="inline-flex items-center gap-2">
-                    <tool.icon className="w-4 h-4" />
+                    <ToolIcon className="w-4 h-4" />
                     Open {tool.name}
                     <ArrowRight className="w-4 h-4" />
                   </Link>
