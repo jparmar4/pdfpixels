@@ -3,13 +3,16 @@ import { notFound } from "next/navigation";
 import NextImage from "next/image";
 import Link from "next/link";
 import Script from "next/script";
-import { getBlogPostBySlug, getRelatedPosts, getAllBlogPosts } from "@/config/blog";
+import { getBlogPostBySlug, getRelatedPosts, getAllBlogPosts, getAdjacentPosts } from "@/config/blog";
 import { siteConfig } from "@/lib/seo-config";
 import { processContent } from "@/lib/content-processor";
-import BlogSidebar from "@/components/blog/BlogSidebar";
 import { Navigation } from "@/components/layout/navigation";
 import { Footer } from "@/components/layout/footer";
-import { ArrowLeft, Clock, Calendar, ArrowRight } from "lucide-react";
+import { ReadingProgressBar } from "@/components/blog/ReadingProgressBar";
+import { ProcessContentWithToc } from "@/components/blog/ProcessContentWithToc";
+import { ShareButtons } from "@/components/blog/ShareButtons";
+import { ArticleNavigation } from "@/components/blog/ArticleNavigation";
+import { ArrowLeft, Clock, Calendar, ArrowRight, User } from "lucide-react";
 
 // Generate static params
 export function generateStaticParams() {
@@ -96,9 +99,11 @@ export default async function BlogPostPage({
         notFound();
     }
 
-    const relatedPosts = getRelatedPosts(slug, 2);
+    const relatedPosts = getRelatedPosts(slug, 3);
+    const { prev: prevPost, next: nextPost } = getAdjacentPosts(slug);
 
     const isoDate = Number.isNaN(Date.parse(post.date)) ? post.date : new Date(post.date).toISOString();
+    const postUrl = `${siteConfig.url}/blog/${slug}`;
 
     // Article Schema
     const articleSchema = {
@@ -175,6 +180,7 @@ export default async function BlogPostPage({
     return (
         <>
             <Navigation />
+            <ReadingProgressBar />
 
             {/* JSON-LD Schemas */}
             <Script
@@ -201,10 +207,12 @@ export default async function BlogPostPage({
             )}
 
             <div className="min-h-screen bg-background">
-                {/* Header */}
-                <header className="py-12 lg:py-20 relative overflow-hidden">
-                    <div className="absolute top-0 left-0 w-full h-full bg-card/50 backdrop-blur-3xl -z-10" />
+                {/* Article Header */}
+                <header className="relative overflow-hidden pt-12 pb-16 lg:pt-20 lg:pb-24">
+                    {/* Background decorations */}
+                    <div className="absolute inset-0 bg-gradient-to-b from-primary/[0.03] via-transparent to-transparent" />
                     <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 blur-[100px] rounded-full -z-10" />
+                    <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-violet-500/5 blur-[100px] rounded-full -z-10" />
 
                     <div className="container mx-auto px-4 lg:px-8 relative z-10">
                         {/* Back Link */}
@@ -216,148 +224,200 @@ export default async function BlogPostPage({
                             Back to Blog
                         </Link>
 
-                        <div className="max-w-4xl mx-auto text-center">
-                            {/* Category */}
+                        <div className="max-w-4xl mx-auto">
+                            {/* Category Badge with Gradient */}
                             <div className="mb-6 flex justify-center">
-                                <span className="inline-block px-4 py-1.5 text-xs font-bold bg-primary/10 text-primary rounded-full tracking-wide uppercase">
+                                <span className="inline-block px-5 py-2 text-xs font-bold text-primary rounded-full tracking-widest uppercase border border-primary/20 shadow-sm"
+                                    style={{ background: 'linear-gradient(135deg, rgba(var(--color-primary-rgb), 0.08), rgba(139, 92, 246, 0.08))' }}
+                                >
                                     {post.category}
                                 </span>
                             </div>
 
                             {/* Title */}
-                            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-6 leading-tight tracking-tight">
+                            <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-foreground mb-6 leading-[1.1] tracking-tight text-center">
                                 {post.title}
                             </h1>
 
-                            <div className="summary text-lg text-muted-foreground leading-relaxed max-w-2xl mx-auto mb-8">
+                            <div className="summary text-lg text-muted-foreground leading-relaxed max-w-2xl mx-auto mb-8 text-center font-medium">
                                 {post.metaDescription}
                             </div>
 
-                            {/* Meta */}
-                            <div className="flex flex-wrap items-center justify-center gap-6 text-muted-foreground border-t border-border pt-6">
-                                <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center text-primary-foreground font-bold text-sm shadow-md">
-                                        {post.author.charAt(0)}
+                            {/* Author, Meta, and Share Row */}
+                            <div className="flex flex-col sm:flex-row items-center justify-between gap-6 mt-8 pt-8 border-t border-border">
+                                {/* Author & Meta */}
+                                <div className="flex flex-wrap items-center gap-5">
+                                    {/* Author Avatar */}
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-12 h-12 rounded-full flex items-center justify-center text-primary-foreground font-bold text-base shadow-lg ring-2 ring-primary/20"
+                                            style={{ background: 'linear-gradient(135deg, var(--color-primary), #8b5cf6)' }}
+                                        >
+                                            {post.author.charAt(0)}
+                                        </div>
+                                        <div className="text-left">
+                                            <span className="block text-foreground font-bold text-sm">{post.author}</span>
+                                            <span className="text-xs text-muted-foreground">{post.authorRole}</span>
+                                        </div>
                                     </div>
-                                    <div className="text-left">
-                                        <span className="block text-foreground font-bold text-sm">{post.author}</span>
-                                        <span className="text-xs text-muted-foreground">{post.authorRole}</span>
+
+                                    <div className="hidden sm:block h-8 w-px bg-border" />
+
+                                    {/* Date & Reading Time */}
+                                    <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                                        <span className="flex items-center gap-1.5">
+                                            <Calendar className="w-4 h-4 text-primary" />
+                                            <time dateTime={isoDate} className="font-medium">{post.date}</time>
+                                        </span>
+                                        <span className="flex items-center gap-1.5">
+                                            <Clock className="w-4 h-4 text-primary" />
+                                            <span className="font-medium">{post.readTime}</span>
+                                        </span>
                                     </div>
                                 </div>
-                                <div className="flex items-center gap-5 text-sm">
-                                    <span className="flex items-center gap-2">
-                                        <Calendar className="w-4 h-4 text-primary" />
-                                        <time dateTime={isoDate}>{post.date}</time>
-                                    </span>
-                                    <span className="flex items-center gap-2">
-                                        <Clock className="w-4 h-4 text-primary" />
-                                        {post.readTime}
-                                    </span>
-                                </div>
+
+                                {/* Share Buttons */}
+                                <ShareButtons url={postUrl} title={post.title} />
                             </div>
                         </div>
                     </div>
                 </header>
 
-                <div className="container mx-auto px-4 lg:px-8 py-12">
-                    {/* 2-Column Layout */}
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+                {/* Cover Image */}
+                {post.coverImage && (
+                    <div className="container mx-auto px-4 lg:px-8">
+                        <div className="max-w-5xl mx-auto">
+                            <div className="relative w-full aspect-video rounded-2xl lg:rounded-3xl overflow-hidden shadow-2xl ring-1 ring-black/5">
+                                <NextImage
+                                    src={post.coverImage}
+                                    alt={post.imageAlt || post.title}
+                                    fill
+                                    className="object-cover"
+                                    priority
+                                />
+                                {/* Gradient overlay at bottom */}
+                                <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-background/20 to-transparent" />
+                            </div>
+                        </div>
+                    </div>
+                )}
 
-                        {/* Main Content Column */}
-                        <div className="lg:col-span-2">
-                            {/* Cover Image */}
-                            {post.coverImage && (
-                                <div className="relative w-full aspect-video rounded-2xl overflow-hidden shadow-xl mb-10">
-                                    <NextImage
-                                        src={post.coverImage}
-                                        alt={post.imageAlt || post.title}
-                                        fill
-                                        className="object-cover"
-                                        priority
-                                    />
+                {/* Main Content */}
+                <div className="container mx-auto px-4 lg:px-8 py-12 lg:py-16">
+                    <div className="max-w-5xl mx-auto">
+                        <ProcessContentWithToc content={post.content}>
+                            {/* Article Content */}
+                            <div className="prose prose-lg prose-slate dark:prose-invert max-w-none
+                                prose-headings:font-bold prose-headings:tracking-tight prose-headings:text-foreground
+                                prose-h2:text-2xl prose-h2:mt-14 prose-h2:mb-6 prose-h2:leading-tight
+                                prose-h2:before:content-[''] prose-h2:before:block prose-h2:before:w-16 prose-h2:before:h-1 prose-h2:before:rounded-full prose-h2:before:mb-4
+                                prose-h2:before:bg-gradient-to-r prose-h2:before:from-primary prose-h2:before:to-violet-500
+                                prose-h3:text-xl prose-h3:mt-10 prose-h3:mb-4
+                                prose-p:text-muted-foreground prose-p:leading-[1.85] prose-p:text-[1.08rem]
+                                prose-a:text-primary prose-a:font-semibold prose-a:no-underline hover:prose-a:underline
+                                prose-strong:text-foreground prose-strong:font-bold
+                                prose-ul:my-6 prose-ol:my-6
+                                prose-li:text-muted-foreground prose-li:leading-relaxed
+                                prose-li:before:bg-primary prose-li:before:text-primary
+                                prose-blockquote:border-l-[3px] prose-blockquote:border-primary prose-blockquote:bg-primary/5 prose-blockquote:py-4 prose-blockquote:px-6 prose-blockquote:rounded-r-xl prose-blockquote:not-italic
+                                prose-blockquote:border-l-[4px]
+                                prose-img:rounded-xl prose-img:shadow-lg
+                                prose-pre:bg-slate-900 dark:prose-pre:bg-slate-950 prose-pre:rounded-xl prose-pre:shadow-lg
+                                prose-code:text-primary-foreground prose-code:bg-primary/10 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-md prose-code:text-sm prose-code:before:content-[''] prose-code:after:content-['']
+                                prose-pre:prose-code:bg-transparent prose-pre:prose-code:px-0 prose-pre:prose-code:py-0">
+                                {processContent(post.content)}
+                            </div>
+
+                            {/* Tags */}
+                            {post.keywords && post.keywords.length > 0 && (
+                                <div className="mt-16 pt-8 border-t border-border">
+                                    <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-4">Topics</h3>
+                                    <div className="flex flex-wrap gap-2">
+                                        {post.keywords.slice(0, 8).map((keyword, index) => (
+                                            <span
+                                                key={index}
+                                                className="px-3 py-1.5 bg-muted text-muted-foreground rounded-full text-xs font-medium hover:bg-primary/10 hover:text-primary transition-colors cursor-default"
+                                            >
+                                                {keyword}
+                                            </span>
+                                        ))}
+                                    </div>
                                 </div>
                             )}
 
-                            <article itemScope itemType="https://schema.org/Article">
-                                {/* Article Content */}
-                                <div className="prose prose-lg prose-slate dark:prose-invert max-w-none
-                                    prose-headings:font-bold prose-headings:tracking-tight prose-headings:text-foreground
-                                    prose-h2:text-2xl prose-h2:mt-12 prose-h2:mb-6 prose-h2:pb-3 prose-h2:border-b prose-h2:border-border
-                                    prose-h3:text-xl prose-h3:mt-8 prose-h3:mb-4
-                                    prose-p:text-muted-foreground prose-p:leading-relaxed
-                                    prose-a:text-primary prose-a:font-semibold prose-a:no-underline hover:prose-a:underline
-                                    prose-strong:text-foreground prose-strong:font-bold
-                                    prose-ul:my-6 prose-li:text-muted-foreground
-                                    prose-blockquote:border-primary prose-blockquote:bg-primary/5 prose-blockquote:py-1 prose-blockquote:rounded-r-lg
-                                    prose-img:rounded-xl prose-img:shadow-md">
-                                    {processContent(post.content)}
+                            {/* FAQ Section */}
+                            {post.faq && post.faq.length > 0 && (
+                                <div className="mt-16 p-6 md:p-8 bg-muted/50 rounded-2xl border border-border">
+                                    <h2 className="text-2xl font-bold text-foreground mb-8 flex items-center gap-3">
+                                        <span className="text-2xl">FAQ</span>
+                                        Frequently Asked Questions
+                                    </h2>
+                                    <div className="space-y-5">
+                                        {post.faq.map((item, index) => (
+                                            <div key={index} className="bg-card rounded-xl p-5 shadow-sm border border-border">
+                                                <h3 className="font-bold text-base text-foreground mb-2">{item.question}</h3>
+                                                <p className="text-muted-foreground text-sm leading-relaxed">{item.answer}</p>
+                                            </div>
+                                        ))}
+                                    </div>
                                 </div>
+                            )}
+                        </ProcessContentWithToc>
 
-                                {/* Tags */}
-                                {post.keywords && post.keywords.length > 0 && (
-                                    <div className="mt-12 pt-8 border-t border-border">
-                                        <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-4">Topics</h3>
-                                        <div className="flex flex-wrap gap-2">
-                                            {post.keywords.slice(0, 8).map((keyword, index) => (
-                                                <span
-                                                    key={index}
-                                                    className="px-3 py-1.5 bg-muted text-muted-foreground rounded-full text-xs font-medium hover:bg-primary/10 hover:text-primary transition-colors cursor-default"
-                                                >
-                                                    {keyword}
-                                                </span>
-                                            ))}
-                                        </div>
+                        {/* Article Navigation */}
+                        <ArticleNavigation
+                            prevPost={prevPost ? { slug: prevPost.slug, title: prevPost.title } : null}
+                            nextPost={nextPost ? { slug: nextPost.slug, title: nextPost.title } : null}
+                        />
+
+                        {/* Related Articles */}
+                        <div className="mt-20">
+                            {relatedPosts.length > 0 && (
+                                <>
+                                    <div className="flex items-center gap-4 mb-10">
+                                        <div className="h-px flex-1 bg-gradient-to-r from-transparent to-border" />
+                                        <h2 className="text-xl font-bold text-foreground whitespace-nowrap">Related Articles</h2>
+                                        <div className="h-px flex-1 bg-gradient-to-l from-transparent to-border" />
                                     </div>
-                                )}
-
-                                {/* FAQ Section */}
-                                {post.faq && post.faq.length > 0 && (
-                                    <div className="mt-16 p-6 md:p-8 bg-muted/50 rounded-2xl border border-border">
-                                        <h2 className="text-2xl font-bold text-foreground mb-8 flex items-center gap-3">
-                                            <span className="text-2xl">FAQ</span>
-                                            Frequently Asked Questions
-                                        </h2>
-                                        <div className="space-y-5">
-                                            {post.faq.map((item, index) => (
-                                                <div key={index} className="bg-card rounded-xl p-5 shadow-sm border border-border">
-                                                    <h3 className="font-bold text-base text-foreground mb-2">{item.question}</h3>
-                                                    <p className="text-muted-foreground text-sm leading-relaxed">{item.answer}</p>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </div>
-                                )}
-                            </article>
-
-                            {/* Related Posts */}
-                            <div className="mt-16">
-                                {relatedPosts.length > 0 && (
-                                    <>
-                                        <h2 className="text-2xl font-bold text-foreground mb-8">
-                                            Keep Reading
-                                        </h2>
-                                        <div className="grid md:grid-cols-2 gap-6">
-                                            {relatedPosts.map((relatedPost) => (
-                                                <Link key={relatedPost.slug} href={`/blog/${relatedPost.slug}`} className="group">
-                                                    <article className="h-full bg-card rounded-2xl p-5 border border-border hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-                                                        <span className="text-xs font-bold text-primary bg-primary/10 px-2 py-1 rounded-md uppercase tracking-wide">
-                                                            {relatedPost.category}
-                                                        </span>
-                                                        <h3 className="text-lg font-bold text-foreground mt-3 mb-2 group-hover:text-primary transition-colors leading-tight">
+                                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                        {relatedPosts.map((relatedPost) => (
+                                            <Link key={relatedPost.slug} href={`/blog/${relatedPost.slug}`} className="group">
+                                                <article className="h-full bg-card rounded-2xl overflow-hidden border border-border hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                                                    {relatedPost.coverImage && (
+                                                        <div className="relative aspect-[16/10] overflow-hidden">
+                                                            <NextImage
+                                                                src={relatedPost.coverImage}
+                                                                alt={relatedPost.imageAlt || relatedPost.title}
+                                                                fill
+                                                                className="object-cover group-hover:scale-105 transition-transform duration-500"
+                                                            />
+                                                            <div className="absolute top-3 left-3">
+                                                                <span className="inline-block px-3 py-1 text-[10px] font-bold bg-background/90 backdrop-blur-md text-foreground border border-border/50 rounded-full uppercase tracking-wider shadow-sm">
+                                                                    {relatedPost.category}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                                    <div className="p-5">
+                                                        <h3 className="text-base font-bold text-foreground group-hover:text-primary transition-colors leading-snug line-clamp-2 mb-2">
                                                             {relatedPost.title}
                                                         </h3>
-                                                    </article>
-                                                </Link>
-                                            ))}
-                                        </div>
-                                    </>
-                                )}
-                            </div>
-                        </div>
-
-                        {/* Sidebar Column (Desktop) */}
-                        <div className="hidden lg:block lg:col-span-1">
-                            <BlogSidebar />
+                                                        <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                                                            <span className="flex items-center gap-1">
+                                                                <User className="w-3 h-3" />
+                                                                {relatedPost.author}
+                                                            </span>
+                                                            <span className="flex items-center gap-1">
+                                                                <Clock className="w-3 h-3" />
+                                                                {relatedPost.readTime}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </article>
+                                            </Link>
+                                        ))}
+                                    </div>
+                                </>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -367,10 +427,11 @@ export default async function BlogPostPage({
                     <div className="container mx-auto px-4 lg:px-8">
                         <div className="max-w-3xl mx-auto bg-card rounded-3xl p-8 md:p-12 text-center border border-border shadow-xl relative overflow-hidden">
                             <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-bl-full -z-0 opacity-50" />
+                            <div className="absolute bottom-0 left-0 w-48 h-48 bg-violet-500/5 rounded-tr-full -z-0 opacity-50" />
 
                             <div className="relative z-10">
                                 <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-5">
-                                    Try It Yourself - Free
+                                    Try It Yourself — Free
                                 </h2>
                                 <p className="text-muted-foreground mb-8 max-w-lg mx-auto">
                                     Put these tips into action with our free image and PDF tools. No sign-up needed, no watermarks.
@@ -392,4 +453,3 @@ export default async function BlogPostPage({
         </>
     );
 }
-

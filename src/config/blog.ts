@@ -3357,3 +3357,13 @@ export function getAllBlogPosts(): BlogPost[] {
         return dateB - dateA;
     });
 }
+
+export function getAdjacentPosts(currentSlug: string): { prev: BlogPost | null; next: BlogPost | null } {
+    const sorted = getAllBlogPosts();
+    const currentIndex = sorted.findIndex(p => p.slug === currentSlug);
+    if (currentIndex === -1) return { prev: null, next: null };
+    return {
+        prev: currentIndex < sorted.length - 1 ? sorted[currentIndex + 1] : null,
+        next: currentIndex > 0 ? sorted[currentIndex - 1] : null,
+    };
+}
