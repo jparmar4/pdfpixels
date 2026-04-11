@@ -12,10 +12,11 @@ import {
   ArrowUp, Search, X, ChevronDown, Upload, Sliders,
   Download, Zap, Sparkles, ArrowRight, CheckCircle2, Wrench,
   Server, Files, DollarSign, Image as ImageIcon, FileText,
-  Minimize2, ShieldCheck
+  Minimize2, ShieldCheck, BookOpen, Star, Users, Clock, ChevronLeft, ChevronRight
 } from 'lucide-react';
-import { useState, useEffect, useRef, Suspense } from 'react';
+import { useState, useEffect, useRef, Suspense, useCallback } from 'react';
 import Link from 'next/link';
+
 function AnimatedCounter({ end, suffix = '', duration = 2000 }: { end: number; suffix?: string; duration?: number }) {
   const [count, setCount] = useState(0);
   const ref = useRef<HTMLDivElement>(null);
@@ -47,14 +48,98 @@ function AnimatedCounter({ end, suffix = '', duration = 2000 }: { end: number; s
   return <div ref={ref}>{count}{suffix}</div>;
 }
 
+// --- Typing Text Effect ---
+function TypingText() {
+  const words = [
+    'Compress PDF',
+    'Merge PDF',
+    'Remove Background',
+    'Resize Image',
+    'Convert HEIC to JPG',
+    'Split PDF',
+    'Compress Image',
+    'Image to PDF',
+  ];
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [displayText, setDisplayText] = useState('');
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  useEffect(() => {
+    const currentWord = words[currentIndex];
+    let timeout: NodeJS.Timeout;
+
+    if (!isDeleting && displayText === currentWord) {
+      timeout = setTimeout(() => setIsDeleting(true), 2000);
+    } else if (isDeleting && displayText === '') {
+      timeout = setTimeout(() => {
+        setIsDeleting(false);
+        setCurrentIndex((prev) => (prev + 1) % words.length);
+      }, 300);
+    } else {
+      timeout = setTimeout(() => {
+        setDisplayText(
+          isDeleting
+            ? currentWord.substring(0, displayText.length - 1)
+            : currentWord.substring(0, displayText.length + 1)
+        );
+      }, isDeleting ? 40 : 80);
+    }
+
+    return () => clearTimeout(timeout);
+  }, [displayText, isDeleting, currentIndex]);
+
+  return (
+    <span className="gradient-text inline-block min-w-[200px] md:min-w-[320px] text-left">
+      {displayText}
+      <motion.span
+        animate={{ opacity: [1, 0] }}
+        transition={{ duration: 0.5, repeat: Infinity, repeatType: 'reverse' }}
+        className="inline-block w-[3px] h-[0.85em] bg-primary ml-0.5 align-middle"
+      />
+    </span>
+  );
+}
+
 // --- Compact Premium Header + Search ---
 function ToolsHeader({ search, setSearch }: { search: string, setSearch: (val: string) => void }) {
+  const floatingBadges = [
+    { text: 'Free Forever', Icon: DollarSign, className: 'float-badge-1', color: 'text-emerald-500' },
+    { text: 'No Signup', Icon: Zap, className: 'float-badge-2', color: 'text-primary' },
+    { text: '55+ Tools', Icon: Wrench, className: 'float-badge-3', color: 'text-violet-500' },
+    { text: 'Fast Processing', Icon: Clock, className: 'float-badge-4', color: 'text-cyan-500' },
+  ];
+
   return (
     <section className="relative overflow-hidden border-b border-border/40 min-h-[54vh] flex flex-col justify-center bg-gradient-to-b from-background via-background to-muted/20">
       {/* SaaS Tier Fluid Background */}
       <AnimatedMeshBg />
 
+      {/* Particle dot grid background */}
+      <div className="absolute inset-0 dot-pattern opacity-30" />
+      <div className="absolute inset-0 hero-grid" />
+
       <div className="relative z-10 container mx-auto px-4 lg:px-8 py-16 md:py-24 text-center">
+        {/* Floating decorative badges */}
+        <div className="absolute inset-0 pointer-events-none hidden lg:block">
+          {floatingBadges.map((badge, idx) => {
+            const BadgeIcon = badge.Icon;
+            const positions = [
+              'top-[12%] left-[8%]',
+              'top-[18%] right-[10%]',
+              'bottom-[22%] left-[12%]',
+              'bottom-[18%] right-[8%]',
+            ];
+            return (
+              <div key={badge.text} className={`${badge.className} absolute ${positions[idx]}`}>
+                <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full glass-card shadow-soft text-xs font-semibold text-muted-foreground">
+                  <BadgeIcon className={`w-3 h-3 ${badge.color}`} />
+                  {badge.text}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
         <div className="max-w-4xl mx-auto rounded-3xl border border-border/60 bg-card/60 backdrop-blur-2xl shadow-[0_24px_80px_-32px_rgba(99,102,241,.5)] px-6 md:px-10 py-10 md:py-14">
           <motion.div
             initial={{ opacity: 0, y: 15 }}
@@ -64,10 +149,14 @@ function ToolsHeader({ search, setSearch }: { search: string, setSearch: (val: s
             <p className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold border border-primary/20 bg-primary/10 text-primary mb-5">
               Fast · Secure · No signup
             </p>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight mb-4 leading-[1.05]">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight mb-2 leading-[1.05]">
               Premium PDF & Image Tools
             </h1>
-            <p className="text-muted-foreground text-lg md:text-xl mb-7 max-w-2xl mx-auto font-medium leading-relaxed">
+            <div className="text-lg md:text-xl mb-4 max-w-2xl mx-auto font-medium leading-relaxed text-muted-foreground">
+              Try{' '}
+              <TypingText />
+            </div>
+            <p className="text-muted-foreground text-sm md:text-base mb-7 max-w-xl mx-auto font-medium leading-relaxed opacity-80">
               Compress, convert, and edit files in seconds with a clean, professional workflow.
             </p>
 
@@ -132,9 +221,13 @@ function PopularToolsMiniGrid() {
         <Link
           key={item.href}
           href={item.href}
-          className="group rounded-2xl border border-border/60 bg-gradient-to-b from-card/80 to-card/40 backdrop-blur-xl p-4 hover:border-primary/40 hover:shadow-[0_12px_30px_-20px_rgba(99,102,241,.65)] transition-all"
+          className="group relative rounded-2xl border border-border/60 bg-gradient-to-b from-card/80 to-card/40 backdrop-blur-xl p-4 rainbow-border hover:scale-[1.03] hover:shadow-[0_16px_40px_-18px_rgba(99,102,241,.55)] transition-all duration-300"
         >
-          <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-primary/20 to-violet-500/20 text-primary flex items-center justify-center mb-3">
+          <span className="absolute -top-2.5 -right-2 z-10 inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-white text-[9px] font-bold uppercase tracking-[0.12em] shadow-sm">
+            <Star className="w-2.5 h-2.5 fill-current" />
+            Popular
+          </span>
+          <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-primary/20 to-violet-500/20 text-primary flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-300">
             <item.icon className="w-4 h-4" />
           </div>
           <p className="font-semibold text-sm flex items-center gap-1.5">
@@ -331,6 +424,213 @@ function HowItWorks() {
               <p className="text-sm text-muted-foreground leading-relaxed max-w-xs mx-auto">{step.description}</p>
             </motion.div>
           ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// --- Testimonials Section ---
+function TestimonialsSection() {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [isHovered, setIsHovered] = useState(false);
+  const [activeDot, setActiveDot] = useState(0);
+
+  const testimonials = [
+    {
+      name: 'Sarah Mitchell',
+      role: 'Marketing Manager',
+      initials: 'SM',
+      color: 'from-violet-500 to-purple-600',
+      text: 'PdfPixels has been a game-changer for our team. We compress hundreds of PDFs weekly and the quality is always outstanding. The speed is incredible compared to other tools.',
+      stars: 5,
+    },
+    {
+      name: 'James Rodriguez',
+      role: 'Freelance Designer',
+      initials: 'JR',
+      color: 'from-cyan-500 to-blue-600',
+      text: 'The image compression and background removal tools are absolutely perfect. I use them daily for client work. Clean interface, fast results, and no watermarks.',
+      stars: 5,
+    },
+    {
+      name: 'Emily Chen',
+      role: 'University Researcher',
+      initials: 'EC',
+      color: 'from-emerald-500 to-teal-600',
+      text: 'I love how simple everything is. No signup, no ads, no nonsense. Just upload, process, download. The HEIC to JPG converter saved me so much time.',
+      stars: 5,
+    },
+    {
+      name: 'Michael Brooks',
+      role: 'Small Business Owner',
+      initials: 'MB',
+      color: 'from-amber-500 to-orange-600',
+      text: 'Merge PDF is my most-used feature. Combining invoices and reports into one file has never been easier. It handles large files without breaking a sweat.',
+      stars: 5,
+    },
+    {
+      name: 'Lisa Thompson',
+      role: 'Content Creator',
+      initials: 'LT',
+      color: 'from-fuchsia-500 to-pink-600',
+      text: 'The resize and crop tools are perfect for social media. I batch process images all the time and PdfPixels handles it flawlessly. Highly recommended!',
+      stars: 5,
+    },
+    {
+      name: 'David Kim',
+      role: 'Software Engineer',
+      initials: 'DK',
+      color: 'from-sky-500 to-indigo-600',
+      text: 'As a developer, I appreciate clean tools that just work. PdfPixels nails this — fast API-like performance with a beautiful UI. Split PDF is fantastic.',
+      stars: 5,
+    },
+  ];
+
+  // Auto-scroll animation
+  useEffect(() => {
+    if (!scrollRef.current || isHovered) return;
+    const container = scrollRef.current;
+    let scrollPos = 0;
+    const cardWidth = 316; // 300px card + 16px gap
+    let animationId: number;
+
+    const autoScroll = () => {
+      scrollPos += 0.5;
+      if (scrollPos >= container.scrollWidth / 2) {
+        scrollPos = 0;
+      }
+      container.scrollLeft = scrollPos;
+      animationId = requestAnimationFrame(autoScroll);
+    };
+
+    animationId = requestAnimationFrame(autoScroll);
+    return () => cancelAnimationFrame(animationId);
+  }, [isHovered]);
+
+  // Update active dot based on scroll position
+  useEffect(() => {
+    const container = scrollRef.current;
+    if (!container) return;
+
+    const handleScroll = () => {
+      const cardWidth = 316;
+      const idx = Math.round(container.scrollLeft / cardWidth) % testimonials.length;
+      setActiveDot(idx);
+    };
+
+    container.addEventListener('scroll', handleScroll, { passive: true });
+    return () => container.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const scrollToIndex = useCallback((idx: number) => {
+    if (!scrollRef.current) return;
+    const cardWidth = 316;
+    scrollRef.current.scrollTo({ left: idx * cardWidth, behavior: 'smooth' });
+    setActiveDot(idx);
+  }, []);
+
+  const scrollPrev = useCallback(() => {
+    const prevIdx = activeDot === 0 ? testimonials.length - 1 : activeDot - 1;
+    scrollToIndex(prevIdx);
+  }, [activeDot, scrollToIndex, testimonials.length]);
+
+  const scrollNext = useCallback(() => {
+    const nextIdx = (activeDot + 1) % testimonials.length;
+    scrollToIndex(nextIdx);
+  }, [activeDot, scrollToIndex, testimonials.length]);
+
+  return (
+    <section className="py-16 md:py-20 bg-background border-t border-border/50 relative overflow-hidden">
+      <div className="container mx-auto px-4 lg:px-8 max-w-6xl relative z-10">
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-14"
+        >
+          <span className="inline-flex items-center gap-2 text-xs font-bold text-primary uppercase tracking-[0.2em] px-4 py-1.5 rounded-full bg-primary/8 border border-primary/15 mb-4">
+            <Users className="w-3.5 h-3.5" />
+            Loved by thousands
+          </span>
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold mt-3 mb-4">
+            What Our <span className="text-foreground">Users Say</span>
+          </h2>
+          <p className="text-muted-foreground max-w-lg mx-auto">
+            Trusted by professionals, creators, and teams around the world.
+          </p>
+        </motion.div>
+
+        {/* Carousel with navigation */}
+        <div className="relative">
+          {/* Left arrow */}
+          <button
+            onClick={scrollPrev}
+            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-2 z-20 w-10 h-10 rounded-full glass-card shadow-premium flex items-center justify-center hover:border-primary/30 transition-all hidden md:flex"
+            aria-label="Previous testimonial"
+          >
+            <ChevronLeft className="w-5 h-5 text-muted-foreground" />
+          </button>
+
+          {/* Right arrow */}
+          <button
+            onClick={scrollNext}
+            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-2 z-20 w-10 h-10 rounded-full glass-card shadow-premium flex items-center justify-center hover:border-primary/30 transition-all hidden md:flex"
+            aria-label="Next testimonial"
+          >
+            <ChevronRight className="w-5 h-5 text-muted-foreground" />
+          </button>
+
+          {/* Gradient fade edges */}
+          <div className="absolute left-0 top-0 bottom-3 w-8 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
+          <div className="absolute right-0 top-0 bottom-3 w-8 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
+
+          {/* Scrollable carousel */}
+          <div
+            ref={scrollRef}
+            className="scroll-carousel px-2"
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+          >
+            {/* Duplicate cards for seamless loop */}
+            {[...testimonials, ...testimonials].map((testimonial, idx) => (
+              <div key={`test-${idx}`} className="testimonial-card">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className={`w-10 h-10 rounded-full bg-gradient-to-br ${testimonial.color} flex items-center justify-center text-white text-xs font-bold shadow-sm`}>
+                    {testimonial.initials}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-semibold text-sm truncate">{testimonial.name}</p>
+                    <p className="text-xs text-muted-foreground">{testimonial.role}</p>
+                  </div>
+                </div>
+                <div className="flex gap-0.5 mb-3">
+                  {Array.from({ length: testimonial.stars }).map((_, i) => (
+                    <Star key={i} className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+                  ))}
+                </div>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  &ldquo;{testimonial.text}&rdquo;
+                </p>
+              </div>
+            ))}
+          </div>
+
+          {/* Navigation dots */}
+          <div className="flex items-center justify-center gap-2 mt-6">
+            {testimonials.map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => scrollToIndex(idx)}
+                className={`rounded-full transition-all duration-300 ${
+                  activeDot === idx
+                    ? 'w-6 h-2 bg-primary'
+                    : 'w-2 h-2 bg-muted-foreground/30 hover:bg-muted-foreground/50'
+                }`}
+                aria-label={`Go to testimonial ${idx + 1}`}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </section>
@@ -567,7 +867,7 @@ function FAQSection() {
 // --- CTA Section ---
 function CTASection() {
   return (
-    <section className="py-16 md:py-20 border-t border-border/50">
+    <section className="py-16 md:py-20 border-t border-border/50 relative overflow-hidden">
       <div className="container mx-auto px-4 lg:px-8 max-w-3xl text-center">
         <motion.div
           initial={{ opacity: 0, y: 15 }}
@@ -578,22 +878,41 @@ function CTASection() {
             {/* Noise overlay */}
             <div className="noise-overlay absolute inset-0 pointer-events-none" />
 
-            {/* Border gradient */}
-            <div className="absolute inset-0 rounded-3xl border border-primary/15" />
+            {/* Animated gradient border */}
+            <div className="absolute inset-0 rounded-3xl p-[2px] overflow-hidden">
+              <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-primary/30 via-fuchsia-500/20 to-cyan-500/30 animate-gradient-shift" style={{ backgroundSize: '300% 300%' }} />
+            </div>
+
+            {/* Inner border */}
+            <div className="absolute inset-[2px] rounded-3xl border border-primary/15" />
 
             {/* Floating sparkles */}
             <div className="absolute top-6 left-8 w-2 h-2 rounded-full bg-primary/30 animate-sparkle" />
             <div className="absolute bottom-8 right-12 w-1.5 h-1.5 rounded-full bg-fuchsia-400/30 animate-sparkle" style={{ animationDelay: '1s' }} />
             <div className="absolute top-12 right-8 w-1 h-1 rounded-full bg-cyan-400/30 animate-sparkle" style={{ animationDelay: '2s' }} />
+            <div className="absolute bottom-12 left-10 w-1.5 h-1.5 rounded-full bg-emerald-400/25 animate-sparkle" style={{ animationDelay: '0.5s' }} />
 
             <div className="relative z-10">
+              {/* User count badge */}
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-card mb-6">
+                <div className="flex -space-x-2">
+                  <div className="avatar-ring bg-gradient-to-br from-violet-500 to-purple-600">S</div>
+                  <div className="avatar-ring bg-gradient-to-br from-cyan-500 to-blue-600">J</div>
+                  <div className="avatar-ring bg-gradient-to-br from-emerald-500 to-teal-600">E</div>
+                  <div className="avatar-ring bg-gradient-to-br from-amber-500 to-orange-600">M</div>
+                </div>
+                <span className="text-xs font-semibold text-muted-foreground">
+                  Join <span className="text-foreground"><AnimatedCounter end={1250} suffix="+" duration={2500} /></span> happy users
+                </span>
+              </div>
+
               <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold mb-5">
                 Ready to <span className="gradient-text">Get Started</span>?
               </h2>
               <p className="text-muted-foreground max-w-md mx-auto mb-10 text-lg">
                 No signup. No installation. Just upload your file and go.
               </p>
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <div className="flex flex-wrap items-center justify-center gap-3">
                 <Link
                   href="/tools/compress-image"
                   className="group inline-flex items-center gap-2.5 px-8 py-4 rounded-2xl btn-premium font-semibold text-sm relative z-10"
@@ -606,6 +925,20 @@ function CTASection() {
                   className="inline-flex items-center gap-2 px-8 py-4 rounded-2xl glass-card font-semibold text-sm hover:border-primary/40 transition-all hover:shadow-premium"
                 >
                   Resize Image
+                </Link>
+                <Link
+                  href="/tools/remove-background"
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-xl border border-fuchsia-500/30 bg-fuchsia-500/5 text-sm font-semibold text-fuchsia-600 dark:text-fuchsia-400 hover:bg-fuchsia-500/10 transition-all"
+                >
+                  <Sparkles className="w-4 h-4" />
+                  Try AI Tools
+                </Link>
+                <Link
+                  href="/blog"
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-xl border border-border/70 bg-background/50 text-sm font-semibold text-muted-foreground hover:border-primary/40 hover:text-primary transition-all"
+                >
+                  <BookOpen className="w-4 h-4" />
+                  Explore Blog
                 </Link>
               </div>
             </div>
@@ -637,6 +970,7 @@ export default function Home() {
         </Suspense>
         <StatsBanner />
         <HowItWorks />
+        <TestimonialsSection />
         <FeaturesSection />
         <FAQSection />
         <CTASection />
@@ -663,4 +997,3 @@ export default function Home() {
     </div>
   );
 }
-
