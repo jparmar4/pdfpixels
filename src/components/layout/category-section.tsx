@@ -1,5 +1,6 @@
 'use client';
 
+import React from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ArrowRight, ShieldCheck, Sparkles, Eye, Zap, Star, TrendingUp } from 'lucide-react';
@@ -186,7 +187,7 @@ function ToolBadge({ badge }: { badge: string }) {
 
   return (
     <span className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.16em] ${classes}`}>
-      {icon && <icon className="h-3 w-3" />}
+      {icon && React.createElement(icon, { className: "h-3 w-3" })}
       {badge}
     </span>
   );
