@@ -150,7 +150,7 @@ export function Navigation() {
 
   return (
     <>
-      <header className={`sticky top-0 z-50 w-full transition-all duration-300 ${scrolled ? 'border-b border-border/50 bg-background/88 shadow-soft backdrop-blur-2xl' : 'bg-background/72 backdrop-blur-xl'}`}>
+      <header className={`sticky top-0 z-50 w-full transition-all duration-300 ${scrolled ? 'border-b border-border/50 bg-background/95 shadow-soft' : 'bg-background/80'}`}>
         {/* Top thin gradient bar */}
         <div className="border-b border-border/30 bg-[linear-gradient(90deg,rgba(59,130,246,0.08),rgba(16,185,129,0.06),rgba(59,130,246,0.08))]">
           <div className="container mx-auto flex min-h-10 items-center justify-between gap-4 px-4 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground lg:px-8">
@@ -229,7 +229,7 @@ export function Navigation() {
               </div>
             </Link>
 
-            <div className="hidden xl:flex items-center gap-1 rounded-full border border-border/50 bg-card/65 p-1 shadow-soft backdrop-blur-xl">
+            <div className="hidden xl:flex items-center gap-1 rounded-full border border-border/50 bg-card/90 p-1 shadow-soft">
               <Button variant="ghost" size="sm" className="rounded-full px-4 text-sm" onClick={() => handleHomeLink()}>
                 All tools
               </Button>
@@ -339,7 +339,7 @@ export function Navigation() {
                 onMouseLeave={closeMega}
                 className="hidden xl:block pb-4"
               >
-                <div className="rounded-[1.75rem] border border-border/50 bg-card/80 p-6 shadow-premium backdrop-blur-2xl">
+                <div className="rounded-[1.75rem] border border-border/50 bg-card/95 p-6 shadow-premium">
                   <div className="grid gap-6 lg:grid-cols-[300px_minmax(0,1fr)]">
                     <div className="rounded-[1.5rem] border border-border/50 bg-background/75 p-5">
                       <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-primary/15 to-sky-500/10 text-primary">
@@ -458,14 +458,14 @@ export function Navigation() {
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-[60] flex items-start justify-center px-4 pt-[12vh]"
           >
-            <button type="button" className="absolute inset-0 bg-background/80 backdrop-blur-md" onClick={closeSearch} aria-label="Close search" />
+            <button type="button" className="absolute inset-0 bg-background/95" onClick={closeSearch} aria-label="Close search" />
 
             <motion.div
               initial={{ opacity: 0, y: -18, scale: 0.985 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -10, scale: 0.985 }}
               transition={{ duration: 0.2 }}
-              className={`relative w-full max-w-3xl overflow-hidden rounded-[2rem] border bg-card/92 shadow-premium backdrop-blur-2xl transition-all duration-300 ${searchFocused ? 'border-primary/40 shadow-primary/10' : 'border-border/50'}`}
+              className={`relative w-full max-w-3xl overflow-hidden rounded-[2rem] border bg-card/98 shadow-premium transition-all duration-300 ${searchFocused ? 'border-primary/40 shadow-primary/10' : 'border-border/50'}`}
             >
               {/* Gradient border animation when focused */}
               {searchFocused && (

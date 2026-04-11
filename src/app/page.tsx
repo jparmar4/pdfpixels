@@ -1,6 +1,12 @@
 'use client';
 
 import { AnimatePresence, motion } from 'framer-motion';
+import dynamic from 'next/dynamic';
+
+// Lazy load heavy below-the-fold sections
+const LazyStatsBanner = dynamic(() => import('./_lazy/stats-banner').then(m => ({ default: m.StatsBanner })), { ssr: false });
+const LazyTestimonialsSection = dynamic(() => import('./_lazy/testimonials-section').then(m => ({ default: m.TestimonialsSection })), { ssr: false });
+const LazyFeaturesSection = dynamic(() => import('./_lazy/features-section').then(m => ({ default: m.FeaturesSection })), { ssr: false });
 import { Navigation } from '@/components/layout/navigation';
 import { CategorySection } from '@/components/layout/category-section';
 import { Footer } from '@/components/layout/footer';
@@ -91,11 +97,7 @@ function TypingText() {
   return (
     <span className="gradient-text inline-block min-w-[200px] md:min-w-[320px] text-left">
       {displayText}
-      <motion.span
-        animate={{ opacity: [1, 0] }}
-        transition={{ duration: 0.5, repeat: Infinity, repeatType: 'reverse' }}
-        className="inline-block w-[3px] h-[0.85em] bg-primary ml-0.5 align-middle"
-      />
+      <span className="inline-block w-[3px] h-[0.85em] bg-primary ml-0.5 align-middle animate-pulse" />
     </span>
   );
 }
@@ -282,16 +284,12 @@ function ToolsSection() {
         {filteredCategories.map((category, idx) => (
           <div key={category.id}>
             {idx > 0 && <div className="h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent my-10" />}
-            <motion.section
+            <section
               id={category.id}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-80px' }}
-              transition={{ duration: 0.4, delay: idx * 0.03 }}
               aria-labelledby={`${category.id}-heading`}
             >
               <CategorySection category={category} />
-            </motion.section>
+            </section>
           </div>
         ))}
 
@@ -487,12 +485,25 @@ function TestimonialsSection() {
     },
   ];
 
-  // Auto-scroll animation
+  // Auto-scroll only when visible (performance: avoid rAF when off-screen)
+  const [isVisible, setIsVisible] = useState(false);
+  const sectionRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
-    if (!scrollRef.current || isHovered) return;
+    const el = sectionRef.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([e]) => setIsVisible(e.isIntersecting),
+      { threshold: 0.1 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!scrollRef.current || isHovered || !isVisible) return;
     const container = scrollRef.current;
     let scrollPos = 0;
-    const cardWidth = 316; // 300px card + 16px gap
     let animationId: number;
 
     const autoScroll = () => {
@@ -506,7 +517,7 @@ function TestimonialsSection() {
 
     animationId = requestAnimationFrame(autoScroll);
     return () => cancelAnimationFrame(animationId);
-  }, [isHovered]);
+  }, [isHovered, isVisible]);
 
   // Update active dot based on scroll position
   useEffect(() => {
@@ -541,7 +552,7 @@ function TestimonialsSection() {
   }, [activeDot, scrollToIndex, testimonials.length]);
 
   return (
-    <section className="py-16 md:py-20 bg-background border-t border-border/50 relative overflow-hidden">
+    <section ref={sectionRef} className="py-16 md:py-20 bg-background border-t border-border/50 relative overflow-hidden">
       <div className="container mx-auto px-4 lg:px-8 max-w-6xl relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 15 }}
