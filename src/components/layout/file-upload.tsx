@@ -4,12 +4,14 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
   CheckCircle2,
+  FileImage,
   FileText,
-  Image as ImageIcon,
   ShieldCheck,
   Sparkles,
   Upload,
   X,
+  Image as ImageIcon,
+  FileType2,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
@@ -35,6 +37,13 @@ function getFileType(file: File) {
   return type || file.name.split('.').pop()?.toUpperCase() || 'FILE';
 }
 
+/** Determine a file category from MIME type / extension for icon selection */
+function getFileCategory(file: File): 'pdf' | 'image' | 'unknown' {
+  if (file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf')) return 'pdf';
+  if (file.type.startsWith('image/')) return 'image';
+  return 'unknown';
+}
+
 export function FileUpload({ accept = 'image/*', maxSizeMb = 25 }: FileUploadProps) {
   const { uploadedFile, setUploadedFile, isProcessing, progress } = useAppStore();
   const [dragOver, setDragOver] = useState(false);
@@ -42,11 +51,13 @@ export function FileUpload({ accept = 'image/*', maxSizeMb = 25 }: FileUploadPro
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const previewUrlRef = useRef<string | null>(null);
+  const dragCounter = useRef(0);
 
   const acceptTokens = useMemo(() => accept.split(',').map((token) => token.trim()).filter(Boolean), [accept]);
   const isImageAccept = acceptTokens.some((token) => token.includes('image/'));
   const isPDFAccept = acceptTokens.some((token) => token.includes('pdf') || token === '.pdf');
   const isPDF = uploadedFile?.type === 'application/pdf' || uploadedFile?.name.toLowerCase().endsWith('.pdf');
+  const isImageFile = uploadedFile ? uploadedFile.type.startsWith('image/') : false;
   const maxBytes = maxSizeMb * 1024 * 1024;
 
   useEffect(() => {
@@ -126,8 +137,28 @@ export function FileUpload({ accept = 'image/*', maxSizeMb = 25 }: FileUploadPro
     getImageInfo(file);
   }, [accept, acceptedLabels, getImageInfo, matchesAccept, maxBytes, maxSizeMb, setUploadedFile]);
 
+  const handleDragEnter = useCallback((event: React.DragEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
+    dragCounter.current += 1;
+    if (dragCounter.current === 1) {
+      setDragOver(true);
+    }
+  }, []);
+
+  const handleDragLeave = useCallback((event: React.DragEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
+    dragCounter.current -= 1;
+    if (dragCounter.current === 0) {
+      setDragOver(false);
+    }
+  }, []);
+
   const handleDrop = useCallback((event: React.DragEvent) => {
     event.preventDefault();
+    event.stopPropagation();
+    dragCounter.current = 0;
     setDragOver(false);
     handleSelectedFile(event.dataTransfer.files?.[0] ?? null);
   }, [handleSelectedFile]);
@@ -153,6 +184,34 @@ export function FileUpload({ accept = 'image/*', maxSizeMb = 25 }: FileUploadPro
   const uploadLabel = isPDFAccept && !isImageAccept ? 'Upload PDF' : 'Upload file';
   const uploadHeading = isPDFAccept && !isImageAccept ? 'Drop your PDF here' : 'Drop your file here';
 
+  /** Icon to show in the drop zone based on accepted file types */
+  const dropZoneIcon = (() => {
+    if (isPDFAccept && isImageAccept) {
+      return <FileType2 className="h-10 w-10" />;
+    }
+    if (isPDFAccept) {
+      return <FileText className="h-10 w-10" />;
+    }
+    return <ImageIcon className="h-10 w-10" />;
+  })();
+
+  /** Icon for the uploaded file preview */
+  const uploadedFileIcon = (() => {
+    if (!uploadedFile) return null;
+    const cat = getFileCategory(uploadedFile);
+    if (cat === 'pdf') return <FileText className="h-10 w-10" />;
+    if (cat === 'image') return <FileImage className="h-10 w-10" />;
+    return <FileType2 className="h-10 w-10" />;
+  })();
+
+  const uploadedFileIconBg = (() => {
+    if (!uploadedFile) return '';
+    const cat = getFileCategory(uploadedFile);
+    if (cat === 'pdf') return 'bg-red-500/10 text-red-500';
+    if (cat === 'image') return 'bg-sky-500/10 text-sky-500';
+    return 'bg-primary/10 text-primary';
+  })();
+
   return (
     <div className="space-y-4">
       <AnimatePresence mode="wait">
@@ -162,17 +221,48 @@ export function FileUpload({ accept = 'image/*', maxSizeMb = 25 }: FileUploadPro
             initial={{ opacity: 0, scale: 0.985 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.985 }}
-            onDragOver={(event) => {
-              event.preventDefault();
-              setDragOver(true);
-            }}
-            onDragLeave={() => setDragOver(false)}
+            onDragEnter={handleDragEnter}
+            onDragOver={handleDragEnter}
+            onDragLeave={handleDragLeave}
             onDrop={handleDrop}
-            className={`relative overflow-hidden rounded-[2rem] border-2 border-dashed transition-all duration-300 ${dragOver
-              ? 'border-primary bg-primary/6 shadow-[0_18px_60px_-30px_rgba(59,130,246,0.45)]'
-              : 'border-border/60 bg-card/65 shadow-premium backdrop-blur-xl hover:border-primary/35 hover:bg-card/80'
-              }`}
+            className={`relative overflow-hidden rounded-[2rem] border-2 transition-all duration-300 ${
+              dragOver
+                ? 'border-primary bg-primary/6 shadow-[0_18px_60px_-30px_rgba(59,130,246,0.45)]'
+                : 'border-border/60 bg-card/65 shadow-premium backdrop-blur-xl hover:border-primary/35 hover:bg-card/80'
+            }`}
+            style={
+              dragOver
+                ? {
+                    borderImageSource: 'linear-gradient(135deg, #6366f1, #8b5cf6, #06b6d4)',
+                    borderImageSlice: 1,
+                  }
+                : undefined
+            }
           >
+            {/* Animated dashed border for empty state */}
+            {!dragOver && (
+              <div className="pointer-events-none absolute inset-0 rounded-[2rem]">
+                <svg className="absolute inset-0 h-full w-full" xmlns="http://www.w3.org/2000/svg">
+                  <rect
+                    x="1"
+                    y="1"
+                    rx="31"
+                    ry="31"
+                    width="calc(100% - 2px)"
+                    height="calc(100% - 2px)"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeDasharray="8 6"
+                    className="text-border/40"
+                    style={{
+                      animation: 'dashFlow 2s linear infinite',
+                    }}
+                  />
+                </svg>
+              </div>
+            )}
+
             <input
               ref={inputRef}
               type="file"
@@ -185,15 +275,25 @@ export function FileUpload({ accept = 'image/*', maxSizeMb = 25 }: FileUploadPro
             <div className="absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
 
             <div className="relative z-10 flex flex-col items-center px-6 py-10 text-center md:px-10 md:py-14">
+              {/* Animated icon area */}
               <motion.div
-                animate={dragOver ? { y: -6, scale: 1.03 } : { y: 0, scale: 1 }}
-                transition={{ type: 'spring', stiffness: 260, damping: 18 }}
-                className={`mb-6 flex h-24 w-24 items-center justify-center rounded-[1.75rem] border shadow-lg ${dragOver
-                  ? 'border-primary/20 bg-gradient-to-br from-primary to-sky-500 text-white'
-                  : 'border-border/60 bg-background/80 text-primary'
-                  }`}
+                animate={
+                  dragOver
+                    ? { y: -6, scale: [1, 1.12, 1] }
+                    : { y: [0, -4, 0], scale: 1 }
+                }
+                transition={
+                  dragOver
+                    ? { type: 'spring', stiffness: 260, damping: 18, repeat: Infinity, repeatType: 'reverse' }
+                    : { type: 'spring', stiffness: 260, damping: 18, repeat: Infinity, repeatType: 'reverse', duration: 3 }
+                }
+                className={`mb-6 flex h-24 w-24 items-center justify-center rounded-[1.75rem] border shadow-lg transition-colors duration-300 ${
+                  dragOver
+                    ? 'border-primary/30 bg-gradient-to-br from-primary to-sky-500 text-white shadow-primary/30'
+                    : 'border-border/60 bg-background/80 text-primary'
+                }`}
               >
-                {isPDFAccept && !isImageAccept ? <FileText className="h-10 w-10" /> : <Upload className="h-10 w-10" />}
+                {dragOver ? <Upload className="h-10 w-10" /> : dropZoneIcon}
               </motion.div>
 
               <div className="space-y-3">
@@ -205,6 +305,7 @@ export function FileUpload({ accept = 'image/*', maxSizeMb = 25 }: FileUploadPro
                 </p>
               </div>
 
+              {/* File type badges */}
               <div className="mt-6 flex flex-wrap items-center justify-center gap-2.5">
                 {acceptedLabels.map((label) => (
                   <Badge key={label} variant="secondary" className="rounded-full border border-border/60 bg-background/80 px-3 py-1 font-medium">
@@ -219,6 +320,7 @@ export function FileUpload({ accept = 'image/*', maxSizeMb = 25 }: FileUploadPro
                 </Badge>
               </div>
 
+              {/* Trust indicators */}
               <div className="mt-6 grid gap-3 text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground sm:grid-cols-3">
                 <span className="inline-flex items-center justify-center gap-2 rounded-full border border-border/60 bg-background/75 px-3 py-1.5">
                   <ShieldCheck className="h-3.5 w-3.5 text-emerald-500" />
@@ -234,10 +336,20 @@ export function FileUpload({ accept = 'image/*', maxSizeMb = 25 }: FileUploadPro
                 </span>
               </div>
 
-              <Button size="lg" className="btn-premium mt-8 h-12 rounded-2xl px-8 font-bold pointer-events-none" type="button">
-                <Upload className="h-4 w-4" />
+              {/* Prominent upload button */}
+              <Button
+                size="lg"
+                className="btn-premium btn-shimmer mt-8 h-13 rounded-2xl px-10 text-base font-bold pointer-events-none shadow-primary"
+                type="button"
+              >
+                <Upload className="h-5 w-5" />
                 {uploadLabel}
               </Button>
+
+              {/* "Recently used" / file type support hint */}
+              <p className="mt-4 text-xs text-muted-foreground/70">
+                Supports JPG, PNG, WebP, HEIC, PDF and more
+              </p>
             </div>
           </motion.div>
         ) : (
@@ -253,9 +365,14 @@ export function FileUpload({ accept = 'image/*', maxSizeMb = 25 }: FileUploadPro
               <div className="relative flex min-h-[280px] items-center justify-center overflow-hidden rounded-[1.5rem] border border-border/50 bg-background/70 px-4 py-6">
                 {isPDF ? (
                   <div className="flex flex-col items-center gap-3 text-center">
-                    <div className="flex h-20 w-20 items-center justify-center rounded-[1.4rem] bg-red-500/10 text-red-500">
+                    <motion.div
+                      initial={{ scale: 0.8, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      transition={{ type: 'spring', stiffness: 200, damping: 15 }}
+                      className="flex h-20 w-20 items-center justify-center rounded-[1.4rem] bg-red-500/10 text-red-500"
+                    >
                       <FileText className="h-10 w-10" />
-                    </div>
+                    </motion.div>
                     <div>
                       <p className="max-w-xs truncate text-base font-semibold text-foreground">{uploadedFile.name}</p>
                       <p className="text-sm text-muted-foreground">PDF ready for processing</p>
@@ -296,9 +413,20 @@ export function FileUpload({ accept = 'image/*', maxSizeMb = 25 }: FileUploadPro
 
               <div className="flex flex-col gap-3 rounded-[1.5rem] border border-border/50 bg-background/75 p-4">
                 <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Selected file</p>
-                    <p className="mt-1 line-clamp-2 text-sm font-semibold text-foreground">{uploadedFile.name}</p>
+                  <div className="flex items-start gap-3">
+                    {/* File type icon */}
+                    <motion.div
+                      initial={{ scale: 0.7, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      transition={{ type: 'spring', stiffness: 200, damping: 15, delay: 0.1 }}
+                      className={`mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${uploadedFileIconBg}`}
+                    >
+                      {uploadedFileIcon}
+                    </motion.div>
+                    <div>
+                      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Selected file</p>
+                      <p className="mt-1 line-clamp-2 text-sm font-semibold text-foreground">{uploadedFile.name}</p>
+                    </div>
                   </div>
                   <Badge className="rounded-full bg-primary/10 text-primary hover:bg-primary/15">{getFileType(uploadedFile)}</Badge>
                 </div>

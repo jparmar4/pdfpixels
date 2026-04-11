@@ -2,15 +2,21 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
   ArrowRight,
+  BookOpen,
+  ChevronRight,
   Command,
+  Home,
   Menu,
+  Moon,
   Search,
   ShieldCheck,
   Sparkles,
+  Sun,
   Upload,
   X,
   Zap,
@@ -28,19 +34,46 @@ export function Navigation() {
   const [searchResults, setSearchResults] = useState<Tool[]>([]);
   const [scrolled, setScrolled] = useState(false);
   const [activeMegaCategory, setActiveMegaCategory] = useState<string | null>(null);
+  const [isDark, setIsDark] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem('theme');
+      if (stored) return stored === 'dark';
+      return window.matchMedia('(prefers-color-scheme: dark)').matches;
+    }
+    return false;
+  });
+  const [searchFocused, setSearchFocused] = useState(false);
   const megaTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const searchRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
+  const pathname = usePathname();
   const setActiveTool = useAppStore((state) => state.setActiveTool);
+  const activeTool = useAppStore((state) => state.activeTool);
 
   const featuredTools = useMemo(() => allTools.filter((tool) => tool.popular).slice(0, 6), []);
   const activeCategory = toolCategories.find((category) => category.id === activeMegaCategory) ?? null;
+
+  // Breadcrumb: show on /tools/* pages
+  const isToolPage = pathname.startsWith('/tools/');
+  const toolSlug = isToolPage ? pathname.replace('/tools/', '') : '';
+  const toolName = activeTool?.name ?? (toolSlug ? toolSlug.split('-').map((s) => s.charAt(0).toUpperCase() + s.slice(1)).join(' ') : '');
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 10);
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Sync dark mode class to DOM whenever isDark changes
+  useEffect(() => {
+    document.documentElement.classList.toggle('dark', isDark);
+  }, [isDark]);
+
+  const toggleDarkMode = () => {
+    const next = !isDark;
+    setIsDark(next);
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+  };
 
   useEffect(() => {
     const handleKey = (event: KeyboardEvent) => {
@@ -50,6 +83,7 @@ export function Navigation() {
       if ((event.ctrlKey && event.key.toLowerCase() === 'k') || (event.key === '/' && !isTypingTarget)) {
         event.preventDefault();
         setSearchOpen(true);
+        setSearchFocused(true);
         setTimeout(() => searchRef.current?.focus(), 50);
       }
 
@@ -57,6 +91,7 @@ export function Navigation() {
         setSearchOpen(false);
         setSearchQuery('');
         setSearchResults([]);
+        setSearchFocused(false);
         setActiveMegaCategory(null);
       }
     };
@@ -69,6 +104,7 @@ export function Navigation() {
     setSearchOpen(false);
     setSearchQuery('');
     setSearchResults([]);
+    setSearchFocused(false);
   };
 
   const handleSearch = (query: string) => {
@@ -115,6 +151,7 @@ export function Navigation() {
   return (
     <>
       <header className={`sticky top-0 z-50 w-full transition-all duration-300 ${scrolled ? 'border-b border-border/50 bg-background/88 shadow-soft backdrop-blur-2xl' : 'bg-background/72 backdrop-blur-xl'}`}>
+        {/* Top thin gradient bar */}
         <div className="border-b border-border/30 bg-[linear-gradient(90deg,rgba(59,130,246,0.08),rgba(16,185,129,0.06),rgba(59,130,246,0.08))]">
           <div className="container mx-auto flex min-h-10 items-center justify-between gap-4 px-4 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground lg:px-8">
             <div className="hidden items-center gap-3 md:flex">
@@ -131,6 +168,37 @@ export function Navigation() {
               <Sparkles className="h-3.5 w-3.5 text-primary" />
               Premium PDF and image tooling
             </div>
+            {/* Dark mode toggle */}
+            <button
+              type="button"
+              onClick={toggleDarkMode}
+              className="ml-2 flex h-8 w-8 items-center justify-center rounded-full border border-border/50 bg-card/60 text-muted-foreground transition-all duration-200 hover:border-primary/30 hover:bg-card hover:text-foreground"
+              aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+            >
+              <AnimatePresence mode="wait">
+                {isDark ? (
+                  <motion.div
+                    key="sun"
+                    initial={{ rotate: -90, scale: 0 }}
+                    animate={{ rotate: 0, scale: 1 }}
+                    exit={{ rotate: 90, scale: 0 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <Sun className="h-3.5 w-3.5" />
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="moon"
+                    initial={{ rotate: 90, scale: 0 }}
+                    animate={{ rotate: 0, scale: 1 }}
+                    exit={{ rotate: -90, scale: 0 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <Moon className="h-3.5 w-3.5" />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </button>
           </div>
         </div>
 
@@ -165,6 +233,15 @@ export function Navigation() {
               <Button variant="ghost" size="sm" className="rounded-full px-4 text-sm" onClick={() => handleHomeLink()}>
                 All tools
               </Button>
+              <Link href="/blog">
+                <button
+                  type="button"
+                  className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  <BookOpen className="h-4 w-4" />
+                  Blog
+                </button>
+              </Link>
               {toolCategories.map((category) => {
                 const CategoryIcon = category.icon;
                 return (
@@ -194,6 +271,7 @@ export function Navigation() {
                 className="h-10 rounded-full border border-border/50 bg-card/60 px-4 text-sm text-muted-foreground shadow-soft transition-colors hover:bg-card hover:text-foreground"
                 onClick={() => {
                   setSearchOpen(true);
+                  setSearchFocused(true);
                   setTimeout(() => searchRef.current?.focus(), 50);
                 }}
               >
@@ -219,6 +297,36 @@ export function Navigation() {
               </Button>
             </div>
           </div>
+
+          {/* Breadcrumb navigation for tool pages */}
+          <AnimatePresence>
+            {isToolPage && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.2 }}
+                className="overflow-hidden"
+              >
+                <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 pb-3 text-xs text-muted-foreground">
+                  <Link href="/" className="inline-flex items-center gap-1 transition-colors hover:text-foreground">
+                    <Home className="h-3 w-3" />
+                    Home
+                  </Link>
+                  <ChevronRight className="h-3 w-3 text-muted-foreground/50" />
+                  <Link href="/" onClick={(e) => { e.preventDefault(); handleHomeLink(); }} className="transition-colors hover:text-foreground">
+                    Tools
+                  </Link>
+                  {toolName && (
+                    <>
+                      <ChevronRight className="h-3 w-3 text-muted-foreground/50" />
+                      <span className="font-medium text-foreground">{normalizeDisplayText(toolName)}</span>
+                    </>
+                  )}
+                </nav>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           <AnimatePresence>
             {activeCategory ? (
@@ -282,12 +390,18 @@ export function Navigation() {
                 className="overflow-hidden border-t border-border/30 lg:hidden"
               >
                 <div className="space-y-5 py-4">
-                  <div className="grid gap-2 sm:grid-cols-2">
+                  <div className="grid gap-2 sm:grid-cols-3">
                     <Button asChild className="btn-premium h-11 rounded-2xl">
                       <Link href="/tools/compress-pdf" onClick={() => setMobileMenuOpen(false)}>Open PDF tools</Link>
                     </Button>
                     <Button variant="outline" className="h-11 rounded-2xl" onClick={() => handleHomeLink()}>
                       Browse all categories
+                    </Button>
+                    <Button asChild variant="outline" className="h-11 rounded-2xl">
+                      <Link href="/blog" onClick={() => setMobileMenuOpen(false)}>
+                        <BookOpen className="mr-2 h-4 w-4" />
+                        Blog
+                      </Link>
                     </Button>
                   </div>
 
@@ -351,8 +465,29 @@ export function Navigation() {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -10, scale: 0.985 }}
               transition={{ duration: 0.2 }}
-              className="relative w-full max-w-3xl overflow-hidden rounded-[2rem] border border-border/50 bg-card/92 shadow-premium backdrop-blur-2xl"
+              className={`relative w-full max-w-3xl overflow-hidden rounded-[2rem] border bg-card/92 shadow-premium backdrop-blur-2xl transition-all duration-300 ${searchFocused ? 'border-primary/40 shadow-primary/10' : 'border-border/50'}`}
             >
+              {/* Gradient border animation when focused */}
+              {searchFocused && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="pointer-events-none absolute inset-0 rounded-[2rem]"
+                  style={{
+                    padding: '2px',
+                    background: 'linear-gradient(135deg, rgba(99,102,241,0.4), rgba(139,92,246,0.3), rgba(217,70,239,0.2), rgba(6,182,212,0.3), rgba(99,102,241,0.4))',
+                    backgroundSize: '300% 300%',
+                    animation: 'gradientShift 4s ease infinite',
+                    WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+                    mask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+                    WebkitMaskComposite: 'xor',
+                    maskComposite: 'exclude',
+                    borderRadius: '2rem',
+                  }}
+                />
+              )}
+
               <div className="border-b border-border/40 bg-background/70 px-5 py-4">
                 <div className="flex items-center gap-3">
                   <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary/10 text-primary">
@@ -363,6 +498,8 @@ export function Navigation() {
                     type="text"
                     value={searchQuery}
                     onChange={(event) => handleSearch(event.target.value)}
+                    onFocus={() => setSearchFocused(true)}
+                    onBlur={() => setSearchFocused(false)}
                     placeholder="Search PDF and image tools"
                     className="flex-1 border-none bg-transparent text-base font-semibold outline-none placeholder:text-muted-foreground/70"
                     autoFocus
