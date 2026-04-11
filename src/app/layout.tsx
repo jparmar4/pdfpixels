@@ -6,6 +6,8 @@ import { JsonLdSchemas } from '@/components/seo/json-ld';
 import { seoConfig, siteConfig } from '@/lib/seo-config';
 import { AdSenseScript } from '@/components/ads/adsense-script';
 import { DEFAULT_OG_IMAGE_URL } from '@/lib/seo';
+import { PageTransitionWrapper } from '@/components/layout/page-transition-wrapper';
+import { CookieConsentBanner } from '@/components/ads/cookie-consent';
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
@@ -149,9 +151,12 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <body className="bg-background text-foreground antialiased">
         <JsonLdSchemas />
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} forcedTheme="light" disableTransitionOnChange>
-          {children}
+          <PageTransitionWrapper>
+            {children}
+          </PageTransitionWrapper>
           <Toaster />
           <AdSenseScript />
+          <CookieConsentBanner />
         </ThemeProvider>
       </body>
     </html>

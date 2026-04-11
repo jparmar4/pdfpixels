@@ -1,10 +1,8 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { LayoutTemplate } from 'lucide-react';
-import { SitePageShell } from '@/components/layout/site-page-shell';
-import { getToolBySlug } from '@/lib/tools-data';
 import { useCasePages } from '@/lib/use-cases';
+import { getToolBySlug, allTools, toolCategories } from '@/lib/tools-data';
+import { UseCaseDetailContent } from './use-case-detail-content';
 
 export function generateStaticParams() {
   return useCasePages.map((useCase) => ({ slug: useCase.slug }));
@@ -51,41 +49,23 @@ export default async function UseCasePage({ params }: { params: Promise<{ slug: 
     },
   };
 
+  // Find related tools from the same category
+  const relatedTools = allTools
+    .filter((t) => t.category === tool.category && t.slug !== tool.slug)
+    .slice(0, 6);
+
+  // Get the category name
+  const category = toolCategories.find((c) => c.id === tool.category);
+
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
-      <SitePageShell
-        eyebrow="Use case"
-        title={entry.title}
-        description={entry.description}
-        iconName="layout"
-        actions={[
-          { label: `Open ${tool.name}`, href: `/tools/${tool.slug}` },
-          { label: 'View more use cases', href: '/use-cases', variant: 'outline' },
-        ]}
-        contentClassName="max-w-5xl"
-      >
-        <div className="mb-6 text-sm text-muted-foreground">
-          <Link href="/" className="hover:text-primary">Home</Link> / <Link href="/use-cases" className="hover:text-primary">Use cases</Link> / <span className="text-foreground">{entry.title}</span>
-        </div>
-
-        <section className="section-panel rounded-[2rem] p-6 md:p-8">
-          <h2 className="text-2xl font-bold text-foreground">Quick answer</h2>
-          <p className="mt-4 text-sm leading-7 text-muted-foreground">
-            Use <strong>{tool.name}</strong> to handle <strong>{entry.intent}</strong> in a fast browser workflow. Upload your file, tune the required settings, process, and download the optimized result.
-          </p>
-        </section>
-
-        <section className="section-panel mt-6 rounded-[2rem] p-6 md:p-8">
-          <h2 className="text-2xl font-bold text-foreground">How to do it</h2>
-          <ol className="mt-4 list-decimal space-y-2 pl-5 text-sm leading-7 text-muted-foreground">
-            <li>Open the recommended tool below.</li>
-            <li>Upload the source file you want to process.</li>
-            <li>Set target options according to the requirement.</li>
-            <li>Process and download the final result.</li>
-          </ol>
-        </section>
-      </SitePageShell>
+      <UseCaseDetailContent
+        entry={entry}
+        tool={tool}
+        relatedTools={relatedTools}
+        categoryName={category?.name || 'Tools'}
+      />
     </>
   );
 }
