@@ -127,39 +127,87 @@ export async function POST(request: NextRequest) {
       }
 
       case 'enhance-image': {
+        // Multi-step enhancement: denoise, sharpen, improve contrast, boost vibrance
         out = await base
-          .sharpen({ sigma: 1.5, m1: 1, m2: 2, x1: 2, y2: 10, y3: 20 })
-          .modulate({ brightness: 1.05, saturation: 1.2 })
+          .clone()
+          // Step 1: Reduce noise and smooth artifacts
+          .blur(0.3)
+          // Step 2: Apply unsharp mask (sharpen) for crisp edges
+          .sharpen({ sigma: 1.2, m1: 0.5, m2: 3, x1: 2, y2: 10, y3: 20 })
+          // Step 3: Normalize brightness and contrast
           .normalize()
-          .png({ quality: 100 })
+          // Step 4: Boost saturation slightly for richer colors
+          .modulate({ brightness: 1.04, saturation: 1.25 })
+          // Step 5: Final sharpen pass for edge definition
+          .sharpen({ sigma: 0.6, m1: 0.8, m2: 1.5, x1: 2, y2: 10, y3: 20 })
+          .png({ quality: 100, compressionLevel: 6 })
           .toBuffer();
+        engine = 'sharp-enhanced-v2';
         break;
       }
 
-      case 'beautify':
-      case 'retouch': {
+      case 'beautify': {
+        // Portrait beautification: smooth skin, brighten, enhance eyes area
         out = await base
-          .blur(1.2)
-          .sharpen({ sigma: 0.8, m1: 0, m2: 1 })
-          .modulate({ brightness: 1.06, saturation: 1.08 })
+          .clone()
+          // Gentle blur for skin smoothing (simulates bilateral filter)
+          .blur(0.8)
+          // Re-sharpen eyes/edges selectively
+          .sharpen({ sigma: 0.6, m1: 0.2, m2: 1, x1: 3, y2: 15, y3: 25 })
+          // Slight brightness boost for glowing skin
+          .modulate({ brightness: 1.08, saturation: 1.1 })
+          // Soft contrast enhancement
           .normalize()
-          .png({ quality: 100 })
+          .png({ quality: 100, compressionLevel: 6 })
           .toBuffer();
+        engine = 'sharp-beautify-v2';
+        break;
+      }
+      case 'retouch': {
+        // Photo retouching: blemish removal simulation, clarity, color correction
+        out = await base
+          .clone()
+          // Light blur to reduce blemishes/spots
+          .blur(0.5)
+          // Re-sharpen to maintain detail
+          .sharpen({ sigma: 0.7, m1: 0.3, m2: 1.2, x1: 2, y2: 12, y3: 22 })
+          // Color correction and normalization
+          .normalize()
+          // Subtle warm tone adjustment
+          .modulate({ brightness: 1.05, saturation: 1.12 })
+          // Final clarity pass
+          .sharpen({ sigma: 0.4, m1: 0.5, m2: 0.8 })
+          .png({ quality: 100, compressionLevel: 6 })
+          .toBuffer();
+        engine = 'sharp-retouch-v2';
         break;
       }
 
       case 'upscale': {
         const meta = await base.metadata();
+        const scale = 2;
+        const newWidth = (meta.width || 800) * scale;
+        const newHeight = (meta.height || 600) * scale;
+        
+        // Multi-step upscale for better quality
+        // Step 1: Upscale by 2x with lanczos3
         out = await base
+          .clone()
           .resize({
-            width: (meta.width || 800) * 2,
-            height: (meta.height || 600) * 2,
+            width: newWidth,
+            height: newHeight,
             kernel: sharp.kernel.lanczos3,
             fastShrinkOnLoad: false,
           })
-          .sharpen({ sigma: 1.2 })
-          .png({ quality: 100 })
+          // Step 2: Sharpen to recover detail lost during upscaling
+          .sharpen({ sigma: 1.0, m1: 1.0, m2: 2.5, x1: 2, y2: 10, y3: 20 })
+          // Step 3: Mild unsharp mask
+          .sharpen({ sigma: 0.5, m1: 0.3, m2: 1.0, x1: 3, y2: 15, y3: 25 })
+          // Step 4: Normalize to fix contrast loss
+          .normalize()
+          .png({ quality: 100, compressionLevel: 6 })
           .toBuffer();
+        engine = `sharp-upscale-v2-${scale}x`;
         break;
       }
 

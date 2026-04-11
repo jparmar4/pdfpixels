@@ -140,9 +140,12 @@ export function ConvertWorkspace() {
     return 'Image';
   }, [activeTool?.id]);
 
+  const isPdfToImage = activeTool?.id === 'pdf-to-image';
+  const [dpi, setDpi] = useState(150);
+
   const handleProcess = useCallback(async () => {
     if (!uploadedFile) {
-      toast.error('Please upload an image first');
+      toast.error(isPdfToImage ? 'Please upload a PDF first' : 'Please upload an image first');
       return;
     }
 
@@ -150,16 +153,25 @@ export function ConvertWorkspace() {
     setProgress(0);
 
     const formData = new FormData();
-    formData.append('image', uploadedFile);
+    formData.append('file', uploadedFile);
     formData.append('format', outputFormat);
     formData.append('quality', quality.toString());
+
+    // PDF-to-image uses a different API endpoint
+    if (isPdfToImage) {
+      formData.append('dpi', dpi.toString());
+      formData.append('pages', 'all');
+    } else {
+      formData.append('image', uploadedFile);
+    }
 
     try {
       const progressInterval = setInterval(() => {
         setProgress((prev) => Math.min(prev + 10, 90));
       }, 180);
 
-      const response = await fetch('/api/image/process', {
+      const endpoint = isPdfToImage ? '/api/pdf/to-image' : '/api/image/process';
+      const response = await fetch(endpoint, {
         method: 'POST',
         body: formData,
       });
@@ -178,20 +190,37 @@ export function ConvertWorkspace() {
         throw new Error(message);
       }
 
-      const data = await response.json();
-      setProcessedImage(data.imageUrl);
-      setProcessingStats({
-        originalSize: data.originalSize,
-        processedSize: data.processedSize,
-        savedPercent: data.savedPercent,
-      });
-      toast.success(`Image converted to ${formatInfo[outputFormat].name}.`);
+      if (isPdfToImage) {
+        // PDF-to-image returns an array of page images
+        const data = await response.json();
+        if (data.images && data.images.length > 0) {
+          // Set the first page as the processed image for preview
+          setProcessedImage(data.images[0].imageUrl);
+          setProcessingStats({
+            originalSize: 0,
+            processedSize: data.images[0].size || 0,
+            savedPercent: 0,
+          });
+          toast.success(`Converted ${data.convertedPages} page${data.convertedPages !== 1 ? 's' : ''} to images.`);
+        } else {
+          throw new Error('No pages could be converted from the PDF.');
+        }
+      } else {
+        const data = await response.json();
+        setProcessedImage(data.imageUrl);
+        setProcessingStats({
+          originalSize: data.originalSize,
+          processedSize: data.processedSize,
+          savedPercent: data.savedPercent,
+        });
+        toast.success(`Image converted to ${formatInfo[outputFormat].name}.`);
+      }
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Failed to convert image. Please try again.');
+      toast.error(error instanceof Error ? error.message : (isPdfToImage ? 'Failed to convert PDF. Please try again.' : 'Failed to convert image. Please try again.'));
     } finally {
       setIsProcessing(false);
     }
-  }, [outputFormat, quality, setIsProcessing, setProcessedImage, setProgress, uploadedFile]);
+  }, [isPdfToImage, outputFormat, quality, dpi, setIsProcessing, setProcessedImage, setProgress, uploadedFile]);
 
   const handleDownload = useCallback(() => {
     if (!processedImage) return;
@@ -372,16 +401,36 @@ export function ConvertWorkspace() {
                 </div>
               ) : null}
 
+              {isPdfToImage ? (
+                <div className="space-y-2">
+                  <Label>DPI (Resolution)</Label>
+                  <Select value={dpi.toString()} onValueChange={(value) => setDpi(Number.parseInt(value, 10))}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="72">72 DPI (Fast, small files)</SelectItem>
+                      <SelectItem value="150">150 DPI (Balanced)</SelectItem>
+                      <SelectItem value="200">200 DPI (Good quality)</SelectItem>
+                      <SelectItem value="300">300 DPI (Print quality)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <p className="text-xs leading-5 text-muted-foreground">
+                    Higher DPI produces larger images with more detail but takes longer to process.
+                  </p>
+                </div>
+              ) : null}
+
               <Button className="btn-premium h-12 w-full rounded-2xl" onClick={handleProcess} disabled={!uploadedFile || isProcessing}>
                 {isProcessing ? (
                   <>
                     <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: 'linear' }} className="mr-2 h-4 w-4 rounded-full border-2 border-primary-foreground/30 border-t-primary-foreground" />
-                    Converting...
+                    {isPdfToImage ? 'Converting PDF...' : 'Converting...'}
                   </>
                 ) : (
                   <>
                     <Zap className="mr-2 h-4 w-4" />
-                    Convert image
+                    {isPdfToImage ? 'Convert PDF to Images' : 'Convert image'}
                   </>
                 )}
               </Button>

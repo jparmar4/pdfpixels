@@ -475,7 +475,7 @@ export function PDFToolsWorkspace() {
             setIsProcessing(false);
         }
 
-    }, [uploadedFile, activeTool, angle, rotatePages, wmText, wmOpacity, wmColor, wmFontSize, wmPosition, wmRotation, password, confirmPassword, deletePages, pageOrder]);
+    }, [uploadedFile, activeTool, angle, rotatePages, wmText, wmOpacity, wmColor, wmFontSize, wmPosition, wmRotation, password, confirmPassword, deletePages, pageOrder, setIsProcessing, setProgress, buildFormData, getApiEndpoint]);
 
     const handleDownload = useCallback(() => {
         if (!result) return;

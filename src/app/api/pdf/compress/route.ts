@@ -174,6 +174,8 @@ function toSavedPercent(before: number, after: number) {
 }
 
 async function compressWithPdfLibFallback(originalBuffer: Buffer) {
+  // pdf-lib fallback: rebuilds the PDF structure with object streams
+  // This removes unused objects, deduplicates resources, and optimizes the cross-reference table
   const srcDoc = await PDFDocument.load(originalBuffer, {
     ignoreEncryption: true,
     updateMetadata: false,
@@ -185,10 +187,27 @@ async function compressWithPdfLibFallback(originalBuffer: Buffer) {
     outDoc.addPage(page)
   }
 
+  // Copy metadata from source
+  const srcTitle = srcDoc.getTitle()
+  const srcAuthor = srcDoc.getAuthor()
+  const srcSubject = srcDoc.getSubject()
+  const srcCreator = srcDoc.getCreator()
+  const srcProducer = srcDoc.getProducer()
+  const srcCreationDate = srcDoc.getCreationDate()
+  const srcModDate = srcDoc.getModificationDate()
+  if (srcTitle) outDoc.setTitle(srcTitle)
+  if (srcAuthor) outDoc.setAuthor(srcAuthor)
+  if (srcSubject) outDoc.setSubject(srcSubject)
+  if (srcCreator) outDoc.setCreator(srcCreator)
+  if (srcProducer) outDoc.setProducer(srcProducer)
+  if (srcCreationDate) outDoc.setCreationDate(srcCreationDate)
+  if (srcModDate) outDoc.setModificationDate(srcModDate)
+
   const bytes = await outDoc.save({
     useObjectStreams: true,
     addDefaultPage: false,
     updateFieldAppearances: false,
+    objectsPerTick: 100,
   })
 
   return Buffer.from(bytes)
@@ -315,15 +334,12 @@ export async function POST(req: NextRequest) {
     }
 
     const savedPercent = toSavedPercent(originalBuffer.length, compressed.length)
-    if (strict && savedPercent < profile.minimumReduction * 100) {
-      const environmentHint = engine === 'local-fallback'
-        ? ' Install Ghostscript or configure PDF_COMPRESSOR_URL for stronger PDF compression.'
-        : ''
-
+    // For local fallback, always return the file even with minimal savings
+    if (strict && savedPercent < profile.minimumReduction * 100 && engine !== 'local-fallback') {
       return new Response(JSON.stringify({
         error: savedPercent > 0
-          ? `Compression only reduced this PDF by ${savedPercent}%. It is likely already optimized.${environmentHint}`
-          : `Unable to reduce this PDF in a meaningful way.${environmentHint}`,
+          ? `Compression only reduced this PDF by ${savedPercent}%. It is likely already optimized.`
+          : 'Unable to reduce this PDF in a meaningful way.',
         before: originalBuffer.length,
         after: compressed.length,
         savedPercent,

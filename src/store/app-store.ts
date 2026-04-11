@@ -19,6 +19,7 @@ type AppState = {
   setIsProcessing: (processing: boolean) => void;
   setProgress: (progress: number | ((prev: number) => number)) => void;
   reset: () => void;
+  fullReset: () => void;
 };
 
 export const useAppStore = create<AppState>((set) => ({
@@ -35,7 +36,14 @@ export const useAppStore = create<AppState>((set) => ({
   setProgress: (progress) => set((state) => ({
     progress: typeof progress === 'function' ? progress(state.progress) : progress
   })),
-  reset: () => set({
+  reset: () => set((state) => ({
+    // Preserve activeTool so the workspace stays visible after reset
+    uploadedFile: null,
+    processedImage: null,
+    isProcessing: false,
+    progress: 0,
+  })),
+  fullReset: () => set({
     activeTool: null,
     uploadedFile: null,
     processedImage: null,
