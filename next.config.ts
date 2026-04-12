@@ -6,6 +6,9 @@ const allowedImageHosts = (process.env.NEXT_PUBLIC_IMAGE_HOSTS || 'www.pdfpixels
   .filter(Boolean);
 
 const nextConfig: NextConfig = {
+  // Output standalone to optimize memory on Hostinger
+  output: 'standalone',
+
   // Enable React strict mode for better development
   reactStrictMode: true,
 
