@@ -445,7 +445,8 @@ export function Navigation() {
             ) : null}
           </AnimatePresence>
         </div>
-      </header>
+      </div>
+    </header>
 
       <AnimatePresence>
         {searchOpen ? (
