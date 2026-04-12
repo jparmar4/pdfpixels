@@ -3,7 +3,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     Download, RotateCcw, RotateCw, Sparkles, ChevronRight,
-    Stamp, Shield, FileLock, Layers, Trash2, GripVertical, Plus, Minus, Check
+    Stamp, Shield, FileLock, Layers, Trash2, GripVertical, Plus, Minus, Check, Zap
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -327,6 +327,19 @@ function ReorderSettings({ order, setOrder, totalPages }: {
     );
 }
 
+function LinearizeSettings() {
+    return (
+        <div className="space-y-4 text-sm text-muted-foreground p-2">
+            <p>
+                <strong>Fast Web View</strong> restructures your PDF so that it can be displayed page-by-page as it downloads over the internet, rather than requiring the entire file to download first.
+            </p>
+            <p className="p-3 rounded-lg bg-primary/10 border border-primary/20 text-primary dark:text-primary-foreground font-medium">
+                Ideal for large PDFs hosted on websites. Simply click process below.
+            </p>
+        </div>
+    );
+}
+
 // ─── Main Component ────────────────────────────────────────────────────────────
 
 export function PDFToolsWorkspace() {
@@ -384,6 +397,7 @@ export function PDFToolsWorkspace() {
         if (toolId === 'pdf-unlock') return '/api/pdf/protect'; // same route, action=unlock
         if (toolId === 'pdf-delete-pages') return '/api/pdf/delete-pages';
         if (toolId === 'pdf-reorder') return '/api/pdf/reorder';
+        if (toolId === 'pdf-linearize') return '/api/pdf/linearize';
         return '/api/pdf/rotate';
     };
 
@@ -454,7 +468,7 @@ export function PDFToolsWorkspace() {
             const contentType = response.headers.get('content-type') || '';
 
             if (contentType.includes('application/json')) {
-                // JSON response (watermark, delete-pages, reorder)
+                // JSON response (watermark, delete-pages, reorder, linearize)
                 const data = await response.json();
                 setResult({ pdfUrl: data.pdfUrl, fileName: data.fileName, pageCount: data.pageCount });
             } else {
@@ -502,6 +516,7 @@ export function PDFToolsWorkspace() {
         if (toolId === 'pdf-unlock') return FileLock;
         if (toolId === 'pdf-reorder') return Layers;
         if (toolId === 'pdf-delete-pages') return Trash2;
+        if (toolId === 'pdf-linearize') return Zap;
     return Sparkles;
 };
 
@@ -513,6 +528,7 @@ const renderSettings = () => {
     if (toolId === 'pdf-unlock') return <UnlockSettings password={password} setPassword={setPassword} />;
     if (toolId === 'pdf-delete-pages') return <DeletePagesSettings pages={deletePages} setPages={setDeletePages} totalPages={totalPages} />;
     if (toolId === 'pdf-reorder') return <ReorderSettings order={pageOrder} setOrder={setPageOrder} totalPages={totalPages} />;
+    if (toolId === 'pdf-linearize') return <LinearizeSettings />;
     return null;
 };
 
@@ -525,6 +541,7 @@ const getProcessLabel = () => {
     if (toolId === 'pdf-unlock') return 'Unlock PDF';
     if (toolId === 'pdf-delete-pages') return 'Delete Pages';
     if (toolId === 'pdf-reorder') return 'Reorder Pages';
+    if (toolId === 'pdf-linearize') return 'Optimize PDF';
     return 'Process PDF';
 };
 

@@ -117,7 +117,7 @@ function getWorkspaceComponent(toolId: string) {
   if (toolId === 'image-to-pdf') return <ImageToPDFWorkspace />;
   if (toolId === 'pdf-compress') return <PDFCompressWorkspace />;
   if (toolId === 'pdf-to-image') return <ConvertWorkspace />;
-  if (['pdf-rotate', 'pdf-watermark', 'pdf-protect', 'pdf-unlock', 'pdf-delete-pages', 'pdf-reorder'].includes(toolId)) {
+  if (['pdf-rotate', 'pdf-watermark', 'pdf-protect', 'pdf-unlock', 'pdf-delete-pages', 'pdf-reorder', 'pdf-linearize'].includes(toolId)) {
     return <PDFToolsWorkspace />;
   }
 

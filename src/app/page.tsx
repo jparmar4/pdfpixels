@@ -127,12 +127,18 @@ function ToolsHeader({ search, setSearch }: { search: string, setSearch: (val: s
               'bottom-[18%] right-[8%]',
             ];
             return (
-              <div key={badge.text} className={`${badge.className} absolute ${positions[idx]}`}>
-                <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full glass-card shadow-soft text-xs font-semibold text-muted-foreground">
-                  <BadgeIcon className={`w-3 h-3 ${badge.color}`} />
+              <motion.div
+                key={badge.text}
+                initial={{ opacity: 0, scale: 0.8, y: 10 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.3 + idx * 0.15, ease: [0.16, 1, 0.3, 1] }}
+                className={`${badge.className} absolute ${positions[idx]}`}
+              >
+                <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full glass-card shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-premium transition-shadow text-xs font-bold text-muted-foreground">
+                  <BadgeIcon className={`w-3.5 h-3.5 ${badge.color}`} />
                   {badge.text}
                 </div>
-              </div>
+              </motion.div>
             );
           })}
         </div>
@@ -143,9 +149,11 @@ function ToolsHeader({ search, setSearch }: { search: string, setSearch: (val: s
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           >
-            <p className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold border border-primary/20 bg-primary/10 text-primary mb-5">
-              Fast · Secure · No signup
-            </p>
+            <Link href="/tools/linearize-pdf" className="group mb-6 inline-flex items-center gap-2 rounded-full border border-amber-500/30 bg-gradient-to-r from-amber-500/10 to-orange-500/10 px-5 py-1.5 text-sm font-bold text-amber-600 dark:text-amber-500 transition-all hover:scale-105 hover:shadow-[0_8px_30px_rgba(245,158,11,0.15)] shadow-sm">
+              <Zap className="h-4 w-4 group-hover:scale-110 transition-transform" />
+              New Pro Tool: Fast Web View (Linearize)
+              <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-0.5 transition-transform" />
+            </Link>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight mb-2 leading-[1.05]">
               Premium PDF & Image Tools
             </h1>
@@ -208,8 +216,8 @@ function PopularToolsMiniGrid() {
   const items = [
     { title: 'Compress PDF', href: '/tools/compress-pdf', desc: 'Reduce file size fast', icon: Minimize2 },
     { title: 'Merge PDF', href: '/tools/merge-pdf', desc: 'Combine multiple PDFs', icon: Files },
-    { title: 'Split PDF', href: '/tools/split-pdf', desc: 'Extract selected pages', icon: FileText },
-    { title: 'Image to PDF', href: '/tools/image-to-pdf', desc: 'Convert JPG/PNG to PDF', icon: ImageIcon },
+    { title: 'Linearize PDF', href: '/tools/linearize-pdf', desc: 'Fast web view optimization', icon: Zap, isPro: true, badge: 'Pro' },
+    { title: 'Remove BG', href: '/tools/remove-image-background', desc: 'AI background removal', icon: Sparkles, isPro: true, badge: 'AI' },
   ];
 
   return (
@@ -218,20 +226,26 @@ function PopularToolsMiniGrid() {
         <Link
           key={item.href}
           href={item.href}
-          className="group relative rounded-2xl border border-border/60 bg-gradient-to-b from-card/80 to-card/40 backdrop-blur-xl p-4 rainbow-border hover:scale-[1.03] hover:shadow-[0_16px_40px_-18px_rgba(99,102,241,.55)] transition-all duration-300"
+          className={`group relative rounded-2xl border ${item.isPro ? 'border-amber-500/20 shadow-[0_16px_40px_-18px_rgba(245,158,11,.2)] bg-gradient-to-b from-amber-500/[0.03] to-card/40' : 'border-border/60 bg-gradient-to-b from-card/80 to-card/40 shadow-soft'} backdrop-blur-xl p-4 hover:-translate-y-1 hover:shadow-premium transition-all duration-300`}
         >
-          <span className="absolute -top-2.5 -right-2 z-10 inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-white text-[9px] font-bold uppercase tracking-[0.12em] shadow-sm">
-            <Star className="w-2.5 h-2.5 fill-current" />
-            Popular
-          </span>
-          <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-primary/20 to-violet-500/20 text-primary flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-300">
-            <item.icon className="w-4 h-4" />
+          {item.badge ? (
+             <span className={`absolute -top-2.5 -right-2 z-10 inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-[0.15em] shadow-sm text-white ${item.badge === 'Pro' ? 'bg-gradient-to-r from-amber-500 to-orange-600' : 'bg-gradient-to-r from-violet-500 to-fuchsia-600'}`}>
+                {item.badge}
+             </span>
+          ) : (
+             <span className="absolute -top-2.5 -right-2 z-10 inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-gradient-to-r from-sky-500 to-blue-600 text-white text-[9px] font-black uppercase tracking-[0.15em] shadow-sm">
+                <Star className="w-2.5 h-2.5 fill-current" />
+                Popular
+             </span>
+          )}
+          <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-300 ${item.isPro ? 'bg-amber-500/10 text-amber-500' : 'bg-primary/10 text-primary'}`}>
+            <item.icon className="w-5 h-5" />
           </div>
-          <p className="font-semibold text-sm flex items-center gap-1.5">
+          <p className="font-bold text-sm flex items-center gap-1.5 text-foreground group-hover:text-primary transition-colors">
             {item.title}
-            <ArrowRight className="w-3.5 h-3.5 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
+            <ArrowRight className="w-3.5 h-3.5 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300" />
           </p>
-          <p className="text-xs text-muted-foreground mt-1">{item.desc}</p>
+          <p className="text-xs text-muted-foreground mt-1.5 font-medium">{item.desc}</p>
         </Link>
       ))}
     </div>

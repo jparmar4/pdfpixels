@@ -55,6 +55,7 @@ import {
   Boxes,
   Focus,
   SquareDashedBottom,
+  Zap,
 } from 'lucide-react';
 
 export type Tool = {
@@ -753,6 +754,17 @@ export const toolCategories: ToolCategory[] = [
         icon: Trash2,
         category: 'pdf-tools',
         keywords: ['delete pdf pages', 'remove pdf pages', 'pdf page remover'],
+        processing: 'server',
+      },
+      {
+        id: 'pdf-linearize',
+        slug: 'linearize-pdf',
+        name: 'Fast Web View (Linearize)',
+        description: 'Optimize PDF files for fast web viewing and streaming on the internet.',
+        icon: Zap,
+        category: 'pdf-tools',
+        keywords: ['fast web view', 'linearize pdf', 'optimize pdf for web', 'web ready pdf'],
+        badge: 'Pro',
         processing: 'server',
       },
     ],

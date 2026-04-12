@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
@@ -227,6 +227,15 @@ export function Navigation() {
               <Button variant="ghost" size="sm" className="rounded-full px-4 text-sm" onClick={() => handleHomeLink()}>
                 All tools
               </Button>
+              <Link href="/pricing" className="group">
+                <button
+                  type="button"
+                  className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-orange-600 transition-all hover:scale-[1.02]"
+                >
+                  <Sparkles className="h-4 w-4 text-amber-500" />
+                  Pricing
+                </button>
+              </Link>
               <Link href="/blog">
                 <button
                   type="button"

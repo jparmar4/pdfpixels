@@ -52,8 +52,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const cleanName = normalizeDisplayText(tool.name);
   const cleanDescription = normalizeDisplayText(tool.description);
   const isAI = tool.isAI;
-  const title = `${cleanName} - Free Online ${isAI ? 'AI ' : ''}Tool`;
-  const description = `${cleanDescription} Use ${cleanName.toLowerCase()} online for free on PdfPixels with a fast, privacy-aware workflow and no signup required.`;
+  const title = `Free ${cleanName} Online - No Sign Up Required`;
+  const description = `${cleanDescription} Use our fast, secure, and completely free online ${cleanName.toLowerCase()} tool. Works instantly on Windows, Mac, and Mobile with no signup or installation needed.`;
   const canonicalUrl = absoluteUrl(`/tools/${tool.slug}`);
   const keywords = dedupeKeywords([
     ...tool.keywords.map((keyword) => normalizeDisplayText(keyword)),
