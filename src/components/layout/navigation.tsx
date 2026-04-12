@@ -227,23 +227,19 @@ export function Navigation() {
               <Button variant="ghost" size="sm" className="rounded-full px-4 text-sm" onClick={() => handleHomeLink()}>
                 All tools
               </Button>
-              <Link href="/pricing" className="group">
-                <button
-                  type="button"
-                  className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-orange-600 transition-all hover:scale-[1.02]"
-                >
-                  <Sparkles className="h-4 w-4 text-amber-500" />
-                  Pricing
-                </button>
+              <Link
+                href="/pricing"
+                className="group inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-orange-600 transition-all hover:scale-[1.02]"
+              >
+                <Sparkles className="h-4 w-4 text-amber-500" />
+                Pricing
               </Link>
-              <Link href="/blog">
-                <button
-                  type="button"
-                  className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-                >
-                  <BookOpen className="h-4 w-4" />
-                  Blog
-                </button>
+              <Link
+                href="/blog"
+                className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+              >
+                <BookOpen className="h-4 w-4" />
+                Blog
               </Link>
               {toolCategories.map((category) => {
                 const CategoryIcon = category.icon;
