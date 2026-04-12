@@ -200,7 +200,7 @@ export function Navigation() {
           <div className="flex min-h-[4.5rem] items-center justify-between gap-4">
             <Link
               href="/"
-              className="group flex shrink-0 items-center gap-3"
+              className="group flex flex-shrink-0 items-center gap-3"
               onClick={(event) => {
                 if (window.location.pathname === '/') {
                   event.preventDefault();
@@ -209,90 +209,105 @@ export function Navigation() {
                 }
               }}
             >
-              <div className="relative flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-sky-500 text-white shadow-lg shadow-primary/20 transition-transform duration-300 group-hover:scale-[1.03]">
-                <ImageIcon className="h-5 w-5" />
-                <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-white text-[9px] font-black text-primary">P</span>
+              <div className="relative flex h-10 w-10 items-center justify-center rounded-[14px] bg-gradient-to-br from-primary to-sky-500 text-white shadow-lg shadow-primary/20 transition-transform duration-300 group-hover:scale-[1.05]">
+                <ImageIcon className="h-4 w-4" />
+                <span className="absolute -right-1 -top-1 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-white text-[8px] font-black text-primary">P</span>
               </div>
               <div className="hidden sm:block">
-                <div className="text-xl font-extrabold tracking-tight text-foreground">
+                <div className="text-xl font-extrabold tracking-tight text-foreground leading-none">
                   PdfPixels
                 </div>
-                <div className="text-[10px] font-semibold uppercase tracking-[0.22em] text-muted-foreground">
-                  Pro document suite
+                <div className="text-[9px] font-bold uppercase tracking-[0.25em] text-muted-foreground mt-1">
+                  Pro Suite
                 </div>
               </div>
             </Link>
 
-            <div className="hidden xl:flex items-center gap-1 rounded-full border border-border/50 bg-card/90 p-1 shadow-soft">
-              <Button variant="ghost" size="sm" className="rounded-full px-4 text-sm" onClick={() => handleHomeLink()}>
-                All tools
-              </Button>
-              <Link
-                href="/pricing"
-                className="group inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-orange-600 transition-all hover:scale-[1.02]"
-              >
-                <Sparkles className="h-4 w-4 text-amber-500" />
-                Pricing
-              </Link>
-              <Link
-                href="/blog"
-                className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-              >
-                <BookOpen className="h-4 w-4" />
-                Blog
-              </Link>
-              {toolCategories.map((category) => {
-                const CategoryIcon = category.icon;
+            {/* Center Desktop Navigation */}
+            <div className="hidden lg:flex flex-1 items-center justify-center gap-1 xl:gap-2">
+              {toolCategories.filter(c => ['pdf-tools', 'most-used', 'basic-editing', 'effects'].includes(c.id)).map(category => {
+                const isActive = activeMegaCategory === category.id;
                 return (
                   <div
                     key={category.id}
-                    className="relative"
+                    className="relative group py-2"
                     onMouseEnter={() => openMega(category.id)}
                     onMouseLeave={closeMega}
                   >
                     <button
                       type="button"
                       onClick={() => handleHomeLink(category.id)}
-                      className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-colors ${activeMegaCategory === category.id ? 'bg-background text-foreground shadow-soft' : 'text-muted-foreground hover:text-foreground'}`}
+                      className={`inline-flex items-center gap-1.5 rounded-full px-4 py-2.5 text-[14px] font-semibold transition-all duration-200 ${isActive ? 'bg-secondary text-foreground' : 'text-muted-foreground hover:bg-secondary/50 hover:text-foreground'}`}
                     >
-                      <CategoryIcon className="h-4 w-4" />
-                      {normalizeDisplayText(category.name)}
+                      {category.name === 'Most Popular Tools' ? 'Popular Tools' : category.name === 'Basic Editing' ? 'Image Editor' : normalizeDisplayText(category.name)}
+                      <ChevronRight className={`h-3.5 w-3.5 opacity-60 transition-transform duration-300 ${isActive ? 'rotate-90' : 'group-hover:rotate-90'}`} />
                     </button>
+                    {isActive && (
+                      <motion.div layoutId="nav-pill" className="absolute inset-0 -z-10 rounded-full bg-secondary shadow-sm ring-1 ring-border/50" transition={{ type: "spring", bounce: 0.15, duration: 0.5 }} />
+                    )}
                   </div>
                 );
               })}
+              
+              <Link
+                href="/pricing"
+                className="relative inline-flex items-center gap-1.5 rounded-full px-4 py-2.5 text-[14px] font-semibold text-muted-foreground transition-all duration-200 hover:bg-amber-500/10 hover:text-amber-600 dark:hover:text-amber-500"
+              >
+                <Sparkles className="h-3.5 w-3.5 text-amber-500" />
+                Pricing
+              </Link>
             </div>
 
-            <div className="flex items-center gap-2">
+            {/* Right Actions */}
+            <div className="flex flex-shrink-0 items-center gap-2 xl:gap-3">
+              <Link href="/blog" className="hidden xl:inline-flex text-[14px] font-semibold text-muted-foreground hover:text-foreground transition-colors px-3 py-2">
+                Blog
+              </Link>
+
+              <div className="hidden xl:block h-4 w-px bg-border/60 mx-1" />
+
               <Button
-                variant="ghost"
+                variant="outline"
                 size="sm"
-                className="h-10 rounded-full border border-border/50 bg-card/60 px-4 text-sm text-muted-foreground shadow-soft transition-colors hover:bg-card hover:text-foreground"
+                className="hidden lg:inline-flex h-9 rounded-full border-border/60 bg-background/50 px-3 text-xs font-semibold text-muted-foreground shadow-none transition-colors hover:bg-secondary hover:text-foreground"
                 onClick={() => {
                   setSearchOpen(true);
                   setSearchFocused(true);
                   setTimeout(() => searchRef.current?.focus(), 50);
                 }}
               >
-                <Search className="h-4 w-4" />
-                <span className="hidden md:inline">Search tools</span>
-                <span className="hidden items-center gap-1 rounded-full border border-border/60 bg-background/80 px-2 py-0.5 text-[10px] font-bold md:inline-flex">
-                  <Command className="h-3 w-3" />K
-                </span>
-              </Button>
-
-              <Button asChild size="sm" className="hidden h-10 rounded-full px-4 lg:inline-flex btn-premium">
-                <Link href="/tools/compress-pdf">Start with PDF</Link>
+                <Search className="mr-2 h-3.5 w-3.5" />
+                Search...
+                <kbd className="ml-3 hidden md:inline-flex h-5 select-none items-center gap-1 rounded bg-muted/80 px-1.5 font-mono text-[10px] font-medium text-muted-foreground">
+                  ⌘K
+                </kbd>
               </Button>
 
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-10 w-10 rounded-full lg:hidden"
+                className="h-10 w-10 text-muted-foreground hover:text-foreground lg:hidden"
+                onClick={() => {
+                  setSearchOpen(true);
+                  setSearchFocused(true);
+                  setTimeout(() => searchRef.current?.focus(), 50);
+                }}
+              >
+                <Search className="h-5 w-5" />
+              </Button>
+
+              <Button asChild size="sm" className="hidden lg:inline-flex h-9 rounded-full px-5 text-sm font-bold shadow-lg shadow-primary/20 transition-all hover:scale-105 btn-premium">
+                <Link href="/tools/compress-pdf">Get Started</Link>
+              </Button>
+
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-10 w-10 rounded-full lg:hidden text-foreground"
                 onClick={() => setMobileMenuOpen((current) => !current)}
                 aria-label="Toggle menu"
               >
-                {mobileMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+                {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
               </Button>
             </div>
           </div>
