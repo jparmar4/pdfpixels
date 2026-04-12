@@ -76,10 +76,27 @@ export function Footer() {
     { icon: Globe, label: 'Global access' },
   ];
 
-  const handleSubscribe = useCallback(() => {
+  const [subscribeError, setSubscribeError] = useState('');
+
+  const handleSubscribe = useCallback(async () => {
     if (!email.trim() || !email.includes('@')) return;
-    setSubscribed(true);
-    setEmail('');
+    setSubscribeError('');
+    try {
+      const res = await fetch('/api/newsletter', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email.trim() }),
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setSubscribed(true);
+        setEmail('');
+      } else {
+        setSubscribeError(data.error || 'Something went wrong. Please try again.');
+      }
+    } catch {
+      setSubscribeError('Network error. Please try again.');
+    }
   }, [email]);
 
   return (
@@ -126,7 +143,8 @@ export function Footer() {
                   <button
                     type="button"
                     onClick={handleSubscribe}
-                    className="btn-premium inline-flex h-12 items-center justify-center gap-2 rounded-2xl px-6 text-sm font-semibold"
+                    disabled={subscribed}
+                    className="btn-premium inline-flex h-12 items-center justify-center gap-2 rounded-2xl px-6 text-sm font-semibold disabled:opacity-60"
                   >
                     {subscribed ? (
                       <>
@@ -141,6 +159,9 @@ export function Footer() {
                     )}
                   </button>
                 </div>
+                {subscribeError && (
+                  <p className="text-xs text-destructive mt-1">{subscribeError}</p>
+                )}
               </div>
             </div>
 

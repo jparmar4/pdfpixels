@@ -46,10 +46,31 @@ export default function ContactPage() {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsSubmitting(true);
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    setIsSubmitting(false);
-    setSubmitted(true);
-    toast.success("Message sent successfully. We'll get back to you soon.");
+    try {
+      const form = event.currentTarget;
+      const formData = new FormData(form);
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: formData.get('name'),
+          email: formData.get('email'),
+          subject,
+          message: formData.get('message'),
+        }),
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setSubmitted(true);
+        toast.success("Message sent successfully. We'll get back to you soon.");
+      } else {
+        toast.error(data.error || 'Failed to send message. Please try again.');
+      }
+    } catch {
+      toast.error('Network error. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const contactMethods = [
@@ -242,6 +263,7 @@ export default function ContactPage() {
                           </Label>
                           <Input
                             id="contact-name"
+                            name="name"
                             placeholder="Your full name"
                             required
                             className="h-12 rounded-xl border-border/60 bg-background/60 px-4 transition-all duration-200 focus-visible:border-primary/40 focus-visible:ring-primary/20"
@@ -253,6 +275,7 @@ export default function ContactPage() {
                           </Label>
                           <Input
                             id="contact-email"
+                            name="email"
                             type="email"
                             placeholder="you@email.com"
                             required
@@ -287,6 +310,7 @@ export default function ContactPage() {
                         </Label>
                         <Textarea
                           id="contact-message"
+                          name="message"
                           placeholder="Tell us what you need, which tool is involved, and what happened..."
                           required
                           className="min-h-[160px] resize-none rounded-xl border-border/60 bg-background/60 px-4 py-3 text-sm transition-all duration-200 focus-visible:border-primary/40 focus-visible:ring-primary/20"

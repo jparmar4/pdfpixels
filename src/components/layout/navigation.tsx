@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/navigation';
+import { useTheme } from 'next-themes';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
   ArrowRight,
@@ -34,14 +35,14 @@ export function Navigation() {
   const [searchResults, setSearchResults] = useState<Tool[]>([]);
   const [scrolled, setScrolled] = useState(false);
   const [activeMegaCategory, setActiveMegaCategory] = useState<string | null>(null);
-  const [isDark, setIsDark] = useState(() => {
-    if (typeof window !== 'undefined') {
-      const stored = localStorage.getItem('theme');
-      if (stored) return stored === 'dark';
-      return window.matchMedia('(prefers-color-scheme: dark)').matches;
-    }
-    return false;
-  });
+  const { theme, setTheme, resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const isDark = mounted && resolvedTheme === 'dark';
   const [searchFocused, setSearchFocused] = useState(false);
   const megaTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const searchRef = useRef<HTMLInputElement>(null);
@@ -64,15 +65,8 @@ export function Navigation() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Sync dark mode class to DOM whenever isDark changes
-  useEffect(() => {
-    document.documentElement.classList.toggle('dark', isDark);
-  }, [isDark]);
-
   const toggleDarkMode = () => {
-    const next = !isDark;
-    setIsDark(next);
-    localStorage.setItem('theme', next ? 'dark' : 'light');
+    setTheme(isDark ? 'light' : 'dark');
   };
 
   useEffect(() => {

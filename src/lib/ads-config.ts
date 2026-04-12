@@ -66,12 +66,16 @@ export type CookieConsent = {
 
 // Check if advertising consent is given
 export function hasAdvertisingConsent(): boolean {
-  return true;
+  if (typeof window === 'undefined') return false;
+  const consent = getConsent();
+  return consent?.advertising ?? false;
 }
 
 // Check if analytics consent is given
 export function hasAnalyticsConsent(): boolean {
-  return true;
+  if (typeof window === 'undefined') return false;
+  const consent = getConsent();
+  return consent?.analytics ?? false;
 }
 
 // Save consent settings
@@ -105,5 +109,6 @@ export function getConsent(): CookieConsent | null {
 
 // Check if consent has been given (any choice made)
 export function hasConsent(): boolean {
-  return true;
+  if (typeof window === 'undefined') return false;
+  return getConsent() !== null;
 }

@@ -150,7 +150,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       </head>
       <body className="bg-background text-foreground antialiased">
         <JsonLdSchemas />
-        <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} forcedTheme="light" disableTransitionOnChange>
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
           <PageTransitionWrapper>
             {children}
           </PageTransitionWrapper>
