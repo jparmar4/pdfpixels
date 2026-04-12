@@ -147,7 +147,7 @@ export default function TermsOfService() {
       <section>
         <h2>13. Contact</h2>
         <div className="legal-callout">
-          <p><strong>Email:</strong> <a href="mailto:legal@pdfpixels.com">legal@pdfpixels.com</a></p>
+          <p><strong>Email:</strong> <a href="mailto:support@pdfpixels.com">support@pdfpixels.com</a></p>
           <p><strong>Contact page:</strong> <a href="https://www.pdfpixels.com/contact">https://www.pdfpixels.com/contact</a></p>
         </div>
       </section>

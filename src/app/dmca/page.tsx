@@ -89,7 +89,7 @@ export default function DMCAPage() {
       <section>
         <h2>7. Contact</h2>
         <div className="legal-callout">
-          <p><strong>Email:</strong> <a href="mailto:dmca@pdfpixels.com">dmca@pdfpixels.com</a></p>
+          <p><strong>Email:</strong> <a href="mailto:support@pdfpixels.com">support@pdfpixels.com</a></p>
           <p><strong>Subject line:</strong> DMCA Takedown Notice</p>
           <p><strong>Contact page:</strong> <a href="https://www.pdfpixels.com/contact">https://www.pdfpixels.com/contact</a></p>
         </div>

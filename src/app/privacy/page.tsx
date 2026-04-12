@@ -137,7 +137,7 @@ export default function PrivacyPolicy() {
           <li>Data portability where applicable.</li>
           <li>Opt-out rights under applicable regional law.</li>
         </ul>
-        <p>To make a request, contact <a href="mailto:privacy@pdfpixels.com">privacy@pdfpixels.com</a>.</p>
+        <p>To make a request, contact <a href="mailto:support@pdfpixels.com">support@pdfpixels.com</a>.</p>
       </section>
 
       <section>
@@ -150,7 +150,7 @@ export default function PrivacyPolicy() {
       <section>
         <h2>11. Contact</h2>
         <div className="legal-callout">
-          <p><strong>Email:</strong> <a href="mailto:privacy@pdfpixels.com">privacy@pdfpixels.com</a></p>
+          <p><strong>Email:</strong> <a href="mailto:support@pdfpixels.com">support@pdfpixels.com</a></p>
           <p><strong>Contact page:</strong> <a href="https://www.pdfpixels.com/contact">https://www.pdfpixels.com/contact</a></p>
         </div>
       </section>
