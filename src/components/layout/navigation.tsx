@@ -144,60 +144,42 @@ export function Navigation() {
 
   return (
     <>
-      <header className={`sticky top-0 z-50 w-full transition-all duration-300 ${scrolled ? 'border-b border-border/50 bg-background/95 shadow-soft' : 'bg-background/80'}`}>
-        {/* Top thin gradient bar */}
-        <div className="border-b border-border/30 bg-[linear-gradient(90deg,rgba(59,130,246,0.08),rgba(16,185,129,0.06),rgba(59,130,246,0.08))]">
-          <div className="container mx-auto flex min-h-10 items-center justify-between gap-4 px-4 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground lg:px-8">
-            <div className="hidden items-center gap-3 md:flex">
-              <span className="inline-flex items-center gap-2">
-                <ShieldCheck className="h-3.5 w-3.5 text-emerald-500" />
-                Private workflows
-              </span>
-              <span className="inline-flex items-center gap-2">
-                <Zap className="h-3.5 w-3.5 text-sky-500" />
-                Built for speed
-              </span>
-            </div>
-            <div className="flex items-center gap-2 text-foreground/80">
-              <Sparkles className="h-3.5 w-3.5 text-primary" />
-              Premium PDF and image tooling
-            </div>
-            {/* Dark mode toggle */}
-            <button
-              type="button"
-              onClick={toggleDarkMode}
-              className="ml-2 flex h-8 w-8 items-center justify-center rounded-full border border-border/50 bg-card/60 text-muted-foreground transition-all duration-200 hover:border-primary/30 hover:bg-card hover:text-foreground"
-              aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
-            >
-              <AnimatePresence mode="wait">
-                {isDark ? (
-                  <motion.div
-                    key="sun"
-                    initial={{ rotate: -90, scale: 0 }}
-                    animate={{ rotate: 0, scale: 1 }}
-                    exit={{ rotate: 90, scale: 0 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <Sun className="h-3.5 w-3.5" />
-                  </motion.div>
-                ) : (
-                  <motion.div
-                    key="moon"
-                    initial={{ rotate: 90, scale: 0 }}
-                    animate={{ rotate: 0, scale: 1 }}
-                    exit={{ rotate: -90, scale: 0 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <Moon className="h-3.5 w-3.5" />
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </button>
+      <div className="relative z-40 border-b border-border/30 bg-[linear-gradient(90deg,rgba(59,130,246,0.08),rgba(16,185,129,0.06),rgba(59,130,246,0.08))]">
+        <div className="container mx-auto flex min-h-10 items-center justify-between gap-4 px-4 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground lg:px-8">
+          <div className="hidden items-center gap-3 md:flex">
+            <span className="inline-flex items-center gap-2">
+              <ShieldCheck className="h-3.5 w-3.5 text-emerald-500" />
+              Private workflows
+            </span>
+            <span className="inline-flex items-center gap-2">
+              <Zap className="h-3.5 w-3.5 text-sky-500" />
+              Built for speed
+            </span>
           </div>
+          <div className="flex items-center gap-2 text-foreground/80">
+            <Sparkles className="h-3.5 w-3.5 text-primary" />
+            Premium PDF and image tooling
+          </div>
+          <button
+            type="button"
+            onClick={toggleDarkMode}
+            className="ml-2 flex h-8 w-8 items-center justify-center rounded-full border border-border/50 bg-card/60 text-muted-foreground transition-all duration-200 hover:border-primary/30 hover:bg-card hover:text-foreground"
+            aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+          >
+            <AnimatePresence mode="wait">
+              {isDark ? (
+                <motion.div key="sun" initial={{ rotate: -90, scale: 0 }} animate={{ rotate: 0, scale: 1 }} exit={{ rotate: 90, scale: 0 }} transition={{ duration: 0.2 }}><Sun className="h-3.5 w-3.5" /></motion.div>
+              ) : (
+                <motion.div key="moon" initial={{ rotate: 90, scale: 0 }} animate={{ rotate: 0, scale: 1 }} exit={{ rotate: -90, scale: 0 }} transition={{ duration: 0.2 }}><Moon className="h-3.5 w-3.5" /></motion.div>
+              )}
+            </AnimatePresence>
+          </button>
         </div>
+      </div>
 
-        <nav className="container mx-auto px-4 lg:px-8">
-          <div className="flex min-h-[4.5rem] items-center justify-between gap-4">
+      <header className={`sticky top-0 z-50 w-full pointer-events-none transition-all duration-500 ${scrolled ? 'pt-3 lg:pt-5' : 'pt-0'}`}>
+        <div className={`mx-auto w-full transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] pointer-events-auto ${scrolled ? 'px-3 sm:px-6 lg:px-8 max-w-[85rem]' : 'px-0 max-w-full'}`}>
+          <div className={`mx-auto flex w-full items-center justify-between gap-4 transition-all duration-500 ease-out ${scrolled ? 'rounded-[2.5rem] border border-border/40 bg-card/65 backdrop-blur-2xl shadow-[0_8px_30px_rgb(0,0,0,0.06)] dark:shadow-[0_8px_30px_rgb(255,255,255,0.02)] px-3 py-2 sm:px-5 lg:w-[98%]' : 'border-b border-border/20 bg-background/60 backdrop-blur-md px-4 py-3 sm:px-6 lg:px-8'}`}>
             <Link
               href="/"
               className="group flex flex-shrink-0 items-center gap-3"
@@ -230,20 +212,20 @@ export function Navigation() {
                 return (
                   <div
                     key={category.id}
-                    className="relative group py-2"
+                    className="relative group py-1.5"
                     onMouseEnter={() => openMega(category.id)}
                     onMouseLeave={closeMega}
                   >
                     <button
                       type="button"
                       onClick={() => handleHomeLink(category.id)}
-                      className={`inline-flex items-center gap-1.5 rounded-full px-4 py-2.5 text-[14px] font-semibold transition-all duration-200 ${isActive ? 'bg-secondary text-foreground' : 'text-muted-foreground hover:bg-secondary/50 hover:text-foreground'}`}
+                      className={`relative z-10 inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-[14px] font-bold transition-all duration-200 ${isActive ? 'text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
                     >
                       {category.name === 'Most Popular Tools' ? 'Popular Tools' : category.name === 'Basic Editing' ? 'Image Editor' : normalizeDisplayText(category.name)}
-                      <ChevronRight className={`h-3.5 w-3.5 opacity-60 transition-transform duration-300 ${isActive ? 'rotate-90' : 'group-hover:rotate-90'}`} />
+                      <ChevronRight className={`h-3 w-3 opacity-60 transition-transform duration-300 ${isActive ? 'rotate-90' : 'group-hover:translate-y-0.5 group-hover:rotate-90'}`} />
                     </button>
                     {isActive && (
-                      <motion.div layoutId="nav-pill" className="absolute inset-0 -z-10 rounded-full bg-secondary shadow-sm ring-1 ring-border/50" transition={{ type: "spring", bounce: 0.15, duration: 0.5 }} />
+                      <motion.div layoutId="nav-pill" className="absolute inset-0 z-0 rounded-full bg-secondary shadow-sm ring-1 ring-border/20" transition={{ type: "spring", bounce: 0.15, duration: 0.5 }} />
                     )}
                   </div>
                 );
@@ -251,16 +233,16 @@ export function Navigation() {
               
               <Link
                 href="/pricing"
-                className="relative inline-flex items-center gap-1.5 rounded-full px-4 py-2.5 text-[14px] font-semibold text-muted-foreground transition-all duration-200 hover:bg-amber-500/10 hover:text-amber-600 dark:hover:text-amber-500"
+                className="relative inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-[14px] font-bold text-muted-foreground transition-all duration-200 hover:bg-amber-500/10 hover:text-amber-600 dark:hover:text-amber-500"
               >
-                <Sparkles className="h-3.5 w-3.5 text-amber-500" />
+                <Sparkles className="h-3 w-3 text-amber-500" />
                 Pricing
               </Link>
             </div>
 
             {/* Right Actions */}
             <div className="flex flex-shrink-0 items-center gap-2 xl:gap-3">
-              <Link href="/blog" className="hidden xl:inline-flex text-[14px] font-semibold text-muted-foreground hover:text-foreground transition-colors px-3 py-2">
+              <Link href="/blog" className="hidden xl:inline-flex text-[14px] font-bold text-muted-foreground hover:text-foreground transition-colors px-3 py-2">
                 Blog
               </Link>
 
@@ -269,7 +251,7 @@ export function Navigation() {
               <Button
                 variant="outline"
                 size="sm"
-                className="hidden lg:inline-flex h-9 rounded-full border-border/60 bg-background/50 px-3 text-xs font-semibold text-muted-foreground shadow-none transition-colors hover:bg-secondary hover:text-foreground"
+                className={`hidden lg:inline-flex h-9 rounded-full border-border/40 px-3 text-xs font-bold text-muted-foreground shadow-none transition-colors hover:bg-secondary hover:text-foreground ${scrolled ? 'bg-background/50' : 'bg-background/80'}`}
                 onClick={() => {
                   setSearchOpen(true);
                   setSearchFocused(true);
@@ -278,7 +260,7 @@ export function Navigation() {
               >
                 <Search className="mr-2 h-3.5 w-3.5" />
                 Search...
-                <kbd className="ml-3 hidden md:inline-flex h-5 select-none items-center gap-1 rounded bg-muted/80 px-1.5 font-mono text-[10px] font-medium text-muted-foreground">
+                <kbd className="ml-3 hidden md:inline-flex h-5 select-none items-center gap-1 rounded bg-muted/80 px-1.5 font-mono text-[10px] font-bold text-muted-foreground">
                   ⌘K
                 </kbd>
               </Button>
@@ -312,17 +294,18 @@ export function Navigation() {
             </div>
           </div>
 
-          {/* Breadcrumb navigation for tool pages */}
-          <AnimatePresence>
-            {isToolPage && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
-                transition={{ duration: 0.2 }}
-                className="overflow-hidden"
-              >
-                <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 pb-3 text-xs text-muted-foreground">
+          <div className={`mx-auto w-full transition-all duration-300 ${scrolled ? 'mt-3 max-w-[80rem] px-4 sm:px-8' : 'mt-0 px-4 sm:px-6 lg:px-8'}`}>
+            {/* Breadcrumb navigation for tool pages */}
+            <AnimatePresence>
+              {isToolPage && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="overflow-hidden"
+                >
+                  <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 pb-3 pt-2 text-xs text-muted-foreground">
                   <Link href="/" className="inline-flex items-center gap-1 transition-colors hover:text-foreground">
                     <Home className="h-3 w-3" />
                     Home
@@ -461,7 +444,7 @@ export function Navigation() {
               </motion.div>
             ) : null}
           </AnimatePresence>
-        </nav>
+        </div>
       </header>
 
       <AnimatePresence>
