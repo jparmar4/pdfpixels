@@ -1,12 +1,7 @@
 'use client';
 
 import { AnimatePresence, motion } from 'framer-motion';
-import dynamic from 'next/dynamic';
 
-// Lazy load heavy below-the-fold sections
-const LazyStatsBanner = dynamic(() => import('./_lazy/stats-banner').then(m => ({ default: m.StatsBanner })), { ssr: false });
-const LazyTestimonialsSection = dynamic(() => import('./_lazy/testimonials-section').then(m => ({ default: m.TestimonialsSection })), { ssr: false });
-const LazyFeaturesSection = dynamic(() => import('./_lazy/features-section').then(m => ({ default: m.FeaturesSection })), { ssr: false });
 import { Navigation } from '@/components/layout/navigation';
 import { CategorySection } from '@/components/layout/category-section';
 import { Footer } from '@/components/layout/footer';
