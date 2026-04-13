@@ -1,4 +1,4 @@
-import { Metadata } from "next";
+﻿import { Metadata } from "next";
 import Link from "next/link";
 import NextImage from "next/image";
 import Script from "next/script";
@@ -257,7 +257,7 @@ export default function BlogPage() {
                                                         <CalendarDays className="w-3.5 h-3.5" />
                                                         {post.date}
                                                     </span>
-                                                    <span>�</span>
+                                                    <span>ï¿½</span>
                                                     <span className="flex items-center gap-1.5">
                                                         <Clock className="w-3.5 h-3.5" />
                                                         {post.readTime}
@@ -318,6 +318,7 @@ export default function BlogPage() {
         </>
     );
 }
+
 
 
 

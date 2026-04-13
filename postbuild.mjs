@@ -42,6 +42,14 @@ const run = () => {
     path.join(standaloneDir, '.next', 'static')
   );
 
+  // Note: For Hostinger/LiteSpeed, static assets requested at /_next/static/...
+  // might be intercepted by LiteSpeed and looked up in the docroot (public_html/public).
+  // So we mirror them into the public folder.
+  copyDir(
+    path.join(process.cwd(), '.next', 'static'),
+    path.join(process.cwd(), 'public', '_next', 'static')
+  );
+
   console.log('Post-build static file mapping completed successfully.');
 };
 
