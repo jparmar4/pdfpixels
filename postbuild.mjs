@@ -24,10 +24,18 @@ const copyDir = (src, dest) => {
 
 const run = () => {
   const standaloneDir = path.join(process.cwd(), '.next', 'standalone');
+  const publicNextDir = path.join(process.cwd(), 'public', '_next');
   
   if (!fs.existsSync(standaloneDir)) {
     console.warn('Standalone directory not found. Did you set output: "standalone" in next.config.ts?');
     return;
+  }
+
+  // Next.js 16 refuses to build when public/_next exists, so never leave
+  // mirrored framework assets in the source public directory.
+  if (fs.existsSync(publicNextDir)) {
+    fs.rmSync(publicNextDir, { recursive: true, force: true });
+    console.log(`Removed forbidden source public asset mirror: ${publicNextDir}`);
   }
 
   // Copy public folder
@@ -36,19 +44,16 @@ const run = () => {
     path.join(standaloneDir, 'public')
   );
 
-  // Copy static folder
-  copyDir(
-    path.join(process.cwd(), '.next', 'static'),
-    path.join(standaloneDir, '.next', 'static')
-  );
+  // Copy static folder to standalone for production runtime
+  const standaloneStaticDir = path.join(standaloneDir, '.next', 'static');
+  if (!fs.existsSync(standaloneStaticDir)) fs.mkdirSync(standaloneStaticDir, { recursive: true });
+  copyDir(path.join(process.cwd(), '.next', 'static'), standaloneStaticDir);
 
-  // Note: For Hostinger/LiteSpeed, static assets requested at /_next/static/...
-  // might be intercepted by LiteSpeed and looked up in the docroot (public_html/public).
-  // So we mirror them into the public folder.
-  copyDir(
-    path.join(process.cwd(), '.next', 'static'),
-    path.join(process.cwd(), 'public', '_next', 'static')
-  );
+  // Mirror static files into standalone/public so external web servers can serve
+  // them directly in standalone deployments without polluting source public/.
+  const standalonePublicStaticDir = path.join(standaloneDir, 'public', '_next', 'static');
+  if (!fs.existsSync(standalonePublicStaticDir)) fs.mkdirSync(standalonePublicStaticDir, { recursive: true });
+  copyDir(path.join(process.cwd(), '.next', 'static'), standalonePublicStaticDir);
 
   console.log('Post-build static file mapping completed successfully.');
 };

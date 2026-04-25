@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { useState, useEffect, useRef, Suspense, useCallback } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 
 function AnimatedCounter({ end, suffix = '', duration = 2000 }: { end: number; suffix?: string; duration?: number }) {
   const [count, setCount] = useState(0);
@@ -62,7 +63,7 @@ function TypingText() {
     'Image to PDF',
   ];
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [displayText, setDisplayText] = useState('');
+  const [displayText, setDisplayText] = useState(words[0]); // Match SSR
   const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
@@ -91,7 +92,7 @@ function TypingText() {
 
   return (
     <span className="gradient-text inline-block min-w-[200px] md:min-w-[320px] text-left">
-      {displayText}
+      {displayText || '\u00A0'}
       <span className="inline-block w-[3px] h-[0.85em] bg-primary ml-0.5 align-middle animate-pulse" />
     </span>
   );
@@ -145,8 +146,9 @@ function ToolsHeader({ search, setSearch }: { search: string, setSearch: (val: s
 
         <div className="max-w-4xl mx-auto rounded-3xl border border-border/60 bg-card/60 backdrop-blur-2xl shadow-[0_24px_80px_-32px_rgba(99,102,241,.5)] px-6 md:px-10 py-10 md:py-14">
           <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
+            /* Removed initial opacity to ensure text is visible during slow hydration */
+            initial={{ y: 15 }}
+            animate={{ y: 0 }}
             transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           >
             <Link href="/tools/linearize-pdf" className="group mb-6 inline-flex items-center gap-2 rounded-full border border-amber-500/30 bg-gradient-to-r from-amber-500/10 to-orange-500/10 px-5 py-1.5 text-sm font-bold text-amber-600 dark:text-amber-500 transition-all hover:scale-105 hover:shadow-[0_8px_30px_rgba(245,158,11,0.15)] shadow-sm">
@@ -154,14 +156,14 @@ function ToolsHeader({ search, setSearch }: { search: string, setSearch: (val: s
               New Pro Tool: Fast Web View (Linearize)
               <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-0.5 transition-transform" />
             </Link>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight mb-2 leading-[1.05]">
+            <h1 id="home-hero-title" className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight mb-2 leading-[1.05]">
               Premium PDF & Image Tools
             </h1>
             <div className="text-lg md:text-xl mb-4 max-w-2xl mx-auto font-medium leading-relaxed text-muted-foreground">
               Try{' '}
               <TypingText />
             </div>
-            <p className="text-muted-foreground text-sm md:text-base mb-7 max-w-xl mx-auto font-medium leading-relaxed opacity-80">
+            <p id="home-hero-summary" className="text-muted-foreground text-sm md:text-base mb-7 max-w-xl mx-auto font-medium leading-relaxed opacity-80">
               Compress, convert, and edit files in seconds with a clean, professional workflow.
             </p>
 
@@ -254,7 +256,14 @@ function PopularToolsMiniGrid() {
 
 // --- Search + Tools Section ---
 function ToolsSection() {
-  const [search, setSearch] = useState('');
+  const searchParams = useSearchParams();
+  const initialSearch = searchParams.get('search') ?? searchParams.get('q') ?? '';
+  const [search, setSearch] = useState(initialSearch);
+
+  useEffect(() => {
+    setSearch(initialSearch);
+  }, [initialSearch]);
+
   const filteredCategories = search.trim()
     ? toolCategories.map(cat => ({
       ...cat,
@@ -355,6 +364,60 @@ function StatsBanner() {
               </div>
               <div className="text-sm text-muted-foreground font-medium">{stat.label}</div>
             </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function AnswerEngineSection() {
+  const answerCards = [
+    {
+      question: 'What is the fastest free way to compress a PDF online?',
+      answer: 'Use PdfPixels Compress PDF to upload a document, choose a compression level, and download a smaller PDF without creating an account.',
+      href: '/tools/compress-pdf',
+      cta: 'Open Compress PDF',
+    },
+    {
+      question: 'Can I merge or split PDF files without installing software?',
+      answer: 'Yes. PdfPixels provides browser-friendly PDF merge, split, rotate, reorder, delete, watermark, and conversion workflows for everyday document jobs.',
+      href: '/tools/merge-pdf',
+      cta: 'Open Merge PDF',
+    },
+    {
+      question: 'Which image tools are available for uploads, forms, and social media?',
+      answer: 'PdfPixels supports image compression, resizing, format conversion, background removal, passport photo creation, metadata cleanup, and OCR.',
+      href: '/tools/resize-image',
+      cta: 'Open Resize Image',
+    },
+  ];
+
+  return (
+    <section className="border-t border-border/50 bg-background py-16 md:py-20">
+      <div className="container mx-auto max-w-6xl px-4 lg:px-8">
+        <div className="mb-10 max-w-3xl">
+          <span className="inline-flex items-center gap-2 rounded-full border border-primary/15 bg-primary/8 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.2em] text-primary">
+            Search and AI answers
+          </span>
+          <h2 className="mt-4 text-3xl font-extrabold tracking-tight text-foreground md:text-4xl">
+            Direct answers for common PDF and image tasks
+          </h2>
+          <p className="mt-4 text-base leading-7 text-muted-foreground md:text-lg">
+            PdfPixels is built for high-intent workflows: reduce file size, combine documents, convert formats, prepare application photos, and clean up files quickly on any modern device.
+          </p>
+        </div>
+
+        <div className="grid gap-4 md:grid-cols-3">
+          {answerCards.map((card) => (
+            <article key={card.question} className="flex h-full flex-col rounded-2xl border border-border/60 bg-card/75 p-5 shadow-soft">
+              <h3 className="text-base font-bold leading-6 text-foreground">{card.question}</h3>
+              <p className="mt-3 flex-1 text-sm leading-6 text-muted-foreground">{card.answer}</p>
+              <Link href={card.href} className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline underline-offset-4">
+                {card.cta}
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            </article>
           ))}
         </div>
       </div>
@@ -947,7 +1010,7 @@ function CTASection() {
                   Resize Image
                 </Link>
                 <Link
-                  href="/tools/remove-background"
+                  href="/tools/remove-image-background"
                   className="inline-flex items-center gap-2 px-6 py-3 rounded-xl border border-fuchsia-500/30 bg-fuchsia-500/5 text-sm font-semibold text-fuchsia-600 dark:text-fuchsia-400 hover:bg-fuchsia-500/10 transition-all"
                 >
                   <Sparkles className="w-4 h-4" />
@@ -990,6 +1053,7 @@ export default function Home() {
         </Suspense>
         <StatsBanner />
         <HowItWorks />
+        <AnswerEngineSection />
         <TestimonialsSection />
         <FeaturesSection />
         <FAQSection />

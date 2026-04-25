@@ -6,27 +6,27 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: '*',
         allow: ['/', '/llms.txt', '/llms-full.txt'],
-        disallow: ['/api/', '/_next/', '/_static/'],
+        disallow: ['/api/', '/_static/'],
       },
       {
         userAgent: 'Googlebot',
         allow: '/',
-        disallow: ['/api/', '/_next/'],
+        disallow: ['/api/'],
       },
       {
         userAgent: 'Bingbot',
         allow: '/',
-        disallow: ['/api/', '/_next/'],
+        disallow: ['/api/'],
       },
       {
         userAgent: 'Yandex',
         allow: '/',
-        disallow: ['/api/', '/_next/'],
+        disallow: ['/api/'],
       },
       {
         userAgent: 'Baiduspider',
         allow: '/',
-        disallow: ['/api/', '/_next/'],
+        disallow: ['/api/'],
       },
       {
         userAgent: 'GPTBot',

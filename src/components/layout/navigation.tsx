@@ -36,13 +36,8 @@ export function Navigation() {
   const [scrolled, setScrolled] = useState(false);
   const [activeMegaCategory, setActiveMegaCategory] = useState<string | null>(null);
   const { theme, setTheme, resolvedTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  const isDark = mounted && resolvedTheme === 'dark';
+  const isDark = resolvedTheme === 'dark';
   const [searchFocused, setSearchFocused] = useState(false);
   const megaTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const searchRef = useRef<HTMLInputElement>(null);

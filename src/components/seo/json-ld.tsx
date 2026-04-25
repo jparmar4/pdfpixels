@@ -334,12 +334,13 @@ export function HomePageSchemas() {
 }
 
 export function ToolSchema({ tool }: { tool: { id: string; slug?: string; name: string; description: string; keywords: string[] } }) {
+  const toolPath = tool.slug ?? tool.id;
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'SoftwareApplication',
     name: tool.name,
     description: tool.description,
-    url: absoluteUrl(`/tools/${tool.id}`),
+    url: absoluteUrl(`/tools/${toolPath}`),
     applicationCategory: 'UtilitiesApplication',
     operatingSystem: 'Any',
     isAccessibleForFree: true,

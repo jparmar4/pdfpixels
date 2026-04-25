@@ -130,10 +130,12 @@ export async function POST(request: NextRequest) {
 // ─── Parameters ───────────────────────────────────────────────────────────────
 
 function parseParams(formData: FormData) {
+  const requestedFormat = ((formData.get('format') as string) || '').toLowerCase().replace('jpeg', 'jpg');
+
   return {
     // Default quality raised to 92 — more faithful color reproduction than 85
     quality: Math.min(100, Math.max(1, parseInt(formData.get('quality') as string) || 92)),
-    format: 'jpg', // Default, will be overwritten by metadata.format in POST handler
+    format: requestedFormat || undefined,
     width: parsePositiveInt(formData.get('width')),
     height: parsePositiveInt(formData.get('height')),
     fit: (formData.get('fit') as string) || 'inside',
