@@ -1,8 +1,8 @@
-﻿import { Metadata } from "next";
+import { Metadata } from "next";
 import Link from "next/link";
 import NextImage from "next/image";
 import Script from "next/script";
-import { getAllBlogPosts } from "@/config/blog";
+import { getBlogPostsForListing } from "@/config/blog";
 import { siteConfig } from "@/lib/seo-config";
 import { allTools } from "@/lib/tools-data";
 import { Navigation } from "@/components/layout/navigation";
@@ -63,7 +63,7 @@ export const metadata: Metadata = {
 };
 
 export default function BlogPage() {
-    const blogPosts = getAllBlogPosts();
+    const blogPosts = getBlogPostsForListing();
     const featuredPost = blogPosts[0];
     const otherPosts = blogPosts.slice(1);
 
@@ -159,6 +159,7 @@ export default function BlogPage() {
                                                     src={featuredPost.coverImage}
                                                     alt={featuredPost.imageAlt || featuredPost.title}
                                                     fill
+                                                    sizes="(max-width: 1024px) 100vw, 50vw"
                                                     className="object-cover group-hover:scale-105 transition-transform duration-700 ease-in-out"
                                                     priority
                                                 />
@@ -242,6 +243,8 @@ export default function BlogPage() {
                                                         src={post.coverImage}
                                                         alt={post.imageAlt || post.title}
                                                         fill
+                                                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                                                        loading="lazy"
                                                         className="object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
                                                     />
                                                     <div className="absolute top-4 left-4">

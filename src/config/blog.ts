@@ -3641,6 +3641,14 @@ export function getAllBlogPosts(): BlogPost[] {
     });
 }
 
+// Lightweight version for the blog listing page — strips content & faq to avoid
+// sending ~250KB of article text as part of the listing page JS bundle.
+export type BlogPostListItem = Omit<BlogPost, 'content' | 'faq'>;
+
+export function getBlogPostsForListing(): BlogPostListItem[] {
+    return getAllBlogPosts().map(({ content: _c, faq: _f, ...rest }) => rest);
+}
+
 export function getAdjacentPosts(currentSlug: string): { prev: BlogPost | null; next: BlogPost | null } {
     const sorted = getAllBlogPosts();
     const currentIndex = sorted.findIndex(p => p.slug === currentSlug);
