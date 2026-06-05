@@ -6,6 +6,7 @@ import { ArrowRight, GitCompareArrows, Layers3, LayoutTemplate, type LucideIcon 
 import { ToolContentSection } from '@/components/layout/tool-content-section';
 import { ToolPageClient } from '@/components/layout/tool-page-client';
 import { ToolSidebarAd } from '@/components/ads/tool-sidebar-ad';
+import { HeaderAd, FooterAd } from '@/components/ads/ad-banner';
 import { comparisonPages } from '@/lib/comparisons';
 import { normalizeDisplayText } from '@/lib/display-text';
 import { siteConfig } from '@/lib/seo-config';
@@ -265,6 +266,8 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
 
         <ToolSidebarAd />
 
+        <HeaderAd />
+
         <Suspense fallback={<WorkspaceLoading />}>
           <ToolPageClient toolId={tool.id} toolName={cleanToolName} toolDescription={normalizeDisplayText(tool.description)} />
         </Suspense>
@@ -321,6 +324,8 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
             </div>
           </section>
         ) : null}
+
+        <FooterAd />
       </div>
     </>
   );

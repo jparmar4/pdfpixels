@@ -1,7 +1,4 @@
-'use client';
-
 import Link from 'next/link';
-import { motion } from 'framer-motion';
 import {
   ArrowRight, Upload, Sliders, Download, Zap, CheckCircle2, ArrowUpRight
 } from 'lucide-react';
@@ -11,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { getToolBySlug, allTools, toolCategories } from '@/lib/tools-data';
 import type { UseCasePage } from '@/lib/use-cases';
+import { HeaderAd, InContentAd, FooterAd } from '@/components/ads/ad-banner';
 
 /* ─── Props (serializable only) ─────────────────────────────────────── */
 interface UseCaseDetailContentProps {
@@ -55,7 +53,6 @@ export function UseCaseDetailContent({
   entry,
   targetToolSlug,
 }: UseCaseDetailContentProps) {
-  // Look up tool data on the client side (avoids serializing icon functions)
   const tool = getToolBySlug(targetToolSlug);
   const relatedTools = tool
     ? allTools.filter((t) => t.category === tool.category && t.slug !== tool.slug).slice(0, 6)
@@ -72,6 +69,10 @@ export function UseCaseDetailContent({
   return (
     <div className="premium-page-bg min-h-screen bg-background text-foreground">
       <Navigation />
+      
+      {/* High RPM Header Ad placement */}
+      <HeaderAd />
+
       <main className="flex-1">
         {/* ── Hero Header ─────────────────────────────────────────── */}
         <section className="relative overflow-hidden border-b border-border/40">
@@ -104,30 +105,15 @@ export function UseCaseDetailContent({
                 </Badge>
               </div>
 
-              <motion.h1
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                className="text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight text-foreground"
-              >
+              <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight text-foreground transition-all duration-500 ease-out transform translate-y-0 opacity-100">
                 {entry.title}
-              </motion.h1>
-              <motion.p
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-                className="mt-5 text-lg leading-8 text-muted-foreground max-w-2xl mx-auto"
-              >
+              </h1>
+              <p className="mt-5 text-lg leading-8 text-muted-foreground max-w-2xl mx-auto transition-all duration-500 ease-out delay-100 opacity-90">
                 {entry.description}
-              </motion.p>
+              </p>
 
               {/* CTA buttons */}
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-                className="mt-8 flex flex-wrap gap-3 justify-center"
-              >
+              <div className="mt-8 flex flex-wrap gap-3 justify-center transition-all duration-500 ease-out delay-200">
                 <Button asChild size="lg" className="btn-premium rounded-2xl px-7">
                   <Link href={`/tools/${tool.slug}`} className="inline-flex items-center gap-2">
                     <ToolIcon className="w-4 h-4" />
@@ -138,15 +124,10 @@ export function UseCaseDetailContent({
                 <Button asChild variant="outline" size="lg" className="rounded-2xl px-7">
                   <Link href="/use-cases">View All Use Cases</Link>
                 </Button>
-              </motion.div>
+              </div>
 
               {/* Tool info bar */}
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-                className="mt-8 inline-flex flex-wrap items-center justify-center gap-3"
-              >
+              <div className="mt-8 inline-flex flex-wrap items-center justify-center gap-3 transition-all duration-500 ease-out delay-300">
                 <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-border/60 bg-background/80 text-xs font-semibold text-muted-foreground">
                   <Zap className="w-3.5 h-3.5 text-emerald-500" />
                   Free
@@ -159,35 +140,27 @@ export function UseCaseDetailContent({
                   <Zap className="w-3.5 h-3.5 text-primary" />
                   Instant
                 </span>
-              </motion.div>
+              </div>
             </div>
           </div>
         </section>
 
         <div className="container mx-auto px-4 py-8 lg:px-8 max-w-5xl">
           {/* ── Quick Answer ───────────────────────────────────────── */}
-          <motion.section
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-            className="section-panel rounded-[2rem] p-6 md:p-8"
-          >
+          <section className="section-panel rounded-[2rem] p-6 md:p-8 transition-all duration-500 ease-out">
             <h2 className="text-2xl font-bold text-foreground">Quick Answer</h2>
             <p className="mt-4 text-sm leading-7 text-muted-foreground">
               Use <strong className="text-foreground">{tool.name}</strong> to handle{' '}
               <strong className="text-foreground">{entry.intent}</strong> in a fast browser workflow.
               Upload your file, tune the required settings, process, and download the optimized result.
             </p>
-          </motion.section>
+          </section>
+
+          {/* Inline Content Ad placement for high RPM */}
+          <InContentAd />
 
           {/* ── Step-by-step Guide ────────────────────────────────── */}
-          <motion.section
-            initial={{ opacity: 0, y: 15 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="mt-6"
-          >
+          <section className="mt-6">
             <div className="section-panel rounded-[2rem] p-6 md:p-8">
               <h2 className="text-2xl font-bold text-foreground mb-8">Step-by-Step Guide</h2>
 
@@ -195,16 +168,12 @@ export function UseCaseDetailContent({
                 {/* Vertical connecting line */}
                 <div className="absolute left-6 top-0 bottom-0 w-px bg-gradient-to-b from-primary/40 via-violet-500/30 to-emerald-500/20 hidden md:block" />
 
-                {steps.map((step, idx) => {
+                {steps.map((step) => {
                   const StepIcon = step.icon;
                   return (
-                    <motion.div
+                    <div
                       key={step.number}
-                      initial={{ opacity: 0, x: -20 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: idx * 0.1 }}
-                      className="relative flex gap-5 pb-8 last:pb-0"
+                      className="relative flex gap-5 pb-8 last:pb-0 transition-all duration-500 ease-out"
                     >
                       {/* Numbered circle on the line */}
                       <div className="relative z-10 shrink-0">
@@ -218,21 +187,16 @@ export function UseCaseDetailContent({
                         <h3 className="text-base font-bold text-foreground">{step.title}</h3>
                         <p className="mt-1.5 text-sm leading-7 text-muted-foreground">{step.description}</p>
                       </div>
-                    </motion.div>
+                    </div>
                   );
                 })}
               </div>
             </div>
-          </motion.section>
+          </section>
 
           {/* ── Related Tools Grid ────────────────────────────────── */}
           {relatedTools.length > 0 && (
-            <motion.section
-              initial={{ opacity: 0, y: 15 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="mt-6"
-            >
+            <section className="mt-6">
               <div className="section-panel rounded-[2rem] p-6 md:p-8">
                 <div className="flex items-center justify-between mb-6">
                   <div>
@@ -245,16 +209,10 @@ export function UseCaseDetailContent({
                 </div>
 
                 <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {relatedTools.map((rt, idx) => {
+                  {relatedTools.map((rt) => {
                     const RtIcon = rt.icon;
                     return (
-                      <motion.div
-                        key={rt.slug}
-                        initial={{ opacity: 0, y: 15 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: idx * 0.06 }}
-                      >
+                      <div key={rt.slug}>
                         <Link
                           href={`/tools/${rt.slug}`}
                           className="group flex items-start gap-3 rounded-2xl border border-border/60 bg-background/75 p-4 shadow-soft hover:shadow-premium hover:border-primary/20 hover:-translate-y-0.5 transition-all duration-300"
@@ -275,7 +233,7 @@ export function UseCaseDetailContent({
                             )}
                           </div>
                         </Link>
-                      </motion.div>
+                      </div>
                     );
                   })}
                 </div>
@@ -286,16 +244,11 @@ export function UseCaseDetailContent({
                   </Link>
                 </div>
               </div>
-            </motion.section>
+            </section>
           )}
 
           {/* ── CTA ──────────────────────────────────────────────── */}
-          <motion.section
-            initial={{ opacity: 0, y: 15 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="mt-6 aurora-bg rounded-[2rem] overflow-hidden"
-          >
+          <section className="mt-6 aurora-bg rounded-[2rem] overflow-hidden">
             <div className="relative z-10 px-6 py-12 md:px-10 md:py-14 text-center">
               <h2 className="text-2xl md:text-3xl font-extrabold text-foreground">
                 Try this workflow now
@@ -316,9 +269,13 @@ export function UseCaseDetailContent({
                 </Button>
               </div>
             </div>
-          </motion.section>
+          </section>
         </div>
       </main>
+
+      {/* Footer Ad placement for high RPM */}
+      <FooterAd />
+
       <Footer />
     </div>
   );

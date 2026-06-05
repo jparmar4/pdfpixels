@@ -1,12 +1,10 @@
-'use client';
-
 import Link from 'next/link';
 import { ChevronDown, CheckCircle2, Users, Sparkles, Shield, FileType, ArrowRight, BookOpen, Clock } from 'lucide-react';
-import { useState, useMemo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { toolContentMap, type ToolContent } from '@/lib/tool-content-data';
 import { getToolBySlug, type Tool } from '@/lib/tools-data';
 import { blogPosts } from '@/config/blog';
+import { FAQAccordion } from '@/components/layout/faq-accordion';
+import { InContentAd } from '@/components/ads/ad-banner';
 
 /* ── Gradient accent line for section headers ── */
 function SectionHeader({ icon: Icon, iconColor = 'text-primary', children }: {
@@ -37,62 +35,6 @@ function SubHeader({ icon: Icon, iconColor = 'text-primary', children }: {
         <Icon className={`w-[18px] h-[18px] ${iconColor}`} />
         {children}
       </h3>
-    </div>
-  );
-}
-
-/* ── FAQ Item with numbered badge, gradient border, smoother animation ── */
-function FAQItem({ question, answer, index }: { question: string; answer: string; index: number }) {
-  const [open, setOpen] = useState(false);
-  const badge = String(index + 1).padStart(2, '0');
-
-  return (
-    <div
-      className={`rounded-xl overflow-hidden transition-all duration-300 ${
-        open
-          ? 'border border-primary/30 shadow-sm shadow-primary/5 bg-gradient-to-r from-primary/[0.02] to-transparent'
-          : 'border border-border/40'
-      }`}
-    >
-      <button
-        onClick={() => setOpen(!open)}
-        className="w-full flex items-center gap-4 px-5 py-4 text-left hover:bg-muted/30 transition-colors"
-        aria-expanded={open}
-      >
-        <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-xs font-bold transition-all duration-300 ${
-          open
-            ? 'bg-gradient-to-br from-primary to-sky-500 text-white shadow-sm shadow-primary/20'
-            : 'bg-muted/60 text-muted-foreground'
-        }`}>
-          {badge}
-        </span>
-        <span className="font-medium text-sm flex-1 pr-4">{question}</span>
-        <motion.span
-          animate={{ rotate: open ? 180 : 0 }}
-          transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
-        >
-          <ChevronDown className="w-4 h-4 shrink-0 text-muted-foreground" />
-        </motion.span>
-      </button>
-      <AnimatePresence initial={false}>
-        {open && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
-            className="overflow-hidden"
-          >
-            <div className="border-l-2 border-gradient-to-b from-primary to-sky-400 border-l-primary/40 mx-5 border-l-2">
-              <div className="border-l-2 border-l-transparent pl-4 pb-4 pt-1">
-                <p className="text-sm text-muted-foreground leading-relaxed">
-                  {answer}
-                </p>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </div>
   );
 }
@@ -210,7 +152,7 @@ export function ToolContentSection({ toolSlug, toolName, isAI, processing }: {
   processing: 'client' | 'server' | 'ai';
 }) {
   const content = toolContentMap[toolSlug];
-  const relatedArticles = useMemo(() => findRelatedArticles(toolSlug, toolName), [toolSlug, toolName]);
+  const relatedArticles = findRelatedArticles(toolSlug, toolName);
 
   // Fallback for tools without content data
   if (!content) {
@@ -278,15 +220,6 @@ export function ToolContentSection({ toolSlug, toolName, isAI, processing }: {
           <ul className="grid sm:grid-cols-2 gap-3 mt-4">
             {content.features.map((feature, i) => (
               <li key={i} className="flex items-start gap-2.5 text-sm text-muted-foreground">
-                <CheckCircle2 className="h-4 w-4 shrink-0 mt-0.5 bg-gradient-to-br from-emerald-400 to-teal-500 text-transparent bg-clip-text [&>path]:stroke-[url(#checkGrad)]" />
-                <svg className="absolute h-0 w-0" aria-hidden="true">
-                  <defs>
-                    <linearGradient id="checkGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#34d399" />
-                      <stop offset="100%" stopColor="#14b8a6" />
-                    </linearGradient>
-                  </defs>
-                </svg>
                 <CheckCircle2 className="h-4 w-4 shrink-0 mt-0.5 text-emerald-500" />
                 <span>{feature}</span>
               </li>
@@ -311,7 +244,7 @@ export function ToolContentSection({ toolSlug, toolName, isAI, processing }: {
           </ul>
         </div>
 
-        {/* How It Works */}
+        {/* How to Use */}
         <div>
           <SubHeader icon={Sparkles} iconColor="text-violet-500">
             How to Use {toolName}
@@ -338,17 +271,16 @@ export function ToolContentSection({ toolSlug, toolName, isAI, processing }: {
           </div>
         </div>
 
+        {/* High RPM InContent Ad unit */}
+        <InContentAd />
+
         {/* FAQ Accordion */}
         {content.faqs.length > 0 && (
           <div>
             <SubHeader icon={BookOpen} iconColor="text-amber-500">
               Frequently Asked Questions
             </SubHeader>
-            <div className="space-y-2 mt-4">
-              {content.faqs.map((faq, i) => (
-                <FAQItem key={i} question={faq.question} answer={faq.answer} index={i} />
-              ))}
-            </div>
+            <FAQAccordion faqs={content.faqs} />
           </div>
         )}
 
