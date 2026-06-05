@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from 'next';
+import { Inter, DM_Sans, Outfit } from 'next/font/google';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 import { ThemeProvider } from 'next-themes';
@@ -8,6 +9,24 @@ import { AdSenseScript } from '@/components/ads/adsense-script';
 import { DEFAULT_OG_IMAGE_URL } from '@/lib/seo';
 import { PageTransitionWrapper } from '@/components/layout/page-transition-wrapper';
 import { CookieConsentBanner } from '@/components/ads/cookie-consent';
+
+const fontInter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+  display: 'swap',
+});
+
+const fontDmSans = DM_Sans({
+  subsets: ['latin'],
+  variable: '--font-dm-sans',
+  display: 'swap',
+});
+
+const fontOutfit = Outfit({
+  subsets: ['latin'],
+  variable: '--font-outfit',
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
@@ -132,7 +151,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" suppressHydrationWarning className="scroll-smooth">
+    <html lang="en" suppressHydrationWarning className={`scroll-smooth ${fontInter.variable} ${fontDmSans.variable} ${fontOutfit.variable}`}>
       <head>
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
         <link rel="dns-prefetch" href="https://www.google-analytics.com" />

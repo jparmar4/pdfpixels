@@ -3,7 +3,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     Download, RotateCcw, RotateCw, Sparkles, ChevronRight,
-    Stamp, Shield, FileLock, Layers, Trash2, GripVertical, Plus, Minus, Check, Zap
+    Stamp, Shield, FileLock, Layers, Trash2, GripVertical, Plus, Minus, Check, Zap, Hash
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -12,6 +12,7 @@ import { Slider } from '@/components/ui/slider';
 import { useAppStore } from '@/store/app-store';
 import { FileUpload } from './file-upload';
 import { ToolPageHeader } from './tool-page-header';
+import { InContentAd } from '@/components/ads/ad-banner';
 import { useState, useCallback, useEffect } from 'react';
 import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
@@ -340,6 +341,64 @@ function LinearizeSettings() {
     );
 }
 
+function PageNumberSettings({
+    position, setPosition, format, setFormat,
+    margin, setMargin, fontSize, setFontSize
+}: {
+    position: string; setPosition: (v: string) => void;
+    format: string; setFormat: (v: string) => void;
+    margin: number; setMargin: (v: number) => void;
+    fontSize: number; setFontSize: (v: number) => void;
+}) {
+    return (
+        <div className="space-y-5">
+            <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                    <Label>Position</Label>
+                    <Select value={position} onValueChange={setPosition}>
+                        <SelectTrigger><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="bottom-left">Bottom Left</SelectItem>
+                            <SelectItem value="bottom-center">Bottom Center</SelectItem>
+                            <SelectItem value="bottom-right">Bottom Right</SelectItem>
+                            <SelectItem value="top-left">Top Left</SelectItem>
+                            <SelectItem value="top-center">Top Center</SelectItem>
+                            <SelectItem value="top-right">Top Right</SelectItem>
+                        </SelectContent>
+                    </Select>
+                </div>
+                <div className="space-y-2">
+                    <Label>Format</Label>
+                    <Select value={format} onValueChange={setFormat}>
+                        <SelectTrigger><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="{n}">1, 2, 3...</SelectItem>
+                            <SelectItem value="Page {n}">Page 1, Page 2...</SelectItem>
+                            <SelectItem value="{n} of {total}">1 of 5...</SelectItem>
+                            <SelectItem value="Page {n} of {total}">Page 1 of 5...</SelectItem>
+                            <SelectItem value="- {n} -">- 1 -</SelectItem>
+                        </SelectContent>
+                    </Select>
+                </div>
+            </div>
+            <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                    <Label>Margin (px)</Label>
+                    <span className="text-sm font-mono text-primary">{margin}px</span>
+                </div>
+                <Slider value={[margin]} onValueChange={([v]) => setMargin(v)} min={10} max={100} step={5} />
+            </div>
+            <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                    <Label>Font Size</Label>
+                    <span className="text-sm font-mono text-primary">{fontSize}pt</span>
+                </div>
+                <Slider value={[fontSize]} onValueChange={([v]) => setFontSize(v)} min={8} max={72} step={2} />
+            </div>
+        </div>
+    );
+}
+
 // ─── Main Component ────────────────────────────────────────────────────────────
 
 export function PDFToolsWorkspace() {
@@ -370,6 +429,12 @@ export function PDFToolsWorkspace() {
     // Reorder
     const [pageOrder, setPageOrder] = useState<number[]>([]);
 
+    // Page Numbers
+    const [pnPosition, setPnPosition] = useState('bottom-center');
+    const [pnFormat, setPnFormat] = useState('{n}');
+    const [pnMargin, setPnMargin] = useState(30);
+    const [pnFontSize, setPnFontSize] = useState(12);
+
     // Get page count from uploaded PDF
     useEffect(() => {
         if (!uploadedFile || !uploadedFile.name.toLowerCase().endsWith('.pdf')) {
@@ -398,6 +463,7 @@ export function PDFToolsWorkspace() {
         if (toolId === 'pdf-delete-pages') return '/api/pdf/delete-pages';
         if (toolId === 'pdf-reorder') return '/api/pdf/reorder';
         if (toolId === 'pdf-linearize') return '/api/pdf/linearize';
+        if (toolId === 'pdf-add-page-numbers') return '/api/pdf/add-page-numbers';
         return '/api/pdf/rotate';
     };
 
@@ -432,6 +498,11 @@ export function PDFToolsWorkspace() {
         } else if (toolId === 'pdf-reorder') {
             if (pageOrder.length === 0) { toast.error('No page order set'); return null; }
             formData.append('order', JSON.stringify(pageOrder));
+        } else if (toolId === 'pdf-add-page-numbers') {
+            formData.append('position', pnPosition);
+            formData.append('format', pnFormat);
+            formData.append('margin', pnMargin.toString());
+            formData.append('fontSize', pnFontSize.toString());
         }
 
         return formData;
@@ -489,7 +560,7 @@ export function PDFToolsWorkspace() {
             setIsProcessing(false);
         }
 
-    }, [uploadedFile, activeTool, angle, rotatePages, wmText, wmOpacity, wmColor, wmFontSize, wmPosition, wmRotation, password, confirmPassword, deletePages, pageOrder, setIsProcessing, setProgress, buildFormData, getApiEndpoint]);
+    }, [uploadedFile, activeTool, angle, rotatePages, wmText, wmOpacity, wmColor, wmFontSize, wmPosition, wmRotation, password, confirmPassword, deletePages, pageOrder, pnPosition, pnFormat, pnMargin, pnFontSize, setIsProcessing, setProgress, buildFormData, getApiEndpoint]);
 
     const handleDownload = useCallback(() => {
         if (!result) return;
@@ -517,6 +588,7 @@ export function PDFToolsWorkspace() {
         if (toolId === 'pdf-reorder') return Layers;
         if (toolId === 'pdf-delete-pages') return Trash2;
         if (toolId === 'pdf-linearize') return Zap;
+        if (toolId === 'pdf-add-page-numbers') return Hash;
     return Sparkles;
 };
 
@@ -529,6 +601,7 @@ const renderSettings = () => {
     if (toolId === 'pdf-delete-pages') return <DeletePagesSettings pages={deletePages} setPages={setDeletePages} totalPages={totalPages} />;
     if (toolId === 'pdf-reorder') return <ReorderSettings order={pageOrder} setOrder={setPageOrder} totalPages={totalPages} />;
     if (toolId === 'pdf-linearize') return <LinearizeSettings />;
+    if (toolId === 'pdf-add-page-numbers') return <PageNumberSettings position={pnPosition} setPosition={setPnPosition} format={pnFormat} setFormat={setPnFormat} margin={pnMargin} setMargin={setPnMargin} fontSize={pnFontSize} setFontSize={setPnFontSize} />;
     return null;
 };
 
@@ -542,6 +615,7 @@ const getProcessLabel = () => {
     if (toolId === 'pdf-delete-pages') return 'Delete Pages';
     if (toolId === 'pdf-reorder') return 'Reorder Pages';
     if (toolId === 'pdf-linearize') return 'Optimize PDF';
+    if (toolId === 'pdf-add-page-numbers') return 'Add Page Numbers';
     return 'Process PDF';
 };
 
@@ -664,6 +738,10 @@ return (
                             </Button>
                         </div>
                     </div>
+                </div>
+
+                <div className="rounded-2xl border border-border/40 bg-card/60 backdrop-blur-xl overflow-hidden shadow-premium p-4">
+                    <InContentAd />
                 </div>
 
                 <div className="rounded-2xl border border-border/40 bg-gradient-to-br from-primary/5 to-transparent p-5 space-y-3">

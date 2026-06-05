@@ -18,6 +18,7 @@ import {
 import { useState, useEffect, useRef, Suspense, useCallback } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
+import { HeaderAd, NativeAd } from '@/components/ads/ad-banner';
 
 function AnimatedCounter({ end, suffix = '', duration = 2000 }: { end: number; suffix?: string; duration?: number }) {
   const [count, setCount] = useState(0);
@@ -278,7 +279,10 @@ function ToolsSection() {
   return (
     <section className="bg-background">
       <ToolsHeader search={search} setSearch={setSearch} />
-      <div className="container mx-auto px-4 lg:px-8 pt-6 md:pt-8">
+      <div className="container mx-auto px-4 lg:px-8 py-6">
+        <HeaderAd />
+      </div>
+      <div className="container mx-auto px-4 lg:px-8 pt-2 md:pt-4">
         {!search && (
           <>
             <div className="flex items-center justify-between gap-3">
@@ -941,6 +945,10 @@ function FAQSection() {
               </AnimatePresence>
             </motion.div>
           ))}
+          
+          <div className="py-4">
+            <NativeAd />
+          </div>
         </div>
       </div>
     </section>

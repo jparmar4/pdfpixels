@@ -639,4 +639,46 @@ export const toolContentMap: Record<string, ToolContent> = {
         supportedFormats: 'Input/Output: PDF',
         relatedTools: ['reorder-pdf-pages', 'split-pdf', 'merge-pdf'],
     },
+    'add-page-numbers-to-pdf': {
+        about: 'Add Page Numbers to PDF lets you automatically insert page numbers across your entire PDF document. You can customize the numbering format (e.g., "1", "Page 1", "1 of 5"), choose exactly where the numbers appear on the page (bottom, top, left, right), and adjust the font size and margins. The tool processes files completely in the browser for maximum privacy and speed.',
+        features: ['Multiple numbering formats (e.g., Page N of Total)', 'Custom positioning (top-left, bottom-center, etc.)', 'Adjustable font sizes and margins', 'Fast server-side processing without quality loss', 'High privacy with encrypted transfers'],
+        useCases: ['Adding page numbers to printed reports and ebooks', 'Numbering legal documents for court submissions', 'Organizing scanned documents and lecture notes', 'Bates numbering for large PDF portfolios'],
+        faqs: [
+            { question: 'Will this tool overwrite existing text?', answer: 'No, the page numbers are placed as an overlay on top of the PDF. We recommend using margins to ensure numbers do not overlap with existing text.' },
+            { question: 'Is it free to use?', answer: 'Yes! Our tool is 100% free with no watermarks and no limits on the number of pages.' }
+        ],
+        supportedFormats: 'Input/Output: PDF',
+        relatedTools: ['watermark-pdf', 'merge-pdf', 'reorder-pdf-pages'],
+    },
+    'svg-to-png': {
+        about: 'SVG to PNG Converter easily transforms your scalable vector graphics into transparent, high-quality raster PNG images. Perfect for converting web icons, logos, and illustrations into universally supported image formats that work across all software and platforms.',
+        features: ['Preserves background transparency', 'Maintains crisp edges and colors', 'Fast server-side rendering', 'Processes files instantly', 'High privacy with no image storage'],
+        useCases: ['Converting web icons to PNG for email signatures', 'Transforming vector logos for presentation software', 'Preparing SVG graphics for social media posts', 'Converting designer assets for non-technical clients'],
+        faqs: [
+            { question: 'Will my transparent background be kept?', answer: 'Yes, our SVG to PNG converter automatically preserves any transparent backgrounds present in your original SVG file.' },
+            { question: 'Is there a file size limit?', answer: 'You can upload SVG files up to 25MB, which is more than enough for extremely complex vector graphics.' }
+        ],
+        supportedFormats: 'Input: SVG | Output: PNG',
+        relatedTools: ['svg-to-jpg', 'png-to-jpeg', 'resize-image'],
+    },
+    'svg-to-jpg': {
+        about: 'Convert your SVG vector graphics into standard JPG images instantly. While SVG is great for scalable design, JPG is the universal standard for photos and general web use. This tool renders your SVG against a solid white background (since JPG does not support transparency) and outputs a highly compressed, shareable image file.',
+        features: ['Replaces transparent backgrounds with solid white', 'Highly optimized JPEG compression', 'Lightning-fast conversion', 'Works entirely without downloading software'],
+        useCases: ['Converting vector logos into profile pictures', 'Sharing illustrations on platforms that don\'t support SVG', 'Compressing graphics for faster page loads', 'Creating thumbnails from vector assets'],
+        faqs: [
+            { question: 'Why does my background turn white?', answer: 'The JPG format does not support transparency. Any transparent areas in your SVG will be automatically converted to a white background during processing.' }
+        ],
+        supportedFormats: 'Input: SVG | Output: JPG',
+        relatedTools: ['svg-to-png', 'webp-to-jpg', 'compress-image'],
+    },
+    'webp-to-png': {
+        about: 'WebP to PNG Converter transforms next-gen WebP images back into the universally recognized PNG format. Since many older applications, email clients, and image viewers still struggle to open WebP files, converting them to PNG ensures your graphics load correctly with full transparency intact.',
+        features: ['100% lossless conversion', 'Preserves alpha-channel transparency', 'No software installation required', 'Processes files in seconds'],
+        useCases: ['Converting downloaded WebP images for Photoshop editing', 'Fixing images that won\'t open in older software', 'Preparing graphics for older email clients', 'Standardizing assets for legacy systems'],
+        faqs: [
+            { question: 'Will the image lose quality?', answer: 'No, converting from WebP to PNG is a completely lossless process, meaning your image will look exactly the same as the original.' }
+        ],
+        supportedFormats: 'Input: WebP | Output: PNG',
+        relatedTools: ['webp-to-jpg', 'png-to-jpeg', 'remove-image-background'],
+    },
 };

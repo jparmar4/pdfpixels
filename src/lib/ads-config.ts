@@ -7,7 +7,7 @@ export const adsConfig = {
   publisherId: process.env.NEXT_PUBLIC_ADSENSE_PUBLISHER_ID || 'ca-pub-3541576002060495',
 
   // Enable/disable ads globally (set to false during development)
-  enabled: process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_ADSENSE_ENABLED === 'true',
+  enabled: process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_ADSENSE_ENABLED !== 'false',
 
   // Ad slot IDs for different placements
   // Get these from your AdSense dashboard when you create ad units

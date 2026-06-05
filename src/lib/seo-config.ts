@@ -17,8 +17,8 @@ export const siteConfig = {
 
 export const seoConfig = {
   siteName: 'PdfPixels',
-  tagline: 'Free online PDF and image tools',
-  description: 'Free online PDF and image tools for compression, conversion, editing, and AI-powered workflows. No signup required.',
+  tagline: 'Fast, Free Online PDF & Image Tools - No Signup',
+  description: 'Compress, convert, merge, and edit PDF and image files instantly online for free. Fast, secure processing with no signup required.',
   longDescription: `PdfPixels is a free online workspace for PDF and image tasks such as compression, conversion, resizing, background removal, and document cleanup. The platform is built around fast, privacy-aware workflows, practical tool pages, and clear guidance for users who need dependable results without signup friction.`,
   primaryKeywords: [
     'pdf tools',
