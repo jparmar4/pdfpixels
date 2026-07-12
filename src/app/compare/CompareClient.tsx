@@ -3,7 +3,7 @@
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import { GitCompareArrows, ArrowRight, Check, X } from 'lucide-react';
+import { GitCompareArrows, ArrowRight, Check } from 'lucide-react';
 import { getToolBySlug } from '@/lib/tools-data';
 import type { ComparisonPage } from '@/lib/comparisons';
 import { CategoryFilter } from '@/components/compare/CategoryFilter';

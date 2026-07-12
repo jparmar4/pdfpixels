@@ -10,7 +10,6 @@ import {
   ArrowRight,
   BookOpen,
   ChevronRight,
-  Command,
   Home,
   Menu,
   Moon,
@@ -35,7 +34,7 @@ export function Navigation() {
   const [searchResults, setSearchResults] = useState<Tool[]>([]);
   const [scrolled, setScrolled] = useState(false);
   const [activeMegaCategory, setActiveMegaCategory] = useState<string | null>(null);
-  const { theme, setTheme, resolvedTheme } = useTheme();
+  const { setTheme, resolvedTheme } = useTheme();
 
   const isDark = resolvedTheme === 'dark';
   const [searchFocused, setSearchFocused] = useState(false);
@@ -494,6 +493,7 @@ export function Navigation() {
                     onFocus={() => setSearchFocused(true)}
                     onBlur={() => setSearchFocused(false)}
                     placeholder="Search PDF and image tools"
+                    aria-label="Search PDF and image tools"
                     className="flex-1 border-none bg-transparent text-base font-semibold outline-none placeholder:text-muted-foreground/70"
                     autoFocus
                   />

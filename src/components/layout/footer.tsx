@@ -19,6 +19,7 @@ import {
   ArrowUp,
 } from 'lucide-react';
 import { allTools, toolCategories } from '@/lib/tools-data';
+import { geoRegions } from '@/lib/geo-data';
 import { useAppStore } from '@/store/app-store';
 
 const toolLinkIds = ['compress', 'resize', 'remove-background', 'image-to-pdf', 'pdf-merge', 'pdf-split'];
@@ -31,10 +32,10 @@ export function Footer() {
 
   const toolLinks = toolLinkIds
     .map((id) => allTools.find((tool) => tool.id === id))
-    .filter(Boolean)
+    .filter((t): t is NonNullable<typeof t> => t != null)
     .map((tool) => ({
-      name: tool!.name,
-      href: `/tools/${tool!.slug}`,
+      name: tool.name,
+      href: `/tools/${tool.slug}`,
     }));
 
   // Build dynamic category columns from toolCategories (first 6 tools each)
@@ -49,19 +50,17 @@ export function Footer() {
       })),
     }));
 
-  const companyLinks = [
-    { name: 'About', href: '/about' },
-    { name: 'Blog', href: '/blog' },
-    { name: 'Contact', href: '/contact' },
-    { name: 'Compare tools', href: '/compare' },
-  ];
-
   const legalLinks = [
     { name: 'Privacy', href: '/privacy' },
     { name: 'Terms', href: '/terms' },
     { name: 'Disclaimer', href: '/disclaimer' },
     { name: 'DMCA', href: '/dmca' },
   ];
+
+  const regionLinks = geoRegions.map((region) => ({
+    name: region.name,
+    href: `/${region.code}`,
+  }));
 
   const socialLinks = [
     { icon: Twitter, href: 'https://twitter.com/pdfpixels', label: 'Follow us on Twitter / X', tooltip: 'Twitter' },
@@ -134,6 +133,7 @@ export function Footer() {
                     <input
                       type="email"
                       placeholder="Enter your email for updates"
+                      aria-label="Email for newsletter"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       onKeyDown={(e) => e.key === 'Enter' && handleSubscribe()}
@@ -185,7 +185,7 @@ export function Footer() {
       {/* ── Footer Columns ── */}
       <div className="border-t border-border/30 bg-muted/15">
         <div className="container mx-auto px-4 py-14 lg:px-8">
-          <div className="grid gap-10 lg:grid-cols-[minmax(0,1.45fr)_repeat(4,minmax(0,1fr))]">
+          <div className="grid gap-10 lg:grid-cols-[minmax(0,1.45fr)_repeat(5,minmax(0,1fr))]">
             {/* Brand Column */}
             <div className="space-y-6">
               <Link href="/" className="flex items-center gap-3" onClick={() => setActiveTool(null)}>
@@ -254,6 +254,14 @@ export function Footer() {
                 <FooterColumn title={col.title} links={col.links} />
               </div>
             ))}
+
+            {/* Regions Column */}
+            <div className="lg:hidden">
+              <CollapsibleFooterColumn title="Regions" links={regionLinks} />
+            </div>
+            <div className="hidden lg:block">
+              <FooterColumn title="Regions" links={regionLinks} />
+            </div>
 
             {/* Legal Column */}
             <div className="lg:hidden">

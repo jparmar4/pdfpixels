@@ -1,3 +1,7 @@
+import { apiError } from '@/lib/api-response';
+import { loadPdfWithTimeout } from '@/lib/pdf-api';
+
+export const maxDuration = 60;
 import { NextRequest, NextResponse } from 'next/server';
 import { PDFDocument } from 'pdf-lib';
 import sharp from 'sharp';
@@ -130,15 +134,15 @@ export async function POST(request: NextRequest) {
     const pagesParam = (formData.get('pages') as string) || 'all';
 
     if (!file) {
-      return NextResponse.json({ error: 'No PDF file provided' }, { status: 400, headers: CACHE_HEADERS });
+      return apiError('No PDF file provided', 400);
     }
 
     if (file.size > MAX_FILE_SIZE) {
-      return NextResponse.json({ error: 'File too large (25MB max).' }, { status: 400, headers: CACHE_HEADERS });
+      return apiError('File too large (25MB max).', 400);
     }
 
     if (file.type && file.type !== 'application/pdf') {
-      return NextResponse.json({ error: 'Only PDF files are supported.' }, { status: 400, headers: CACHE_HEADERS });
+      return apiError('Only PDF files are supported.', 400);
     }
 
     const safeFormat = ['jpg', 'png', 'webp'].includes(format) ? (format as 'jpg' | 'png' | 'webp') : 'jpg';
@@ -147,7 +151,7 @@ export async function POST(request: NextRequest) {
 
     const arrayBuffer = await file.arrayBuffer();
     const pdfBytes = new Uint8Array(arrayBuffer);
-    const pdf = await PDFDocument.load(pdfBytes, { ignoreEncryption: true });
+    const pdf = await loadPdfWithTimeout(pdfBytes);
     const totalPages = pdf.getPageCount();
 
     let pageIndices: number[] = [];
@@ -176,11 +180,13 @@ export async function POST(request: NextRequest) {
     pageIndices = [...new Set(pageIndices)].slice(0, MAX_PAGES);
 
     if (pageIndices.length === 0) {
-      return NextResponse.json({ error: 'No valid PDF pages selected.' }, { status: 400, headers: CACHE_HEADERS });
+      return apiError('No valid PDF pages selected.', 400);
     }
 
-    const images: { pageNumber: number; imageUrl: string; width: number; height: number; size: number }[] = [];
+    const AdmZip = (await import('adm-zip')).default;
+    const zip = new AdmZip();
     let totalImageBytes = 0;
+    let convertedPages = 0;
 
     const tempDir = os.tmpdir();
     const id = crypto.randomUUID();
@@ -209,16 +215,8 @@ export async function POST(request: NextRequest) {
             break;
           }
 
-          const metadata = await sharp(finalBuffer).metadata();
-          const mimeType = safeFormat === 'png' ? 'image/png' : safeFormat === 'webp' ? 'image/webp' : 'image/jpeg';
-
-          images.push({
-            pageNumber: idx + 1,
-            imageUrl: `data:${mimeType};base64,${finalBuffer.toString('base64')}`,
-            width: metadata.width || 0,
-            height: metadata.height || 0,
-            size: finalBuffer.length,
-          });
+          zip.addFile(`page-${idx + 1}.${safeFormat}`, finalBuffer);
+          convertedPages++;
         } finally {
           if (fs.existsSync(outputPath)) fs.unlinkSync(outputPath);
         }
@@ -227,19 +225,23 @@ export async function POST(request: NextRequest) {
       if (fs.existsSync(inputPath)) fs.unlinkSync(inputPath);
     }
 
-    return NextResponse.json(
-      {
-        success: true,
-        totalPages,
-        requestedPages,
-        convertedPages: images.length,
-        format: safeFormat,
-        dpi: safeDpi,
-        truncated: requestedPages > images.length,
-        images,
+    const zipBuffer = zip.toBuffer();
+    const fileName = `converted-images-${Date.now()}.zip`;
+
+    return new NextResponse(zipBuffer as unknown as BodyInit, {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/zip',
+        'Content-Disposition': `attachment; filename="${fileName}"`,
+        'Cache-Control': 'no-store, max-age=0',
+        'X-Total-Pages': String(totalPages),
+        'X-Requested-Pages': String(requestedPages),
+        'X-Converted-Pages': String(convertedPages),
+        'X-Format': safeFormat,
+        'X-Dpi': String(safeDpi),
+        'X-Truncated': String(requestedPages > convertedPages),
       },
-      { headers: CACHE_HEADERS }
-    );
+    });
   } catch (error) {
     console.error('PDF to image error:', error);
     const details = error instanceof Error ? error.message : 'Unknown error';

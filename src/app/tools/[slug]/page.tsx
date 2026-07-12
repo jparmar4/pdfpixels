@@ -163,6 +163,10 @@ function getToolJsonLd(tool: ReturnType<typeof getToolBySlug>) {
         width: 1200,
         height: 630,
       },
+      speakable: {
+        '@type': 'SpeakableSpecification',
+        cssSelector: ['h1', '.tool-hero-description'],
+      },
       mainEntity: {
         '@id': `${url}#software`,
       },
@@ -237,7 +241,8 @@ function getToolJsonLd(tool: ReturnType<typeof getToolBySlug>) {
       '@type': 'BreadcrumbList',
       itemListElement: [
         { '@type': 'ListItem', position: 1, name: 'Home', item: absoluteUrl('/') },
-        { '@type': 'ListItem', position: 2, name: cleanName, item: url },
+        { '@type': 'ListItem', position: 2, name: 'Tools', item: absoluteUrl('/tools') },
+        { '@type': 'ListItem', position: 3, name: cleanName, item: url },
       ],
     },
   ];

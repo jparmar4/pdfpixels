@@ -7,8 +7,10 @@ import { JsonLdSchemas } from '@/components/seo/json-ld';
 import { seoConfig, siteConfig } from '@/lib/seo-config';
 import { AdSenseScript } from '@/components/ads/adsense-script';
 import { DEFAULT_OG_IMAGE_URL } from '@/lib/seo';
-import { PageTransitionWrapper } from '@/components/layout/page-transition-wrapper';
 import { CookieConsentBanner } from '@/components/ads/cookie-consent';
+import { Analytics } from '@/components/ads/analytics';
+import { Navigation } from '@/components/layout/navigation';
+import { Footer } from '@/components/layout/footer';
 
 const fontInter = Inter({
   subsets: ['latin'],
@@ -115,10 +117,10 @@ export const metadata: Metadata = {
     'msapplication-TileColor': seoConfig.brandColor,
   },
   verification: {
-    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || 'google1b97f335783a2de5',
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || undefined,
     other: {
-      'msvalidate.01': process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION || 'FB59613C2AC3152EE30F7AA64D5F67BA',
-      'yandex-verification': process.env.NEXT_PUBLIC_YANDEX_VERIFICATION || 'c91f89e27af42d74',
+      ...(process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION ? { 'msvalidate.01': process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION } : {}),
+      ...(process.env.NEXT_PUBLIC_YANDEX_VERIFICATION ? { 'yandex-verification': process.env.NEXT_PUBLIC_YANDEX_VERIFICATION } : {}),
     },
   },
   category: 'Productivity',
@@ -159,22 +161,21 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <link rel="preconnect" href="https://adservice.google.com" />
         <link rel="search" type="application/opensearchdescription+xml" title="PdfPixels" href="/opensearch.xml" />
         <link rel="alternate" type="application/rss+xml" title="PdfPixels RSS Feed" href="/feed" />
-        <link rel="shortcut icon" href="/favicon.ico" />
-        <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
-        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
-        <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96.png" />
-        <link rel="icon" type="image/svg+xml" href="/logo.svg" />
-        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
       </head>
-      <body className="bg-background text-foreground antialiased">
+      <body className="bg-background text-foreground antialiased min-h-screen flex flex-col">
+        <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-lg focus:text-sm focus:font-semibold focus:outline-none focus:ring-2 focus:ring-primary/50">
+          Skip to main content
+        </a>
         <JsonLdSchemas />
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
-          <PageTransitionWrapper>
+          <Navigation />
+          <div className="flex-1 flex flex-col">
             {children}
-          </PageTransitionWrapper>
+          </div>
+          <Footer />
           <Toaster />
           <AdSenseScript />
+          <Analytics />
           <CookieConsentBanner />
         </ThemeProvider>
       </body>

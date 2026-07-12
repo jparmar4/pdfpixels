@@ -3,6 +3,7 @@
 import dynamic from 'next/dynamic';
 import { useAppStore } from '@/store/app-store';
 import { useEffect } from 'react';
+import { ErrorBoundary } from '@/components/ui/error-boundary';
 
 // Dynamically import workspace components
 const CompressWorkspace = dynamic(
@@ -117,7 +118,7 @@ function getWorkspaceComponent(toolId: string) {
   if (toolId === 'image-to-pdf') return <ImageToPDFWorkspace />;
   if (toolId === 'pdf-compress') return <PDFCompressWorkspace />;
   if (toolId === 'pdf-to-image') return <ConvertWorkspace />;
-  if (['pdf-rotate', 'pdf-watermark', 'pdf-protect', 'pdf-unlock', 'pdf-delete-pages', 'pdf-reorder', 'pdf-linearize'].includes(toolId)) {
+  if (['pdf-rotate', 'pdf-watermark', 'pdf-protect', 'pdf-unlock', 'pdf-delete-pages', 'pdf-reorder', 'pdf-linearize', 'pdf-add-page-numbers'].includes(toolId)) {
     return <PDFToolsWorkspace />;
   }
 
@@ -176,5 +177,9 @@ export function ToolPageClient({ toolId, toolName, toolDescription }: ToolPageCl
     });
   }, [toolId, toolName, toolDescription, setActiveTool]);
 
-  return getWorkspaceComponent(toolId);
+  return (
+    <ErrorBoundary>
+      {getWorkspaceComponent(toolId)}
+    </ErrorBoundary>
+  );
 }

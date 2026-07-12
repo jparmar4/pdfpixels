@@ -1,6 +1,6 @@
 'use client';
 
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Download, RotateCcw, Settings, Sparkles, ChevronRight, RotateCw, FlipHorizontal, FlipVertical, Crop, Type, Stamp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';

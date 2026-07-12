@@ -57,7 +57,6 @@ export function FileUpload({ accept = 'image/*', maxSizeMb = 25 }: FileUploadPro
   const isImageAccept = acceptTokens.some((token) => token.includes('image/'));
   const isPDFAccept = acceptTokens.some((token) => token.includes('pdf') || token === '.pdf');
   const isPDF = uploadedFile?.type === 'application/pdf' || uploadedFile?.name.toLowerCase().endsWith('.pdf');
-  const isImageFile = uploadedFile ? uploadedFile.type.startsWith('image/') : false;
   const maxBytes = maxSizeMb * 1024 * 1024;
 
   useEffect(() => {
@@ -242,7 +241,7 @@ export function FileUpload({ accept = 'image/*', maxSizeMb = 25 }: FileUploadPro
             {/* Animated dashed border for empty state */}
             {!dragOver && (
               <div className="pointer-events-none absolute inset-0 rounded-[2rem]">
-                <svg className="absolute inset-0 h-full w-full" xmlns="http://www.w3.org/2000/svg">
+                <svg className="absolute inset-0 h-full w-full" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                   <rect
                     x="1"
                     y="1"
@@ -267,6 +266,7 @@ export function FileUpload({ accept = 'image/*', maxSizeMb = 25 }: FileUploadPro
               ref={inputRef}
               type="file"
               accept={accept}
+              aria-label="Choose file to upload"
               onChange={handleFileSelect}
               className="absolute inset-0 z-20 h-full w-full cursor-pointer opacity-0"
             />

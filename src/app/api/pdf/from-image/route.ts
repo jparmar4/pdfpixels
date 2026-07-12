@@ -1,3 +1,4 @@
+import { apiError } from '@/lib/api-response';
 import { NextRequest, NextResponse } from 'next/server';
 import { PDFDocument } from 'pdf-lib';
 import sharp from 'sharp';
@@ -16,25 +17,16 @@ export async function POST(request: NextRequest) {
     const fitMode = formData.get('fitMode') as string || 'contain'; // 'contain', 'fill', 'stretch'
     
     if (!files || files.length === 0) {
-      return NextResponse.json(
-        { error: 'No images provided' },
-        { status: 400 }
-      );
+      return apiError('No images provided', 400);
     }
 
     if (files.length > MAX_FILES) {
-      return NextResponse.json(
-        { error: `Too many images. Maximum ${MAX_FILES} files allowed.` },
-        { status: 400 }
-      );
+      return apiError(`Too many images. Maximum ${MAX_FILES} files allowed.`, 400);
     }
 
     const totalSize = files.reduce((sum, file) => sum + file.size, 0);
     if (totalSize > MAX_TOTAL_SIZE) {
-      return NextResponse.json(
-        { error: 'Total upload size too large (120MB max).' },
-        { status: 400 }
-      );
+      return apiError('Total upload size too large (120MB max).', 400);
     }
 
     // Page sizes in points (1 inch = 72 points)
@@ -50,10 +42,7 @@ export async function POST(request: NextRequest) {
     
     for (const file of files) {
       if (file.size > MAX_FILE_SIZE) {
-        return NextResponse.json(
-          { error: `File "${file.name}" is too large (15MB max per image).` },
-          { status: 400 }
-        );
+        return apiError(`File "${file.name}" is too large (15MB max per image).`, 400);
       }
 
       if (!file.type.startsWith('image/')) {
@@ -148,10 +137,7 @@ export async function POST(request: NextRequest) {
     
     const pageCount = pdfDoc.getPageCount();
     if (pageCount === 0) {
-      return NextResponse.json(
-        { error: 'No valid images found to convert.' },
-        { status: 400 }
-      );
+      return apiError('No valid images found to convert.', 400);
     }
 
     const pdfBytes = await pdfDoc.save();
@@ -168,9 +154,6 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error('Image to PDF error:', error);
-    return NextResponse.json(
-      { error: 'Failed to convert images to PDF', details: error instanceof Error ? error.message : 'Unknown error' },
-      { status: 500 }
-    );
+    return apiError('Failed to convert images to PDF', 500);
   }
 }

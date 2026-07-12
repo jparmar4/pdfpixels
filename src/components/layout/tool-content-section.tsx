@@ -1,6 +1,6 @@
 import Link from 'next/link';
-import { ChevronDown, CheckCircle2, Users, Sparkles, Shield, FileType, ArrowRight, BookOpen, Clock } from 'lucide-react';
-import { toolContentMap, type ToolContent } from '@/lib/tool-content-data';
+import { CheckCircle2, Users, Sparkles, Shield, FileType, ArrowRight, BookOpen, Clock, AlertTriangle } from 'lucide-react';
+import { toolContentMap } from '@/lib/tool-content-data';
 import { getToolBySlug, type Tool } from '@/lib/tools-data';
 import { blogPosts } from '@/config/blog';
 import { FAQAccordion } from '@/components/layout/faq-accordion';
@@ -207,6 +207,11 @@ export function ToolContentSection({ toolSlug, toolName, isAI, processing }: {
           <SectionHeader icon={Sparkles} iconColor="text-primary">
             About {toolName}
           </SectionHeader>
+          {content.directAnswer && (
+            <p className="text-foreground font-medium text-base leading-relaxed mt-4 mb-3 border-l-4 border-primary/60 pl-4 py-1">
+              {content.directAnswer}
+            </p>
+          )}
           <p className="text-muted-foreground text-sm leading-relaxed mt-4">
             {content.about}
           </p>
@@ -250,29 +255,60 @@ export function ToolContentSection({ toolSlug, toolName, isAI, processing }: {
             How to Use {toolName}
           </SubHeader>
           <div className="mt-4 space-y-0">
-            <StepItem
-              number={1}
-              title="Upload"
-              description={`Drag and drop your file or click to browse. Supports ${content.supportedFormats}.`}
-              isLast={false}
-            />
-            <StepItem
-              number={2}
-              title="Configure"
-              description="Adjust settings like quality, size, effects, or format to match your needs."
-              isLast={false}
-            />
-            <StepItem
-              number={3}
-              title="Download"
-              description={`Click process and download your result. ${processing === 'ai' ? 'AI processing takes 10-30 seconds.' : 'Results are instant.'}`}
-              isLast={true}
-            />
+            {content.steps ? (
+              content.steps.map((step, i) => (
+                <StepItem
+                  key={i}
+                  number={i + 1}
+                  title={step.title}
+                  description={step.description}
+                  isLast={i === content.steps!.length - 1}
+                />
+              ))
+            ) : (
+              <>
+                <StepItem
+                  number={1}
+                  title="Upload"
+                  description={`Drag and drop your file or click to browse. Supports ${content.supportedFormats}.`}
+                  isLast={false}
+                />
+                <StepItem
+                  number={2}
+                  title="Configure"
+                  description="Adjust settings like quality, size, effects, or format to match your needs."
+                  isLast={false}
+                />
+                <StepItem
+                  number={3}
+                  title="Download"
+                  description={`Click process and download your result. ${processing === 'ai' ? 'AI processing takes 10-30 seconds.' : 'Results are instant.'}`}
+                  isLast={true}
+                />
+              </>
+            )}
           </div>
         </div>
 
         {/* High RPM InContent Ad unit */}
         <InContentAd />
+
+        {/* Common Problems */}
+        {content.commonProblems && content.commonProblems.length > 0 && (
+          <div>
+            <SubHeader icon={AlertTriangle} iconColor="text-amber-500">
+              Troubleshooting & Common Problems
+            </SubHeader>
+            <div className="mt-4 space-y-4">
+              {content.commonProblems.map((cp, i) => (
+                <div key={i} className="rounded-xl border border-border/50 bg-card/50 p-4">
+                  <h4 className="text-sm font-semibold text-foreground mb-1.5">{cp.problem}</h4>
+                  <p className="text-sm text-muted-foreground">{cp.solution}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* FAQ Accordion */}
         {content.faqs.length > 0 && (

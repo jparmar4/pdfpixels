@@ -1,8 +1,5 @@
 'use client';
 
-import { useState, useMemo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-
 interface CategoryFilterProps {
     categories: string[];
     activeCategory: string;

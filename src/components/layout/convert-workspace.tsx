@@ -4,8 +4,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import {
   ArrowLeftRight,
-  CheckCircle2,
-  Download,
   Eye,
   Image as ImageIcon,
   RotateCcw,
@@ -104,6 +102,7 @@ export function ConvertWorkspace() {
   const [viewMode, setViewMode] = useState<'preview' | 'compare'>('preview');
   const [processingStats, setProcessingStats] = useState<{ originalSize: number; processedSize: number; savedPercent: number } | null>(null);
   const [objectUrl, setObjectUrl] = useState<string | null>(null);
+  const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
 
   useEffect(() => {
     if (!uploadedFile) {
@@ -193,19 +192,46 @@ export function ConvertWorkspace() {
       }
 
       if (isPdfToImage) {
-        // PDF-to-image returns an array of page images
-        const data = await response.json();
-        if (data.images && data.images.length > 0) {
-          // Set the first page as the processed image for preview
-          setProcessedImage(data.images[0].imageUrl);
-          setProcessingStats({
-            originalSize: 0,
-            processedSize: data.images[0].size || 0,
-            savedPercent: 0,
-          });
-          toast.success(`Converted ${data.convertedPages} page${data.convertedPages !== 1 ? 's' : ''} to images.`);
+        const contentType = response.headers.get('content-type') || '';
+        if (contentType.includes('application/zip')) {
+          const JSZip = (await import('jszip')).default;
+          const blob = await response.blob();
+          const zipUrl = URL.createObjectURL(blob);
+          setDownloadUrl(zipUrl);
+          
+          const zip = new JSZip();
+          const unzipped = await zip.loadAsync(blob);
+          const files = Object.values(unzipped.files).filter(f => !f.dir);
+          
+          if (files.length > 0) {
+            const firstFile = files[0];
+            const firstBlob = await firstFile.async('blob');
+            const previewUrl = URL.createObjectURL(firstBlob);
+            setProcessedImage(previewUrl);
+            setProcessingStats({
+              originalSize: 0,
+              processedSize: blob.size,
+              savedPercent: 0,
+            });
+            const convertedPages = response.headers.get('x-converted-pages') || files.length;
+            toast.success(`Converted ${convertedPages} page(s) to images.`);
+          } else {
+            throw new Error('No images found in the response.');
+          }
         } else {
-          throw new Error('No pages could be converted from the PDF.');
+          // Fallback if not zip
+          const data = await response.json();
+          if (data.images && data.images.length > 0) {
+            setProcessedImage(data.images[0].imageUrl);
+            setProcessingStats({
+              originalSize: 0,
+              processedSize: data.images[0].size || 0,
+              savedPercent: 0,
+            });
+            toast.success(`Converted ${data.convertedPages} page(s) to images.`);
+          } else {
+            throw new Error('No pages could be converted from the PDF.');
+          }
         }
       } else {
         const data = await response.json();
@@ -225,13 +251,13 @@ export function ConvertWorkspace() {
   }, [isPdfToImage, outputFormat, quality, dpi, setIsProcessing, setProcessedImage, setProgress, uploadedFile]);
 
   const handleDownload = useCallback(() => {
-    if (!processedImage) return;
+    if (!processedImage && !downloadUrl) return;
 
     const link = document.createElement('a');
-    link.href = processedImage;
-    link.download = `converted-${Date.now()}.${outputFormat}`;
+    link.href = downloadUrl || processedImage || '';
+    link.download = isPdfToImage ? `converted-${Date.now()}.zip` : `converted-${Date.now()}.${outputFormat}`;
     link.click();
-  }, [outputFormat, processedImage]);
+  }, [outputFormat, processedImage, downloadUrl, isPdfToImage]);
 
   const handleReset = useCallback(() => {
     reset();

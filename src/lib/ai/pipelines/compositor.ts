@@ -1,12 +1,12 @@
-import type { BlurRegion, RGBAImage, SoftMask } from './types';
+import type { BlurRegion, RGBAImage, SharpLib, SoftMask } from './types';
 
-export async function applyTransparentBackground(sharp: any, image: RGBAImage, softFgMask: SoftMask) {
+export async function applyTransparentBackground(sharp: SharpLib, image: RGBAImage, softFgMask: SoftMask) {
   const out = Uint8Array.from(image.data);
   for (let p = 0; p < softFgMask.length; p++) out[p * 4 + 3] = softFgMask[p];
   return sharp(out, { raw: { width: image.width, height: image.height, channels: 4 } }).png().toBuffer();
 }
 
-export async function applyBackgroundBlur(sharp: any, image: RGBAImage, softFgMask: SoftMask, sigma = 16) {
+export async function applyBackgroundBlur(sharp: SharpLib, image: RGBAImage, softFgMask: SoftMask, sigma = 16) {
   const blurred = await sharp(image.data, { raw: { width: image.width, height: image.height, channels: 4 } })
     .blur(sigma)
     .raw()
@@ -25,7 +25,7 @@ export async function applyBackgroundBlur(sharp: any, image: RGBAImage, softFgMa
   return sharp(out, { raw: { width: image.width, height: image.height, channels: 4 } }).png().toBuffer();
 }
 
-export async function applyRegionBlur(sharp: any, image: RGBAImage, regions: BlurRegion[], sigma = 24) {
+export async function applyRegionBlur(sharp: SharpLib, image: RGBAImage, regions: BlurRegion[], sigma = 24) {
   let pipeline = sharp(image.data, { raw: { width: image.width, height: image.height, channels: 4 } });
 
   for (const r of regions) {

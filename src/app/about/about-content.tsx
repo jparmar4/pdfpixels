@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { SitePageShell } from '@/components/layout/site-page-shell';
 import { Button } from '@/components/ui/button';
+import { allTools } from '@/lib/tools-data';
 
 /* ─── Animated Counter ────────────────────────────────────────────── */
 function AnimatedCounter({ end, suffix = '', duration = 2000 }: { end: number; suffix?: string; duration?: number }) {
@@ -84,8 +85,8 @@ const timelineMilestones = [
   },
   {
     year: '2026 - Expansion',
-    title: '55+ Tools & Content',
-    description: 'Reached 55+ tools, launched the blog with product guides, comparison pages, and use-case-driven entry points.',
+    title: `${allTools.length}+ Tools & Content`,
+    description: `Reached ${allTools.length}+ tools, launched the blog with product guides, comparison pages, and use-case-driven entry points.`,
     icon: Wrench,
     color: 'from-violet-500/20 to-fuchsia-500/15',
     iconColor: 'text-violet-500',
@@ -93,7 +94,7 @@ const timelineMilestones = [
 ];
 
 const statsData = [
-  { value: 55, suffix: '+', label: 'Free Tools', icon: Wrench, gradient: 'from-indigo-500 to-violet-500' },
+  { value: allTools.length, suffix: '+', label: 'Free Tools', icon: Wrench, gradient: 'from-indigo-500 to-violet-500' },
   { value: 100, suffix: '%', label: 'Free Forever', icon: DollarSign, gradient: 'from-emerald-500 to-teal-500' },
   { value: 0, suffix: '', label: 'No Signup Required', icon: Users, gradient: 'from-fuchsia-500 to-pink-500', display: 'Zero' },
   { value: 0, suffix: '', label: 'Works Everywhere', icon: MonitorSmartphone, gradient: 'from-cyan-500 to-blue-500', display: 'All' },
@@ -118,7 +119,7 @@ export function AboutPageContent() {
       iconName="sparkles"
       align="center"
       stats={[
-        { label: 'Tools available', value: '55+' },
+        { label: 'Tools available', value: `${allTools.length}+` },
         { label: 'Signup required', value: 'No' },
         { label: 'Design goal', value: 'Premium UX' },
         { label: 'Core principle', value: 'Fast output' },
@@ -220,7 +221,7 @@ export function AboutPageContent() {
       >
         <div className="text-center mb-10">
           <p className="text-xs font-bold uppercase tracking-[0.2em] text-primary mb-3">Our Journey</p>
-          <h2 className="text-3xl font-extrabold text-foreground md:text-4xl">From idea to 55+ tools</h2>
+          <h2 className="text-3xl font-extrabold text-foreground md:text-4xl">From idea to {allTools.length}+ tools</h2>
           <p className="mt-3 text-muted-foreground max-w-xl mx-auto">
             A brief look at the key milestones that shaped PdfPixels into the platform it is today.
           </p>

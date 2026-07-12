@@ -1,8 +1,6 @@
 'use client';
 
 import { useEffect, useState, useMemo } from 'react';
-import Link from 'next/link';
-import { motion } from 'framer-motion';
 import { ChevronRight } from 'lucide-react';
 
 interface TocItem {

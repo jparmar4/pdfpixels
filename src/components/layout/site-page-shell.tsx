@@ -16,8 +16,8 @@ import {
   Zap,
 } from 'lucide-react';
 import Link from 'next/link';
-import { Navigation } from '@/components/layout/navigation';
-import { Footer } from '@/components/layout/footer';
+
+
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -82,8 +82,8 @@ export function SitePageShell({
 
   return (
     <div className="premium-page-bg min-h-screen bg-background text-foreground">
-      <Navigation />
-      <main className="flex-1">
+      
+      <main id="main-content" className="flex-1">
         <section className="relative overflow-hidden border-b border-border/40">
           <div className="hero-grid absolute inset-0 opacity-60" />
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(14,76,181,0.18),transparent_28%),radial-gradient(circle_at_top_right,rgba(14,165,170,0.14),transparent_26%),radial-gradient(circle_at_bottom,rgba(184,134,39,0.12),transparent_32%)]" />
@@ -169,7 +169,7 @@ export function SitePageShell({
 
         <div className={cn('container mx-auto px-4 pb-12 pt-4 lg:px-8 md:pb-16', contentClassName)}>{children}</div>
       </main>
-      <Footer />
+      
     </div>
   );
 }

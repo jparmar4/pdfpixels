@@ -5,6 +5,7 @@ export interface BlogPost {
     title: string;
     excerpt: string;
     date: string;
+    dateModified?: string;
     category: string;
     author: string;
     authorRole: string;

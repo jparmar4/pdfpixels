@@ -1,11 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
 import { motion } from 'framer-motion';
 import {
   Check,
-  Code,
   Copy,
   FileJson,
   FileText,
@@ -95,10 +93,10 @@ export function ApiDocsPage() {
         <div className="section-panel rounded-[2rem] p-6 md:p-8">
           <h2 className="text-2xl font-bold text-foreground">Reference links</h2>
           <div className="mt-6 flex flex-col gap-3">
-            <a href="/openapi.yaml" target="_blank" className="rounded-[1.25rem] border border-border/60 bg-background/75 px-4 py-4 text-sm font-semibold text-foreground hover:border-primary/25">
+            <a href="/openapi.yaml" target="_blank" rel="noopener noreferrer" className="rounded-[1.25rem] border border-border/60 bg-background/75 px-4 py-4 text-sm font-semibold text-foreground hover:border-primary/25">
               OpenAPI specification
             </a>
-            <a href="/.well-known/ai-plugin.json" target="_blank" className="rounded-[1.25rem] border border-border/60 bg-background/75 px-4 py-4 text-sm font-semibold text-foreground hover:border-primary/25">
+            <a href="/.well-known/ai-plugin.json" target="_blank" rel="noopener noreferrer" className="rounded-[1.25rem] border border-border/60 bg-background/75 px-4 py-4 text-sm font-semibold text-foreground hover:border-primary/25">
               AI plugin manifest
             </a>
           </div>

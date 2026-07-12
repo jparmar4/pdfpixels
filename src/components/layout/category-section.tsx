@@ -3,9 +3,8 @@
 import React from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { ArrowRight, ShieldCheck, Sparkles, Eye, Zap, Star, TrendingUp } from 'lucide-react';
+import { ArrowRight, ShieldCheck, Sparkles, Eye, Zap, Star } from 'lucide-react';
 import type { ToolCategory } from '@/lib/tools-data';
-import { ToolCard } from './tool-card';
 import { normalizeDisplayText } from '@/lib/display-text';
 
 type CategorySectionProps = {
@@ -79,11 +78,11 @@ export function CategorySection({ category }: CategorySectionProps) {
       {hasMoreTools && (
         <div className="relative z-10 mt-6 flex justify-center">
           <Link
-            href={`/#${category.id}`}
+            href={`/tools/category/${category.id}`}
             className="group inline-flex items-center gap-2 rounded-2xl border border-border/60 bg-background/70 px-5 py-3 text-sm font-semibold text-muted-foreground transition-all duration-200 hover:border-primary/30 hover:text-primary hover:shadow-sm hover:shadow-primary/5"
           >
             <Eye className="h-4 w-4" />
-            View all {normalizeDisplayText(category.name).toLowerCase()} tools
+            View all {normalizeDisplayText(category.name).toLowerCase()}
             <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
           </Link>
         </div>
@@ -93,7 +92,7 @@ export function CategorySection({ category }: CategorySectionProps) {
 }
 
 /* ── Enhanced Tool Card wrapper with hover animations ── */
-function EnhancedToolCard({ tool, index }: { tool: import('@/lib/tools-data').Tool; index: number }) {
+export function EnhancedToolCard({ tool, index }: { tool: import('@/lib/tools-data').Tool; index: number }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 16 }}

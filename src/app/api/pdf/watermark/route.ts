@@ -1,5 +1,9 @@
+import { apiError } from '@/lib/api-response';
+import { loadPdfWithTimeout, pdfBinaryResponse } from '@/lib/pdf-api';
 import { NextRequest, NextResponse } from 'next/server';
 import { PDFDocument, rgb, StandardFonts, degrees } from 'pdf-lib';
+
+export const maxDuration = 60;
 
 const CACHE_HEADERS = {
     'Cache-Control': 'no-store, max-age=0',
@@ -24,12 +28,12 @@ export async function POST(request: NextRequest) {
         const position = (formData.get('position') as string) || 'center'; // center, diagonal
 
         if (!file) {
-            return NextResponse.json({ error: 'No PDF file provided' }, { status: 400, headers: CACHE_HEADERS });
+            return apiError('No PDF file provided', 400);
         }
 
         const arrayBuffer = await file.arrayBuffer();
         const pdfBytes = new Uint8Array(arrayBuffer);
-        const pdf = await PDFDocument.load(pdfBytes, { ignoreEncryption: true });
+        const pdf = await loadPdfWithTimeout(pdfBytes);
 
         const font = await pdf.embedFont(StandardFonts.HelveticaBold);
         const color = hexToRgb(colorHex);
@@ -55,26 +59,17 @@ export async function POST(request: NextRequest) {
                 size: fontSize,
                 font,
                 color: rgb(color.r, color.g, color.b),
+                rotate: degrees(rotation),
                 opacity,
-                rotate: degrees(position === 'diagonal' || position === 'center' ? rotation : 0),
             });
         }
 
-        const savedPdfBytes = await pdf.save();
-        const base64 = Buffer.from(savedPdfBytes).toString('base64');
-        const dataUrl = `data:application/pdf;base64,${base64}`;
+        const outBytes = await pdf.save();
+        const fileName = file.name ? file.name.replace('.pdf', '-watermarked.pdf') : `watermarked-${Date.now()}.pdf`;
 
-        return NextResponse.json({
-            success: true,
-            pdfUrl: dataUrl,
-            fileName: `watermarked-${Date.now()}.pdf`,
-            pageCount: totalPages,
-        }, { headers: CACHE_HEADERS });
+        return pdfBinaryResponse(outBytes, fileName);
     } catch (error) {
         console.error('PDF watermark error:', error);
-        return NextResponse.json(
-            { error: 'Failed to add watermark', details: error instanceof Error ? error.message : 'Unknown error' },
-            { status: 500, headers: CACHE_HEADERS }
-        );
+        return apiError(error instanceof Error ? error.message : 'Failed to watermark PDF', 500);
     }
 }

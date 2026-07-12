@@ -17,13 +17,18 @@ export default function Error({
   }, [error]);
 
   return (
-    <div className="flex min-h-[60vh] flex-col items-center justify-center px-4 text-center">
+    <div className="flex min-h-[60vh] flex-col items-center justify-center px-4 text-center" role="alert" aria-live="assertive">
       <div className="w-16 h-16 rounded-2xl bg-destructive/10 flex items-center justify-center mb-6">
         <AlertTriangle className="w-8 h-8 text-destructive" />
       </div>
       <h2 className="text-2xl font-bold text-foreground mb-2">Something went wrong</h2>
       <p className="text-muted-foreground max-w-md mb-8">
         An unexpected error occurred. Please try again or go back to the homepage.
+        {error?.digest && (
+          <span className="block mt-2 text-xs opacity-50 font-mono">
+            Error ID: {error.digest}
+          </span>
+        )}
       </p>
       <div className="flex flex-wrap items-center justify-center gap-3">
         <Button onClick={reset} variant="outline" className="gap-2">

@@ -1,3 +1,6 @@
+import { loadPdfWithTimeout, pdfBinaryResponse } from '@/lib/pdf-api';
+
+export const maxDuration = 60;
 import { NextRequest, NextResponse } from 'next/server';
 import { spawn } from 'child_process';
 import fs from 'fs';
@@ -109,7 +112,7 @@ export async function POST(request: NextRequest) {
     const inputBuffer = Buffer.from(await file.arrayBuffer());
     
     // Quick check to load up PDF properties (also ensures basic validity)
-    const srcPdf = await PDFDocument.load(inputBuffer, { ignoreEncryption: true });
+    const srcPdf = await loadPdfWithTimeout(inputBuffer);
     const pageCount = srcPdf.getPageCount();
 
     const tempDir = os.tmpdir();
@@ -126,18 +129,9 @@ export async function POST(request: NextRequest) {
     ]);
 
     const outputBuffer = fs.readFileSync(outputPath);
-    const base64 = outputBuffer.toString('base64');
-    const dataUrl = `data:application/pdf;base64,${base64}`;
-
-    return NextResponse.json(
-      {
-        success: true,
-        pdfUrl: dataUrl,
-        fileName: `fast-web-view-${Date.now()}.pdf`,
-        pageCount,
-      },
-      { headers: CACHE_HEADERS },
-    );
+    return pdfBinaryResponse(outputBuffer, `fast-web-view-${Date.now()}.pdf`, {
+        'X-Page-Count': String(pageCount),
+    });
   } catch (error) {
     console.error('PDF linearize error:', error);
     const message = error instanceof Error ? error.message : 'Unknown error';

@@ -1,12 +1,14 @@
 import { Metadata } from 'next';
-import Link from 'next/link';
-import { GitCompareArrows, ArrowRight, Zap, Shield, Clock } from 'lucide-react';
+import { GitCompareArrows, Zap, Shield, Clock } from 'lucide-react';
 import { AnimatedMeshBg } from '@/components/ui/animated-mesh-bg';
-import { Navigation } from '@/components/layout/navigation';
-import { Footer } from '@/components/layout/footer';
-import { getToolBySlug } from '@/lib/tools-data';
+
+
 import { comparisonPages } from '@/lib/comparisons';
 import { CompareClient } from './CompareClient';
+import Script from 'next/script';
+import { collectionItemListJsonLd } from '@/app/jsonld-helpers';
+import { SITE_URL } from '@/lib/seo';
+
 
 export const metadata: Metadata = {
     title: 'Comparisons | PdfPixels',
@@ -15,11 +17,29 @@ export const metadata: Metadata = {
 };
 
 export default function CompareIndexPage() {
+    const items = comparisonPages.map((cmp) => ({
+        url: `${SITE_URL}/compare/${cmp.slug}`,
+        name: cmp.title,
+    }));
+
+    const jsonLd = collectionItemListJsonLd({
+        baseUrl: `${SITE_URL}/compare`,
+        title: `PdfPixels Comparisons`,
+        description: `Objective comparisons of PdfPixels tools with popular alternatives for PDF and image workflows.`,
+        items,
+    });
+
     return (
         <>
-            <Navigation />
+            <Script
+                id="compare-collection-schema"
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+            />
+            
 
-            <div className="min-h-screen bg-background">
+
+            <main id="main-content" className="min-h-screen bg-background">
                 {/* Hero Section */}
                 <section className="relative overflow-hidden border-b border-border/40 min-h-[35vh] flex flex-col justify-center">
                     <AnimatedMeshBg />
@@ -57,9 +77,9 @@ export default function CompareIndexPage() {
                         <CompareClient comparisons={comparisonPages} />
                     </div>
                 </section>
-            </div>
+            </main>
 
-            <Footer />
+            
         </>
     );
 }

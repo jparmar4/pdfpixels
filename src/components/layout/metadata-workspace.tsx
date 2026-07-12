@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Download, RotateCcw, Eye, Trash2, Sparkles, ChevronRight } from 'lucide-react';
+import { Download, RotateCcw, Eye, Trash2, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAppStore } from '@/store/app-store';
 import { FileUpload } from './file-upload';

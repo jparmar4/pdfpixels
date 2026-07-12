@@ -49,7 +49,6 @@ export function processContent(content: string): React.ReactNode[] {
     let listType: 'ul' | 'ol' | null = null;
     let blockquoteItems: string[] = [];
     let blockquoteType: AlertType | null = null;
-    let paragraphCount = 0;
 
     const linkedKeywords = new Set<string>();
 
@@ -127,7 +126,7 @@ export function processContent(content: string): React.ReactNode[] {
     };
 
     const parseInlineMarkdown = (text: string, keyPrefix: string, autoLink: boolean = false): React.ReactNode[] => {
-        const pattern = /(\*\*[^*]+\*\*)|(\[[^\]]+\]\([^\)]+\))|(!\[[^\]]*\]\([^\)]+\))/g;
+        const pattern = /(\*\*[^*]+\*\*)|(\[[^\]]+\]\([^)]+\))|(!\[[^\]]*\]\([^)]+\))/g;
         const parts = text.split(pattern).filter((p) => p !== undefined && p !== '');
         const nodes: React.ReactNode[] = [];
 
@@ -136,7 +135,7 @@ export function processContent(content: string): React.ReactNode[] {
 
             // Image: ![alt](url)
             if (part.startsWith('![') && part.includes('](') && part.endsWith(')')) {
-                const match = part.match(/^!\[([^\]]*)\]\(([^\)]+)\)$/);
+                const match = part.match(/^!\[([^\]]*)\]\(([^)]+)\)$/);
                 if (match) {
                     const alt = match[1];
                     const src = match[2];
@@ -169,7 +168,7 @@ export function processContent(content: string): React.ReactNode[] {
 
             // Link: [label](url)
             if (part.startsWith('[') && part.includes('](') && part.endsWith(')')) {
-                const match = part.match(/^\[([^\]]+)\]\(([^\)]+)\)$/);
+                const match = part.match(/^\[([^\]]+)\]\(([^)]+)\)$/);
                 if (match) {
                     const label = match[1];
                     const url = match[2];
@@ -403,7 +402,6 @@ export function processContent(content: string): React.ReactNode[] {
                     {parseInlineMarkdown(trimmedLine.replace(/\*\*/g, ''), `p-${index}`, false)}
                 </p>
             );
-            paragraphCount++;
             return;
         }
 
@@ -424,8 +422,6 @@ export function processContent(content: string): React.ReactNode[] {
                 </p>
             );
         }
-
-        paragraphCount++;
     });
 
     // Flush remaining items

@@ -11,9 +11,6 @@ import { useState, useCallback } from 'react';
 import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
 import { Slider } from '@/components/ui/slider';
-import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue
-} from '@/components/ui/select';
 
 const EFFECT_CONFIG: Record<string, { emoji: string; hasIntensity: boolean; label: string }> = {
   'blur-image': { emoji: '🌫️', hasIntensity: true, label: 'Blur Intensity' },

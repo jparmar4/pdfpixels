@@ -5,7 +5,7 @@
  */
 
 import sharp from 'sharp';
-import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
+import { readFileSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
@@ -36,17 +36,6 @@ for (const icon of icons) {
   
   console.log(`✓ Generated ${icon.name} (${icon.size}x${icon.size})`);
 }
-
-// Generate ICO favicon (multi-size)
-const icoSizes = [16, 32, 48];
-const pngBuffers = await Promise.all(
-  icoSizes.map(size => 
-    sharp(svgBuffer)
-      .resize(size, size)
-      .png()
-      .toBuffer()
-  )
-);
 
 // Note: For proper ICO generation, we'd need 'png-to-ico' package
 // For now, we'll just ensure the PNG favicon exists

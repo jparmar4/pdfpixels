@@ -10,7 +10,6 @@ import {
   RefreshCw,
   Ruler,
   Settings2,
-  Sparkles,
   Unlink,
 } from 'lucide-react';
 import { toast } from 'sonner';

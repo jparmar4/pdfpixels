@@ -1,12 +1,12 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { Download, RotateCcw, FilePlus, Image as ImageIcon, FileText, Plus, X, Trash2, GripVertical, ChevronRight, Sparkles } from 'lucide-react';
+import { Download, RotateCcw, FilePlus, Image as ImageIcon, FileText, Plus, X, ChevronRight, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { useAppStore } from '@/store/app-store';
 import { ToolPageHeader } from './tool-page-header';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -16,8 +16,6 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select';
-import { Slider } from '@/components/ui/slider';
-
 interface ImageFile {
   file: File;
   name: string;
@@ -29,12 +27,13 @@ interface ImageFile {
 export function ImageToPDFWorkspace() {
   const { activeTool, isProcessing, setIsProcessing, setProgress, reset } = useAppStore();
 
+  const inputRef = useRef<HTMLInputElement>(null);
   const [files, setFiles] = useState<ImageFile[]>([]);
   const [result, setResult] = useState<{ pdfUrl: string; fileName: string; pageCount: number } | null>(null);
   const [pageSize, setPageSize] = useState('a4');
   const [orientation, setOrientation] = useState('auto');
   const [fitMode, setFitMode] = useState('contain');
-  const [margin, setMargin] = useState(20);
+  const margin = 20;
 
   const handleFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFiles = e.target.files;
@@ -139,7 +138,7 @@ export function ImageToPDFWorkspace() {
       const blob = await response.blob();
       const pdfUrl = URL.createObjectURL(blob);
       const disposition = response.headers.get('content-disposition') || '';
-      const fileNameMatch = disposition.match(/filename=\"?([^\";]+)\"?/i);
+      const fileNameMatch = disposition.match(/filename="?([^";]+)"?/i);
       const fileName = fileNameMatch?.[1] || `images-to-pdf-${Date.now()}.pdf`;
       const pageCount = Number(response.headers.get('x-page-count') || files.length);
 
@@ -213,13 +212,18 @@ export function ImageToPDFWorkspace() {
           <motion.div
             onDragOver={(e) => e.preventDefault()}
             onDrop={handleDrop}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); inputRef.current?.click(); } }}
             className="drop-zone relative flex flex-col items-center justify-center p-8 rounded-2xl cursor-pointer"
           >
             <input
+              ref={inputRef}
               type="file"
               accept="image/*"
               multiple
               onChange={handleFileSelect}
+              aria-label="Upload images"
               className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
             />
 

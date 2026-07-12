@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useMemo } from 'react';
+import { useEffect, useRef } from 'react';
 import { TableOfContents } from './TableOfContents';
 
 /**
@@ -32,19 +32,6 @@ export function ProcessContentWithToc({ content, children }: ProcessContentWithT
                 h2Elements[index].id = `section-${lines.findIndex((l) => l === `## ${text}`)}`;
             }
         });
-    }, [content]);
-
-    const headings = useMemo(() => {
-        const lines = content.split('\n');
-        const items: { id: string; text: string }[] = [];
-        lines.forEach((line, index) => {
-            if (line.startsWith('## ')) {
-                const text = line.replace('## ', '').trim();
-                const id = `section-${index}`;
-                items.push({ id, text });
-            }
-        });
-        return items;
     }, [content]);
 
     return (

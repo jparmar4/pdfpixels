@@ -3,8 +3,8 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { GitCompareArrows, ArrowRight, Check, X, Trophy, Sparkles, Zap, Shield } from 'lucide-react';
 import { AnimatedMeshBg } from '@/components/ui/animated-mesh-bg';
-import { Navigation } from '@/components/layout/navigation';
-import { Footer } from '@/components/layout/footer';
+
+
 import { Button } from '@/components/ui/button';
 import { comparisonPages } from '@/lib/comparisons';
 import { getToolBySlug } from '@/lib/tools-data';
@@ -77,9 +77,9 @@ export default async function ComparisonPage({ params }: { params: Promise<{ slu
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
-      <Navigation />
+      
 
-      <div className="min-h-screen bg-background">
+      <main id="main-content" className="min-h-screen bg-background">
         {/* Comparison Header with Hero */}
         <section className="relative overflow-hidden border-b border-border/40">
           <AnimatedMeshBg />
@@ -282,9 +282,9 @@ export default async function ComparisonPage({ params }: { params: Promise<{ slu
             </section>
           </div>
         </div>
-      </div>
+      </main>
 
-      <Footer />
+      
     </>
   );
 }

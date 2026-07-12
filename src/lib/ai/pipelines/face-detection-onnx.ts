@@ -127,7 +127,7 @@ function nonMaxSuppression(boxes: OrthoBox[], iouThreshold: number): OrthoBox[] 
   return picked;
 }
 
-function decodeFaceOutputs(outputs: Record<string, any>, inW: number, inH: number, outW: number, outH: number, mode: FaceOnnxMode): OrthoBox[] {
+function decodeFaceOutputs(outputs: Record<string, unknown>, inW: number, inH: number, outW: number, outH: number, mode: FaceOnnxMode): OrthoBox[] {
   const vals = Object.values(outputs) as OrtTensorLike[];
 
   // Find candidate box and score tensors in either [N,4]/[N,2] or [1,N,4]/[1,N,2]

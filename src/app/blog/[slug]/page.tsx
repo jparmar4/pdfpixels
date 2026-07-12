@@ -34,6 +34,9 @@ export async function generateMetadata({
     }
 
     const isoDate = Number.isNaN(Date.parse(post.date)) ? post.date : new Date(post.date).toISOString();
+    const isoModifiedDate = post.dateModified
+        ? (Number.isNaN(Date.parse(post.dateModified)) ? post.dateModified : new Date(post.dateModified).toISOString())
+        : isoDate;
 
     return {
         title: post.title,
@@ -56,7 +59,7 @@ export async function generateMetadata({
             description: post.metaDescription,
             type: "article",
             publishedTime: isoDate,
-            modifiedTime: isoDate,
+            modifiedTime: isoModifiedDate,
             authors: [post.author],
             section: post.category,
             tags: post.keywords,
@@ -81,8 +84,9 @@ export async function generateMetadata({
         other: {
             'article:author': post.author,
             'article:published_time': isoDate,
-            'article:modified_time': isoDate,
+            'article:modified_time': isoModifiedDate,
             'article:section': post.category,
+            'article:tag': post.keywords.slice(0, 6).join(','),
         },
     };
 }
@@ -103,6 +107,9 @@ export default async function BlogPostPage({
     const { prev: prevPost, next: nextPost } = getAdjacentPosts(slug);
 
     const isoDate = Number.isNaN(Date.parse(post.date)) ? post.date : new Date(post.date).toISOString();
+    const isoModifiedDate = post.dateModified
+        ? (Number.isNaN(Date.parse(post.dateModified)) ? post.dateModified : new Date(post.dateModified).toISOString())
+        : isoDate;
     const postUrl = `${siteConfig.url}/blog/${slug}`;
 
     // Article Schema
@@ -127,7 +134,7 @@ export default async function BlogPostPage({
             },
         },
         datePublished: isoDate,
-        dateModified: isoDate,
+        dateModified: isoModifiedDate,
         url: `${siteConfig.url}/blog/${slug}`,
         mainEntityOfPage: `${siteConfig.url}/blog/${slug}`,
         image: post.coverImage ? `${siteConfig.url}${post.coverImage}` : undefined,
@@ -179,7 +186,7 @@ export default async function BlogPostPage({
 
     return (
         <>
-            <Navigation />
+            
             <ReadingProgressBar />
 
             {/* JSON-LD Schemas */}
@@ -206,7 +213,7 @@ export default async function BlogPostPage({
                 />
             )}
 
-            <div className="min-h-screen bg-background">
+            <main id="main-content" className="min-h-screen bg-background">
                 {/* Article Header */}
                 <header className="relative overflow-hidden pt-12 pb-16 lg:pt-20 lg:pb-24">
                     {/* Background decorations */}
@@ -447,9 +454,9 @@ export default async function BlogPostPage({
                         </div>
                     </div>
                 </section>
-            </div>
+            </main>
 
-            <Footer />
+            
         </>
     );
 }

@@ -1,3 +1,7 @@
+import { apiError } from '@/lib/api-response';
+import { loadPdfWithTimeout } from '@/lib/pdf-api';
+
+export const maxDuration = 60;
 import { NextRequest, NextResponse } from 'next/server';
 import { PDFDocument } from 'pdf-lib';
 
@@ -11,25 +15,16 @@ export async function POST(request: NextRequest) {
     const files = formData.getAll('files') as File[];
     
     if (!files || files.length === 0) {
-      return NextResponse.json(
-        { error: 'No PDF files provided' },
-        { status: 400 }
-      );
+      return apiError('No PDF files provided', 400);
     }
 
     if (files.length > MAX_FILES) {
-      return NextResponse.json(
-        { error: `Too many files. Maximum ${MAX_FILES} PDFs allowed per request.` },
-        { status: 400 }
-      );
+      return apiError(`Too many files. Maximum ${MAX_FILES} PDFs allowed per request.`, 400);
     }
 
     const totalSize = files.reduce((sum, file) => sum + file.size, 0);
     if (totalSize > MAX_TOTAL_SIZE) {
-      return NextResponse.json(
-        { error: 'Total upload size too large (100MB max).' },
-        { status: 400 }
-      );
+      return apiError('Total upload size too large (100MB max).', 400);
     }
 
     // Create a new PDF document
@@ -39,10 +34,7 @@ export async function POST(request: NextRequest) {
 
     for (const file of files) {
       if (file.size > MAX_FILE_SIZE) {
-        return NextResponse.json(
-          { error: `File \"${file.name}\" is too large (25MB max per file).` },
-          { status: 400 }
-        );
+        return apiError(`File \"${file.name}\" is too large (25MB max per file).`, 400);
       }
 
       const looksLikePdf = file.name.toLowerCase().endsWith('.pdf') || file.type === 'application/pdf';
@@ -54,7 +46,7 @@ export async function POST(request: NextRequest) {
       const pdfBytes = new Uint8Array(arrayBuffer);
       
       try {
-        const pdf = await PDFDocument.load(pdfBytes, { ignoreEncryption: true });
+        const pdf = await loadPdfWithTimeout(pdfBytes);
         const copiedPages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
         
         for (const page of copiedPages) {
@@ -68,10 +60,7 @@ export async function POST(request: NextRequest) {
     }
 
     if (addedPages === 0) {
-      return NextResponse.json(
-        { error: 'No valid PDF pages found to merge.' },
-        { status: 400 }
-      );
+      return apiError('No valid PDF pages found to merge.', 400);
     }
 
     const mergedPdfBytes = await mergedPdf.save();
@@ -89,9 +78,6 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error('PDF merge error:', error);
-    return NextResponse.json(
-      { error: 'Failed to merge PDFs', details: error instanceof Error ? error.message : 'Unknown error' },
-      { status: 500 }
-    );
+    return apiError('Failed to merge PDFs', 500);
   }
 }

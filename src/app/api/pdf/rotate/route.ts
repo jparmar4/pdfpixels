@@ -1,3 +1,7 @@
+import { apiError } from '@/lib/api-response';
+import { loadPdfWithTimeout, pdfBinaryResponse } from '@/lib/pdf-api';
+
+export const maxDuration = 60;
 import { NextRequest, NextResponse } from 'next/server';
 import { PDFDocument, degrees } from 'pdf-lib';
 
@@ -13,12 +17,12 @@ export async function POST(request: NextRequest) {
         const pages = formData.get('pages') as string || 'all'; // 'all' or '1,2,3'
 
         if (!file) {
-            return NextResponse.json({ error: 'No PDF file provided' }, { status: 400, headers: CACHE_HEADERS });
+            return apiError('No PDF file provided', 400);
         }
 
         const arrayBuffer = await file.arrayBuffer();
         const pdfBytes = new Uint8Array(arrayBuffer);
-        const pdf = await PDFDocument.load(pdfBytes, { ignoreEncryption: true });
+        const pdf = await loadPdfWithTimeout(pdfBytes);
 
         const totalPages = pdf.getPageCount();
 
@@ -38,22 +42,13 @@ export async function POST(request: NextRequest) {
         }
 
         const savedPdfBytes = await pdf.save();
-        const base64 = Buffer.from(savedPdfBytes).toString('base64');
-        const dataUrl = `data:application/pdf;base64,${base64}`;
-
-        return NextResponse.json({
-            success: true,
-            pdfUrl: dataUrl,
-            fileName: `rotated-${Date.now()}.pdf`,
-            pageCount: totalPages,
-            rotatedPages: pageIndices.map(i => i + 1),
-            angle,
-        }, { headers: CACHE_HEADERS });
+        return pdfBinaryResponse(savedPdfBytes, `rotated-${Date.now()}.pdf`, {
+            'X-Page-Count': String(totalPages),
+            'X-Rotated-Pages': pageIndices.map(i => i + 1).join(','),
+            'X-Rotation-Angle': String(angle),
+        });
     } catch (error) {
         console.error('PDF rotate error:', error);
-        return NextResponse.json(
-            { error: 'Failed to rotate PDF', details: error instanceof Error ? error.message : 'Unknown error' },
-            { status: 500, headers: CACHE_HEADERS }
-        );
+        return apiError('Failed to rotate PDF', 500);
     }
 }

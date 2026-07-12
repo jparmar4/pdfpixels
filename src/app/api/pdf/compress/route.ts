@@ -1,3 +1,4 @@
+import { loadPdfWithTimeout } from '@/lib/pdf-api';
 import { NextRequest } from 'next/server'
 import { spawn } from 'child_process'
 import fs from 'fs'
@@ -176,7 +177,7 @@ function toSavedPercent(before: number, after: number) {
 async function compressWithPdfLibFallback(originalBuffer: Buffer) {
   // pdf-lib fallback: rebuilds the PDF structure with object streams
   // This removes unused objects, deduplicates resources, and optimizes the cross-reference table
-  const srcDoc = await PDFDocument.load(originalBuffer, {
+  const srcDoc = await loadPdfWithTimeout(originalBuffer, {
     ignoreEncryption: true,
     updateMetadata: false,
   })

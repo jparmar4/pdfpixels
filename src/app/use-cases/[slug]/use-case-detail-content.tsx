@@ -2,8 +2,6 @@ import Link from 'next/link';
 import {
   ArrowRight, Upload, Sliders, Download, Zap, CheckCircle2, ArrowUpRight
 } from 'lucide-react';
-import { Navigation } from '@/components/layout/navigation';
-import { Footer } from '@/components/layout/footer';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { getToolBySlug, allTools, toolCategories } from '@/lib/tools-data';
@@ -68,12 +66,11 @@ export function UseCaseDetailContent({
 
   return (
     <div className="premium-page-bg min-h-screen bg-background text-foreground">
-      <Navigation />
-      
+            
       {/* High RPM Header Ad placement */}
       <HeaderAd />
 
-      <main className="flex-1">
+      <main id="main-content" className="flex-1">
         {/* ── Hero Header ─────────────────────────────────────────── */}
         <section className="relative overflow-hidden border-b border-border/40">
           <div className="hero-grid absolute inset-0 opacity-60" />
@@ -108,7 +105,7 @@ export function UseCaseDetailContent({
               <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight text-foreground transition-all duration-500 ease-out transform translate-y-0 opacity-100">
                 {entry.title}
               </h1>
-              <p className="mt-5 text-lg leading-8 text-muted-foreground max-w-2xl mx-auto transition-all duration-500 ease-out delay-100 opacity-90">
+              <p className="use-case-summary mt-5 text-lg leading-8 text-muted-foreground max-w-2xl mx-auto transition-all duration-500 ease-out delay-100 opacity-90">
                 {entry.description}
               </p>
 
@@ -276,7 +273,6 @@ export function UseCaseDetailContent({
       {/* Footer Ad placement for high RPM */}
       <FooterAd />
 
-      <Footer />
-    </div>
+          </div>
   );
 }

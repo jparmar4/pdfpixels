@@ -1,49 +1,58 @@
+import { apiError } from '@/lib/api-response';
 import { NextRequest, NextResponse } from 'next/server';
+import { rateLimit } from '@/lib/rate-limit';
+import { db } from '@/lib/db';
+import { sendEmail } from '@/lib/email';
 
-// Newsletter subscription endpoint
-// In production, replace the console.log with your email service (Mailchimp, SendGrid, etc.)
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
+    const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
+    const { allowed, remaining, resetIn } = rateLimit(`newsletter:${ip}`, 5, 60_000);
+
+    if (!allowed) {
+      return apiError('Too many requests. Please try again later.', 429, 'RATE_LIMIT_EXCEEDED');
+    }
+
+    const body = await request.json().catch(() => null);
+    if (!body || typeof body !== 'object') {
+      return apiError('Invalid JSON body', 400);
+    }
+
     const { email } = body;
 
-    // Basic validation
     if (!email || typeof email !== 'string') {
+      return apiError('Email address is required', 400);
+    }
+
+    const normalizedEmail = email.trim().toLowerCase();
+    if (!emailRegex.test(normalizedEmail)) {
+      return apiError('Please provide a valid email address', 400);
+    }
+
+    const existing = await db.subscriber.findUnique({ where: { email: normalizedEmail } });
+    if (existing) {
       return NextResponse.json(
-        { error: 'Email address is required' },
-        { status: 400 }
+        { success: true, message: 'You are already subscribed!' },
+        { status: 200 }
       );
     }
 
-    // Email format validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return NextResponse.json(
-        { error: 'Please provide a valid email address' },
-        { status: 400 }
-      );
-    }
+    await db.subscriber.create({ data: { email: normalizedEmail } });
 
-    // Rate limiting: In production, implement proper rate limiting with Redis/IP tracking
-    // For now, this is a placeholder that logs the subscription
-
-    // TODO: Replace with actual email service integration
-    // Example integrations:
-    // - Mailchimp: Add to list via API
-    // - SendGrid: Add to contact list
-    // - ConvertKit: Add subscriber
-    // - Database: Store in subscribers table
-    console.log(`[Newsletter] New subscription: ${email}`);
+    const emailSent = await sendEmail({
+      to: normalizedEmail,
+      subject: 'Welcome to PdfPixels Newsletter!',
+      html: `<p>Thanks for subscribing to the PdfPixels newsletter!</p><p>You'll now receive updates on new tools, tips, and features.</p>`,
+    });
 
     return NextResponse.json(
-      { success: true, message: 'Successfully subscribed to newsletter' },
+      { success: true, message: 'Successfully subscribed to newsletter', emailSent: emailSent.success },
       { status: 200 }
     );
   } catch (error) {
     console.error('[Newsletter] Error processing subscription:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
+    return apiError('Internal server error', 500);
   }
 }

@@ -1,3 +1,7 @@
+import { apiError } from '@/lib/api-response';
+import { loadPdfWithTimeout } from '@/lib/pdf-api';
+
+export const maxDuration = 60;
 import { NextRequest, NextResponse } from 'next/server';
 import { PDFDocument } from 'pdf-lib';
 
@@ -13,29 +17,20 @@ export async function POST(request: NextRequest) {
     const singlePage = formData.get('singlePage') as string; // e.g., '1'
 
     if (!file) {
-      return NextResponse.json(
-        { error: 'No PDF file provided' },
-        { status: 400 }
-      );
+      return apiError('No PDF file provided', 400);
     }
 
     if (file.size > MAX_FILE_SIZE) {
-      return NextResponse.json(
-        { error: 'File too large (25MB max).' },
-        { status: 400 }
-      );
+      return apiError('File too large (25MB max).', 400);
     }
 
     if (file.type && file.type !== 'application/pdf') {
-      return NextResponse.json(
-        { error: 'Only PDF files are supported.' },
-        { status: 400 }
-      );
+      return apiError('Only PDF files are supported.', 400);
     }
 
     const arrayBuffer = await file.arrayBuffer();
     const pdfBytes = new Uint8Array(arrayBuffer);
-    const pdf = await PDFDocument.load(pdfBytes, { ignoreEncryption: true });
+    const pdf = await loadPdfWithTimeout(pdfBytes);
 
     const totalPages = pdf.getPageCount();
     let pagesToExtract: number[] = [];
@@ -63,37 +58,39 @@ export async function POST(request: NextRequest) {
       }
     } else {
       // Extract all pages individually (capped for payload safety)
-      const results: { pageNumber: number; pdfUrl: string; fileName: string }[] = [];
+      const AdmZip = (await import('adm-zip')).default;
+      const zip = new AdmZip();
+      
       const pagesToReturn = Math.min(totalPages, MAX_SPLIT_PAGES);
       for (let i = 0; i < pagesToReturn; i++) {
         const newPdf = await PDFDocument.create();
         const [copiedPage] = await newPdf.copyPages(pdf, [i]);
         newPdf.addPage(copiedPage);
         const newPdfBytes = await newPdf.save();
-        const base64 = Buffer.from(newPdfBytes).toString('base64');
-        results.push({
-          pageNumber: i + 1,
-          pdfUrl: `data:application/pdf;base64,${base64}`,
-          fileName: `page-${i + 1}.pdf`,
-        });
+        zip.addFile(`page-${i + 1}.pdf`, Buffer.from(newPdfBytes));
       }
 
-      return NextResponse.json({
-        success: true,
-        mode: 'split-all',
-        totalPages,
-        pages: results,
-        truncated: totalPages > pagesToReturn,
+      const zipBuffer = zip.toBuffer();
+      const fileName = `split-${Date.now()}.zip`;
+
+      return new NextResponse(zipBuffer as unknown as BodyInit, {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/zip',
+          'Content-Disposition': `attachment; filename="${fileName}"`,
+          'Cache-Control': 'no-store, max-age=0',
+          'X-Mode': 'split-all',
+          'X-Total-Pages': String(totalPages),
+          'X-Pages-Returned': String(pagesToReturn),
+          'X-Truncated': String(totalPages > pagesToReturn),
+        },
       });
     }
 
     pagesToExtract = Array.from(new Set(pagesToExtract)).slice(0, MAX_SPLIT_PAGES);
 
     if (pagesToExtract.length === 0) {
-      return NextResponse.json(
-        { error: 'No valid pages selected.' },
-        { status: 400 }
-      );
+      return apiError('No valid pages selected.', 400);
     }
 
     // Create PDF with selected pages
@@ -120,9 +117,6 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error('PDF split error:', error);
-    return NextResponse.json(
-      { error: 'Failed to split PDF', details: error instanceof Error ? error.message : 'Unknown error' },
-      { status: 500 }
-    );
+    return apiError('Failed to split PDF', 500);
   }
 }

@@ -4,7 +4,7 @@
 export const adsConfig = {
   // Your AdSense Publisher ID (starts with ca-pub-)
   // Find it in your AdSense dashboard: Account > Account information
-  publisherId: process.env.NEXT_PUBLIC_ADSENSE_PUBLISHER_ID || 'ca-pub-3541576002060495',
+  publisherId: process.env.NEXT_PUBLIC_ADSENSE_PUBLISHER_ID || '',
 
   // Enable/disable ads globally (set to false during development)
   enabled: process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_ADSENSE_ENABLED !== 'false',

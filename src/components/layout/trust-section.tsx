@@ -8,16 +8,13 @@ import {
   Star,
   Users,
   Zap,
-  Clock,
   CheckCircle2,
   Globe,
-  Server,
   BadgeCheck,
-  Scan,
   Quote
 } from 'lucide-react';
 import { seoConfig } from '@/lib/seo-config';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 
 // Animated counter for trust section
 function AnimatedStat({ value, icon: Icon, label }: { value: string; icon: React.ComponentType<{ className?: string }>; label: string }) {

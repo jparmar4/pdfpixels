@@ -1,3 +1,4 @@
+import { apiError } from '@/lib/api-response';
 import { NextRequest, NextResponse } from 'next/server';
 import { segmentForeground } from '@/lib/ai/pipelines/segmentation';
 import { applyBackgroundBlur, applyRegionBlur, applyTransparentBackground } from '@/lib/ai/pipelines/compositor';
@@ -19,14 +20,11 @@ export async function POST(request: NextRequest) {
     const expectedFaces = Number.isFinite(expectedFacesRaw) && expectedFacesRaw > 0 ? Math.min(8, expectedFacesRaw) : null;
 
     if (!file) {
-      return NextResponse.json({ error: 'No image provided', success: false }, { status: 400, headers: CACHE_HEADERS });
+      return apiError('No image provided', 400);
     }
 
     if (file.size > 20 * 1024 * 1024) {
-      return NextResponse.json(
-        { error: 'File too large. Maximum size for processing is 20MB.', success: false },
-        { status: 400, headers: CACHE_HEADERS }
-      );
+      return apiError('File too large. Maximum size for processing is 20MB.', 400);
     }
 
     const sharpModule = await import('sharp');
@@ -62,64 +60,66 @@ export async function POST(request: NextRequest) {
 
         let regions = faces.regions;
 
-        // Hard rule for group reliability:
-        // in high/privacy mode, if fewer than 3 faces detected, force 3 face slots.
-        if (!expectedFaces && (mode === 'high' || mode === 'privacy-max') && regions.length < 3) {
-          const base = regions[0];
-          const fw = base?.width ?? Math.round(image.width * 0.16);
-          const fh = base?.height ?? Math.round(fw * 1.22);
-          const y = base?.top ?? Math.round(image.height * 0.18);
-
-          const centers = [0.18, 0.5, 0.82].map((p) => Math.round(image.width * p));
-          regions = centers.map((centerX) => {
+        // Only pad with synthetic slots when the user explicitly expects more faces.
+        // Never invent faces when detection found none (avoids random full-image blur).
+        if (expectedFaces && regions.length > 0 && regions.length < expectedFaces) {
+          const template = regions[0];
+          const fw = template.width || Math.round(image.width * 0.16);
+          const fh = template.height || Math.round(fw * 1.22);
+          const y = template.top ?? Math.round(image.height * 0.18);
+          const step = image.width / expectedFaces;
+          while (regions.length < expectedFaces) {
+            const i = regions.length;
+            const centerX = Math.round(step * i + step / 2);
             const left = Math.max(0, Math.min(image.width - 1, centerX - Math.round(fw / 2)));
-            return {
+            regions.push({
               left,
               top: Math.max(0, Math.min(image.height - 1, y)),
               width: Math.max(1, Math.min(fw, image.width - left)),
-              height: Math.max(1, Math.min(fh, image.height - Math.max(0, Math.min(image.height - 1, y)))),
-            };
-          });
+              height: Math.max(1, Math.min(fh, image.height - y)),
+            });
+          }
         }
 
-        if (expectedFaces && regions.length < expectedFaces) {
-          const fw = Math.round(image.width * 0.16);
-          const fh = Math.round(fw * 1.22);
-          const y = Math.round(image.height * 0.18);
-          const step = image.width / expectedFaces;
-          const forced = Array.from({ length: expectedFaces }).map((_, i) => {
-            const centerX = Math.round(step * i + step / 2);
-            const left = Math.max(0, Math.min(image.width - 1, centerX - Math.round(fw / 2)));
-            return {
-              left,
-              top: y,
-              width: Math.max(1, Math.min(fw, image.width - left)),
-              height: Math.max(1, Math.min(fh, image.height - y)),
-            };
-          });
-          regions = forced;
+        if (regions.length === 0) {
+          return NextResponse.json(
+            {
+              error: 'No faces detected. Try a clearer portrait photo or lower the detection mode.',
+              success: false,
+              engine: faces.engine,
+            },
+            { status: 422, headers: CACHE_HEADERS },
+          );
         }
 
         const sigma = mode === 'privacy-max' ? 34 : mode === 'high' ? 28 : 24;
         out = await applyRegionBlur(sharp, image, regions, sigma);
 
+        // privacy-max: slightly expand each face region blur, not the whole image
         if (mode === 'privacy-max') {
-          const bandTop = Math.floor(info.height * 0.02);
-          const bandHeight = Math.floor(info.height * 0.9);
-          const band = await sharp(out)
-            .ensureAlpha()
-            .extract({ left: 0, top: bandTop, width: info.width, height: Math.max(1, Math.min(bandHeight, info.height - bandTop)) })
-            .blur(24)
-            .png()
-            .toBuffer();
-
-          out = await sharp(out)
-            .ensureAlpha()
-            .composite([{ input: band, left: 0, top: bandTop }])
-            .png()
-            .toBuffer();
-
-          engine = `${faces.engine}+band-guard${expectedFaces ? `+expected-${expectedFaces}` : ''}`;
+          const expanded = regions.map((r) => {
+            const padX = Math.round(r.width * 0.2);
+            const padY = Math.round(r.height * 0.25);
+            const left = Math.max(0, r.left - padX);
+            const top = Math.max(0, r.top - padY);
+            return {
+              left,
+              top,
+              width: Math.min(info.width - left, r.width + padX * 2),
+              height: Math.min(info.height - top, r.height + padY * 2),
+            };
+          });
+          out = await applyRegionBlur(
+            sharp,
+            await sharp(out).ensureAlpha().raw().toBuffer({ resolveWithObject: true }).then((raw) => ({
+              data: raw.data,
+              width: raw.info.width,
+              height: raw.info.height,
+            })),
+            expanded,
+            18,
+          );
+          engine = `${faces.engine}+expand${expectedFaces ? `+expected-${expectedFaces}` : ''}`;
         } else {
           engine = `${faces.engine}${expectedFaces ? `+expected-${expectedFaces}` : ''}`;
         }
@@ -227,9 +227,6 @@ export async function POST(request: NextRequest) {
     );
   } catch (error) {
     console.error('AI route error:', error);
-    return NextResponse.json(
-      { error: 'Image processing failed. Please try a different image.', success: false },
-      { status: 500, headers: CACHE_HEADERS }
-    );
+    return apiError('Image processing failed. Please try a different image.', 500);
   }
 }

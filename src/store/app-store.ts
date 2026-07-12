@@ -36,7 +36,7 @@ export const useAppStore = create<AppState>((set) => ({
   setProgress: (progress) => set((state) => ({
     progress: typeof progress === 'function' ? progress(state.progress) : progress
   })),
-  reset: () => set((state) => ({
+  reset: () => set((_state) => ({
     // Preserve activeTool so the workspace stays visible after reset
     uploadedFile: null,
     processedImage: null,

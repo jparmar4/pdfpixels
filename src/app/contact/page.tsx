@@ -35,8 +35,8 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import { AnimatedMeshBg } from '@/components/ui/animated-mesh-bg';
-import { Navigation } from '@/components/layout/navigation';
-import { Footer } from '@/components/layout/footer';
+
+
 
 export default function ContactPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -131,9 +131,9 @@ export default function ContactPage() {
 
   return (
     <div className="premium-page-bg min-h-screen bg-background text-foreground">
-      <Navigation />
+      
 
-      <main className="flex-1">
+      <main id="main-content" className="flex-1">
         {/* ─── Hero Section ─── */}
         <section className="relative overflow-hidden">
           <AnimatedMeshBg />
@@ -452,7 +452,7 @@ export default function ContactPage() {
         </section>
       </main>
 
-      <Footer />
+      
     </div>
   );
 }

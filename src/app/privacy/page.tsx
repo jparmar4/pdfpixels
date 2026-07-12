@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import { Shield } from 'lucide-react';
 import { CookieActions, LegalMetaRow, LegalPageLayout } from '@/components/layout/legal-page-layout';
 
 export const metadata: Metadata = {

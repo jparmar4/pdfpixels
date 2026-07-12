@@ -243,7 +243,7 @@ export function CookieConsentBanner() {
 
 // Cookie settings page component for privacy policy page
 export function CookieSettingsButton() {
-  const [consent, setConsent] = useState<CookieConsent | null>(() => {
+  const [consent] = useState<CookieConsent | null>(() => {
     if (typeof window === 'undefined') return null;
     return getConsent();
   });

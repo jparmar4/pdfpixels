@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ArrowRight, Download, Minimize2, RefreshCw, Sparkles, Zap } from 'lucide-react';
+import { ArrowRight, Minimize2, RefreshCw, Sparkles, Zap } from 'lucide-react';
 import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';

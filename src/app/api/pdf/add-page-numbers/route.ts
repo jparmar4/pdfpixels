@@ -1,3 +1,7 @@
+import { apiError } from '@/lib/api-response';
+import { loadPdfWithTimeout, pdfBinaryResponse } from '@/lib/pdf-api';
+
+export const maxDuration = 60;
 import { NextRequest, NextResponse } from 'next/server';
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 
@@ -15,12 +19,12 @@ export async function POST(request: NextRequest) {
         const fontSize = parseInt(formData.get('fontSize') as string) || 12;
 
         if (!file) {
-            return NextResponse.json({ error: 'No PDF file provided' }, { status: 400, headers: CACHE_HEADERS });
+            return apiError('No PDF file provided', 400);
         }
 
         const arrayBuffer = await file.arrayBuffer();
         const pdfBytes = new Uint8Array(arrayBuffer);
-        const pdf = await PDFDocument.load(pdfBytes, { ignoreEncryption: true });
+        const pdf = await loadPdfWithTimeout(pdfBytes);
 
         const font = await pdf.embedFont(StandardFonts.Helvetica);
         const totalPages = pdf.getPageCount();
@@ -64,20 +68,11 @@ export async function POST(request: NextRequest) {
         }
 
         const savedPdfBytes = await pdf.save();
-        const base64 = Buffer.from(savedPdfBytes).toString('base64');
-        const dataUrl = `data:application/pdf;base64,${base64}`;
-
-        return NextResponse.json({
-            success: true,
-            pdfUrl: dataUrl,
-            fileName: `numbered-${Date.now()}.pdf`,
-            pageCount: totalPages,
-        }, { headers: CACHE_HEADERS });
+        return pdfBinaryResponse(savedPdfBytes, `numbered-${Date.now()}.pdf`, {
+            'X-Page-Count': String(totalPages),
+        });
     } catch (error) {
         console.error('PDF add page numbers error:', error);
-        return NextResponse.json(
-            { error: 'Failed to add page numbers', details: error instanceof Error ? error.message : 'Unknown error' },
-            { status: 500, headers: CACHE_HEADERS }
-        );
+        return apiError('Failed to add page numbers', 500);
     }
 }

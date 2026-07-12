@@ -1,8 +1,11 @@
 export type ToolContent = {
     about: string;
+    directAnswer?: string;
     features: string[];
     useCases: string[];
     faqs: { question: string; answer: string }[];
+    steps?: { title: string; description: string }[];
+    commonProblems?: { problem: string; solution: string }[];
     supportedFormats: string;
     relatedTools: string[];
 };
@@ -13,6 +16,7 @@ export const toolContentMap: Record<string, ToolContent> = {
     // ═══════════════════════════════════════════════════════════════════════
     'compress-image': {
         about: 'Compress Image is a powerful online tool that reduces your image file size to any target — from 5 KB to 2 MB and beyond — without noticeable quality loss. Whether you need to meet strict upload limits for government forms, optimize images for faster website loading speeds, or shrink photos before emailing, this compressor handles JPG, PNG, WebP, and more. The intelligent compression algorithm balances file size reduction with visual quality, giving you full control through an intuitive quality slider. Processing happens securely in your browser for maximum privacy, with no installation, no signup, and completely free access.',
+        directAnswer: 'The Compress Image tool by PdfPixels instantly reduces your photo file sizes without visible quality loss. Just upload your image, specify a target size (like 50 KB or 200 KB), and download the perfectly optimized result for free.',
         features: [
             'Target any file size from 5 KB to 10 MB+ with precision control',
             'Smart lossy and lossless compression for JPG, PNG, and WebP',
@@ -32,12 +36,22 @@ export const toolContentMap: Record<string, ToolContent> = {
             { question: 'Is Compress Image free to use?', answer: 'Absolutely. PdfPixels Compress Image is 100% free with no registration, no watermarks, and no usage limits. Process as many images as you need.' },
             { question: 'What image formats are supported for compression?', answer: 'We support JPG/JPEG, PNG, WebP, GIF, BMP, TIFF, and HEIC formats. The compressed output is available in the same format or you can convert during compression.' },
         ],
+        steps: [
+            { title: 'Upload your photo', description: 'Drag and drop your JPG, PNG, WebP or HEIC image into the dropzone.' },
+            { title: 'Set compression target', description: 'Enter an exact target file size (e.g. 100 KB) or use the quality slider to adjust compression manually.' },
+            { title: 'Preview and download', description: 'Check the real-time preview to ensure quality, then click download to save the compressed image.' }
+        ],
+        commonProblems: [
+            { problem: 'Image looks too blurry after compression', solution: 'If your target file size is extremely small (like under 20 KB) for a large photo, it will become blurry. Try reducing the image dimensions (resize) first, then compress.' },
+            { problem: 'File size didn\'t decrease', solution: 'If your original image is already highly optimized, further compression won\'t help much. Try lowering the quality slider or converting it to WebP.' }
+        ],
         supportedFormats: 'JPG, JPEG, PNG, WebP, GIF, BMP, TIFF, HEIC',
         relatedTools: ['resize-image', 'increase-image-size-in-kb', 'convert-dpi', 'png-to-jpeg'],
     },
 
     'resize-image': {
         about: 'Resize Image lets you change image dimensions precisely using pixels, centimeters, millimeters, or inches — perfect for print documents, social media posts, and official submissions. Choose from built-in presets for Instagram, Facebook, LinkedIn, YouTube thumbnails, and standard document sizes like A4 and Letter, or enter custom dimensions. The tool maintains aspect ratio by default to prevent distortion, with an option to override for exact sizing. Whether you need a 35×45mm passport photo, a 1080×1080 Instagram post, or a 4K wallpaper, Resize Image delivers pixel-perfect results instantly.',
+        directAnswer: 'To resize an image instantly, upload it to the PdfPixels Resize tool, enter your desired width and height (in pixels, CM, or inches), and download the perfectly scaled photo for free.',
         features: [
             'Resize in pixels, centimeters, millimeters, or inches with unit conversion',
             'Social media presets: Instagram, Facebook, Twitter, LinkedIn, YouTube',
@@ -56,12 +70,21 @@ export const toolContentMap: Record<string, ToolContent> = {
             { question: 'Can I resize an image in centimeters or inches for printing?', answer: 'Yes! Select CM, MM, or Inches as your unit, set the DPI (300 DPI recommended for print), and enter your desired dimensions. The tool automatically calculates the correct pixel values for crisp printing.' },
             { question: 'What social media presets are available?', answer: 'We include presets for Instagram (1080×1080 post, 1080×1920 story), Facebook (1200×630 link, 820×312 cover), Twitter (1600×900), LinkedIn (1200×627), YouTube (1280×720 thumbnail), and more.' },
         ],
+        steps: [
+            { title: 'Upload image', description: 'Select the image you want to resize from your device.' },
+            { title: 'Set dimensions', description: 'Choose your measurement unit (Pixels, CM, MM, Inches) and enter the new width and height, or select a preset.' },
+            { title: 'Download resized photo', description: 'Click process to apply the new dimensions and download your resized file instantly.' }
+        ],
+        commonProblems: [
+            { problem: 'Image looks stretched or squished', solution: 'This happens when you resize to exact dimensions without locking the aspect ratio. To prevent distortion, make sure the "Lock Aspect Ratio" icon is enabled so the image scales proportionally.' }
+        ],
         supportedFormats: 'JPG, JPEG, PNG, WebP, GIF, BMP, TIFF, HEIC',
         relatedTools: ['compress-image', 'crop-image', 'convert-dpi', 'passport-size-photo'],
     },
 
     'remove-image-background': {
         about: 'Remove Background uses advanced AI-powered machine learning to instantly detect the subject in your photo and remove the background, producing a clean transparent PNG. The AI model accurately handles complex edges like hair, fur, and semi-transparent objects that manual editing would take hours to perfect. Ideal for creating product photography with white backgrounds, professional headshots, marketing materials, and social media graphics. The entire process takes just 10-30 seconds and works with photos of people, products, animals, and objects.',
+        directAnswer: 'The AI Background Remover perfectly isolates the main subject of your photo by erasing the background in seconds. It outputs a high-quality transparent PNG ideal for product listings, headshots, or graphic design.',
         features: [
             'AI-powered edge detection for hair, fur, and complex boundaries',
             'Instant transparent PNG output with alpha channel',
@@ -80,12 +103,21 @@ export const toolContentMap: Record<string, ToolContent> = {
             { question: 'Can I remove the background from product photos?', answer: 'Yes! The AI works excellently with product photography. Upload your product image and get a clean transparent PNG perfect for e-commerce listings on Amazon, Shopify, eBay, and other marketplaces.' },
             { question: 'What output format do I get after background removal?', answer: 'The output is always a PNG file with transparency (alpha channel). This allows you to place the subject on any background in design tools like Canva, Photoshop, or Figma.' },
         ],
+        steps: [
+            { title: 'Upload your image', description: 'Select a photo of a person, animal, or product that you want to isolate.' },
+            { title: 'AI Processing', description: 'Wait a few seconds while our AI detects the subject and erases the background automatically.' },
+            { title: 'Download PNG', description: 'Download the result as a transparent PNG, ready to place on any new background.' }
+        ],
+        commonProblems: [
+            { problem: 'Parts of the subject were removed', solution: 'The AI might struggle if the subject is the exact same color as the background. Try uploading a photo with higher contrast between foreground and background.' }
+        ],
         supportedFormats: 'JPG, JPEG, PNG, WebP, HEIC — Output: Transparent PNG',
         relatedTools: ['blur-background', 'increase-image-quality', 'compress-image', 'beautify-image'],
     },
 
     'passport-size-photo': {
         about: 'Passport Photo Maker creates compliant passport and ID photos for any country in the world — USA, UK, India, Canada, Australia, Schengen, and 100+ more. The tool auto-crops your face to official government dimensions (e.g., 35×45mm for most countries, 2×2 inches for US passport), ensures proper head positioning, and adjusts the background to meet submission requirements. Save money by creating your own passport photos at home instead of paying studio fees. Works with smartphone selfies and delivers print-ready results instantly.',
+        directAnswer: 'Make official passport and ID photos at home for free. Select your country, upload a portrait, and our tool auto-crops it to strict official government dimensions (like 2x2 inches or 35x45mm) for instant printing.',
         features: [
             'Country-specific presets: USA (2×2 in), UK (35×45mm), India (35×45mm), and 100+ more',
             'Auto face detection and centering to meet official guidelines',
@@ -104,12 +136,21 @@ export const toolContentMap: Record<string, ToolContent> = {
             { question: 'Can I print passport photos at home?', answer: 'Yes! The output is 300+ DPI print-ready. You can print on standard 4×6 inch photo paper at any pharmacy, photo shop, or home printer. We arrange multiple copies on a single sheet to save paper.' },
             { question: 'Will my passport photo be accepted by the government?', answer: 'Our tool follows official government specifications for dimensions, head size ratio, and positioning. However, final acceptance depends on additional factors like lighting, expression, and background. We recommend taking your photo against a plain white wall with even lighting.' },
         ],
+        steps: [
+            { title: 'Upload portrait', description: 'Take a photo of yourself against a plain wall and upload it.' },
+            { title: 'Select country requirements', description: 'Choose the country and ID type (e.g., US Passport, Schengen Visa) to apply the correct size rules.' },
+            { title: 'Download and print', description: 'Download the finalized single photo or a 4x6 print sheet with multiple copies ready for printing.' }
+        ],
+        commonProblems: [
+            { problem: 'Photo was rejected by official agency', solution: 'Ensure you took the photo with flat, even lighting (no shadows across the face), a neutral expression, and a plain light background. Tool dimensions are exact, but lighting is often the cause of rejection.' }
+        ],
         supportedFormats: 'JPG, JPEG, PNG, WebP, HEIC — Output: JPG at 300+ DPI',
         relatedTools: ['resize-image', 'compress-image', 'crop-image', 'remove-image-background'],
     },
 
     'image-to-pdf': {
         about: 'Image to PDF converts one or multiple images into a single, organized PDF document. Upload JPG, PNG, or WebP images, drag to reorder pages, choose your page size (A4, Letter, Legal, or fit-to-image), set orientation, and generate a professional PDF in seconds. Perfect for creating photo albums, document scans, portfolios, and multi-page reports from image files. The tool preserves image quality during conversion and supports both portrait and landscape orientations with smart auto-detection.',
+        directAnswer: 'Easily combine multiple JPG, PNG, or WebP photos into a single PDF document. Just upload your images, drag them to rearrange the page order, choose a page size like A4, and download your consolidated PDF.',
         features: [
             'Convert multiple images to a single multi-page PDF',
             'Drag and drop to reorder pages before conversion',
@@ -127,6 +168,14 @@ export const toolContentMap: Record<string, ToolContent> = {
             { question: 'How many images can I combine into one PDF?', answer: 'There is no hard limit on the number of images. You can combine dozens of images into a single PDF. For very large batches, we recommend keeping file sizes reasonable for faster processing.' },
             { question: 'Can I choose the page size for the PDF?', answer: 'Yes! Choose from A4, Letter, Legal, A3, A5, or "Fit to Image" which automatically sizes each page to match the image dimensions. You can also set portrait, landscape, or auto-detect orientation.' },
             { question: 'Will the image quality be preserved in the PDF?', answer: 'Yes, images are embedded at their original resolution. The output PDF maintains the full quality of your source images with no additional compression applied.' },
+        ],
+        steps: [
+            { title: 'Upload images', description: 'Select one or more images (JPG, PNG, WebP) you want to include in your PDF.' },
+            { title: 'Arrange and configure', description: 'Drag and drop the thumbnails to reorder pages. Select your page size and orientation settings.' },
+            { title: 'Generate PDF', description: 'Click process to embed the images into a single PDF document and save it.' }
+        ],
+        commonProblems: [
+            { problem: 'Images are cut off in the PDF', solution: 'If your images are cut off, try changing the "Fit" setting to "Contain" so the entire image shrinks to fit the page without cropping.' }
         ],
         supportedFormats: 'Input: JPG, JPEG, PNG, WebP, BMP — Output: PDF',
         relatedTools: ['compress-image', 'resize-image', 'merge-pdf', 'compress-pdf'],

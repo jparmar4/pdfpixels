@@ -120,7 +120,7 @@ export function PDFSplitWorkspace() {
         try {
           const err = await response.json();
           message = err?.error || message;
-        } catch {}
+        } catch { /* ignore parse error */ }
         throw new Error(message);
       }
 
@@ -138,11 +138,44 @@ export function PDFSplitWorkspace() {
         } else {
           toast.success(`Extracted ${data.extractedPages?.length || 0} pages!`);
         }
+      } else if (contentType.includes('application/zip')) {
+        const JSZip = (await import('jszip')).default;
+        const blob = await response.blob();
+        const zip = await JSZip.loadAsync(blob);
+        const pages = [];
+        let i = 1;
+        
+        for (const [relativePath, zipEntry] of Object.entries(zip.files)) {
+          if (!zipEntry.dir) {
+            const fileData = await zipEntry.async('blob');
+            const pdfUrl = URL.createObjectURL(fileData);
+            pages.push({
+              pageNumber: i++,
+              pdfUrl,
+              fileName: relativePath,
+            });
+          }
+        }
+        
+        const totalPages = Number(response.headers.get('x-total-pages') || 0);
+        const truncated = response.headers.get('x-truncated') === 'true';
+        
+        setResult({
+          mode: 'split-all',
+          totalPages,
+          pages,
+          truncated,
+        });
+        
+        toast.success(`Split into ${pages.length} files!`);
+        if (truncated) {
+          toast.info('Showing first 20 pages only for performance. Use range for larger PDFs.');
+        }
       } else {
         const blob = await response.blob();
         const pdfUrl = URL.createObjectURL(blob);
         const disposition = response.headers.get('content-disposition') || '';
-        const fileNameMatch = disposition.match(/filename=\"?([^\";]+)\"?/i);
+        const fileNameMatch = disposition.match(/filename="?([^";]+)"?/i);
         const fileName = fileNameMatch?.[1] || `extracted-pages-${Date.now()}.pdf`;
         const totalPages = Number(response.headers.get('x-total-pages') || 0);
         const extractedPagesHeader = response.headers.get('x-extracted-pages') || '';

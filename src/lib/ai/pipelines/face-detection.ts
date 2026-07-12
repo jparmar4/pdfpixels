@@ -1,4 +1,4 @@
-import type { BlurRegion, FaceDetectionResult, RGBAImage } from './types';
+import type { BlurRegion, FaceDetectionResult, RGBAImage, SharpLib } from './types';
 
 function isLikelySkin(r: number, g: number, b: number): boolean {
   const max = Math.max(r, g, b);
@@ -27,7 +27,7 @@ function iou(a: { x1: number; y1: number; x2: number; y2: number }, b: { x1: num
 
 export type FaceMode = 'balanced' | 'high' | 'privacy-max';
 
-export async function detectFaceRegions(sharp: any, image: RGBAImage, mode: FaceMode = 'balanced'): Promise<FaceDetectionResult> {
+export async function detectFaceRegions(sharp: SharpLib, image: RGBAImage, mode: FaceMode = 'balanced'): Promise<FaceDetectionResult> {
   const downW = Math.max(180, Math.min(mode === 'privacy-max' ? 620 : 520, image.width));
   const downH = Math.max(180, Math.round((image.height / image.width) * downW));
 

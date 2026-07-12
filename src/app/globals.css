@@ -478,18 +478,6 @@ h6 {
 
 /* ========== GLASSMORPHISM ========== */
 
-.glass {
-  background: rgba(255, 255, 255, 0.6);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-}
-
-.dark .glass {
-  background: rgba(15, 10, 40, 0.55);
-  border-color: rgba(139, 92, 246, 0.12);
-}
-
 .glass-subtle {
   background: rgba(255, 255, 255, 0.45);
   backdrop-filter: blur(12px) saturate(160%);
@@ -498,20 +486,6 @@ h6 {
 
 .dark .glass-subtle {
   background: rgba(15, 10, 40, 0.4);
-}
-
-.glass-card {
-  background: rgba(255, 255, 255, 0.78);
-  backdrop-filter: blur(12px) saturate(140%);
-  -webkit-backdrop-filter: blur(12px) saturate(140%);
-  border: 1px solid rgba(15, 23, 42, 0.06);
-  box-shadow: 0 8px 24px -16px rgba(15, 23, 42, 0.25), 0 1px 2px rgba(15, 23, 42, 0.05);
-}
-
-.dark .glass-card {
-  background: rgba(17, 24, 39, 0.72);
-  border-color: rgba(148, 163, 184, 0.16);
-  box-shadow: 0 10px 28px -16px rgba(0, 0, 0, 0.6), 0 1px 2px rgba(0, 0, 0, 0.35);
 }
 
 /* ========== PREMIUM BORDERS ========== */
@@ -746,6 +720,7 @@ h6 {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
 
@@ -1052,25 +1027,6 @@ h6 {
       rgba(129, 140, 248, 0.2) 80%,
       transparent 100%);
   background-size: 200% 100%;
-}
-
-/* ========== TESTIMONIAL CARD ========== */
-
-.testimonial-card {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(16px) saturate(180%);
-  -webkit-backdrop-filter: blur(16px) saturate(180%);
-  border: 1px solid rgba(226, 232, 240, 0.5);
-  border-radius: 1.25rem;
-  padding: 1.5rem;
-  flex-shrink: 0;
-  width: 300px;
-  transition: all 0.3s ease;
-}
-
-.dark .testimonial-card {
-  background: rgba(15, 23, 42, 0.6);
-  border-color: rgba(30, 41, 59, 0.5);
 }
 
 .testimonial-card:hover {

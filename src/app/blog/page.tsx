@@ -7,7 +7,7 @@ import { siteConfig } from "@/lib/seo-config";
 import { allTools } from "@/lib/tools-data";
 import { Navigation } from "@/components/layout/navigation";
 import { Footer } from "@/components/layout/footer";
-import { Clock, User, ArrowRight, BookOpen, Sparkles, CalendarDays } from "lucide-react";
+import { Clock, ArrowRight, BookOpen, Sparkles, CalendarDays } from "lucide-react";
 import { AnimatedMeshBg } from "@/components/ui/animated-mesh-bg";
 import { SpotlightCard } from "@/components/ui/spotlight-card";
 
@@ -111,9 +111,9 @@ export default function BlogPage() {
                 }}
             />
 
-            <Navigation />
+            
 
-            <div className="min-h-screen bg-background">
+            <main id="main-content" className="min-h-screen bg-background">
                 {/* Hero Section */}
                 <section className="relative overflow-hidden border-b border-border/40 min-h-[40vh] flex flex-col justify-center">
                     <AnimatedMeshBg />
@@ -315,9 +315,9 @@ export default function BlogPage() {
                         </div>
                     </div>
                 </section>
-            </div>
+            </main>
 
-            <Footer />
+            
         </>
     );
 }

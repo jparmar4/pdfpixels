@@ -1,3 +1,7 @@
+import { apiError } from '@/lib/api-response';
+import { loadPdfWithTimeout, pdfBinaryResponse } from '@/lib/pdf-api';
+
+export const maxDuration = 60;
 import { NextRequest, NextResponse } from 'next/server';
 import { PDFDocument } from 'pdf-lib';
 
@@ -12,16 +16,16 @@ export async function POST(request: NextRequest) {
         const pagesToDelete = formData.get('pages') as string; // e.g., '1,3,5' (1-indexed)
 
         if (!file) {
-            return NextResponse.json({ error: 'No PDF file provided' }, { status: 400, headers: CACHE_HEADERS });
+            return apiError('No PDF file provided', 400);
         }
 
         if (!pagesToDelete) {
-            return NextResponse.json({ error: 'No pages specified for deletion' }, { status: 400, headers: CACHE_HEADERS });
+            return apiError('No pages specified for deletion', 400);
         }
 
         const arrayBuffer = await file.arrayBuffer();
         const pdfBytes = new Uint8Array(arrayBuffer);
-        const sourcePdf = await PDFDocument.load(pdfBytes, { ignoreEncryption: true });
+        const sourcePdf = await loadPdfWithTimeout(pdfBytes);
 
         const totalPages = sourcePdf.getPageCount();
 
@@ -33,7 +37,7 @@ export async function POST(request: NextRequest) {
         );
 
         if (deleteSet.size >= totalPages) {
-            return NextResponse.json({ error: 'Cannot delete all pages from a PDF' }, { status: 400, headers: CACHE_HEADERS });
+            return apiError('Cannot delete all pages from a PDF', 400);
         }
 
         // Build list of pages to KEEP
@@ -46,22 +50,13 @@ export async function POST(request: NextRequest) {
         }
 
         const savedPdfBytes = await newPdf.save();
-        const base64 = Buffer.from(savedPdfBytes).toString('base64');
-        const dataUrl = `data:application/pdf;base64,${base64}`;
-
-        return NextResponse.json({
-            success: true,
-            pdfUrl: dataUrl,
-            fileName: `edited-${Date.now()}.pdf`,
-            originalPageCount: totalPages,
-            deletedPages: Array.from(deleteSet).map(i => i + 1),
-            remainingPageCount: keepIndices.length,
-        }, { headers: CACHE_HEADERS });
+        return pdfBinaryResponse(savedPdfBytes, `edited-${Date.now()}.pdf`, {
+            'X-OriginalPageCount': String(totalPages),
+            'X-DeletedPages': String(Array.from(deleteSet).map(i => i + 1)),
+            'X-RemainingPageCount': String(keepIndices.length),
+        });
     } catch (error) {
         console.error('PDF delete pages error:', error);
-        return NextResponse.json(
-            { error: 'Failed to delete pages', details: error instanceof Error ? error.message : 'Unknown error' },
-            { status: 500, headers: CACHE_HEADERS }
-        );
+        return apiError('Failed to delete pages', 500);
     }
 }

@@ -119,7 +119,7 @@ export function ToolPageHeader({
                 ) : null}
               </div>
 
-              <p className="max-w-3xl text-sm font-medium leading-6 text-muted-foreground md:text-base">
+              <p className="tool-hero-description max-w-3xl text-sm font-medium leading-6 text-muted-foreground md:text-base">
                 {safeDescription}
               </p>
 

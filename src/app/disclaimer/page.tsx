@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import { TriangleAlert } from 'lucide-react';
 import { LegalMetaRow, LegalPageLayout } from '@/components/layout/legal-page-layout';
 
 export const metadata: Metadata = {

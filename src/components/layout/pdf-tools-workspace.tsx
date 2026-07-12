@@ -3,7 +3,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     Download, RotateCcw, RotateCw, Sparkles, ChevronRight,
-    Stamp, Shield, FileLock, Layers, Trash2, GripVertical, Plus, Minus, Check, Zap, Hash
+    Stamp, Shield, FileLock, Layers, Trash2, GripVertical, Check, Zap, Hash
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -128,7 +128,7 @@ function WatermarkSettings({
                 <div className="space-y-2">
                     <Label>Color</Label>
                     <div className="flex items-center gap-2">
-                        <input type="color" value={color} onChange={e => setColor(e.target.value)} className="w-8 h-8 rounded cursor-pointer border border-border" />
+                        <input type="color" value={color} onChange={e => setColor(e.target.value)} aria-label="Pick a color" className="w-8 h-8 rounded cursor-pointer border border-border" />
                         <span className="text-sm font-mono text-muted-foreground">{color}</span>
                     </div>
                 </div>
@@ -454,64 +454,64 @@ export function PDFToolsWorkspace() {
         })();
     }, [uploadedFile]);
 
-    const getApiEndpoint = () => {
-        const toolId = activeTool?.id || '';
-        if (toolId === 'pdf-rotate') return '/api/pdf/rotate';
-        if (toolId === 'pdf-watermark') return '/api/pdf/watermark';
-        if (toolId === 'pdf-protect') return '/api/pdf/protect';
-        if (toolId === 'pdf-unlock') return '/api/pdf/protect'; // same route, action=unlock
-        if (toolId === 'pdf-delete-pages') return '/api/pdf/delete-pages';
-        if (toolId === 'pdf-reorder') return '/api/pdf/reorder';
-        if (toolId === 'pdf-linearize') return '/api/pdf/linearize';
-        if (toolId === 'pdf-add-page-numbers') return '/api/pdf/add-page-numbers';
-        return '/api/pdf/rotate';
-    };
-
-    const buildFormData = (): FormData | null => {
-        if (!uploadedFile) return null;
-        const toolId = activeTool?.id || '';
-        const formData = new FormData();
-        formData.append('file', uploadedFile);
-
-        if (toolId === 'pdf-rotate') {
-            formData.append('angle', angle.toString());
-            formData.append('pages', rotatePages);
-        } else if (toolId === 'pdf-watermark') {
-            if (!wmText.trim()) { toast.error('Please enter watermark text'); return null; }
-            formData.append('text', wmText);
-            formData.append('opacity', wmOpacity.toString());
-            formData.append('color', wmColor);
-            formData.append('fontSize', wmFontSize.toString());
-            formData.append('position', wmPosition);
-            formData.append('rotation', wmRotation.toString());
-        } else if (toolId === 'pdf-protect') {
-            if (!password) { toast.error('Please enter a password'); return null; }
-            if (password !== confirmPassword) { toast.error('Passwords do not match'); return null; }
-            formData.append('password', password);
-            formData.append('action', 'protect');
-        } else if (toolId === 'pdf-unlock') {
-            formData.append('password', password);
-            formData.append('action', 'unlock');
-        } else if (toolId === 'pdf-delete-pages') {
-            if (!deletePages.trim()) { toast.error('Please select pages to delete'); return null; }
-            formData.append('pages', deletePages);
-        } else if (toolId === 'pdf-reorder') {
-            if (pageOrder.length === 0) { toast.error('No page order set'); return null; }
-            formData.append('order', JSON.stringify(pageOrder));
-        } else if (toolId === 'pdf-add-page-numbers') {
-            formData.append('position', pnPosition);
-            formData.append('format', pnFormat);
-            formData.append('margin', pnMargin.toString());
-            formData.append('fontSize', pnFontSize.toString());
-        }
-
-        return formData;
-    };
-
     const handleProcess = useCallback(async () => {
+        const getEndpoint = () => {
+            const tid = activeTool?.id || '';
+            if (tid === 'pdf-rotate') return '/api/pdf/rotate';
+            if (tid === 'pdf-watermark') return '/api/pdf/watermark';
+            if (tid === 'pdf-protect') return '/api/pdf/protect';
+            if (tid === 'pdf-unlock') return '/api/pdf/protect';
+            if (tid === 'pdf-delete-pages') return '/api/pdf/delete-pages';
+            if (tid === 'pdf-reorder') return '/api/pdf/reorder';
+            if (tid === 'pdf-linearize') return '/api/pdf/linearize';
+            if (tid === 'pdf-add-page-numbers') return '/api/pdf/add-page-numbers';
+            return '/api/pdf/rotate';
+        };
+
+        const buildForm = (): FormData | null => {
+            if (!uploadedFile) return null;
+            const tid = activeTool?.id || '';
+            const fd = new FormData();
+            fd.append('file', uploadedFile);
+
+            if (tid === 'pdf-rotate') {
+                fd.append('angle', angle.toString());
+                fd.append('pages', rotatePages);
+            } else if (tid === 'pdf-watermark') {
+                if (!wmText.trim()) { toast.error('Please enter watermark text'); return null; }
+                fd.append('text', wmText);
+                fd.append('opacity', wmOpacity.toString());
+                fd.append('color', wmColor);
+                fd.append('fontSize', wmFontSize.toString());
+                fd.append('position', wmPosition);
+                fd.append('rotation', wmRotation.toString());
+            } else if (tid === 'pdf-protect') {
+                if (!password) { toast.error('Please enter a password'); return null; }
+                if (password !== confirmPassword) { toast.error('Passwords do not match'); return null; }
+                fd.append('password', password);
+                fd.append('action', 'protect');
+            } else if (tid === 'pdf-unlock') {
+                fd.append('password', password);
+                fd.append('action', 'unlock');
+            } else if (tid === 'pdf-delete-pages') {
+                if (!deletePages.trim()) { toast.error('Please select pages to delete'); return null; }
+                fd.append('pages', deletePages);
+            } else if (tid === 'pdf-reorder') {
+                if (pageOrder.length === 0) { toast.error('No page order set'); return null; }
+                fd.append('order', JSON.stringify(pageOrder));
+            } else if (tid === 'pdf-add-page-numbers') {
+                fd.append('position', pnPosition);
+                fd.append('format', pnFormat);
+                fd.append('margin', pnMargin.toString());
+                fd.append('fontSize', pnFontSize.toString());
+            }
+
+            return fd;
+        };
+
         if (!uploadedFile) { toast.error('Please upload a PDF file'); return; }
 
-        const formData = buildFormData();
+        const formData = buildForm();
         if (!formData) return;
 
         setIsProcessing(true);
@@ -523,7 +523,7 @@ export function PDFToolsWorkspace() {
                 setProgress(prev => Math.min(prev + 8, 90));
             }, 200);
 
-            const response = await fetch(getApiEndpoint(), { method: 'POST', body: formData });
+            const response = await fetch(getEndpoint(), { method: 'POST', body: formData });
             clearInterval(progressInterval);
             setProgress(100);
 
@@ -532,18 +532,16 @@ export function PDFToolsWorkspace() {
                 try {
                     const errText = await response.text();
                     try { const err = JSON.parse(errText); message = err.error || message; } catch { message = errText || message; }
-                } catch { }
+                } catch { /* ignore parse error */ }
                 throw new Error(message);
             }
 
             const contentType = response.headers.get('content-type') || '';
 
             if (contentType.includes('application/json')) {
-                // JSON response (watermark, delete-pages, reorder, linearize)
                 const data = await response.json();
                 setResult({ pdfUrl: data.pdfUrl, fileName: data.fileName, pageCount: data.pageCount });
             } else {
-                // Binary PDF response (rotate + others that may return binary)
                 const blob = await response.blob();
                 const pdfUrl = URL.createObjectURL(blob);
                 const disposition = response.headers.get('content-disposition') || '';
@@ -560,7 +558,7 @@ export function PDFToolsWorkspace() {
             setIsProcessing(false);
         }
 
-    }, [uploadedFile, activeTool, angle, rotatePages, wmText, wmOpacity, wmColor, wmFontSize, wmPosition, wmRotation, password, confirmPassword, deletePages, pageOrder, pnPosition, pnFormat, pnMargin, pnFontSize, setIsProcessing, setProgress, buildFormData, getApiEndpoint]);
+    }, [uploadedFile, activeTool, angle, rotatePages, wmText, wmOpacity, wmColor, wmFontSize, wmPosition, wmRotation, password, confirmPassword, deletePages, pageOrder, pnPosition, pnFormat, pnMargin, pnFontSize, setIsProcessing, setProgress]);
 
     const handleDownload = useCallback(() => {
         if (!result) return;

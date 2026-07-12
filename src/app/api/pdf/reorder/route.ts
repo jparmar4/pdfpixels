@@ -1,3 +1,7 @@
+import { apiError } from '@/lib/api-response';
+import { loadPdfWithTimeout, pdfBinaryResponse } from '@/lib/pdf-api';
+
+export const maxDuration = 60;
 import { NextRequest, NextResponse } from 'next/server';
 import { PDFDocument } from 'pdf-lib';
 
@@ -12,27 +16,24 @@ export async function POST(request: NextRequest) {
         const orderJson = formData.get('order') as string; // JSON array of 1-indexed page numbers e.g. [3,1,2]
 
         if (!file) {
-            return NextResponse.json({ error: 'No PDF file provided' }, { status: 400, headers: CACHE_HEADERS });
+            return apiError('No PDF file provided', 400);
         }
 
         if (!orderJson) {
-            return NextResponse.json({ error: 'Page order not provided' }, { status: 400, headers: CACHE_HEADERS });
+            return apiError('Page order not provided', 400);
         }
 
         const newOrder: number[] = JSON.parse(orderJson); // 1-indexed
 
         const arrayBuffer = await file.arrayBuffer();
         const pdfBytes = new Uint8Array(arrayBuffer);
-        const sourcePdf = await PDFDocument.load(pdfBytes, { ignoreEncryption: true });
+        const sourcePdf = await loadPdfWithTimeout(pdfBytes);
 
         const totalPages = sourcePdf.getPageCount();
 
         // Validate order
         if (newOrder.length !== totalPages) {
-            return NextResponse.json(
-                { error: `Order must include all ${totalPages} page numbers` },
-                { status: 400, headers: CACHE_HEADERS }
-            );
+            return apiError(`Order must include all ${totalPages} page numbers`, 400);
         }
 
         // Convert 1-indexed to 0-indexed
@@ -45,21 +46,12 @@ export async function POST(request: NextRequest) {
         }
 
         const savedPdfBytes = await newPdf.save();
-        const base64 = Buffer.from(savedPdfBytes).toString('base64');
-        const dataUrl = `data:application/pdf;base64,${base64}`;
-
-        return NextResponse.json({
-            success: true,
-            pdfUrl: dataUrl,
-            fileName: `reordered-${Date.now()}.pdf`,
-            pageCount: totalPages,
-            newOrder,
-        }, { headers: CACHE_HEADERS });
+        return pdfBinaryResponse(savedPdfBytes, `reordered-${Date.now()}.pdf`, {
+            'X-Page-Count': String(totalPages),
+            'X-NewOrder': String(newOrder),
+        });
     } catch (error) {
         console.error('PDF reorder error:', error);
-        return NextResponse.json(
-            { error: 'Failed to reorder PDF pages', details: error instanceof Error ? error.message : 'Unknown error' },
-            { status: 500, headers: CACHE_HEADERS }
-        );
+        return apiError('Failed to reorder PDF pages', 500);
     }
 }

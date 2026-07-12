@@ -1,4 +1,4 @@
-import type { SegmentationResult } from './types';
+import type { SegmentationResult, SharpLib } from './types';
 import { closing, largestComponent, opening, pIndex, rgbaIndex, toSoftMaskFromBinary } from '../utils/image';
 
 function colorDistance(r1: number, g1: number, b1: number, r2: number, g2: number, b2: number): number {
@@ -8,7 +8,7 @@ function colorDistance(r1: number, g1: number, b1: number, r2: number, g2: numbe
   return Math.sqrt(dr * dr + dg * dg + db * db);
 }
 
-export async function segmentForeground(sharp: any, input: Buffer): Promise<SegmentationResult> {
+export async function segmentForeground(sharp: SharpLib, input: Buffer): Promise<SegmentationResult> {
   const { data, info } = await sharp(input, { failOn: 'none' }).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
   const width = info.width;
   const height = info.height;

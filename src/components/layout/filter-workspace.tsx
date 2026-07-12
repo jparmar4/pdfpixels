@@ -173,7 +173,7 @@ export function FilterWorkspace() {
       <ToolPageHeader
         title={activeTool.name}
         description={activeTool.description}
-        icon={<span className="text-2xl" aria-hidden>{getToolIcon()}</span>}
+        icon={<span className="text-2xl" aria-hidden="true">{getToolIcon()}</span>}
         onReset={handleReset}
       >
         {processedImage && (

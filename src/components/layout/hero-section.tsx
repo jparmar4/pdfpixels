@@ -67,7 +67,7 @@ export function HeroSection({
                 >
                     <div className="absolute inset-0 bg-gradient-to-r from-primary/30 to-violet-500/30 blur-xl opacity-40 rounded-2xl" />
                     <div className="relative flex items-center bg-card/90 backdrop-blur-xl border border-border/50 rounded-2xl p-2 shadow-premium hover:shadow-primary transition-all duration-500 focus-within:ring-2 focus-within:ring-primary/50 focus-within:border-primary/50">
-                        <svg className="w-6 h-6 text-muted-foreground ml-3 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <svg className="w-6 h-6 text-muted-foreground ml-3 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                         </svg>
                         <input
@@ -75,16 +75,17 @@ export function HeroSection({
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
                             placeholder="Search 55+ tools — compress, resize, merge PDF, blur..."
+                            aria-label="Search tools"
                             className="w-full bg-transparent border-none text-base font-medium placeholder:text-muted-foreground/60 focus:outline-none py-3 h-12"
                         />
                         {search && (
-                            <button onClick={() => setSearch('')} className="mr-3 text-muted-foreground hover:text-foreground transition-colors p-1 bg-muted rounded-full">
-                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                            <button onClick={() => setSearch('')} aria-label="Clear search" className="mr-3 text-muted-foreground hover:text-foreground transition-colors p-1 bg-muted rounded-full">
+                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
                             </button>
                         )}
-                        <div className="bg-primary hover:bg-primary/90 text-primary-foreground px-6 py-3 h-12 rounded-xl font-medium transition-colors hidden sm:flex items-center cursor-pointer shadow-sm">
+                        <button type="button" className="bg-primary hover:bg-primary/90 text-primary-foreground px-6 py-3 h-12 rounded-xl font-medium transition-colors hidden sm:flex items-center cursor-pointer shadow-sm">
                             Search
-                        </div>
+                        </button>
                     </div>
                 </motion.div>
 

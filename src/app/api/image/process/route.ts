@@ -1,3 +1,4 @@
+import { apiError } from '@/lib/api-response';
 import { NextRequest, NextResponse } from 'next/server';
 
 // Cache control for API responses
@@ -24,17 +25,11 @@ export async function POST(request: NextRequest) {
     const file = formData.get('image') as File;
 
     if (!file) {
-      return NextResponse.json(
-        { error: 'No image provided', success: false },
-        { status: 400, headers: CACHE_HEADERS }
-      );
+      return apiError('No image provided', 400);
     }
 
     if (file.size > MAX_IMAGE_SIZE) {
-      return NextResponse.json(
-        { error: 'File too large. Maximum size is 100 MB', success: false },
-        { status: 400, headers: CACHE_HEADERS }
-      );
+      return apiError('File too large. Maximum size is 100 MB', 400);
     }
 
     const arrayBuffer = await file.arrayBuffer();
@@ -60,10 +55,7 @@ export async function POST(request: NextRequest) {
       (metadata.width && metadata.width > MAX_DIMENSION) ||
       (metadata.height && metadata.height > MAX_DIMENSION)
     ) {
-      return NextResponse.json(
-        { error: 'Image dimensions too large. Maximum is 20,000 px per side.', success: false },
-        { status: 400, headers: CACHE_HEADERS }
-      );
+      return apiError('Image dimensions too large. Maximum is 20,000 px per side.', 400);
     }
 
     // ── Fix 1: Convert non-sRGB colorspaces to sRGB ───────────────────────────

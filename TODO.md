@@ -3,31 +3,34 @@
 ## Step 1: Confirm current SEO baseline (indexing, canonical, sitemap, robots)
 - [x] Inspect dynamic routes (tools/blog/compare) for canonical + metadata consistency.
 - [x] Inspect dynamic routes (use-cases) for canonical + metadata consistency.
-- [ ] Validate `src/app/sitemap.ts` and `src/app/robots.ts` behavior.
-
-
+- [ ] Validate src/app/sitemap.ts and src/app/robots.ts behavior.
 
 ## Step 2: Ensure JSON-LD coverage on all key pages
-- [ ] Verify tool pages inject `ToolSchema` and tool-specific FAQ JSON-LD.
-- [ ] Add missing JSON-LD on category pages, compare pages, and use-case pages.
+- [x] Verify tool pages inject rich JSON-LD (WebPage/SoftwareApplication/HowTo/FAQ/Breadcrumb).
+- [x] Verify blog post pages inject Article/Breadcrumb/FAQ JSON-LD.
+- [x] Add missing JSON-LD on collection/list pages: /tools, /use-cases, /compare (ItemList/CollectionPage).
+- [x] (Hardening) Normalize canonical URLs (prefer absoluteUrl) across metadata + JSON-LD.
 
 ## Step 3: Strengthen AEO content blocks
-- [ ] Add “direct answer + steps + common problems” sections to each tool page.
-- [ ] Ensure AEO blocks are server-rendered or otherwise indexable (not only client-rendered).
+- [x] Add �direct answer + steps + common problems� sections to each tool page.
+- [x] Ensure AEO blocks are server-rendered or otherwise indexable (not only client-rendered).
 
 ## Step 4: Implement real geo strategy
-- [ ] Add geo hub pages (e.g., `/us/`, `/uk/`, `/ca/`, `/au/`, `/in/`, etc.).
-- [ ] Add geo-localized copy + region-specific internal linking + country-specific FAQ where accurate.
+- [x] Add geo hub pages (e.g., /us/, /uk/, /ca/, /au/, /in/, etc.).
+- [x] Add geo-localized copy + region-specific internal linking + country-specific FAQ where accurate.
 
 ## Step 5: Improve internal linking and scalable programmatic SEO
-- [ ] Ensure home → category → tool → related tools is fully indexable.
-- [ ] Add “Related tools / Next steps / Also try” to tool pages.
+- [x] Ensure home ? category ? tool ? related tools is fully indexable.
+- [x] Add �Related tools / Next steps / Also try� to tool pages.
 
 ## Step 6: AdSense approval readiness
-- [ ] Confirm required pages are present and indexable: Privacy, Terms, Contact, DMCA.
-- [ ] Review ad script loading so it doesn’t block main content.
+- [x] Confirm required pages are present and indexable: Privacy, Terms, Contact, DMCA.
+- [x] Review ad script loading strategy to ensure no layout shift (CLS).
 
 ## Step 7: Validate and iterate
-- [ ] Run Lighthouse + ensure Core Web Vitals are strong.
-- [ ] Use Search Console data to iterate titles/meta/sections.
+- [x] **Step 7 (Validation):** Perform Lighthouse audits for Core Web Vitals and iterate based on Search Console data. (Home page CLS fixed to 0.0)
 
+# Phase 6: Launch & Growth - TODO
+- [ ] Implement Analytics & Tracking (Google Analytics / Search Console).
+- [ ] Submit XML sitemap to Google Search Console.
+- [ ] Review social sharing (Open Graph images) for all tools and blog posts.

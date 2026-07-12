@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Download, RotateCcw, PenTool, Type, Upload, Trash2, ChevronRight, Sparkles } from 'lucide-react';
+import { Download, RotateCcw, PenTool, Type, Trash2, ChevronRight, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
@@ -214,10 +214,10 @@ export function SignatureWorkspace() {
                                 <div className="space-y-2">
                                     <Label>Pen Color</Label>
                                     <div className="flex gap-2">
-                                        {['#000000', '#1e40af', '#dc2626', '#059669', '#7c3aed'].map(c => (
-                                            <button key={c} onClick={() => setPenColor(c)} className={`w-8 h-8 rounded-full border-2 transition-all ${penColor === c ? 'border-primary ring-2 ring-primary/30 scale-110' : 'border-gray-200 hover:scale-105'}`} style={{ backgroundColor: c }} />
+                                        {[{ hex: '#000000', name: 'Black' }, { hex: '#1e40af', name: 'Blue' }, { hex: '#dc2626', name: 'Red' }, { hex: '#059669', name: 'Green' }, { hex: '#7c3aed', name: 'Purple' }].map(c => (
+                                            <button key={c.hex} onClick={() => setPenColor(c.hex)} aria-label={c.name} className={`w-8 h-8 rounded-full border-2 transition-all ${penColor === c.hex ? 'border-primary ring-2 ring-primary/30 scale-110' : 'border-gray-200 hover:scale-105'}`} style={{ backgroundColor: c.hex }} />
                                         ))}
-                                        <input type="color" value={penColor} onChange={(e) => setPenColor(e.target.value)} className="w-8 h-8 rounded-full cursor-pointer" />
+                                        <input type="color" value={penColor} onChange={(e) => setPenColor(e.target.value)} aria-label="Custom pen color" className="w-8 h-8 rounded-full cursor-pointer" />
                                     </div>
                                 </div>
                                 <div className="space-y-2">

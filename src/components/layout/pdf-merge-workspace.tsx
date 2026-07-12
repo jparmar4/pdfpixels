@@ -110,14 +110,14 @@ export function PDFMergeWorkspace() {
         try {
           const err = await response.json();
           message = err?.error || message;
-        } catch {}
+        } catch { /* ignore parse error */ }
         throw new Error(message);
       }
 
       const blob = await response.blob();
       const pdfUrl = URL.createObjectURL(blob);
       const disposition = response.headers.get('content-disposition') || '';
-      const fileNameMatch = disposition.match(/filename=\"?([^\";]+)\"?/i);
+      const fileNameMatch = disposition.match(/filename="?([^";]+)"?/i);
       const fileName = fileNameMatch?.[1] || `merged-${Date.now()}.pdf`;
 
       const pageCount = Number(response.headers.get('x-page-count') || 0);

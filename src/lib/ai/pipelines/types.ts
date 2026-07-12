@@ -28,3 +28,5 @@ export type FaceDetectionResult = {
   regions: BlurRegion[];
   engine: string;
 };
+
+export type SharpLib = any;

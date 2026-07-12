@@ -1,6 +1,16 @@
 import Link from 'next/link';
 import { FileQuestion, Home, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Page Not Found - PdfPixels',
+  description: 'The page you are looking for does not exist.',
+  robots: {
+    index: false,
+    follow: true,
+  },
+};
 
 export default function NotFound() {
   return (

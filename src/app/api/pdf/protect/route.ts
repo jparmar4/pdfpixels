@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { apiError } from '@/lib/api-response';
+import { loadPdfWithTimeout, pdfBinaryResponse } from '@/lib/pdf-api';
 import { spawn } from 'child_process';
 import fs from 'fs';
 import os from 'os';
@@ -79,12 +81,6 @@ async function runQpdf(args: string[]) {
   throw lastError ?? new Error('qpdf is not available in the current environment.');
 }
 
-function jsonError(message: string, status = 400, details?: string) {
-  return NextResponse.json(
-    details ? { error: message, details } : { error: message },
-    { status, headers: CACHE_HEADERS },
-  );
-}
 
 export async function POST(request: NextRequest) {
   let inputPath = '';
@@ -97,15 +93,15 @@ export async function POST(request: NextRequest) {
     const password = (formData.get('password') as string) || '';
 
     if (!file) {
-      return jsonError('No PDF file provided');
+      return apiError('No PDF file provided');
     }
 
     if (file.type && file.type !== 'application/pdf') {
-      return jsonError('Only PDF files are supported');
+      return apiError('Only PDF files are supported');
     }
 
     if (file.size > 25 * 1024 * 1024) {
-      return jsonError('File too large (25MB max)');
+      return apiError('File too large (25MB max)');
     }
 
     const inputBuffer = Buffer.from(await file.arrayBuffer());
@@ -113,7 +109,7 @@ export async function POST(request: NextRequest) {
     const pageCount = srcPdf.getPageCount();
 
     if (action === 'protect' && password.length < 4) {
-      return jsonError('Please enter a password with at least 4 characters');
+      return apiError('Please enter a password with at least 4 characters');
     }
 
     const tempDir = os.tmpdir();
@@ -138,7 +134,7 @@ export async function POST(request: NextRequest) {
         : ['--decrypt', inputPath, outputPath];
       await runQpdf(args);
     } else {
-      return jsonError('Unsupported PDF security action');
+      return apiError('Unsupported PDF security action');
     }
 
     const outputBuffer = fs.readFileSync(outputPath);
@@ -160,18 +156,18 @@ export async function POST(request: NextRequest) {
     const message = error instanceof Error ? error.message : 'Unknown error';
 
     if (message.toLowerCase().includes('invalid password')) {
-      return jsonError('The provided PDF password is incorrect.', 401, message);
+      return apiError('The provided PDF password is incorrect.', 401, message);
     }
 
     if (message.toLowerCase().includes('encrypted file')) {
-      return jsonError('This PDF requires a valid password before it can be unlocked.', 401, message);
+      return apiError('This PDF requires a valid password before it can be unlocked.', 401, message);
     }
 
     if (message.toLowerCase().includes('qpdf is not available')) {
-      return jsonError('PDF security engine is not available in the current environment.', 503, message);
+      return apiError('PDF security engine is not available in the current environment.', 503, message);
     }
 
-    return jsonError('Failed to process PDF security settings', 500, message);
+    return apiError('Failed to process PDF security settings', 500, message);
   } finally {
     if (inputPath && fs.existsSync(inputPath)) fs.unlinkSync(inputPath);
     if (outputPath && fs.existsSync(outputPath)) fs.unlinkSync(outputPath);

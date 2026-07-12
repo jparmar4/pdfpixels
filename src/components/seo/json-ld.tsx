@@ -60,11 +60,6 @@ function KnowledgeGraphSchema() {
         operatingSystem: 'Windows, macOS, Linux, iOS, Android',
         browserRequirements: 'Requires JavaScript and HTML5 Canvas',
         isAccessibleForFree: true,
-        aggregateRating: {
-          '@type': 'AggregateRating',
-          ratingValue: '4.9',
-          ratingCount: '1549',
-        },
         offers: {
           '@type': 'Offer',
           price: webAppData.offers.price,
@@ -85,17 +80,46 @@ function KnowledgeGraphSchema() {
 }
 
 function FAQSchema() {
+  const aeoQuestions = [
+    {
+      '@type': 'Question',
+      name: 'What can I do on PdfPixels?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'PdfPixels helps with PDF and image tasks such as compressing files, resizing photos, converting formats, merging PDFs, splitting PDFs, and removing image backgrounds.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Do I need to create an account to use PdfPixels?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'No. PdfPixels is designed so users can start core PDF and image workflows without creating an account first.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Does PdfPixels support mobile browsers?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Yes. The platform is designed to work across desktop and mobile browsers for common PDF and image tasks.',
+      },
+    },
+  ];
+
+  const standardQuestions = faqData.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: faq.answer,
+    },
+  }));
+
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
-    mainEntity: faqData.map((faq) => ({
-      '@type': 'Question',
-      name: faq.question,
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: faq.answer,
-      },
-    })),
+    mainEntity: [...aeoQuestions, ...standardQuestions],
   };
 
   return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />;
@@ -275,40 +299,7 @@ function APISchema() {
   return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />;
 }
 
-function AEOAnswerSchema() {
-  const schema = {
-    '@context': 'https://schema.org',
-    '@type': 'FAQPage',
-    mainEntity: [
-      {
-        '@type': 'Question',
-        name: 'What can I do on PdfPixels?',
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: 'PdfPixels helps with PDF and image tasks such as compressing files, resizing photos, converting formats, merging PDFs, splitting PDFs, and removing image backgrounds.',
-        },
-      },
-      {
-        '@type': 'Question',
-        name: 'Do I need to create an account to use PdfPixels?',
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: 'No. PdfPixels is designed so users can start core PDF and image workflows without creating an account first.',
-        },
-      },
-      {
-        '@type': 'Question',
-        name: 'Does PdfPixels support mobile browsers?',
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: 'Yes. The platform is designed to work across desktop and mobile browsers for common PDF and image tasks.',
-        },
-      },
-    ],
-  };
-
-  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />;
-}
+// AEOAnswerSchema has been merged into FAQSchema
 
 export function JsonLdSchemas() {
   return (
@@ -326,7 +317,6 @@ export function HomePageSchemas() {
     <>
       <HomepageCollectionSchema />
       <FAQSchema />
-      <AEOAnswerSchema />
       <BreadcrumbSchema />
       <SpeakableSchema />
     </>

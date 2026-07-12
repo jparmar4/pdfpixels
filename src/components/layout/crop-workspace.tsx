@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { Download, RotateCcw, Crop, Circle, Square, Scissors, Settings } from 'lucide-react';
+
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
@@ -11,7 +12,6 @@ import { ToolPageHeader } from './tool-page-header';
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
-import { Slider } from '@/components/ui/slider';
 import {
     Select, SelectContent, SelectItem, SelectTrigger, SelectValue
 } from '@/components/ui/select';
@@ -30,7 +30,6 @@ const ASPECT_PRESETS = [
 export function CropWorkspace() {
     const { activeTool, uploadedFile, processedImage, isProcessing, reset, setIsProcessing, setProcessedImage, setProgress } = useAppStore();
     const canvasRef = useRef<HTMLCanvasElement>(null);
-    const previewRef = useRef<HTMLCanvasElement>(null);
     const imageRef = useRef<HTMLImageElement | null>(null);
 
     const cropMode: CropMode =
@@ -55,9 +54,9 @@ export function CropWorkspace() {
             const canvas = canvasRef.current;
             if (!canvas) return;
             const maxW = 800;
-            const scale = Math.min(1, maxW / img.width);
-            canvas.width = img.width * scale;
-            canvas.height = img.height * scale;
+            const s = Math.min(1, maxW / img.width);
+            canvas.width = img.width * s;
+            canvas.height = img.height * s;
             const ctx = canvas.getContext('2d');
             if (!ctx) return;
             ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
@@ -81,7 +80,6 @@ export function CropWorkspace() {
         const ctx = canvas.getContext('2d');
         if (!ctx) return;
         const img = imageRef.current;
-        const scale = canvas.width / img.width;
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);

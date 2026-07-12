@@ -117,7 +117,7 @@ export function OCRWorkspace() {
         } finally {
             setIsProcessing(false);
         }
-    }, [uploadedFile, language, setIsProcessing, setProgress]);
+    }, [uploadedFile, language, highAccuracy, setIsProcessing, setProgress]);
 
     const handleCopy = useCallback(async () => {
         if (!extractedText) return;
@@ -208,6 +208,7 @@ export function OCRWorkspace() {
                                         }}
                                         className="w-full min-h-64 p-3 rounded-lg border border-border bg-muted/30 text-sm font-mono resize-y focus:outline-none focus:ring-2 focus:ring-primary/30"
                                         placeholder="Extracted text will appear here..."
+                                        aria-label="Extracted text"
                                     />
                                     <div className="flex justify-end mt-2">
                                         <Button variant="outline" size="sm" onClick={handleCopy} className="gap-2">

@@ -70,11 +70,7 @@ const nextConfig: NextConfig = {
             key: 'X-Content-Type-Options',
             value: 'nosniff',
           },
-          // XSS Protection
-          {
-            key: 'X-XSS-Protection',
-            value: '1; mode=block',
-          },
+
           // Referrer Policy for privacy
           {
             key: 'Referrer-Policy',
