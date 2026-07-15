@@ -47,38 +47,48 @@ export function PDFSplitWorkspace() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const prefersReducedMotion = useReducedMotion();
 
-  const handleFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = e.target.files?.[0];
-    if (selectedFile && selectedFile.name.toLowerCase().endsWith('.pdf')) {
-      setFile(selectedFile);
+  const loadPdfMeta = useCallback(async (selectedFile: File) => {
+    setFile(selectedFile);
+    setResult(null);
+    setPdfInfo({
+      name: selectedFile.name,
+      size: selectedFile.size,
+      pageCount: 0,
+    });
+    try {
+      const { PDFDocument } = await import('pdf-lib');
+      const bytes = await selectedFile.arrayBuffer();
+      const pdf = await PDFDocument.load(bytes, { ignoreEncryption: true });
+      const pageCount = pdf.getPageCount();
       setPdfInfo({
         name: selectedFile.name,
         size: selectedFile.size,
-        pageCount: 0, // Will be updated after processing
+        pageCount,
       });
-      setResult(null);
+      toast.success(`PDF added · ${pageCount} page${pageCount === 1 ? '' : 's'}`);
+    } catch {
       toast.success('PDF file added');
+    }
+  }, []);
+
+  const handleFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = e.target.files?.[0];
+    if (selectedFile && selectedFile.name.toLowerCase().endsWith('.pdf')) {
+      void loadPdfMeta(selectedFile);
     } else if (selectedFile) {
       toast.error('Please select a PDF file');
     }
-  }, []);
+  }, [loadPdfMeta]);
 
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     const droppedFile = e.dataTransfer.files[0];
     if (droppedFile && droppedFile.name.toLowerCase().endsWith('.pdf')) {
-      setFile(droppedFile);
-      setPdfInfo({
-        name: droppedFile.name,
-        size: droppedFile.size,
-        pageCount: 0,
-      });
-      setResult(null);
-      toast.success('PDF file added');
+      void loadPdfMeta(droppedFile);
     } else {
       toast.error('Please drop a PDF file');
     }
-  }, []);
+  }, [loadPdfMeta]);
 
   const handleProcess = useCallback(async () => {
     if (!file) {

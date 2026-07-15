@@ -64,6 +64,24 @@ export function ResizeWorkspace() {
   const [result, setResult] = useState<ResizeResult | null>(null);
 
   const aspectRatio = originalDimensions.width / originalDimensions.height || 1;
+  const isPassport = activeTool?.id === 'passport-photo';
+  const isDpiTool = activeTool?.id === 'dpi-converter';
+
+  // Tool-specific defaults (passport size photo / DPI converter)
+  useEffect(() => {
+    if (isPassport) {
+      setActiveTab('presets');
+      setUnit('cm');
+      setDpi(300);
+      setWidth(3.5);
+      setHeight(4.5);
+      setMaintainRatio(false);
+    } else if (isDpiTool) {
+      setActiveTab('dimensions');
+      setUnit('inch');
+      setDpi(300);
+    }
+  }, [isPassport, isDpiTool]);
 
   useEffect(() => {
     if (!uploadedFile || !uploadedFile.type.startsWith('image/')) {
@@ -214,8 +232,16 @@ export function ResizeWorkspace() {
 
       <div className="grid gap-8 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-2">
-          <FileUpload />
-          <ToolLimitNotice limits={['Image input only', 'Use pixels for digital delivery', 'Use cm or inch with DPI for print sizing']} />
+          <FileUpload accept="image/*" />
+          <ToolLimitNotice
+            limits={
+              isPassport
+                ? ['Passport / ID photo presets at 300 DPI', 'Crop face first if needed', 'Export as JPG for forms']
+                : isDpiTool
+                  ? ['Set print size in cm/inch + DPI', 'Effective pixel size updates live', 'Use 300 DPI for print quality']
+                  : ['Image input only', 'Use pixels for digital delivery', 'Use cm or inch with DPI for print sizing']
+            }
+          />
 
           {originalDimensions.width > 0 ? (
             <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} className="grid gap-4 md:grid-cols-2">

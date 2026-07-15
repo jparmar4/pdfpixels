@@ -9,7 +9,7 @@ import { Slider } from '@/components/ui/slider';
 import { useAppStore } from '@/store/app-store';
 import { FileUpload } from './file-upload';
 import { ToolPageHeader } from './tool-page-header';
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -23,6 +23,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { SpotlightCard } from '@/components/ui/spotlight-card';
 import { InContentAd } from '@/components/ads/ad-banner';
 
+function hexFromRgb(r: number, g: number, b: number) {
+  return `#${[r, g, b].map((value) => value.toString(16).padStart(2, '0')).join('')}`;
+}
+
 export function ToolWorkspace() {
   const { activeTool, uploadedFile, processedImage, isProcessing, reset, setIsProcessing, setProcessedImage, setProgress } = useAppStore();
 
@@ -30,12 +34,16 @@ export function ToolWorkspace() {
   const [rotate, setRotate] = useState(0);
   const [flipH, setFlipH] = useState(false);
   const [flipV, setFlipV] = useState(false);
-  const [outputFormat, setOutputFormat] = useState('jpg');
-  const [quality, setQuality] = useState(90);
+  const [outputFormat, setOutputFormat] = useState('png');
+  const [quality, setQuality] = useState(92);
   const [watermarkText, setWatermarkText] = useState('');
   const [watermarkOpacity, setWatermarkOpacity] = useState(50);
+  const [watermarkStyle, setWatermarkStyle] = useState<'single' | 'diagonal'>('diagonal');
   const [textColor, setTextColor] = useState('#ffffff');
   const [textSize, setTextSize] = useState(48);
+  // Placement as % of image (0-100) for text / watermark / logo center
+  const [placeX, setPlaceX] = useState(50);
+  const [placeY, setPlaceY] = useState(50);
   const [mergeDirection, setMergeDirection] = useState<'vertical' | 'horizontal'>('vertical');
   const [extraFiles, setExtraFiles] = useState<File[]>([]);
   const [splitRows, setSplitRows] = useState(3);
@@ -45,26 +53,45 @@ export function ToolWorkspace() {
   const [originalDimensions, setOriginalDimensions] = useState({ width: 0, height: 0 });
   const [activeTab, setActiveTab] = useState('transform');
   const [logoFile, setLogoFile] = useState<File | null>(null);
-  const [logoPosition, setLogoPosition] = useState<'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'center'>('bottom-right');
   const [logoScale, setLogoScale] = useState(20); // % of base image width
   const [logoOpacity, setLogoOpacity] = useState(100);
-  const [logoPadding, setLogoPadding] = useState(24);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
   const toolId = activeTool?.id.toLowerCase() || '';
   const clientCanvasTools = ['watermark', 'add-text', 'add-logo', 'merge-images', 'split-image', 'color-picker', 'rotate', 'flip'];
   const usesClientCanvas = clientCanvasTools.includes(toolId);
+  const needsPlacement = toolId === 'watermark' || toolId === 'add-text' || toolId === 'add-logo';
+  const isColorPicker = toolId === 'color-picker';
+  const showRotateFlip = toolId === 'rotate' || toolId === 'flip';
 
-  // Get original dimensions when file is uploaded
+  // Get original dimensions + preview when file is uploaded
   useEffect(() => {
     if (uploadedFile && uploadedFile.type.startsWith('image/')) {
+      const url = URL.createObjectURL(uploadedFile);
+      setPreviewUrl(url);
       const img = new Image();
       img.onload = () => {
         setOriginalDimensions({ width: img.width, height: img.height });
+        // Defaults per tool
+        if (toolId === 'add-text') {
+          setPlaceX(50);
+          setPlaceY(88);
+          setTextColor('#ffffff');
+        } else if (toolId === 'watermark') {
+          setPlaceX(50);
+          setPlaceY(50);
+          setTextColor('#808080');
+        } else if (toolId === 'add-logo') {
+          setPlaceX(85);
+          setPlaceY(85);
+        }
       };
-      img.src = URL.createObjectURL(uploadedFile);
-    } else if (uploadedFile) {
-      setOriginalDimensions({ width: 0, height: 0 });
+      img.src = url;
+      return () => URL.revokeObjectURL(url);
     }
-  }, [uploadedFile]);
+    setPreviewUrl(null);
+    setOriginalDimensions({ width: 0, height: 0 });
+  }, [uploadedFile, toolId]);
 
   const loadImageFromFile = useCallback((file: File) => {
     return new Promise<HTMLImageElement>((resolve, reject) => {
@@ -86,9 +113,6 @@ export function ToolWorkspace() {
     const mimeType = outputFormat === 'png' ? 'image/png' : outputFormat === 'webp' ? 'image/webp' : 'image/jpeg';
     return canvas.toDataURL(mimeType, Math.max(0.1, Math.min(1, quality / 100)));
   }, [outputFormat, quality]);
-
-  const hexFromRgb = (r: number, g: number, b: number) =>
-    `#${[r, g, b].map((value) => value.toString(16).padStart(2, '0')).join('')}`;
 
   const handleClientCanvasProcess = useCallback(async () => {
     if (!uploadedFile) {
@@ -178,8 +202,17 @@ export function ToolWorkspace() {
             count += 1;
           }
           const average = hexFromRgb(Math.round(r / count), Math.round(g / count), Math.round(b / count));
+          const cx = Math.floor((placeX / 100) * canvas.width);
+          const cy = Math.floor((placeY / 100) * canvas.height);
+          const picked = ctx.getImageData(
+            Math.min(canvas.width - 1, Math.max(0, cx)),
+            Math.min(canvas.height - 1, Math.max(0, cy)),
+            1,
+            1,
+          ).data;
           const center = ctx.getImageData(Math.floor(canvas.width / 2), Math.floor(canvas.height / 2), 1, 1).data;
           setPickedColors([
+            { label: 'Clicked / marker color', value: hexFromRgb(picked[0], picked[1], picked[2]) },
             { label: 'Average color', value: average },
             { label: 'Center pixel', value: hexFromRgb(center[0], center[1], center[2]) },
           ]);
@@ -220,6 +253,8 @@ export function ToolWorkspace() {
         if (toolId === 'watermark' || toolId === 'add-text') {
           const text = watermarkText.trim() || (toolId === 'watermark' ? 'CONFIDENTIAL' : 'Your text');
           const fontSize = Math.max(12, Math.min(textSize, Math.round(canvas.width * 0.12)));
+          const cx = (placeX / 100) * canvas.width;
+          const cy = (placeY / 100) * canvas.height;
           ctx.save();
           ctx.globalAlpha = toolId === 'watermark' ? watermarkOpacity / 100 : 1;
           ctx.fillStyle = textColor;
@@ -228,14 +263,22 @@ export function ToolWorkspace() {
           ctx.font = `700 ${fontSize}px Arial, sans-serif`;
           ctx.textAlign = 'center';
           ctx.textBaseline = 'middle';
-          if (toolId === 'watermark') {
+
+          if (toolId === 'watermark' && watermarkStyle === 'diagonal') {
+            // Tiled diagonal watermark across image
             ctx.translate(canvas.width / 2, canvas.height / 2);
             ctx.rotate(-Math.PI / 5);
-            ctx.strokeText(text, 0, 0);
-            ctx.fillText(text, 0, 0);
+            const stepX = Math.max(fontSize * 6, canvas.width / 3);
+            const stepY = Math.max(fontSize * 3, canvas.height / 4);
+            for (let y = -canvas.height; y < canvas.height; y += stepY) {
+              for (let x = -canvas.width; x < canvas.width; x += stepX) {
+                ctx.strokeText(text, x, y);
+                ctx.fillText(text, x, y);
+              }
+            }
           } else {
-            ctx.strokeText(text, canvas.width / 2, canvas.height - fontSize * 1.4);
-            ctx.fillText(text, canvas.width / 2, canvas.height - fontSize * 1.4);
+            ctx.strokeText(text, cx, cy);
+            ctx.fillText(text, cx, cy);
           }
           ctx.restore();
         }
@@ -248,23 +291,8 @@ export function ToolWorkspace() {
           const targetWidth = Math.max(16, Math.round((canvas.width * logoScale) / 100));
           const aspect = logoImage.height / Math.max(1, logoImage.width);
           const targetHeight = Math.max(16, Math.round(targetWidth * aspect));
-          const pad = Math.max(0, logoPadding);
-
-          let x = pad;
-          let y = pad;
-          if (logoPosition === 'top-right') {
-            x = canvas.width - targetWidth - pad;
-            y = pad;
-          } else if (logoPosition === 'bottom-left') {
-            x = pad;
-            y = canvas.height - targetHeight - pad;
-          } else if (logoPosition === 'bottom-right') {
-            x = canvas.width - targetWidth - pad;
-            y = canvas.height - targetHeight - pad;
-          } else if (logoPosition === 'center') {
-            x = Math.round((canvas.width - targetWidth) / 2);
-            y = Math.round((canvas.height - targetHeight) / 2);
-          }
+          const x = Math.round((placeX / 100) * canvas.width - targetWidth / 2);
+          const y = Math.round((placeY / 100) * canvas.height - targetHeight / 2);
 
           ctx.save();
           ctx.globalAlpha = Math.max(0.05, Math.min(1, logoOpacity / 100));
@@ -281,7 +309,7 @@ export function ToolWorkspace() {
     } finally {
       setIsProcessing(false);
     }
-  }, [canvasToDataUrl, extraFiles, flipH, flipV, loadImageFromFile, logoFile, logoOpacity, logoPadding, logoPosition, logoScale, mergeDirection, rotate, setIsProcessing, setProcessedImage, setProgress, splitColumns, splitRows, textColor, textSize, toolId, uploadedFile, watermarkOpacity, watermarkText]);
+  }, [canvasToDataUrl, extraFiles, flipH, flipV, loadImageFromFile, logoFile, logoOpacity, logoScale, mergeDirection, placeX, placeY, rotate, setIsProcessing, setProcessedImage, setProgress, splitColumns, splitRows, textColor, textSize, toolId, uploadedFile, watermarkOpacity, watermarkStyle, watermarkText]);
 
   const handleProcess = useCallback(async () => {
     if (!uploadedFile) {
@@ -359,11 +387,48 @@ export function ToolWorkspace() {
     setPickedColors([]);
     setExtraFiles([]);
     setLogoFile(null);
-    setLogoPosition('bottom-right');
     setLogoScale(20);
     setLogoOpacity(100);
-    setLogoPadding(24);
+    setPlaceX(50);
+    setPlaceY(50);
+    setPreviewUrl(null);
+    setWatermarkStyle('diagonal');
   }, [reset]);
+
+  const handleStagePointer = useCallback((e: React.PointerEvent) => {
+    if (!stageRef.current || (!needsPlacement && !isColorPicker)) return;
+    const rect = stageRef.current.getBoundingClientRect();
+    const x = Math.max(0, Math.min(100, ((e.clientX - rect.left) / rect.width) * 100));
+    const y = Math.max(0, Math.min(100, ((e.clientY - rect.top) / rect.height) * 100));
+    setPlaceX(Math.round(x));
+    setPlaceY(Math.round(y));
+    if (isColorPicker && uploadedFile) {
+      // Sample immediately for better UX
+      void (async () => {
+        try {
+          const img = await loadImageFromFile(uploadedFile);
+          const c = document.createElement('canvas');
+          c.width = img.width;
+          c.height = img.height;
+          const ctx = c.getContext('2d');
+          if (!ctx) return;
+          ctx.drawImage(img, 0, 0);
+          const px = Math.min(img.width - 1, Math.max(0, Math.floor((x / 100) * img.width)));
+          const py = Math.min(img.height - 1, Math.max(0, Math.floor((y / 100) * img.height)));
+          const d = ctx.getImageData(px, py, 1, 1).data;
+          const hex = hexFromRgb(d[0], d[1], d[2]);
+          setPickedColors((prev) => {
+            const next = [{ label: `Picked (${px},${py})`, value: hex }, ...prev.filter((p) => !p.label.startsWith('Picked'))];
+            return next.slice(0, 6);
+          });
+          await navigator.clipboard?.writeText(hex);
+          toast.success(`Picked ${hex.toUpperCase()} (copied)`);
+        } catch {
+          // ignore
+        }
+      })();
+    }
+  }, [isColorPicker, loadImageFromFile, needsPlacement, uploadedFile]);
 
   const getToolIcon = () => {
     if (toolId.includes('rotate')) return RotateCw;
@@ -404,6 +469,40 @@ export function ToolWorkspace() {
         {/* Left Panel - Upload & Preview */}
         <div className="lg:col-span-2 space-y-6">
           <FileUpload accept={activeTool?.id.includes('pdf-') ? '.pdf' : 'image/*'} />
+
+          {/* Interactive stage: click/drag to place text, logo, watermark, or pick color */}
+          {previewUrl && (needsPlacement || isColorPicker) ? (
+            <div className="overflow-hidden rounded-2xl border border-border/50 bg-card shadow-lg">
+              <div className="border-b border-border/40 bg-gradient-to-r from-primary/5 to-transparent px-4 py-3">
+                <h3 className="text-sm font-semibold">
+                  {isColorPicker ? 'Click the image to pick a color' : 'Click the image to set position'}
+                </h3>
+                <p className="text-xs text-muted-foreground">
+                  {isColorPicker
+                    ? 'HEX is copied automatically. Then click Apply for a color board export.'
+                    : `Marker at ${placeX}% × ${placeY}% — then click Apply Changes.`}
+                </p>
+              </div>
+              <div className="flex justify-center bg-muted/30 p-3">
+                <div
+                  ref={stageRef}
+                  className="relative inline-block max-w-full cursor-crosshair touch-none"
+                  onPointerDown={handleStagePointer}
+                >
+                  <img
+                    src={previewUrl}
+                    alt="Interactive stage"
+                    className="max-h-[480px] max-w-full select-none rounded-lg"
+                    draggable={false}
+                  />
+                  <span
+                    className="pointer-events-none absolute h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white bg-primary shadow-lg ring-2 ring-primary/40"
+                    style={{ left: `${placeX}%`, top: `${placeY}%` }}
+                  />
+                </div>
+              </div>
+            </div>
+          ) : null}
 
           {/* Image Info */}
           {originalDimensions.width > 0 && (
@@ -558,14 +657,26 @@ export function ToolWorkspace() {
                         </div>
                       </div>
                       {toolId === 'watermark' && (
-                        <div className="space-y-3">
-                          <div className="flex items-center justify-between">
-                            <Label>Opacity</Label>
-                            <span className="text-sm font-mono text-primary">{watermarkOpacity}%</span>
+                        <>
+                          <div className="space-y-2">
+                            <Label>Style</Label>
+                            <div className="grid grid-cols-2 gap-2">
+                              <Button type="button" size="sm" variant={watermarkStyle === 'single' ? 'default' : 'outline'} onClick={() => setWatermarkStyle('single')}>Single</Button>
+                              <Button type="button" size="sm" variant={watermarkStyle === 'diagonal' ? 'default' : 'outline'} onClick={() => setWatermarkStyle('diagonal')}>Diagonal tile</Button>
+                            </div>
                           </div>
-                          <Slider value={[watermarkOpacity]} onValueChange={([value]) => setWatermarkOpacity(value)} min={10} max={100} step={5} />
-                        </div>
+                          <div className="space-y-3">
+                            <div className="flex items-center justify-between">
+                              <Label>Opacity</Label>
+                              <span className="text-sm font-mono text-primary">{watermarkOpacity}%</span>
+                            </div>
+                            <Slider value={[watermarkOpacity]} onValueChange={([value]) => setWatermarkOpacity(value)} min={10} max={100} step={5} />
+                          </div>
+                        </>
                       )}
+                      {watermarkStyle === 'single' || toolId === 'add-text' ? (
+                        <p className="text-xs text-muted-foreground">Click the preview image to place text (X {placeX}% · Y {placeY}%).</p>
+                      ) : null}
                     </div>
                   )}
 
@@ -579,23 +690,8 @@ export function ToolWorkspace() {
                           onChange={(event) => setLogoFile(event.target.files?.[0] ?? null)}
                         />
                         <p className="text-xs text-muted-foreground">
-                          {logoFile ? `Selected: ${logoFile.name}` : 'PNG logos with transparency work best.'}
+                          {logoFile ? `Selected: ${logoFile.name}` : 'PNG logos with transparency work best. Click preview to place.'}
                         </p>
-                      </div>
-                      <div className="space-y-2">
-                        <Label>Position</Label>
-                        <Select value={logoPosition} onValueChange={(value) => setLogoPosition(value as typeof logoPosition)}>
-                          <SelectTrigger>
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="top-left">Top left</SelectItem>
-                            <SelectItem value="top-right">Top right</SelectItem>
-                            <SelectItem value="center">Center</SelectItem>
-                            <SelectItem value="bottom-left">Bottom left</SelectItem>
-                            <SelectItem value="bottom-right">Bottom right</SelectItem>
-                          </SelectContent>
-                        </Select>
                       </div>
                       <div className="space-y-3">
                         <div className="flex items-center justify-between">
@@ -611,14 +707,26 @@ export function ToolWorkspace() {
                         </div>
                         <Slider value={[logoOpacity]} onValueChange={([value]) => setLogoOpacity(value)} min={10} max={100} step={5} />
                       </div>
-                      <div className="space-y-3">
-                        <div className="flex items-center justify-between">
-                          <Label>Padding</Label>
-                          <span className="text-sm font-mono text-primary">{logoPadding}px</span>
-                        </div>
-                        <Slider value={[logoPadding]} onValueChange={([value]) => setLogoPadding(value)} min={0} max={120} step={4} />
+                      <div className="grid grid-cols-2 gap-2">
+                        {[
+                          { label: 'TL', x: 15, y: 15 },
+                          { label: 'TR', x: 85, y: 15 },
+                          { label: 'BL', x: 15, y: 85 },
+                          { label: 'BR', x: 85, y: 85 },
+                          { label: 'Center', x: 50, y: 50 },
+                        ].map((p) => (
+                          <Button key={p.label} type="button" size="sm" variant="outline" onClick={() => { setPlaceX(p.x); setPlaceY(p.y); }}>
+                            {p.label}
+                          </Button>
+                        ))}
                       </div>
                     </div>
+                  )}
+
+                  {toolId === 'color-picker' && (
+                    <p className="rounded-xl border border-border/60 bg-background/75 p-3 text-sm text-muted-foreground">
+                      Click anywhere on the image to sample a color (copied to clipboard). Apply Changes also exports average + center colors.
+                    </p>
                   )}
 
                   {toolId === 'merge-images' && (
@@ -648,101 +756,62 @@ export function ToolWorkspace() {
                     </div>
                   )}
 
-                  {toolId === 'color-picker' && (
-                    <p className="rounded-xl border border-border/60 bg-background/75 p-3 text-sm text-muted-foreground">
-                      Upload an image and process it to extract quick average and center-point colors. Click a swatch to copy its HEX value.
-                    </p>
-                  )}
-
-                  {/* Rotation */}
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <Label className="flex items-center gap-2">
-                        <RotateCw className="w-4 h-4" />
-                        Rotation
-                      </Label>
-                      <span className="text-sm font-mono text-primary">{rotate}°</span>
-                    </div>
-                    {(toolId === 'rotate' || !usesClientCanvas || toolId === 'flip') && (
-                      <div className="grid grid-cols-4 gap-2">
-                        {[0, 90, 180, 270].map((deg) => (
-                          <Button
-                            key={deg}
-                            type="button"
-                            size="sm"
-                            variant={rotate === deg || rotate === deg - 360 ? 'default' : 'outline'}
-                            onClick={() => setRotate(deg > 180 ? deg - 360 : deg)}
-                          >
-                            {deg}°
-                          </Button>
-                        ))}
+                  {/* Rotation / Flip — only for those tools (keeps other tools focused) */}
+                  {showRotateFlip ? (
+                    <>
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between">
+                          <Label className="flex items-center gap-2">
+                            <RotateCw className="w-4 h-4" />
+                            Rotation
+                          </Label>
+                          <span className="text-sm font-mono text-primary">{rotate}°</span>
+                        </div>
+                        <div className="grid grid-cols-4 gap-2">
+                          {[0, 90, 180, -90].map((deg) => (
+                            <Button
+                              key={deg}
+                              type="button"
+                              size="sm"
+                              variant={rotate === deg ? 'default' : 'outline'}
+                              onClick={() => setRotate(deg)}
+                            >
+                              {deg === -90 ? '-90°' : `${deg}°`}
+                            </Button>
+                          ))}
+                        </div>
+                        <Slider
+                          value={[rotate]}
+                          onValueChange={([v]) => setRotate(v)}
+                          min={-180}
+                          max={180}
+                          step={1}
+                        />
                       </div>
-                    )}
-                    <Slider
-                      value={[rotate]}
-                      onValueChange={([v]) => setRotate(v)}
-                      min={-180}
-                      max={180}
-                      step={1}
-                    />
-                    <div className="grid grid-cols-4 gap-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setRotate(0)}
-                        className={rotate === 0 ? 'border-primary' : ''}
-                      >
-                        0°
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setRotate(90)}
-                        className={rotate === 90 ? 'border-primary' : ''}
-                      >
-                        90°
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setRotate(180)}
-                        className={rotate === 180 ? 'border-primary' : ''}
-                      >
-                        180°
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setRotate(-90)}
-                        className={rotate === -90 ? 'border-primary' : ''}
-                      >
-                        -90°
-                      </Button>
-                    </div>
-                  </div>
 
-                  {/* Flip */}
-                  <div className="space-y-2">
-                    <Label>Flip Image</Label>
-                    <div className="grid grid-cols-2 gap-2">
-                      <Button
-                        variant={flipH ? "default" : "outline"}
-                        onClick={() => setFlipH(!flipH)}
-                        className="gap-2"
-                      >
-                        <FlipHorizontal className="w-4 h-4" />
-                        Horizontal
-                      </Button>
-                      <Button
-                        variant={flipV ? "default" : "outline"}
-                        onClick={() => setFlipV(!flipV)}
-                        className="gap-2"
-                      >
-                        <FlipVertical className="w-4 h-4" />
-                        Vertical
-                      </Button>
-                    </div>
-                  </div>
+                      <div className="space-y-2">
+                        <Label>Flip image</Label>
+                        <div className="grid grid-cols-2 gap-2">
+                          <Button
+                            variant={flipH ? 'default' : 'outline'}
+                            onClick={() => setFlipH(!flipH)}
+                            className="gap-2"
+                          >
+                            <FlipHorizontal className="w-4 h-4" />
+                            Horizontal
+                          </Button>
+                          <Button
+                            variant={flipV ? 'default' : 'outline'}
+                            onClick={() => setFlipV(!flipV)}
+                            className="gap-2"
+                          >
+                            <FlipVertical className="w-4 h-4" />
+                            Vertical
+                          </Button>
+                        </div>
+                      </div>
+                    </>
+                  ) : null}
                 </TabsContent>
 
                 <TabsContent value="output" className="space-y-4 mt-4">

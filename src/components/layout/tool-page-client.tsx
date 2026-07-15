@@ -164,7 +164,8 @@ function getWorkspaceComponent(toolId: string) {
   const editTools = ['rotate', 'flip', 'watermark', 'add-text', 'add-logo', 'merge-images', 'split-image', 'color-picker'];
   if (editTools.includes(toolId)) return <ToolWorkspace />;
 
-  // Fallback
+  // Fallback — still use ToolWorkspace so unknown tools never blank the page
+  console.warn(`[PdfPixels] No dedicated workspace for tool "${toolId}", using ToolWorkspace fallback.`);
   return <ToolWorkspace />;
 }
 
