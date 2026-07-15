@@ -4,5 +4,9 @@ builder = "NIXPACKS"
 [phases.setup]
 aptPkgs = ["ghostscript", "qpdf"]
 
+# Ensure Prisma client exists before Next collects API route data
+[phases.install]
+cmds = ["npm ci", "npx prisma generate"]
+
 [start]
 cmd = "npm start"
