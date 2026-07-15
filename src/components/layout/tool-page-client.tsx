@@ -152,7 +152,9 @@ function getWorkspaceComponent(toolId: string) {
   if (toolId === 'resize' || toolId === 'passport-photo' || toolId === 'dpi-converter') return <ResizeWorkspace />;
 
   // ── Format conversion ──
-  if (['png-to-jpg', 'jpg-to-png', 'webp-to-jpg', 'heic-to-jpg'].includes(toolId)) return <ConvertWorkspace />;
+  if (['png-to-jpg', 'jpg-to-png', 'webp-to-jpg', 'heic-to-jpg', 'svg-to-png', 'svg-to-jpg', 'webp-to-png'].includes(toolId)) {
+    return <ConvertWorkspace />;
+  }
 
   // ── Effects & Filters (client-side Canvas) ──
   const effectTools = ['blur-image', 'pixelate', 'grayscale', 'black-white', 'sepia', 'invert', 'motion-blur', 'censor-photo', 'pixel-art'];

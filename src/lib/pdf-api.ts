@@ -7,7 +7,45 @@ export const PDF_CACHE_HEADERS = {
 
 export function isPdfFile(file: File): boolean {
   const name = file.name?.toLowerCase() || '';
-  return file.type === 'application/pdf' || name.endsWith('.pdf') || !file.type;
+  return file.type === 'application/pdf' || name.endsWith('.pdf');
+}
+
+/**
+ * Parse a human page selection like "1,3,5-7" into 0-based indices.
+ * Invalid tokens are skipped. Out-of-range indices are filtered.
+ */
+export function parsePageSelection(
+  input: string,
+  totalPages: number,
+): number[] {
+  if (!input || !input.trim() || input.trim().toLowerCase() === 'all') {
+    return Array.from({ length: totalPages }, (_, i) => i);
+  }
+
+  const indices = new Set<number>();
+  const tokens = input.split(',').map((t) => t.trim()).filter(Boolean);
+
+  for (const token of tokens) {
+    const rangeMatch = token.match(/^(\d+)\s*-\s*(\d+)$/);
+    if (rangeMatch) {
+      let start = parseInt(rangeMatch[1], 10);
+      let end = parseInt(rangeMatch[2], 10);
+      if (!Number.isFinite(start) || !Number.isFinite(end)) continue;
+      if (start > end) [start, end] = [end, start];
+      for (let page = start; page <= end; page += 1) {
+        const idx = page - 1;
+        if (idx >= 0 && idx < totalPages) indices.add(idx);
+      }
+      continue;
+    }
+
+    const page = parseInt(token, 10);
+    if (!Number.isFinite(page)) continue;
+    const idx = page - 1;
+    if (idx >= 0 && idx < totalPages) indices.add(idx);
+  }
+
+  return Array.from(indices).sort((a, b) => a - b);
 }
 
 export function validatePdfBuffer(buffer: Buffer | Uint8Array): { ok: true } | { ok: false; error: string } {

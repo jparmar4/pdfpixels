@@ -9,7 +9,7 @@ const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 export async function POST(request: NextRequest) {
   try {
     const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
-    const { allowed, remaining, resetIn } = rateLimit(`newsletter:${ip}`, 5, 60_000);
+    const { allowed } = rateLimit(`newsletter:${ip}`, 5, 60_000);
 
     if (!allowed) {
       return apiError('Too many requests. Please try again later.', 429, 'RATE_LIMIT_EXCEEDED');

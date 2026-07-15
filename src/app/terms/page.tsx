@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import { LegalMetaRow, LegalPageLayout } from '@/components/layout/legal-page-layout';
 
 export const metadata: Metadata = {
@@ -111,7 +112,7 @@ export default function TermsOfService() {
       <section>
         <h2>8. Privacy</h2>
         <p>
-          Use of the Service is also governed by the <a href="/privacy">Privacy Policy</a>.
+          Use of the Service is also governed by the <Link href="/privacy">Privacy Policy</Link>.
         </p>
       </section>
 

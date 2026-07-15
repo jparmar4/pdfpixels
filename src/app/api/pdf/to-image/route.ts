@@ -3,7 +3,6 @@ import { loadPdfWithTimeout } from '@/lib/pdf-api';
 
 export const maxDuration = 60;
 import { NextRequest, NextResponse } from 'next/server';
-import { PDFDocument } from 'pdf-lib';
 import sharp from 'sharp';
 import { spawn } from 'child_process';
 import fs from 'fs';
@@ -223,6 +222,13 @@ export async function POST(request: NextRequest) {
       }
     } finally {
       if (fs.existsSync(inputPath)) fs.unlinkSync(inputPath);
+    }
+
+    if (convertedPages === 0) {
+      return apiError(
+        'Could not convert any pages. The PDF may be too large, unsupported, or Ghostscript is unavailable.',
+        422,
+      );
     }
 
     const zipBuffer = zip.toBuffer();

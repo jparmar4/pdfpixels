@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
 
     for (const file of files) {
       if (file.size > MAX_FILE_SIZE) {
-        return apiError(`File \"${file.name}\" is too large (25MB max per file).`, 400);
+        return apiError(`File "${file.name}" is too large (25MB max per file).`, 400);
       }
 
       const looksLikePdf = file.name.toLowerCase().endsWith('.pdf') || file.type === 'application/pdf';

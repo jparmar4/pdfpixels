@@ -60,7 +60,18 @@ export function AIWorkspace() {
 
   const toolConfig = AI_TOOLS[activeTool?.id || ''] || AI_TOOLS['enhance-image'];
   const isFaceBlur = activeTool?.id === 'blur-face';
-  const supportsModeSelector = ['remove-background', 'blur-background', 'blur-face'].includes(activeTool?.id || '');
+  // All AI tools accept a quality mode (enhance/beautify/retouch/upscale use balanced/high)
+  const supportsModeSelector = true;
+  const modeLabels = isFaceBlur || activeTool?.id === 'remove-background' || activeTool?.id === 'blur-background'
+    ? ([
+        { id: 'balanced' as const, label: 'Balanced' },
+        { id: 'high' as const, label: 'High' },
+        { id: 'privacy-max' as const, label: 'Privacy Max' },
+      ])
+    : ([
+        { id: 'balanced' as const, label: 'Natural' },
+        { id: 'high' as const, label: 'Vivid' },
+      ]);
 
   const handleProcess = useCallback(async () => {
     if (!uploadedFile) {
@@ -172,7 +183,13 @@ export function AIWorkspace() {
                   </div>
                   <Badge className="bg-emerald-500/10 text-emerald-700 hover:bg-emerald-500/15 dark:text-emerald-300">PNG ready</Badge>
                 </div>
-                <div className="flex min-h-[320px] items-center justify-center bg-muted/30 p-4">
+                <div
+                  className={`flex min-h-[320px] items-center justify-center p-4 ${
+                    activeTool.id === 'remove-background'
+                      ? 'bg-[linear-gradient(45deg,#e5e7eb_25%,transparent_25%),linear-gradient(-45deg,#e5e7eb_25%,transparent_25%),linear-gradient(45deg,transparent_75%,#e5e7eb_75%),linear-gradient(-45deg,transparent_75%,#e5e7eb_75%)] bg-[length:20px_20px] bg-[position:0_0,0_10px,10px_-10px,-10px_0] dark:bg-[linear-gradient(45deg,#1f2937_25%,transparent_25%),linear-gradient(-45deg,#1f2937_25%,transparent_25%),linear-gradient(45deg,transparent_75%,#1f2937_75%),linear-gradient(-45deg,transparent_75%,#1f2937_75%)]'
+                      : 'bg-muted/30'
+                  }`}
+                >
                   <img src={processedImage} alt={`${toolConfig.label} result`} className="max-h-[520px] max-w-full rounded-2xl object-contain" />
                 </div>
               </div>
@@ -214,10 +231,18 @@ export function AIWorkspace() {
               {supportsModeSelector ? (
                 <div className="space-y-2">
                   <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Quality mode</p>
-                  <div className="grid grid-cols-3 gap-2">
-                    <Button type="button" variant={mode === 'balanced' ? 'default' : 'outline'} className="h-9 text-xs" onClick={() => setMode('balanced')}>Balanced</Button>
-                    <Button type="button" variant={mode === 'high' ? 'default' : 'outline'} className="h-9 text-xs" onClick={() => setMode('high')}>High</Button>
-                    <Button type="button" variant={mode === 'privacy-max' ? 'default' : 'outline'} className="h-9 text-xs" onClick={() => setMode('privacy-max')}>Privacy Max</Button>
+                  <div className={`grid gap-2 ${modeLabels.length === 3 ? 'grid-cols-3' : 'grid-cols-2'}`}>
+                    {modeLabels.map((item) => (
+                      <Button
+                        key={item.id}
+                        type="button"
+                        variant={mode === item.id ? 'default' : 'outline'}
+                        className="h-9 text-xs"
+                        onClick={() => setMode(item.id)}
+                      >
+                        {item.label}
+                      </Button>
+                    ))}
                   </div>
                 </div>
               ) : null}

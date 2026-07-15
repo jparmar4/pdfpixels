@@ -6,8 +6,6 @@ import Script from "next/script";
 import { getBlogPostBySlug, getRelatedPosts, getAllBlogPosts, getAdjacentPosts } from "@/config/blog";
 import { siteConfig } from "@/lib/seo-config";
 import { processContent } from "@/lib/content-processor";
-import { Navigation } from "@/components/layout/navigation";
-import { Footer } from "@/components/layout/footer";
 import { ReadingProgressBar } from "@/components/blog/ReadingProgressBar";
 import { ProcessContentWithToc } from "@/components/blog/ProcessContentWithToc";
 import { ShareButtons } from "@/components/blog/ShareButtons";

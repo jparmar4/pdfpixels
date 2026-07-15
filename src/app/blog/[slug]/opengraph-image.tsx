@@ -88,7 +88,7 @@ export default async function Image({ params }: { params: { slug: string } }) {
               {post.author}
             </div>
             <div style={{ color: '#64748b', fontSize: '22px' }}>
-              {date} · {post.readingTime}
+              {date} · {post.readTime}
             </div>
           </div>
           <div style={{ display: 'flex', color: '#64748b', fontSize: '24px', fontWeight: '500' }}>

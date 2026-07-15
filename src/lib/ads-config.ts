@@ -1,22 +1,28 @@
 // Google AdSense Configuration
 // Update these values with your actual AdSense credentials after approval
 
+// Keep in sync with public/ads.txt (pub-XXXXXXXX)
+const DEFAULT_PUBLISHER_ID = 'ca-pub-3541576002060495';
+
 export const adsConfig = {
   // Your AdSense Publisher ID (starts with ca-pub-)
   // Find it in your AdSense dashboard: Account > Account information
-  publisherId: process.env.NEXT_PUBLIC_ADSENSE_PUBLISHER_ID || '',
+  publisherId: process.env.NEXT_PUBLIC_ADSENSE_PUBLISHER_ID || DEFAULT_PUBLISHER_ID,
 
   // Enable/disable ads globally (set to false during development)
-  enabled: process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_ADSENSE_ENABLED !== 'false',
+  enabled:
+    process.env.NODE_ENV === 'production' &&
+    process.env.NEXT_PUBLIC_ADSENSE_ENABLED !== 'false' &&
+    Boolean(process.env.NEXT_PUBLIC_ADSENSE_PUBLISHER_ID || DEFAULT_PUBLISHER_ID),
 
   // Ad slot IDs for different placements
   // Get these from your AdSense dashboard when you create ad units
   slots: {
-    header: process.env.NEXT_PUBLIC_ADSENSE_SLOT_HEADER || 'header-ad-slot',
-    sidebar: process.env.NEXT_PUBLIC_ADSENSE_SLOT_SIDEBAR || 'sidebar-ad-slot',
-    inContent: process.env.NEXT_PUBLIC_ADSENSE_SLOT_IN_CONTENT || 'in-content-ad-slot',
-    footer: process.env.NEXT_PUBLIC_ADSENSE_SLOT_FOOTER || 'footer-ad-slot',
-    native: process.env.NEXT_PUBLIC_ADSENSE_SLOT_NATIVE || 'native-ad-slot',
+    header: process.env.NEXT_PUBLIC_ADSENSE_SLOT_HEADER || '',
+    sidebar: process.env.NEXT_PUBLIC_ADSENSE_SLOT_SIDEBAR || '',
+    inContent: process.env.NEXT_PUBLIC_ADSENSE_SLOT_IN_CONTENT || '',
+    footer: process.env.NEXT_PUBLIC_ADSENSE_SLOT_FOOTER || '',
+    native: process.env.NEXT_PUBLIC_ADSENSE_SLOT_NATIVE || '',
   },
 
   // AdSense script URL
@@ -88,6 +94,14 @@ export function saveConsent(consent: Omit<CookieConsent, 'timestamp'>): void {
   };
 
   localStorage.setItem(cookieConfig.cookieName, JSON.stringify(fullConsent));
+
+  // Also set a lightweight cookie so server components can optionally read preference later
+  try {
+    const maxAge = cookieConfig.cookieExpiration * 24 * 60 * 60;
+    document.cookie = `${cookieConfig.cookieName}=1; path=/; max-age=${maxAge}; SameSite=Lax`;
+  } catch {
+    // ignore cookie write failures
+  }
 
   // Dispatch event for other components to react
   window.dispatchEvent(new CustomEvent('cookie-consent-updated', { detail: fullConsent }));

@@ -10,6 +10,10 @@ interface AdBannerProps {
   responsive?: boolean;
   className?: string;
   style?: React.CSSProperties;
+  /** Fixed min height to protect CLS (AdSense requires reserved space) */
+  minHeight?: number;
+  /** Show "Advertisement" label (recommended for policy + UX) */
+  labeled?: boolean;
 }
 
 declare global {
@@ -18,22 +22,55 @@ declare global {
   }
 }
 
-export function AdBanner({ 
-  slot, 
-  format = 'auto', 
+function AdLabel() {
+  return (
+    <p className="mb-1.5 text-center text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground/80">
+      Advertisement
+    </p>
+  );
+}
+
+function ReservedSpace({
+  className,
+  style,
+  minHeight = 90,
+}: {
+  className?: string;
+  style?: React.CSSProperties;
+  minHeight?: number;
+}) {
+  return (
+    <div
+      className={cn('overflow-hidden rounded-xl bg-muted/15', className)}
+      style={{ minHeight, ...style }}
+      aria-hidden="true"
+      data-ad-placeholder="reserved"
+    />
+  );
+}
+
+export function AdBanner({
+  slot,
+  format = 'auto',
   responsive = true,
   className,
-  style 
+  style,
+  minHeight = 90,
+  labeled = false,
 }: AdBannerProps) {
   const adRef = useRef<HTMLModElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const isLoaded = useRef(false);
   const [hasConsent, setHasConsent] = useState(() => {
     if (typeof window === 'undefined') return false;
     return hasAdvertisingConsent();
   });
+  // Default true when IO missing; observer flips true when near viewport
+  const [inView, setInView] = useState(
+    () => typeof window === 'undefined' || typeof IntersectionObserver === 'undefined',
+  );
 
   useEffect(() => {
-    // Listen for consent updates
     const handleConsentUpdate = () => {
       setHasConsent(hasAdvertisingConsent());
     };
@@ -44,138 +81,192 @@ export function AdBanner({
     };
   }, []);
 
+  // Lazy-init: only push ads when near viewport (better CWV + fill rate)
   useEffect(() => {
-    // Only load ads if enabled, has consent, and not already loaded
-    if (!adsConfig.enabled || !hasConsent || isLoaded.current) return;
-    
-    try {
-      if (typeof window !== 'undefined' && window.adsbygoogle) {
-        (window.adsbygoogle as unknown[]).push({});
-        isLoaded.current = true;
-      }
-    } catch {
-      // Silently handle ad errors
+    const el = containerRef.current;
+    if (!el || typeof IntersectionObserver === 'undefined') {
+      return;
     }
-  }, [hasConsent]);
 
-  // Development placeholder or disabled
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          setInView(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: '200px 0px', threshold: 0.01 },
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!adsConfig.enabled || !hasConsent || !slot || !inView || isLoaded.current) return;
+
+    // Defer push to next frame so layout is stable
+    const id = requestAnimationFrame(() => {
+      try {
+        if (typeof window !== 'undefined') {
+          window.adsbygoogle = window.adsbygoogle || [];
+          window.adsbygoogle.push({});
+          isLoaded.current = true;
+        }
+      } catch {
+        // Silently handle ad errors
+      }
+    });
+    return () => cancelAnimationFrame(id);
+  }, [hasConsent, slot, inView]);
+
+  // Development placeholder — fixed height avoids CLS
   if (adsConfig.testMode || !adsConfig.enabled) {
     return (
-      <div 
-        className={cn(
-          "bg-muted/50 border border-dashed border-muted-foreground/30 rounded-lg flex items-center justify-center text-muted-foreground text-sm",
-          className
-        )}
-        style={{ minHeight: '90px', ...style }}
-      >
-        <span className="opacity-50">Ad Space ({format})</span>
+      <div ref={containerRef} className={cn('w-full', className)}>
+        {labeled ? <AdLabel /> : null}
+        <ReservedSpace
+          className="flex items-center justify-center border border-dashed border-border/40 text-[10px] text-muted-foreground/50"
+          style={style}
+          minHeight={minHeight}
+        />
       </div>
     );
   }
 
-  // No consent placeholder
-  if (!hasConsent) {
-    return (
-      <div 
-        className={cn(
-          "bg-muted/30 border border-border/50 rounded-lg flex items-center justify-center text-muted-foreground text-xs",
-          className
-        )}
-        style={{ minHeight: '90px', ...style }}
-      >
-        <span className="opacity-50">Ads disabled (no consent)</span>
-      </div>
-    );
+  // No consent / missing slot: no empty chrome in production
+  if (!hasConsent || !slot) {
+    return null;
   }
 
   return (
-    <div className={cn("ad-container overflow-hidden", className)}>
-      <ins
-        ref={adRef}
-        className="adsbygoogle"
-        style={{
-          display: 'block',
-          ...style
-        }}
-        data-ad-client={adsConfig.publisherId}
-        data-ad-slot={slot}
-        data-ad-format={format}
-        data-full-width-responsive={responsive ? 'true' : 'false'}
-      />
+    <div ref={containerRef} className={cn('w-full', className)} style={{ minHeight }}>
+      {labeled ? <AdLabel /> : null}
+      <div className="ad-container overflow-hidden" style={{ minHeight }}>
+        {inView ? (
+          <ins
+            ref={adRef}
+            className="adsbygoogle"
+            style={{
+              display: 'block',
+              minHeight,
+              ...style,
+            }}
+            data-ad-client={adsConfig.publisherId}
+            data-ad-slot={slot}
+            data-ad-format={format}
+            data-full-width-responsive={responsive ? 'true' : 'false'}
+          />
+        ) : (
+          <ReservedSpace minHeight={minHeight} style={style} />
+        )}
+      </div>
     </div>
   );
 }
 
 // Pre-configured ad components for common placements
 
-export function HeaderAd() {
+export function HeaderAd({ className }: { className?: string } = {}) {
+  if (!adsConfig.slots.header && !adsConfig.testMode) return null;
   return (
-    <div className="w-full flex justify-center py-2">
-      <AdBanner 
-        slot={adsConfig.slots.header} 
+    <div
+      className={cn('mx-auto w-full max-w-5xl px-4 py-3 lg:px-8', className)}
+      aria-label="Advertisement"
+      role="complementary"
+    >
+      <AdBanner
+        slot={adsConfig.slots.header}
         format="horizontal"
-        className="w-full max-w-[728px] min-h-[90px]"
+        minHeight={90}
+        labeled
+        className="w-full max-w-[728px] mx-auto"
       />
     </div>
   );
 }
 
-export function SidebarAd() {
+export function SidebarAd({ className }: { className?: string } = {}) {
+  if (!adsConfig.slots.sidebar && !adsConfig.testMode) return null;
   return (
-    <div className="w-full">
-      <AdBanner 
-        slot={adsConfig.slots.sidebar} 
+    <div className={cn('w-full', className)} aria-label="Advertisement" role="complementary">
+      <AdBanner
+        slot={adsConfig.slots.sidebar}
         format="vertical"
-        className="w-[300px] min-h-[250px]"
+        minHeight={250}
+        labeled
+        className="w-[300px] max-w-full"
       />
     </div>
   );
 }
 
-export function InContentAd() {
+export function InContentAd({ className }: { className?: string } = {}) {
+  if (!adsConfig.slots.inContent && !adsConfig.testMode) return null;
   return (
-    <div className="w-full flex justify-center py-4">
-      <AdBanner 
-        slot={adsConfig.slots.inContent} 
+    <div
+      className={cn('my-8 w-full flex justify-center', className)}
+      aria-label="Advertisement"
+      role="complementary"
+    >
+      <AdBanner
+        slot={adsConfig.slots.inContent}
         format="rectangle"
-        className="w-[336px] min-h-[280px]"
+        minHeight={280}
+        labeled
+        className="w-full max-w-[336px]"
       />
     </div>
   );
 }
 
-export function FooterAd() {
+export function FooterAd({ className }: { className?: string } = {}) {
+  if (!adsConfig.slots.footer && !adsConfig.testMode) return null;
   return (
-    <div className="w-full flex justify-center py-4">
-      <AdBanner 
-        slot={adsConfig.slots.footer} 
+    <div
+      className={cn('mx-auto w-full max-w-5xl px-4 py-6 lg:px-8', className)}
+      aria-label="Advertisement"
+      role="complementary"
+    >
+      <AdBanner
+        slot={adsConfig.slots.footer}
         format="horizontal"
-        className="w-full max-w-[728px] min-h-[90px]"
+        minHeight={90}
+        labeled
+        className="w-full max-w-[728px] mx-auto"
       />
     </div>
   );
 }
 
-// Native Ad for better integration
 export function NativeAd({ className }: { className?: string }) {
+  if (!adsConfig.slots.native && !adsConfig.testMode) return null;
   return (
-    <div className={cn("w-full", className)}>
-      <AdBanner 
-        slot={adsConfig.slots.native} 
-        format="auto"
-        responsive
-      />
+    <div className={cn('w-full', className)} aria-label="Advertisement" role="complementary">
+      <AdBanner slot={adsConfig.slots.native} format="auto" responsive minHeight={200} labeled />
     </div>
   );
 }
 
-// Multiplex Ad (display multiple ads)
 export function MultiplexAd({ className }: { className?: string }) {
+  if (!adsConfig.enabled || !adsConfig.slots.native || adsConfig.testMode) {
+    if (adsConfig.testMode) {
+      return (
+        <div className={cn('w-full', className)}>
+          <AdLabel />
+          <ReservedSpace minHeight={280} className="border border-dashed border-border/40" />
+        </div>
+      );
+    }
+    return null;
+  }
+
   return (
-    <div className={cn("w-full", className)}>
+    <div className={cn('w-full min-h-[280px]', className)} aria-label="Advertisement" role="complementary">
+      <AdLabel />
       <ins
         className="adsbygoogle"
-        style={{ display: 'block' }}
+        style={{ display: 'block', minHeight: 280 }}
         data-ad-format="autorelaxed"
         data-ad-client={adsConfig.publisherId}
         data-ad-slot={adsConfig.slots.native}

@@ -7,8 +7,6 @@ import fs from 'fs';
 import os from 'os';
 import path from 'path';
 import crypto from 'crypto';
-import { PDFDocument } from 'pdf-lib';
-
 const CACHE_HEADERS = {
   'Cache-Control': 'no-store, max-age=0',
 };

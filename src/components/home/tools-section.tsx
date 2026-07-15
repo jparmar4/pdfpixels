@@ -1,9 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, Suspense } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight, ArrowUpRight, Clock, DollarSign, Files, Minimize2, Search, Sparkles, Star, Wrench, X, Zap } from 'lucide-react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { AnimatedMeshBg } from '@/components/ui/animated-mesh-bg';
 import { CategorySection } from '@/components/layout/category-section';
 import { toolCategories } from '@/lib/tools-data';
@@ -161,18 +162,8 @@ function PopularToolsMiniGrid() {
   );
 }
 
-export function ToolsSection({ region }: { region?: GeoRegion } = {}) {
-  const [search, setSearch] = useState('');
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const params = new URLSearchParams(window.location.search);
-      const initialSearch = params.get('search') ?? params.get('q') ?? '';
-      if (initialSearch) {
-        setSearch(initialSearch);
-      }
-    }
-  }, []);
+function ToolsSectionInner({ region, initialSearch = '' }: { region?: GeoRegion; initialSearch?: string }) {
+  const [search, setSearch] = useState(initialSearch);
 
   const filteredCategories = search.trim()
     ? toolCategories.map(cat => ({
@@ -188,9 +179,6 @@ export function ToolsSection({ region }: { region?: GeoRegion } = {}) {
   return (
     <section className="bg-background">
       <ToolsHeader search={search} setSearch={setSearch} region={region} />
-      <div className="container mx-auto px-4 lg:px-8 py-6">
-        <HeaderAd />
-      </div>
       <div className="container mx-auto px-4 lg:px-8 pt-2 md:pt-4">
         {!search && (
           <>
@@ -201,6 +189,10 @@ export function ToolsSection({ region }: { region?: GeoRegion } = {}) {
             <PopularToolsMiniGrid />
           </>
         )}
+      </div>
+      {/* Ad after primary content starts — better content-to-ad ratio for AdSense */}
+      <div className="container mx-auto px-4 lg:px-8 py-4">
+        <HeaderAd />
       </div>
       <div className="container mx-auto px-4 lg:px-8 py-12 space-y-6">
         {search && (
@@ -234,5 +226,19 @@ export function ToolsSection({ region }: { region?: GeoRegion } = {}) {
         )}
       </div>
     </section>
+  );
+}
+
+function ToolsSectionWithSearch({ region }: { region?: GeoRegion }) {
+  const searchParams = useSearchParams();
+  const initialSearch = searchParams.get('search') ?? searchParams.get('q') ?? '';
+  return <ToolsSectionInner region={region} initialSearch={initialSearch} />;
+}
+
+export function ToolsSection({ region }: { region?: GeoRegion } = {}) {
+  return (
+    <Suspense fallback={<ToolsSectionInner region={region} />}>
+      <ToolsSectionWithSearch region={region} />
+    </Suspense>
   );
 }

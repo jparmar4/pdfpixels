@@ -540,7 +540,12 @@ export function PDFToolsWorkspace() {
 
             if (contentType.includes('application/json')) {
                 const data = await response.json();
-                setResult({ pdfUrl: data.pdfUrl, fileName: data.fileName, pageCount: data.pageCount });
+                setResult((previous) => {
+                    if (previous?.pdfUrl?.startsWith('blob:')) {
+                        URL.revokeObjectURL(previous.pdfUrl);
+                    }
+                    return { pdfUrl: data.pdfUrl, fileName: data.fileName, pageCount: data.pageCount };
+                });
             } else {
                 const blob = await response.blob();
                 const pdfUrl = URL.createObjectURL(blob);
@@ -548,7 +553,12 @@ export function PDFToolsWorkspace() {
                 const fileNameMatch = disposition.match(/filename=["\x27]?([^";\r\n]+)["\x27]?/i);
                 const fileName = fileNameMatch?.[1]?.trim() || `processed-${Date.now()}.pdf`;
                 const pageCount = Number(response.headers.get('x-page-count') || response.headers.get('x-total-pages') || 0);
-                setResult({ pdfUrl, fileName, pageCount: pageCount || undefined });
+                setResult((previous) => {
+                    if (previous?.pdfUrl?.startsWith('blob:')) {
+                        URL.revokeObjectURL(previous.pdfUrl);
+                    }
+                    return { pdfUrl, fileName, pageCount: pageCount || undefined };
+                });
             }
 
             toast.success('PDF processed successfully!');
@@ -569,13 +579,16 @@ export function PDFToolsWorkspace() {
     }, [result]);
 
     const handleReset = useCallback(() => {
+        if (result?.pdfUrl?.startsWith('blob:')) {
+            URL.revokeObjectURL(result.pdfUrl);
+        }
         reset();
         setResult(null);
         setPassword('');
         setConfirmPassword('');
         setDeletePages('');
         setPageOrder([]);
-    }, [reset]);
+    }, [reset, result]);
 
     const getToolIcon = () => {
         const toolId = activeTool?.id || '';

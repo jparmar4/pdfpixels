@@ -14,38 +14,48 @@ export const maxDuration = 60
 type CompressionLevel = 'extreme' | 'recommended' | 'less'
 
 type CompressionProfile = {
-  pdfSettings: '/screen' | '/ebook' | '/printer'
+  pdfSettings: '/screen' | '/ebook' | '/printer' | '/prepress'
   colorImageResolution: number
   grayImageResolution: number
   monoImageResolution: number
   jpegQuality: number
+  colorDownsampleThreshold: number
+  grayDownsampleThreshold: number
   minimumReduction: number
 }
 
+// Tuned for readable text + photo quality. Mono stays high to keep scanned text sharp.
 const compressionProfiles: Record<CompressionLevel, CompressionProfile> = {
   extreme: {
     pdfSettings: '/screen',
-    colorImageResolution: 96,
-    grayImageResolution: 96,
-    monoImageResolution: 200,
-    jpegQuality: 52,
-    minimumReduction: 0.08,
+    colorImageResolution: 110,
+    grayImageResolution: 110,
+    monoImageResolution: 300,
+    jpegQuality: 58,
+    colorDownsampleThreshold: 1.1,
+    grayDownsampleThreshold: 1.1,
+    minimumReduction: 0.06,
   },
   recommended: {
     pdfSettings: '/ebook',
-    colorImageResolution: 144,
-    grayImageResolution: 144,
+    colorImageResolution: 150,
+    grayImageResolution: 150,
     monoImageResolution: 300,
-    jpegQuality: 68,
-    minimumReduction: 0.05,
+    jpegQuality: 76,
+    colorDownsampleThreshold: 1.2,
+    grayDownsampleThreshold: 1.2,
+    minimumReduction: 0.04,
   },
   less: {
+    // High quality: prefer print-ready image fidelity
     pdfSettings: '/printer',
-    colorImageResolution: 200,
-    grayImageResolution: 200,
-    monoImageResolution: 300,
-    jpegQuality: 82,
-    minimumReduction: 0.03,
+    colorImageResolution: 220,
+    grayImageResolution: 220,
+    monoImageResolution: 400,
+    jpegQuality: 88,
+    colorDownsampleThreshold: 1.5,
+    grayDownsampleThreshold: 1.5,
+    minimumReduction: 0.02,
   },
 }
 
@@ -121,30 +131,42 @@ function runGhostscript(command: string, args: string[]) {
 async function compressWithGhostscript(inputPath: string, outputPath: string, profile: CompressionProfile) {
   const args = [
     '-sDEVICE=pdfwrite',
-    '-dCompatibilityLevel=1.4',
+    '-dCompatibilityLevel=1.5',
     `-dPDFSETTINGS=${profile.pdfSettings}`,
     '-dNOPAUSE',
     '-dQUIET',
     '-dBATCH',
+    '-dSAFER',
     '-dDetectDuplicateImages=true',
     '-dCompressFonts=true',
     '-dSubsetFonts=true',
+    '-dEmbedAllFonts=true',
     '-dAutoRotatePages=/None',
+    // Preserve vector text sharpness; only downsample raster images
     '-dDownsampleColorImages=true',
     '-dColorImageDownsampleType=/Bicubic',
     `-dColorImageResolution=${profile.colorImageResolution}`,
+    `-dColorImageDownsampleThreshold=${profile.colorDownsampleThreshold}`,
     '-dDownsampleGrayImages=true',
     '-dGrayImageDownsampleType=/Bicubic',
     `-dGrayImageResolution=${profile.grayImageResolution}`,
+    `-dGrayImageDownsampleThreshold=${profile.grayDownsampleThreshold}`,
     '-dDownsampleMonoImages=true',
     '-dMonoImageDownsampleType=/Subsample',
     `-dMonoImageResolution=${profile.monoImageResolution}`,
+    '-dMonoImageDownsampleThreshold=1.1',
     '-dAutoFilterColorImages=false',
     '-dColorImageFilter=/DCTEncode',
     '-dAutoFilterGrayImages=false',
     '-dGrayImageFilter=/DCTEncode',
+    '-dEncodeColorImages=true',
+    '-dEncodeGrayImages=true',
+    '-dEncodeMonoImages=true',
     `-dJPEGQ=${profile.jpegQuality}`,
+    // Prefer quality-preserving DCT for text-heavy docs
+    '-dPassThroughJPEGImages=false',
     '-dFastWebView=true',
+    '-dOptimize=true',
     `-sOutputFile=${outputPath}`,
     inputPath,
   ]
@@ -222,6 +244,8 @@ export async function POST(req: NextRequest) {
     const form = await req.formData()
     const file = form.get('file') as File | null
     const levelStr = (form.get('level') as string) || 'recommended'
+    // force=1 returns the best attempt even if savings are small (user choice)
+    const force = String(form.get('force') || '') === '1' || String(form.get('force') || '') === 'true'
     const profile = getCompressionProfile(levelStr)
 
     if (!file) {
@@ -231,7 +255,7 @@ export async function POST(req: NextRequest) {
       })
     }
 
-    if (file.type && file.type !== 'application/pdf') {
+    if (file.type && file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf')) {
       return new Response(JSON.stringify({ error: 'Only PDF files are supported' }), {
         status: 400,
         headers: { 'Content-Type': 'application/json' },
@@ -246,7 +270,15 @@ export async function POST(req: NextRequest) {
     }
 
     const originalBuffer = Buffer.from(await file.arrayBuffer())
-    const strict = true
+    // Validate PDF magic bytes
+    if (originalBuffer.length < 5 || originalBuffer.subarray(0, 5).toString('ascii') !== '%PDF-') {
+      return new Response(JSON.stringify({ error: 'Invalid PDF file content' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      })
+    }
+
+    const strict = !force
 
     const remoteUrl = process.env.PDF_COMPRESSOR_URL
     const remoteToken = process.env.PDF_COMPRESSOR_TOKEN
@@ -255,6 +287,7 @@ export async function POST(req: NextRequest) {
       const remoteForm = new FormData()
       remoteForm.append('file', new Blob([originalBuffer], { type: 'application/pdf' }), file.name || 'input.pdf')
       remoteForm.append('level', levelStr)
+      if (force) remoteForm.append('force', '1')
 
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 58_000);
@@ -279,6 +312,7 @@ export async function POST(req: NextRequest) {
                 'Content-Type': 'application/pdf',
                 'Content-Disposition': 'attachment; filename="compressed.pdf"',
                 'x-compress-engine': 'railway-gs',
+                'x-compress-level': levelStr,
                 'x-size-before': String(originalBuffer.length),
                 'x-size-after': String(out.length),
                 'x-saved-percent': String(savedPercent),
@@ -286,21 +320,32 @@ export async function POST(req: NextRequest) {
             })
           }
 
+          // Remote succeeded but savings too small — do NOT fall through to local
           return new Response(JSON.stringify({
             error: savedPercent > 0
-              ? `Compression only reduced this PDF by ${savedPercent}%. It is likely already optimized.`
-              : 'Compression did not reduce this PDF in a meaningful way.',
+              ? `Compression only reduced this PDF by ${savedPercent}%. It is likely already optimized. Try a different preset or force download.`
+              : 'Compression did not reduce this PDF in a meaningful way. Try Smallest size, or force download the best attempt.',
             before: originalBuffer.length,
             after: out.length,
             savedPercent,
             engine: 'railway-gs',
+            canForce: true,
           }), {
             status: 422,
             headers: { 'Content-Type': 'application/json' },
           })
         }
 
-        console.error('Remote compressor failed:', await remoteResp.text())
+        // Explicit remote 422: pass through to client
+        if (remoteResp.status === 422) {
+          const body = await remoteResp.text()
+          return new Response(body, {
+            status: 422,
+            headers: { 'Content-Type': 'application/json' },
+          })
+        }
+
+        console.error('Remote compressor failed:', remoteResp.status, await remoteResp.text())
       } catch (remoteError) {
         clearTimeout(timeoutId);
         console.error('Remote compressor error or timeout:', remoteError);
@@ -334,30 +379,38 @@ export async function POST(req: NextRequest) {
       throw new Error('Compression failed')
     }
 
-    const savedPercent = toSavedPercent(originalBuffer.length, compressed.length)
+    // Prefer the smaller of compressed vs original when forced
+    let finalBytes = compressed
+    if (compressed.length >= originalBuffer.length && engine === 'local-fallback') {
+      finalBytes = originalBuffer
+    }
+
+    const savedPercent = toSavedPercent(originalBuffer.length, finalBytes.length)
     // For local fallback, always return the file even with minimal savings
     if (strict && savedPercent < profile.minimumReduction * 100 && engine !== 'local-fallback') {
       return new Response(JSON.stringify({
         error: savedPercent > 0
-          ? `Compression only reduced this PDF by ${savedPercent}%. It is likely already optimized.`
-          : 'Unable to reduce this PDF in a meaningful way.',
+          ? `Compression only reduced this PDF by ${savedPercent}%. It is likely already optimized. Try another preset or force download.`
+          : 'Unable to reduce this PDF in a meaningful way. Scanned or image-heavy PDFs compress best with Ghostscript.',
         before: originalBuffer.length,
-        after: compressed.length,
+        after: finalBytes.length,
         savedPercent,
         engine,
+        canForce: true,
       }), {
         status: 422,
         headers: { 'Content-Type': 'application/json' },
       })
     }
 
-    return new Response(new Uint8Array(compressed), {
+    return new Response(new Uint8Array(finalBytes), {
       headers: {
         'Content-Type': 'application/pdf',
         'Content-Disposition': 'attachment; filename="compressed.pdf"',
         'x-compress-engine': engine,
+        'x-compress-level': levelStr,
         'x-size-before': String(originalBuffer.length),
-        'x-size-after': String(compressed.length),
+        'x-size-after': String(finalBytes.length),
         'x-saved-percent': String(savedPercent),
       },
     })

@@ -12,7 +12,7 @@ const CACHE_HEADERS = {
 const LOSSY_FORMATS = new Set(['jpg', 'jpeg']);
 
 // Maximum file sizes
-const MAX_IMAGE_SIZE = 100 * 1024 * 1024; // 100 MB
+const MAX_IMAGE_SIZE = 25 * 1024 * 1024; // 25 MB (keeps base64 JSON responses manageable)
 const MAX_DIMENSION = 20_000;
 
 // ─── POST handler ─────────────────────────────────────────────────────────────
@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
     }
 
     if (file.size > MAX_IMAGE_SIZE) {
-      return apiError('File too large. Maximum size is 100 MB', 400);
+      return apiError('File too large. Maximum size is 25 MB', 400);
     }
 
     const arrayBuffer = await file.arrayBuffer();
@@ -83,10 +83,16 @@ export async function POST(request: NextRequest) {
     // Process output
     const { outputBuffer, mimeType } = await processOutput(image, params, metadata);
 
-    // Binary-search optimize for target file size (if requested)
-    const finalBuffer = params.targetSize
-      ? await optimizeForTargetSize(buffer, params, params.targetSize * 1024, params.format)
-      : outputBuffer;
+    // Target size: compress down OR pad/increase depending on sizeMode
+    let finalBuffer = outputBuffer;
+    if (params.targetSize) {
+      const targetBytes = params.targetSize * 1024;
+      if (params.sizeMode === 'increase') {
+        finalBuffer = await increaseToTargetSize(outputBuffer, mimeType, targetBytes);
+      } else {
+        finalBuffer = await optimizeForTargetSize(buffer, params, targetBytes, params.format);
+      }
+    }
 
     const base64 = finalBuffer.toString('base64');
     const dataUrl = `data:${mimeType};base64,${base64}`;
@@ -152,6 +158,9 @@ function parseParams(formData: FormData) {
     sepia: formData.get('sepia') === 'true',
     normalise: formData.get('normalise') === 'true',
     density: parsePositiveInt(formData.get('density')),
+    sizeMode: ((formData.get('sizeMode') as string) || 'compress').toLowerCase() === 'increase'
+      ? 'increase' as const
+      : 'compress' as const,
   };
 }
 
@@ -329,6 +338,56 @@ async function processOutput(
   return { outputBuffer, mimeType };
 }
 
+/**
+ * Grow a buffer to at least targetBytes while keeping the image decodable.
+ * Appends a trailing comment/COM marker for JPEG, or zero-padding after IEND for PNG.
+ */
+async function increaseToTargetSize(
+  buffer: Buffer,
+  mimeType: string,
+  targetBytes: number,
+): Promise<Buffer> {
+  if (buffer.length >= targetBytes) {
+    return buffer;
+  }
+
+  const needed = targetBytes - buffer.length;
+
+  // JPEG: insert a COM marker before EOI (FF D9)
+  if (mimeType.includes('jpeg') || mimeType.includes('jpg')) {
+    const eoi = buffer.lastIndexOf(Buffer.from([0xff, 0xd9]));
+    if (eoi > 0) {
+      const payloadLen = needed + 2; // includes length bytes
+      const comLen = Math.min(payloadLen, 0xffff);
+      const comHeader = Buffer.alloc(4 + (comLen - 2));
+      comHeader[0] = 0xff;
+      comHeader[1] = 0xfe;
+      comHeader.writeUInt16BE(comLen, 2);
+      // Fill remainder with spaces
+      comHeader.fill(0x20, 4);
+
+      let result = Buffer.concat([buffer.subarray(0, eoi), comHeader, buffer.subarray(eoi)]);
+      // If still short, append more COM markers
+      while (result.length < targetBytes) {
+        const stillNeeded = targetBytes - result.length;
+        const chunkLen = Math.min(stillNeeded + 2, 0xffff);
+        const chunk = Buffer.alloc(2 + chunkLen);
+        chunk[0] = 0xff;
+        chunk[1] = 0xfe;
+        chunk.writeUInt16BE(chunkLen, 2);
+        chunk.fill(0x20, 4);
+        const insertAt = result.lastIndexOf(Buffer.from([0xff, 0xd9]));
+        result = Buffer.concat([result.subarray(0, insertAt), chunk, result.subarray(insertAt)]);
+      }
+      return result.subarray(0, Math.max(targetBytes, result.length));
+    }
+  }
+
+  // PNG / WebP / others: append trailing bytes (ignored by most decoders after EOF)
+  const pad = Buffer.alloc(needed, 0);
+  return Buffer.concat([buffer, pad]);
+}
+
 // ─── Target size binary-search optimisation ───────────────────────────────────
 
 async function optimizeForTargetSize(
@@ -354,7 +413,14 @@ async function optimizeForTargetSize(
       img = img.flatten({ background: { r: 255, g: 255, b: 255 } });
     }
     if (params.width || params.height) {
-      img = img.resize(params.width, params.height, { fit: 'inside', withoutEnlargement: true, kernel: 'lanczos3' });
+      img = img.resize(params.width, params.height, {
+        fit: (params.fit as 'cover' | 'contain' | 'fill' | 'inside' | 'outside') || 'inside',
+        withoutEnlargement: params.withoutEnlargement,
+        kernel: 'lanczos3',
+      });
+    }
+    if (params.density) {
+      img = img.withMetadata({ density: params.density });
     }
     if (params.rotate) img = img.rotate(params.rotate, { background: { r: 255, g: 255, b: 255 } });
     if (params.flip) img = img.flip();

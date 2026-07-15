@@ -12,7 +12,7 @@
 - [x] (Hardening) Normalize canonical URLs (prefer absoluteUrl) across metadata + JSON-LD.
 
 ## Step 3: Strengthen AEO content blocks
-- [x] Add “direct answer + steps + common problems” sections to each tool page.
+- [x] Add ï¿½direct answer + steps + common problemsï¿½ sections to each tool page.
 - [x] Ensure AEO blocks are server-rendered or otherwise indexable (not only client-rendered).
 
 ## Step 4: Implement real geo strategy
@@ -21,7 +21,7 @@
 
 ## Step 5: Improve internal linking and scalable programmatic SEO
 - [x] Ensure home ? category ? tool ? related tools is fully indexable.
-- [x] Add “Related tools / Next steps / Also try” to tool pages.
+- [x] Add ï¿½Related tools / Next steps / Also tryï¿½ to tool pages.
 
 ## Step 6: AdSense approval readiness
 - [x] Confirm required pages are present and indexable: Privacy, Terms, Contact, DMCA.
@@ -34,3 +34,13 @@
 - [ ] Implement Analytics & Tracking (Google Analytics / Search Console).
 - [ ] Submit XML sitemap to Google Search Console.
 - [ ] Review social sharing (Open Graph images) for all tools and blog posts.
+
+# Tool reliability (2026-07 follow-up)
+- [x] Add Logo to Image (client canvas overlay: position, scale, opacity, padding)
+- [x] Edit Metadata (Title/Author/Copyright/Description + PNG tEXt / JPEG COM export)
+- [x] Page-range parsing for rotate/delete/split
+- [x] Resize enlargement + DPI density
+- [x] Increase image size (target KB pad path)
+- [x] Protect/Unlock binary PDF download
+- [x] Convert workspace PDF format lock + blob cleanup
+- [x] AEO answer cards expanded + geo in llms-full.txt

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -128,13 +129,13 @@ export function CookieConsentBanner() {
                 {/* Privacy Link */}
                 <p className="text-xs text-muted-foreground">
                   By accepting, you agree to our{' '}
-                  <a href="/privacy" className="underline hover:text-foreground">
+                  <Link href="/privacy" className="underline hover:text-foreground">
                     Privacy Policy
-                  </a>{' '}
+                  </Link>{' '}
                   and{' '}
-                  <a href="/terms" className="underline hover:text-foreground">
+                  <Link href="/terms" className="underline hover:text-foreground">
                     Terms of Service
-                  </a>
+                  </Link>
                   .
                 </p>
               </div>

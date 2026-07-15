@@ -7,49 +7,64 @@ import { useCasePages } from '@/lib/use-cases';
 import { geoRegions } from '@/lib/geo-data';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const defaultLastModified = new Date('2024-05-20T00:00:00Z');
+  const now = new Date();
   const blogPosts = getAllBlogPosts();
+  const latestBlogDate = blogPosts[0] && !Number.isNaN(Date.parse(blogPosts[0].date))
+    ? new Date(blogPosts[0].date)
+    : now;
 
   const corePages: MetadataRoute.Sitemap = [
     {
       url: absoluteUrl('/'),
-      lastModified: defaultLastModified,
+      lastModified: now,
       changeFrequency: 'daily',
       priority: 1,
     },
     {
+      url: absoluteUrl('/tools'),
+      lastModified: now,
+      changeFrequency: 'weekly',
+      priority: 0.95,
+    },
+    {
       url: absoluteUrl('/about'),
-      lastModified: defaultLastModified,
+      lastModified: now,
       changeFrequency: 'monthly',
       priority: 0.7,
     },
     {
       url: absoluteUrl('/blog'),
-      lastModified: blogPosts[0] ? new Date(blogPosts[0].date) : defaultLastModified,
+      lastModified: latestBlogDate,
       changeFrequency: 'daily',
       priority: 0.85,
     },
     {
       url: absoluteUrl('/use-cases'),
-      lastModified: defaultLastModified,
+      lastModified: now,
       changeFrequency: 'weekly',
       priority: 0.78,
     },
     {
       url: absoluteUrl('/compare'),
-      lastModified: defaultLastModified,
+      lastModified: now,
       changeFrequency: 'weekly',
       priority: 0.74,
     },
     {
+      url: absoluteUrl('/pricing'),
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.65,
+    },
+    {
       url: absoluteUrl('/api-docs'),
-      lastModified: defaultLastModified,
+      lastModified: now,
       changeFrequency: 'monthly',
       priority: 0.6,
     },
     {
       url: absoluteUrl('/contact'),
-      lastModified: defaultLastModified,
+      lastModified: now,
       changeFrequency: 'monthly',
       priority: 0.55,
     },
@@ -58,25 +73,25 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const legalPages: MetadataRoute.Sitemap = [
     {
       url: absoluteUrl('/privacy'),
-      lastModified: defaultLastModified,
+      lastModified: now,
       changeFrequency: 'yearly',
       priority: 0.3,
     },
     {
       url: absoluteUrl('/terms'),
-      lastModified: defaultLastModified,
+      lastModified: now,
       changeFrequency: 'yearly',
       priority: 0.3,
     },
     {
       url: absoluteUrl('/disclaimer'),
-      lastModified: defaultLastModified,
+      lastModified: now,
       changeFrequency: 'yearly',
       priority: 0.25,
     },
     {
       url: absoluteUrl('/dmca'),
-      lastModified: defaultLastModified,
+      lastModified: now,
       changeFrequency: 'yearly',
       priority: 0.25,
     },
@@ -84,45 +99,54 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   const toolPages: MetadataRoute.Sitemap = allTools.map((tool) => ({
     url: absoluteUrl(`/tools/${tool.slug}`),
-    lastModified: defaultLastModified,
+    lastModified: now,
     changeFrequency: 'weekly' as const,
     priority: tool.popular || tool.isAI ? 0.9 : 0.8,
   }));
 
   const blogPages: MetadataRoute.Sitemap = blogPosts.map((post) => ({
     url: absoluteUrl(`/blog/${post.slug}`),
-    lastModified: Number.isNaN(Date.parse(post.date)) ? defaultLastModified : new Date(post.date),
+    lastModified: Number.isNaN(Date.parse(post.date)) ? now : new Date(post.date),
     changeFrequency: 'weekly' as const,
     priority: 0.78,
   }));
 
   const useCaseEntries: MetadataRoute.Sitemap = useCasePages.map((useCase) => ({
     url: absoluteUrl(`/use-cases/${useCase.slug}`),
-    lastModified: defaultLastModified,
+    lastModified: now,
     changeFrequency: 'weekly' as const,
     priority: 0.72,
   }));
 
   const comparisonEntries: MetadataRoute.Sitemap = comparisonPages.map((comparison) => ({
     url: absoluteUrl(`/compare/${comparison.slug}`),
-    lastModified: defaultLastModified,
+    lastModified: now,
     changeFrequency: 'weekly' as const,
     priority: 0.7,
   }));
 
   const geoEntries: MetadataRoute.Sitemap = geoRegions.map((region) => ({
     url: absoluteUrl(`/${region.code}`),
-    lastModified: defaultLastModified,
+    lastModified: now,
     changeFrequency: 'weekly' as const,
     priority: 0.85,
   }));
 
   const categoryEntries: MetadataRoute.Sitemap = toolCategories.map((category) => ({
     url: absoluteUrl(`/tools/category/${category.id}`),
-    lastModified: defaultLastModified,
+    lastModified: now,
     changeFrequency: 'weekly' as const,
     priority: 0.82,
   }));
 
-  return [...corePages, ...geoEntries, ...categoryEntries, ...toolPages, ...useCaseEntries, ...comparisonEntries, ...blogPages, ...legalPages];
+  return [
+    ...corePages,
+    ...geoEntries,
+    ...categoryEntries,
+    ...toolPages,
+    ...useCaseEntries,
+    ...comparisonEntries,
+    ...blogPages,
+    ...legalPages,
+  ];
 }

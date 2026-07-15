@@ -2,17 +2,17 @@
 
 import { useEffect, useState } from 'react';
 import { GoogleAnalytics } from '@next/third-parties/google';
-import { hasAdvertisingConsent } from '@/lib/ads-config';
+import { hasAnalyticsConsent } from '@/lib/ads-config';
 
 export function Analytics() {
   const [hasConsent, setHasConsent] = useState(() => {
     if (typeof window === 'undefined') return false;
-    return hasAdvertisingConsent();
+    return hasAnalyticsConsent();
   });
 
   useEffect(() => {
     const handleConsentUpdate = () => {
-      setHasConsent(hasAdvertisingConsent());
+      setHasConsent(hasAnalyticsConsent());
     };
 
     window.addEventListener('cookie-consent-updated', handleConsentUpdate);

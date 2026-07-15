@@ -12,9 +12,6 @@ import { Navigation } from '@/components/layout/navigation';
 import { Footer } from '@/components/layout/footer';
 import { useCasePages } from '@/lib/use-cases';
 import { getToolBySlug, allTools } from '@/lib/tools-data';
-import Script from 'next/script';
-import { collectionItemListJsonLd } from '@/app/jsonld-helpers';
-import { SITE_URL } from '@/lib/seo';
 
 
 /* ─── Category definitions for filtering ──────────────────────────── */

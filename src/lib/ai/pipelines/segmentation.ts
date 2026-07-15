@@ -37,8 +37,9 @@ export async function segmentForeground(sharp: SharpLib, input: Buffer): Promise
   const visited = new Uint8Array(pxCount);
   let bgMask = new Uint8Array(pxCount);
   const q: number[] = [];
-  const seedT = 60;
-  const growT = 72;
+  // Slightly tighter thresholds reduce background bleed into subject edges
+  const seedT = 52;
+  const growT = 68;
 
   const trySeed = (x: number, y: number) => {
     const p = pIndex(x, y, width);
@@ -92,7 +93,8 @@ export async function segmentForeground(sharp: SharpLib, input: Buffer): Promise
   for (let p = 0; p < pxCount; p++) if (fgMask[p]) fgPixels++;
   if (fgPixels < pxCount * 0.01) fgMask = fgRaw;
 
-  const softFgMask = toSoftMaskFromBinary(fgMask, width, height, 4);
+  // Feather edges (~6px) for cleaner cutouts without hard fringing
+  const softFgMask = toSoftMaskFromBinary(fgMask, width, height, 6);
 
   return {
     image: { data: new Uint8Array(data), width, height },

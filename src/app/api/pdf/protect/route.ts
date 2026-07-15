@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { apiError } from '@/lib/api-response';
-import { loadPdfWithTimeout, pdfBinaryResponse } from '@/lib/pdf-api';
+
 import { spawn } from 'child_process';
 import fs from 'fs';
 import os from 'os';
@@ -138,19 +138,18 @@ export async function POST(request: NextRequest) {
     }
 
     const outputBuffer = fs.readFileSync(outputPath);
-    const base64 = outputBuffer.toString('base64');
-    const dataUrl = `data:application/pdf;base64,${base64}`;
+    const fileName = `${action === 'protect' ? 'protected' : 'unlocked'}-${Date.now()}.pdf`;
 
-    return NextResponse.json(
-      {
-        success: true,
-        pdfUrl: dataUrl,
-        fileName: `${action === 'protect' ? 'protected' : 'unlocked'}-${Date.now()}.pdf`,
-        pageCount,
-        action,
+    return new NextResponse(outputBuffer, {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/pdf',
+        'Content-Disposition': `attachment; filename="${fileName}"`,
+        ...CACHE_HEADERS,
+        'X-Page-Count': String(pageCount),
+        'X-Action': action,
       },
-      { headers: CACHE_HEADERS },
-    );
+    });
   } catch (error) {
     console.error('PDF protect/unlock error:', error);
     const message = error instanceof Error ? error.message : 'Unknown error';

@@ -6,7 +6,7 @@ import { ArrowRight, GitCompareArrows, Layers3, LayoutTemplate, type LucideIcon 
 import { ToolContentSection } from '@/components/layout/tool-content-section';
 import { ToolPageClient } from '@/components/layout/tool-page-client';
 import { ToolSidebarAd } from '@/components/ads/tool-sidebar-ad';
-import { HeaderAd, FooterAd } from '@/components/ads/ad-banner';
+import { FooterAd } from '@/components/ads/ad-banner';
 import { comparisonPages } from '@/lib/comparisons';
 import { normalizeDisplayText } from '@/lib/display-text';
 import { siteConfig } from '@/lib/seo-config';
@@ -82,7 +82,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       locale: 'en_US',
       images: [
         {
-          url: DEFAULT_OG_IMAGE_URL,
+          url: absoluteUrl(`/tools/${tool.slug}/opengraph-image`),
           width: 1200,
           height: 630,
           alt: cleanName,
@@ -93,7 +93,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       card: 'summary_large_image',
       title: `${title} | ${siteConfig.name}`,
       description,
-      images: [DEFAULT_OG_IMAGE_URL],
+      images: [absoluteUrl(`/tools/${tool.slug}/opengraph-image`)],
     },
     robots: {
       index: true,
@@ -269,14 +269,14 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
           <script key={index} type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
         ))}
 
+        {/* Sticky sidebar / mobile in-content — no extra header ad (reduces density + better UX) */}
         <ToolSidebarAd />
-
-        <HeaderAd />
 
         <Suspense fallback={<WorkspaceLoading />}>
           <ToolPageClient toolId={tool.id} toolName={cleanToolName} toolDescription={normalizeDisplayText(tool.description)} />
         </Suspense>
 
+        {/* Editorial content (indexable) sits before mid-page ads for better AdSense policy ratio */}
         <ToolContentSection toolSlug={tool.slug} toolName={cleanToolName} isAI={tool.isAI} processing={tool.processing} />
 
         {(relatedTools.length > 0 || relatedUseCases.length > 0 || relatedComparisons.length > 0) ? (
@@ -330,6 +330,7 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
           </section>
         ) : null}
 
+        {/* Single footer unit after full content — clearer separation for AdSense */}
         <FooterAd />
       </div>
     </>

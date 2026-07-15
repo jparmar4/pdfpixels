@@ -1,16 +1,22 @@
 import Link from 'next/link';
-import { FileQuestion, Home, Search } from 'lucide-react';
+import { FileQuestion, Home, Search, Minimize2, Merge, Image as ImageIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Page Not Found - PdfPixels',
-  description: 'The page you are looking for does not exist.',
+  description: 'The page you are looking for does not exist. Browse free PDF and image tools on PdfPixels.',
   robots: {
     index: false,
     follow: true,
   },
 };
+
+const popularLinks = [
+  { href: '/tools/compress-pdf', label: 'Compress PDF', icon: Minimize2 },
+  { href: '/tools/merge-pdf', label: 'Merge PDF', icon: Merge },
+  { href: '/tools/compress-image', label: 'Compress Image', icon: ImageIcon },
+];
 
 export default function NotFound() {
   return (
@@ -22,9 +28,9 @@ export default function NotFound() {
       <h2 className="text-2xl font-bold text-foreground mb-2">Page not found</h2>
       <p className="text-muted-foreground max-w-md mb-8">
         The page you are looking for does not exist or has been moved.
-        Try searching for the tool you need or head back to the homepage.
+        Try one of the popular tools below or browse the full library.
       </p>
-      <div className="flex flex-wrap items-center justify-center gap-3">
+      <div className="flex flex-wrap items-center justify-center gap-3 mb-10">
         <Button asChild className="gap-2">
           <Link href="/">
             <Home className="w-4 h-4" />
@@ -37,6 +43,23 @@ export default function NotFound() {
             Browse tools
           </Link>
         </Button>
+      </div>
+      <div className="grid w-full max-w-xl gap-3 sm:grid-cols-3">
+        {popularLinks.map((item) => {
+          const Icon = item.icon;
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              className="rounded-2xl border border-border/60 bg-card/70 px-4 py-3 text-sm font-semibold transition-colors hover:border-primary/40 hover:text-primary"
+            >
+              <span className="inline-flex items-center gap-2">
+                <Icon className="h-4 w-4" />
+                {item.label}
+              </span>
+            </Link>
+          );
+        })}
       </div>
     </div>
   );

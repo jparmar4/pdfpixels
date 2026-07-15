@@ -13,7 +13,6 @@ export function AdSenseScript() {
   });
 
   useEffect(() => {
-    // Listen for consent updates
     const handleConsentUpdate = () => {
       setHasConsent(hasAdvertisingConsent());
     };
@@ -24,56 +23,40 @@ export function AdSenseScript() {
     };
   }, []);
 
-  // Don't load if ads are disabled or no consent
-  if (!adsConfig.enabled || !hasConsent) {
+  // Don't load if ads are disabled, publisher missing, or no consent
+  if (!adsConfig.enabled || !adsConfig.publisherId || !hasConsent) {
     return null;
   }
 
   return (
-    <>
-      {/* Auto Ads Script */}
-      <Script
-        async
-        src={adsConfig.scriptUrl}
-        crossOrigin="anonymous"
-        strategy="afterInteractive"
-      />
-      
-      {/* AdSense Auto Ads Configuration */}
-      <Script
-        id="adsense-config"
-        strategy="afterInteractive"
-        dangerouslySetInnerHTML={{
-          __html: `
-            (adsbygoogle = window.adsbygoogle || []).push({
-              google_ad_client: "${adsConfig.publisherId}",
-              enable_page_level_ads: true,
-              overlays: {bottom: true}
-            });
-          `,
-        }}
-      />
-    </>
+    <Script
+      id="adsense-loader"
+      async
+      src={adsConfig.scriptUrl}
+      crossOrigin="anonymous"
+      strategy="lazyOnload"
+    />
   );
 }
 
-// Non-personalized ads version (for users without consent)
+// Non-personalized ads version (for users without personalized consent)
 export function AdSenseScriptNonPersonalized() {
-  if (!adsConfig.enabled) {
+  if (!adsConfig.enabled || !adsConfig.publisherId) {
     return null;
   }
 
   return (
     <>
       <Script
+        id="adsense-loader-np"
         async
         src={adsConfig.scriptUrl}
         crossOrigin="anonymous"
-        strategy="afterInteractive"
+        strategy="lazyOnload"
       />
       <Script
         id="adsense-config-np"
-        strategy="afterInteractive"
+        strategy="lazyOnload"
         dangerouslySetInnerHTML={{
           __html: `
             (adsbygoogle = window.adsbygoogle || []).push({
@@ -87,7 +70,3 @@ export function AdSenseScriptNonPersonalized() {
     </>
   );
 }
-
-// Publisher ID: Replace ca-pub-XXXXXXXXXXXXXXXX with your actual AdSense Publisher ID
-// You can find this in your AdSense dashboard under Account > Account information
-// Or set NEXT_PUBLIC_ADSENSE_PUBLISHER_ID environment variable

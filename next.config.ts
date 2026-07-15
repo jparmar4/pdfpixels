@@ -309,6 +309,11 @@ const nextConfig: NextConfig = {
       { source: '/png-to-jpg', destination: '/tools/png-to-jpeg', permanent: true },
       { source: '/jpg-to-png', destination: '/tools/jpeg-to-png', permanent: true },
       { source: '/pdf-compress', destination: '/tools/compress-pdf', permanent: true },
+      { source: '/svg-to-png', destination: '/tools/svg-to-png', permanent: true },
+      { source: '/svg-to-jpg', destination: '/tools/svg-to-jpg', permanent: true },
+      { source: '/webp-to-png', destination: '/tools/webp-to-png', permanent: true },
+      { source: '/linearize-pdf', destination: '/tools/linearize-pdf', permanent: true },
+      { source: '/add-page-numbers-pdf', destination: '/tools/add-page-numbers-to-pdf', permanent: true },
     ];
   },
 

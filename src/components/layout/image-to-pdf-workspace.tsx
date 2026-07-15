@@ -132,7 +132,19 @@ export function ImageToPDFWorkspace() {
       setProgress(100);
 
       if (!response.ok) {
-        throw new Error('Processing failed');
+        let message = 'Processing failed';
+        try {
+          const errText = await response.text();
+          try {
+            const err = JSON.parse(errText);
+            message = err.error || message;
+          } catch {
+            message = errText || message;
+          }
+        } catch {
+          // keep default
+        }
+        throw new Error(message);
       }
 
       const blob = await response.blob();
@@ -142,14 +154,19 @@ export function ImageToPDFWorkspace() {
       const fileName = fileNameMatch?.[1] || `images-to-pdf-${Date.now()}.pdf`;
       const pageCount = Number(response.headers.get('x-page-count') || files.length);
 
-      setResult({
-        pdfUrl,
-        fileName,
-        pageCount,
+      setResult((previous) => {
+        if (previous?.pdfUrl?.startsWith('blob:')) {
+          URL.revokeObjectURL(previous.pdfUrl);
+        }
+        return {
+          pdfUrl,
+          fileName,
+          pageCount,
+        };
       });
       toast.success(`Created PDF with ${pageCount} pages!`);
-    } catch {
-      toast.error('Failed to create PDF. Please try again.');
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Failed to create PDF. Please try again.');
     } finally {
       setIsProcessing(false);
     }

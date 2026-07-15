@@ -290,9 +290,6 @@ export function ToolContentSection({ toolSlug, toolName, isAI, processing }: {
           </div>
         </div>
 
-        {/* High RPM InContent Ad unit */}
-        <InContentAd />
-
         {/* Common Problems */}
         {content.commonProblems && content.commonProblems.length > 0 && (
           <div>
@@ -319,6 +316,9 @@ export function ToolContentSection({ toolSlug, toolName, isAI, processing }: {
             <FAQAccordion faqs={content.faqs} />
           </div>
         )}
+
+        {/* Mid-content ad after substantial editorial content (AdSense policy-friendly) */}
+        <InContentAd />
 
         {/* Trust Signals */}
         <div className="flex flex-wrap gap-3">

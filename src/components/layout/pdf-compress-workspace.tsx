@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
-import { ArrowRight, FileText, Minimize2, RefreshCw, Zap } from 'lucide-react';
+import { ArrowRight, FileText, Minimize2, RefreshCw, Zap, CheckCircle2, Info } from 'lucide-react';
 import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -20,27 +20,36 @@ interface CompressionResult {
   originalSize: number;
   processedSize: number;
   savedPercent: number;
+  engine?: string;
 }
 
 const compressionLevels: Array<{
   value: CompressionLevel;
   title: string;
   description: string;
+  qualityHint: string;
+  dpiHint: string;
 }> = [
-  {
-    value: 'recommended',
-    title: 'Recommended',
-    description: 'Balanced reduction for everyday sharing and uploads.',
-  },
   {
     value: 'less',
     title: 'High quality',
-    description: 'Lighter compression when visual fidelity matters most.',
+    description: 'Best for contracts, portfolios, and print-adjacent sharing.',
+    qualityHint: '~88% JPEG · 220 DPI color',
+    dpiHint: 'Minimal quality loss',
+  },
+  {
+    value: 'recommended',
+    title: 'Recommended',
+    description: 'Balanced reduction for email, forms, and everyday uploads.',
+    qualityHint: '~76% JPEG · 150 DPI color',
+    dpiHint: 'Best all-rounder',
   },
   {
     value: 'extreme',
     title: 'Smallest size',
-    description: 'Maximum reduction for strict upload limits.',
+    description: 'Maximum reduction for strict upload limits (e.g. 200 KB–1 MB).',
+    qualityHint: '~58% JPEG · 110 DPI color',
+    dpiHint: 'Text stays sharp; photos softer',
   },
 ];
 
@@ -56,10 +65,11 @@ export function CompressPDFWorkspace() {
   const [statusLabel, setStatusLabel] = useState<'Idle' | 'Uploading' | 'Processing' | 'Finalizing'>('Idle');
   const [compressionLevel, setCompressionLevel] = useState<CompressionLevel>('recommended');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [canForce, setCanForce] = useState(false);
   const prefersReducedMotion = useReducedMotion();
 
   const activeLevel = useMemo(
-    () => compressionLevels.find((level) => level.value === compressionLevel) ?? compressionLevels[0],
+    () => compressionLevels.find((level) => level.value === compressionLevel) ?? compressionLevels[1],
     [compressionLevel],
   );
 
@@ -71,7 +81,7 @@ export function CompressPDFWorkspace() {
     };
   }, [result]);
 
-  const handleProcess = useCallback(async () => {
+  const runCompress = useCallback(async (force = false) => {
     if (!uploadedFile) {
       toast.error('Please upload a PDF first');
       return;
@@ -79,12 +89,14 @@ export function CompressPDFWorkspace() {
 
     setIsProcessing(true);
     setErrorMessage(null);
+    setCanForce(false);
     setStatusLabel('Uploading');
     setProgress(0);
 
     const formData = new FormData();
     formData.append('file', uploadedFile);
     formData.append('level', compressionLevel);
+    if (force) formData.append('force', '1');
 
     try {
       const progressInterval = setInterval(() => {
@@ -103,17 +115,20 @@ export function CompressPDFWorkspace() {
 
       if (!response.ok) {
         let message = 'Processing failed';
+        let forceAvailable = false;
         try {
           const errorText = await response.text();
           try {
             const errorJson = JSON.parse(errorText);
             message = errorJson?.error || message;
+            forceAvailable = Boolean(errorJson?.canForce);
           } catch {
             message = errorText || message;
           }
         } catch {
           // Keep default message.
         }
+        setCanForce(forceAvailable || response.status === 422);
         throw new Error(message);
       }
 
@@ -122,15 +137,29 @@ export function CompressPDFWorkspace() {
       const originalSize = Number(response.headers.get('x-size-before') || uploadedFile.size);
       const processedSize = Number(response.headers.get('x-size-after') || blob.size);
       const savedPercent = Math.max(0, Math.round((1 - processedSize / originalSize) * 1000) / 10);
-      setResult({
-        pdfUrl,
-        level: compressionLevel,
-        originalSize,
-        processedSize,
-        savedPercent,
+      const engine = response.headers.get('x-compress-engine') || undefined;
+
+      setResult((previous) => {
+        if (previous?.pdfUrl?.startsWith('blob:')) {
+          URL.revokeObjectURL(previous.pdfUrl);
+        }
+        return {
+          pdfUrl,
+          level: compressionLevel,
+          originalSize,
+          processedSize,
+          savedPercent,
+          engine: engine || undefined,
+        };
       });
       setErrorMessage(null);
-      toast.success(`PDF compressed by ${savedPercent}% (${formatSize(originalSize)} to ${formatSize(processedSize)}).`);
+      setCanForce(false);
+
+      if (savedPercent < 1) {
+        toast.message('File returned with little size change — it may already be optimized.');
+      } else {
+        toast.success(`PDF compressed by ${savedPercent}% (${formatSize(originalSize)} → ${formatSize(processedSize)}).`);
+      }
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Failed to compress PDF. Please try again.';
       setErrorMessage(message);
@@ -140,6 +169,9 @@ export function CompressPDFWorkspace() {
       setStatusLabel('Idle');
     }
   }, [compressionLevel, setIsProcessing, setProgress, uploadedFile]);
+
+  const handleProcess = useCallback(() => runCompress(false), [runCompress]);
+  const handleForce = useCallback(() => runCompress(true), [runCompress]);
 
   const handleDownload = useCallback(() => {
     if (!result || !uploadedFile) return;
@@ -159,23 +191,34 @@ export function CompressPDFWorkspace() {
     reset();
     setResult(null);
     setErrorMessage(null);
+    setCanForce(false);
     setCompressionLevel('recommended');
   }, [reset, result]);
 
   if (!activeTool) return null;
 
+  const sizeRatio = result
+    ? Math.min(100, Math.max(4, Math.round((result.processedSize / Math.max(1, result.originalSize)) * 100)))
+    : 0;
+
   return (
     <div aria-busy={isProcessing} className="container mx-auto max-w-5xl px-4 py-8 lg:px-8 md:py-12">
       <ToolPageHeader
         title="Compress PDF"
-        description="Reduce PDF size with a cleaner preset-driven workflow optimized for faster uploads and sharing."
+        description="Reduce PDF size while protecting text clarity. Choose a quality profile tuned for email, forms, or maximum savings."
         icon={<Minimize2 className="h-7 w-7 text-white" />}
         onReset={handleReset}
       />
 
       <div className="space-y-6">
-        <FileUpload accept=".pdf" />
-        <ToolLimitNotice limits={['PDF only', 'Max file size: 25 MB', 'Best results on image-heavy or scanned PDFs with a real compression engine']} />
+        <FileUpload accept=".pdf,application/pdf" />
+        <ToolLimitNotice
+          limits={[
+            'PDF only · max 25 MB',
+            'Image-heavy / scanned PDFs compress best',
+            'Vector text stays sharp; photos are downsampled by preset',
+          ]}
+        />
 
         {uploadedFile && !result ? (
           <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
@@ -185,9 +228,9 @@ export function CompressPDFWorkspace() {
                   <FileText className="h-5 w-5" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-foreground">Choose your compression preset</h3>
+                  <h3 className="text-lg font-bold text-foreground">Choose quality vs size</h3>
                   <p className="text-sm leading-6 text-muted-foreground">
-                    Pick the output profile based on whether you care more about visual quality or file size.
+                    High quality keeps photos clearer. Smallest size hits strict portals. Recommended works for most email and form uploads.
                   </p>
                 </div>
               </div>
@@ -199,14 +242,25 @@ export function CompressPDFWorkspace() {
                     type="button"
                     onClick={() => setCompressionLevel(level.value)}
                     className={`rounded-[1.35rem] border p-4 text-left transition-colors ${compressionLevel === level.value
-                      ? 'border-primary/30 bg-primary/6 shadow-soft'
+                      ? 'border-primary/30 bg-primary/6 shadow-soft ring-1 ring-primary/20'
                       : 'border-border/60 bg-background/75 hover:border-primary/25 hover:bg-background'
                       }`}
                   >
                     <p className="text-sm font-bold text-foreground">{level.title}</p>
                     <p className="mt-2 text-sm leading-6 text-muted-foreground">{level.description}</p>
+                    <p className="mt-3 text-[11px] font-semibold uppercase tracking-[0.12em] text-primary/80">
+                      {level.qualityHint}
+                    </p>
                   </button>
                 ))}
+              </div>
+
+              <div className="mt-5 flex items-start gap-2 rounded-2xl border border-border/50 bg-muted/30 p-3 text-sm text-muted-foreground">
+                <Info className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+                <p>
+                  <span className="font-semibold text-foreground">{activeLevel.dpiHint}.</span>{' '}
+                  Already-optimized PDFs may only shrink a little — try another preset or force-download the best attempt.
+                </p>
               </div>
             </div>
 
@@ -214,6 +268,7 @@ export function CompressPDFWorkspace() {
               <p className="text-xs font-bold uppercase tracking-[0.18em] text-primary">Current selection</p>
               <h3 className="mt-2 text-xl font-bold text-foreground">{activeLevel.title}</h3>
               <p className="mt-2 text-sm leading-6 text-muted-foreground">{activeLevel.description}</p>
+              <p className="mt-3 text-xs font-medium text-muted-foreground">{activeLevel.qualityHint}</p>
 
               <Button
                 className="btn-premium mt-6 h-12 w-full rounded-2xl text-sm font-bold"
@@ -227,7 +282,7 @@ export function CompressPDFWorkspace() {
                       transition={prefersReducedMotion ? undefined : { duration: 1, repeat: Infinity, ease: 'linear' }}
                       className="mr-2 h-4 w-4 rounded-full border-2 border-primary-foreground/30 border-t-primary-foreground"
                     />
-                    {statusLabel} - {Math.round(progress)}%
+                    {statusLabel} · {Math.round(progress)}%
                   </>
                 ) : (
                   <>
@@ -249,6 +304,39 @@ export function CompressPDFWorkspace() {
           <div className="rounded-[1.5rem] border border-amber-500/25 bg-amber-500/10 p-4 text-sm text-amber-900 shadow-soft dark:text-amber-100">
             <p className="font-semibold">Compression could not complete</p>
             <p className="mt-1 leading-6">{errorMessage}</p>
+            <div className="mt-4 flex flex-wrap gap-2">
+              {canForce ? (
+                <Button size="sm" className="rounded-xl" onClick={handleForce} disabled={isProcessing}>
+                  Download best attempt anyway
+                </Button>
+              ) : null}
+              {compressionLevel !== 'extreme' ? (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="rounded-xl"
+                  onClick={() => {
+                    setCompressionLevel('extreme');
+                    setErrorMessage(null);
+                  }}
+                >
+                  Switch to Smallest size
+                </Button>
+              ) : null}
+              {compressionLevel !== 'less' ? (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="rounded-xl"
+                  onClick={() => {
+                    setCompressionLevel('less');
+                    setErrorMessage(null);
+                  }}
+                >
+                  Try High quality
+                </Button>
+              ) : null}
+            </div>
           </div>
         ) : null}
 
@@ -256,6 +344,7 @@ export function CompressPDFWorkspace() {
           <div className="space-y-4 pt-2">
             <div className="flex flex-wrap items-center gap-3">
               <Badge className="rounded-full border border-emerald-500/20 bg-emerald-500/10 px-4 py-2 text-sm font-bold text-emerald-700 hover:bg-emerald-500/15 dark:text-emerald-300">
+                <CheckCircle2 className="mr-1.5 inline h-3.5 w-3.5" />
                 Saved {result.savedPercent}%
               </Badge>
               <Badge variant="secondary" className="rounded-full px-4 py-2 text-sm font-semibold">
@@ -263,6 +352,25 @@ export function CompressPDFWorkspace() {
                 <ArrowRight className="mx-2 inline h-3.5 w-3.5" />
                 {formatSize(result.processedSize)}
               </Badge>
+              {result.engine ? (
+                <Badge variant="outline" className="rounded-full px-3 py-1.5 text-xs font-medium">
+                  Engine: {result.engine}
+                </Badge>
+              ) : null}
+            </div>
+
+            {/* Visual size comparison bar */}
+            <div className="rounded-2xl border border-border/50 bg-card/60 p-4">
+              <div className="mb-2 flex items-center justify-between text-xs font-semibold text-muted-foreground">
+                <span>Original</span>
+                <span>Compressed ({sizeRatio}%)</span>
+              </div>
+              <div className="relative h-3 overflow-hidden rounded-full bg-muted">
+                <div
+                  className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-primary to-violet-500 transition-all"
+                  style={{ width: `${sizeRatio}%` }}
+                />
+              </div>
             </div>
 
             <ResultCard
@@ -270,7 +378,7 @@ export function CompressPDFWorkspace() {
               description="Your PDF is ready for faster sharing, uploads, and document workflows."
               onDownload={handleDownload}
               downloadLabel="Download compressed PDF"
-              primaryMeta={`${uploadedFile.name} - ${compressionLevels.find((level) => level.value === result.level)?.title} preset - ${formatSize(result.originalSize)} to ${formatSize(result.processedSize)}`}
+              primaryMeta={`${uploadedFile.name} · ${compressionLevels.find((level) => level.value === result.level)?.title} · ${formatSize(result.originalSize)} → ${formatSize(result.processedSize)}`}
               nextActions={[
                 { label: 'Merge PDF', href: '/tools/merge-pdf' },
                 { label: 'Split PDF', href: '/tools/split-pdf' },
@@ -287,7 +395,7 @@ export function CompressPDFWorkspace() {
       {uploadedFile && !result ? (
         <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/95 p-3 backdrop-blur md:hidden">
           <Button className="btn-premium h-11 w-full" onClick={handleProcess} disabled={isProcessing}>
-            {isProcessing ? `${statusLabel} - ${Math.round(progress)}%` : `Compress PDF (${activeLevel.title})`}
+            {isProcessing ? `${statusLabel} · ${Math.round(progress)}%` : `Compress PDF (${activeLevel.title})`}
           </Button>
         </div>
       ) : null}

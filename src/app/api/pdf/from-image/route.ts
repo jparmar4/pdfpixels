@@ -56,25 +56,45 @@ export async function POST(request: NextRequest) {
       const image = sharp(Buffer.from(imageBytes));
       const metadata = await image.metadata();
       
+      // Normalize all non-JPEG/PNG inputs through Sharp so GIF/HEIC/AVIF/BMP work
+      const isPng = file.type === 'image/png' || (metadata.format === 'png');
+      const isJpeg = file.type === 'image/jpeg' || file.type === 'image/jpg' || metadata.format === 'jpeg';
       let imageEmbed;
-      if (file.type === 'image/png') {
-        imageEmbed = await pdfDoc.embedPng(imageBytes);
-      } else if (file.type === 'image/webp') {
-        // Convert webp to png for embedding
-        const pngBuffer = await sharp(Buffer.from(imageBytes)).png().toBuffer();
+      if (isPng) {
+        const pngBuffer = isPng && metadata.format === 'png'
+          ? Buffer.from(imageBytes)
+          : await sharp(Buffer.from(imageBytes)).png().toBuffer();
         imageEmbed = await pdfDoc.embedPng(pngBuffer);
+      } else if (isJpeg) {
+        try {
+          imageEmbed = await pdfDoc.embedJpg(imageBytes);
+        } catch {
+          const jpegBuffer = await sharp(Buffer.from(imageBytes)).jpeg({ quality: 92 }).toBuffer();
+          imageEmbed = await pdfDoc.embedJpg(jpegBuffer);
+        }
       } else {
-        // Default to JPEG
-        imageEmbed = await pdfDoc.embedJpg(imageBytes);
+        const hasAlpha = Boolean(metadata.hasAlpha);
+        if (hasAlpha) {
+          const pngBuffer = await sharp(Buffer.from(imageBytes)).png().toBuffer();
+          imageEmbed = await pdfDoc.embedPng(pngBuffer);
+        } else {
+          const jpegBuffer = await sharp(Buffer.from(imageBytes)).jpeg({ quality: 92 }).toBuffer();
+          imageEmbed = await pdfDoc.embedJpg(jpegBuffer);
+        }
       }
       
       // Determine page size
       let pageWidth: number, pageHeight: number;
       
       if (pageSize === 'fit') {
-        // Fit page to image dimensions
-        pageWidth = metadata.width || 595;
-        pageHeight = metadata.height || 841;
+        // Convert pixel dimensions to PDF points at 72 DPI, with a sane max page size
+        const dpi = metadata.density && metadata.density > 0 ? metadata.density : 72;
+        const rawW = ((metadata.width || 595) * 72) / dpi;
+        const rawH = ((metadata.height || 841) * 72) / dpi;
+        const maxSide = 1440; // 20 inches at 72 DPI
+        const scale = Math.min(1, maxSide / Math.max(rawW, rawH));
+        pageWidth = Math.max(72, rawW * scale);
+        pageHeight = Math.max(72, rawH * scale);
       } else {
         const size = pageSizes[pageSize] || pageSizes['a4'];
         

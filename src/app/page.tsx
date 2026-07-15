@@ -19,11 +19,26 @@ export const metadata: Metadata = {
   description: seoConfig.description,
   alternates: {
     canonical: '/',
+    languages: {
+      'en-US': '/us',
+      'en-GB': '/uk',
+      'en-CA': '/ca',
+      'en-AU': '/au',
+      'en-IN': '/in',
+      'x-default': '/',
+    },
   },
   openGraph: {
     title: `${siteConfig.name} - Free Online PDF & Image Tools`,
     description: seoConfig.description,
-    url: '/',
+    url: siteConfig.url,
+    type: 'website',
+    siteName: siteConfig.name,
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: `${siteConfig.name} - Free Online PDF & Image Tools`,
+    description: seoConfig.description,
   },
 };
 

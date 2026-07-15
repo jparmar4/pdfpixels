@@ -1,13 +1,10 @@
 import { apiError } from '@/lib/api-response';
-import { loadPdfWithTimeout, pdfBinaryResponse } from '@/lib/pdf-api';
+import { loadPdfWithTimeout, pdfBinaryResponse, validatePdfUpload } from '@/lib/pdf-api';
+import { NextRequest } from 'next/server';
+import { rgb, StandardFonts } from 'pdf-lib';
 
 export const maxDuration = 60;
-import { NextRequest, NextResponse } from 'next/server';
-import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
-
-const CACHE_HEADERS = {
-    'Cache-Control': 'no-store, max-age=0',
-};
+export const runtime = 'nodejs';
 
 export async function POST(request: NextRequest) {
     try {
@@ -18,9 +15,8 @@ export async function POST(request: NextRequest) {
         const margin = parseInt(formData.get('margin') as string) || 30;
         const fontSize = parseInt(formData.get('fontSize') as string) || 12;
 
-        if (!file) {
-            return apiError('No PDF file provided', 400);
-        }
+        const validation = validatePdfUpload(file);
+        if (!validation.ok) return validation.response;
 
         const arrayBuffer = await file.arrayBuffer();
         const pdfBytes = new Uint8Array(arrayBuffer);
@@ -34,7 +30,7 @@ export async function POST(request: NextRequest) {
             const { width, height } = page.getSize();
             
             // Format text, e.g. replacing {n} with page number and {total} with total pages
-            let text = format.replace('{n}', (i + 1).toString()).replace('{total}', totalPages.toString());
+            const text = format.replace('{n}', (i + 1).toString()).replace('{total}', totalPages.toString());
             const textWidth = font.widthOfTextAtSize(text, fontSize);
             const textHeight = font.heightAtSize(fontSize);
 

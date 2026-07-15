@@ -9,28 +9,102 @@ const CACHE_HEADERS = {
   'Cache-Control': 'no-store, max-age=0',
 };
 
+const MAX_BYTES = 20 * 1024 * 1024;
+const MAX_EDGE = 4096;
+const MAX_OUTPUT_EDGE = 4096;
+
+type QualityMode = FaceMode; // balanced | high | privacy-max
+
+function clampDimension(width: number, height: number, maxEdge: number) {
+  const longest = Math.max(width, height);
+  if (longest <= maxEdge) return { width, height };
+  const scale = maxEdge / longest;
+  return {
+    width: Math.max(1, Math.round(width * scale)),
+    height: Math.max(1, Math.round(height * scale)),
+  };
+}
+
+async function toPngDataUrl(buffer: Buffer, maxEdge = MAX_OUTPUT_EDGE) {
+  const sharpModule = await import('sharp');
+  const sharp = sharpModule.default;
+  const meta = await sharp(buffer, { failOn: 'none' }).metadata();
+  const w = meta.width || 1;
+  const h = meta.height || 1;
+  const dims = clampDimension(w, h, maxEdge);
+
+  let pipeline = sharp(buffer, { failOn: 'none' });
+  if (dims.width !== w || dims.height !== h) {
+    pipeline = pipeline.resize(dims.width, dims.height, {
+      fit: 'inside',
+      withoutEnlargement: true,
+      kernel: 'lanczos3',
+    });
+  }
+
+  const out = await pipeline.png({ compressionLevel: 6, adaptiveFiltering: true }).toBuffer();
+  // Cap ~12MB base64 payload
+  if (out.length > 12 * 1024 * 1024) {
+    const smaller = await sharp(out)
+      .resize({ width: Math.min(dims.width, 2048), height: Math.min(dims.height, 2048), fit: 'inside' })
+      .png({ compressionLevel: 8 })
+      .toBuffer();
+    return {
+      imageUrl: `data:image/png;base64,${smaller.toString('base64')}`,
+      bytes: smaller.length,
+    };
+  }
+
+  return {
+    imageUrl: `data:image/png;base64,${out.toString('base64')}`,
+    bytes: out.length,
+  };
+}
+
 export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
-    const file = formData.get('image') as File;
+    const file = formData.get('image') as File | null;
     const tool = (formData.get('tool') as string) || 'enhance-image';
     const modeRaw = (formData.get('mode') as string) || 'balanced';
-    const mode: FaceMode = modeRaw === 'privacy-max' ? 'privacy-max' : modeRaw === 'high' ? 'high' : 'balanced';
+    const mode: QualityMode =
+      modeRaw === 'privacy-max' ? 'privacy-max' : modeRaw === 'high' ? 'high' : 'balanced';
     const expectedFacesRaw = parseInt((formData.get('expectedFaces') as string) || '', 10);
-    const expectedFaces = Number.isFinite(expectedFacesRaw) && expectedFacesRaw > 0 ? Math.min(8, expectedFacesRaw) : null;
+    const expectedFaces =
+      Number.isFinite(expectedFacesRaw) && expectedFacesRaw > 0 ? Math.min(8, expectedFacesRaw) : null;
 
     if (!file) {
       return apiError('No image provided', 400);
     }
 
-    if (file.size > 20 * 1024 * 1024) {
-      return apiError('File too large. Maximum size for processing is 20MB.', 400);
+    if (file.size > MAX_BYTES) {
+      return apiError('File too large. Maximum size for AI processing is 20MB.', 400);
+    }
+
+    if (file.type && !file.type.startsWith('image/') && !/\.(jpe?g|png|webp|gif|heic|avif|bmp|tiff?)$/i.test(file.name)) {
+      return apiError('Only image files are supported for AI tools.', 400);
     }
 
     const sharpModule = await import('sharp');
     const sharp = sharpModule.default;
-    const input = Buffer.from(await file.arrayBuffer());
-    const base = sharp(input, { failOn: 'none' });
+    let input = Buffer.from(await file.arrayBuffer());
+
+    // Normalize orientation + cap working resolution for speed/stability
+    const meta = await sharp(input, { failOn: 'none' }).metadata();
+    const srcW = meta.width || 1;
+    const srcH = meta.height || 1;
+    const work = clampDimension(srcW, srcH, MAX_EDGE);
+
+    let base = sharp(input, { failOn: 'none' }).rotate(); // honor EXIF orientation
+    if (work.width !== srcW || work.height !== srcH) {
+      base = base.resize(work.width, work.height, {
+        fit: 'inside',
+        withoutEnlargement: true,
+        kernel: 'lanczos3',
+      });
+      input = Buffer.from(await base.toBuffer());
+      base = sharp(input, { failOn: 'none' });
+    }
 
     let out: Buffer;
     let engine = 'sharp-basic-v1';
@@ -45,7 +119,7 @@ export async function POST(request: NextRequest) {
 
       case 'blur-background': {
         const seg = await segmentForeground(sharp, input);
-        const sigma = mode === 'privacy-max' ? 26 : mode === 'high' ? 20 : 16;
+        const sigma = mode === 'privacy-max' ? 28 : mode === 'high' ? 20 : 14;
         out = await applyBackgroundBlur(sharp, seg.image, seg.softFgMask, sigma);
         engine = `${seg.engine}:${mode}`;
         break;
@@ -57,11 +131,8 @@ export async function POST(request: NextRequest) {
 
         const onnx = await detectFaceRegionsONNX(image, mode);
         const faces = onnx && onnx.regions.length > 0 ? onnx : await detectFaceRegions(sharp, image, mode);
+        const regions = faces.regions;
 
-        let regions = faces.regions;
-
-        // Only pad with synthetic slots when the user explicitly expects more faces.
-        // Never invent faces when detection found none (avoids random full-image blur).
         if (expectedFaces && regions.length > 0 && regions.length < expectedFaces) {
           const template = regions[0];
           const fw = template.width || Math.round(image.width * 0.16);
@@ -84,7 +155,7 @@ export async function POST(request: NextRequest) {
         if (regions.length === 0) {
           return NextResponse.json(
             {
-              error: 'No faces detected. Try a clearer portrait photo or lower the detection mode.',
+              error: 'No faces detected. Try a clearer portrait, better lighting, or Balanced mode.',
               success: false,
               engine: faces.engine,
             },
@@ -92,14 +163,13 @@ export async function POST(request: NextRequest) {
           );
         }
 
-        const sigma = mode === 'privacy-max' ? 34 : mode === 'high' ? 28 : 24;
+        const sigma = mode === 'privacy-max' ? 36 : mode === 'high' ? 28 : 22;
         out = await applyRegionBlur(sharp, image, regions, sigma);
 
-        // privacy-max: slightly expand each face region blur, not the whole image
         if (mode === 'privacy-max') {
           const expanded = regions.map((r) => {
-            const padX = Math.round(r.width * 0.2);
-            const padY = Math.round(r.height * 0.25);
+            const padX = Math.round(r.width * 0.22);
+            const padY = Math.round(r.height * 0.28);
             const left = Math.max(0, r.left - padX);
             const top = Math.max(0, r.top - padY);
             return {
@@ -111,11 +181,15 @@ export async function POST(request: NextRequest) {
           });
           out = await applyRegionBlur(
             sharp,
-            await sharp(out).ensureAlpha().raw().toBuffer({ resolveWithObject: true }).then((raw) => ({
-              data: raw.data,
-              width: raw.info.width,
-              height: raw.info.height,
-            })),
+            await sharp(out)
+              .ensureAlpha()
+              .raw()
+              .toBuffer({ resolveWithObject: true })
+              .then((raw) => ({
+                data: raw.data,
+                width: raw.info.width,
+                height: raw.info.height,
+              })),
             expanded,
             18,
           );
@@ -127,106 +201,121 @@ export async function POST(request: NextRequest) {
       }
 
       case 'enhance-image': {
-        // Multi-step enhancement: denoise, sharpen, improve contrast, boost vibrance
+        // Mode-aware enhance: balanced = gentle, high = punchier, privacy-max unused → treat as high
+        const strength = mode === 'balanced' ? 0.85 : 1.15;
+        // Natural = mild polish; Vivid/high = stronger contrast + color
         out = await base
           .clone()
-          // Step 1: Reduce noise and smooth artifacts
-          .blur(0.3)
-          // Step 2: Apply unsharp mask (sharpen) for crisp edges
-          .sharpen({ sigma: 1.2, m1: 0.5, m2: 3, x1: 2, y2: 10, y3: 20 })
-          // Step 3: Normalize brightness and contrast
+          .blur(mode === 'balanced' ? 0.28 : 0.18)
+          .sharpen({
+            sigma: 0.9 * strength,
+            m1: 0.5,
+            m2: 2.8,
+            x1: 2,
+            y2: 10,
+            y3: 20,
+          })
           .normalize()
-          // Step 4: Boost saturation slightly for richer colors
-          .modulate({ brightness: 1.04, saturation: 1.25 })
-          // Step 5: Final sharpen pass for edge definition
-          .sharpen({ sigma: 0.6, m1: 0.8, m2: 1.5, x1: 2, y2: 10, y3: 20 })
-          .png({ quality: 100, compressionLevel: 6 })
+          .modulate({
+            brightness: mode === 'balanced' ? 1.02 : 1.05,
+            saturation: mode === 'balanced' ? 1.12 : 1.22,
+          })
+          .sharpen({ sigma: 0.45 * strength, m1: 0.7, m2: 1.2, x1: 2, y2: 10, y3: 20 })
+          .png({ compressionLevel: 6 })
           .toBuffer();
-        engine = 'sharp-enhanced-v2';
+        engine = `sharp-enhanced-v3:${mode}`;
         break;
       }
 
       case 'beautify': {
-        // Portrait beautification: smooth skin, brighten, enhance eyes area
+        const blurAmt = mode === 'balanced' ? 0.55 : 0.9;
         out = await base
           .clone()
-          // Gentle blur for skin smoothing (simulates bilateral filter)
-          .blur(0.8)
-          // Re-sharpen eyes/edges selectively
-          .sharpen({ sigma: 0.6, m1: 0.2, m2: 1, x1: 3, y2: 15, y3: 25 })
-          // Slight brightness boost for glowing skin
-          .modulate({ brightness: 1.08, saturation: 1.1 })
-          // Soft contrast enhancement
+          .blur(blurAmt)
+          .sharpen({ sigma: mode === 'balanced' ? 0.5 : 0.7, m1: 0.25, m2: 1.1, x1: 3, y2: 15, y3: 25 })
+          .modulate({
+            brightness: mode === 'balanced' ? 1.05 : 1.09,
+            saturation: mode === 'balanced' ? 1.06 : 1.12,
+          })
           .normalize()
-          .png({ quality: 100, compressionLevel: 6 })
+          .png({ compressionLevel: 6 })
           .toBuffer();
-        engine = 'sharp-beautify-v2';
+        engine = `sharp-beautify-v3:${mode}`;
         break;
       }
+
       case 'retouch': {
-        // Photo retouching: blemish removal simulation, clarity, color correction
         out = await base
           .clone()
-          // Light blur to reduce blemishes/spots
-          .blur(0.5)
-          // Re-sharpen to maintain detail
-          .sharpen({ sigma: 0.7, m1: 0.3, m2: 1.2, x1: 2, y2: 12, y3: 22 })
-          // Color correction and normalization
+          .blur(mode === 'balanced' ? 0.35 : 0.55)
+          .sharpen({ sigma: mode === 'balanced' ? 0.55 : 0.75, m1: 0.3, m2: 1.2, x1: 2, y2: 12, y3: 22 })
           .normalize()
-          // Subtle warm tone adjustment
-          .modulate({ brightness: 1.05, saturation: 1.12 })
-          // Final clarity pass
-          .sharpen({ sigma: 0.4, m1: 0.5, m2: 0.8 })
-          .png({ quality: 100, compressionLevel: 6 })
+          .modulate({
+            brightness: 1.04,
+            saturation: mode === 'balanced' ? 1.08 : 1.14,
+          })
+          .sharpen({ sigma: 0.35, m1: 0.45, m2: 0.8 })
+          .png({ compressionLevel: 6 })
           .toBuffer();
-        engine = 'sharp-retouch-v2';
+        engine = `sharp-retouch-v3:${mode}`;
         break;
       }
 
       case 'upscale': {
-        const meta = await base.metadata();
-        const scale = 2;
-        const newWidth = (meta.width || 800) * scale;
-        const newHeight = (meta.height || 600) * scale;
-        
-        // Multi-step upscale for better quality
-        // Step 1: Upscale by 2x with lanczos3
+        const m = await base.metadata();
+        const scale = mode === 'balanced' ? 2 : mode === 'high' ? 2 : 2;
+        // Cap upscaled edge so we don't OOM
+        const targetW = Math.min((m.width || 800) * scale, MAX_OUTPUT_EDGE);
+        const targetH = Math.min((m.height || 600) * scale, MAX_OUTPUT_EDGE);
         out = await base
           .clone()
           .resize({
-            width: newWidth,
-            height: newHeight,
+            width: targetW,
+            height: targetH,
+            fit: 'inside',
             kernel: sharp.kernel.lanczos3,
             fastShrinkOnLoad: false,
           })
-          // Step 2: Sharpen to recover detail lost during upscaling
-          .sharpen({ sigma: 1.0, m1: 1.0, m2: 2.5, x1: 2, y2: 10, y3: 20 })
-          // Step 3: Mild unsharp mask
-          .sharpen({ sigma: 0.5, m1: 0.3, m2: 1.0, x1: 3, y2: 15, y3: 25 })
-          // Step 4: Normalize to fix contrast loss
-          .normalize()
-          .png({ quality: 100, compressionLevel: 6 })
+          .sharpen({
+            sigma: mode === 'balanced' ? 0.8 : 1.1,
+            m1: 0.9,
+            m2: 2.2,
+            x1: 2,
+            y2: 10,
+            y3: 20,
+          })
+          .modulate({ brightness: 1.01, saturation: 1.05 })
+          .png({ compressionLevel: 6 })
           .toBuffer();
-        engine = `sharp-upscale-v2-${scale}x`;
+        engine = `sharp-upscale-v3-${scale}x:${mode}`;
         break;
       }
 
       default: {
-        out = await base.png({ quality: 100 }).toBuffer();
+        out = await base.png({ compressionLevel: 6 }).toBuffer();
+        engine = 'sharp-passthrough';
       }
     }
+
+    const payload = await toPngDataUrl(out);
 
     return NextResponse.json(
       {
         success: true,
-        imageUrl: `data:image/png;base64,${out.toString('base64')}`,
+        imageUrl: payload.imageUrl,
         tool,
         engine,
+        mode,
+        outputBytes: payload.bytes,
       },
-      { headers: CACHE_HEADERS }
+      { headers: CACHE_HEADERS },
     );
   } catch (error) {
     console.error('AI route error:', error);
-    return apiError('Image processing failed. Please try a different image.', 500);
+    const message = error instanceof Error ? error.message : '';
+    if (message.toLowerCase().includes('unsupported image') || message.toLowerCase().includes('input buffer')) {
+      return apiError('Could not read this image. Try JPG or PNG.', 400);
+    }
+    return apiError('Image processing failed. Please try a different image or quality mode.', 500);
   }
 }

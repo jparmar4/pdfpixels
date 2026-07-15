@@ -39,6 +39,7 @@ const formatInfo = {
 };
 
 type OutputFormat = keyof typeof formatInfo;
+const PDF_OUTPUT_FORMATS: OutputFormat[] = ['jpg', 'png', 'webp'];
 
 function getTargetFormat(toolId: string): OutputFormat | null {
   if (toolId.includes('-to-jpg') || toolId.includes('-to-jpeg')) return 'jpg';
@@ -143,6 +144,21 @@ export function ConvertWorkspace() {
 
   const isPdfToImage = activeTool?.id === 'pdf-to-image';
   const [dpi, setDpi] = useState(150);
+  const availableFormats = useMemo(
+    () => (isPdfToImage ? PDF_OUTPUT_FORMATS : (Object.keys(formatInfo) as OutputFormat[])),
+    [isPdfToImage],
+  );
+
+  useEffect(() => {
+    if (isPdfToImage && !PDF_OUTPUT_FORMATS.includes(outputFormat)) {
+      setOutputFormat('jpg');
+    }
+  }, [isPdfToImage, outputFormat]);
+
+  const revokeBlobUrls = useCallback(() => {
+    if (downloadUrl?.startsWith('blob:')) URL.revokeObjectURL(downloadUrl);
+    if (processedImage?.startsWith('blob:')) URL.revokeObjectURL(processedImage);
+  }, [downloadUrl, processedImage]);
 
   const handleProcess = useCallback(async () => {
     if (!uploadedFile) {
@@ -150,12 +166,16 @@ export function ConvertWorkspace() {
       return;
     }
 
+    const safeFormat = isPdfToImage && !PDF_OUTPUT_FORMATS.includes(outputFormat) ? 'jpg' : outputFormat;
+
     setIsProcessing(true);
     setProgress(0);
+    revokeBlobUrls();
+    setDownloadUrl(null);
 
     const formData = new FormData();
     formData.append('file', uploadedFile);
-    formData.append('format', outputFormat);
+    formData.append('format', safeFormat);
     formData.append('quality', quality.toString());
 
     // PDF-to-image uses a different API endpoint
@@ -209,10 +229,11 @@ export function ConvertWorkspace() {
             const previewUrl = URL.createObjectURL(firstBlob);
             setProcessedImage(previewUrl);
             setProcessingStats({
-              originalSize: 0,
+              originalSize: uploadedFile.size,
               processedSize: blob.size,
               savedPercent: 0,
             });
+            setViewMode('preview');
             const convertedPages = response.headers.get('x-converted-pages') || files.length;
             toast.success(`Converted ${convertedPages} page(s) to images.`);
           } else {
@@ -241,14 +262,14 @@ export function ConvertWorkspace() {
           processedSize: data.processedSize,
           savedPercent: data.savedPercent,
         });
-        toast.success(`Image converted to ${formatInfo[outputFormat].name}.`);
+        toast.success(`Image converted to ${formatInfo[safeFormat].name}.`);
       }
     } catch (error) {
       toast.error(error instanceof Error ? error.message : (isPdfToImage ? 'Failed to convert PDF. Please try again.' : 'Failed to convert image. Please try again.'));
     } finally {
       setIsProcessing(false);
     }
-  }, [isPdfToImage, outputFormat, quality, dpi, setIsProcessing, setProcessedImage, setProgress, uploadedFile]);
+  }, [isPdfToImage, outputFormat, quality, dpi, revokeBlobUrls, setIsProcessing, setProcessedImage, setProgress, uploadedFile]);
 
   const handleDownload = useCallback(() => {
     if (!processedImage && !downloadUrl) return;
@@ -260,19 +281,21 @@ export function ConvertWorkspace() {
   }, [outputFormat, processedImage, downloadUrl, isPdfToImage]);
 
   const handleReset = useCallback(() => {
+    revokeBlobUrls();
     reset();
     setOutputFormat(lockedFormat || 'jpg');
     setQuality(92);
     setProcessingStats(null);
     setViewMode('preview');
-  }, [lockedFormat, reset]);
+    setDownloadUrl(null);
+  }, [lockedFormat, reset, revokeBlobUrls]);
 
   if (!activeTool) return null;
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="container mx-auto px-4 py-8 lg:px-8">
       <ToolPageHeader title={activeTool.name} description={activeTool.description} icon={ArrowLeftRight} onReset={handleReset}>
-        {processedImage ? (
+        {processedImage && !isPdfToImage ? (
           <div className="rounded-full border border-border/60 bg-background/80 p-1 shadow-soft">
             <Tabs value={viewMode} onValueChange={(value) => setViewMode(value as 'preview' | 'compare')}>
               <TabsList className="h-9 bg-transparent">
@@ -339,7 +362,7 @@ export function ConvertWorkspace() {
                 </div>
 
                 <div className="p-4">
-                  {viewMode === 'compare' && objectUrl ? (
+                  {viewMode === 'compare' && objectUrl && !isPdfToImage ? (
                     <ComparisonSlider before={objectUrl} after={processedImage} />
                   ) : (
                     <div className="flex aspect-video items-center justify-center rounded-[1.35rem] bg-muted/25">
@@ -384,14 +407,19 @@ export function ConvertWorkspace() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="jpg">JPG/JPEG</SelectItem>
-                    <SelectItem value="png">PNG</SelectItem>
-                    <SelectItem value="webp">WebP</SelectItem>
-                    <SelectItem value="avif">AVIF</SelectItem>
+                    {availableFormats.map((key) => (
+                      <SelectItem key={key} value={key}>
+                        {formatInfo[key].name}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
                 <p className="text-xs leading-5 text-muted-foreground">
-                  {lockedFormat ? `Output format fixed to ${formatInfo[lockedFormat].name}.` : formatInfo[outputFormat].description}
+                  {lockedFormat
+                    ? `Output format fixed to ${formatInfo[lockedFormat].name}.`
+                    : isPdfToImage
+                      ? 'PDF pages export as JPG, PNG, or WebP.'
+                      : formatInfo[outputFormat].description}
                 </p>
               </div>
 
@@ -409,23 +437,26 @@ export function ConvertWorkspace() {
 
               {!lockedFormat ? (
                 <div className="space-y-2">
-                  {Object.entries(formatInfo).map(([key, info]) => (
-                    <button
-                      key={key}
-                      type="button"
-                      onClick={() => setOutputFormat(key as OutputFormat)}
-                      className={`w-full rounded-2xl border p-3 text-left transition-colors ${outputFormat === key
-                        ? 'border-primary/30 bg-primary/6'
-                        : 'border-border/60 bg-background/75 hover:border-primary/20'
-                        }`}
-                    >
-                      <div className="flex items-center justify-between gap-3">
-                        <span className="text-sm font-semibold text-foreground">{info.name}</span>
-                        {outputFormat === key ? <Badge variant="secondary">Selected</Badge> : null}
-                      </div>
-                      <p className="mt-1 text-sm leading-6 text-muted-foreground">{info.description}</p>
-                    </button>
-                  ))}
+                  {availableFormats.map((key) => {
+                    const info = formatInfo[key];
+                    return (
+                      <button
+                        key={key}
+                        type="button"
+                        onClick={() => setOutputFormat(key)}
+                        className={`w-full rounded-2xl border p-3 text-left transition-colors ${outputFormat === key
+                          ? 'border-primary/30 bg-primary/6'
+                          : 'border-border/60 bg-background/75 hover:border-primary/20'
+                          }`}
+                      >
+                        <div className="flex items-center justify-between gap-3">
+                          <span className="text-sm font-semibold text-foreground">{info.name}</span>
+                          {outputFormat === key ? <Badge variant="secondary">Selected</Badge> : null}
+                        </div>
+                        <p className="mt-1 text-sm leading-6 text-muted-foreground">{info.description}</p>
+                      </button>
+                    );
+                  })}
                 </div>
               ) : null}
 

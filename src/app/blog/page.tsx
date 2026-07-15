@@ -5,8 +5,6 @@ import Script from "next/script";
 import { getBlogPostsForListing } from "@/config/blog";
 import { siteConfig } from "@/lib/seo-config";
 import { allTools } from "@/lib/tools-data";
-import { Navigation } from "@/components/layout/navigation";
-import { Footer } from "@/components/layout/footer";
 import { Clock, ArrowRight, BookOpen, Sparkles, CalendarDays } from "lucide-react";
 import { AnimatedMeshBg } from "@/components/ui/animated-mesh-bg";
 import { SpotlightCard } from "@/components/ui/spotlight-card";

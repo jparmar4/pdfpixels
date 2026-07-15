@@ -139,6 +139,11 @@ export function ResizeWorkspace() {
     formData.append('image', uploadedFile);
     formData.append('width', pixelDimensions.width.toString());
     formData.append('height', pixelDimensions.height.toString());
+    // Allow enlargement for resize / passport / DPI workflows
+    formData.append('withoutEnlargement', 'false');
+    formData.append('fit', 'fill');
+    // Persist print density for DPI converter and print-ready outputs
+    formData.append('density', String(dpi));
 
     try {
       const progressInterval = setInterval(() => {
@@ -177,7 +182,7 @@ export function ResizeWorkspace() {
     } finally {
       setIsProcessing(false);
     }
-  }, [pixelDimensions.height, pixelDimensions.width, setIsProcessing, setProcessedImage, setProgress, uploadedFile]);
+  }, [dpi, pixelDimensions.height, pixelDimensions.width, setIsProcessing, setProcessedImage, setProgress, uploadedFile]);
 
   const handleDownload = useCallback(() => {
     if (!processedImage) return;

@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Download, RotateCcw, Settings, Sparkles, ChevronRight, RotateCw, FlipHorizontal, FlipVertical, Crop, Type, Stamp } from 'lucide-react';
+import { Download, RotateCcw, Settings, Sparkles, ChevronRight, RotateCw, FlipHorizontal, FlipVertical, Crop, Type, Stamp, ImagePlus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -44,8 +44,13 @@ export function ToolWorkspace() {
   const [pickedColors, setPickedColors] = useState<Array<{ label: string; value: string }>>([]);
   const [originalDimensions, setOriginalDimensions] = useState({ width: 0, height: 0 });
   const [activeTab, setActiveTab] = useState('transform');
+  const [logoFile, setLogoFile] = useState<File | null>(null);
+  const [logoPosition, setLogoPosition] = useState<'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'center'>('bottom-right');
+  const [logoScale, setLogoScale] = useState(20); // % of base image width
+  const [logoOpacity, setLogoOpacity] = useState(100);
+  const [logoPadding, setLogoPadding] = useState(24);
   const toolId = activeTool?.id.toLowerCase() || '';
-  const clientCanvasTools = ['watermark', 'add-text', 'merge-images', 'split-image', 'color-picker'];
+  const clientCanvasTools = ['watermark', 'add-text', 'add-logo', 'merge-images', 'split-image', 'color-picker'];
   const usesClientCanvas = clientCanvasTools.includes(toolId);
 
   // Get original dimensions when file is uploaded
@@ -213,6 +218,38 @@ export function ToolWorkspace() {
           }
           ctx.restore();
         }
+
+        if (toolId === 'add-logo') {
+          if (!logoFile) {
+            throw new Error('Please upload a logo image to overlay.');
+          }
+          const logoImage = await loadImageFromFile(logoFile);
+          const targetWidth = Math.max(16, Math.round((canvas.width * logoScale) / 100));
+          const aspect = logoImage.height / Math.max(1, logoImage.width);
+          const targetHeight = Math.max(16, Math.round(targetWidth * aspect));
+          const pad = Math.max(0, logoPadding);
+
+          let x = pad;
+          let y = pad;
+          if (logoPosition === 'top-right') {
+            x = canvas.width - targetWidth - pad;
+            y = pad;
+          } else if (logoPosition === 'bottom-left') {
+            x = pad;
+            y = canvas.height - targetHeight - pad;
+          } else if (logoPosition === 'bottom-right') {
+            x = canvas.width - targetWidth - pad;
+            y = canvas.height - targetHeight - pad;
+          } else if (logoPosition === 'center') {
+            x = Math.round((canvas.width - targetWidth) / 2);
+            y = Math.round((canvas.height - targetHeight) / 2);
+          }
+
+          ctx.save();
+          ctx.globalAlpha = Math.max(0.05, Math.min(1, logoOpacity / 100));
+          ctx.drawImage(logoImage, x, y, targetWidth, targetHeight);
+          ctx.restore();
+        }
       }
 
       setProgress(100);
@@ -223,7 +260,7 @@ export function ToolWorkspace() {
     } finally {
       setIsProcessing(false);
     }
-  }, [canvasToDataUrl, extraFiles, loadImageFromFile, mergeDirection, setIsProcessing, setProcessedImage, setProgress, splitColumns, splitRows, textColor, textSize, toolId, uploadedFile, watermarkOpacity, watermarkText]);
+  }, [canvasToDataUrl, extraFiles, loadImageFromFile, logoFile, logoOpacity, logoPadding, logoPosition, logoScale, mergeDirection, setIsProcessing, setProcessedImage, setProgress, splitColumns, splitRows, textColor, textSize, toolId, uploadedFile, watermarkOpacity, watermarkText]);
 
   const handleProcess = useCallback(async () => {
     if (!uploadedFile) {
@@ -261,14 +298,21 @@ export function ToolWorkspace() {
       setProgress(100);
 
       if (!response.ok) {
-        throw new Error('Processing failed');
+        let message = 'Processing failed';
+        try {
+          const errorJson = await response.json();
+          message = errorJson?.error || message;
+        } catch {
+          // keep default
+        }
+        throw new Error(message);
       }
 
       const data = await response.json();
       setProcessedImage(data.imageUrl);
       toast.success('Image processed successfully!');
-    } catch {
-      toast.error('Failed to process image. Please try again.');
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Failed to process image. Please try again.');
     } finally {
       setIsProcessing(false);
     }
@@ -293,6 +337,11 @@ export function ToolWorkspace() {
     setSplitTiles([]);
     setPickedColors([]);
     setExtraFiles([]);
+    setLogoFile(null);
+    setLogoPosition('bottom-right');
+    setLogoScale(20);
+    setLogoOpacity(100);
+    setLogoPadding(24);
   }, [reset]);
 
   const getToolIcon = () => {
@@ -300,6 +349,7 @@ export function ToolWorkspace() {
     if (toolId.includes('flip')) return FlipHorizontal;
     if (toolId.includes('crop')) return Crop;
     if (toolId.includes('watermark')) return Stamp;
+    if (toolId.includes('logo')) return ImagePlus;
     if (toolId.includes('text')) return Type;
     return Settings;
   };
@@ -495,6 +545,58 @@ export function ToolWorkspace() {
                           <Slider value={[watermarkOpacity]} onValueChange={([value]) => setWatermarkOpacity(value)} min={10} max={100} step={5} />
                         </div>
                       )}
+                    </div>
+                  )}
+
+                  {toolId === 'add-logo' && (
+                    <div className="space-y-4 rounded-2xl border border-border/60 bg-background/75 p-4">
+                      <div className="space-y-2">
+                        <Label>Logo image</Label>
+                        <Input
+                          type="file"
+                          accept="image/*"
+                          onChange={(event) => setLogoFile(event.target.files?.[0] ?? null)}
+                        />
+                        <p className="text-xs text-muted-foreground">
+                          {logoFile ? `Selected: ${logoFile.name}` : 'PNG logos with transparency work best.'}
+                        </p>
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Position</Label>
+                        <Select value={logoPosition} onValueChange={(value) => setLogoPosition(value as typeof logoPosition)}>
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="top-left">Top left</SelectItem>
+                            <SelectItem value="top-right">Top right</SelectItem>
+                            <SelectItem value="center">Center</SelectItem>
+                            <SelectItem value="bottom-left">Bottom left</SelectItem>
+                            <SelectItem value="bottom-right">Bottom right</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between">
+                          <Label>Logo size</Label>
+                          <span className="text-sm font-mono text-primary">{logoScale}% width</span>
+                        </div>
+                        <Slider value={[logoScale]} onValueChange={([value]) => setLogoScale(value)} min={5} max={60} step={1} />
+                      </div>
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between">
+                          <Label>Opacity</Label>
+                          <span className="text-sm font-mono text-primary">{logoOpacity}%</span>
+                        </div>
+                        <Slider value={[logoOpacity]} onValueChange={([value]) => setLogoOpacity(value)} min={10} max={100} step={5} />
+                      </div>
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between">
+                          <Label>Padding</Label>
+                          <span className="text-sm font-mono text-primary">{logoPadding}px</span>
+                        </div>
+                        <Slider value={[logoPadding]} onValueChange={([value]) => setLogoPadding(value)} min={0} max={120} step={4} />
+                      </div>
                     </div>
                   )}
 

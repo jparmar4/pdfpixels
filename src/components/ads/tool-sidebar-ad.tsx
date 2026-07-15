@@ -3,37 +3,59 @@
 import { AdBanner, SidebarAd } from '@/components/ads/ad-banner';
 import { adsConfig } from '@/lib/ads-config';
 
+/**
+ * Tool-page ad layout:
+ * - Desktop (≥1400px): sticky right rail (300×250+)
+ * - Below that: a single in-content unit between header and tool UI
+ *
+ * Renders nothing when ads are disabled and not in test mode,
+ * so pages don't show empty "Sponsored" chrome.
+ */
 export function ToolSidebarAd() {
+  const hasSidebar = Boolean(adsConfig.slots.sidebar) || adsConfig.testMode;
+  const hasInContent = Boolean(adsConfig.slots.inContent) || adsConfig.testMode;
+
+  if (!adsConfig.enabled && !adsConfig.testMode) {
+    return null;
+  }
+
+  if (!hasSidebar && !hasInContent) {
+    return null;
+  }
+
   return (
     <>
-      {/* Floating Sidebar for large screens (>= 1400px) */}
-      <aside className="pointer-events-none fixed right-5 top-24 z-30 hidden min-[1400px]:block animate-fade-in" aria-label="Sidebar Advertisement">
-        <div className="pointer-events-auto w-[300px] rounded-[1.75rem] border border-border/60 bg-card/85 p-3 shadow-premium backdrop-blur-xl">
-          <p className="px-2 text-[10px] font-bold uppercase tracking-[0.22em] text-muted-foreground">
-            Sponsored
-          </p>
-          <div className="mt-3 overflow-hidden rounded-[1.25rem] border border-border/50 bg-background/70 p-2">
+      {hasSidebar ? (
+        <aside
+          className="pointer-events-none fixed right-4 top-24 z-30 hidden w-[300px] min-[1400px]:block"
+          aria-label="Sponsored"
+        >
+          <div className="pointer-events-auto sticky top-24 rounded-2xl border border-border/50 bg-card/90 p-3 shadow-soft backdrop-blur-md">
             <SidebarAd />
           </div>
-        </div>
-      </aside>
+        </aside>
+      ) : null}
 
-      {/* Inline Ad Unit for screens < 1400px (mobile, tablet, standard laptop) */}
-      <div className="block min-[1400px]:hidden container mx-auto px-4 py-4 lg:px-8" aria-label="Inline Advertisement">
-        <div className="w-full rounded-[1.5rem] border border-border/40 bg-card/45 p-3 shadow-soft backdrop-blur-md">
-          <p className="px-2 text-[9px] font-bold uppercase tracking-[0.22em] text-muted-foreground text-center">
-            Sponsored Advertisement
-          </p>
-          <div className="mt-2 flex justify-center min-h-[100px] overflow-hidden">
-            <AdBanner
-              slot={adsConfig.slots.inContent}
-              format="auto"
-              responsive={true}
-              className="w-full max-w-[728px]"
-            />
+      {/* Only show mobile/tablet unit when there is no sticky rail or when sidebar missing */}
+      {hasInContent ? (
+        <div
+          className={hasSidebar ? 'block min-[1400px]:hidden' : 'block'}
+          aria-label="Sponsored"
+        >
+          <div className="container mx-auto px-4 py-3 lg:px-8">
+            <div className="mx-auto flex max-w-3xl justify-center rounded-2xl border border-border/40 bg-card/40 px-3 py-3">
+              <AdBanner
+                slot={adsConfig.slots.inContent}
+                format="horizontal"
+                responsive
+                minHeight={100}
+                labeled
+                className="w-full max-w-[728px]"
+              />
+            </div>
           </div>
         </div>
-      </div>
+      ) : null}
     </>
   );
 }

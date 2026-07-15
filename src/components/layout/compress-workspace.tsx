@@ -62,9 +62,13 @@ export function CompressWorkspace() {
     setIsProcessing(true);
     setProgress(0);
 
+    const isIncrease = activeTool?.id === 'increase-image-size';
     const formData = new FormData();
     formData.append('image', uploadedFile);
     formData.append('targetSize', targetSize);
+    if (isIncrease) {
+      formData.append('sizeMode', 'increase');
+    }
 
     try {
       const progressInterval = setInterval(() => {
@@ -91,24 +95,29 @@ export function CompressWorkspace() {
       }
 
       const data = await response.json();
+      const deltaPercent = Math.round(((data.processedSize - data.originalSize) / Math.max(1, data.originalSize)) * 100);
       const savedPercent = Math.max(0, Math.round((1 - data.processedSize / data.originalSize) * 100));
       const nextResult: CompressionResult = {
         imageUrl: data.imageUrl,
         originalSize: data.originalSize,
         processedSize: data.processedSize,
-        savedPercent,
+        savedPercent: isIncrease ? Math.max(0, deltaPercent) : savedPercent,
         format: data.format,
       };
 
       setResult(nextResult);
       setProcessedImage(data.imageUrl);
-      toast.success(`Compressed successfully. Saved ${savedPercent}% file size.`);
+      toast.success(
+        isIncrease
+          ? `Increased file size to ${formatSize(data.processedSize)} (target ${targetSize} KB).`
+          : `Compressed successfully. Saved ${savedPercent}% file size.`,
+      );
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Failed to compress image. Please try again.');
     } finally {
       setIsProcessing(false);
     }
-  }, [setIsProcessing, setProcessedImage, setProgress, targetSize, uploadedFile]);
+  }, [activeTool?.id, setIsProcessing, setProcessedImage, setProgress, targetSize, uploadedFile]);
 
   const handleDownload = useCallback(() => {
     if (!processedImage || !uploadedFile || !result) return;
@@ -118,9 +127,10 @@ export function CompressWorkspace() {
     const baseName = originalName.includes('.') ? originalName.substring(0, originalName.lastIndexOf('.')) : originalName;
     const extension = result.format || 'jpg';
     link.href = processedImage;
-    link.download = `${baseName}-compressed.${extension}`;
+    const suffix = activeTool?.id === 'increase-image-size' ? 'increased' : 'compressed';
+    link.download = `${baseName}-${suffix}.${extension}`;
     link.click();
-  }, [processedImage, result, uploadedFile]);
+  }, [activeTool?.id, processedImage, result, uploadedFile]);
 
   const handleReset = useCallback(() => {
     reset();
@@ -128,6 +138,8 @@ export function CompressWorkspace() {
   }, [reset]);
 
   if (!activeTool) return null;
+
+  const isIncrease = activeTool.id === 'increase-image-size';
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="container mx-auto max-w-5xl px-4 py-8 lg:px-8 md:py-12">
@@ -140,7 +152,7 @@ export function CompressWorkspace() {
 
       <div className="space-y-6">
         <FileUpload accept="image/*" />
-        <ToolLimitNotice limits={['Images only', 'Custom target size from 5 KB upward', 'Exact result depends on source image complexity']} />
+        <ToolLimitNotice limits={['Images only', 'Custom target size from 5 KB upward', isIncrease ? 'Pads/encodes image to meet minimum KB requirements' : 'Exact result depends on source image complexity']} />
 
         {uploadedFile && !result ? (
           <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
@@ -152,7 +164,9 @@ export function CompressWorkspace() {
                 <div>
                   <h3 className="text-lg font-bold text-foreground">Choose your target size</h3>
                   <p className="text-sm leading-6 text-muted-foreground">
-                    Aim for an upload requirement or a practical sharing size. Lower targets usually require more aggressive quality reduction.
+                    {isIncrease
+                      ? 'Increase the file to meet a minimum upload requirement (for example form portals that demand 50–200 KB).'
+                      : 'Aim for an upload requirement or a practical sharing size. Lower targets usually require more aggressive quality reduction.'}
                   </p>
                 </div>
               </div>
@@ -193,10 +207,14 @@ export function CompressWorkspace() {
             </div>
 
             <div className="rounded-[1.75rem] border border-border/60 bg-card/75 p-6 shadow-premium backdrop-blur-xl">
-              <p className="text-xs font-bold uppercase tracking-[0.18em] text-primary">Compression summary</p>
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-primary">
+                {isIncrease ? 'Increase summary' : 'Compression summary'}
+              </p>
               <h3 className="mt-2 text-xl font-bold text-foreground">Target: {targetSize} KB</h3>
               <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                Great for portals, forms, messaging apps, or faster delivery on slow connections.
+                {isIncrease
+                  ? 'Best for portals and forms that reject files under a minimum size.'
+                  : 'Great for portals, forms, messaging apps, or faster delivery on slow connections.'}
               </p>
 
               <Button className="btn-premium mt-6 h-12 w-full rounded-2xl text-sm font-bold" onClick={handleProcess} disabled={isProcessing}>
@@ -207,12 +225,12 @@ export function CompressWorkspace() {
                       transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
                       className="mr-2 h-4 w-4 rounded-full border-2 border-primary-foreground/30 border-t-primary-foreground"
                     />
-                    Compressing...
+                    {isIncrease ? 'Increasing size...' : 'Compressing...'}
                   </>
                 ) : (
                   <>
                     <Zap className="mr-2 h-4 w-4" />
-                    Compress image
+                    {isIncrease ? 'Increase image size' : 'Compress image'}
                   </>
                 )}
               </Button>

@@ -1,13 +1,10 @@
 import { apiError } from '@/lib/api-response';
-import { loadPdfWithTimeout, pdfBinaryResponse } from '@/lib/pdf-api';
-import { NextRequest, NextResponse } from 'next/server';
-import { PDFDocument, rgb, StandardFonts, degrees } from 'pdf-lib';
+import { loadPdfWithTimeout, pdfBinaryResponse, validatePdfUpload } from '@/lib/pdf-api';
+import { NextRequest } from 'next/server';
+import { rgb, StandardFonts, degrees } from 'pdf-lib';
 
 export const maxDuration = 60;
-
-const CACHE_HEADERS = {
-    'Cache-Control': 'no-store, max-age=0',
-};
+export const runtime = 'nodejs';
 
 function hexToRgb(hex: string): { r: number; g: number; b: number } {
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
@@ -16,22 +13,26 @@ function hexToRgb(hex: string): { r: number; g: number; b: number } {
         : { r: 0.5, g: 0.5, b: 0.5 };
 }
 
+/** Keep WinAnsi-safe text for StandardFonts; strip unsupported chars. */
+function sanitizeWatermarkText(text: string): string {
+    return text.replace(/[^\x20-\x7E]/g, '?').trim() || 'CONFIDENTIAL';
+}
+
 export async function POST(request: NextRequest) {
     try {
         const formData = await request.formData();
-        const file = formData.get('file') as File;
-        const text = (formData.get('text') as string) || 'CONFIDENTIAL';
-        const opacity = parseFloat(formData.get('opacity') as string) || 0.3;
+        const file = formData.get('file') as File | null;
+        const text = sanitizeWatermarkText((formData.get('text') as string) || 'CONFIDENTIAL');
+        const opacity = Math.min(1, Math.max(0.05, parseFloat(formData.get('opacity') as string) || 0.3));
         const fontSize = parseInt(formData.get('fontSize') as string) || 48;
         const colorHex = (formData.get('color') as string) || '#808080';
         const rotation = parseInt(formData.get('rotation') as string) || 45;
-        const position = (formData.get('position') as string) || 'center'; // center, diagonal
+        const position = (formData.get('position') as string) || 'center';
 
-        if (!file) {
-            return apiError('No PDF file provided', 400);
-        }
+        const validation = validatePdfUpload(file);
+        if (!validation.ok) return validation.response;
 
-        const arrayBuffer = await file.arrayBuffer();
+        const arrayBuffer = await file!.arrayBuffer();
         const pdfBytes = new Uint8Array(arrayBuffer);
         const pdf = await loadPdfWithTimeout(pdfBytes);
 
@@ -45,27 +46,42 @@ export async function POST(request: NextRequest) {
             const textWidth = font.widthOfTextAtSize(text, fontSize);
             const textHeight = font.heightAtSize(fontSize);
 
-            let x = (width - textWidth) / 2;
-            let y = (height - textHeight) / 2;
+            const drawAt = (x: number, y: number) => {
+                page.drawText(text, {
+                    x,
+                    y,
+                    size: fontSize,
+                    font,
+                    color: rgb(color.r, color.g, color.b),
+                    rotate: degrees(rotation),
+                    opacity,
+                });
+            };
 
-            if (position === 'top-left') { x = 50; y = height - 100; }
-            else if (position === 'top-right') { x = width - textWidth - 50; y = height - 100; }
-            else if (position === 'bottom-left') { x = 50; y = 50; }
-            else if (position === 'bottom-right') { x = width - textWidth - 50; y = 50; }
+            if (position === 'diagonal') {
+                // Tile watermark across the page for diagonal repeat
+                const stepX = Math.max(textWidth + 40, width / 3);
+                const stepY = Math.max(textHeight + 60, height / 4);
+                for (let y = -height * 0.2; y < height * 1.2; y += stepY) {
+                    for (let x = -width * 0.2; x < width * 1.2; x += stepX) {
+                        drawAt(x, y);
+                    }
+                }
+            } else {
+                let x = (width - textWidth) / 2;
+                let y = (height - textHeight) / 2;
 
-            page.drawText(text, {
-                x,
-                y,
-                size: fontSize,
-                font,
-                color: rgb(color.r, color.g, color.b),
-                rotate: degrees(rotation),
-                opacity,
-            });
+                if (position === 'top-left') { x = 50; y = height - 100; }
+                else if (position === 'top-right') { x = width - textWidth - 50; y = height - 100; }
+                else if (position === 'bottom-left') { x = 50; y = 50; }
+                else if (position === 'bottom-right') { x = width - textWidth - 50; y = 50; }
+
+                drawAt(x, y);
+            }
         }
 
         const outBytes = await pdf.save();
-        const fileName = file.name ? file.name.replace('.pdf', '-watermarked.pdf') : `watermarked-${Date.now()}.pdf`;
+        const fileName = file!.name ? file!.name.replace(/\.pdf$/i, '-watermarked.pdf') : `watermarked-${Date.now()}.pdf`;
 
         return pdfBinaryResponse(outBytes, fileName);
     } catch (error) {

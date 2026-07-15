@@ -2,8 +2,8 @@ import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import dynamic from 'next/dynamic';
 import { geoRegions, getRegionByCode } from '@/lib/geo-data';
-import { siteConfig, seoConfig } from '@/lib/seo-config';
-import { HomePageSchemas } from '@/components/seo/json-ld';
+import { siteConfig } from '@/lib/seo-config';
+import { absoluteUrl } from '@/lib/seo';
 import { ToolsSection } from '@/components/home/tools-section';
 import { StatsBanner } from '@/components/home/stats-banner';
 import { AnswerEngineSection } from '@/components/home/answer-engine-section';
@@ -85,10 +85,76 @@ export default async function GeoHubPage({ params }: GeoPageProps) {
     notFound();
   }
 
+  const regionUrl = absoluteUrl(`/${region.code}`);
+  const regionSchemas = [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'WebPage',
+      '@id': `${regionUrl}#webpage`,
+      url: regionUrl,
+      name: `Free Online PDF & Image Tools in ${region.name}`,
+      description: `Fast, free PDF and image tools tailored for users in ${region.name}. Compress, merge, split, convert, and edit without signup.`,
+      inLanguage: region.locale,
+      isPartOf: { '@id': `${absoluteUrl('/')}/#website` },
+      about: {
+        '@type': 'Place',
+        name: region.name,
+      },
+      speakable: {
+        '@type': 'SpeakableSpecification',
+        cssSelector: ['#home-hero-title', '#home-hero-summary'],
+      },
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: absoluteUrl('/') },
+        { '@type': 'ListItem', position: 2, name: region.name, item: regionUrl },
+      ],
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: [
+        {
+          '@type': 'Question',
+          name: `Are PdfPixels tools free to use in ${region.name}?`,
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: `Yes. Core PDF and image tools on PdfPixels are free for users in ${region.name}, with no signup required for standard workflows.`,
+          },
+        },
+        {
+          '@type': 'Question',
+          name: `Can I compress a PDF online in ${region.name}?`,
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: `Yes. Open Compress PDF on PdfPixels, upload your file, choose a compression level, and download a smaller PDF suitable for email and form uploads in ${region.name}.`,
+          },
+        },
+        {
+          '@type': 'Question',
+          name: `Does PdfPixels work on mobile devices in ${region.name}?`,
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: `Yes. PdfPixels works in modern mobile and desktop browsers used across ${region.name}, including Chrome, Safari, Edge, and Firefox.`,
+          },
+        },
+      ],
+    },
+  ];
+
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <main id="main-content" className="flex-1">
-        <HomePageSchemas />
+        {regionSchemas.map((schema, index) => (
+          <script
+            key={`region-schema-${index}`}
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+          />
+        ))}
         <ToolsSection region={region} />
         <StatsBanner />
         <HowItWorks />
