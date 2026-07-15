@@ -50,7 +50,7 @@ export function ToolWorkspace() {
   const [logoOpacity, setLogoOpacity] = useState(100);
   const [logoPadding, setLogoPadding] = useState(24);
   const toolId = activeTool?.id.toLowerCase() || '';
-  const clientCanvasTools = ['watermark', 'add-text', 'add-logo', 'merge-images', 'split-image', 'color-picker'];
+  const clientCanvasTools = ['watermark', 'add-text', 'add-logo', 'merge-images', 'split-image', 'color-picker', 'rotate', 'flip'];
   const usesClientCanvas = clientCanvasTools.includes(toolId);
 
   // Get original dimensions when file is uploaded
@@ -106,6 +106,27 @@ export function ToolWorkspace() {
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
       if (!ctx) throw new Error('Canvas is not available in this browser');
+
+      if (toolId === 'rotate' || toolId === 'flip') {
+        const radians = (rotate * Math.PI) / 180;
+        const absCos = Math.abs(Math.cos(radians));
+        const absSin = Math.abs(Math.sin(radians));
+        // After rotation the bounding box may grow
+        const rotW = Math.round(baseImage.width * absCos + baseImage.height * absSin) || baseImage.width;
+        const rotH = Math.round(baseImage.width * absSin + baseImage.height * absCos) || baseImage.height;
+        canvas.width = rotW;
+        canvas.height = rotH;
+        ctx.translate(rotW / 2, rotH / 2);
+        if (flipH) ctx.scale(-1, 1);
+        if (flipV) ctx.scale(1, -1);
+        ctx.rotate(radians);
+        ctx.drawImage(baseImage, -baseImage.width / 2, -baseImage.height / 2);
+        setProgress(100);
+        setProcessedImage(canvasToDataUrl(canvas));
+        toast.success('Image processed successfully.');
+        setIsProcessing(false);
+        return;
+      }
 
       if (toolId === 'merge-images') {
         const images = await Promise.all([uploadedFile, ...extraFiles].map((file) => loadImageFromFile(file)));
@@ -260,7 +281,7 @@ export function ToolWorkspace() {
     } finally {
       setIsProcessing(false);
     }
-  }, [canvasToDataUrl, extraFiles, loadImageFromFile, logoFile, logoOpacity, logoPadding, logoPosition, logoScale, mergeDirection, setIsProcessing, setProcessedImage, setProgress, splitColumns, splitRows, textColor, textSize, toolId, uploadedFile, watermarkOpacity, watermarkText]);
+  }, [canvasToDataUrl, extraFiles, flipH, flipV, loadImageFromFile, logoFile, logoOpacity, logoPadding, logoPosition, logoScale, mergeDirection, rotate, setIsProcessing, setProcessedImage, setProgress, splitColumns, splitRows, textColor, textSize, toolId, uploadedFile, watermarkOpacity, watermarkText]);
 
   const handleProcess = useCallback(async () => {
     if (!uploadedFile) {
@@ -642,6 +663,21 @@ export function ToolWorkspace() {
                       </Label>
                       <span className="text-sm font-mono text-primary">{rotate}°</span>
                     </div>
+                    {(toolId === 'rotate' || !usesClientCanvas || toolId === 'flip') && (
+                      <div className="grid grid-cols-4 gap-2">
+                        {[0, 90, 180, 270].map((deg) => (
+                          <Button
+                            key={deg}
+                            type="button"
+                            size="sm"
+                            variant={rotate === deg || rotate === deg - 360 ? 'default' : 'outline'}
+                            onClick={() => setRotate(deg > 180 ? deg - 360 : deg)}
+                          >
+                            {deg}°
+                          </Button>
+                        ))}
+                      </div>
+                    )}
                     <Slider
                       value={[rotate]}
                       onValueChange={([v]) => setRotate(v)}

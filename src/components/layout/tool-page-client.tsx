@@ -2,7 +2,7 @@
 
 import dynamic from 'next/dynamic';
 import { useAppStore } from '@/store/app-store';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { ErrorBoundary } from '@/components/ui/error-boundary';
 
 // Dynamically import workspace components
@@ -170,14 +170,21 @@ function getWorkspaceComponent(toolId: string) {
 
 export function ToolPageClient({ toolId, toolName, toolDescription }: ToolPageClientProps) {
   const setActiveTool = useAppStore((state) => state.setActiveTool);
+  const reset = useAppStore((state) => state.reset);
+  const prevToolId = useRef<string | null>(null);
 
   useEffect(() => {
+    // Clear previous tool's file when navigating between tools
+    if (prevToolId.current && prevToolId.current !== toolId) {
+      reset();
+    }
+    prevToolId.current = toolId;
     setActiveTool({
       id: toolId,
       name: toolName,
       description: toolDescription,
     });
-  }, [toolId, toolName, toolDescription, setActiveTool]);
+  }, [toolId, toolName, toolDescription, setActiveTool, reset]);
 
   return (
     <ErrorBoundary>
