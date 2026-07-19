@@ -730,4 +730,15 @@ export const toolContentMap: Record<string, ToolContent> = {
         supportedFormats: 'Input: WebP | Output: PNG',
         relatedTools: ['webp-to-jpg', 'png-to-jpeg', 'remove-image-background'],
     },
+    'linearize-pdf': {
+        about: 'Fast Web View (Linearize PDF) optimizes your PDF files for internet streaming. By rearranging the internal structure of the PDF document, it allows a web browser to display the first page almost instantly while the rest of the file downloads in the background. This is a critical optimization for large PDF files hosted on websites.',
+        features: ['Instant rendering of first page', 'Reduces perceived loading time', 'Optimizes document structure', 'Maintains original visual quality', 'Ensures high compatibility with web servers'],
+        useCases: ['Optimizing large reports or eBooks for website embedding', 'Speeding up PDF delivery on slow network connections', 'Enhancing user experience for web-hosted documents', 'Fulfilling technical SEO requirements for fast content loading'],
+        faqs: [
+            { question: 'What does "Linearize" mean?', answer: 'Linearizing a PDF reorders its internal data so that the information required to display the first page is at the very beginning of the file. This allows web browsers to render the first page immediately.' },
+            { question: 'Will linearizing a PDF change its contents?', answer: 'No, the content and visual appearance of the PDF remain exactly the same. Only the internal byte structure is reorganized for efficiency.' }
+        ],
+        supportedFormats: 'Input: PDF | Output: PDF',
+        relatedTools: ['compress-pdf', 'merge-pdf', 'split-pdf'],
+    },
 };

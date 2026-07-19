@@ -28,6 +28,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       url: `https://www.pdfpixels.com/compare/${item.slug}`,
       type: 'article',
     },
+    robots: {
+      index: false,
+      follow: true,
+    },
   };
 }
 

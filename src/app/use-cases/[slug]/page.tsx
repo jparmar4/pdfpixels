@@ -28,6 +28,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       url,
       type: 'article',
     },
+    robots: {
+      index: false,
+      follow: true,
+    },
     other: {
       'article:tag': entry.intent,
     },
