@@ -45,7 +45,7 @@ export const blogPosts: BlogPost[] = [
             "iphone photos to windows",
             "heic viewer windows"
         ],
-        coverImage: "/images/blog/convert-heic-jpg-windows-hero.png",
+        coverImage: "/images/blog/convert-heic-jpg-windows-hero.jpg",
         imageAlt: "A person converting an iPhone HEIC photo to JPG on a Windows laptop",
         content: `
 Have you ever tried to open a photo from your iPhone on your Windows PC, only to be met with a frustrating error message saying the file format is unsupported? If so, you've just encountered a **HEIC file**.
