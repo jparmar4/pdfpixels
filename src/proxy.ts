@@ -7,7 +7,7 @@ const PROCESSING_API_WINDOW_MS = 60_000;
 const GLOBAL_API_LIMIT = 100;
 const GLOBAL_API_WINDOW_MS = 60_000;
 
-export function middleware(request: NextRequest) {
+export default function proxy(request: NextRequest) {
   if (request.method === 'GET' || request.method === 'HEAD' || request.method === 'OPTIONS') {
     return NextResponse.next();
   }

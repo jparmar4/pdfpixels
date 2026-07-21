@@ -1,19 +1,43 @@
 import { Metadata } from 'next';
 import { GitCompareArrows, Zap, Shield, Clock } from 'lucide-react';
 import { AnimatedMeshBg } from '@/components/ui/animated-mesh-bg';
-
-
 import { comparisonPages } from '@/lib/comparisons';
 import { CompareClient } from './CompareClient';
 import Script from 'next/script';
 import { collectionItemListJsonLd } from '@/app/jsonld-helpers';
-import { SITE_URL } from '@/lib/seo';
-
+import { SITE_URL, absoluteUrl, DEFAULT_OG_IMAGE_URL } from '@/lib/seo';
+import { siteConfig } from '@/lib/seo-config';
 
 export const metadata: Metadata = {
-    title: 'Comparisons | PdfPixels',
-    description: 'Objective comparisons of PdfPixels with popular tools for image and PDF workflows.',
+    title: 'Tool Comparisons & Guides | PdfPixels',
+    description: 'Objective comparisons of PdfPixels with popular online tools for image and PDF workflows.',
     alternates: { canonical: '/compare' },
+    openGraph: {
+        title: 'Tool Comparisons & Guides | PdfPixels',
+        description: 'Objective comparisons of PdfPixels with popular online tools for image and PDF workflows.',
+        url: absoluteUrl('/compare'),
+        siteName: siteConfig.name,
+        type: 'website',
+        locale: 'en_US',
+        images: [
+            {
+                url: DEFAULT_OG_IMAGE_URL,
+                width: 1200,
+                height: 630,
+                alt: 'PdfPixels Comparisons',
+            },
+        ],
+    },
+    twitter: {
+        card: 'summary_large_image',
+        title: 'Tool Comparisons & Guides | PdfPixels',
+        description: 'Objective comparisons of PdfPixels with popular online tools for image and PDF workflows.',
+        images: [DEFAULT_OG_IMAGE_URL],
+    },
+    robots: {
+        index: true,
+        follow: true,
+    },
 };
 
 export default function CompareIndexPage() {
@@ -36,8 +60,6 @@ export default function CompareIndexPage() {
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
             />
-            
-
 
             <main id="main-content" className="min-h-screen bg-background">
                 {/* Hero Section */}
@@ -78,8 +100,6 @@ export default function CompareIndexPage() {
                     </div>
                 </section>
             </main>
-
-            
         </>
     );
 }

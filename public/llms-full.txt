@@ -18,6 +18,10 @@
 - Split PDF: https://www.pdfpixels.com/tools/split-pdf
 - PDF to JPG: https://www.pdfpixels.com/tools/pdf-to-jpg
 - Rotate PDF: https://www.pdfpixels.com/tools/rotate-pdf
+- Protect PDF: https://www.pdfpixels.com/tools/protect-pdf
+- Unlock PDF: https://www.pdfpixels.com/tools/unlock-pdf
+- Fast Web View (Linearize PDF): https://www.pdfpixels.com/tools/linearize-pdf
+- Add Page Numbers: https://www.pdfpixels.com/tools/add-page-numbers-to-pdf
 - Reorder PDF pages: https://www.pdfpixels.com/tools/reorder-pdf-pages
 - Delete PDF pages: https://www.pdfpixels.com/tools/delete-pdf-pages
 - Add watermark to PDF: https://www.pdfpixels.com/tools/add-watermark-pdf

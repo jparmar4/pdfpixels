@@ -25,7 +25,11 @@ PdfPixels (https://www.pdfpixels.com) is a browser-based platform for PDF and im
 - Split PDF: https://www.pdfpixels.com/tools/split-pdf
 - PDF to JPG: https://www.pdfpixels.com/tools/pdf-to-jpg
 - Image to PDF: https://www.pdfpixels.com/tools/image-to-pdf
-- Rotate / Watermark / Protect / Unlock / Reorder / Delete pages / Linearize / Page numbers
+- Protect PDF: https://www.pdfpixels.com/tools/protect-pdf
+- Unlock PDF: https://www.pdfpixels.com/tools/unlock-pdf
+- Fast Web View (Linearize PDF): https://www.pdfpixels.com/tools/linearize-pdf
+- Add Page Numbers to PDF: https://www.pdfpixels.com/tools/add-page-numbers-to-pdf
+- Rotate PDF / Watermark PDF / Reorder PDF / Delete PDF Pages
 
 ### Image
 - Compress, Resize, Crop, Convert (PNG/JPG/WebP/HEIC/SVG)

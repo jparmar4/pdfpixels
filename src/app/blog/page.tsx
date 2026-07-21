@@ -258,7 +258,7 @@ export default function BlogPage() {
                                                         <CalendarDays className="w-3.5 h-3.5" />
                                                         {post.date}
                                                     </span>
-                                                    <span>ï¿½</span>
+                                                    <span className="text-muted-foreground/40">•</span>
                                                     <span className="flex items-center gap-1.5">
                                                         <Clock className="w-3.5 h-3.5" />
                                                         {post.readTime}

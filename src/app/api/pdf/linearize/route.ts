@@ -119,25 +119,41 @@ export async function POST(request: NextRequest) {
     outputPath = path.join(tempDir, `${id}-linearized.pdf`);
     fs.writeFileSync(inputPath, inputBuffer);
 
-    // Run linearization
-    await runQpdf([
-      '--linearize',
-      inputPath,
-      outputPath,
-    ]);
+    // Run linearization using qpdf, with pdf-lib object-stream fallback if qpdf is unavailable
+    let outputBuffer: Buffer;
+    let engine = 'qpdf';
 
-    const outputBuffer = fs.readFileSync(outputPath);
+    try {
+      await runQpdf([
+        '--linearize',
+        inputPath,
+        outputPath,
+      ]);
+      outputBuffer = fs.readFileSync(outputPath);
+    } catch (qpdfErr) {
+      const qMsg = qpdfErr instanceof Error ? qpdfErr.message : '';
+      if (qMsg.toLowerCase().includes('qpdf is not available') || qMsg.includes('ENOENT') || qMsg.includes('spawn')) {
+        // Fallback: Use pdf-lib object stream optimization
+        const fallbackBytes = await srcPdf.save({
+          useObjectStreams: true,
+          addDefaultPage: false,
+          objectsPerTick: 100,
+        });
+        outputBuffer = Buffer.from(fallbackBytes);
+        engine = 'pdf-lib-fallback';
+      } else {
+        throw qpdfErr;
+      }
+    }
+
     return pdfBinaryResponse(outputBuffer, `fast-web-view-${Date.now()}.pdf`, {
         'X-Page-Count': String(pageCount),
+        'X-Linearize-Engine': engine,
     });
   } catch (error) {
     console.error('PDF linearize error:', error);
     const message = error instanceof Error ? error.message : 'Unknown error';
 
-    if (message.toLowerCase().includes('qpdf is not available')) {
-      return jsonError('Wait, PDF engine is not available in the current environment.', 503, message);
-    }
-    
     // Check for encrypted files failing formatting
     if (message.toLowerCase().includes('encrypted file') || message.toLowerCase().includes('password')) {
        return jsonError('Encrypted PDFs cannot be linearized. Please unlock the PDF first.', 400, message);
