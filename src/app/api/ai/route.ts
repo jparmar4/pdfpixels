@@ -108,6 +108,7 @@ export async function POST(request: NextRequest) {
 
     let out: Buffer;
     let engine = 'sharp-basic-v1';
+    let faceCount: number | undefined;
 
     switch (tool) {
       case 'remove-background': {
@@ -119,9 +120,19 @@ export async function POST(request: NextRequest) {
 
       case 'blur-background': {
         const seg = await segmentForeground(sharp, input);
-        const sigma = mode === 'privacy-max' ? 28 : mode === 'high' ? 20 : 14;
+        // Optional client-provided blur strength 1–100 (preferred over coarse mode)
+        const strengthRaw = parseInt((formData.get('blurStrength') as string) || '', 10);
+        let sigma: number;
+        if (Number.isFinite(strengthRaw) && strengthRaw > 0) {
+          // Map 1–100 → ~6–40 Gaussian sigma (portrait-friendly)
+          const t = Math.max(1, Math.min(100, strengthRaw)) / 100;
+          sigma = 6 + t * 34;
+        } else {
+          // Mode fallbacks for older clients
+          sigma = mode === 'privacy-max' ? 32 : mode === 'high' ? 22 : 14;
+        }
         out = await applyBackgroundBlur(sharp, seg.image, seg.softFgMask, sigma);
-        engine = `${seg.engine}:${mode}`;
+        engine = `${seg.engine}:blur-bg:s${Math.round(sigma)}:${mode}`;
         break;
       }
 
@@ -158,45 +169,85 @@ export async function POST(request: NextRequest) {
               error: 'No faces detected. Try a clearer portrait, better lighting, or Balanced mode.',
               success: false,
               engine: faces.engine,
+              faceCount: 0,
             },
             { status: 422, headers: CACHE_HEADERS },
           );
         }
 
-        const sigma = mode === 'privacy-max' ? 36 : mode === 'high' ? 28 : 22;
-        out = await applyRegionBlur(sharp, image, regions, sigma);
-
-        if (mode === 'privacy-max') {
-          const expanded = regions.map((r) => {
-            const padX = Math.round(r.width * 0.22);
-            const padY = Math.round(r.height * 0.28);
-            const left = Math.max(0, r.left - padX);
-            const top = Math.max(0, r.top - padY);
-            return {
-              left,
-              top,
-              width: Math.min(info.width - left, r.width + padX * 2),
-              height: Math.min(info.height - top, r.height + padY * 2),
-            };
-          });
-          out = await applyRegionBlur(
-            sharp,
-            await sharp(out)
-              .ensureAlpha()
-              .raw()
-              .toBuffer({ resolveWithObject: true })
-              .then((raw) => ({
-                data: raw.data,
-                width: raw.info.width,
-                height: raw.info.height,
-              })),
-            expanded,
-            18,
-          );
-          engine = `${faces.engine}+expand${expectedFaces ? `+expected-${expectedFaces}` : ''}`;
+        // blurStrength 1–100 optional; faceStyle blur | pixelate
+        const strengthRaw = parseInt((formData.get('blurStrength') as string) || '', 10);
+        const faceStyle = ((formData.get('faceStyle') as string) || 'blur').toLowerCase();
+        let sigma: number;
+        if (Number.isFinite(strengthRaw) && strengthRaw > 0) {
+          const t = Math.max(1, Math.min(100, strengthRaw)) / 100;
+          sigma = 14 + t * 36; // ~14–50
         } else {
-          engine = `${faces.engine}${expectedFaces ? `+expected-${expectedFaces}` : ''}`;
+          sigma = mode === 'privacy-max' ? 40 : mode === 'high' ? 30 : 22;
         }
+
+        const expandPad =
+          mode === 'privacy-max' || (Number.isFinite(strengthRaw) && strengthRaw >= 75) ? 0.28 : 0.12;
+
+        const expanded = regions.map((r) => {
+          const padX = Math.round(r.width * expandPad);
+          const padY = Math.round(r.height * (expandPad + 0.06));
+          const left = Math.max(0, r.left - padX);
+          const top = Math.max(0, r.top - padY);
+          return {
+            left,
+            top,
+            width: Math.min(info.width - left, r.width + padX * 2),
+            height: Math.min(info.height - top, r.height + padY * 2),
+          };
+        });
+
+        if (faceStyle === 'pixelate') {
+          // Mosaic faces: extract → pixelate via resize down/up → composite
+          let pipeline = sharp(image.data, {
+            raw: { width: image.width, height: image.height, channels: 4 },
+          });
+          const block = Math.max(4, Math.round(6 + (sigma / 50) * 22));
+          for (const r of expanded) {
+            const smallW = Math.max(1, Math.round(r.width / block));
+            const smallH = Math.max(1, Math.round(r.height / block));
+            const tile = await sharp(image.data, {
+              raw: { width: image.width, height: image.height, channels: 4 },
+            })
+              .extract({ left: r.left, top: r.top, width: r.width, height: r.height })
+              .resize(smallW, smallH, { kernel: 'nearest' })
+              .resize(r.width, r.height, { kernel: 'nearest' })
+              .png()
+              .toBuffer();
+            pipeline = pipeline.composite([{ input: tile, left: r.left, top: r.top }]);
+          }
+          out = await pipeline.png().toBuffer();
+          engine = `${faces.engine}+pixelate:b${block}:n${regions.length}`;
+        } else {
+          out = await applyRegionBlur(sharp, image, expanded, sigma);
+          if (mode === 'privacy-max' || (Number.isFinite(strengthRaw) && strengthRaw >= 85)) {
+            // Second pass for heavy privacy
+            out = await applyRegionBlur(
+              sharp,
+              await sharp(out)
+                .ensureAlpha()
+                .raw()
+                .toBuffer({ resolveWithObject: true })
+                .then((raw) => ({
+                  data: raw.data,
+                  width: raw.info.width,
+                  height: raw.info.height,
+                })),
+              expanded,
+              Math.max(12, sigma * 0.55),
+            );
+            engine = `${faces.engine}+blur-x2:s${Math.round(sigma)}:n${regions.length}`;
+          } else {
+            engine = `${faces.engine}+blur:s${Math.round(sigma)}:n${regions.length}`;
+          }
+        }
+
+        faceCount = regions.length;
         break;
       }
 
@@ -307,6 +358,7 @@ export async function POST(request: NextRequest) {
         engine,
         mode,
         outputBytes: payload.bytes,
+        ...(faceCount !== undefined ? { faceCount } : {}),
       },
       { headers: CACHE_HEADERS },
     );

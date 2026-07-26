@@ -66,6 +66,7 @@ export function CompressPDFWorkspace() {
   const [compressionLevel, setCompressionLevel] = useState<CompressionLevel>('recommended');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [canForce, setCanForce] = useState(false);
+  const [pdfMeta, setPdfMeta] = useState<{ pages: number } | null>(null);
   const prefersReducedMotion = useReducedMotion();
 
   const activeLevel = useMemo(
@@ -160,6 +161,9 @@ export function CompressPDFWorkspace() {
       } else {
         toast.success(`PDF compressed by ${savedPercent}% (${formatSize(originalSize)} → ${formatSize(processedSize)}).`);
       }
+      requestAnimationFrame(() => {
+        document.getElementById('compress-result')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      });
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Failed to compress PDF. Please try again.';
       setErrorMessage(message);
@@ -181,7 +185,10 @@ export function CompressPDFWorkspace() {
     const baseName = originalName.includes('.') ? originalName.substring(0, originalName.lastIndexOf('.')) : originalName;
     link.href = result.pdfUrl;
     link.download = `${baseName}-compressed.pdf`;
+    document.body.appendChild(link);
     link.click();
+    link.remove();
+    toast.success('Download started');
   }, [result, uploadedFile]);
 
   const handleReset = useCallback(() => {
@@ -193,7 +200,32 @@ export function CompressPDFWorkspace() {
     setErrorMessage(null);
     setCanForce(false);
     setCompressionLevel('recommended');
+    setPdfMeta(null);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [reset, result]);
+
+  useEffect(() => {
+    if (!uploadedFile) {
+      setPdfMeta(null);
+      setResult(null);
+      setErrorMessage(null);
+      return;
+    }
+    let cancelled = false;
+    (async () => {
+      try {
+        const { PDFDocument } = await import('pdf-lib');
+        const bytes = await uploadedFile.arrayBuffer();
+        const pdf = await PDFDocument.load(bytes, { ignoreEncryption: true });
+        if (!cancelled) setPdfMeta({ pages: pdf.getPageCount() });
+      } catch {
+        if (!cancelled) setPdfMeta(null);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [uploadedFile]);
 
   if (!activeTool) return null;
 
@@ -219,6 +251,24 @@ export function CompressPDFWorkspace() {
             'Vector text stays sharp; photos are downsampled by preset',
           ]}
         />
+
+        {uploadedFile ? (
+          <div className="rounded-2xl border border-border/60 bg-card/70 px-4 py-3 flex flex-wrap items-center justify-between gap-2">
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-red-500/10 text-red-500">
+                <FileText className="h-5 w-5" />
+              </div>
+              <div className="min-w-0">
+                <p className="text-sm font-semibold truncate">{uploadedFile.name}</p>
+                <p className="text-xs text-muted-foreground">
+                  {formatSize(uploadedFile.size)}
+                  {pdfMeta?.pages ? ` · ${pdfMeta.pages} page${pdfMeta.pages === 1 ? '' : 's'}` : ''}
+                </p>
+              </div>
+            </div>
+            <Badge variant="secondary">Ready to compress</Badge>
+          </div>
+        ) : null}
 
         {uploadedFile && !result ? (
           <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
@@ -273,7 +323,7 @@ export function CompressPDFWorkspace() {
               <Button
                 className="btn-premium mt-6 h-12 w-full rounded-2xl text-sm font-bold"
                 onClick={handleProcess}
-                disabled={isProcessing}
+                disabled={!uploadedFile || isProcessing}
               >
                 {isProcessing ? (
                   <>
@@ -341,7 +391,7 @@ export function CompressPDFWorkspace() {
         ) : null}
 
         {result && uploadedFile ? (
-          <div className="space-y-4 pt-2">
+          <div id="compress-result" className="space-y-4 pt-2">
             <div className="flex flex-wrap items-center gap-3">
               <Badge className="rounded-full border border-emerald-500/20 bg-emerald-500/10 px-4 py-2 text-sm font-bold text-emerald-700 hover:bg-emerald-500/15 dark:text-emerald-300">
                 <CheckCircle2 className="mr-1.5 inline h-3.5 w-3.5" />

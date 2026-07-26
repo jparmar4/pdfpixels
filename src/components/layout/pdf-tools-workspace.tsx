@@ -12,6 +12,7 @@ import { Slider } from '@/components/ui/slider';
 import { useAppStore } from '@/store/app-store';
 import { FileUpload } from './file-upload';
 import { ToolPageHeader } from './tool-page-header';
+import { ToolLimitNotice } from './tool-limit-notice';
 import { InContentAd } from '@/components/ads/ad-banner';
 import { useState, useCallback, useEffect } from 'react';
 import { toast } from 'sonner';
@@ -41,50 +42,57 @@ function RotateSettings({
     pages: string; setPages: (p: string) => void;
     totalPages: number;
 }) {
+    const presets: Array<{ value: number; label: string; hint: string }> = [
+        { value: 90, label: '90°', hint: 'Right' },
+        { value: 180, label: '180°', hint: 'Upside down' },
+        { value: 270, label: '270°', hint: 'Left' },
+        { value: -90, label: '−90°', hint: 'Left alt' },
+    ];
     return (
         <div className="space-y-5">
             <div className="space-y-2">
-                <Label>Rotation Angle</Label>
-                <div className="grid grid-cols-4 gap-2">
-                    {[90, 180, 270, -90].map(a => (
+                <Label>Rotation</Label>
+                <div className="grid grid-cols-2 gap-2">
+                    {presets.map((p) => (
                         <Button
-                            key={a}
-                            variant={angle === a ? 'default' : 'outline'}
-                            size="sm"
-                            onClick={() => setAngle(a)}
-                            className="gap-1"
+                            key={p.value}
+                            type="button"
+                            variant={angle === p.value ? 'default' : 'outline'}
+                            className="h-12 flex-col gap-0.5 rounded-xl"
+                            onClick={() => setAngle(p.value)}
                         >
-                            {a === -90 ? '-90°' : `${a}°`}
+                            <span className="text-sm font-bold tabular-nums">{p.label}</span>
+                            <span className="text-[10px] font-normal opacity-80">{p.hint}</span>
                         </Button>
                     ))}
                 </div>
-                <p className="text-xs text-muted-foreground">Rotates pages clockwise</p>
+                <p className="text-xs text-muted-foreground">
+                    Angles add to each page&apos;s current rotation (clockwise positive).
+                </p>
             </div>
 
-            {totalPages > 0 && (
-                <div className="space-y-2">
-                    <Label>Pages to Rotate</Label>
-                    <div className="grid grid-cols-2 gap-2">
-                        <Button variant={pages === 'all' ? 'default' : 'outline'} size="sm" onClick={() => setPages('all')}>
-                            All Pages
-                        </Button>
-                        <Button variant={pages !== 'all' ? 'default' : 'outline'} size="sm" onClick={() => setPages('1')}>
-                            Specific
-                        </Button>
-                    </div>
-                    {pages !== 'all' && (
-                        <Input
-                            value={pages}
-                            onChange={e => setPages(e.target.value)}
-                            placeholder="e.g. 1,2,4-6"
-                            className="font-mono text-sm"
-                        />
-                    )}
-                    <p className="text-xs text-muted-foreground">
-                        {totalPages > 0 ? `PDF has ${totalPages} pages` : 'Upload a PDF to see page count'}
-                    </p>
+            <div className="space-y-2">
+                <Label>Pages to rotate</Label>
+                <div className="grid grid-cols-2 gap-2">
+                    <Button type="button" variant={pages === 'all' ? 'default' : 'outline'} size="sm" className="rounded-xl" onClick={() => setPages('all')}>
+                        All pages
+                    </Button>
+                    <Button type="button" variant={pages !== 'all' ? 'default' : 'outline'} size="sm" className="rounded-xl" onClick={() => setPages(pages === 'all' ? '1' : pages)}>
+                        Specific
+                    </Button>
                 </div>
-            )}
+                {pages !== 'all' && (
+                    <Input
+                        value={pages}
+                        onChange={e => setPages(e.target.value)}
+                        placeholder="e.g. 1,2,4-6"
+                        className="font-mono text-sm rounded-xl"
+                    />
+                )}
+                <p className="text-xs text-muted-foreground">
+                    {totalPages > 0 ? `PDF has ${totalPages} page${totalPages === 1 ? '' : 's'}` : 'Upload a PDF to see page count'}
+                </p>
+            </div>
         </div>
     );
 }
@@ -101,11 +109,26 @@ function WatermarkSettings({
     position: string; setPosition: (v: string) => void;
     rotation: number; setRotation: (v: number) => void;
 }) {
+    const textPresets = ['CONFIDENTIAL', 'DRAFT', 'SAMPLE', 'DO NOT COPY', 'COPY'];
     return (
         <div className="space-y-5">
             <div className="space-y-2">
-                <Label>Watermark Text</Label>
-                <Input value={text} onChange={e => setText(e.target.value)} placeholder="e.g. CONFIDENTIAL" />
+                <Label>Watermark text</Label>
+                <Input value={text} onChange={e => setText(e.target.value)} placeholder="e.g. CONFIDENTIAL" className="rounded-xl" />
+                <div className="flex flex-wrap gap-1.5">
+                    {textPresets.map((p) => (
+                        <Button
+                            key={p}
+                            type="button"
+                            size="sm"
+                            variant={text === p ? 'default' : 'outline'}
+                            className="h-7 rounded-lg text-[10px] font-bold tracking-wide"
+                            onClick={() => setText(p)}
+                        >
+                            {p}
+                        </Button>
+                    ))}
+                </div>
             </div>
 
             <div className="space-y-3">
@@ -413,7 +436,7 @@ export function PDFToolsWorkspace() {
 
     // Watermark
     const [wmText, setWmText] = useState('CONFIDENTIAL');
-    const [wmOpacity, setWmOpacity] = useState(0.3);
+    const [wmOpacity, setWmOpacity] = useState(0.28);
     const [wmColor, setWmColor] = useState('#808080');
     const [wmFontSize, setWmFontSize] = useState(48);
     const [wmPosition, setWmPosition] = useState('center');
@@ -561,7 +584,17 @@ export function PDFToolsWorkspace() {
                 });
             }
 
-            toast.success('PDF processed successfully!');
+            const tid = activeTool?.id || '';
+            toast.success(
+                tid === 'pdf-rotate'
+                    ? 'PDF rotated successfully.'
+                    : tid === 'pdf-watermark'
+                        ? 'Watermark added successfully.'
+                        : 'PDF processed successfully!',
+            );
+            requestAnimationFrame(() => {
+                document.getElementById('pdf-tools-result')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            });
         } catch (error) {
             toast.error(error instanceof Error ? error.message : 'Failed to process PDF');
         } finally {
@@ -575,7 +608,10 @@ export function PDFToolsWorkspace() {
         const link = document.createElement('a');
         link.href = result.pdfUrl;
         link.download = result.fileName;
+        document.body.appendChild(link);
         link.click();
+        link.remove();
+        toast.success('Download started');
     }, [result]);
 
     const handleReset = useCallback(() => {
@@ -658,10 +694,19 @@ return (
         <div className="grid lg:grid-cols-3 gap-8">
             {/* Left Panel */}
             <div className="lg:col-span-2 space-y-6">
-                <FileUpload accept=".pdf" />
+                <FileUpload accept=".pdf,application/pdf" maxSizeMb={25} />
+                <ToolLimitNotice
+                    limits={
+                        activeTool.id === 'pdf-rotate'
+                            ? ['PDF only · max 25 MB', 'Rotate all or selected pages', '90° / 180° / 270°']
+                            : activeTool.id === 'pdf-watermark'
+                                ? ['PDF only · max 25 MB', 'Text watermark on every page', 'Opacity, position, rotation']
+                                : ['PDF only · max 25 MB', 'Processed in a secure session']
+                    }
+                />
 
                 {/* Page Count Info */}
-                {totalPages > 0 && (
+                {uploadedFile && (
                     <motion.div
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -670,11 +715,17 @@ return (
                         <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
                             <Layers className="w-5 h-5 text-primary" />
                         </div>
-                        <div>
-                            <p className="text-sm font-medium">PDF Loaded</p>
-                            <p className="text-sm text-muted-foreground">{totalPages} page{totalPages !== 1 ? 's' : ''}</p>
+                        <div className="min-w-0 flex-1">
+                            <p className="text-sm font-medium truncate">{uploadedFile.name}</p>
+                            <p className="text-sm text-muted-foreground">
+                                {totalPages > 0 ? `${totalPages} page${totalPages !== 1 ? 's' : ''}` : 'Reading PDF…'}
+                                {' · '}
+                                {(uploadedFile.size / (1024 * 1024)).toFixed(2)} MB
+                            </p>
                         </div>
-                        <Badge variant="secondary" className="ml-auto">Ready</Badge>
+                        <Badge variant="secondary" className="ml-auto shrink-0">
+                            {totalPages > 0 ? 'Ready' : 'Loading'}
+                        </Badge>
                     </motion.div>
                 )}
 
@@ -682,6 +733,7 @@ return (
                 <AnimatePresence>
                     {result && (
                         <motion.div
+                            id="pdf-tools-result"
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -20 }}
@@ -692,15 +744,22 @@ return (
                                     <Check className="w-5 h-5 text-green-500" />
                                 </div>
                                 <div>
-                                    <h3 className="font-semibold text-green-700 dark:text-green-400">Processing Complete!</h3>
+                                    <h3 className="font-semibold text-green-700 dark:text-green-400">
+                                        {activeTool.id === 'pdf-rotate'
+                                            ? 'Rotation complete'
+                                            : activeTool.id === 'pdf-watermark'
+                                                ? 'Watermark applied'
+                                                : 'Processing complete'}
+                                    </h3>
                                     <p className="text-sm text-muted-foreground">
-                                        {result.pageCount} page{result.pageCount !== 1 ? 's' : ''} · {result.fileName}
+                                        {result.pageCount ? `${result.pageCount} page${result.pageCount !== 1 ? 's' : ''} · ` : ''}
+                                        {result.fileName}
                                     </p>
                                 </div>
                             </div>
                             <Button onClick={handleDownload} className="w-full gap-2 btn-premium py-6 rounded-xl font-bold" size="lg">
                                 <Download className="w-4 h-4" />
-                                Download Processed PDF
+                                Download PDF
                             </Button>
                         </motion.div>
                     )}
@@ -761,13 +820,37 @@ return (
                         Tips
                     </h4>
                     <ul className="text-sm text-muted-foreground space-y-2">
+                        {activeTool.id === 'pdf-rotate' ? (
+                            <>
+                                <li className="flex items-start gap-2">
+                                    <ChevronRight className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                                    <span>Use 90° to fix sideways phone scans; 180° for upside-down pages.</span>
+                                </li>
+                                <li className="flex items-start gap-2">
+                                    <ChevronRight className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                                    <span>Select specific pages when only some are wrong-way up.</span>
+                                </li>
+                            </>
+                        ) : activeTool.id === 'pdf-watermark' ? (
+                            <>
+                                <li className="flex items-start gap-2">
+                                    <ChevronRight className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                                    <span>Diagonal + ~30% opacity works well for CONFIDENTIAL stamps.</span>
+                                </li>
+                                <li className="flex items-start gap-2">
+                                    <ChevronRight className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                                    <span>Larger font sizes suit cover pages; smaller for multi-page docs.</span>
+                                </li>
+                            </>
+                        ) : (
+                            <li className="flex items-start gap-2">
+                                <ChevronRight className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                                <span>Supports PDFs up to 25 MB.</span>
+                            </li>
+                        )}
                         <li className="flex items-start gap-2">
                             <ChevronRight className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                            <span>Rotate, watermark, protect, unlock, reorder, and delete pages run in one workspace</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                            <ChevronRight className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                            <span>Supports PDFs up to 25MB</span>
+                            <span>Your original file is not overwritten — download a new copy.</span>
                         </li>
                     </ul>
                 </div>

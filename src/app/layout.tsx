@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import { Inter, DM_Sans, Outfit } from 'next/font/google';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
+import { Toaster as SonnerToaster } from '@/components/ui/sonner';
 import { ThemeProvider } from 'next-themes';
 import { JsonLdSchemas } from '@/components/seo/json-ld';
 import { seoConfig, siteConfig } from '@/lib/seo-config';
@@ -11,6 +12,7 @@ import { CookieConsentBanner } from '@/components/ads/cookie-consent';
 import { Analytics } from '@/components/ads/analytics';
 import { Navigation } from '@/components/layout/navigation';
 import { Footer } from '@/components/layout/footer';
+import { ScrollToTop } from '@/components/home/scroll-to-top';
 
 const fontInter = Inter({
   subsets: ['latin'],
@@ -173,7 +175,11 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             {children}
           </div>
           <Footer />
+          {/* Global: scroll-to-top on route change + jump top/bottom controls */}
+          <ScrollToTop />
+          {/* Radix/shadcn toasts (useToast) + Sonner (used by all tool workspaces) */}
           <Toaster />
+          <SonnerToaster richColors closeButton position="top-center" />
           <AdSenseScript />
           <Analytics />
           <CookieConsentBanner />

@@ -1379,6 +1379,11 @@ h6 {
   transform: translateY(-1px);
 }
 
+.btn-premium:active {
+  transform: translateY(0) scale(0.98);
+  box-shadow: 0 4px 12px -6px rgba(79, 70, 229, 0.4);
+}
+
 .btn-premium::after {
   content: '';
   position: absolute;

@@ -217,7 +217,7 @@ export function CompressWorkspace() {
                   : 'Great for portals, forms, messaging apps, or faster delivery on slow connections.'}
               </p>
 
-              <Button className="btn-premium mt-6 h-12 w-full rounded-2xl text-sm font-bold" onClick={handleProcess} disabled={isProcessing}>
+              <Button className="btn-premium mt-6 h-12 w-full rounded-2xl text-sm font-bold" onClick={handleProcess} disabled={!uploadedFile || isProcessing}>
                 {isProcessing ? (
                   <>
                     <motion.div

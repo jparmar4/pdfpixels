@@ -9,7 +9,6 @@ import { TestimonialsSection } from '@/components/home/testimonials-section';
 import { FeaturesSection } from '@/components/home/features-section';
 import { FAQSection } from '@/components/home/faq-section';
 import { CTASection } from '@/components/home/cta-section';
-import { ScrollToTop } from '@/components/home/scroll-to-top';
 
 import { Metadata } from 'next';
 import { siteConfig, seoConfig } from '@/lib/seo-config';
@@ -57,8 +56,6 @@ export default function Home() {
         <FAQSection />
         <CTASection />
       </main>
-
-            <ScrollToTop />
     </div>
   );
 }

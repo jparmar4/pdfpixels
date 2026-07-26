@@ -28,38 +28,68 @@ export function PDFMergeWorkspace() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const prefersReducedMotion = useReducedMotion();
 
-  const handleFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFiles = e.target.files;
-    if (selectedFiles) {
-      const newFiles: PDFFile[] = Array.from(selectedFiles)
-        .filter(f => f.name.toLowerCase().endsWith('.pdf'))
-        .map(f => ({
-          file: f,
-          name: f.name,
-          size: f.size,
-        }));
-
-      setFiles(prev => [...prev, ...newFiles]);
-      toast.success(`Added ${newFiles.length} PDF file(s)`);
+  const enrichPdfMeta = useCallback(async (items: PDFFile[]) => {
+    try {
+      const { PDFDocument } = await import('pdf-lib');
+      const withMeta = await Promise.all(
+        items.map(async (item) => {
+          try {
+            const bytes = await item.file.arrayBuffer();
+            const pdf = await PDFDocument.load(bytes, { ignoreEncryption: true });
+            return { ...item, pageCount: pdf.getPageCount() };
+          } catch {
+            return item;
+          }
+        }),
+      );
+      return withMeta;
+    } catch {
+      return items;
     }
   }, []);
+
+  const addPdfFiles = useCallback(async (fileList: FileList | File[]) => {
+    const list = Array.from(fileList);
+    const pdfs = list.filter((f) => f.name.toLowerCase().endsWith('.pdf') || f.type === 'application/pdf');
+    if (pdfs.length === 0) {
+      toast.error('Please add PDF files only');
+      return;
+    }
+    const oversized = pdfs.filter((f) => f.size > 25 * 1024 * 1024);
+    if (oversized.length > 0) {
+      toast.error(`${oversized.length} file(s) exceed 25 MB and were skipped`);
+    }
+    const ok = pdfs.filter((f) => f.size <= 25 * 1024 * 1024).slice(0, 20);
+    if (ok.length === 0) return;
+
+    const base: PDFFile[] = ok.map((f) => ({ file: f, name: f.name, size: f.size }));
+    const enriched = await enrichPdfMeta(base);
+    setFiles((prev) => {
+      const next = [...prev, ...enriched].slice(0, 20);
+      return next;
+    });
+    setResult(null);
+    const pages = enriched.reduce((sum, f) => sum + (f.pageCount || 0), 0);
+    toast.success(
+      pages > 0
+        ? `Added ${enriched.length} PDF(s) · ${pages} page${pages === 1 ? '' : 's'}`
+        : `Added ${enriched.length} PDF file(s)`,
+    );
+  }, [enrichPdfMeta]);
+
+  const handleFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files?.length) {
+      void addPdfFiles(e.target.files);
+      e.target.value = '';
+    }
+  }, [addPdfFiles]);
 
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
-    const droppedFiles = e.dataTransfer.files;
-    const newFiles: PDFFile[] = Array.from(droppedFiles)
-      .filter(f => f.name.toLowerCase().endsWith('.pdf'))
-      .map(f => ({
-        file: f,
-        name: f.name,
-        size: f.size,
-      }));
-
-    if (newFiles.length > 0) {
-      setFiles(prev => [...prev, ...newFiles]);
-      toast.success(`Added ${newFiles.length} PDF file(s)`);
+    if (e.dataTransfer.files?.length) {
+      void addPdfFiles(e.dataTransfer.files);
     }
-  }, []);
+  }, [addPdfFiles]);
 
   const removeFile = useCallback((index: number) => {
     setFiles(prev => prev.filter((_, i) => i !== index));
@@ -128,6 +158,9 @@ export function PDFMergeWorkspace() {
         pageCount,
       });
       toast.success(`Merged ${files.length} PDFs into ${pageCount || 'multiple'} pages!`);
+      requestAnimationFrame(() => {
+        document.getElementById('merge-result')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      });
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Failed to merge PDFs. Please try again.');
     } finally {
@@ -141,7 +174,10 @@ export function PDFMergeWorkspace() {
       const link = document.createElement('a');
       link.href = result.pdfUrl;
       link.download = result.fileName;
+      document.body.appendChild(link);
       link.click();
+      link.remove();
+      toast.success('Download started');
     }
   }, [result]);
 
@@ -260,7 +296,10 @@ export function PDFMergeWorkspace() {
 
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium truncate">{file.name}</p>
-                      <p className="text-xs text-muted-foreground">{formatSize(file.size)}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {formatSize(file.size)}
+                        {file.pageCount ? ` · ${file.pageCount} page${file.pageCount === 1 ? '' : 's'}` : ''}
+                      </p>
                     </div>
 
                     <Badge variant="outline" className="text-xs">
@@ -305,19 +344,20 @@ export function PDFMergeWorkspace() {
           <AnimatePresence>
             {result && (
               <motion.div
+                id="merge-result"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
               >
                 <ResultCard
-                  title="PDF Merged Successfully"
+                  title="PDF merged successfully"
                   description="Your files have been combined in the selected order."
-                  primaryMeta={`${result.pageCount} page${result.pageCount === 1 ? '' : 's'}`}
+                  primaryMeta={`${result.pageCount || 'Multiple'} page${result.pageCount === 1 ? '' : 's'} · ${result.fileName}`}
                   onDownload={handleDownload}
-                  downloadLabel="Download Merged PDF"
+                  downloadLabel="Download merged PDF"
                   nextActions={[
                     { label: 'Compress PDF', href: '/tools/compress-pdf' },
-                    { label: 'Reorder Pages', href: '/tools/reorder-pdf-pages' },
+                    { label: 'Split PDF', href: '/tools/split-pdf' },
                   ]}
                 />
               </motion.div>
@@ -336,13 +376,19 @@ export function PDFMergeWorkspace() {
             </div>
 
             <div className="p-5 space-y-4">
-              <div className="p-4 rounded-xl bg-muted/50">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-medium">Total Files</span>
+              <div className="p-4 rounded-xl bg-muted/50 space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium">Total files</span>
                   <span className="text-lg font-bold text-primary">{files.length}</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">Total Size</span>
+                  <span className="text-sm font-medium">Total pages</span>
+                  <span className="text-sm font-semibold text-foreground">
+                    {files.reduce((acc, f) => acc + (f.pageCount || 0), 0) || '—'}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium">Total size</span>
                   <span className="text-sm text-muted-foreground">
                     {formatSize(files.reduce((acc, f) => acc + f.size, 0))}
                   </span>

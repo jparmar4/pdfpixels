@@ -2,7 +2,7 @@
 
 import dynamic from 'next/dynamic';
 import { useAppStore } from '@/store/app-store';
-import { useEffect, useRef } from 'react';
+import { useLayoutEffect, useRef } from 'react';
 import { ErrorBoundary } from '@/components/ui/error-boundary';
 
 // Dynamically import workspace components
@@ -76,6 +76,26 @@ const CropWorkspace = dynamic(
   { loading: () => <WorkspaceLoading />, ssr: false }
 );
 
+const RotateWorkspace = dynamic(
+  () => import('@/components/layout/rotate-workspace').then(mod => ({ default: mod.RotateWorkspace })),
+  { loading: () => <WorkspaceLoading />, ssr: false }
+);
+
+const FlipWorkspace = dynamic(
+  () => import('@/components/layout/flip-workspace').then(mod => ({ default: mod.FlipWorkspace })),
+  { loading: () => <WorkspaceLoading />, ssr: false }
+);
+
+const BlurBackgroundWorkspace = dynamic(
+  () => import('@/components/layout/blur-background-workspace').then(mod => ({ default: mod.BlurBackgroundWorkspace })),
+  { loading: () => <WorkspaceLoading />, ssr: false }
+);
+
+const BlurFaceWorkspace = dynamic(
+  () => import('@/components/layout/blur-face-workspace').then(mod => ({ default: mod.BlurFaceWorkspace })),
+  { loading: () => <WorkspaceLoading />, ssr: false }
+);
+
 const AIWorkspace = dynamic(
   () => import('@/components/layout/ai-workspace').then(mod => ({ default: mod.AIWorkspace })),
   { loading: () => <WorkspaceLoading />, ssr: false }
@@ -123,7 +143,9 @@ function getWorkspaceComponent(toolId: string) {
   }
 
   // ── AI-powered tools ──
-  if (['remove-background', 'enhance-image', 'blur-background', 'blur-face', 'beautify', 'retouch', 'upscale'].includes(toolId)) {
+  if (toolId === 'blur-background') return <BlurBackgroundWorkspace />;
+  if (toolId === 'blur-face') return <BlurFaceWorkspace />;
+  if (['remove-background', 'enhance-image', 'beautify', 'retouch', 'upscale'].includes(toolId)) {
     return <AIWorkspace />;
   }
 
@@ -145,6 +167,10 @@ function getWorkspaceComponent(toolId: string) {
     return <CropWorkspace />;
   }
 
+  // ── Rotate / Flip ──
+  if (toolId === 'rotate') return <RotateWorkspace />;
+  if (toolId === 'flip') return <FlipWorkspace />;
+
   // ── Compression tools ──
   if (toolId === 'compress' || toolId === 'increase-image-size') return <CompressWorkspace />;
 
@@ -161,7 +187,7 @@ function getWorkspaceComponent(toolId: string) {
   if (effectTools.includes(toolId)) return <EffectWorkspace />;
 
   // ── Basic editing (client-side) ──
-  const editTools = ['rotate', 'flip', 'watermark', 'add-text', 'add-logo', 'merge-images', 'split-image', 'color-picker'];
+  const editTools = ['watermark', 'add-text', 'add-logo', 'merge-images', 'split-image', 'color-picker'];
   if (editTools.includes(toolId)) return <ToolWorkspace />;
 
   // Fallback — still use ToolWorkspace so unknown tools never blank the page
@@ -174,7 +200,8 @@ export function ToolPageClient({ toolId, toolName, toolDescription }: ToolPageCl
   const reset = useAppStore((state) => state.reset);
   const prevToolId = useRef<string | null>(null);
 
-  useEffect(() => {
+  // useLayoutEffect so activeTool is set before paint — workspaces return null without it
+  useLayoutEffect(() => {
     // Clear previous tool's file when navigating between tools
     if (prevToolId.current && prevToolId.current !== toolId) {
       reset();

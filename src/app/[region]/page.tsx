@@ -27,8 +27,6 @@ const FAQSection = dynamic(() => import('@/components/home/faq-section').then(m 
 
 const CTASection = dynamic(() => import('@/components/home/cta-section').then(m => m.CTASection));
 
-const ScrollToTop = dynamic(() => import('@/components/home/scroll-to-top').then(m => m.ScrollToTop));
-
 // Restrict this dynamic route to strictly the configured geo regions.
 export const dynamicParams = false;
 
@@ -164,7 +162,6 @@ export default async function GeoHubPage({ params }: GeoPageProps) {
         <FAQSection />
         <CTASection />
       </main>
-      <ScrollToTop />
     </div>
   );
 }

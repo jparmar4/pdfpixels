@@ -144,10 +144,33 @@ export function ConvertWorkspace() {
 
   const isPdfToImage = activeTool?.id === 'pdf-to-image';
   const [dpi, setDpi] = useState(150);
+  const [pdfPageCount, setPdfPageCount] = useState(0);
+  const [convertedPageCount, setConvertedPageCount] = useState(0);
   const availableFormats = useMemo(
     () => (isPdfToImage ? PDF_OUTPUT_FORMATS : (Object.keys(formatInfo) as OutputFormat[])),
     [isPdfToImage],
   );
+
+  useEffect(() => {
+    if (!isPdfToImage || !uploadedFile) {
+      setPdfPageCount(0);
+      return;
+    }
+    let cancelled = false;
+    (async () => {
+      try {
+        const { PDFDocument } = await import('pdf-lib');
+        const bytes = await uploadedFile.arrayBuffer();
+        const pdf = await PDFDocument.load(bytes, { ignoreEncryption: true });
+        if (!cancelled) setPdfPageCount(pdf.getPageCount());
+      } catch {
+        if (!cancelled) setPdfPageCount(0);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [isPdfToImage, uploadedFile]);
 
   useEffect(() => {
     if (isPdfToImage && !PDF_OUTPUT_FORMATS.includes(outputFormat)) {
@@ -234,8 +257,12 @@ export function ConvertWorkspace() {
               savedPercent: 0,
             });
             setViewMode('preview');
-            const convertedPages = response.headers.get('x-converted-pages') || files.length;
-            toast.success(`Converted ${convertedPages} page(s) to images.`);
+            const convertedPages = Number(response.headers.get('x-converted-pages') || files.length);
+            setConvertedPageCount(convertedPages);
+            toast.success(`Converted ${convertedPages} page(s) to ${formatInfo[safeFormat].name}.`);
+            requestAnimationFrame(() => {
+              document.getElementById('pdf-to-image-result')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            });
           } else {
             throw new Error('No images found in the response.');
           }
@@ -244,12 +271,16 @@ export function ConvertWorkspace() {
           const data = await response.json();
           if (data.images && data.images.length > 0) {
             setProcessedImage(data.images[0].imageUrl);
+            setConvertedPageCount(Number(data.convertedPages || data.images.length));
             setProcessingStats({
-              originalSize: 0,
+              originalSize: uploadedFile.size,
               processedSize: data.images[0].size || 0,
               savedPercent: 0,
             });
-            toast.success(`Converted ${data.convertedPages} page(s) to images.`);
+            toast.success(`Converted ${data.convertedPages || data.images.length} page(s) to images.`);
+            requestAnimationFrame(() => {
+              document.getElementById('pdf-to-image-result')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            });
           } else {
             throw new Error('No pages could be converted from the PDF.');
           }
@@ -274,21 +305,31 @@ export function ConvertWorkspace() {
   const handleDownload = useCallback(() => {
     if (!processedImage && !downloadUrl) return;
 
+    const base = uploadedFile?.name?.replace(/\.[^.]+$/, '') || 'converted';
     const link = document.createElement('a');
     link.href = downloadUrl || processedImage || '';
-    link.download = isPdfToImage ? `converted-${Date.now()}.zip` : `converted-${Date.now()}.${outputFormat}`;
+    link.download = isPdfToImage
+      ? `${base}-pages.zip`
+      : `${base}.${outputFormat === 'jpg' ? 'jpg' : outputFormat}`;
+    document.body.appendChild(link);
     link.click();
-  }, [outputFormat, processedImage, downloadUrl, isPdfToImage]);
+    link.remove();
+    toast.success('Download started');
+  }, [outputFormat, processedImage, downloadUrl, isPdfToImage, uploadedFile]);
 
   const handleReset = useCallback(() => {
     revokeBlobUrls();
     reset();
-    setOutputFormat(lockedFormat || 'jpg');
-    setQuality(92);
+    setOutputFormat(lockedFormat || (isPdfToImage ? 'jpg' : 'jpg'));
+    setQuality(isPdfToImage ? 90 : 92);
+    setDpi(150);
     setProcessingStats(null);
     setViewMode('preview');
     setDownloadUrl(null);
-  }, [lockedFormat, reset, revokeBlobUrls]);
+    setPdfPageCount(0);
+    setConvertedPageCount(0);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [isPdfToImage, lockedFormat, reset, revokeBlobUrls]);
 
   if (!activeTool) return null;
 
@@ -315,11 +356,26 @@ export function ConvertWorkspace() {
 
       <div className="grid gap-8 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-2">
-          <FileUpload accept={activeTool.id.includes('pdf-to') ? '.pdf' : 'image/*'} />
-          <ToolLimitNotice limits={activeTool.id.includes('pdf-to') ? ['PDF input', 'Each page is exported as an image', 'Review output visually before publishing'] : ['Image input only', 'Quality setting affects file size and output fidelity', 'Choose the target format based on final use case']} />
+          <FileUpload accept={activeTool.id.includes('pdf-to') ? '.pdf,application/pdf' : 'image/*'} maxSizeMb={25} />
+          <ToolLimitNotice
+            limits={
+              isPdfToImage
+                ? ['PDF only · max 25 MB', 'Up to 10 pages per conversion', 'ZIP download for multi-page', 'JPG / PNG / WebP']
+                : ['Image input only', 'Quality affects size & fidelity', 'Pick format for your use case']
+            }
+          />
 
           {uploadedFile ? (
             <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} className="rounded-[1.75rem] border border-border/60 bg-card/75 p-6 shadow-premium backdrop-blur-xl">
+              {isPdfToImage ? (
+                <div className="mb-4 flex flex-wrap items-center justify-between gap-2 rounded-xl border border-border/50 bg-background/70 px-3 py-2.5 text-sm">
+                  <span className="font-medium truncate max-w-[60%]">{uploadedFile.name}</span>
+                  <span className="text-muted-foreground text-xs">
+                    {formatBytes(uploadedFile.size)}
+                    {pdfPageCount > 0 ? ` · ${pdfPageCount} page${pdfPageCount === 1 ? '' : 's'}` : ''}
+                  </span>
+                </div>
+              ) : null}
               <div className="flex flex-col items-center justify-center gap-6 text-center md:flex-row md:text-left">
                 <div>
                   <div className="mb-2 flex h-20 w-20 items-center justify-center rounded-[1.35rem] bg-muted text-lg font-bold text-muted-foreground">
@@ -344,21 +400,37 @@ export function ConvertWorkspace() {
           ) : null}
 
           {processedImage ? (
-            <motion.div initial={{ opacity: 0, scale: 0.985 }} animate={{ opacity: 1, scale: 1 }} className="space-y-4">
+            <motion.div
+              id="pdf-to-image-result"
+              initial={{ opacity: 0, scale: 0.985 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="space-y-4"
+            >
               <div className="overflow-hidden rounded-[1.75rem] border border-border/60 bg-card/75 shadow-premium backdrop-blur-xl">
                 <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border/40 bg-background/75 px-5 py-4">
                   <div className="flex items-center gap-2">
                     <ImageIcon className="h-4 w-4 text-primary" />
-                    <h3 className="font-semibold text-foreground">Processed preview</h3>
+                    <h3 className="font-semibold text-foreground">
+                      {isPdfToImage ? 'Page preview' : 'Processed preview'}
+                    </h3>
                   </div>
-                  {processingStats ? (
-                    <div className="flex flex-wrap gap-2">
-                      <Badge variant="outline" className="border-primary/20 text-primary">
-                        {processingStats.savedPercent > 0 ? `Saved ${processingStats.savedPercent}%` : 'Optimized'}
+                  <div className="flex flex-wrap gap-2">
+                    {isPdfToImage && convertedPageCount > 0 ? (
+                      <Badge variant="secondary">
+                        {convertedPageCount} page{convertedPageCount === 1 ? '' : 's'}
                       </Badge>
-                      <Badge variant="secondary">{formatBytes(processingStats.processedSize)}</Badge>
-                    </div>
-                  ) : null}
+                    ) : null}
+                    {processingStats ? (
+                      <>
+                        <Badge variant="outline" className="border-primary/20 text-primary">
+                          {processingStats.savedPercent > 0 ? `Saved ${processingStats.savedPercent}%` : formatInfo[outputFormat].name}
+                        </Badge>
+                        {processingStats.processedSize > 0 ? (
+                          <Badge variant="secondary">{formatBytes(processingStats.processedSize)}</Badge>
+                        ) : null}
+                      </>
+                    ) : null}
+                  </div>
                 </div>
 
                 <div className="p-4">
@@ -366,22 +438,49 @@ export function ConvertWorkspace() {
                     <ComparisonSlider before={objectUrl} after={processedImage} />
                   ) : (
                     <div className="flex aspect-video items-center justify-center rounded-[1.35rem] bg-muted/25">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={processedImage} alt="Converted" className="max-h-full max-w-full object-contain" />
                     </div>
                   )}
                 </div>
+                {isPdfToImage && convertedPageCount > 1 ? (
+                  <p className="border-t border-border/40 px-5 py-2.5 text-xs text-muted-foreground">
+                    Preview shows page 1. Download the ZIP for all {convertedPageCount} pages.
+                  </p>
+                ) : null}
               </div>
 
               <ResultCard
-                title="Conversion complete"
-                description={`Your file is ready in ${formatInfo[outputFormat].name}.`}
+                title={isPdfToImage ? 'PDF converted to images' : 'Conversion complete'}
+                description={
+                  isPdfToImage
+                    ? `Pages exported as ${formatInfo[outputFormat].name}${convertedPageCount > 1 ? ' in a ZIP archive' : ''}.`
+                    : `Your file is ready in ${formatInfo[outputFormat].name}.`
+                }
                 onDownload={handleDownload}
-                downloadLabel="Download converted file"
-                primaryMeta={processingStats ? `${formatBytes(processingStats.originalSize)} to ${formatBytes(processingStats.processedSize)}` : formatInfo[outputFormat].name}
-                nextActions={[
-                  { label: 'Compress image', href: '/tools/compress-image' },
-                  { label: 'Resize image', href: '/tools/resize-image' },
-                ]}
+                downloadLabel={
+                  isPdfToImage && (downloadUrl || convertedPageCount > 1)
+                    ? 'Download ZIP of images'
+                    : 'Download converted file'
+                }
+                primaryMeta={
+                  isPdfToImage
+                    ? `${convertedPageCount || pdfPageCount || '—'} page(s) · ${dpi} DPI · ${formatInfo[outputFormat].name}`
+                    : processingStats
+                      ? `${formatBytes(processingStats.originalSize)} to ${formatBytes(processingStats.processedSize)}`
+                      : formatInfo[outputFormat].name
+                }
+                nextActions={
+                  isPdfToImage
+                    ? [
+                        { label: 'Compress PDF', href: '/tools/compress-pdf' },
+                        { label: 'Merge PDF', href: '/tools/merge-pdf' },
+                      ]
+                    : [
+                        { label: 'Compress image', href: '/tools/compress-image' },
+                        { label: 'Resize image', href: '/tools/resize-image' },
+                      ]
+                }
               />
             </motion.div>
           ) : null}
@@ -462,20 +561,31 @@ export function ConvertWorkspace() {
 
               {isPdfToImage ? (
                 <div className="space-y-2">
-                  <Label>DPI (Resolution)</Label>
-                  <Select value={dpi.toString()} onValueChange={(value) => setDpi(Number.parseInt(value, 10))}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="72">72 DPI (Fast, small files)</SelectItem>
-                      <SelectItem value="150">150 DPI (Balanced)</SelectItem>
-                      <SelectItem value="200">200 DPI (Good quality)</SelectItem>
-                      <SelectItem value="300">300 DPI (Print quality)</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <Label>Resolution (DPI)</Label>
+                  <div className="grid grid-cols-2 gap-2">
+                    {[
+                      { v: 72, label: '72', hint: 'Fast' },
+                      { v: 150, label: '150', hint: 'Balanced' },
+                      { v: 200, label: '200', hint: 'Sharp' },
+                      { v: 300, label: '300', hint: 'Print' },
+                    ].map((item) => (
+                      <button
+                        key={item.v}
+                        type="button"
+                        onClick={() => setDpi(item.v)}
+                        className={`rounded-xl border p-2.5 text-left transition-colors ${
+                          dpi === item.v
+                            ? 'border-primary/40 bg-primary/8 ring-1 ring-primary/20'
+                            : 'border-border/60 bg-background/70 hover:border-primary/25'
+                        }`}
+                      >
+                        <p className="text-sm font-bold tabular-nums">{item.label} DPI</p>
+                        <p className="text-[10px] text-muted-foreground">{item.hint}</p>
+                      </button>
+                    ))}
+                  </div>
                   <p className="text-xs leading-5 text-muted-foreground">
-                    Higher DPI produces larger images with more detail but takes longer to process.
+                    Higher DPI = more detail and larger files. Max 10 pages per run.
                   </p>
                 </div>
               ) : null}
@@ -484,12 +594,14 @@ export function ConvertWorkspace() {
                 {isProcessing ? (
                   <>
                     <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: 'linear' }} className="mr-2 h-4 w-4 rounded-full border-2 border-primary-foreground/30 border-t-primary-foreground" />
-                    {isPdfToImage ? 'Converting PDF...' : 'Converting...'}
+                    {isPdfToImage ? 'Converting PDF…' : 'Converting…'}
                   </>
                 ) : (
                   <>
                     <Zap className="mr-2 h-4 w-4" />
-                    {isPdfToImage ? 'Convert PDF to Images' : 'Convert image'}
+                    {isPdfToImage
+                      ? `Convert to ${formatInfo[outputFormat].name.split('/')[0]}${pdfPageCount > 0 ? ` (${Math.min(pdfPageCount, 10)} pg)` : ''}`
+                      : 'Convert image'}
                   </>
                 )}
               </Button>

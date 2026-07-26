@@ -202,6 +202,9 @@ export function PDFSplitWorkspace() {
         });
         toast.success(`Extracted ${extractedPages.length || 1} pages!`);
       }
+      requestAnimationFrame(() => {
+        document.getElementById('split-result')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      });
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Failed to split PDF. Please try again.');
     } finally {
@@ -217,7 +220,35 @@ export function PDFSplitWorkspace() {
       const link = document.createElement('a');
       link.href = url;
       link.download = name;
+      document.body.appendChild(link);
       link.click();
+      link.remove();
+      toast.success('Download started');
+    }
+  }, [result]);
+
+  const handleDownloadAllPages = useCallback(async () => {
+    if (!result?.pages?.length) return;
+    try {
+      const JSZip = (await import('jszip')).default;
+      const zip = new JSZip();
+      for (const page of result.pages) {
+        const res = await fetch(page.pdfUrl);
+        const blob = await res.blob();
+        zip.file(page.fileName || `page-${page.pageNumber}.pdf`, blob);
+      }
+      const out = await zip.generateAsync({ type: 'blob' });
+      const url = URL.createObjectURL(out);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `split-pages-${Date.now()}.zip`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+      toast.success(`Downloaded ${result.pages.length} pages as ZIP`);
+    } catch {
+      toast.error('Could not build ZIP — download pages individually');
     }
   }, [result]);
 
@@ -319,12 +350,12 @@ export function PDFSplitWorkspace() {
                     <span>PDF</span>
                     <span>•</span>
                     <span>{formatSize(pdfInfo?.size || 0)}</span>
-                    {result?.totalPages && (
+                    {(pdfInfo?.pageCount || result?.totalPages) ? (
                       <>
                         <span>•</span>
-                        <span>{result.totalPages} pages</span>
+                        <span>{pdfInfo?.pageCount || result?.totalPages} pages</span>
                       </>
-                    )}
+                    ) : null}
                   </div>
                 </div>
                 <Button variant="outline" size="sm" onClick={() => {
@@ -348,17 +379,18 @@ export function PDFSplitWorkspace() {
           <AnimatePresence>
             {result?.pdfUrl && (
               <motion.div
+                id="split-result"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
                 className="mb-4"
               >
                 <ResultCard
-                  title="PDF Extract Ready"
+                  title="PDF extract ready"
                   description="Selected pages were extracted successfully."
                   primaryMeta={result.extractedPages?.length ? `${result.extractedPages.length} extracted page(s)` : undefined}
                   onDownload={() => handleDownload()}
-                  downloadLabel="Download Extracted PDF"
+                  downloadLabel="Download extracted PDF"
                   nextActions={[
                     { label: 'Compress PDF', href: '/tools/compress-pdf' },
                     { label: 'Merge PDF', href: '/tools/merge-pdf' },
@@ -368,13 +400,18 @@ export function PDFSplitWorkspace() {
             )}
             {result && result.pages && (
               <motion.div
+                id="split-result"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
                 className="rounded-2xl border border-border bg-card overflow-hidden"
               >
-                <div className="p-4 border-b border-border">
-                  <h3 className="font-medium">Split Pages ({result.pages.length})</h3>
+                <div className="p-4 border-b border-border flex flex-wrap items-center justify-between gap-2">
+                  <h3 className="font-medium">Split pages ({result.pages.length})</h3>
+                  <Button size="sm" className="btn-premium rounded-xl gap-1.5" onClick={handleDownloadAllPages}>
+                    <Download className="w-3.5 h-3.5" />
+                    Download all as ZIP
+                  </Button>
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4 p-4 max-h-96 overflow-y-auto">
                   {result.pages.map((page, index) => (
@@ -391,7 +428,7 @@ export function PDFSplitWorkspace() {
                         </div>
                         <div>
                           <p className="text-sm font-medium">Page {page.pageNumber}</p>
-                          <p className="text-xs text-muted-foreground">{page.fileName}</p>
+                          <p className="text-xs text-muted-foreground truncate max-w-[120px]">{page.fileName}</p>
                         </div>
                       </div>
                       <Button
@@ -439,29 +476,58 @@ export function PDFSplitWorkspace() {
 
                 <TabsContent value="range" className="space-y-4 mt-4">
                   <div className="space-y-2">
-                    <Label>Page Range</Label>
+                    <Label>Page range</Label>
                     <Input
                       placeholder="e.g., 1-3,5,7-9"
                       value={pageRange}
                       onChange={(e) => setPageRange(e.target.value)}
                     />
+                    {pdfInfo?.pageCount ? (
+                      <div className="flex flex-wrap gap-1.5">
+                        {[
+                          { label: 'First 3', value: '1-3' },
+                          { label: 'First 5', value: '1-5' },
+                          {
+                            label: 'Last page',
+                            value: String(pdfInfo.pageCount),
+                          },
+                          {
+                            label: 'All',
+                            value: `1-${pdfInfo.pageCount}`,
+                          },
+                        ].map((p) => (
+                          <Button
+                            key={p.label}
+                            type="button"
+                            size="sm"
+                            variant="outline"
+                            className="h-7 rounded-lg text-xs"
+                            onClick={() => setPageRange(p.value)}
+                          >
+                            {p.label}
+                          </Button>
+                        ))}
+                      </div>
+                    ) : null}
                     <p className="text-xs text-muted-foreground">
-                      Enter pages to extract (e.g., 1-3,5,7-9)
+                      Enter pages to extract into one PDF (e.g. 1-3,5,7-9)
                     </p>
                   </div>
                 </TabsContent>
 
                 <TabsContent value="single" className="space-y-4 mt-4">
                   <div className="space-y-2">
-                    <Label>Page Number</Label>
+                    <Label>Page number</Label>
                     <Input
                       type="number"
                       min={1}
+                      max={pdfInfo?.pageCount || undefined}
                       value={singlePage}
                       onChange={(e) => setSinglePage(e.target.value)}
                     />
                     <p className="text-xs text-muted-foreground">
-                      Extract a single page from the PDF
+                      Extract one page
+                      {pdfInfo?.pageCount ? ` (1–${pdfInfo.pageCount})` : ''}
                     </p>
                   </div>
                 </TabsContent>
@@ -471,7 +537,12 @@ export function PDFSplitWorkspace() {
                 <Button
                   className="w-full btn-premium py-6 rounded-xl font-bold shadow-xl shadow-primary/20 hover:shadow-primary/40 transition-all"
                   onClick={handleProcess}
-                  disabled={!file || isProcessing || (mode === 'range' && !pageRange)}
+                  disabled={
+                    !file
+                    || isProcessing
+                    || (mode === 'range' && !pageRange.trim())
+                    || (mode === 'single' && (!singlePage || Number(singlePage) < 1))
+                  }
                   size="lg"
                 >
                   {isProcessing ? (
@@ -486,7 +557,7 @@ export function PDFSplitWorkspace() {
                   ) : (
                     <>
                       <Scissors className="w-5 h-5 mr-3" />
-                      Split PDF
+                      {mode === 'all' ? 'Split all pages' : mode === 'range' ? 'Extract range' : 'Extract page'}
                     </>
                   )}
                 </Button>
