@@ -368,7 +368,7 @@ export const toolCategories: ToolCategory[] = [
         id: 'black-white',
         slug: 'turn-image-to-black-and-white',
         name: 'Black & White',
-        description: 'Convert images to high-contrast black and white with threshold control.',
+        description: 'Convert photos to readable black and white — keeps text and detail clear, with optional high-contrast poster mode.',
         icon: Contrast,
         category: 'effects',
         keywords: ['black and white', 'black white image', 'bw photo', 'monochrome', 'high contrast'],

@@ -83,18 +83,19 @@ const EFFECT_CONFIG: Record<string, EffectMeta> = {
   'black-white': {
     emoji: '⬛',
     hasIntensity: true,
-    label: 'Threshold',
+    label: 'Contrast',
     applyLabel: 'Convert to B&W',
-    defaultIntensity: 50,
+    defaultIntensity: 55,
     tips: [
-      'Threshold controls how much becomes pure white vs black.',
-      'Lower threshold = more white; higher = more black.',
+      'Smooth B&W keeps mid-tones so text and details stay readable.',
+      'Raise contrast for punchier photos; use Document for scans with text.',
+      'Poster mode (95%+) is a hard black/white cut — only for stamp-style looks.',
     ],
     presets: [
-      { label: 'Light', value: 35 },
-      { label: 'Balanced', value: 50 },
-      { label: 'Dark', value: 65 },
-      { label: 'High contrast', value: 45 },
+      { label: 'Soft', value: 30 },
+      { label: 'Balanced', value: 55 },
+      { label: 'Document', value: 72 },
+      { label: 'Poster', value: 98 },
     ],
   },
   sepia: {
@@ -280,13 +281,86 @@ export function EffectWorkspace() {
         }
         ctx.putImageData(imageData, 0, 0);
       } else if (id === 'black-white') {
+        /**
+         * Readable black & white (NOT pure binary threshold by default).
+         * Old hard threshold crushed mid-tones so colored text became unreadable.
+         *
+         * Pipeline:
+         * 1) Rec.601 luminance (true perceived brightness of colored pixels)
+         * 2) Auto-levels stretch so ink separates from tinted backgrounds
+         * 3) S-curve + contrast slider for punch without destroying detail
+         * 4) Poster preset (intensity ≥ 92) only then eases toward hard cut
+         */
         const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
         const d = imageData.data;
-        const threshold = (int / 100) * 255;
-        for (let i = 0; i < d.length; i += 4) {
-          const gray = d[i] * 0.299 + d[i + 1] * 0.587 + d[i + 2] * 0.114;
-          const bw = gray > threshold ? 255 : 0;
-          d[i] = d[i + 1] = d[i + 2] = bw;
+        const pixelCount = d.length / 4;
+        const grays = new Float32Array(pixelCount);
+
+        let minG = 255;
+        let maxG = 0;
+        // Histogram for percentile auto-levels (ignore extreme 1% outliers)
+        const hist = new Uint32Array(256);
+        for (let p = 0, i = 0; p < pixelCount; p += 1, i += 4) {
+          const g = Math.round(d[i] * 0.299 + d[i + 1] * 0.587 + d[i + 2] * 0.114);
+          const gv = Math.max(0, Math.min(255, g));
+          grays[p] = gv;
+          hist[gv] += 1;
+          if (gv < minG) minG = gv;
+          if (gv > maxG) maxG = gv;
+        }
+
+        const lowCount = Math.floor(pixelCount * 0.01);
+        const highCount = Math.floor(pixelCount * 0.99);
+        let acc = 0;
+        let pLow = minG;
+        let pHigh = maxG;
+        for (let b = 0; b < 256; b += 1) {
+          acc += hist[b];
+          if (acc >= lowCount && pLow === minG) pLow = b;
+          if (acc >= highCount) {
+            pHigh = b;
+            break;
+          }
+        }
+        const range = Math.max(24, pHigh - pLow);
+
+        // Contrast: Soft 30→~1.05, Balanced 55→~1.3, Document 72→~1.45
+        const contrastAmt = 0.9 + (Math.min(88, Math.max(1, int)) / 100) * 0.95;
+        const posterT = int >= 92 ? Math.min(1, (int - 92) / 8) : 0;
+
+        for (let p = 0, i = 0; p < pixelCount; p += 1, i += 4) {
+          // Auto-level using percentiles so text on color backgrounds pops
+          let g = ((grays[p] - pLow) / range) * 255;
+          g = Math.max(0, Math.min(255, g));
+
+          // Gentle S-curve: strengthens edges (text) without full binary crush
+          const x = g / 255;
+          const s = x * x * (3 - 2 * x);
+          g = (x * 0.55 + s * 0.45) * 255;
+
+          // User contrast around mid-gray
+          g = (g - 128) * contrastAmt + 128;
+
+          // Keep thin/light text from vanishing into pure black
+          if (posterT === 0 && g > 28 && g < 200) {
+            g += 4 * (1 - Math.abs(g - 140) / 140);
+          }
+
+          g = Math.max(0, Math.min(255, g));
+
+          if (posterT > 0) {
+            // Soft sigmoid → hard poster only for Poster preset
+            const mid = 120;
+            const softness = Math.max(3, 26 * (1 - posterT));
+            const sigmoid = 1 / (1 + Math.exp(-(g - mid) / softness));
+            g = g * (1 - posterT) + sigmoid * 255 * posterT;
+            g = Math.max(0, Math.min(255, g));
+          }
+
+          const v = Math.round(g);
+          d[i] = v;
+          d[i + 1] = v;
+          d[i + 2] = v;
         }
         ctx.putImageData(imageData, 0, 0);
       } else if (id === 'sepia') {
@@ -774,7 +848,7 @@ export function EffectWorkspace() {
                   ) : null}
                   {isBW ? (
                     <Badge variant="secondary" className="tabular-nums">
-                      Threshold {intensity}%
+                      {intensity >= 92 ? 'Poster' : intensity >= 68 ? 'Document' : 'Smooth'} · {intensity}%
                     </Badge>
                   ) : null}
                   {isGrayscale ? (
