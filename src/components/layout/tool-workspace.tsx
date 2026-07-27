@@ -36,8 +36,8 @@ export function ToolWorkspace() {
   const [flipV, setFlipV] = useState(false);
   const [outputFormat, setOutputFormat] = useState('png');
   const [quality, setQuality] = useState(92);
-  const [watermarkText, setWatermarkText] = useState('');
-  const [watermarkOpacity, setWatermarkOpacity] = useState(50);
+  const [watermarkText, setWatermarkText] = useState('CONFIDENTIAL');
+  const [watermarkOpacity, setWatermarkOpacity] = useState(45);
   const [watermarkStyle, setWatermarkStyle] = useState<'single' | 'diagonal'>('diagonal');
   const [textColor, setTextColor] = useState('#ffffff');
   const [textSize, setTextSize] = useState(48);
@@ -303,7 +303,24 @@ export function ToolWorkspace() {
 
       setProgress(100);
       setProcessedImage(canvasToDataUrl(canvas));
-      toast.success('Image processed successfully.');
+      toast.success(
+        toolId === 'watermark'
+          ? 'Watermark applied.'
+          : toolId === 'add-text'
+            ? 'Text added to image.'
+            : toolId === 'add-logo'
+              ? 'Logo added to image.'
+              : toolId === 'merge-images'
+                ? 'Images joined successfully.'
+                : toolId === 'split-image'
+                  ? 'Image split into tiles.'
+                  : toolId === 'color-picker'
+                    ? 'Colors extracted.'
+                    : 'Image processed successfully.',
+      );
+      requestAnimationFrame(() => {
+        document.getElementById('tool-edit-result')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      });
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Failed to process image. Please try again.');
     } finally {
@@ -369,12 +386,17 @@ export function ToolWorkspace() {
 
   const handleDownload = useCallback(() => {
     if (processedImage) {
+      const base = uploadedFile?.name?.replace(/\.[^.]+$/, '') || 'image';
+      const ext = outputFormat === 'jpg' ? 'jpg' : outputFormat;
       const link = document.createElement('a');
       link.href = processedImage;
-      link.download = `processed-${Date.now()}.${outputFormat === 'jpg' ? 'jpg' : outputFormat}`;
+      link.download = `${base}-${toolId || 'edited'}.${ext}`;
+      document.body.appendChild(link);
       link.click();
+      link.remove();
+      toast.success('Download started');
     }
-  }, [processedImage, outputFormat]);
+  }, [processedImage, outputFormat, toolId, uploadedFile]);
 
   const handleReset = useCallback(() => {
     reset();
@@ -550,15 +572,22 @@ export function ToolWorkspace() {
 
           {processedImage && (
             <motion.div
+              id="tool-edit-result"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               className="rounded-2xl border border-border overflow-hidden bg-card"
             >
-              <div className="p-4 border-b border-border flex items-center justify-between">
-                <h3 className="font-medium">Processed Image</h3>
-                <Badge className="bg-green-500/10 text-green-600 dark:text-green-400 hover:bg-green-500/20">
-                  Complete
-                </Badge>
+              <div className="p-4 border-b border-border flex flex-wrap items-center justify-between gap-2">
+                <h3 className="font-medium">Processed image</h3>
+                <div className="flex items-center gap-2">
+                  <Badge className="bg-green-500/10 text-green-600 dark:text-green-400 hover:bg-green-500/20">
+                    Complete
+                  </Badge>
+                  <Button size="sm" className="btn-premium rounded-xl gap-1.5" onClick={handleDownload}>
+                    <Download className="h-3.5 w-3.5" />
+                    Download
+                  </Button>
+                </div>
               </div>
               <div className="aspect-video bg-muted/50 flex items-center justify-center">
                 <img
@@ -867,7 +896,19 @@ export function ToolWorkspace() {
                   ) : (
                     <>
                       <Sparkles className="w-5 h-5 mr-3" />
-                      Apply Changes
+                      {toolId === 'watermark'
+                        ? 'Apply watermark'
+                        : toolId === 'add-text'
+                          ? 'Add text'
+                          : toolId === 'add-logo'
+                            ? 'Add logo'
+                            : toolId === 'merge-images'
+                              ? 'Join images'
+                              : toolId === 'split-image'
+                                ? 'Split image'
+                                : toolId === 'color-picker'
+                                  ? 'Extract colors'
+                                  : 'Apply changes'}
                     </>
                   )}
                 </Button>

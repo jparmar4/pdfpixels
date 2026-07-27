@@ -17,6 +17,7 @@ import {
 } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
+import { ToolLimitNotice } from './tool-limit-notice';
 
 const LANGUAGES = [
     { value: 'eng', label: 'English' },
@@ -108,6 +109,9 @@ export function OCRWorkspace() {
 
             if (text) {
                 toast.success(`Extracted ${text.length} characters successfully!`);
+                requestAnimationFrame(() => {
+                    document.getElementById('ocr-result')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                });
             } else {
                 toast.warning('No text found in the image. Try a clearer image.');
             }
@@ -121,27 +125,36 @@ export function OCRWorkspace() {
 
     const handleCopy = useCallback(async () => {
         if (!extractedText) return;
-        await navigator.clipboard.writeText(extractedText);
-        setCopied(true);
-        toast.success('Text copied to clipboard!');
-        setTimeout(() => setCopied(false), 2000);
+        try {
+            await navigator.clipboard.writeText(extractedText);
+            setCopied(true);
+            toast.success('Text copied to clipboard!');
+            setTimeout(() => setCopied(false), 2000);
+        } catch {
+            toast.error('Could not copy — select the text and copy manually');
+        }
     }, [extractedText]);
 
     const handleDownloadText = useCallback(() => {
         if (!extractedText) return;
-        const blob = new Blob([extractedText], { type: 'text/plain' });
+        const blob = new Blob([extractedText], { type: 'text/plain;charset=utf-8' });
         const url = URL.createObjectURL(blob);
+        const base = uploadedFile?.name?.replace(/\.[^.]+$/, '') || 'extracted-text';
         const link = document.createElement('a');
         link.href = url;
-        link.download = `extracted-text-${Date.now()}.txt`;
+        link.download = `${base}-ocr.txt`;
+        document.body.appendChild(link);
         link.click();
+        link.remove();
         URL.revokeObjectURL(url);
-    }, [extractedText]);
+        toast.success('Download started');
+    }, [extractedText, uploadedFile]);
 
     const handleReset = useCallback(() => {
         reset();
         setExtractedText('');
         setCharCount(0);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }, [reset]);
 
     if (!activeTool) return null;
@@ -176,12 +189,21 @@ export function OCRWorkspace() {
             <div className="grid lg:grid-cols-3 gap-8">
                 {/* Left Panel */}
                 <div className="lg:col-span-2 space-y-6">
-                    <FileUpload accept="image/*" />
+                    <FileUpload accept="image/*" maxSizeMb={15} />
+                    <ToolLimitNotice
+                        limits={[
+                            'Images only · max 15 MB',
+                            'Runs in your browser (Tesseract.js)',
+                            'High-accuracy mode preprocesses contrast',
+                            'Editable text · copy or .txt download',
+                        ]}
+                    />
 
                     {/* Extracted Text */}
                     <AnimatePresence>
                         {extractedText && (
                             <motion.div
+                                id="ocr-result"
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: -20 }}

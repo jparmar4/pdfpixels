@@ -462,7 +462,10 @@ export function MetadataWorkspace() {
     const link = document.createElement('a');
     link.href = processedImage;
     link.download = outputName;
+    document.body.appendChild(link);
     link.click();
+    link.remove();
+    toast.success('Download started');
   }, [outputName, processedImage]);
 
   const handleReset = useCallback(() => {

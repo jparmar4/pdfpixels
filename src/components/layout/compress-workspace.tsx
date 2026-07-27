@@ -112,6 +112,9 @@ export function CompressWorkspace() {
           ? `Increased file size to ${formatSize(data.processedSize)} (target ${targetSize} KB).`
           : `Compressed successfully. Saved ${savedPercent}% file size.`,
       );
+      requestAnimationFrame(() => {
+        document.getElementById('image-compress-result')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      });
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Failed to compress image. Please try again.');
     } finally {
@@ -129,12 +132,16 @@ export function CompressWorkspace() {
     link.href = processedImage;
     const suffix = activeTool?.id === 'increase-image-size' ? 'increased' : 'compressed';
     link.download = `${baseName}-${suffix}.${extension}`;
+    document.body.appendChild(link);
     link.click();
+    link.remove();
+    toast.success('Download started');
   }, [activeTool?.id, processedImage, result, uploadedFile]);
 
   const handleReset = useCallback(() => {
     reset();
     setResult(null);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [reset]);
 
   if (!activeTool) return null;
@@ -245,7 +252,7 @@ export function CompressWorkspace() {
 
         <AnimatePresence>
           {result && processedImage && uploadedFile ? (
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -16 }} className="space-y-4 pt-2">
+            <motion.div id="image-compress-result" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -16 }} className="space-y-4 pt-2">
               <div className="flex flex-wrap items-center gap-3">
                 <Badge className="rounded-full border border-emerald-500/20 bg-emerald-500/10 px-4 py-2 text-sm font-bold text-emerald-700 hover:bg-emerald-500/15 dark:text-emerald-300">
                   Saved {result.savedPercent}%

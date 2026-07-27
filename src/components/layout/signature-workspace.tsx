@@ -225,8 +225,10 @@ export function SignatureWorkspace() {
     const link = document.createElement('a');
     link.href = src;
     link.download = `${toolId}-${Date.now()}.png`;
+    document.body.appendChild(link);
     link.click();
-    toast.success('Downloaded!');
+    link.remove();
+    toast.success('Download started');
   }, [processedImage, signatureData, toolId]);
 
   const handleReset = useCallback(() => {

@@ -165,6 +165,9 @@ export function ImageToPDFWorkspace() {
         };
       });
       toast.success(`Created PDF with ${pageCount} pages!`);
+      requestAnimationFrame(() => {
+        document.getElementById('image-to-pdf-result')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      });
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Failed to create PDF. Please try again.');
     } finally {
@@ -177,7 +180,10 @@ export function ImageToPDFWorkspace() {
       const link = document.createElement('a');
       link.href = result.pdfUrl;
       link.download = result.fileName;
+      document.body.appendChild(link);
       link.click();
+      link.remove();
+      toast.success('Download started');
     }
   }, [result]);
 
@@ -339,24 +345,29 @@ export function ImageToPDFWorkspace() {
           <AnimatePresence>
             {result && (
               <motion.div
+                id="image-to-pdf-result"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
-                className="rounded-2xl border border-green-500/30 bg-green-500/5 p-6"
+                className="rounded-2xl border border-green-500/30 bg-green-500/5 p-6 space-y-4"
               >
                 <div className="flex items-center gap-4">
                   <div className="w-14 h-14 rounded-xl bg-green-500/10 flex items-center justify-center">
                     <FileText className="w-7 h-7 text-green-500" />
                   </div>
-                  <div>
+                  <div className="flex-1">
                     <h3 className="font-semibold text-green-600 dark:text-green-400">
-                      PDF Created Successfully!
+                      PDF created successfully
                     </h3>
                     <p className="text-sm text-muted-foreground">
-                      {result.pageCount} pages • Ready for download
+                      {result.pageCount} page{result.pageCount === 1 ? '' : 's'} · {result.fileName}
                     </p>
                   </div>
                 </div>
+                <Button onClick={handleDownload} className="w-full btn-premium gap-2 rounded-xl py-6 font-bold">
+                  <Download className="w-4 h-4" />
+                  Download PDF
+                </Button>
               </motion.div>
             )}
           </AnimatePresence>

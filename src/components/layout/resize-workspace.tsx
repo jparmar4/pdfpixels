@@ -195,6 +195,9 @@ export function ResizeWorkspace() {
       });
       setProcessedImage(data.imageUrl);
       toast.success(`Image resized to ${pixelDimensions.width} x ${pixelDimensions.height} pixels.`);
+      requestAnimationFrame(() => {
+        document.getElementById('resize-result')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      });
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Failed to resize image. Please try again.');
     } finally {
@@ -204,17 +207,21 @@ export function ResizeWorkspace() {
 
   const handleDownload = useCallback(() => {
     if (!processedImage) return;
-
+    const base = uploadedFile?.name?.replace(/\.[^.]+$/, '') || 'image';
     const link = document.createElement('a');
     link.href = processedImage;
-    link.download = `resized-${pixelDimensions.width}x${pixelDimensions.height}-${Date.now()}.jpg`;
+    link.download = `${base}-${pixelDimensions.width}x${pixelDimensions.height}.jpg`;
+    document.body.appendChild(link);
     link.click();
-  }, [pixelDimensions.height, pixelDimensions.width, processedImage]);
+    link.remove();
+    toast.success('Download started');
+  }, [pixelDimensions.height, pixelDimensions.width, processedImage, uploadedFile]);
 
   const handleReset = useCallback(() => {
     reset();
     setResult(null);
     setScalePercent(100);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [reset]);
 
   if (!activeTool) return null;
@@ -277,7 +284,7 @@ export function ResizeWorkspace() {
           ) : null}
 
           {result && processedImage ? (
-            <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
+            <motion.div id="resize-result" initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
               <div className="overflow-hidden rounded-[1.75rem] border border-border/60 bg-card/75 shadow-premium backdrop-blur-xl">
                 <div className="flex items-center justify-between gap-3 border-b border-border/40 bg-background/75 px-5 py-4">
                   <h3 className="font-semibold text-foreground">Resized preview</h3>

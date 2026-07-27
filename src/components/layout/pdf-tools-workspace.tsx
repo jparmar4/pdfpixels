@@ -656,13 +656,13 @@ const renderSettings = () => {
 const getProcessLabel = () => {
     const toolId = activeTool?.id || '';
     if (toolId === 'pdf-rotate') return 'Rotate PDF';
-    if (toolId === 'pdf-watermark') return 'Add Watermark';
-    if (toolId === 'pdf-protect') return 'Protect PDF';
+    if (toolId === 'pdf-watermark') return 'Add watermark';
+    if (toolId === 'pdf-protect') return 'Protect with password';
     if (toolId === 'pdf-unlock') return 'Unlock PDF';
-    if (toolId === 'pdf-delete-pages') return 'Delete Pages';
-    if (toolId === 'pdf-reorder') return 'Reorder Pages';
-    if (toolId === 'pdf-linearize') return 'Optimize PDF';
-    if (toolId === 'pdf-add-page-numbers') return 'Add Page Numbers';
+    if (toolId === 'pdf-delete-pages') return 'Delete selected pages';
+    if (toolId === 'pdf-reorder') return 'Save new page order';
+    if (toolId === 'pdf-linearize') return 'Optimize for web (linearize)';
+    if (toolId === 'pdf-add-page-numbers') return 'Add page numbers';
     return 'Process PDF';
 };
 
@@ -749,7 +749,19 @@ return (
                                             ? 'Rotation complete'
                                             : activeTool.id === 'pdf-watermark'
                                                 ? 'Watermark applied'
-                                                : 'Processing complete'}
+                                                : activeTool.id === 'pdf-protect'
+                                                  ? 'PDF protected'
+                                                  : activeTool.id === 'pdf-unlock'
+                                                    ? 'PDF unlocked'
+                                                    : activeTool.id === 'pdf-delete-pages'
+                                                      ? 'Pages deleted'
+                                                      : activeTool.id === 'pdf-reorder'
+                                                        ? 'Pages reordered'
+                                                        : activeTool.id === 'pdf-linearize'
+                                                          ? 'PDF linearized'
+                                                          : activeTool.id === 'pdf-add-page-numbers'
+                                                            ? 'Page numbers added'
+                                                            : 'Processing complete'}
                                     </h3>
                                     <p className="text-sm text-muted-foreground">
                                         {result.pageCount ? `${result.pageCount} page${result.pageCount !== 1 ? 's' : ''} · ` : ''}

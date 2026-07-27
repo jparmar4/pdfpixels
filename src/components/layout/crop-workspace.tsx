@@ -775,14 +775,21 @@ export function CropWorkspace() {
     if (!processedImage) return;
     const link = document.createElement('a');
     link.href = processedImage;
-    const base =
-      uploadedFile?.name?.replace(/\.[^.]+$/, '') || 'image';
-    link.download = `${base}-freehand-crop.png`;
+    const base = uploadedFile?.name?.replace(/\.[^.]+$/, '') || 'image';
+    const mode =
+      cropMode === 'circle'
+        ? 'circle-crop'
+        : cropMode === 'square'
+          ? 'square-crop'
+          : cropMode === 'freehand'
+            ? 'freehand-crop'
+            : 'crop';
+    link.download = `${base}-${mode}.png`;
     document.body.appendChild(link);
     link.click();
     link.remove();
     toast.success('Download started');
-  }, [processedImage, uploadedFile]);
+  }, [cropMode, processedImage, uploadedFile]);
 
   const handleReset = useCallback(() => {
     setImageLoaded(false);
