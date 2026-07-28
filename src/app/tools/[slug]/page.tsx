@@ -258,6 +258,7 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
 
   const cleanToolName = normalizeDisplayText(tool.name);
   const schemas = getToolJsonLd(tool);
+  const hasRichContent = !!toolContentMap[tool.slug];
   const relatedTools = allTools.filter((candidate) => candidate.category === tool.category && candidate.slug !== tool.slug).slice(0, 6);
   const relatedUseCases = useCasePages.filter((useCase) => useCase.targetToolSlug === tool.slug).slice(0, 4);
   const relatedComparisons = comparisonPages.filter((comparison) => comparison.primaryToolSlug === tool.slug).slice(0, 3);
@@ -269,8 +270,8 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
           <script key={index} type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
         ))}
 
-        {/* Sticky sidebar / mobile in-content — no extra header ad (reduces density + better UX) */}
-        <ToolSidebarAd />
+        {/* Sticky sidebar / mobile in-content — only shown when editorial content is sufficient */}
+        {hasRichContent && <ToolSidebarAd />}
 
         <Suspense fallback={<WorkspaceLoading />}>
           <ToolPageClient toolId={tool.id} toolName={cleanToolName} toolDescription={normalizeDisplayText(tool.description)} />
@@ -330,8 +331,8 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
           </section>
         ) : null}
 
-        {/* Single footer unit after full content — clearer separation for AdSense */}
-        <FooterAd />
+        {/* Single footer unit after full content — only shown when editorial content is sufficient */}
+        {hasRichContent && <FooterAd />}
       </div>
     </>
   );

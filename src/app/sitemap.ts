@@ -56,7 +56,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'monthly',
       priority: 0.5,
     },
-    // /api-docs intentionally omitted while noindex (developer surface, not primary content)
+    {
+      url: absoluteUrl('/api-docs'),
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.5,
+    },
     {
       url: absoluteUrl('/contact'),
       lastModified: now,

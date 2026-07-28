@@ -7,10 +7,15 @@ export const metadata: Metadata = {
   alternates: {
     canonical: '/api-docs',
   },
-  // Conservative for AdSense quality: keep out of main discovery until API is a polished product surface
   robots: {
-    index: false,
+    index: true,
     follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
   },
 };
 

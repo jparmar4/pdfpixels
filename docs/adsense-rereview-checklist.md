@@ -14,7 +14,7 @@ Use this after deploying content-quality fixes. Do **not** request review the sa
   - `/blog/remove-exif-gps-data-from-photos`
   - `/blog/image-dpi-for-print-vs-web-explained`
 - [ ] Confirm `/pricing` is honest free messaging (no fake Pro checkout)
-- [ ] Confirm `/api-docs` is `noindex` if still not a primary product surface
+- [ ] Confirm `/api-docs` is indexable and included in sitemap
 
 ## 2. Quality smoke test (reviewer perspective)
 
