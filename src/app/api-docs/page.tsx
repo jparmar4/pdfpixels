@@ -7,6 +7,11 @@ export const metadata: Metadata = {
   alternates: {
     canonical: '/api-docs',
   },
+  // Conservative for AdSense quality: keep out of main discovery until API is a polished product surface
+  robots: {
+    index: false,
+    follow: true,
+  },
 };
 
 export default function ApiDocs() {

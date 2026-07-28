@@ -8,6 +8,7 @@ import { HowItWorks } from '@/components/home/how-it-works';
 import { TestimonialsSection } from '@/components/home/testimonials-section';
 import { FeaturesSection } from '@/components/home/features-section';
 import { FAQSection } from '@/components/home/faq-section';
+import { GuidesSection } from '@/components/home/guides-section';
 import { CTASection } from '@/components/home/cta-section';
 
 import { Metadata } from 'next';
@@ -53,6 +54,7 @@ export default function Home() {
         <AnswerEngineSection />
         <TestimonialsSection />
         <FeaturesSection />
+        <GuidesSection />
         <FAQSection />
         <CTASection />
       </main>

@@ -302,13 +302,7 @@ The [PdfPixels HEIC to JPG converter](/tools/heic-to-jpg) is the fastest fix —
                 question: "Is it safe to upload personal photos to an online HEIC converter?",
                 answer: "PdfPixels processes HEIC to JPG conversion entirely in your browser — the actual image processing happens locally on your device, not on external servers. Your photos are never transmitted or stored. You can verify this by checking your network traffic during conversion — no upload occurs."
             }
-        ],
-        rating: {
-            ratingValue: "4.9",
-            ratingCount: "1847",
-            bestRating: "5",
-            worstRating: "1",
-        }
+        ],
     },
     {
         slug: "how-to-convert-heic-to-jpg-windows",
@@ -393,13 +387,7 @@ Dealing with HEIC files on a Windows PC doesn't have to be a nightmare. By bookm
                 question: "Why does Apple use HEIC instead of JPG?",
                 answer: "HEIC uses advanced compression algorithms to store photos at half the file size of a traditional JPG without losing image quality. It's a great space-saver for your phone's storage."
             }
-        ],
-        rating: {
-            ratingValue: "4.8",
-            ratingCount: "215",
-            bestRating: "5",
-            worstRating: "1",
-        }
+        ],
     },
     {
         slug: "compress-pdf-for-government-job-form-upload",
@@ -508,13 +496,7 @@ Bookmark the [Compress PDF](/tools/compress-pdf) tool now so you have it ready f
                 question: "Can I compress a PDF on my mobile phone for a job application?",
                 answer: "Absolutely. Simply open your mobile browser, go to the PdfPixels Compress PDF page, upload your document directly from your phone's storage, and download the compressed version to upload to the government portal."
             }
-        ],
-        rating: {
-            ratingValue: "4.9",
-            ratingCount: "342",
-            bestRating: "5",
-            worstRating: "1",
-        }
+        ],
     },
     {
         slug: "ai-background-remover-free-tools-guide",
@@ -730,13 +712,7 @@ If you need more precise control over the background afterward — adding a blur
                 question: "How can I remove the background from a product photo for my online store?",
                 answer: "Take a well-lit photo of your product, upload it to an AI background remover like PdfPixels, and download the transparent PNG. For e-commerce platforms like Amazon and Shopify, place the cutout on a clean white background. Compress the final image to keep file sizes web-friendly and improve page load speed."
             }
-        ],
-        rating: {
-            ratingValue: "4.8",
-            ratingCount: "1247",
-            bestRating: "5",
-            worstRating: "1",
-        }
+        ],
     },
     {
         slug: "compress-pdf-to-200kb-guide",
@@ -844,13 +820,7 @@ Hitting strict upload limits doesn't have to be a roadblock in your day. By unde
                 question: "Is it safe to compress confidential documents online?",
                 answer: "Yes, provided you use tools that process files locally in your browser. PdfPixels uses WebAssembly to compress files directly on your device, meaning your sensitive tax documents or resumes are never uploaded to our servers."
             }
-        ],
-        rating: {
-            ratingValue: "4.9",
-            ratingCount: "842",
-            bestRating: "5",
-            worstRating: "1",
-        }
+        ],
     },
     {
         slug: "how-to-compress-pdf-file-size",
@@ -1049,13 +1019,7 @@ Bookmark this page and the [Compress PDF tool](/tools/compress-pdf) for the next
                 question: "How do I compress a PDF to under 1MB?",
                 answer: "Upload your PDF to the PdfPixels Compress PDF tool and select 'Medium' or 'High' compression depending on your starting file size. A typical document with images should compress to under 1MB with medium compression. If the file is mostly scanned images, high compression should achieve this. You can also try splitting the document to use only necessary pages."
             }
-        ],
-        rating: {
-            ratingValue: "4.9",
-            ratingCount: "2183",
-            bestRating: "5",
-            worstRating: "1",
-        }
+        ],
     },
     {
         slug: "reduce-pdf-size-for-email",
@@ -1274,13 +1238,7 @@ Bookmark the [Compress PDF tool](/tools/compress-pdf) for the next time you're s
                 question: "What if my PDF is still too large after compression?",
                 answer: "Try these steps: (1) Use High Compression instead of Medium, (2) Remove unnecessary pages using a PDF splitter to reduce the page count first, (3) If it's a scanned document, the images may need OCR conversion before compression is effective, (4) For files that genuinely need to stay large, use a file sharing service like Google Drive or WeTransfer and email a link instead."
             }
-        ],
-        rating: {
-            ratingValue: "4.8",
-            ratingCount: "1756",
-            bestRating: "5",
-            worstRating: "1",
-        }
+        ],
     },
     {
         slug: "how-to-compress-pdf-online",
@@ -1457,13 +1415,7 @@ You're done in under a minute. No account needed, no watermarks, completely free
                 question: "Do I need to create an account to compress a PDF online?",
                 answer: "No. PdfPixels Compress PDF requires zero sign-up. Upload, compress and download — that's it. No email, no password, no subscription needed."
             }
-        ],
-        rating: {
-            ratingValue: "4.9",
-            ratingCount: "3412",
-            bestRating: "5",
-            worstRating: "1",
-        }
+        ],
     },
     {
         slug: "reduce-pdf-file-size-for-email",
@@ -1670,13 +1622,7 @@ This lets the recipient download the full original at their end without any emai
                 question: "My PDF is still too large after compression — what can I do?",
                 answer: "Try these steps: (1) Use High compression if you used Medium. (2) Remove unnecessary pages using a Split PDF tool before compressing — fewer pages means a smaller baseline. (3) Use the Print to PDF trick in Chrome to flatten the file first, then compress. (4) If all else fails, upload to Google Drive or WeTransfer and send a link instead."
             }
-        ],
-        rating: {
-            ratingValue: "4.8",
-            ratingCount: "2891",
-            bestRating: "5",
-            worstRating: "1",
-        }
+        ],
     },
     {
         slug: "free-pdf-editor-alternative-to-adobe",
@@ -1933,13 +1879,7 @@ For most people reading this guide, that means the correct answer is: cancel Ado
                 question: "What Adobe Acrobat features have no free alternative?",
                 answer: "The features with the fewest free alternatives are: (1) advanced fillable PDF form creation with complex logic, (2) enterprise document workflows with audit trails, and (3) legal-grade e-signature compliance. For everyday document tasks, free tools cover virtually everything else."
             }
-        ],
-        rating: {
-            ratingValue: "4.9",
-            ratingCount: "3241",
-            bestRating: "5",
-            worstRating: "1",
-        }
+        ],
     },
     {
         slug: "merge-pdf-online-free",
@@ -2184,13 +2124,7 @@ Keep the tool bookmarked. The next time you're staring at a single upload button
                 question: "Is it safe to merge confidential PDF documents online?",
                 answer: "PdfPixels processes files locally in your browser using WebAssembly technology, meaning your documents never leave your device or get uploaded to any server. For sensitive documents like contracts, medical records, or financial statements, this local processing approach is the most private option available."
             }
-        ],
-        rating: {
-            ratingValue: "4.9",
-            ratingCount: "4127",
-            bestRating: "5",
-            worstRating: "1",
-        }
+        ],
     },
     {
         slug: "heic-to-jpg-converter-guide",
@@ -2480,13 +2414,7 @@ Whatever your setup, you now have every method available to make your iPhone pho
                 question: "What is the difference between HEIC and JPG?",
                 answer: "HEIC is Apple's modern image format (used by iPhone since 2017) that offers 40-50% smaller file sizes at equivalent quality — making it great for phone storage. JPG is the universal image format supported by every device, website, and operating system since 1992. HEIC is technically superior but only natively supported on Apple devices and modern software. JPG has universal compatibility. For sharing and uploading, always use JPG."
             }
-        ],
-        rating: {
-            ratingValue: "4.8",
-            ratingCount: "2847",
-            bestRating: "5",
-            worstRating: "1",
-        }
+        ],
     },
     {
         slug: "compress-pdf-under-1mb",
@@ -2731,13 +2659,7 @@ Bookmark the [Compress PDF tool](/tools/compress-pdf) and the next time you see 
                 question: "How big should a PDF resume be?",
                 answer: "A professional resume PDF should ideally be under 500KB, and almost always under 1MB. Applicant tracking systems and HR portals frequently impose 1MB or 2MB limits. A resume with no embedded photos compresses to well under 100KB. If your resume PDF is over 1MB, it likely contains a high-resolution photo or was exported with unnecessary embedded assets."
             }
-        ],
-        rating: {
-            ratingValue: "4.9",
-            ratingCount: "1584",
-            bestRating: "5",
-            worstRating: "1",
-        }
+        ],
     },
     {
         slug: "compress-pdf-to-200kb-email-attachment",
@@ -2941,13 +2863,7 @@ Bookmark the [Compress PDF tool](/tools/compress-pdf) — you'll reach for it ag
                 question: "Can I compress a PDF to 200KB on my phone?",
                 answer: "Yes. Open your phone browser (Chrome or Safari) and navigate to the PdfPixels Compress PDF tool. Select your file from your device, choose High Compression, and download the result. The tool is fully functional on mobile — no app installation needed."
             }
-        ],
-        rating: {
-            ratingValue: "4.9",
-            ratingCount: "1034",
-            bestRating: "5",
-            worstRating: "1",
-        }
+        ],
     },
     {
         slug: "reduce-pdf-size-gmail-25mb-fix",
@@ -3167,13 +3083,7 @@ Bookmark [pdfpixels.com/tools/compress-pdf](https://www.pdfpixels.com/tools/comp
                 question: "What is the maximum attachment size for Gmail vs Outlook?",
                 answer: "Gmail allows attachments up to 25MB. Outlook.com caps at 20MB. Yahoo Mail allows 25MB. Corporate Exchange servers vary widely — often 10MB or less. If your file exceeds these limits, compress it first using a PDF compressor or send it via a cloud link from Google Drive, Dropbox, or WeTransfer."
             }
-        ],
-        rating: {
-            ratingValue: "4.9",
-            ratingCount: "1847",
-            bestRating: "5",
-            worstRating: "1",
-        }
+        ],
     },
     {
         slug: "how-to-send-large-pdf-files-through-email",
@@ -3410,13 +3320,7 @@ Keep the [PdfPixels Compress PDF tool](/tools/compress-pdf) bookmarked — it's 
                 question: "Is it safe to compress confidential PDFs online?",
                 answer: "It depends on the tool. The PdfPixels compressor processes files locally in your browser using WebAssembly — your document never leaves your device or gets uploaded to any server. This makes it safe for confidential documents like tax returns, legal contracts, and medical records. Always check a tool's privacy policy before uploading sensitive files."
             }
-        ],
-        rating: {
-            ratingValue: "4.9",
-            ratingCount: "1624",
-            bestRating: "5",
-            worstRating: "1",
-        }
+        ],
     },
     {
         slug: "compress-scanned-pdf-without-losing-quality",
@@ -3682,13 +3586,7 @@ And for related PDF tasks — splitting out just the pages you need before compr
                 question: "My scanned PDF is still too large after compression. What else can I try?",
                 answer: "Try a two-step approach: first use the Split PDF tool to extract only the pages you need to submit (removing unnecessary pages before compression dramatically improves results), then run the smaller extract through High Compression. For very strict limits like 200KB government portal requirements, this combination usually works. Alternatively, try re-scanning the document at 150 DPI if you still have access to the physical original."
             }
-        ],
-        rating: {
-            ratingValue: "4.8",
-            ratingCount: "1382",
-            bestRating: "5",
-            worstRating: "1",
-        }
+        ],
     },
     {
         slug: "why-is-pdf-file-so-large-fix",
@@ -3813,13 +3711,7 @@ By running your bulky documents through a secure, browser-based [PDF compressor]
                 question: "Is it safe to compress confidential documents online?",
                 answer: "It depends on the tool. You should use a tool that processes files locally in your browser using WebAssembly, like PdfPixels. This ensures your sensitive documents (like tax returns or contracts) never leave your device and are never uploaded to an external server."
             }
-        ],
-        rating: {
-            ratingValue: "4.9",
-            ratingCount: "853",
-            bestRating: "5",
-            worstRating: "1",
-        }
+        ],
     },
     {
         slug: "best-free-pdf-compressor-online",
@@ -4096,13 +3988,7 @@ Start with [PDFPixels Compress PDF](/tools/compress-pdf) — it handles the vast
                 question: "What is the difference between Basic, Medium, and High PDF compression?",
                 answer: "Basic Compression removes invisible metadata and lightly downsamples images — typically 10-30% size reduction, best when quality preservation is critical. Medium Compression resamples images to screen-appropriate resolution — typically 50-75% size reduction, the best everyday choice. High Compression applies aggressive image downsampling — typically 75-90% size reduction, best for hitting strict upload limits like government portals requiring files under 200KB."
             }
-        ],
-        rating: {
-            ratingValue: "4.9",
-            ratingCount: "3241",
-            bestRating: "5",
-            worstRating: "1",
-        }
+        ],
     },
     {
         slug: "how-to-edit-pdf-online-free-adobe-alternative",
@@ -4236,14 +4122,355 @@ Bookmark our [Compress PDF](/tools/compress-pdf), [Merge PDF](/tools/merge-pdf),
                 question: "Why is Adobe Acrobat Pro so expensive compared to free online editors?",
                 answer: "Adobe Acrobat Pro includes heavy enterprise print-prepress and cloud team management features that average consumers and small businesses rarely use. Free web suites deliver all core editing tools without recurring monthly fees."
             }
+        ],
+    },
+
+    {
+        slug: "password-protect-pdf-online-free",
+        title: "How to Password Protect a PDF Online Free (Without Acrobat)",
+        excerpt: "Need to send a contract or bank statement as a PDF without leaving it open to anyone with the link? Here is a clear, free way to add a password in your browser — and what protection actually does (and does not) cover.",
+        date: "Jul 28, 2026",
+        dateModified: "Jul 28, 2026",
+        category: "PDF Security",
+        author: "James Carter",
+        authorRole: "Document Tools Writer",
+        readTime: "8 min read",
+        metaDescription: "Learn how to password protect a PDF online free without Adobe Acrobat. Step-by-step browser method, what encryption covers, and common mistakes to avoid.",
+        keywords: [
+            "password protect pdf",
+            "lock pdf with password free",
+            "encrypt pdf online",
+            "secure pdf without acrobat",
+            "pdf password free",
+            "protect pdf file",
         ],
-        rating: {
-            ratingValue: "4.9",
-            ratingCount: "512",
-            bestRating: "5",
-            worstRating: "1"
-        }
-    }
+        coverImage: "/images/blog/free-pdf-editor-adobe-alternative-hero.png",
+        imageAlt: "Locking a PDF document with a password using a free online tool",
+        content: `
+Sending a PDF is easy. Sending a PDF that only the right person can open is a different job.
+
+If you have ever emailed a lease, invoice packet, or ID scan and worried that anyone who intercepts the file could read it, password protection is the straightforward fix. You do not need Adobe Acrobat Pro for everyday encryption. A browser tool that can open the file, set an open password, and download the locked PDF is enough for most personal and small-business use.
+
+> [!TIP]
+> **Quick path:** Use [Protect PDF](/tools/protect-pdf) on PdfPixels, set a strong password you will share separately (not in the same email), and download the locked file.
+
+## What password protect PDF actually means
+
+When people say they want to lock a PDF, they usually mean one of two things:
+
+1. **Open password (user password)** — the file will not display until the correct password is entered.
+2. **Permissions password (owner password)** — the file may open, but printing, copying, or editing is restricted.
+
+For sharing sensitive attachments, the **open password** is what most people need. Permissions restrictions alone are weaker: determined users can sometimes bypass restriction flags with other software. Treat open-password encryption as the practical baseline.
+
+## When you should protect a PDF
+
+Password protection is worth the extra minute when the file contains:
+
+- Personal identity details (passport scans, tax forms)
+- Financial information (bank statements, invoices with account data)
+- Contracts not yet ready for wide distribution
+- Medical or school records shared one-to-one
+
+You do **not** need a password on a public brochure PDF. Extra friction helps nobody if the content is already meant to be open.
+
+## Step-by-step: protect a PDF free in the browser
+
+1. **Open the protect tool** — go to [Protect PDF](/tools/protect-pdf).
+2. **Upload the PDF** you want to lock. Prefer the final version so you do not re-encrypt multiple drafts.
+3. **Choose a strong password** — at least 12 characters mixing words, numbers, and symbols beats weak defaults every time.
+4. **Process and download** the protected file.
+5. **Share the password on a different channel** — for example, send the PDF by email and the password by SMS or a phone call.
+
+That separation matters. Putting the password in the same email as the attachment is like locking the door and taping the key to the handle.
+
+## Strong passwords without making life impossible
+
+A long passphrase is easier to remember and harder to guess than a short complex string. If you protect files often, a password manager helps you generate and store unique passwords per document.
+
+## Common mistakes
+
+**Using the same password for every client file.** If one password leaks, every past attachment is exposed.
+
+**Forgetting the password yourself.** There is no universal backdoor for a properly encrypted PDF. Keep a secure note of passwords for files you must reopen later.
+
+**Assuming protection equals total privacy.** Encryption protects the file at rest. It does not stop the recipient from screenshotting pages after they unlock it.
+
+**Encrypting a huge scan without compressing first.** A 40MB protected PDF is still painful to email. If size is a problem, [compress the PDF](/tools/compress-pdf) first, then protect the smaller result.
+
+## Privacy notes for online tools
+
+Prefer tools that are clear about processing. For sensitive files, avoid public computers when typing passwords, and delete local copies you no longer need from Downloads.
+
+PdfPixels is designed for practical document jobs — start at [Protect PDF](/tools/protect-pdf) when you need a free open-password lock.
+
+## Quick checklist before you hit send
+
+- Final PDF content is correct
+- Strong unique password set
+- Password shared on a separate channel
+- You can still open the downloaded file with that password
+- File size is email-friendly
+        `,
+        faq: [
+            {
+                question: "Can I password protect a PDF for free without Adobe?",
+                answer: "Yes. Browser-based tools like PdfPixels Protect PDF can add an open password without installing Adobe Acrobat Pro."
+            },
+            {
+                question: "Is a PDF password 100% unbreakable?",
+                answer: "Strong encryption stops casual access, but very weak passwords can still be guessed. Use a long unique passphrase and share it separately from the file."
+            },
+            {
+                question: "Should I put the password in the same email as the PDF?",
+                answer: "No. Send the file and the password through different channels so an intercepted email alone is not enough to open the document."
+            },
+        ],
+    },
+    {
+        slug: "add-page-numbers-to-pdf-online",
+        title: "How to Add Page Numbers to a PDF Online (Free)",
+        excerpt: "Contracts, study notes, and multi-page applications are easier to review when every page is numbered. Here is how to add page numbers to a PDF in your browser — plus placement tips so numbers do not cover stamps or signatures.",
+        date: "Jul 28, 2026",
+        dateModified: "Jul 28, 2026",
+        category: "PDF Editing",
+        author: "Priya Nair",
+        authorRole: "Productivity Writer",
+        readTime: "7 min read",
+        metaDescription: "Add page numbers to a PDF online free. Learn placement, starting numbers, and how to number multi-page PDFs without Adobe Acrobat.",
+        keywords: [
+            "add page numbers to pdf",
+            "pdf page numbers online free",
+            "number pages in pdf",
+            "insert page numbers pdf browser",
+            "pdf pagination free",
+        ],
+        coverImage: "/images/blog/merge-pdf-online-hero.png",
+        imageAlt: "Adding page numbers to a multi-page PDF document online",
+        content: `
+A multi-page PDF without page numbers is a collaboration tax. Reviewers say "see the third paragraph on the page after the chart," and everyone scrolls guessing. Numbered pages turn feedback into "page 12, second paragraph."
+
+You do not need desktop publishing software for basic pagination. Free online tools can stamp page numbers on an existing PDF in under a minute.
+
+> [!TIP]
+> Try [Add Page Numbers](/tools/add-page-numbers-to-pdf) on PdfPixels: upload, choose position, process, download.
+
+## Why page numbers still matter
+
+- Legal and admin packs — "Initial page 4" only works if page 4 is labeled.
+- Printed packets — pages get shuffled; numbers put them back.
+- Teaching and research — citations and study groups need stable references.
+- Merged files — after you [merge PDFs](/tools/merge-pdf), renumbering makes the new packet feel intentional.
+
+## Before you number: fix the page order
+
+Page numbers follow the order of pages in the file. If sections are out of sequence, fix order first with reorder, split, or merge tools — then add numbers once.
+
+## Step-by-step: add numbers online
+
+1. Open [Add Page Numbers](/tools/add-page-numbers-to-pdf).
+2. Upload your PDF.
+3. Choose position — bottom center is classic; bottom right is common for formal docs.
+4. Set start number if needed for appendices or continued packets.
+5. Process and download. Spot-check the first, middle, and last pages.
+
+## Placement tips that avoid disasters
+
+Leave a margin so numbers do not sit on signatures, stamps, or form fields. Watch scanned pages with dark edges that can hide light numbers. For covers, some teams leave the cover unnumbered and start 1 on the first content page.
+
+## Combining with other PDF jobs
+
+A realistic order for application packets: merge, delete blanks, rotate scans, add page numbers, compress if needed, protect with a password only if required.
+
+## Troubleshooting
+
+If numbers are wrong after a merge, you numbered too early — merge first, number once. If the file is huge, compress after pagination; numbering itself rarely bloats files.
+
+Numbered pages are a small polish with outsized impact on review speed. Make it a habit for any PDF longer than a few pages.
+        `,
+        faq: [
+            {
+                question: "Can I add page numbers to a PDF for free online?",
+                answer: "Yes. Upload your PDF to a free page-number tool such as PdfPixels, choose a position, and download the numbered file."
+            },
+            {
+                question: "Should I number pages before or after merging PDFs?",
+                answer: "After merging. If you number first, the combined packet will not have continuous page numbers."
+            },
+            {
+                question: "Can I start page numbers at a number other than 1?",
+                answer: "Many tools allow a custom start index — useful for appendices or documents that continue a larger report."
+            },
+        ],
+    },
+    {
+        slug: "remove-exif-gps-data-from-photos",
+        title: "How to Remove EXIF and GPS Data from Photos Before You Share Them",
+        excerpt: "Your photo can reveal more than the picture: camera model, timestamps, and sometimes exact GPS location. Learn what EXIF is, when to strip it, and how to remove image metadata online before posting or emailing.",
+        date: "Jul 28, 2026",
+        dateModified: "Jul 28, 2026",
+        category: "Image Privacy",
+        author: "James Carter",
+        authorRole: "Mobile Tech & Photography Writer",
+        readTime: "9 min read",
+        metaDescription: "Remove EXIF and GPS location data from photos before sharing. Learn what metadata is stored, privacy risks, and how to strip image metadata free online.",
+        keywords: [
+            "remove exif data",
+            "remove gps from photo",
+            "strip image metadata",
+            "photo location privacy",
+            "remove metadata from image online",
+            "exif cleaner free",
+        ],
+        coverImage: "/images/blog/ai-background-remover-hero.png",
+        imageAlt: "Removing EXIF and GPS metadata from a smartphone photo for privacy",
+        content: `
+A photo is not only pixels. Most camera phones embed **metadata** — extra fields that describe how and where the picture was taken. That can include the time, device model, lens settings, and, if location services were on, **GPS coordinates** accurate enough to mark a home, school, or workplace.
+
+If you post a family photo, a new apartment, or a travel picture from your front door, stripping location data is a simple privacy habit worth learning.
+
+> [!TIP]
+> Use [Remove Image Metadata](/tools/remove-image-metadata) on PdfPixels to strip EXIF/GPS fields, then share the cleaned file.
+
+## What is EXIF?
+
+EXIF is a common way cameras store metadata inside JPEG and other image files: date and time, camera model, exposure settings, orientation, and sometimes GPS latitude/longitude. Screenshots and some chat apps strip a lot of this automatically. Originals from the Camera roll often keep it.
+
+## Why metadata can be a problem
+
+Location leakage is the big one: a photo of your living room posted online might still contain coordinates of your address. Timestamps can reveal routines. Device fields share more than many people intend.
+
+Important limit: **removing metadata does not blur faces, hide street signs, or erase what is visible in the image.** If the front of your house is in the frame, metadata cleanup alone is not enough.
+
+## When you should strip metadata
+
+- Public social posts of home or daily life
+- Marketplace listings shot inside your residence
+- Client work where only the visual matters
+- Before uploading to tools you do not fully trust with originals (strip a copy first)
+
+When to keep metadata: personal archives, photography portfolios that rely on capture settings, and legal evidence workflows that require authenticity trails.
+
+## Step-by-step: remove EXIF online
+
+1. Copy the photo — work on a duplicate so your master archive keeps full EXIF if you want it later.
+2. Open [Remove Image Metadata](/tools/remove-image-metadata).
+3. Upload the copy and download the cleaned image.
+4. Optionally verify with an EXIF viewer or your OS Properties panel.
+
+## Phone settings that reduce GPS in new photos
+
+Turn off location access for the Camera app on iPhone or Android when you do not need geotags. Even then, other EXIF fields may remain, so an explicit strip step before public posting is still useful.
+
+## Metadata vs compression vs screenshots
+
+Compression is about file size, not privacy. Screenshots often drop metadata but may lower quality. For privacy-critical sharing, use an explicit metadata removal step.
+
+## Practical public-post pipeline
+
+1. Crop out sensitive background
+2. Remove metadata
+3. [Compress](/tools/compress-image) for faster uploads
+4. Post the final export
+
+Metadata is invisible, which is exactly why it surprises people. Make "strip before share" a default for anything public, and keep full originals in a private archive when you still want the technical details later.
+        `,
+        faq: [
+            {
+                question: "Does removing EXIF delete GPS location from a photo?",
+                answer: "Yes. A proper metadata strip removes embedded GPS fields. It does not change location clues that are visible in the picture itself."
+            },
+            {
+                question: "Can I remove photo metadata on my phone?",
+                answer: "Yes. Use a mobile browser with an online strip tool, or turn off camera location tags in system settings for future photos."
+            },
+            {
+                question: "Is EXIF the same as the image quality?",
+                answer: "No. EXIF is extra descriptive data. Removing it does not meaningfully improve or destroy visual quality the way heavy compression does."
+            },
+        ],
+    },
+    {
+        slug: "image-dpi-for-print-vs-web-explained",
+        title: "Image DPI Explained: Print vs Web (What Actually Matters)",
+        excerpt: "DPI confuses everyone the first time a form asks for 300 DPI. Here is a plain-English guide to DPI vs pixels, when 72 vs 300 matters, and how to resize images correctly for print, web, and ID photos.",
+        date: "Jul 28, 2026",
+        dateModified: "Jul 28, 2026",
+        category: "Image Basics",
+        author: "Priya Nair",
+        authorRole: "Productivity Writer",
+        readTime: "10 min read",
+        metaDescription: "Understand image DPI for print vs web. Learn pixels vs DPI, when 300 DPI matters, and how to resize photos correctly for documents and screens.",
+        keywords: [
+            "image dpi explained",
+            "300 dpi meaning",
+            "dpi vs pixels",
+            "print vs web resolution",
+            "resize image for print",
+            "convert dpi online",
+        ],
+        coverImage: "/images/blog/compress-pdf-file-size-hero.png",
+        imageAlt: "Concept of image pixels and DPI for print versus web",
+        content: `
+Few three-letter acronyms cause as much form anxiety as **DPI**. A portal says upload a 300 DPI photo, a print shop asks for 300 DPI, and a website guide says 72 DPI is fine for screens. All of those can be true in context.
+
+This guide separates **pixels** (what the image actually contains) from **DPI metadata** (how software suggests those pixels map to physical inches).
+
+> [!TIP]
+> Need a practical resize? Use [Resize Image](/tools/resize-image) for dimensions and [Convert DPI](/tools/convert-dpi) when a form insists on a DPI tag.
+
+## Pixels are the real detail
+
+An image that is 1200 by 1800 pixels has a fixed amount of detail. On a phone screen those pixels might cover a few inches of glass; on a poster the same pixels stretched large will look soft. You cannot invent true detail with DPI alone.
+
+## What DPI means
+
+DPI (dots per inch) comes from print. PPI (pixels per inch) is the screen/document cousin. A useful formula: physical size in inches equals pixels divided by DPI. Example: 1200 pixels wide at 300 DPI is 4 inches wide in print.
+
+## Why web designers shrug at 72 DPI
+
+Browsers display CSS pixels, not the EXIF DPI field. For web performance, optimize correct pixel dimensions and file size — not a magic DPI number.
+
+## Why printers care about 300 DPI
+
+Ink on paper has no responsive layout. If you print a 300-pixel image three inches wide, you only have 100 pixels per inch — soft and blocky. 300 DPI is a common sweet spot for small photo prints and documents. A 2 by 2 inch photo at 300 DPI needs 600 by 600 pixels.
+
+## Forms that demand 300 DPI
+
+Portals sometimes check the DPI metadata field, the pixel dimensions, the file size in KB, or all three. When a form is picky: set width and height first, set DPI to the requested value, then [compress](/tools/compress-image) to the KB limit. Order matters.
+
+## 72 vs 150 vs 300 cheat sheet
+
+- Website and social: pixel width for layout; DPI mostly irrelevant
+- Office laser docs: about 150 to 300 DPI for embedded images
+- Photo lab prints: about 300 DPI at final print size
+- Huge posters viewed at distance: lower DPI can be acceptable
+
+## DPI vs file size (KB)
+
+DPI is not the same as kilobytes. A 300 DPI image can be 50KB or 5MB depending on pixel count and compression. Portals that want 300 DPI and under 100KB need resize plus compress together.
+
+## Bottom line
+
+Pixels decide how much detail exists. DPI decides how those pixels map to physical inches and what fussy forms read in metadata. Web cares about pixels and file weight. Print and many official forms care about physical size plus adequate pixels, often labeled 300 DPI.
+
+Once you separate those ideas, "set to 300 DPI" becomes a sizing problem you can solve in a few clicks with [Resize Image](/tools/resize-image) and [Convert DPI](/tools/convert-dpi).
+        `,
+        faq: [
+            {
+                question: "Is 72 DPI required for web images?",
+                answer: "No. Web browsers primarily use pixel dimensions. 72 DPI is an old default, not a quality requirement for modern websites."
+            },
+            {
+                question: "Does increasing DPI make a blurry photo sharp?",
+                answer: "No. DPI metadata does not add real detail. You need enough pixels for the print or crop size you want."
+            },
+            {
+                question: "What size is a 2x2 inch photo at 300 DPI?",
+                answer: "2 by 2 inches at 300 DPI is 600 by 600 pixels."
+            },
+        ],
+    },
 ];
 
 // Helper functions

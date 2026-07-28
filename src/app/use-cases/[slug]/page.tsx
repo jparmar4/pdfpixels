@@ -29,8 +29,14 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       type: 'article',
     },
     robots: {
-      index: false,
+      index: true,
       follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
+      },
     },
     other: {
       'article:tag': entry.intent,

@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import dynamic from 'next/dynamic';
@@ -49,8 +50,8 @@ export async function generateMetadata({ params }: GeoPageProps): Promise<Metada
   }
 
   const url = `/${region.code}`;
-  const title = `Free Online PDF & Image Tools in ${region.name} - ${siteConfig.name}`;
-  const description = `The #1 set of fast, secure PDF and Image tools tailored for users in ${region.name}. Compress, resize, and convert for free.`;
+  const title = `${region.headline} | ${siteConfig.name}`;
+  const description = region.intro.slice(0, 160);
 
   // Build hreflang object
   const languages: Record<string, string> = {
@@ -90,8 +91,8 @@ export default async function GeoHubPage({ params }: GeoPageProps) {
       '@type': 'WebPage',
       '@id': `${regionUrl}#webpage`,
       url: regionUrl,
-      name: `Free Online PDF & Image Tools in ${region.name}`,
-      description: `Fast, free PDF and image tools tailored for users in ${region.name}. Compress, merge, split, convert, and edit without signup.`,
+      name: region.headline,
+      description: region.intro,
       inLanguage: region.locale,
       isPartOf: { '@id': `${absoluteUrl('/')}/#website` },
       about: {
@@ -100,7 +101,7 @@ export default async function GeoHubPage({ params }: GeoPageProps) {
       },
       speakable: {
         '@type': 'SpeakableSpecification',
-        cssSelector: ['#home-hero-title', '#home-hero-summary'],
+        cssSelector: ['#region-hero-title', '#region-hero-summary'],
       },
     },
     {
@@ -114,32 +115,14 @@ export default async function GeoHubPage({ params }: GeoPageProps) {
     {
       '@context': 'https://schema.org',
       '@type': 'FAQPage',
-      mainEntity: [
-        {
-          '@type': 'Question',
-          name: `Are PdfPixels tools free to use in ${region.name}?`,
-          acceptedAnswer: {
-            '@type': 'Answer',
-            text: `Yes. Core PDF and image tools on PdfPixels are free for users in ${region.name}, with no signup required for standard workflows.`,
-          },
+      mainEntity: region.faqs.map((faq) => ({
+        '@type': 'Question',
+        name: faq.question,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: faq.answer,
         },
-        {
-          '@type': 'Question',
-          name: `Can I compress a PDF online in ${region.name}?`,
-          acceptedAnswer: {
-            '@type': 'Answer',
-            text: `Yes. Open Compress PDF on PdfPixels, upload your file, choose a compression level, and download a smaller PDF suitable for email and form uploads in ${region.name}.`,
-          },
-        },
-        {
-          '@type': 'Question',
-          name: `Does PdfPixels work on mobile devices in ${region.name}?`,
-          acceptedAnswer: {
-            '@type': 'Answer',
-            text: `Yes. PdfPixels works in modern mobile and desktop browsers used across ${region.name}, including Chrome, Safari, Edge, and Firefox.`,
-          },
-        },
-      ],
+      })),
     },
   ];
 
@@ -153,6 +136,68 @@ export default async function GeoHubPage({ params }: GeoPageProps) {
             dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
           />
         ))}
+
+        {/* Unique regional editorial — not a homepage clone */}
+        <section className="border-b border-border/50 bg-background">
+          <div className="container mx-auto max-w-6xl px-4 py-12 lg:px-8 md:py-16">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-primary">
+              {region.name}
+            </p>
+            <h1
+              id="region-hero-title"
+              className="mt-3 max-w-3xl text-3xl font-extrabold tracking-tight text-foreground md:text-4xl"
+            >
+              {region.headline}
+            </h1>
+            <p
+              id="region-hero-summary"
+              className="mt-4 max-w-3xl text-base leading-7 text-muted-foreground md:text-lg"
+            >
+              {region.intro}
+            </p>
+
+            <div className="mt-8 grid gap-4 md:grid-cols-3">
+              {region.commonTasks.map((task) => (
+                <Link
+                  key={task.href}
+                  href={task.href}
+                  className="rounded-2xl border border-border/60 bg-card/80 p-5 shadow-soft transition-all hover:border-primary/30 hover:shadow-premium"
+                >
+                  <h2 className="text-base font-bold text-foreground">{task.title}</h2>
+                  <p className="mt-2 text-sm leading-6 text-muted-foreground">{task.detail}</p>
+                  <span className="mt-4 inline-block text-sm font-semibold text-primary">
+                    Open tool →
+                  </span>
+                </Link>
+              ))}
+            </div>
+
+            <div className="mt-10 grid gap-6 lg:grid-cols-2">
+              <div className="rounded-2xl border border-border/60 bg-muted/20 p-6">
+                <h2 className="text-lg font-bold text-foreground">Local tips for {region.name}</h2>
+                <ul className="mt-4 space-y-3">
+                  {region.localNotes.map((note) => (
+                    <li key={note} className="text-sm leading-7 text-muted-foreground">
+                      • {note}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className="rounded-2xl border border-border/60 bg-muted/20 p-6">
+                <h2 className="text-lg font-bold text-foreground">FAQ for {region.name}</h2>
+                <div className="mt-4 space-y-4">
+                  {region.faqs.map((faq) => (
+                    <div key={faq.question}>
+                      <h3 className="text-sm font-semibold text-foreground">{faq.question}</h3>
+                      <p className="mt-1 text-sm leading-6 text-muted-foreground">{faq.answer}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
         <ToolsSection region={region} />
         <StatsBanner />
         <HowItWorks />

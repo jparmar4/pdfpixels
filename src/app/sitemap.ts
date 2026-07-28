@@ -54,14 +54,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: absoluteUrl('/pricing'),
       lastModified: now,
       changeFrequency: 'monthly',
-      priority: 0.65,
+      priority: 0.5,
     },
-    {
-      url: absoluteUrl('/api-docs'),
-      lastModified: now,
-      changeFrequency: 'monthly',
-      priority: 0.6,
-    },
+    // /api-docs intentionally omitted while noindex (developer surface, not primary content)
     {
       url: absoluteUrl('/contact'),
       lastModified: now,

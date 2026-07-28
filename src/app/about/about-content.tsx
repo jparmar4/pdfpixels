@@ -136,13 +136,16 @@ export function AboutPageContent() {
           <h2 className="text-2xl font-bold text-foreground md:text-3xl">Why the product exists</h2>
           <div className="premium-prose mt-5">
             <p>
-              Many image and PDF tools feel disposable: generic UI, inconsistent output, too many ads, or important features hidden behind signup flows. PdfPixels is being designed in the opposite direction.
+              PdfPixels exists because everyday file jobs are still harder than they should be: a PDF that will not fit in email, a photo rejected for being 12KB over a portal limit, an iPhone HEIC that will not open on Windows, or a passport crop that needs exact dimensions.
             </p>
             <p>
-              The objective is straightforward: give users a polished utility platform that feels global in quality, delivers predictable output, and removes as much operational friction as possible from everyday file work.
+              We build free browser tools for those moments — compress, merge, convert, resize, and clean up files — with clear steps, practical guides, and no account wall for core workflows. The product should feel reliable and calm, not like a cluttered tool farm.
             </p>
             <p>
-              That means strong defaults, clear controls, mobile-friendly workflows, and surfaces that feel closer to a premium SaaS product than a typical free tool directory.
+              Alongside the tools, we publish long-form how-to articles (PDF size limits, HEIC conversion, form photo sizes, and more) so people can learn the “why” as well as click a button. That combination of working utilities and real educational content is the foundation of the site.
+            </p>
+            <p>
+              If something breaks, a limit is unclear, or a tool should work differently, use the contact page. Product decisions are driven by real upload errors and form requirements people hit every day.
             </p>
           </div>
         </div>
