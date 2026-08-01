@@ -31,7 +31,8 @@
 - Compress Image: https://www.pdfpixels.com/tools/compress-image
 - Resize Image: https://www.pdfpixels.com/tools/resize-image
 - Remove Background: https://www.pdfpixels.com/tools/remove-image-background
-- Enhance Image: https://www.pdfpixels.com/tools/increase-image-quality
+- Enhance Image (AI image enhancer free): https://www.pdfpixels.com/tools/increase-image-quality
+- Guide — AI Image Enhancer fix blurry photos: https://www.pdfpixels.com/blog/ai-image-enhancer-fix-blurry-photos
 - Upscale Image: https://www.pdfpixels.com/tools/upscale-image
 - Crop Image: https://www.pdfpixels.com/tools/crop-image
 - Rotate Image: https://www.pdfpixels.com/tools/rotate-image

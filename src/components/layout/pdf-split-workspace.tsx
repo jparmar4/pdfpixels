@@ -110,8 +110,9 @@ export function PDFSplitWorkspace() {
       formData.append('singlePage', singlePage);
     }
 
+    let progressInterval: ReturnType<typeof setInterval> | undefined;
     try {
-      const progressInterval = setInterval(() => {
+      progressInterval = setInterval(() => {
         setStatusLabel('Processing');
         setProgress((prev) => Math.min(prev + 8, 90));
       }, 150);
@@ -121,7 +122,6 @@ export function PDFSplitWorkspace() {
         body: formData,
       });
 
-      clearInterval(progressInterval);
       setStatusLabel('Finalizing');
       setProgress(100);
 
@@ -208,6 +208,7 @@ export function PDFSplitWorkspace() {
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Failed to split PDF. Please try again.');
     } finally {
+      if (progressInterval) clearInterval(progressInterval);
       setIsProcessing(false);
       setStatusLabel('Idle');
     }

@@ -99,8 +99,9 @@ export function CompressPDFWorkspace() {
     formData.append('level', compressionLevel);
     if (force) formData.append('force', '1');
 
+    let progressInterval: ReturnType<typeof setInterval> | undefined;
     try {
-      const progressInterval = setInterval(() => {
+      progressInterval = setInterval(() => {
         setStatusLabel('Processing');
         setProgress((prev) => Math.min(prev + 8, 90));
       }, 150);
@@ -110,7 +111,6 @@ export function CompressPDFWorkspace() {
         body: formData,
       });
 
-      clearInterval(progressInterval);
       setStatusLabel('Finalizing');
       setProgress(100);
 
@@ -169,6 +169,7 @@ export function CompressPDFWorkspace() {
       setErrorMessage(message);
       toast.error(message);
     } finally {
+      if (progressInterval) clearInterval(progressInterval);
       setIsProcessing(false);
       setStatusLabel('Idle');
     }

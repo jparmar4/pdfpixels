@@ -254,7 +254,6 @@ export function AIWorkspace() {
                 <Badge variant="secondary">Ready</Badge>
               </div>
               <div className={`flex min-h-[240px] items-center justify-center p-4 ${isRemoveBg ? checker : 'bg-muted/25'}`}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={sourcePreview} alt="Source" className="max-h-[420px] max-w-full rounded-xl object-contain" />
               </div>
             </div>
@@ -299,21 +298,18 @@ export function AIWorkspace() {
                     <div className="border-b border-border/40 p-4 sm:border-b-0 sm:border-r">
                       <p className="mb-2 text-center text-[11px] font-bold uppercase tracking-[0.16em] text-muted-foreground">Original</p>
                       <div className={`flex min-h-[240px] items-center justify-center ${isRemoveBg ? checker : 'bg-muted/20'}`}>
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img src={sourcePreview} alt="Original" className="max-h-[420px] max-w-full rounded-xl object-contain" />
                       </div>
                     </div>
                     <div className="p-4">
                       <p className="mb-2 text-center text-[11px] font-bold uppercase tracking-[0.16em] text-primary">Result</p>
                       <div className={`flex min-h-[240px] items-center justify-center ${isRemoveBg ? checker : 'bg-muted/20'}`}>
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img src={processedImage} alt="AI result" className="max-h-[420px] max-w-full rounded-xl object-contain" />
                       </div>
                     </div>
                   </div>
                 ) : (
                   <div className={`flex min-h-[320px] items-center justify-center p-4 ${isRemoveBg ? checker : 'bg-muted/25'}`}>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={processedImage} alt={`${toolConfig.label} result`} className="max-h-[520px] max-w-full rounded-2xl object-contain" />
                   </div>
                 )}

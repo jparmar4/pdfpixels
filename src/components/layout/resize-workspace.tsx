@@ -163,8 +163,9 @@ export function ResizeWorkspace() {
     // Persist print density for DPI converter and print-ready outputs
     formData.append('density', String(dpi));
 
+    let progressInterval: ReturnType<typeof setInterval> | undefined;
     try {
-      const progressInterval = setInterval(() => {
+      progressInterval = setInterval(() => {
         setProgress((prev) => Math.min(prev + 8, 90));
       }, 150);
 
@@ -173,7 +174,6 @@ export function ResizeWorkspace() {
         body: formData,
       });
 
-      clearInterval(progressInterval);
       setProgress(100);
 
       if (!response.ok) {
@@ -201,6 +201,7 @@ export function ResizeWorkspace() {
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Failed to resize image. Please try again.');
     } finally {
+      if (progressInterval) clearInterval(progressInterval);
       setIsProcessing(false);
     }
   }, [dpi, pixelDimensions.height, pixelDimensions.width, setIsProcessing, setProcessedImage, setProgress, uploadedFile]);

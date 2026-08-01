@@ -1,6 +1,6 @@
-import { loadPdfWithTimeout } from '@/lib/pdf-api';
+import { loadPdfWithTimeout, readAndValidatePdfFile, validatePdfUpload } from '@/lib/pdf-api';
+import { isGhostscriptMissingError, runGhostscriptWithFallback } from '@/lib/ghostscript';
 import { NextRequest } from 'next/server'
-import { spawn } from 'child_process'
 import fs from 'fs'
 import path from 'path'
 import os from 'os'
@@ -67,67 +67,6 @@ function getCompressionProfile(level: string): CompressionProfile {
   return compressionProfiles.recommended
 }
 
-function getGhostscriptCandidates() {
-  const configured = process.env.GHOSTSCRIPT_PATH?.trim()
-
-  if (os.platform() !== 'win32') {
-    return [configured, 'gs'].filter(Boolean) as string[]
-  }
-
-  const programFiles = process.env.ProgramFiles || 'C:\\Program Files'
-  const gsRoot = path.join(programFiles, 'gs')
-  const discovered: string[] = []
-
-  if (fs.existsSync(gsRoot)) {
-    for (const dir of fs.readdirSync(gsRoot)) {
-      const exePath = path.join(gsRoot, dir, 'bin', 'gswin64c.exe')
-      if (fs.existsSync(exePath)) {
-        discovered.push(exePath)
-      }
-    }
-  }
-
-  return [
-    configured,
-    ...discovered.sort().reverse(),
-    'C:\\Program Files\\gs\\gs10.06.0\\bin\\gswin64c.exe',
-    'C:\\Program Files\\gs\\gs10.04.0\\bin\\gswin64c.exe',
-    'C:\\Program Files\\gs\\gs10.03.1\\bin\\gswin64c.exe',
-    'C:\\Program Files\\gs\\gs10.02.1\\bin\\gswin64c.exe',
-    'C:\\Program Files\\gs\\gs10.01.2\\bin\\gswin64c.exe',
-    'C:\\Program Files\\gs\\gs10.01.1\\bin\\gswin64c.exe',
-    'C:\\Program Files\\gs\\gs10.00.0\\bin\\gswin64c.exe',
-    'gswin64c',
-    'gswin32c',
-    'gs',
-  ].filter(Boolean) as string[]
-}
-
-function runGhostscript(command: string, args: string[]) {
-  return new Promise<void>((resolve, reject) => {
-    const proc = spawn(command, args)
-    const timeout = setTimeout(() => {
-      proc.kill('SIGKILL')
-      reject(new Error('Compression timed out. Please try a smaller PDF.'))
-    }, 45_000)
-
-    proc.on('error', (err) => {
-      clearTimeout(timeout)
-      reject(err)
-    })
-
-    proc.on('close', (code) => {
-      clearTimeout(timeout)
-      if (code === 0) {
-        resolve()
-        return
-      }
-
-      reject(new Error(`Ghostscript failed with exit code ${code}`))
-    })
-  })
-}
-
 async function compressWithGhostscript(inputPath: string, outputPath: string, profile: CompressionProfile) {
   const args = [
     '-sDEVICE=pdfwrite',
@@ -171,24 +110,11 @@ async function compressWithGhostscript(inputPath: string, outputPath: string, pr
     inputPath,
   ]
 
-  let lastError: Error | NodeJS.ErrnoException | null = null
-  for (const candidate of getGhostscriptCandidates()) {
-    try {
-      await runGhostscript(candidate, args)
-      return fs.readFileSync(outputPath)
-    } catch (error) {
-      lastError = error as Error | NodeJS.ErrnoException
-      const errno = lastError as NodeJS.ErrnoException
-      const message = `${lastError.message || ''}`
-      if (errno.code === 'ENOENT' || message.includes('spawn') || message.includes('not recognized')) {
-        continue
-      }
-
-      throw lastError
-    }
-  }
-
-  throw lastError ?? new Error('Ghostscript is not available in the current environment.')
+  await runGhostscriptWithFallback(args, {
+    timeoutMs: 45_000,
+    timeoutMessage: 'Compression timed out. Please try a smaller PDF.',
+  })
+  return fs.readFileSync(outputPath)
 }
 
 function toSavedPercent(before: number, after: number) {
@@ -248,35 +174,19 @@ export async function POST(req: NextRequest) {
     const force = String(form.get('force') || '') === '1' || String(form.get('force') || '') === 'true'
     const profile = getCompressionProfile(levelStr)
 
-    if (!file) {
-      return new Response(JSON.stringify({ error: 'No file uploaded' }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' },
-      })
+    const validation = validatePdfUpload(file)
+    if (!validation.ok) {
+      return validation.response
     }
+    const upload = file as File
+    const uploadName = upload.name || 'input.pdf'
 
-    if (file.type && file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf')) {
-      return new Response(JSON.stringify({ error: 'Only PDF files are supported' }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' },
-      })
+    const read = await readAndValidatePdfFile(upload)
+    if (!read.ok) {
+      return read.response
     }
-
-    if (file.size > 25 * 1024 * 1024) {
-      return new Response(JSON.stringify({ error: 'File too large (25MB max)' }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' },
-      })
-    }
-
-    const originalBuffer = Buffer.from(await file.arrayBuffer())
-    // Validate PDF magic bytes
-    if (originalBuffer.length < 5 || originalBuffer.subarray(0, 5).toString('ascii') !== '%PDF-') {
-      return new Response(JSON.stringify({ error: 'Invalid PDF file content' }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' },
-      })
-    }
+    const originalBuffer = read.buffer
+    const originalBytes = new Uint8Array(originalBuffer)
 
     const strict = !force
 
@@ -285,7 +195,7 @@ export async function POST(req: NextRequest) {
 
     if (remoteUrl && remoteToken) {
       const remoteForm = new FormData()
-      remoteForm.append('file', new Blob([originalBuffer], { type: 'application/pdf' }), file.name || 'input.pdf')
+      remoteForm.append('file', new Blob([originalBytes], { type: 'application/pdf' }), uploadName)
       remoteForm.append('level', levelStr)
       if (force) remoteForm.append('force', '1')
 
@@ -365,9 +275,8 @@ export async function POST(req: NextRequest) {
     try {
       compressed = await compressWithGhostscript(inputPath, outputPath, profile)
     } catch (error) {
-      const err = error as NodeJS.ErrnoException
-      const message = `${err?.message || ''}`
-      if (err?.code === 'ENOENT' || message.includes('Ghostscript') || message.includes('spawn')) {
+      const message = `${(error as Error)?.message || ''}`
+      if (isGhostscriptMissingError(error) || message.toLowerCase().includes('ghostscript')) {
         compressed = await compressWithPdfLibFallback(originalBuffer)
         engine = 'local-fallback'
       } else {

@@ -206,7 +206,7 @@ export const toolContentMap: Record<string, ToolContent> = {
     },
 
     'increase-image-quality': {
-        about: 'AI Image Enhancer uses cutting-edge artificial intelligence to automatically improve photo quality — fixing poor lighting, sharpening blurry details, reducing noise and grain, and enhancing colors. Upload any low-quality, blurry, or poorly-lit photo and the AI model will analyze and enhance it in 10-30 seconds. The enhancement works on portraits, landscapes, product photos, old scanned photos, and screenshots. Perfect for restoring old family photos, improving smartphone shots, or preparing images for professional use.',
+        about: 'AI Image Enhancer uses artificial intelligence to improve photo quality — fixing poor lighting, sharpening soft detail, reducing noise and grain, and balancing color. Upload a low-quality, blurry, or dim photo and get a clearer result in seconds. Works on portraits, landscapes, product shots, scans, and screenshots. Free, no watermark. Full walkthrough: https://www.pdfpixels.com/blog/ai-image-enhancer-fix-blurry-photos',
         features: [
             'AI-powered auto-enhancement for lighting, sharpness, and color',
             'Noise and grain reduction for old or low-light photos',

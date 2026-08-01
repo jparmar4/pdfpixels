@@ -143,25 +143,8 @@ export async function POST(request: NextRequest) {
         const onnx = await detectFaceRegionsONNX(image, mode);
         const faces = onnx && onnx.regions.length > 0 ? onnx : await detectFaceRegions(sharp, image, mode);
         const regions = faces.regions;
-
-        if (expectedFaces && regions.length > 0 && regions.length < expectedFaces) {
-          const template = regions[0];
-          const fw = template.width || Math.round(image.width * 0.16);
-          const fh = template.height || Math.round(fw * 1.22);
-          const y = template.top ?? Math.round(image.height * 0.18);
-          const step = image.width / expectedFaces;
-          while (regions.length < expectedFaces) {
-            const i = regions.length;
-            const centerX = Math.round(step * i + step / 2);
-            const left = Math.max(0, Math.min(image.width - 1, centerX - Math.round(fw / 2)));
-            regions.push({
-              left,
-              top: Math.max(0, Math.min(image.height - 1, y)),
-              width: Math.max(1, Math.min(fw, image.width - left)),
-              height: Math.max(1, Math.min(fh, image.height - y)),
-            });
-          }
-        }
+        // Do not invent face boxes when detection count is below expectedFaces —
+        // fabricated regions leave real faces unblurred and create false confidence.
 
         if (regions.length === 0) {
           return NextResponse.json(
@@ -359,6 +342,12 @@ export async function POST(request: NextRequest) {
         mode,
         outputBytes: payload.bytes,
         ...(faceCount !== undefined ? { faceCount } : {}),
+        ...(tool === 'blur-face' && expectedFaces
+          ? {
+              expectedFaces,
+              faceCountMismatch: faceCount !== undefined && faceCount < expectedFaces,
+            }
+          : {}),
       },
       { headers: CACHE_HEADERS },
     );

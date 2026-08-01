@@ -118,8 +118,9 @@ export function ImageToPDFWorkspace() {
     formData.append('fitMode', fitMode);
     formData.append('margin', margin.toString());
 
+    let progressInterval: ReturnType<typeof setInterval> | undefined;
     try {
-      const progressInterval = setInterval(() => {
+      progressInterval = setInterval(() => {
         setProgress((prev) => Math.min(prev + 8, 90));
       }, 150);
 
@@ -128,7 +129,6 @@ export function ImageToPDFWorkspace() {
         body: formData,
       });
 
-      clearInterval(progressInterval);
       setProgress(100);
 
       if (!response.ok) {
@@ -171,6 +171,7 @@ export function ImageToPDFWorkspace() {
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Failed to create PDF. Please try again.');
     } finally {
+      if (progressInterval) clearInterval(progressInterval);
       setIsProcessing(false);
     }
   }, [files, pageSize, orientation, fitMode, margin, setIsProcessing, setProgress]);

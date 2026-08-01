@@ -133,11 +133,17 @@ export function BlurFaceWorkspace() {
       setEngineLabel(typeof data.engine === 'string' ? data.engine : null);
       setProgress(100);
       setShowCompare(true);
-      toast.success(
-        typeof data.faceCount === 'number'
-          ? `Blurred ${data.faceCount} face${data.faceCount === 1 ? '' : 's'}.`
-          : 'Faces blurred successfully.',
-      );
+      if (data.faceCountMismatch && typeof data.faceCount === 'number' && typeof data.expectedFaces === 'number') {
+        toast.message(
+          `Detected and blurred ${data.faceCount} of ${data.expectedFaces} expected faces. Try High quality or Privacy max if some faces remain visible.`,
+        );
+      } else {
+        toast.success(
+          typeof data.faceCount === 'number'
+            ? `Blurred ${data.faceCount} face${data.faceCount === 1 ? '' : 's'}.`
+            : 'Faces blurred successfully.',
+        );
+      }
       requestAnimationFrame(() => {
         document.getElementById('blur-face-result')?.scrollIntoView({
           behavior: 'smooth',
@@ -228,7 +234,6 @@ export function BlurFaceWorkspace() {
                 <Badge variant="secondary">Ready to anonymize</Badge>
               </div>
               <div className="flex min-h-[240px] items-center justify-center bg-muted/25 p-4">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={sourcePreview}
                   alt="Source"
@@ -301,7 +306,6 @@ export function BlurFaceWorkspace() {
                         Original
                       </p>
                       <div className="flex min-h-[260px] items-center justify-center bg-muted/20">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img src={sourcePreview} alt="Original" className="max-h-[440px] max-w-full rounded-xl object-contain" />
                       </div>
                     </div>
@@ -310,14 +314,12 @@ export function BlurFaceWorkspace() {
                         Anonymized
                       </p>
                       <div className="flex min-h-[260px] items-center justify-center bg-muted/20">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img src={processedImage} alt="Blurred faces result" className="max-h-[440px] max-w-full rounded-xl object-contain" />
                       </div>
                     </div>
                   </div>
                 ) : (
                   <div className="flex min-h-[320px] items-center justify-center bg-muted/25 p-4">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={processedImage}
                       alt="Blurred faces result"

@@ -13,7 +13,9 @@ PdfPixels (https://www.pdfpixels.com) is a browser-based platform for PDF and im
 - **Split PDF**: https://www.pdfpixels.com/tools/split-pdf — extract ranges or split every page.
 - **Compress image to target KB**: https://www.pdfpixels.com/tools/compress-image — set a target size (e.g. 200 KB) and download.
 - **Remove background free**: https://www.pdfpixels.com/tools/remove-image-background — AI background removal, PNG with transparency.
+- **AI image enhancer free**: https://www.pdfpixels.com/tools/increase-image-quality — fix blurry/soft photos, improve quality online.
 - **HEIC to JPG**: https://www.pdfpixels.com/tools/heic-to-jpg — convert iPhone HEIC photos online.
+- **AI image enhancer guide**: https://www.pdfpixels.com/blog/ai-image-enhancer-fix-blurry-photos — how to fix blurry photos with free AI tools (2026).
 - **Passport photo maker**: https://www.pdfpixels.com/tools/passport-size-photo — resize for ID / passport dimensions.
 - **PDF too large for email**: use Compress PDF then attach; guide at https://www.pdfpixels.com/blog
 

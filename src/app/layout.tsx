@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from 'next';
-import { Inter, DM_Sans, Outfit } from 'next/font/google';
+import { DM_Sans, Outfit } from 'next/font/google';
 import './globals.css';
-import { Toaster } from '@/components/ui/toaster';
 import { Toaster as SonnerToaster } from '@/components/ui/sonner';
 import { ThemeProvider } from 'next-themes';
 import { JsonLdSchemas } from '@/components/seo/json-ld';
@@ -13,12 +12,6 @@ import { Analytics } from '@/components/ads/analytics';
 import { Navigation } from '@/components/layout/navigation';
 import { Footer } from '@/components/layout/footer';
 import { ScrollToTop } from '@/components/home/scroll-to-top';
-
-const fontInter = Inter({
-  subsets: ['latin'],
-  variable: '--font-inter',
-  display: 'swap',
-});
 
 const fontDmSans = DM_Sans({
   subsets: ['latin'],
@@ -155,7 +148,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" suppressHydrationWarning className={`scroll-smooth ${fontInter.variable} ${fontDmSans.variable} ${fontOutfit.variable}`}>
+    <html lang="en" suppressHydrationWarning className={`scroll-smooth ${fontDmSans.variable} ${fontOutfit.variable}`}>
       <head>
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
         <link rel="dns-prefetch" href="https://www.google-analytics.com" />
@@ -177,8 +170,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <Footer />
           {/* Global: scroll-to-top on route change + jump top/bottom controls */}
           <ScrollToTop />
-          {/* Radix/shadcn toasts (useToast) + Sonner (used by all tool workspaces) */}
-          <Toaster />
           <SonnerToaster richColors closeButton position="top-center" />
           <AdSenseScript />
           <Analytics />

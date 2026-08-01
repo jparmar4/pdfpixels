@@ -204,7 +204,6 @@ export function BlurBackgroundWorkspace() {
                 <Badge variant="secondary">Ready to blur</Badge>
               </div>
               <div className="flex min-h-[240px] items-center justify-center bg-muted/25 p-4">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={sourcePreview}
                   alt="Source"
@@ -272,7 +271,6 @@ export function BlurBackgroundWorkspace() {
                         Original
                       </p>
                       <div className="flex min-h-[260px] items-center justify-center bg-muted/20">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
                           src={sourcePreview}
                           alt="Original"
@@ -285,7 +283,6 @@ export function BlurBackgroundWorkspace() {
                         Blurred background
                       </p>
                       <div className="flex min-h-[260px] items-center justify-center bg-muted/20">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
                           src={processedImage}
                           alt="Blurred background result"
@@ -296,7 +293,6 @@ export function BlurBackgroundWorkspace() {
                   </div>
                 ) : (
                   <div className="flex min-h-[320px] items-center justify-center bg-muted/25 p-4">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={processedImage}
                       alt="Blurred background result"

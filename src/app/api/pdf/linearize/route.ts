@@ -1,4 +1,9 @@
-import { loadPdfWithTimeout, pdfBinaryResponse } from '@/lib/pdf-api';
+import {
+  loadPdfWithTimeout,
+  pdfBinaryResponse,
+  readAndValidatePdfFile,
+  validatePdfUpload,
+} from '@/lib/pdf-api';
 
 export const maxDuration = 60;
 import { NextRequest, NextResponse } from 'next/server';
@@ -95,20 +100,13 @@ export async function POST(request: NextRequest) {
     const formData = await request.formData();
     const file = formData.get('file') as File | null;
 
-    if (!file) {
-      return jsonError('No PDF file provided');
-    }
+    const validation = validatePdfUpload(file);
+    if (!validation.ok) return validation.response;
 
-    if (file.type && file.type !== 'application/pdf') {
-      return jsonError('Only PDF files are supported');
-    }
+    const read = await readAndValidatePdfFile(file!);
+    if (!read.ok) return read.response;
+    const inputBuffer = read.buffer;
 
-    if (file.size > 25 * 1024 * 1024) {
-      return jsonError('File too large (25MB max)');
-    }
-
-    const inputBuffer = Buffer.from(await file.arrayBuffer());
-    
     // Quick check to load up PDF properties (also ensures basic validity)
     const srcPdf = await loadPdfWithTimeout(inputBuffer);
     const pageCount = srcPdf.getPageCount();

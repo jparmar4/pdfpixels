@@ -418,7 +418,6 @@ export function FlipWorkspace() {
                     Original
                   </p>
                   <div className="flex min-h-[220px] items-center justify-center md:min-h-[320px]">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={sourceUrl}
                       alt="Original image"
@@ -431,7 +430,6 @@ export function FlipWorkspace() {
                     Flipped preview
                   </p>
                   <div className="flex min-h-[220px] items-center justify-center md:min-h-[320px]">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={previewUrl || sourceUrl}
                       alt="Flipped preview"
@@ -616,7 +614,6 @@ export function FlipWorkspace() {
               </div>
             </div>
             <div className={`flex min-h-[200px] items-center justify-center p-4 ${checkerBg}`}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={processedImage}
                 alt="Flipped result"

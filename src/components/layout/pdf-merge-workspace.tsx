@@ -120,8 +120,9 @@ export function PDFMergeWorkspace() {
       formData.append('files', f.file);
     });
 
+    let progressInterval: ReturnType<typeof setInterval> | undefined;
     try {
-      const progressInterval = setInterval(() => {
+      progressInterval = setInterval(() => {
         setStatusLabel('Processing');
         setProgress((prev) => Math.min(prev + 8, 90));
       }, 150);
@@ -131,7 +132,6 @@ export function PDFMergeWorkspace() {
         body: formData,
       });
 
-      clearInterval(progressInterval);
       setStatusLabel('Finalizing');
       setProgress(100);
 
@@ -140,6 +140,15 @@ export function PDFMergeWorkspace() {
         try {
           const err = await response.json();
           message = err?.error || message;
+          if (Array.isArray(err?.skipped) && err.skipped.length > 0) {
+            const names = err.skipped
+              .slice(0, 3)
+              .map((s: { name?: string; reason?: string }) =>
+                s?.name ? `${s.name}${s.reason ? ` — ${s.reason}` : ''}` : s?.reason || 'unknown',
+              )
+              .join('; ');
+            message = `${message}${names ? ` (${names}${err.skipped.length > 3 ? '…' : ''})` : ''}`;
+          }
         } catch { /* ignore parse error */ }
         throw new Error(message);
       }
@@ -164,6 +173,7 @@ export function PDFMergeWorkspace() {
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Failed to merge PDFs. Please try again.');
     } finally {
+      if (progressInterval) clearInterval(progressInterval);
       setIsProcessing(false);
       setStatusLabel('Idle');
     }

@@ -7,7 +7,13 @@ export const PDF_CACHE_HEADERS = {
 
 export function isPdfFile(file: File): boolean {
   const name = file.name?.toLowerCase() || '';
-  return file.type === 'application/pdf' || name.endsWith('.pdf');
+  if (name.endsWith('.pdf')) return true;
+  if (!file.type) return false;
+  return (
+    file.type === 'application/pdf' ||
+    file.type === 'application/octet-stream' ||
+    file.type === 'application/x-pdf'
+  );
 }
 
 /**
@@ -88,7 +94,9 @@ export function validatePdfUpload(
     };
   }
 
-  if (requireType && file.type && file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf')) {
+  // Allow empty MIME (some browsers omit it); isPdfFile accepts .pdf extension
+  // and common PDF content types including application/octet-stream.
+  if (requireType && file.type && !isPdfFile(file)) {
     return {
       ok: false,
       response: NextResponse.json(
@@ -99,6 +107,27 @@ export function validatePdfUpload(
   }
 
   return { ok: true };
+}
+
+/**
+ * Read upload bytes and ensure PDF magic header is present.
+ * Call after validatePdfUpload when you need content-level validation.
+ */
+export async function readAndValidatePdfFile(
+  file: File,
+): Promise<{ ok: true; buffer: Buffer } | { ok: false; response: NextResponse }> {
+  const buffer = Buffer.from(await file.arrayBuffer());
+  const magic = validatePdfBuffer(buffer);
+  if (!magic.ok) {
+    return {
+      ok: false,
+      response: NextResponse.json(
+        { error: magic.error },
+        { status: 400, headers: PDF_CACHE_HEADERS },
+      ),
+    };
+  }
+  return { ok: true, buffer };
 }
 
 export async function loadPdfWithTimeout(
@@ -124,8 +153,8 @@ export function pdfJsonError(message: string, status = 400, details?: string) {
 
 /** Build a browser-downloadable PDF data URL from raw bytes. */
 export function pdfBytesToDataUrl(bytes: Uint8Array | Buffer): string {
-  const base64 = Buffer.from(bytes).toString('base64');
-  return 'data:application/pdf;base64,' + base64;
+  const base64 = Buffer.from(bytes).toString("base64");
+  return ["data:", "application/pdf", ";base64,", base64].join("");
 }
 
 export function pdfBinaryResponse(

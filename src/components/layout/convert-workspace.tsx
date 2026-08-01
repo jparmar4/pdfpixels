@@ -209,8 +209,9 @@ export function ConvertWorkspace() {
       formData.append('image', uploadedFile);
     }
 
+    let progressInterval: ReturnType<typeof setInterval> | undefined;
     try {
-      const progressInterval = setInterval(() => {
+      progressInterval = setInterval(() => {
         setProgress((prev) => Math.min(prev + 10, 90));
       }, 180);
 
@@ -220,7 +221,6 @@ export function ConvertWorkspace() {
         body: formData,
       });
 
-      clearInterval(progressInterval);
       setProgress(100);
 
       if (!response.ok) {
@@ -298,6 +298,7 @@ export function ConvertWorkspace() {
     } catch (error) {
       toast.error(error instanceof Error ? error.message : (isPdfToImage ? 'Failed to convert PDF. Please try again.' : 'Failed to convert image. Please try again.'));
     } finally {
+      if (progressInterval) clearInterval(progressInterval);
       setIsProcessing(false);
     }
   }, [isPdfToImage, outputFormat, quality, dpi, revokeBlobUrls, setIsProcessing, setProcessedImage, setProgress, uploadedFile]);
@@ -437,9 +438,7 @@ export function ConvertWorkspace() {
                   {viewMode === 'compare' && objectUrl && !isPdfToImage ? (
                     <ComparisonSlider before={objectUrl} after={processedImage} />
                   ) : (
-                    <div className="flex aspect-video items-center justify-center rounded-[1.35rem] bg-muted/25">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={processedImage} alt="Converted" className="max-h-full max-w-full object-contain" />
+                    <div className="flex aspect-video items-center justify-center rounded-[1.35rem] bg-muted/25">                      <img src={processedImage} alt="Converted" className="max-h-full max-w-full object-contain" />
                     </div>
                   )}
                 </div>

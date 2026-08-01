@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { apiError } from '@/lib/api-response';
+import { readAndValidatePdfFile, validatePdfUpload } from '@/lib/pdf-api';
 
 import { spawn } from 'child_process';
 import fs from 'fs';
@@ -92,25 +93,29 @@ export async function POST(request: NextRequest) {
     const action = (formData.get('action') as string) || 'protect';
     const password = (formData.get('password') as string) || '';
 
-    if (!file) {
-      return apiError('No PDF file provided');
+    const validation = validatePdfUpload(file);
+    if (!validation.ok) return validation.response;
+
+    if (action === 'protect') {
+      if (password.length < 4) {
+        return apiError('Please enter a password with at least 4 characters');
+      }
+      if (password.length > 128) {
+        return apiError('Password is too long (128 characters max)');
+      }
+      if (/[\r\n\0]/.test(password)) {
+        return apiError('Password contains invalid characters');
+      }
+    } else if (password && (/[\r\n\0]/.test(password) || password.length > 128)) {
+      return apiError('Password is invalid');
     }
 
-    if (file.type && file.type !== 'application/pdf') {
-      return apiError('Only PDF files are supported');
-    }
+    const read = await readAndValidatePdfFile(file!);
+    if (!read.ok) return read.response;
+    const inputBuffer = read.buffer;
 
-    if (file.size > 25 * 1024 * 1024) {
-      return apiError('File too large (25MB max)');
-    }
-
-    const inputBuffer = Buffer.from(await file.arrayBuffer());
     const srcPdf = await PDFDocument.load(inputBuffer, { ignoreEncryption: true });
     const pageCount = srcPdf.getPageCount();
-
-    if (action === 'protect' && password.length < 4) {
-      return apiError('Please enter a password with at least 4 characters');
-    }
 
     const tempDir = os.tmpdir();
     const id = crypto.randomUUID();

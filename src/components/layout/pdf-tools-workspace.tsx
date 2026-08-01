@@ -541,13 +541,13 @@ export function PDFToolsWorkspace() {
         setProgress(0);
         setResult(null);
 
+        let progressInterval: ReturnType<typeof setInterval> | undefined;
         try {
-            const progressInterval = setInterval(() => {
+            progressInterval = setInterval(() => {
                 setProgress(prev => Math.min(prev + 8, 90));
             }, 200);
 
             const response = await fetch(getEndpoint(), { method: 'POST', body: formData });
-            clearInterval(progressInterval);
             setProgress(100);
 
             if (!response.ok) {
@@ -598,6 +598,7 @@ export function PDFToolsWorkspace() {
         } catch (error) {
             toast.error(error instanceof Error ? error.message : 'Failed to process PDF');
         } finally {
+            if (progressInterval) clearInterval(progressInterval);
             setIsProcessing(false);
         }
 

@@ -820,7 +820,6 @@ export function EffectWorkspace() {
                   onPointerUp={onOverlayPointerUp}
                   onPointerCancel={onOverlayPointerUp}
                 >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={previewUrl} alt="Source" className="max-h-[520px] max-w-full select-none rounded-lg" draggable={false} />
                   {regionStyle ? (
                     <div
@@ -859,7 +858,6 @@ export function EffectWorkspace() {
                 </div>
               </div>
               <div className="flex min-h-[240px] items-center justify-center bg-muted/25 p-4">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={displayPreview}
                   alt="Effect preview"
@@ -907,7 +905,6 @@ export function EffectWorkspace() {
                       Original
                     </p>
                     <div className="flex min-h-[220px] items-center justify-center">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={previewUrl} alt="Original" className="max-h-[400px] max-w-full rounded-lg object-contain" />
                     </div>
                   </div>
@@ -916,14 +913,12 @@ export function EffectWorkspace() {
                       Result
                     </p>
                     <div className="flex min-h-[220px] items-center justify-center">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={processedImage} alt="Result" className="max-h-[400px] max-w-full rounded-lg object-contain" />
                     </div>
                   </div>
                 </div>
               ) : (
                 <div className="flex min-h-[240px] items-center justify-center bg-muted/30 p-4 dark:bg-zinc-900">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={processedImage} alt="Processed" className="max-h-[480px] max-w-full rounded-lg object-contain" />
                 </div>
               )}

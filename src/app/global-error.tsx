@@ -1,14 +1,14 @@
 'use client';
 
-import { Inter } from 'next/font/google';
+import { DM_Sans } from 'next/font/google';
 import { Button } from '@/components/ui/button';
 import { RefreshCcw } from 'lucide-react';
 import '@/app/globals.css';
 
-const inter = Inter({
+const dmSans = DM_Sans({
   subsets: ['latin'],
   display: 'swap',
-  variable: '--font-inter',
+  variable: '--font-dm-sans',
 });
 
 export default function GlobalError({
@@ -19,7 +19,7 @@ export default function GlobalError({
   reset: () => void;
 }) {
   return (
-    <html lang="en" className={`${inter.variable} font-sans`}>
+    <html lang="en" className={`${dmSans.variable} font-sans`}>
       <body>
         <div className="flex min-h-screen flex-col items-center justify-center p-6 text-center">
           <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-destructive/10">

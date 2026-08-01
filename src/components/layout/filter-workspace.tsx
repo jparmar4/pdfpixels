@@ -101,8 +101,9 @@ export function FilterWorkspace() {
     formData.append('sepia', filters.sepia.toString());
     if (filters.hueRotate !== 0) formData.append('hue', filters.hueRotate.toString());
 
+    let progressInterval: ReturnType<typeof setInterval> | undefined;
     try {
-      const progressInterval = setInterval(() => {
+      progressInterval = setInterval(() => {
         setProgress((prev) => Math.min(prev + 8, 90));
       }, 150);
 
@@ -111,7 +112,6 @@ export function FilterWorkspace() {
         body: formData,
       });
 
-      clearInterval(progressInterval);
       setProgress(100);
 
       if (!response.ok) {
@@ -124,6 +124,7 @@ export function FilterWorkspace() {
     } catch {
       toast.error('Failed to apply filters. Please try again.');
     } finally {
+      if (progressInterval) clearInterval(progressInterval);
       setIsProcessing(false);
     }
   }, [uploadedFile, filters, setIsProcessing, setProcessedImage, setProgress]);

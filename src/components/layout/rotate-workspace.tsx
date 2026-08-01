@@ -201,7 +201,7 @@ export function RotateWorkspace() {
     return () => {
       URL.revokeObjectURL(url);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- reset transform only on new file
+     
   }, [uploadedFile, isFlipTool, setProcessedImage]);
 
   // Live preview canvas (debounced for smooth slider)
@@ -441,7 +441,6 @@ export function RotateWorkspace() {
                 </div>
               </div>
               <div className={`flex min-h-[280px] items-center justify-center p-4 md:min-h-[360px] ${previewStyleBg}`}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={displaySrc}
                   alt="Rotation preview"
@@ -724,7 +723,6 @@ export function RotateWorkspace() {
               </div>
             </div>
             <div className={`flex min-h-[200px] items-center justify-center p-4 ${previewStyleBg}`}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={processedImage}
                 alt="Rotated result"

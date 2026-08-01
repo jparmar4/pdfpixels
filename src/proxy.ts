@@ -46,9 +46,6 @@ export default function proxy(request: NextRequest) {
           'Retry-After': String(Math.ceil(resetIn / 1000)),
           'X-RateLimit-Limit': String(limit),
           'X-RateLimit-Remaining': '0',
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-          'Access-Control-Allow-Headers': 'Content-Type, Authorization',
         },
       },
     );

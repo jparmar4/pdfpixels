@@ -350,8 +350,9 @@ export function ToolWorkspace() {
     formData.append('flip', flipV.toString());
     formData.append('flop', flipH.toString());
 
+    let progressInterval: ReturnType<typeof setInterval> | undefined;
     try {
-      const progressInterval = setInterval(() => {
+      progressInterval = setInterval(() => {
         setProgress((prev) => Math.min(prev + 8, 90));
       }, 150);
 
@@ -360,7 +361,6 @@ export function ToolWorkspace() {
         body: formData,
       });
 
-      clearInterval(progressInterval);
       setProgress(100);
 
       if (!response.ok) {
@@ -380,6 +380,7 @@ export function ToolWorkspace() {
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Failed to process image. Please try again.');
     } finally {
+      if (progressInterval) clearInterval(progressInterval);
       setIsProcessing(false);
     }
   }, [handleClientCanvasProcess, uploadedFile, rotate, flipH, flipV, outputFormat, quality, setIsProcessing, setProcessedImage, setProgress, usesClientCanvas]);
