@@ -306,19 +306,19 @@ export default async function BlogPostPage({
                     </div>
                 )}
 
-                {/* Main Content */}
-                <div className="container mx-auto px-4 lg:px-8 py-12 lg:py-16">
-                    <div className="max-w-5xl mx-auto">
+                {/* Main Content — full width (no sidebar) for easier reading */}
+                <div className="container mx-auto px-4 sm:px-6 lg:px-10 py-12 lg:py-16">
+                    <div className="max-w-4xl mx-auto">
                         <ProcessContentWithToc content={post.content}>
                             {/* Article Content */}
                             <div className="prose prose-lg prose-slate dark:prose-invert max-w-none
                                 prose-headings:font-bold prose-headings:tracking-tight prose-headings:text-foreground
-                                prose-h2:text-2xl prose-h2:mt-14 prose-h2:mb-6 prose-h2:leading-tight
+                                prose-h2:text-2xl md:prose-h2:text-[1.75rem] prose-h2:mt-14 prose-h2:mb-6 prose-h2:leading-tight
                                 prose-h2:before:content-[''] prose-h2:before:block prose-h2:before:w-16 prose-h2:before:h-1 prose-h2:before:rounded-full prose-h2:before:mb-4
                                 prose-h2:before:bg-gradient-to-r prose-h2:before:from-primary prose-h2:before:to-violet-500
                                 prose-h3:text-xl prose-h3:mt-10 prose-h3:mb-4
-                                prose-p:text-muted-foreground prose-p:leading-[1.85] prose-p:text-[1.08rem]
-                                prose-a:text-primary prose-a:font-semibold prose-a:no-underline hover:prose-a:underline
+                                prose-p:text-muted-foreground prose-p:leading-[1.9] prose-p:text-[1.1rem]
+                                prose-a:text-primary prose-a:font-semibold prose-a:underline prose-a:underline-offset-2 hover:prose-a:text-primary/80
                                 prose-strong:text-foreground prose-strong:font-bold
                                 prose-ul:my-6 prose-ol:my-6
                                 prose-li:text-muted-foreground prose-li:leading-relaxed

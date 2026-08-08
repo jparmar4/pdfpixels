@@ -125,8 +125,60 @@ export function processContent(content: string): React.ReactNode[] {
         }
     };
 
+    const linkClassName =
+        "text-primary hover:text-primary/80 font-medium underline underline-offset-2 transition-colors break-all";
+
+    const renderHref = (url: string, label: string, key: string) => {
+        const isInternal = url.startsWith('/');
+        if (isInternal) {
+            return (
+                <Link key={key} href={url} className={linkClassName}>
+                    {label}
+                </Link>
+            );
+        }
+        const isSameSite =
+            url.startsWith('https://www.pdfpixels.com') ||
+            url.startsWith('https://pdfpixels.com') ||
+            url.startsWith('http://www.pdfpixels.com') ||
+            url.startsWith('http://pdfpixels.com');
+        return (
+            <a
+                key={key}
+                href={url}
+                target={isSameSite ? undefined : '_blank'}
+                rel={isSameSite ? undefined : 'noopener noreferrer'}
+                className={linkClassName}
+            >
+                {label}
+            </a>
+        );
+    };
+
+    /** Turn bare http(s) URLs in plain text into clickable anchors. */
+    const linkifyBareUrls = (text: string, keyPrefix: string): React.ReactNode[] => {
+        const urlPattern = /(https?:\/\/[^\s<>\[\]()`'",.]+[^\s<>\[\]()`'",.!?;:])/g;
+        const nodes: React.ReactNode[] = [];
+        let lastIndex = 0;
+        let match: RegExpExecArray | null;
+        let i = 0;
+        while ((match = urlPattern.exec(text)) !== null) {
+            if (match.index > lastIndex) {
+                nodes.push(text.slice(lastIndex, match.index));
+            }
+            const url = match[0];
+            nodes.push(renderHref(url, url, `${keyPrefix}-url-${i++}`));
+            lastIndex = match.index + url.length;
+        }
+        if (lastIndex < text.length) {
+            nodes.push(text.slice(lastIndex));
+        }
+        return nodes.length > 0 ? nodes : [text];
+    };
+
     const parseInlineMarkdown = (text: string, keyPrefix: string, autoLink: boolean = false): React.ReactNode[] => {
-        const pattern = /(\*\*[^*]+\*\*)|(\[[^\]]+\]\([^)]+\))|(!\[[^\]]*\]\([^)]+\))/g;
+        // Images, markdown links, bold, and inline `code` (often cite-ready URLs)
+        const pattern = /(\*\*[^*]+\*\*)|(\[[^\]]+\]\([^)]+\))|(!\[[^\]]*\]\([^)]+\))|(`[^`]+`)/g;
         const parts = text.split(pattern).filter((p) => p !== undefined && p !== '');
         const nodes: React.ReactNode[] = [];
 
@@ -170,39 +222,30 @@ export function processContent(content: string): React.ReactNode[] {
             if (part.startsWith('[') && part.includes('](') && part.endsWith(')')) {
                 const match = part.match(/^\[([^\]]+)\]\(([^)]+)\)$/);
                 if (match) {
-                    const label = match[1];
-                    const url = match[2];
-                    const isInternal = url.startsWith('/');
-
-                    if (isInternal) {
-                        nodes.push(
-                            <Link
-                                key={key}
-                                href={url}
-                                className="text-primary hover:text-primary/80 font-medium underline underline-offset-2 transition-colors"
-                            >
-                                {label}
-                            </Link>
-                        );
-                        return;
-                    }
-
-                    nodes.push(
-                        <a
-                            key={key}
-                            href={url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-primary hover:text-primary/80 font-medium underline underline-offset-2 transition-colors"
-                        >
-                            {label}
-                        </a>
-                    );
+                    nodes.push(renderHref(match[2], match[1], key));
                     return;
                 }
             }
 
-            // Plain text with auto-linking
+            // Inline code: `...` — if it's a URL, make it a clickable link
+            if (part.startsWith('`') && part.endsWith('`') && part.length > 2) {
+                const inner = part.slice(1, -1).trim();
+                if (/^https?:\/\//i.test(inner) || inner.startsWith('/')) {
+                    nodes.push(renderHref(inner, inner, key));
+                    return;
+                }
+                nodes.push(
+                    <code
+                        key={key}
+                        className="text-primary bg-primary/10 px-1.5 py-0.5 rounded-md text-sm font-mono break-all"
+                    >
+                        {inner}
+                    </code>
+                );
+                return;
+            }
+
+            // Plain text with keyword auto-linking + bare URL linkifying
             if (autoLink) {
                 let textSegments: (string | React.ReactNode)[] = [part];
 
@@ -226,7 +269,7 @@ export function processContent(content: string): React.ReactNode[] {
                             const matched = segment.slice(idx, idx + keyword.length);
                             const after = segment.slice(idx + keyword.length);
 
-                            if (before) newSegments.push(before);
+                            if (before) newSegments.push(...linkifyBareUrls(before, `${key}-b-${keyword}`));
                             newSegments.push(
                                 <Link
                                     key={`${key}-${keyword}`}
@@ -237,7 +280,7 @@ export function processContent(content: string): React.ReactNode[] {
                                     {matched}
                                 </Link>
                             );
-                            if (after) newSegments.push(after);
+                            if (after) newSegments.push(...linkifyBareUrls(after, `${key}-a-${keyword}`));
 
                             linkedKeywords.add(keyword);
                             foundInThisBlock = true;
@@ -247,9 +290,24 @@ export function processContent(content: string): React.ReactNode[] {
                     }
                     textSegments = newSegments;
                 }
-                nodes.push(...textSegments);
+
+                // Linkify remaining bare URLs in string segments
+                const finalSegments: React.ReactNode[] = [];
+                textSegments.forEach((segment, si) => {
+                    if (typeof segment === 'string') {
+                        finalSegments.push(...linkifyBareUrls(segment, `${key}-bare-${si}`));
+                    } else {
+                        finalSegments.push(segment);
+                    }
+                });
+                nodes.push(...finalSegments);
             } else {
-                nodes.push(part);
+                // Still linkify bare URLs even when keyword auto-link is off
+                if (typeof part === 'string' && /https?:\/\//i.test(part)) {
+                    nodes.push(...linkifyBareUrls(part, key));
+                } else {
+                    nodes.push(part);
+                }
             }
         });
 

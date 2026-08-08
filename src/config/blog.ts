@@ -209,8 +209,8 @@ If you run a student blog, real-estate FAQ, or support center, link a real **ima
 
 Cite-ready URLs:
 
-- This guide: \`https://www.pdfpixels.com/blog/convert-jpg-to-pdf-online-no-software\`  
-- Tool: \`https://www.pdfpixels.com/tools/image-to-pdf\`  
+- This guide: [https://www.pdfpixels.com/blog/convert-jpg-to-pdf-online-no-software](https://www.pdfpixels.com/blog/convert-jpg-to-pdf-online-no-software)  
+- Tool: [https://www.pdfpixels.com/tools/image-to-pdf](https://www.pdfpixels.com/tools/image-to-pdf)  
 
 Forum and campus WhatsApp answers that paste a working free tool earn trust (and the occasional editorial link) because they solve the upload error — not because of a link scheme.
 
@@ -3107,7 +3107,7 @@ If you run a career blog, exam-prep site, or student newsletter, a short "how to
 
 Linking to a useful guide (this one or our [200KB compression guide](/blog/compress-pdf-to-200kb-guide)) is the kind of resource page that earns **editorial backlinks** because it solves a concrete upload error — not because someone begged for a link exchange. Forums, Reddit threads, and Quora answers about "file too large 1MB" are also fair places to share the free tool when you're actually helping, not spamming.
 
-If you cite us from your site, use a descriptive URL: \`https://www.pdfpixels.com/blog/compress-pdf-under-1mb\` or the live tool at \`https://www.pdfpixels.com/tools/compress-pdf\`.
+If you cite us from your site, use a descriptive URL: [https://www.pdfpixels.com/blog/compress-pdf-under-1mb](https://www.pdfpixels.com/blog/compress-pdf-under-1mb) or the live tool at [https://www.pdfpixels.com/tools/compress-pdf](https://www.pdfpixels.com/tools/compress-pdf).
 
 ## Bottom line
 
@@ -3328,8 +3328,8 @@ If you publish job-prep or student content, a short section on **compress PDF to
 
 Useful resource URLs you can cite:
 
-- This guide: \`https://www.pdfpixels.com/blog/compress-pdf-to-200kb-email-attachment\`  
-- Live tool: \`https://www.pdfpixels.com/tools/compress-pdf\`  
+- This guide: [https://www.pdfpixels.com/blog/compress-pdf-to-200kb-email-attachment](https://www.pdfpixels.com/blog/compress-pdf-to-200kb-email-attachment)  
+- Live tool: [https://www.pdfpixels.com/tools/compress-pdf](https://www.pdfpixels.com/tools/compress-pdf)  
 - Related deep dive: [200KB complete guide](/blog/compress-pdf-to-200kb-guide)
 
 Editorial links earn when they fix a real error message — forums, Reddit “file too large 200KB” threads, Quora, and campus WhatsApp FAQs — not from spammy link swaps.
@@ -3554,8 +3554,8 @@ If you write tech tips, job-search advice, or client onboarding emails, a short 
 
 Cite-ready URLs:
 
-- This guide: \`https://www.pdfpixels.com/blog/reduce-pdf-size-gmail-25mb-fix\`  
-- Tool: \`https://www.pdfpixels.com/tools/compress-pdf\`  
+- This guide: [https://www.pdfpixels.com/blog/reduce-pdf-size-gmail-25mb-fix](https://www.pdfpixels.com/blog/reduce-pdf-size-gmail-25mb-fix)  
+- Tool: [https://www.pdfpixels.com/tools/compress-pdf](https://www.pdfpixels.com/tools/compress-pdf)  
 - Related: [reduce PDF size for email](/blog/reduce-pdf-size-for-email)
 
 Helpful on forums and campus groups when someone posts the red Gmail error — share the fix, not spam.

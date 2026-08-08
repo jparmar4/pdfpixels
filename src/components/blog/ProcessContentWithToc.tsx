@@ -1,11 +1,11 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import { TableOfContents } from './TableOfContents';
 
 /**
- * ProcessContentWithToc wraps the server-rendered article content and
- * injects IDs into h2 headings so the TableOfContents can link to them.
+ * Wraps server-rendered article content and injects IDs into h2 headings
+ * for deep links / accessibility. Full-width layout (no sidebar) so readers
+ * get more space for the article body.
  */
 interface ProcessContentWithTocProps {
     content: string;
@@ -35,15 +35,13 @@ export function ProcessContentWithToc({ content, children }: ProcessContentWithT
     }, [content]);
 
     return (
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_260px] gap-12">
-            <article ref={articleRef} itemScope itemType="https://schema.org/Article">
-                {children}
-            </article>
-            <aside className="hidden lg:block">
-                <div className="sticky top-24 bg-card/80 backdrop-blur-xl border border-border/60 rounded-2xl p-5 shadow-sm">
-                    <TableOfContents content={content} />
-                </div>
-            </aside>
-        </div>
+        <article
+            ref={articleRef}
+            itemScope
+            itemType="https://schema.org/Article"
+            className="w-full max-w-none"
+        >
+            {children}
+        </article>
     );
 }
