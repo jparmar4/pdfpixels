@@ -314,6 +314,10 @@ const nextConfig: NextConfig = {
       { source: '/webp-to-png', destination: '/tools/webp-to-png', permanent: true },
       { source: '/linearize-pdf', destination: '/tools/linearize-pdf', permanent: true },
       { source: '/add-page-numbers-pdf', destination: '/tools/add-page-numbers-to-pdf', permanent: true },
+      
+      // Old sitemap redirects
+      { source: '/sitemap-images.xml', destination: '/image-sitemap.xml', permanent: true },
+      { source: '/sitemap-news.xml', destination: '/sitemap.xml', permanent: true },
     ];
   },
 

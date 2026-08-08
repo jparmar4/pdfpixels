@@ -13,6 +13,7 @@ export async function GET() {
     pubDate: new Date(post.date).toUTCString(),
     category: post.category,
     author: post.author,
+    coverImage: post.coverImage,
   }));
 
   const rssFeed = `<?xml version="1.0" encoding="UTF-8"?>
@@ -20,6 +21,7 @@ export async function GET() {
      xmlns:atom="http://www.w3.org/2005/Atom"
      xmlns:content="http://purl.org/rss/1.0/modules/content/"
      xmlns:dc="http://purl.org/dc/elements/1.1/"
+     xmlns:media="http://search.yahoo.com/mrss/"
      xmlns:sy="http://purl.org/rss/1.0/modules/syndication/">
   <channel>
     <title>PdfPixels - Blog and Product Guides</title>
@@ -58,7 +60,9 @@ export async function GET() {
       <pubDate>${item.pubDate}</pubDate>
       <guid isPermaLink="true">${item.link}</guid>
       <dc:creator>${escapeXml(item.author)}</dc:creator>
+      <media:content url="${baseUrl}${item.coverImage}" medium="image" />
       <content:encoded><![CDATA[
+        <img src="${baseUrl}${item.coverImage}" alt="${escapeXml(item.title)}" />
         <p>${escapeXml(item.description)}</p>
         <p><a href="${item.link}">Read the full article on PdfPixels</a></p>
       ]]></content:encoded>
