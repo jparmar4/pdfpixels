@@ -149,8 +149,8 @@ export const toolContentMap: Record<string, ToolContent> = {
     },
 
     'image-to-pdf': {
-        about: 'Image to PDF converts one or multiple images into a single, organized PDF document. Upload JPG, PNG, or WebP images, drag to reorder pages, choose your page size (A4, Letter, Legal, or fit-to-image), set orientation, and generate a professional PDF in seconds. Perfect for creating photo albums, document scans, portfolios, and multi-page reports from image files. The tool preserves image quality during conversion and supports both portrait and landscape orientations with smart auto-detection.',
-        directAnswer: 'Easily combine multiple JPG, PNG, or WebP photos into a single PDF document. Just upload your images, drag them to rearrange the page order, choose a page size like A4, and download your consolidated PDF.',
+        about: 'Image to PDF converts one or multiple images into a single, organized PDF document. Upload JPG, PNG, or WebP images, drag to reorder pages, choose your page size (A4, Letter, Legal, or fit-to-image), set orientation, and generate a professional PDF in seconds. Perfect for creating photo albums, document scans, portfolios, and multi-page reports from image files. The tool preserves image quality during conversion and supports both portrait and landscape orientations with smart auto-detection. Full walkthrough: https://www.pdfpixels.com/blog/convert-jpg-to-pdf-online-no-software',
+        directAnswer: 'Easily combine multiple JPG, PNG, or WebP photos into a single PDF document. Just upload your images, drag them to rearrange the page order, choose a page size like A4, and download your consolidated PDF. Guide: https://www.pdfpixels.com/blog/convert-jpg-to-pdf-online-no-software',
         features: [
             'Convert multiple images to a single multi-page PDF',
             'Drag and drop to reorder pages before conversion',
