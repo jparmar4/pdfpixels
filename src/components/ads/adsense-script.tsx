@@ -34,7 +34,7 @@ export function AdSenseScript() {
       async
       src={adsConfig.scriptUrl}
       crossOrigin="anonymous"
-      strategy="lazyOnload"
+      strategy="afterInteractive"
     />
   );
 }
@@ -52,11 +52,11 @@ export function AdSenseScriptNonPersonalized() {
         async
         src={adsConfig.scriptUrl}
         crossOrigin="anonymous"
-        strategy="lazyOnload"
+        strategy="afterInteractive"
       />
       <Script
         id="adsense-config-np"
-        strategy="lazyOnload"
+        strategy="afterInteractive"
         dangerouslySetInnerHTML={{
           __html: `
             (adsbygoogle = window.adsbygoogle || []).push({

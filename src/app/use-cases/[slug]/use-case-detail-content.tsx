@@ -38,8 +38,6 @@ export function UseCaseDetailContent({
 
   return (
     <div className="premium-page-bg min-h-screen bg-background text-foreground">
-      <HeaderAd />
-
       <main id="main-content" className="flex-1">
         <section className="relative overflow-hidden border-b border-border/40">
           <div className="hero-grid absolute inset-0 opacity-60" />
@@ -104,6 +102,10 @@ export function UseCaseDetailContent({
             </div>
           </div>
         </section>
+
+        <div className="container mx-auto px-4 lg:px-8 py-6">
+          <HeaderAd />
+        </div>
 
         <div className="container mx-auto max-w-5xl px-4 py-8 lg:px-8">
           {/* Unique overview — primary quality signal */}

@@ -270,12 +270,12 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
           <script key={index} type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
         ))}
 
-        {/* Sticky sidebar / mobile in-content — only shown when editorial content is sufficient */}
-        {hasRichContent && <ToolSidebarAd />}
-
         <Suspense fallback={<WorkspaceLoading />}>
           <ToolPageClient toolId={tool.id} toolName={cleanToolName} toolDescription={normalizeDisplayText(tool.description)} />
         </Suspense>
+
+        {/* Sticky sidebar / mobile in-content — positioned AFTER the primary tool to comply with AdSense policies */}
+        {hasRichContent && <ToolSidebarAd />}
 
         {/* Editorial content (indexable) sits before mid-page ads for better AdSense policy ratio */}
         <ToolContentSection toolSlug={tool.slug} toolName={cleanToolName} isAI={tool.isAI} processing={tool.processing} />

@@ -41,7 +41,7 @@ function ReservedSpace({
 }) {
   return (
     <div
-      className={cn('overflow-hidden rounded-xl bg-muted/15', className)}
+      className={cn('overflow-hidden rounded-xl bg-transparent', className)}
       style={{ minHeight, ...style }}
       aria-hidden="true"
       data-ad-placeholder="reserved"

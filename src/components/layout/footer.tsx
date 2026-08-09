@@ -51,6 +51,8 @@ export function Footer() {
     }));
 
   const legalLinks = [
+    { name: 'About Us', href: '/about' },
+    { name: 'Contact Us', href: '/contact' },
     { name: 'Privacy', href: '/privacy' },
     { name: 'Terms', href: '/terms' },
     { name: 'Disclaimer', href: '/disclaimer' },
@@ -265,10 +267,10 @@ export function Footer() {
 
             {/* Legal Column */}
             <div className="lg:hidden">
-              <CollapsibleFooterColumn title="Legal" links={legalLinks} />
+              <CollapsibleFooterColumn title="Company & Legal" links={legalLinks} />
             </div>
             <div className="hidden lg:block">
-              <FooterColumn title="Legal" links={legalLinks} />
+              <FooterColumn title="Company & Legal" links={legalLinks} />
             </div>
           </div>
         </div>
