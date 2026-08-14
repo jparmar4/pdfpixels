@@ -1,5 +1,5 @@
 import { apiError } from '@/lib/api-response';
-import { loadPdfWithTimeout, pdfBinaryResponse, validatePdfUpload } from '@/lib/pdf-api';
+import { openEditablePdf, pdfBinaryResponse } from '@/lib/pdf-api';
 import { NextRequest } from 'next/server';
 import { PDFDocument } from 'pdf-lib';
 
@@ -11,9 +11,6 @@ export async function POST(request: NextRequest) {
     const formData = await request.formData();
     const file = formData.get('file') as File | null;
     const orderJson = formData.get('order') as string | null;
-
-    const validation = validatePdfUpload(file);
-    if (!validation.ok) return validation.response;
 
     if (!orderJson) {
       return apiError('Page order not provided', 400);
@@ -30,9 +27,9 @@ export async function POST(request: NextRequest) {
       return apiError('Page order must be an array of integers', 400);
     }
 
-    const arrayBuffer = await file!.arrayBuffer();
-    const pdfBytes = new Uint8Array(arrayBuffer);
-    const sourcePdf = await loadPdfWithTimeout(pdfBytes);
+    const opened = await openEditablePdf(file);
+    if (!opened.ok) return opened.response;
+    const sourcePdf = opened.pdf;
     const totalPages = sourcePdf.getPageCount();
 
     if (newOrder.length !== totalPages) {

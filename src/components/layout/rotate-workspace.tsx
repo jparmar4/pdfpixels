@@ -154,6 +154,7 @@ export function RotateWorkspace() {
   const [flipV, setFlipV] = useState(false);
   const [bgMode, setBgMode] = useState<BgMode>('auto');
   const [outputFormat, setOutputFormat] = useState<OutputFormat>('png');
+  const [exportFormat, setExportFormat] = useState<OutputFormat>('png');
   const [quality, setQuality] = useState(92);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [dims, setDims] = useState({ w: 0, h: 0 });
@@ -306,12 +307,14 @@ export function RotateWorkspace() {
       // Non-right-angle + transparent needs PNG/WebP
       if (!bg && format === 'jpg' && !isRightAngle(angle)) {
         format = 'png';
+        setOutputFormat('png');
         toast.message('Switched output to PNG to preserve transparent corners');
       }
 
       const canvas = renderRotatedImage(img, angle, flipH, flipV, bg);
       setProgress(90);
       const dataUrl = canvasToDataUrl(canvas, format, quality);
+      setExportFormat(format);
       setProcessedImage(dataUrl);
       setOutputDims({ w: canvas.width, h: canvas.height });
       setProgress(100);
@@ -341,7 +344,7 @@ export function RotateWorkspace() {
 
   const handleDownload = useCallback(() => {
     if (!processedImage) return;
-    const ext = outputFormat === 'jpg' ? 'jpg' : outputFormat;
+    const ext = exportFormat === 'jpg' ? 'jpg' : exportFormat;
     const base = uploadedFile?.name?.replace(/\.[^.]+$/, '') || 'image';
     const link = document.createElement('a');
     link.href = processedImage;
@@ -350,7 +353,7 @@ export function RotateWorkspace() {
     link.click();
     link.remove();
     toast.success('Download started');
-  }, [isFlipTool, outputFormat, processedImage, uploadedFile]);
+  }, [exportFormat, isFlipTool, processedImage, uploadedFile]);
 
   const handleReset = useCallback(() => {
     setAngle(0);
@@ -358,6 +361,7 @@ export function RotateWorkspace() {
     setFlipV(false);
     setBgMode('auto');
     setOutputFormat('png');
+    setExportFormat('png');
     setQuality(92);
     setPreviewUrl(null);
     setLivePreviewUrl(null);

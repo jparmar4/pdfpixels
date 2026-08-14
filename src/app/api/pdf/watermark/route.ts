@@ -1,5 +1,5 @@
 import { apiError } from '@/lib/api-response';
-import { loadPdfWithTimeout, pdfBinaryResponse, validatePdfUpload } from '@/lib/pdf-api';
+import { openEditablePdf, pdfBinaryResponse } from '@/lib/pdf-api';
 import { NextRequest } from 'next/server';
 import { rgb, StandardFonts, degrees } from 'pdf-lib';
 
@@ -23,18 +23,18 @@ export async function POST(request: NextRequest) {
         const formData = await request.formData();
         const file = formData.get('file') as File | null;
         const text = sanitizeWatermarkText((formData.get('text') as string) || 'CONFIDENTIAL');
-        const opacity = Math.min(1, Math.max(0.05, parseFloat(formData.get('opacity') as string) || 0.3));
-        const fontSize = parseInt(formData.get('fontSize') as string) || 48;
+        const opacityRaw = parseFloat(String(formData.get('opacity') ?? ''));
+        const opacity = Number.isFinite(opacityRaw) ? Math.min(1, Math.max(0.05, opacityRaw)) : 0.3;
+        const fontSizeRaw = parseInt(String(formData.get('fontSize') ?? ''), 10);
+        const fontSize = Number.isFinite(fontSizeRaw) ? fontSizeRaw : 48;
         const colorHex = (formData.get('color') as string) || '#808080';
-        const rotation = parseInt(formData.get('rotation') as string) || 45;
+        const rotationRaw = parseInt(String(formData.get('rotation') ?? ''), 10);
+        const rotation = Number.isFinite(rotationRaw) ? rotationRaw : 45;
         const position = (formData.get('position') as string) || 'center';
 
-        const validation = validatePdfUpload(file);
-        if (!validation.ok) return validation.response;
-
-        const arrayBuffer = await file!.arrayBuffer();
-        const pdfBytes = new Uint8Array(arrayBuffer);
-        const pdf = await loadPdfWithTimeout(pdfBytes);
+        const opened = await openEditablePdf(file);
+        if (!opened.ok) return opened.response;
+        const { pdf } = opened;
 
         const font = await pdf.embedFont(StandardFonts.HelveticaBold);
         const color = hexToRgb(colorHex);

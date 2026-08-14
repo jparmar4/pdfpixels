@@ -1,63 +1,57 @@
 # AdSense re-review checklist (PdfPixels)
 
-Use this after deploying content-quality fixes. Do **not** request review the same day as deploy.
+Google has already rejected this site multiple times. Do **not** request another review the same day you deploy. Fix, publish, wait, then retry.
+
+Typical reason for a tools site: **Valuable Inventory — low value / not enough unique content**. Reviewers also flag fake social proof, broken numbers, and “Pro” claims on a free site.
+
+## What we just fixed in code
+
+- Crawlers no longer see **0+ tools** / **0.9% uptime** (counters start at the real number).
+- Removed **“Join 1,250+ happy users”** fake avatars.
+- Removed **“New Pro Tool”** wording (there is no paid Pro checkout).
+- Removed unverifiable **99.9% uptime**.
+- Removed fabricated blog star ratings and fictional author names.
+- Privacy policy now includes Google’s required **partner-sites** disclosure.
+- About page names the operator and how ads will fund the site.
+- Tool copy no longer promises batch/in-browser behavior the UI does not have.
 
 ## 1. Deploy
 
-- [ ] Commit all content/SEO changes on `main`
-- [ ] Push to origin and confirm production build succeeds (Railway/hosting)
-- [ ] Hard-refresh production and confirm new UI (no fake star testimonials on home)
-- [ ] Spot-check one use-case, one compare page, one geo page (`/in` or `/us`)
-- [ ] Confirm new blog posts load:
-  - `/blog/password-protect-pdf-online-free`
-  - `/blog/add-page-numbers-to-pdf-online`
-  - `/blog/remove-exif-gps-data-from-photos`
-  - `/blog/image-dpi-for-print-vs-web-explained`
-- [ ] Confirm `/pricing` is honest free messaging (no fake Pro checkout)
-- [ ] Confirm `/api-docs` is indexable and included in sitemap
+- [ ] Commit and deploy to production (the live homepage is what AdSense reviews).
+- [ ] Hard-refresh `https://www.pdfpixels.com/` in incognito.
+- [ ] Confirm the hero does **not** say “Pro Tool”.
+- [ ] Confirm stats are **not** “0+” / “0.9%”.
+- [ ] Confirm the bottom CTA does **not** say “happy users” with fake initials.
+- [ ] Open `/about` and confirm operator + “how the site stays free”.
+- [ ] Open `/privacy` and confirm the Google partner-sites link.
+- [ ] Open `/contact` and submit a test message (or at least confirm the form posts).
+- [ ] Open `/blog` and one long guide. Scroll the whole article.
+- [ ] Confirm new unique guides load:
+  - `/blog/add-confidential-watermark-to-pdf`
+  - `/blog/webp-vs-jpg-vs-png-which-format`
+- [ ] Open `/tools/compress-pdf` and scroll past the tool to the editorial sections.
 
-## 2. Quality smoke test (reviewer perspective)
+## 2. Wait (this is the part people skip)
 
-Visit these cold (incognito):
+- [ ] Wait **14 days** after production is stable.
+- [ ] Get some real visits if you can (share 2–3 useful blog posts). Empty brand-new traffic still looks weak.
+- [ ] Do **not** request review three days in a row.
 
-| URL | What should look good |
-|-----|------------------------|
-| `/` | Real workflows + guides section; no fake reviews |
-| `/about` | Clear product story + contact path |
-| `/contact` | Working form |
-| `/privacy` | Ads/cookies disclosed accurately |
-| `/blog` + 1 long article | Substantial original writing |
-| `/tools/compress-pdf` | Tool + unique editorial sections |
-| `/use-cases/...` | Unique steps/tips (not empty template) |
-| `/compare/...` | Balanced overview + differences |
+## 3. Request review
 
-Avoid clicking only tool empty states — scroll to editorial content.
+AdSense → **Sites** → pdfpixels.com → **Request review**
 
-## 3. Search Console (optional but useful)
+You usually cannot write a long appeal. The site has to speak for itself.
 
-- [ ] Submit/refresh sitemap: `https://www.pdfpixels.com/sitemap.xml`
-- [ ] Request indexing for homepage + 2–3 strong blog posts after deploy
-- [ ] Confirm noindex pages you expect (404, api-docs) are not prioritized
+## 4. If it is rejected again
 
-## 4. Wait before review
+Ask yourself which email reason they used:
 
-- [ ] Wait **7–14 days** after production is stable
-- [ ] Prefer some real organic visits if possible (share useful blog posts)
-- [ ] Fix any broken tools discovered in the wait window
+| Reason | What to do next |
+|---|---|
+| Low value / not enough content | Add 2 more **unique** guides that are not PDF-compression clones. Make the thinnest tool pages longer and more specific. |
+| Site not ready / under construction | Fix any “0+”, Coming soon, empty categories, or broken tools. |
+| Navigation | Check every footer and menu link. |
+| Privacy | Confirm `/privacy` is linked in the footer and mentions AdSense + partner-sites. |
 
-## 5. Request AdSense review
-
-In AdSense: **Sites → your site → Request review**
-
-Notes to yourself (not a form field):
-
-- Low-value content addressed: unique guides, honest pricing, removed fabricated testimonials/ratings
-- Primary content: free tools + how-to articles for real file tasks
-
-## 6. If rejected again
-
-- Add 2 more unique guides outside PDF-compression
-- Improve thinnest tool pages still on fallback-only content
-- Reduce ad-like density / ensure content above ad slots
-- Check for broken links, empty categories, or “under construction” feel
-- Do **not** spam review requests; fix, wait, then retry
+Do **not** invent user counts, star ratings, or fake authors again. That will keep you rejected.

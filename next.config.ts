@@ -36,6 +36,8 @@ const nextConfig: NextConfig = {
     } : false,
   },
 
+  serverExternalPackages: ['heic-convert', 'heic-decode', 'libheif-js', 'jpeg-js', 'pngjs'],
+
   // Experimental features for performance
   experimental: {
     optimizePackageImports: [
@@ -84,7 +86,7 @@ const nextConfig: NextConfig = {
           // Content Security Policy
           {
             key: 'Content-Security-Policy',
-            value: "default-src 'self'; script-src 'self' 'unsafe-inline' https://pagead2.googlesyndication.com https://tpc.googlesyndication.com https://www.googletagmanager.com https://www.google-analytics.com https://adservice.google.com https://www.googleadservices.com https://fundingchoicesmessages.google.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https: blob:; font-src 'self' data:; connect-src 'self' https://www.google-analytics.com https://pagead2.googlesyndication.com https://tpc.googlesyndication.com blob: data:; frame-src https://www.google.com https://googleads.g.doubleclick.net https://tpc.googlesyndication.com https://www.googletagmanager.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self';",
+            value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://pagead2.googlesyndication.com https://tpc.googlesyndication.com https://www.googletagmanager.com https://www.google-analytics.com https://adservice.google.com https://www.googleadservices.com https://fundingchoicesmessages.google.com; worker-src 'self' blob:; style-src 'self' 'unsafe-inline'; img-src 'self' data: https: blob:; font-src 'self' data:; connect-src 'self' https://www.google-analytics.com https://pagead2.googlesyndication.com https://tpc.googlesyndication.com blob: data:; frame-src https://www.google.com https://googleads.g.doubleclick.net https://tpc.googlesyndication.com https://www.googletagmanager.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self';",
           },
           // X-Powered-By is already disabled via poweredByHeader: false
         ],
@@ -301,6 +303,8 @@ const nextConfig: NextConfig = {
       { source: '/pdf-to-jpg', destination: '/tools/pdf-to-jpg', permanent: true },
       { source: '/rotate-pdf', destination: '/tools/rotate-pdf', permanent: true },
       { source: '/add-watermark-pdf', destination: '/tools/add-watermark-pdf', permanent: true },
+      { source: '/watermark-pdf', destination: '/tools/add-watermark-pdf', permanent: true },
+      { source: '/tools/watermark-pdf', destination: '/tools/add-watermark-pdf', permanent: true },
       { source: '/protect-pdf', destination: '/tools/protect-pdf', permanent: true },
       { source: '/unlock-pdf', destination: '/tools/unlock-pdf', permanent: true },
       { source: '/reorder-pdf-pages', destination: '/tools/reorder-pdf-pages', permanent: true },

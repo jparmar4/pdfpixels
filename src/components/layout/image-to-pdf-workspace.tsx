@@ -6,9 +6,12 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { useAppStore } from '@/store/app-store';
 import { ToolPageHeader } from './tool-page-header';
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { toast } from 'sonner';
+import { isImageUpload } from '@/lib/heic-detect';
+import { isHeicUpload, normalizeHeicFile } from '@/lib/heic-client';
 import { Badge } from '@/components/ui/badge';
+import { ToolLimitNotice } from './tool-limit-notice';
 import {
   Select,
   SelectContent,
@@ -17,11 +20,19 @@ import {
   SelectValue
 } from '@/components/ui/select';
 interface ImageFile {
+  id: string;
   file: File;
   name: string;
   size: number;
   preview: string;
   dimensions?: { width: number; height: number };
+}
+
+function newImageId() {
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    return crypto.randomUUID();
+  }
+  return `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
 }
 
 export function ImageToPDFWorkspace() {
@@ -34,54 +45,99 @@ export function ImageToPDFWorkspace() {
   const [orientation, setOrientation] = useState('auto');
   const [fitMode, setFitMode] = useState('contain');
   const margin = 20;
+  const filesRef = useRef(files);
+  const resultRef = useRef(result);
+  filesRef.current = files;
+  resultRef.current = result;
+
+  useEffect(() => {
+    return () => {
+      filesRef.current.forEach((item) => {
+        if (item.preview.startsWith('blob:')) URL.revokeObjectURL(item.preview);
+      });
+      if (resultRef.current?.pdfUrl?.startsWith('blob:')) {
+        URL.revokeObjectURL(resultRef.current.pdfUrl);
+      }
+    };
+  }, []);
+
+  const addImages = useCallback(async (fileList: FileList | File[]) => {
+    const incoming = Array.from(fileList).filter(isImageUpload);
+    if (incoming.length === 0) {
+      toast.error('Please add image files (JPG, PNG, WebP, HEIC)');
+      return;
+    }
+
+    const maxFiles = 30;
+    const maxEach = 15 * 1024 * 1024;
+    const maxTotal = 120 * 1024 * 1024;
+    const currentCount = filesRef.current.length;
+    const currentTotal = filesRef.current.reduce((sum, item) => sum + item.size, 0);
+    const remainingSlots = Math.max(0, maxFiles - currentCount);
+    if (remainingSlots === 0) {
+      toast.error(`Maximum ${maxFiles} images per PDF`);
+      return;
+    }
+
+    const prepared: ImageFile[] = [];
+    let runningTotal = currentTotal;
+    for (const file of incoming.slice(0, remainingSlots)) {
+      if (file.size > maxEach) {
+        toast.error(`${file.name} exceeds 15 MB and was skipped`);
+        continue;
+      }
+      if (runningTotal + file.size > maxTotal) {
+        toast.error('Combined size would exceed 120 MB');
+        break;
+      }
+      try {
+        const usable = isHeicUpload(file) ? await normalizeHeicFile(file) : file;
+        prepared.push({
+          id: newImageId(),
+          file: usable,
+          name: usable.name,
+          size: usable.size,
+          preview: URL.createObjectURL(usable),
+        });
+        runningTotal += usable.size;
+      } catch {
+        toast.error(`Could not read ${file.name}`);
+      }
+    }
+
+    if (prepared.length === 0) return;
+
+    setFiles((prev) => [...prev, ...prepared].slice(0, maxFiles));
+    toast.success(`Added ${prepared.length} image(s)`);
+
+    prepared.forEach((imgFile) => {
+      const img = new Image();
+      img.onload = () => {
+        setFiles((prev) =>
+          prev.map((item) =>
+            item.id === imgFile.id
+              ? { ...item, dimensions: { width: img.width, height: img.height } }
+              : item,
+          ),
+        );
+      };
+      img.src = imgFile.preview;
+    });
+  }, []);
 
   const handleFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFiles = e.target.files;
-    if (selectedFiles) {
-      const newFiles: ImageFile[] = Array.from(selectedFiles)
-        .filter(f => f.type.startsWith('image/'))
-        .map(f => ({
-          file: f,
-          name: f.name,
-          size: f.size,
-          preview: URL.createObjectURL(f),
-        }));
-
-      setFiles(prev => [...prev, ...newFiles]);
-      toast.success(`Added ${newFiles.length} image(s)`);
-
-      // Get dimensions for each image
-      newFiles.forEach((imgFile, index) => {
-        const img = new Image();
-        img.onload = () => {
-          setFiles(prev => prev.map((f, i) =>
-            i === prev.length - newFiles.length + index
-              ? { ...f, dimensions: { width: img.width, height: img.height } }
-              : f
-          ));
-        };
-        img.src = imgFile.preview;
-      });
+    if (e.target.files?.length) {
+      void addImages(e.target.files);
+      e.target.value = '';
     }
-  }, []);
+  }, [addImages]);
 
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
-    const droppedFiles = e.dataTransfer.files;
-    const newFiles: ImageFile[] = Array.from(droppedFiles)
-      .filter(f => f.type.startsWith('image/'))
-      .map(f => ({
-        file: f,
-        name: f.name,
-        size: f.size,
-        preview: URL.createObjectURL(f),
-      }));
-
-    if (newFiles.length > 0) {
-      setFiles(prev => [...prev, ...newFiles]);
-      toast.success(`Added ${newFiles.length} image(s)`);
+    if (e.dataTransfer.files?.length) {
+      void addImages(e.dataTransfer.files);
     }
-  }, []);
+  }, [addImages]);
 
   const removeFile = useCallback((index: number) => {
     setFiles(prev => {
@@ -228,6 +284,12 @@ export function ImageToPDFWorkspace() {
         )}
       </ToolPageHeader>
 
+      <div className="mb-6">
+        <ToolLimitNotice
+          limits={['Up to 30 images', '15 MB per image', '120 MB combined', 'JPG, PNG, WebP, HEIC']}
+        />
+      </div>
+
       {/* Main Content */}
       <div className="grid lg:grid-cols-3 gap-8">
         {/* Left Panel - Upload & File List */}
@@ -244,7 +306,7 @@ export function ImageToPDFWorkspace() {
             <input
               ref={inputRef}
               type="file"
-              accept="image/*"
+              accept="image/*,.heic,.heif,image/heic,image/heif"
               multiple
               onChange={handleFileSelect}
               aria-label="Upload images"
@@ -264,6 +326,7 @@ export function ImageToPDFWorkspace() {
               <Badge variant="secondary" className="font-normal">JPG</Badge>
               <Badge variant="secondary" className="font-normal">PNG</Badge>
               <Badge variant="secondary" className="font-normal">WebP</Badge>
+              <Badge variant="secondary" className="font-normal">HEIC</Badge>
             </div>
           </motion.div>
 
@@ -284,7 +347,7 @@ export function ImageToPDFWorkspace() {
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4 p-4">
                 {files.map((file, index) => (
                   <motion.div
-                    key={`${file.name}-${index}`}
+                    key={file.id}
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: index * 0.03 }}

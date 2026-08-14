@@ -164,7 +164,7 @@ export function ToolContentSection({ toolSlug, toolName, isAI, processing }: {
           </SectionHeader>
           <p className="text-muted-foreground text-sm leading-relaxed mt-4">
             {toolName} is a free online tool by PdfPixels.
-            {processing === 'client' ? ' All processing happens in your browser — your files never leave your device.' : ' Files are processed securely on our servers and automatically deleted.'}
+            {processing === 'client' ? ' Most of this tool runs in your browser. HEIC photos are converted on our servers first.' : ' Files are processed on our servers for this request and temporary files are deleted on supported flows.'}
             {isAI && ' Powered by advanced AI technology for professional-quality results.'}
             {' '}No registration, no watermarks, completely free.
           </p>
@@ -326,7 +326,7 @@ export function ToolContentSection({ toolSlug, toolName, isAI, processing }: {
             <Shield className="w-3.5 h-3.5" /> 100% Free — No Signup
           </div>
           <div className="flex items-center gap-1.5 text-xs text-muted-foreground bg-muted/40 px-3 py-1.5 rounded-full">
-            <Shield className="w-3.5 h-3.5" /> {processing === 'client' ? 'Client-Side — Files Never Uploaded' : 'Secure Server — Auto-Deleted'}
+            <Shield className="w-3.5 h-3.5" /> {processing === 'client' ? 'Browser canvas — HEIC converted on server' : 'Server job — temp files deleted'}
           </div>
           <div className="flex items-center gap-1.5 text-xs text-muted-foreground bg-muted/40 px-3 py-1.5 rounded-full">
             <FileType className="w-3.5 h-3.5" /> {content.supportedFormats}

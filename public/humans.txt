@@ -2,112 +2,30 @@
 # https://www.pdfpixels.com
 
 /* TEAM */
-	PdfPixels Team
-	Title: Development & Design Team
-	Location: Worldwide (Remote-First)
-	Email: team@pdfpixels.com
-	Social: @pdfpixels
-
-	Lead Developer: PdfPixels Engineering
-	Role: Full-Stack Development, API Design
-	Email: dev@pdfpixels.com
-
-	Lead Designer: PdfPixels Design
-	Role: UI/UX Design, Brand Identity
-	Email: design@pdfpixels.com
-
-	Product Manager: PdfPixels Product
-	Role: Product Strategy, User Research
-	Email: product@pdfpixels.com
+	Site: PdfPixels
+	Contact: https://www.pdfpixels.com/contact
+	Email: support@pdfpixels.com
 
 /* THANKS */
-	Open Source Community
-		For the amazing tools that power PdfPixels:
-		- Sharp (Image processing)
-		- PDF-lib (PDF manipulation)
-		- Next.js (Framework)
-		- React (UI Library)
-		- Tailwind CSS (Styling)
-
-	Our Users
-		2,000,000+ users who trust PdfPixels
-		50,000+ reviewers who provided feedback
-		Millions of images processed monthly
+	Open source libraries that power the tools:
+	- Sharp (image processing)
+	- pdf-lib (PDF manipulation)
+	- heic-convert (HEIC decoding)
+	- Next.js, React, Tailwind CSS
 
 /* SITE */
-	Last update: 2025/01
-	Language: English (primary), Spanish, French, German, Portuguese, Russian, Chinese, Japanese, Korean, Arabic
-	Standards: HTML5, CSS3, JavaScript ES6+
-	Components: Next.js 15, React 19, Tailwind CSS 3
-	Responsive: Yes (Mobile-First Design)
-	PWA: Yes (Progressive Web App)
-	SSL: Yes (256-bit encryption)
-	CDN: Global (Cloudflare)
-	Hosting: Edge Computing (Worldwide)
-
-/* VALUES */
-	- Privacy First: Files auto-deleted within 1 hour
-	- Free Forever: All tools available at no cost
-	- No Registration: Immediate access to all features
-	- No Watermarks: Clean output on all processed files
-	- Open API: Free programmatic access for developers
-	- Accessibility: WCAG 2.1 AA compliant
-	- Performance: Sub-100ms response times
-	- Security: SOC 2 Type II certified, GDPR compliant
-
-/* CONTRIBUTIONS */
-	We welcome contributions!
-	GitHub: https://github.com/pdfpixels
-	Email: contribute@pdfpixels.com
+	Last update: 2026/08
+	Language: English
+	Stack: Next.js App Router, React, TypeScript, Tailwind CSS
+	Tools: 50+ free PDF and image workflows
+	Signup: Not required for core tools
+	Processing: Browser canvas for many image edits; server-side Sharp / pdf-lib / Ghostscript for compression, conversion, and PDF jobs
+	Privacy: Files are processed for the current request; temporary server files are deleted on supported flows
 
 /* CONTACT */
 	Website: https://www.pdfpixels.com
 	Support: support@pdfpixels.com
-	Press: press@pdfpixels.com
-	Business: business@pdfpixels.com
-	Twitter: https://twitter.com/pdfpixels
-	LinkedIn: https://linkedin.com/company/pdfpixels
-
-/* LICENSE */
-	Code: MIT License (where applicable)
-	Content: CC BY 4.0
-	API: Free to use, rate limits apply
-
-/* FACTS */
-	Founded: 2019
-	Active Users: 2,000,000+
-	Images Processed: 50,000,000+
-	Tools Available: 50+
-	User Rating: 4.9/5
-	Uptime: 99.9%
-	Pricing: 100% Free
-
-/* AI DISCLOSURE */
-	This site uses AI for:
-	- Background removal in images
-	- Image enhancement and upscaling
-	- Face detection for privacy features
-	- Content recommendations
-	
-	AI models are trained ethically and do not
-	store or share user data.
-
-/* CERTIFICATIONS */
-	SOC 2 Type II Certified
-	GDPR Compliant
-	CCPA Compliant
-	ISO 27001 Aligned
-	256-bit SSL/TLS Encryption
-
-/* ACCESSIBILITY */
-	WCAG 2.1 AA Compliant
-	Screen Reader Friendly
-	Keyboard Navigation Supported
-	High Contrast Mode Available
-
-/* SUSTAINABILITY */
-	Green Hosting Provider
-	Carbon-Neutral Operations
-	Optimized Code for Lower Energy Use
+	Privacy: https://www.pdfpixels.com/privacy
+	Terms: https://www.pdfpixels.com/terms
 
 # End of humans.txt

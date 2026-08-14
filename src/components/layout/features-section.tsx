@@ -20,21 +20,21 @@ const features = [
   {
     icon: Zap,
     title: 'Instant Processing',
-    description: 'Our optimized servers process your images in seconds, not minutes. No queues, no waiting.',
-    highlight: 'Up to 10x faster',
+    description: 'Most jobs finish in a few seconds after upload. Heavy PDFs and HEIC conversions take longer because they run on the server.',
+    highlight: 'Fast typical jobs',
     gradient: 'from-amber-500/15 to-orange-500/5',
     iconGradient: 'from-amber-500/20 to-orange-500/8',
-    stat: '10M+ files/month',
+    stat: 'Browser + server',
     featured: true,
   },
   {
     icon: Shield,
-    title: 'Enterprise Security',
-    description: '256-bit SSL encryption, SOC 2 certified infrastructure, and GDPR compliance for complete peace of mind.',
-    highlight: 'Bank-level security',
+    title: 'HTTPS by default',
+    description: 'Uploads go over HTTPS. PDF and conversion jobs are processed for that request, then temporary files are deleted on supported flows.',
+    highlight: 'Clear processing',
     gradient: 'from-emerald-500/15 to-teal-500/5',
     iconGradient: 'from-emerald-500/20 to-teal-500/8',
-    stat: '99.9% uptime',
+    stat: 'No account wall',
     featured: true,
   },
   {
@@ -47,9 +47,9 @@ const features = [
   },
   {
     icon: Infinity,
-    title: 'Unlimited & Free',
-    description: 'No file limits, no daily restrictions, no hidden fees. Process as many images as you need.',
-    highlight: 'Free to use',
+    title: 'Free core tools',
+    description: 'Core workflows are free and do not require an account. Each tool shows its own file-size and rate limits.',
+    highlight: 'Fair-use limits',
     gradient: 'from-blue-500/15 to-indigo-500/5',
     iconGradient: 'from-blue-500/20 to-indigo-500/8',
   },
@@ -65,15 +65,15 @@ const features = [
     icon: Lock,
     title: 'Privacy First',
     description: 'Privacy-focused processing with temporary file handling and automatic cleanup on supported workflows.',
-    highlight: 'Zero data retention',
+    highlight: 'Temp files cleaned',
     gradient: 'from-cyan-500/15 to-sky-500/5',
     iconGradient: 'from-cyan-500/20 to-sky-500/8',
   },
   {
     icon: FileImage,
     title: 'All Formats Supported',
-    description: 'JPG, PNG, WebP, HEIC, GIF, BMP, TIFF, and more. Convert between any format instantly.',
-    highlight: '50+ formats',
+    description: 'JPG, PNG, WebP, HEIC, GIF, BMP, TIFF, and PDF. Convert between the formats each tool lists.',
+    highlight: 'Common formats',
     gradient: 'from-lime-500/15 to-green-500/5',
     iconGradient: 'from-lime-500/20 to-green-500/8',
   },
@@ -113,7 +113,7 @@ export function FeaturesSection() {
             Why Choose PdfPixels?
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-            Professional-grade image processing tools with enterprise-level security and reliability.
+            Professional-grade image and PDF tools with honest limits and clear processing.
           </p>
         </motion.div>
 
@@ -186,7 +186,7 @@ export function FeaturesSection() {
           {[
             { icon: Clock, title: '24/7 Availability', desc: 'Always online' },
             { icon: Globe, title: 'Global CDN', desc: 'Fast worldwide' },
-            { icon: RefreshCw, title: 'Regular Updates', desc: 'New tools weekly' },
+            { icon: RefreshCw, title: 'Regular Updates', desc: 'Guides and fixes' },
           ].map((item) => (
             <div key={item.title} className="flex items-center gap-3 p-4 rounded-xl bg-card/80 backdrop-blur-sm border border-border/40 shadow-soft hover:shadow-elevated transition-all duration-300 hover:-translate-y-0.5">
               <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary/12 to-primary/3 flex items-center justify-center">

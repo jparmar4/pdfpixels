@@ -1,4 +1,5 @@
 import Script from 'next/script';
+import { Suspense } from 'react';
 import { allTools } from '@/lib/tools-data';
 import { collectionItemListJsonLd } from '@/app/jsonld-helpers';
 import { SITE_URL } from '@/lib/seo';
@@ -25,7 +26,9 @@ export default function ToolsPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <main id="main-content" className="flex-1">
-        <ToolsClient />
+        <Suspense fallback={<div className="h-72 animate-pulse rounded-2xl bg-muted/20" />}>
+          <ToolsClient />
+        </Suspense>
       </main>
     </div>
   );

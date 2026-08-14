@@ -12,6 +12,7 @@ import { GuidesSection } from '@/components/home/guides-section';
 import { CTASection } from '@/components/home/cta-section';
 
 import { Metadata } from 'next';
+import { getGeoLanguageAlternates } from '@/lib/seo';
 import { siteConfig, seoConfig } from '@/lib/seo-config';
 
 export const metadata: Metadata = {
@@ -19,14 +20,7 @@ export const metadata: Metadata = {
   description: seoConfig.description,
   alternates: {
     canonical: '/',
-    languages: {
-      'en-US': '/us',
-      'en-GB': '/uk',
-      'en-CA': '/ca',
-      'en-AU': '/au',
-      'en-IN': '/in',
-      'x-default': '/',
-    },
+    languages: getGeoLanguageAlternates(),
   },
   openGraph: {
     title: `${siteConfig.name} - Free Online PDF & Image Tools`,

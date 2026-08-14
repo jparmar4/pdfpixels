@@ -168,7 +168,7 @@ export const organizationData = {
   url: absoluteUrl('/'),
   logo: absoluteUrl('/icon-512.png'),
   description: 'Free online PDF and image processing platform with browser and server workflows.',
-  foundingDate: '2024',
+  foundingDate: '2025',
   sameAs: [
     'https://twitter.com/pdfpixels',
     'https://www.linkedin.com/company/pdfpixels',

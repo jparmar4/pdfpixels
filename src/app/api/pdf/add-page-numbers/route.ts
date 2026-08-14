@@ -1,5 +1,5 @@
 import { apiError } from '@/lib/api-response';
-import { loadPdfWithTimeout, pdfBinaryResponse, validatePdfUpload } from '@/lib/pdf-api';
+import { openEditablePdf, pdfBinaryResponse } from '@/lib/pdf-api';
 import { NextRequest } from 'next/server';
 import { rgb, StandardFonts } from 'pdf-lib';
 
@@ -12,15 +12,14 @@ export async function POST(request: NextRequest) {
         const file = formData.get('file') as File;
         const position = (formData.get('position') as string) || 'bottom-center';
         const format = (formData.get('format') as string) || '{n}';
-        const margin = parseInt(formData.get('margin') as string) || 30;
-        const fontSize = parseInt(formData.get('fontSize') as string) || 12;
+        const marginRaw = parseInt(String(formData.get('margin') ?? ''), 10);
+        const margin = Number.isFinite(marginRaw) ? Math.max(0, Math.min(200, marginRaw)) : 30;
+        const fontSizeRaw = parseInt(String(formData.get('fontSize') ?? ''), 10);
+        const fontSize = Number.isFinite(fontSizeRaw) ? fontSizeRaw : 12;
 
-        const validation = validatePdfUpload(file);
-        if (!validation.ok) return validation.response;
-
-        const arrayBuffer = await file.arrayBuffer();
-        const pdfBytes = new Uint8Array(arrayBuffer);
-        const pdf = await loadPdfWithTimeout(pdfBytes);
+        const opened = await openEditablePdf(file);
+        if (!opened.ok) return opened.response;
+        const { pdf } = opened;
 
         const font = await pdf.embedFont(StandardFonts.Helvetica);
         const totalPages = pdf.getPageCount();
@@ -30,7 +29,10 @@ export async function POST(request: NextRequest) {
             const { width, height } = page.getSize();
             
             // Format text, e.g. replacing {n} with page number and {total} with total pages
-            const text = format.replace('{n}', (i + 1).toString()).replace('{total}', totalPages.toString());
+            const text = format
+                .replace(/\{n\}/g, (i + 1).toString())
+                .replace(/\{total\}/g, totalPages.toString())
+                .replace(/[^\x20-\x7E]/g, '?');
             const textWidth = font.widthOfTextAtSize(text, fontSize);
             const textHeight = font.heightAtSize(fontSize);
 

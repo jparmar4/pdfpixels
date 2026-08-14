@@ -4,7 +4,7 @@ import { Metadata } from 'next';
 import dynamic from 'next/dynamic';
 import { geoRegions, getRegionByCode } from '@/lib/geo-data';
 import { siteConfig } from '@/lib/seo-config';
-import { absoluteUrl } from '@/lib/seo';
+import { absoluteUrl, getGeoLanguageAlternates, websiteId } from '@/lib/seo';
 import { ToolsSection } from '@/components/home/tools-section';
 import { StatsBanner } from '@/components/home/stats-banner';
 import { AnswerEngineSection } from '@/components/home/answer-engine-section';
@@ -53,25 +53,29 @@ export async function generateMetadata({ params }: GeoPageProps): Promise<Metada
   const title = `${region.headline} | ${siteConfig.name}`;
   const description = region.intro.slice(0, 160);
 
-  // Build hreflang object
-  const languages: Record<string, string> = {
-    'x-default': siteConfig.url,
-  };
-  geoRegions.forEach((r) => {
-    languages[r.locale] = `${siteConfig.url}/${r.code}`;
-  });
-
   return {
     title,
     description,
     alternates: {
       canonical: `${siteConfig.url}${url}`,
-      languages,
+      languages: getGeoLanguageAlternates(),
     },
     openGraph: {
       title,
       description,
       url: `${siteConfig.url}${url}`,
+      locale: region.locale.replace('-', '_'),
+      siteName: siteConfig.name,
+    },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
+      },
     },
   };
 }
@@ -94,7 +98,7 @@ export default async function GeoHubPage({ params }: GeoPageProps) {
       name: region.headline,
       description: region.intro,
       inLanguage: region.locale,
-      isPartOf: { '@id': `${absoluteUrl('/')}/#website` },
+      isPartOf: { '@id': websiteId() },
       about: {
         '@type': 'Place',
         name: region.name,
@@ -171,6 +175,20 @@ export default async function GeoHubPage({ params }: GeoPageProps) {
                 </Link>
               ))}
             </div>
+
+            <nav aria-label="Other regional hubs" className="mt-8 flex flex-wrap gap-2">
+              {geoRegions
+                .filter((item) => item.code !== region.code)
+                .map((item) => (
+                  <Link
+                    key={item.code}
+                    href={`/${item.code}`}
+                    className="rounded-full border border-border/60 bg-background px-3 py-1.5 text-xs font-semibold text-muted-foreground transition-colors hover:border-primary/30 hover:text-primary"
+                  >
+                    {item.name}
+                  </Link>
+                ))}
+            </nav>
 
             <div className="mt-10 grid gap-6 lg:grid-cols-2">
               <div className="rounded-2xl border border-border/60 bg-muted/20 p-6">

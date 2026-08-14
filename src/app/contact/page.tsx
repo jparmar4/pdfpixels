@@ -114,7 +114,7 @@ export default function ContactPage() {
     {
       question: 'Is there a premium plan available?',
       answer:
-        'PdfPixels offers free tools with generous usage limits. We are working on a premium tier with higher limits, batch processing, and priority support. Stay tuned by subscribing to our newsletter or following us on social media.',
+        'Core tools are free and do not require an account. Each page shows its own file-size and rate limits. There is no paid checkout today — see the pricing page for the current story.',
     },
     {
       question: 'How do I report a bug or broken tool?',

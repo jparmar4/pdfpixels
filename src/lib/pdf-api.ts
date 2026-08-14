@@ -9,11 +9,7 @@ export function isPdfFile(file: File): boolean {
   const name = file.name?.toLowerCase() || '';
   if (name.endsWith('.pdf')) return true;
   if (!file.type) return false;
-  return (
-    file.type === 'application/pdf' ||
-    file.type === 'application/octet-stream' ||
-    file.type === 'application/x-pdf'
-  );
+  return file.type === 'application/pdf' || file.type === 'application/x-pdf';
 }
 
 /**
@@ -38,9 +34,11 @@ export function parsePageSelection(
       let end = parseInt(rangeMatch[2], 10);
       if (!Number.isFinite(start) || !Number.isFinite(end)) continue;
       if (start > end) [start, end] = [end, start];
+      start = Math.max(1, start);
+      end = Math.min(totalPages, end);
+      if (start > end) continue;
       for (let page = start; page <= end; page += 1) {
-        const idx = page - 1;
-        if (idx >= 0 && idx < totalPages) indices.add(idx);
+        indices.add(page - 1);
       }
       continue;
     }
@@ -58,9 +56,9 @@ export function validatePdfBuffer(buffer: Buffer | Uint8Array): { ok: true } | {
   if (!buffer || buffer.length < 5) {
     return { ok: false, error: 'File is empty or too small to be a PDF' };
   }
-  // Check for PDF magic bytes: %PDF-
-  const header = Buffer.from(buffer.slice(0, 5)).toString('ascii');
-  if (header !== '%PDF-') {
+  // ISO 32000 allows leading whitespace; some exports add a BOM before %PDF-
+  const probe = Buffer.from(buffer.slice(0, 1024)).toString('latin1');
+  if (!/%PDF-/.test(probe)) {
     return { ok: false, error: 'Invalid file content: Not a valid PDF' };
   }
   return { ok: true };
@@ -136,12 +134,58 @@ export async function loadPdfWithTimeout(
   timeoutMs = 15000
 ): Promise<import('pdf-lib').PDFDocument> {
   const { PDFDocument } = await import('pdf-lib');
-  return Promise.race([
-    PDFDocument.load(bytes, options),
-    new Promise<never>((_, reject) =>
-      setTimeout(() => reject(new Error(`PDF loading timed out after ${timeoutMs}ms`)), timeoutMs)
-    ),
-  ]);
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const loadPromise = PDFDocument.load(bytes, options);
+  const timeoutPromise = new Promise<never>((_, reject) => {
+    timer = setTimeout(() => reject(new Error(`PDF loading timed out after ${timeoutMs}ms`)), timeoutMs);
+  });
+
+  try {
+    const pdf = await Promise.race([loadPromise, timeoutPromise]);
+    if (pdf.isEncrypted && options?.ignoreEncryption) {
+      // Encrypted streams stay ciphertext when ignoreEncryption is set.
+      // Callers that need to mutate pages should reject and send the user to Unlock.
+    }
+    return pdf;
+  } finally {
+    if (timer) clearTimeout(timer);
+    void loadPromise.catch(() => undefined);
+  }
+}
+
+export function rejectEncryptedPdf(pdf: { isEncrypted: boolean }) {
+  if (!pdf.isEncrypted) return null;
+  return pdfJsonError('This PDF is password-protected. Unlock it first, then try again.', 400);
+}
+
+/** Validate, read, load, and reject encrypted PDFs for edit routes. */
+export async function openEditablePdf(
+  file: File | null | undefined,
+): Promise<
+  | { ok: true; pdf: import('pdf-lib').PDFDocument; buffer: Buffer }
+  | { ok: false; response: NextResponse }
+> {
+  const validation = validatePdfUpload(file);
+  if (!validation.ok) return validation;
+  const read = await readAndValidatePdfFile(file!);
+  if (!read.ok) return read;
+
+  try {
+    const pdf = await loadPdfWithTimeout(read.buffer);
+    const encrypted = rejectEncryptedPdf(pdf);
+    if (encrypted) return { ok: false, response: encrypted };
+    return { ok: true, pdf, buffer: read.buffer };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Could not read this PDF.';
+    const status = message.includes('timed out') ? 408 : 400;
+    return {
+      ok: false,
+      response: pdfJsonError(
+        message.includes('timed out') ? message : 'Could not read this PDF. The file may be damaged.',
+        status,
+      ),
+    };
+  }
 }
 
 export function pdfJsonError(message: string, status = 400, details?: string) {
@@ -157,16 +201,22 @@ export function pdfBytesToDataUrl(bytes: Uint8Array | Buffer): string {
   return ["data:", "application/pdf", ";base64,", base64].join("");
 }
 
+export function sanitizeDownloadFileName(fileName: string, fallback = 'download.pdf') {
+  const cleaned = fileName.replace(/["\r\n\\]/g, '').replace(/[^\w.\- ()[\]]+/g, '_').trim();
+  return cleaned || fallback;
+}
+
 export function pdfBinaryResponse(
   bytes: Uint8Array | Buffer,
   fileName: string,
   extraHeaders: Record<string, string> = {},
 ) {
+  const safeName = sanitizeDownloadFileName(fileName);
   return new NextResponse(Buffer.from(bytes), {
     status: 200,
     headers: {
       'Content-Type': 'application/pdf',
-      'Content-Disposition': `attachment; filename="${fileName}"`,
+      'Content-Disposition': `attachment; filename="${safeName}"`,
       ...PDF_CACHE_HEADERS,
       ...extraHeaders,
     },

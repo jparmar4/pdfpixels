@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
+import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -94,7 +95,8 @@ function getProcessingMeta(tool: (typeof allTools)[0]) {
 }
 
 export function ToolsClient() {
-  const [searchQuery, setSearchQuery] = useState('');
+  const searchParams = useSearchParams();
+  const [searchQuery, setSearchQuery] = useState(() => searchParams.get('q') || '');
   const [activeCategory, setActiveCategory] = useState('all');
   const setActiveTool = useAppStore((state) => state.setActiveTool);
 

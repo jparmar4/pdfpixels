@@ -1,4 +1,5 @@
 import { apiError } from '@/lib/api-response';
+import { decodeHeicIfNeeded, isImageUpload } from '@/lib/heic';
 import { NextRequest, NextResponse } from 'next/server';
 import { PDFDocument } from 'pdf-lib';
 import sharp from 'sharp';
@@ -13,7 +14,8 @@ export async function POST(request: NextRequest) {
     const files = formData.getAll('files') as File[];
     const pageSize = formData.get('pageSize') as string || 'a4'; // 'a4', 'letter', 'fit'
     const orientation = formData.get('orientation') as string || 'portrait'; // 'portrait', 'landscape', 'auto'
-    const margin = parseInt(formData.get('margin') as string) || 20;
+    const marginRaw = parseInt(String(formData.get('margin') ?? ''), 10);
+    const margin = Number.isFinite(marginRaw) ? Math.max(0, Math.min(200, marginRaw)) : 20;
     const fitMode = formData.get('fitMode') as string || 'contain'; // 'contain', 'fill', 'stretch'
     
     if (!files || files.length === 0) {
@@ -45,15 +47,21 @@ export async function POST(request: NextRequest) {
         return apiError(`File "${file.name}" is too large (15MB max per image).`, 400);
       }
 
-      if (!file.type.startsWith('image/')) {
-        continue;
+      if (!isImageUpload(file)) {
+        return apiError(`"${file.name}" is not a supported image. Use JPG, PNG, WebP, HEIC, GIF, or BMP.`, 400);
       }
 
       const arrayBuffer = await file.arrayBuffer();
-      const imageBytes = new Uint8Array(arrayBuffer);
+      let decoded: { buffer: Buffer };
+      try {
+        decoded = await decodeHeicIfNeeded(Buffer.from(arrayBuffer), file.name, file.type);
+      } catch {
+        return apiError(`Could not read "${file.name}". If it is HEIC, try converting it first.`, 400);
+      }
+      const imageBytes = new Uint8Array(decoded.buffer);
       
       // Get image metadata
-      const image = sharp(Buffer.from(imageBytes));
+      const image = sharp(decoded.buffer, { failOn: 'none' });
       const metadata = await image.metadata();
       
       // Normalize all non-JPEG/PNG inputs through Sharp so GIF/HEIC/AVIF/BMP work
@@ -119,19 +127,23 @@ export async function POST(request: NextRequest) {
       // Calculate image placement
       const imgWidth = imageEmbed.width;
       const imgHeight = imageEmbed.height;
+      if (imgWidth <= 0 || imgHeight <= 0) {
+        continue;
+      }
       
       let drawWidth: number, drawHeight: number, x: number, y: number;
       
-      const availableWidth = pageWidth - (margin * 2);
-      const availableHeight = pageHeight - (margin * 2);
+      const safeMargin = Math.min(margin, Math.max(0, Math.floor(Math.min(pageWidth, pageHeight) / 2) - 1));
+      const availableWidth = Math.max(1, pageWidth - (safeMargin * 2));
+      const availableHeight = Math.max(1, pageHeight - (safeMargin * 2));
       
       if (fitMode === 'contain') {
         // Fit image within page while maintaining aspect ratio
         const scale = Math.min(availableWidth / imgWidth, availableHeight / imgHeight);
         drawWidth = imgWidth * scale;
         drawHeight = imgHeight * scale;
-        x = margin + (availableWidth - drawWidth) / 2;
-        y = pageHeight - margin - drawHeight - (availableHeight - drawHeight) / 2;
+        x = safeMargin + (availableWidth - drawWidth) / 2;
+        y = pageHeight - safeMargin - drawHeight - (availableHeight - drawHeight) / 2;
       } else if (fitMode === 'fill') {
         // Fill page while maintaining aspect ratio (may crop)
         const scale = Math.max(availableWidth / imgWidth, availableHeight / imgHeight);
@@ -143,8 +155,8 @@ export async function POST(request: NextRequest) {
         // Stretch to fill
         drawWidth = availableWidth;
         drawHeight = availableHeight;
-        x = margin;
-        y = margin;
+        x = safeMargin;
+        y = safeMargin;
       }
       
       page.drawImage(imageEmbed, {

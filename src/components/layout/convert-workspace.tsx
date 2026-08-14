@@ -183,6 +183,12 @@ export function ConvertWorkspace() {
     if (processedImage?.startsWith('blob:')) URL.revokeObjectURL(processedImage);
   }, [downloadUrl, processedImage]);
 
+  useEffect(() => {
+    return () => {
+      revokeBlobUrls();
+    };
+  }, [revokeBlobUrls]);
+
   const handleProcess = useCallback(async () => {
     if (!uploadedFile) {
       toast.error(isPdfToImage ? 'Please upload a PDF first' : 'Please upload an image first');
@@ -357,7 +363,14 @@ export function ConvertWorkspace() {
 
       <div className="grid gap-8 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-2">
-          <FileUpload accept={activeTool.id.includes('pdf-to') ? '.pdf,application/pdf' : 'image/*'} maxSizeMb={25} />
+          <FileUpload
+            accept={
+              activeTool.id.includes('pdf-to')
+                ? '.pdf,application/pdf'
+                : 'image/*,.heic,.heif,image/heic,image/heif'
+            }
+            maxSizeMb={25}
+          />
           <ToolLimitNotice
             limits={
               isPdfToImage

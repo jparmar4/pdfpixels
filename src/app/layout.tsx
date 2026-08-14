@@ -42,11 +42,6 @@ export const metadata: Metadata = {
   creator: siteConfig.creator,
   publisher: siteConfig.publisher,
   alternates: {
-    canonical: '/',
-    languages: {
-      'en-US': '/',
-      'x-default': '/',
-    },
     types: {
       'application/rss+xml': '/feed',
     },
@@ -103,10 +98,6 @@ export const metadata: Metadata = {
     'llms-txt': `${siteConfig.url}/llms.txt`,
     rating: 'general',
     distribution: 'global',
-    'geo.region': 'US',
-    'geo.placename': 'Worldwide',
-    ICBM: '0, 0',
-    'content-language': 'en-US',
     'mobile-web-app-capable': 'yes',
     'apple-mobile-web-app-title': siteConfig.name,
     'msapplication-TileColor': seoConfig.brandColor,

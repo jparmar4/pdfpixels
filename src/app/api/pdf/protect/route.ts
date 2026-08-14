@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { apiError } from '@/lib/api-response';
-import { readAndValidatePdfFile, validatePdfUpload } from '@/lib/pdf-api';
+import { loadPdfWithTimeout, readAndValidatePdfFile, validatePdfUpload } from '@/lib/pdf-api';
 
 import { spawn } from 'child_process';
 import fs from 'fs';
 import os from 'os';
 import path from 'path';
 import crypto from 'crypto';
-import { PDFDocument } from 'pdf-lib';
+
 
 const CACHE_HEADERS = {
   'Cache-Control': 'no-store, max-age=0',
@@ -33,7 +33,7 @@ function getQpdfCandidates() {
 
 function runCommand(command: string, args: string[]) {
   return new Promise<void>((resolve, reject) => {
-    const proc = spawn(command, args);
+    const proc = spawn(command, args, { stdio: ['ignore', 'ignore', 'pipe'] });
     let stderr = '';
     const timeout = setTimeout(() => {
       proc.kill('SIGKILL');
@@ -41,7 +41,9 @@ function runCommand(command: string, args: string[]) {
     }, 45_000);
 
     proc.stderr.on('data', (chunk) => {
-      stderr += chunk.toString();
+      if (stderr.length < 16 * 1024) {
+        stderr += chunk.toString();
+      }
     });
 
     proc.on('error', (error) => {
@@ -86,6 +88,7 @@ async function runQpdf(args: string[]) {
 export async function POST(request: NextRequest) {
   let inputPath = '';
   let outputPath = '';
+  let passwordPath = '';
 
   try {
     const formData = await request.formData();
@@ -114,8 +117,12 @@ export async function POST(request: NextRequest) {
     if (!read.ok) return read.response;
     const inputBuffer = read.buffer;
 
-    const srcPdf = await PDFDocument.load(inputBuffer, { ignoreEncryption: true });
+    const srcPdf = await loadPdfWithTimeout(inputBuffer, { ignoreEncryption: true });
     const pageCount = srcPdf.getPageCount();
+
+    if (action === 'protect' && srcPdf.isEncrypted) {
+      return apiError('This PDF is already password-protected. Unlock it first, then protect it again.', 400);
+    }
 
     const tempDir = os.tmpdir();
     const id = crypto.randomUUID();
@@ -124,6 +131,7 @@ export async function POST(request: NextRequest) {
     fs.writeFileSync(inputPath, inputBuffer);
 
     if (action === 'protect') {
+      // qpdf requires encrypt passwords as arguments; unlock uses a temp file instead.
       await runQpdf([
         '--encrypt',
         password,
@@ -134,9 +142,12 @@ export async function POST(request: NextRequest) {
         outputPath,
       ]);
     } else if (action === 'unlock') {
-      const args = password
-        ? ['--password=' + password, '--decrypt', inputPath, outputPath]
-        : ['--decrypt', inputPath, outputPath];
+      const args = ['--decrypt', inputPath, outputPath];
+      if (password) {
+        passwordPath = path.join(tempDir, `${id}.pwd`);
+        fs.writeFileSync(passwordPath, password, { encoding: 'utf8', mode: 0o600 });
+        args.unshift(`--password-file=${passwordPath}`);
+      }
       await runQpdf(args);
     } else {
       return apiError('Unsupported PDF security action');
@@ -160,20 +171,27 @@ export async function POST(request: NextRequest) {
     const message = error instanceof Error ? error.message : 'Unknown error';
 
     if (message.toLowerCase().includes('invalid password')) {
-      return apiError('The provided PDF password is incorrect.', 401, message);
+      return apiError('The provided PDF password is incorrect.', 401, 'INVALID_PASSWORD');
     }
 
     if (message.toLowerCase().includes('encrypted file')) {
-      return apiError('This PDF requires a valid password before it can be unlocked.', 401, message);
+      return apiError('This PDF requires a valid password before it can be unlocked.', 401, 'PASSWORD_REQUIRED');
     }
 
     if (message.toLowerCase().includes('qpdf is not available')) {
-      return apiError('PDF security engine is not available in the current environment.', 503, message);
+      return apiError('PDF security engine is not available in the current environment.', 503, 'ENGINE_UNAVAILABLE');
     }
 
-    return apiError('Failed to process PDF security settings', 500, message);
+    return apiError('Failed to process PDF security settings', 500, 'SECURITY_FAILED');
   } finally {
-    if (inputPath && fs.existsSync(inputPath)) fs.unlinkSync(inputPath);
-    if (outputPath && fs.existsSync(outputPath)) fs.unlinkSync(outputPath);
+    try {
+      if (inputPath && fs.existsSync(inputPath)) fs.unlinkSync(inputPath);
+    } catch { /* ignore cleanup errors */ }
+    try {
+      if (outputPath && fs.existsSync(outputPath)) fs.unlinkSync(outputPath);
+    } catch { /* ignore cleanup errors */ }
+    try {
+      if (passwordPath && fs.existsSync(passwordPath)) fs.unlinkSync(passwordPath);
+    } catch { /* ignore cleanup errors */ }
   }
 }

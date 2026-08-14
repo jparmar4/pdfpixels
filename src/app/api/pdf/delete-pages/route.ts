@@ -1,9 +1,8 @@
 import { apiError } from '@/lib/api-response';
 import {
-  loadPdfWithTimeout,
+  openEditablePdf,
   parsePageSelection,
   pdfBinaryResponse,
-  validatePdfUpload,
 } from '@/lib/pdf-api';
 import { NextRequest } from 'next/server';
 import { PDFDocument } from 'pdf-lib';
@@ -17,16 +16,13 @@ export async function POST(request: NextRequest) {
     const file = formData.get('file') as File | null;
     const pagesToDelete = String(formData.get('pages') || '');
 
-    const validation = validatePdfUpload(file);
-    if (!validation.ok) return validation.response;
-
     if (!pagesToDelete.trim()) {
       return apiError('No pages specified for deletion', 400);
     }
 
-    const arrayBuffer = await file!.arrayBuffer();
-    const pdfBytes = new Uint8Array(arrayBuffer);
-    const sourcePdf = await loadPdfWithTimeout(pdfBytes);
+    const opened = await openEditablePdf(file);
+    if (!opened.ok) return opened.response;
+    const sourcePdf = opened.pdf;
     const totalPages = sourcePdf.getPageCount();
 
     const deleteIndices = parsePageSelection(pagesToDelete, totalPages);

@@ -1,5 +1,5 @@
 import { faqData, organizationData, webAppData, howToData } from '@/lib/seo-config';
-import { absoluteUrl, DEFAULT_OG_IMAGE_URL, getHomepageFeaturedTools, getSiteSearchUrlTemplate } from '@/lib/seo';
+import { absoluteUrl, DEFAULT_OG_IMAGE_URL, getHomepageFeaturedTools, getSiteSearchUrlTemplate, organizationId, websiteId } from '@/lib/seo';
 
 const featuredTools = getHomepageFeaturedTools();
 
@@ -11,7 +11,7 @@ function KnowledgeGraphSchema() {
     '@graph': [
       {
         '@type': 'Organization',
-        '@id': `${absoluteUrl('/')}/#organization`,
+        '@id': organizationId(),
         name: organizationData.name,
         alternateName: organizationData.alternateName,
         url: organizationData.url,
@@ -33,12 +33,12 @@ function KnowledgeGraphSchema() {
       },
       {
         '@type': 'WebSite',
-        '@id': `${absoluteUrl('/')}/#website`,
+        '@id': websiteId(),
         url: absoluteUrl('/'),
         name: organizationData.name,
         description: webAppData.description,
         publisher: {
-          '@id': `${absoluteUrl('/')}/#organization`,
+          '@id': organizationId(),
         },
         potentialAction: {
           '@type': 'SearchAction',
@@ -56,7 +56,7 @@ function KnowledgeGraphSchema() {
         name: webAppData.name,
         description: webAppData.description,
         url: webAppData.url,
-        applicationCategory: `${webAppData.applicationCategory}, DesktopEnhancementApplication`,
+        applicationCategory: webAppData.applicationCategory,
         operatingSystem: 'Windows, macOS, Linux, iOS, Android',
         browserRequirements: 'Requires JavaScript and HTML5 Canvas',
         isAccessibleForFree: true,
@@ -67,7 +67,7 @@ function KnowledgeGraphSchema() {
           availability: 'https://schema.org/InStock',
         },
         provider: {
-          '@id': `${absoluteUrl('/')}/#organization`,
+          '@id': organizationId(),
         },
         featureList: webAppData.featureList,
         screenshot: DEFAULT_OG_IMAGE_URL,
@@ -162,7 +162,7 @@ function HomepageCollectionSchema() {
     url: absoluteUrl('/'),
     description: 'Homepage for PdfPixels, a free online platform for PDF and image tools.',
     isPartOf: {
-      '@id': `${absoluteUrl('/')}/#website`,
+      '@id': websiteId(),
     },
     primaryImageOfPage: {
       '@type': 'ImageObject',
@@ -223,7 +223,7 @@ function ServiceSchema() {
     '@type': 'Service',
     serviceType: 'Online PDF and image processing',
     provider: {
-      '@id': `${absoluteUrl('/')}/#organization`,
+      '@id': organizationId(),
     },
     areaServed: 'Worldwide',
     hasOfferCatalog: {
@@ -282,17 +282,17 @@ function ServiceSchema() {
   return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />;
 }
 
-function APISchema() {
+export function APISchema() {
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'WebAPI',
     name: 'PdfPixels API',
     description: 'Public API documentation for image and PDF processing workflows.',
-    url: absoluteUrl('/api'),
+    url: absoluteUrl('/api-docs'),
     documentation: absoluteUrl('/api-docs'),
     termsOfService: absoluteUrl('/terms'),
     provider: {
-      '@id': `${absoluteUrl('/')}/#organization`,
+      '@id': organizationId(),
     },
   };
 
@@ -302,14 +302,7 @@ function APISchema() {
 // AEOAnswerSchema has been merged into FAQSchema
 
 export function JsonLdSchemas() {
-  return (
-    <>
-      <KnowledgeGraphSchema />
-      <HowToSchemas />
-      <ServiceSchema />
-      <APISchema />
-    </>
-  );
+  return <KnowledgeGraphSchema />;
 }
 
 export function HomePageSchemas() {
@@ -317,6 +310,8 @@ export function HomePageSchemas() {
     <>
       <HomepageCollectionSchema />
       <FAQSchema />
+      <HowToSchemas />
+      <ServiceSchema />
       <BreadcrumbSchema />
       <SpeakableSchema />
     </>

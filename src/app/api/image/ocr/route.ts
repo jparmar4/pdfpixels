@@ -1,4 +1,5 @@
 import { apiError } from '@/lib/api-response';
+import { decodeHeicIfNeeded, isImageUpload } from '@/lib/heic';
 import { NextRequest, NextResponse } from 'next/server';
 
 const CACHE_HEADERS = {
@@ -15,7 +16,7 @@ export async function POST(request: NextRequest) {
             return apiError('No image provided', 400);
         }
 
-        if (!file.type.startsWith('image/')) {
+        if (!isImageUpload(file)) {
             return apiError('File must be an image', 400);
         }
 
@@ -25,11 +26,19 @@ export async function POST(request: NextRequest) {
         }
 
         const arrayBuffer = await file.arrayBuffer();
-        const buffer = Buffer.from(arrayBuffer);
+        let buffer: Buffer = Buffer.from(arrayBuffer);
+        let mimeType = file.type || 'image/jpeg';
+        try {
+            const decoded = await decodeHeicIfNeeded(buffer, file.name, file.type);
+            buffer = decoded.buffer;
+            if (decoded.converted) mimeType = 'image/jpeg';
+        } catch (error) {
+            return apiError(error instanceof Error ? error.message : 'Could not decode this HEIC photo', 400);
+        }
 
         // Convert to base64 for client-side processing
         const base64 = buffer.toString('base64');
-        const dataUrl = `data:${file.type};base64,${base64}`;
+        const dataUrl = `data:${mimeType};base64,${base64}`;
 
         // Return the processed image URL for client-side Tesseract.js
         return NextResponse.json({

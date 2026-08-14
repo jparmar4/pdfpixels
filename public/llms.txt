@@ -16,6 +16,8 @@ PdfPixels (https://www.pdfpixels.com) is a browser-based platform for PDF and im
 - **AI image enhancer free**: https://www.pdfpixels.com/tools/increase-image-quality — fix blurry/soft photos, improve quality online.
 - **HEIC to JPG**: https://www.pdfpixels.com/tools/heic-to-jpg — convert iPhone HEIC photos online.
 - **AI image enhancer guide**: https://www.pdfpixels.com/blog/ai-image-enhancer-fix-blurry-photos — how to fix blurry photos with free AI tools (2026).
+- **CONFIDENTIAL / DRAFT watermark on a PDF**: https://www.pdfpixels.com/blog/add-confidential-watermark-to-pdf — stamp status on every page (not a password).
+- **WebP vs JPG vs PNG**: https://www.pdfpixels.com/blog/webp-vs-jpg-vs-png-which-format — which format to use and when to convert.
 - **Passport photo maker**: https://www.pdfpixels.com/tools/passport-size-photo — resize for ID / passport dimensions.
 - **PDF too large for email**: use Compress PDF then attach; guide at https://www.pdfpixels.com/blog
 

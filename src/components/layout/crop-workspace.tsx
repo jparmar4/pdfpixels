@@ -258,6 +258,10 @@ export function CropWorkspace() {
       setProcessedImage(null);
     };
     img.onerror = () => {
+      if (objectUrlRef.current) {
+        URL.revokeObjectURL(objectUrlRef.current);
+        objectUrlRef.current = null;
+      }
       toast.error('Could not load this image. Try JPG or PNG.');
       setImageLoaded(false);
     };

@@ -55,7 +55,7 @@ export function HeroSection({
                     transition={{ duration: 0.5, delay: 0.2 }}
                     className="text-lg md:text-xl text-muted-foreground mb-10 max-w-2xl mx-auto"
                 >
-                    Compress, convert, edit, and optimize your files instantly right from your browser. No sign-up. No limits. Super fast.
+                    Compress, convert, edit, and optimize your files in the browser. No sign-up. Each tool shows its own limits.
                 </motion.p>
 
                 {/* Search Bar */}

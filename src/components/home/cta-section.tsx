@@ -3,8 +3,6 @@
 import { motion } from 'framer-motion';
 import { ArrowRight, BookOpen, Sparkles } from 'lucide-react';
 import Link from 'next/link';
-import { AnimatedCounter } from './animated-counter';
-
 export function CTASection() {
   return (
     <section className="py-16 md:py-20 border-t border-border/50 relative overflow-hidden">
@@ -30,14 +28,8 @@ export function CTASection() {
 
             <div className="relative z-10">
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-card mb-6">
-                <div className="flex -space-x-2">
-                  <div className="avatar-ring bg-gradient-to-br from-violet-500 to-purple-600">S</div>
-                  <div className="avatar-ring bg-gradient-to-br from-cyan-500 to-blue-600">J</div>
-                  <div className="avatar-ring bg-gradient-to-br from-emerald-500 to-teal-600">E</div>
-                  <div className="avatar-ring bg-gradient-to-br from-amber-500 to-orange-600">M</div>
-                </div>
                 <span className="text-xs font-semibold text-muted-foreground">
-                  Join <span className="text-foreground"><AnimatedCounter end={1250} suffix="+" duration={2500} /></span> happy users
+                  Free tools · no signup · works in the browser
                 </span>
               </div>
 

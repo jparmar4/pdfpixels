@@ -3,6 +3,7 @@ import {
   loadPdfWithTimeout,
   parsePageSelection,
   readAndValidatePdfFile,
+  rejectEncryptedPdf,
   validatePdfUpload,
   PDF_MAX_FILE_SIZE,
 } from '@/lib/pdf-api';
@@ -79,6 +80,8 @@ export async function POST(request: NextRequest) {
 
     const pdfBytes = new Uint8Array(read.buffer);
     const pdf = await loadPdfWithTimeout(pdfBytes);
+    const encrypted = rejectEncryptedPdf(pdf);
+    if (encrypted) return encrypted;
     const totalPages = pdf.getPageCount();
 
     const selected = parsePageSelection(pagesParam, totalPages);
@@ -129,12 +132,22 @@ export async function POST(request: NextRequest) {
 
           zip.addFile(`page-${idx + 1}.${safeFormat}`, finalBuffer);
           convertedPages++;
+        } catch (pageError) {
+          console.error(`PDF page ${idx + 1} conversion failed:`, pageError);
         } finally {
-          if (fs.existsSync(outputPath)) fs.unlinkSync(outputPath);
+          try {
+            if (fs.existsSync(outputPath)) fs.unlinkSync(outputPath);
+          } catch {
+            // Windows can keep a raster locked briefly; don't fail the job.
+          }
         }
       }
     } finally {
-      if (inputPath && fs.existsSync(inputPath)) fs.unlinkSync(inputPath);
+      try {
+        if (inputPath && fs.existsSync(inputPath)) fs.unlinkSync(inputPath);
+      } catch {
+        // ignore cleanup failures
+      }
       inputPath = '';
     }
 
@@ -147,7 +160,7 @@ export async function POST(request: NextRequest) {
 
     const zipBuffer = zip.toBuffer();
     const fileName = `converted-images-${Date.now()}.zip`;
-    const truncated = requestedPages > convertedPages || totalPages > MAX_PAGES;
+    const truncated = convertedPages < requestedPages || selected.length > MAX_PAGES;
 
     return new NextResponse(zipBuffer as unknown as BodyInit, {
       status: 200,

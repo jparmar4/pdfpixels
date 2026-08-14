@@ -1,4 +1,4 @@
-import { loadPdfWithTimeout, readAndValidatePdfFile, validatePdfUpload } from '@/lib/pdf-api';
+import { loadPdfWithTimeout, readAndValidatePdfFile, rejectEncryptedPdf, validatePdfBuffer, validatePdfUpload } from '@/lib/pdf-api';
 import { isGhostscriptMissingError, runGhostscriptWithFallback } from '@/lib/ghostscript';
 import { NextRequest } from 'next/server'
 import fs from 'fs'
@@ -186,6 +186,9 @@ export async function POST(req: NextRequest) {
       return read.response
     }
     const originalBuffer = read.buffer
+    const srcPdf = await loadPdfWithTimeout(originalBuffer, { ignoreEncryption: true, updateMetadata: false })
+    const encrypted = rejectEncryptedPdf(srcPdf)
+    if (encrypted) return encrypted
     const originalBytes = new Uint8Array(originalBuffer)
 
     const strict = !force
@@ -200,7 +203,7 @@ export async function POST(req: NextRequest) {
       if (force) remoteForm.append('force', '1')
 
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 58_000);
+      const timeoutId = setTimeout(() => controller.abort(), 25_000);
 
       try {
         const remoteResp = await fetch(`${remoteUrl.replace(/\/$/, '')}/compress`, {
@@ -214,6 +217,10 @@ export async function POST(req: NextRequest) {
         if (remoteResp.ok) {
           const ab = await remoteResp.arrayBuffer()
           const out = Buffer.from(ab)
+          const magic = validatePdfBuffer(out)
+          if (!magic.ok) {
+            throw new Error('Remote compressor returned a non-PDF response')
+          }
           const savedPercent = toSavedPercent(originalBuffer.length, out.length)
 
           if (!strict || savedPercent >= profile.minimumReduction * 100) {
@@ -275,8 +282,7 @@ export async function POST(req: NextRequest) {
     try {
       compressed = await compressWithGhostscript(inputPath, outputPath, profile)
     } catch (error) {
-      const message = `${(error as Error)?.message || ''}`
-      if (isGhostscriptMissingError(error) || message.toLowerCase().includes('ghostscript')) {
+      if (isGhostscriptMissingError(error)) {
         compressed = await compressWithPdfLibFallback(originalBuffer)
         engine = 'local-fallback'
       } else {
@@ -332,7 +338,11 @@ export async function POST(req: NextRequest) {
       headers: { 'Content-Type': 'application/json' },
     })
   } finally {
-    if (inputPath && fs.existsSync(inputPath)) fs.unlinkSync(inputPath)
-    if (outputPath && fs.existsSync(outputPath)) fs.unlinkSync(outputPath)
+    try {
+      if (inputPath && fs.existsSync(inputPath)) fs.unlinkSync(inputPath)
+    } catch { /* ignore cleanup errors */ }
+    try {
+      if (outputPath && fs.existsSync(outputPath)) fs.unlinkSync(outputPath)
+    } catch { /* ignore cleanup errors */ }
   }
 }

@@ -1,4 +1,4 @@
-Owner: Jitendra Parmar
+Owner: PdfPixels operator
 
 Website: PDFPixels
 Domain: https://www.pdfpixels.com

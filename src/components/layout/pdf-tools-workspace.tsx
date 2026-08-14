@@ -232,21 +232,22 @@ function UnlockSettings({ password, setPassword }: { password: string; setPasswo
     );
 }
 
-function DeletePagesSettings({ pages, setPages, totalPages }: {
-    pages: string; setPages: (v: string) => void; totalPages: number;
+function DeletePagesSettings({ pages, setPages, totalPages, resetKey }: {
+    pages: string; setPages: (v: string) => void; totalPages: number; resetKey: string;
 }) {
     const [selectedPages, setSelectedPages] = useState<Set<number>>(new Set());
 
     useEffect(() => {
-        const arr = Array.from(selectedPages).sort((a, b) => a - b);
-        setPages(arr.join(','));
-    }, [selectedPages, setPages]);
+        setSelectedPages(new Set());
+        setPages('');
+    }, [resetKey, setPages]);
 
     const togglePage = (p: number) => {
         setSelectedPages(prev => {
             const next = new Set(prev);
             if (next.has(p)) next.delete(p);
             else next.add(p);
+            setPages(Array.from(next).sort((a, b) => a - b).join(','));
             return next;
         });
     };
@@ -458,6 +459,14 @@ export function PDFToolsWorkspace() {
     const [pnMargin, setPnMargin] = useState(30);
     const [pnFontSize, setPnFontSize] = useState(12);
 
+    useEffect(() => {
+        return () => {
+            if (result?.pdfUrl?.startsWith('blob:')) {
+                URL.revokeObjectURL(result.pdfUrl);
+            }
+        };
+    }, [result]);
+
     // Get page count from uploaded PDF
     useEffect(() => {
         if (!uploadedFile || !uploadedFile.name.toLowerCase().endsWith('.pdf')) {
@@ -646,7 +655,7 @@ const renderSettings = () => {
     if (toolId === 'pdf-watermark') return <WatermarkSettings text={wmText} setText={setWmText} opacity={wmOpacity} setOpacity={setWmOpacity} color={wmColor} setColor={setWmColor} fontSize={wmFontSize} setFontSize={setWmFontSize} position={wmPosition} setPosition={setWmPosition} rotation={wmRotation} setRotation={setWmRotation} />;
     if (toolId === 'pdf-protect') return <ProtectSettings password={password} setPassword={setPassword} confirmPassword={confirmPassword} setConfirmPassword={setConfirmPassword} />;
     if (toolId === 'pdf-unlock') return <UnlockSettings password={password} setPassword={setPassword} />;
-    if (toolId === 'pdf-delete-pages') return <DeletePagesSettings pages={deletePages} setPages={setDeletePages} totalPages={totalPages} />;
+    if (toolId === 'pdf-delete-pages') return <DeletePagesSettings pages={deletePages} setPages={setDeletePages} totalPages={totalPages} resetKey={`${uploadedFile?.name || ''}-${uploadedFile?.size || 0}-${uploadedFile?.lastModified || 0}`} />;
     if (toolId === 'pdf-reorder') return <ReorderSettings order={pageOrder} setOrder={setPageOrder} totalPages={totalPages} />;
     if (toolId === 'pdf-linearize') return <LinearizeSettings />;
     if (toolId === 'pdf-add-page-numbers') return <PageNumberSettings position={pnPosition} setPosition={setPnPosition} format={pnFormat} setFormat={setPnFormat} margin={pnMargin} setMargin={setPnMargin} fontSize={pnFontSize} setFontSize={setPnFontSize} />;

@@ -1,10 +1,5 @@
 import { apiError } from '@/lib/api-response';
-import {
-  loadPdfWithTimeout,
-  parsePageSelection,
-  pdfBinaryResponse,
-  validatePdfUpload,
-} from '@/lib/pdf-api';
+import { openEditablePdf, parsePageSelection, pdfBinaryResponse } from '@/lib/pdf-api';
 import { NextRequest } from 'next/server';
 import { degrees } from 'pdf-lib';
 
@@ -15,15 +10,13 @@ export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
     const file = formData.get('file') as File | null;
-    const angle = parseInt(String(formData.get('angle') || '90'), 10) || 90;
+    const angleRaw = parseInt(String(formData.get('angle') ?? '90'), 10);
+    const angle = Number.isFinite(angleRaw) ? angleRaw : 90;
     const pages = String(formData.get('pages') || 'all');
 
-    const validation = validatePdfUpload(file);
-    if (!validation.ok) return validation.response;
-
-    const arrayBuffer = await file!.arrayBuffer();
-    const pdfBytes = new Uint8Array(arrayBuffer);
-    const pdf = await loadPdfWithTimeout(pdfBytes);
+    const opened = await openEditablePdf(file);
+    if (!opened.ok) return opened.response;
+    const { pdf } = opened;
     const totalPages = pdf.getPageCount();
 
     const pageIndices = parsePageSelection(pages, totalPages);
@@ -34,7 +27,7 @@ export async function POST(request: NextRequest) {
     for (const idx of pageIndices) {
       const page = pdf.getPage(idx);
       const currentRotation = page.getRotation().angle;
-      page.setRotation(degrees((currentRotation + angle + 360) % 360));
+      page.setRotation(degrees((((currentRotation + angle) % 360) + 360) % 360));
     }
 
     const savedPdfBytes = await pdf.save();

@@ -1,4 +1,4 @@
-import { absoluteUrl } from "@/lib/seo";
+import { organizationId } from "@/lib/seo";
 
 type Item = { url: string; name: string };
 	export function collectionItemListJsonLd({
@@ -30,7 +30,7 @@ type Item = { url: string; name: string };
     },
     publisher: {
       "@type": "Organization",
-      "@id": `${absoluteUrl("/")}#organization`,
+      "@id": organizationId(),
     },
   };
 }

@@ -572,10 +572,17 @@ export function EffectWorkspace() {
 
     try {
       const img = imageRef.current ?? (await new Promise<HTMLImageElement>((resolve, reject) => {
+        const url = URL.createObjectURL(uploadedFile);
         const i = new Image();
-        i.onload = () => resolve(i);
-        i.onerror = () => reject(new Error('Failed to load image'));
-        i.src = URL.createObjectURL(uploadedFile);
+        i.onload = () => {
+          URL.revokeObjectURL(url);
+          resolve(i);
+        };
+        i.onerror = () => {
+          URL.revokeObjectURL(url);
+          reject(new Error('Failed to load image'));
+        };
+        i.src = url;
       }));
       imageRef.current = img;
 
@@ -659,10 +666,17 @@ export function EffectWorkspace() {
     setProgress(20);
     try {
       const img = imageRef.current ?? (await new Promise<HTMLImageElement>((resolve, reject) => {
+        const url = URL.createObjectURL(uploadedFile);
         const i = new Image();
-        i.onload = () => resolve(i);
-        i.onerror = () => reject(new Error('Failed to load image'));
-        i.src = URL.createObjectURL(uploadedFile);
+        i.onload = () => {
+          URL.revokeObjectURL(url);
+          resolve(i);
+        };
+        i.onerror = () => {
+          URL.revokeObjectURL(url);
+          reject(new Error('Failed to load image'));
+        };
+        i.src = url;
       }));
       const canvas = document.createElement('canvas');
       canvas.width = img.naturalWidth || img.width;

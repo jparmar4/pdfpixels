@@ -15,14 +15,14 @@ export const toolContentMap: Record<string, ToolContent> = {
     // MOST POPULAR TOOLS
     // ═══════════════════════════════════════════════════════════════════════
     'compress-image': {
-        about: 'Compress Image is a powerful online tool that reduces your image file size to any target — from 5 KB to 2 MB and beyond — without noticeable quality loss. Whether you need to meet strict upload limits for government forms, optimize images for faster website loading speeds, or shrink photos before emailing, this compressor handles JPG, PNG, WebP, and more. The intelligent compression algorithm balances file size reduction with visual quality, giving you full control through an intuitive quality slider. Processing happens securely in your browser for maximum privacy, with no installation, no signup, and completely free access.',
+        about: 'Compress Image reduces a photo to a target file size — useful for government forms, job portals, and email. Upload one JPG, PNG, WebP, or HEIC file, set a target in KB, and download the result. Compression runs on our servers for this tool (not in the browser). There is no signup and no watermark. Very aggressive targets can soften photos; preview before you download.',
         directAnswer: 'The Compress Image tool by PdfPixels instantly reduces your photo file sizes without visible quality loss. Just upload your image, specify a target size (like 50 KB or 200 KB), and download the perfectly optimized result for free.',
         features: [
-            'Target any file size from 5 KB to 10 MB+ with precision control',
-            'Smart lossy and lossless compression for JPG, PNG, and WebP',
-            'Real-time preview with before/after file size comparison',
-            'Batch compression for multiple images at once',
-            'Maintains EXIF metadata or strips it for privacy',
+            'Set a target size in KB (for example 50 KB or 200 KB)',
+            'Works with JPG, PNG, WebP, and HEIC after conversion',
+            'Preview appears after processing so you can check quality',
+            'One image per run — upload, set a target, download',
+            'Runs on our servers for this tool, then you download the result',
         ],
         useCases: [
             'Students compressing ID photos to under 50 KB for exam applications',
@@ -31,33 +31,33 @@ export const toolContentMap: Record<string, ToolContent> = {
             'Social media managers preparing images for platform-specific size requirements',
         ],
         faqs: [
-            { question: 'How much can I compress an image without losing quality?', answer: 'For JPEG images, you can typically reduce file size by 60-80% with minimal visible quality loss. PNG compression is lossless by default. Use the quality slider to find the perfect balance between size and clarity for your specific needs.' },
-            { question: 'Can I compress an image to a specific file size like 20 KB or 100 KB?', answer: 'Yes! Enter your target file size in KB or MB, and our algorithm will automatically adjust compression to hit that exact target. This is perfect for government forms, exam portals, and job applications with strict size limits.' },
-            { question: 'Is Compress Image free to use?', answer: 'Absolutely. PdfPixels Compress Image is 100% free with no registration, no watermarks, and no usage limits. Process as many images as you need.' },
-            { question: 'What image formats are supported for compression?', answer: 'We support JPG/JPEG, PNG, WebP, GIF, BMP, TIFF, and HEIC formats. The compressed output is available in the same format or you can convert during compression.' },
+            { question: 'How much can I compress an image without losing quality?', answer: 'For JPEG images, you can typically reduce file size by 60-80% with little visible quality loss. Very small targets (under 20 KB) will soften photos. Preview the result before you download.' },
+            { question: 'Can I compress an image to a specific file size like 20 KB or 100 KB?', answer: 'Yes. Enter your target in KB and the tool tries to land near that size. This is the usual path for government forms, exam portals, and job applications.' },
+            { question: 'Is Compress Image free to use?', answer: 'Yes. Compress Image is free and does not require an account. Fair-use rate limits apply so the service stays available.' },
+            { question: 'What image formats are supported for compression?', answer: 'JPG, PNG, WebP, and HEIC (converted first). Output stays in a common web format. GIF, BMP, and TIFF are not the main path in the current UI.' },
         ],
         steps: [
             { title: 'Upload your photo', description: 'Drag and drop your JPG, PNG, WebP or HEIC image into the dropzone.' },
-            { title: 'Set compression target', description: 'Enter an exact target file size (e.g. 100 KB) or use the quality slider to adjust compression manually.' },
-            { title: 'Preview and download', description: 'Check the real-time preview to ensure quality, then click download to save the compressed image.' }
+            { title: 'Set compression target', description: 'Enter a target file size such as 100 KB, or pick a preset.' },
+            { title: 'Preview and download', description: 'Process the image, check the preview, then download.' }
         ],
         commonProblems: [
             { problem: 'Image looks too blurry after compression', solution: 'If your target file size is extremely small (like under 20 KB) for a large photo, it will become blurry. Try reducing the image dimensions (resize) first, then compress.' },
-            { problem: 'File size didn\'t decrease', solution: 'If your original image is already highly optimized, further compression won\'t help much. Try lowering the quality slider or converting it to WebP.' }
+            { problem: 'File size didn\'t decrease', solution: 'If the original is already small, pick a lower target in KB. Converting a PNG photo to JPEG first can also help.' }
         ],
-        supportedFormats: 'JPG, JPEG, PNG, WebP, GIF, BMP, TIFF, HEIC',
+        supportedFormats: 'JPG, JPEG, PNG, WebP, HEIC',
         relatedTools: ['resize-image', 'increase-image-size-in-kb', 'convert-dpi', 'png-to-jpeg'],
     },
 
     'resize-image': {
-        about: 'Resize Image lets you change image dimensions precisely using pixels, centimeters, millimeters, or inches — perfect for print documents, social media posts, and official submissions. Choose from built-in presets for Instagram, Facebook, LinkedIn, YouTube thumbnails, and standard document sizes like A4 and Letter, or enter custom dimensions. The tool maintains aspect ratio by default to prevent distortion, with an option to override for exact sizing. Whether you need a 35×45mm passport photo, a 1080×1080 Instagram post, or a 4K wallpaper, Resize Image delivers pixel-perfect results instantly.',
-        directAnswer: 'To resize an image instantly, upload it to the PdfPixels Resize tool, enter your desired width and height (in pixels, CM, or inches), and download the perfectly scaled photo for free.',
+        about: 'Resize Image changes photo dimensions in pixels, centimeters, or inches. Use presets for Instagram, YouTube, LinkedIn, and common passport sizes, or type custom values. Aspect ratio stays locked unless you unlock it. Millimeters are not a separate unit — use centimeters (35 mm = 3.5 cm).',
+        directAnswer: 'Upload an image, enter width and height in pixels, centimeters, or inches, and download the resized file.',
         features: [
-            'Resize in pixels, centimeters, millimeters, or inches with unit conversion',
-            'Social media presets: Instagram, Facebook, Twitter, LinkedIn, YouTube',
-            'Document presets: A4, Letter, Legal, passport photo sizes',
-            'Lock/unlock aspect ratio with smart scaling',
-            'Percentage-based resizing for proportional scaling',
+            'Resize in pixels, centimeters, or inches',
+            'Presets for Instagram, YouTube, LinkedIn, and passport sizes',
+            'Lock or unlock aspect ratio',
+            'Percentage scale for proportional resizing',
+            'Set DPI when you work in centimeters or inches',
         ],
         useCases: [
             'Creating passport-size photos (35×45mm) for visa and ID applications',
@@ -67,8 +67,8 @@ export const toolContentMap: Record<string, ToolContent> = {
         ],
         faqs: [
             { question: 'How do I resize an image to exact pixel dimensions?', answer: 'Upload your image, select "Pixels" as the unit, enter your desired width and height, and click Resize. You can lock the aspect ratio to maintain proportions or unlock it for exact dimensions.' },
-            { question: 'Can I resize an image in centimeters or inches for printing?', answer: 'Yes! Select CM, MM, or Inches as your unit, set the DPI (300 DPI recommended for print), and enter your desired dimensions. The tool automatically calculates the correct pixel values for crisp printing.' },
-            { question: 'What social media presets are available?', answer: 'We include presets for Instagram (1080×1080 post, 1080×1920 story), Facebook (1200×630 link, 820×312 cover), Twitter (1600×900), LinkedIn (1200×627), YouTube (1280×720 thumbnail), and more.' },
+            { question: 'Can I resize an image in centimeters or inches for printing?', answer: 'Yes. Choose CM or Inches, set DPI (300 for print), and enter the size. 35 mm is 3.5 cm — there is no separate millimeter unit.' },
+            { question: 'What social media presets are available?', answer: 'Presets include Instagram post and story, YouTube thumbnail, LinkedIn banner, HD 1920×1080, and common passport sizes. You can also type custom pixels.' },
         ],
         steps: [
             { title: 'Upload image', description: 'Select the image you want to resize from your device.' },
@@ -116,14 +116,14 @@ export const toolContentMap: Record<string, ToolContent> = {
     },
 
     'passport-size-photo': {
-        about: 'Passport Photo Maker creates compliant passport and ID photos for any country in the world — USA, UK, India, Canada, Australia, Schengen, and 100+ more. The tool auto-crops your face to official government dimensions (e.g., 35×45mm for most countries, 2×2 inches for US passport), ensures proper head positioning, and adjusts the background to meet submission requirements. Save money by creating your own passport photos at home instead of paying studio fees. Works with smartphone selfies and delivers print-ready results instantly.',
-        directAnswer: 'Make official passport and ID photos at home for free. Select your country, upload a portrait, and our tool auto-crops it to strict official government dimensions (like 2x2 inches or 35x45mm) for instant printing.',
+        about: 'Passport Photo Maker resizes a portrait to common ID dimensions at 300 DPI — 35×45 mm (many passports) or 2×2 inches (US). It uses the same resize workspace: pick a preset, check the pixel size, and download. It does not detect faces, change backgrounds, or print a 4×6 contact sheet. You still need a plain background and even lighting for official submissions.',
+        directAnswer: 'Resize a portrait to common passport and ID sizes such as 35×45 mm or 2×2 inches at 300 DPI. This is a dimension tool, not a studio that guarantees official acceptance.',
         features: [
-            'Country-specific presets: USA (2×2 in), UK (35×45mm), India (35×45mm), and 100+ more',
-            'Auto face detection and centering to meet official guidelines',
-            'Print-ready output at 300+ DPI for photo printing',
-            'Multiple photos on a single 4×6 or 6×4 print sheet',
-            'Supports visa, ID card, and driving license photo sizes',
+            'Presets for 35×45 mm and 2×2 inch photos at 300 DPI',
+            'Same resize controls: pixels, centimeters, or inches',
+            'Print-oriented DPI so the file is large enough for a photo lab',
+            'Download a single resized photo — no contact sheet',
+            'Pair with Compress Image if a portal also has a KB limit',
         ],
         useCases: [
             'Travelers creating passport photos at home for visa applications',
@@ -132,14 +132,14 @@ export const toolContentMap: Record<string, ToolContent> = {
             'Immigration consultants processing bulk passport photos for clients',
         ],
         faqs: [
-            { question: 'What passport photo sizes are supported?', answer: 'We support 100+ country standards including US Passport (2×2 inches), Indian Passport (35×45mm), UK Passport (35×45mm), Canadian Passport (50×70mm), Schengen Visa (35×45mm), and many more. Each preset follows official government guidelines.' },
-            { question: 'Can I print passport photos at home?', answer: 'Yes! The output is 300+ DPI print-ready. You can print on standard 4×6 inch photo paper at any pharmacy, photo shop, or home printer. We arrange multiple copies on a single sheet to save paper.' },
-            { question: 'Will my passport photo be accepted by the government?', answer: 'Our tool follows official government specifications for dimensions, head size ratio, and positioning. However, final acceptance depends on additional factors like lighting, expression, and background. We recommend taking your photo against a plain white wall with even lighting.' },
+            { question: 'What passport photo sizes are supported?', answer: 'The current presets are 35×45 mm (common for UK, India, and Schengen) and 2×2 inches (US). You can also type custom centimeters or inches at 300 DPI if your form lists a different size.' },
+            { question: 'Can I print passport photos at home?', answer: 'You download one resized photo at 300 DPI. Print it on photo paper yourself, or take the file to a pharmacy or photo shop. The tool does not lay out a 4×6 sheet of copies.' },
+            { question: 'Will my passport photo be accepted by the government?', answer: 'We only match the pixel size for the preset. Acceptance still depends on lighting, expression, background, and head position. Use a plain light wall and even lighting, then check the official rules for your country.' },
         ],
         steps: [
             { title: 'Upload portrait', description: 'Take a photo of yourself against a plain wall and upload it.' },
-            { title: 'Select country requirements', description: 'Choose the country and ID type (e.g., US Passport, Schengen Visa) to apply the correct size rules.' },
-            { title: 'Download and print', description: 'Download the finalized single photo or a 4x6 print sheet with multiple copies ready for printing.' }
+            { title: 'Pick a size', description: 'Choose 35×45 mm or 2×2 inches, or enter custom dimensions at 300 DPI.' },
+            { title: 'Download', description: 'Download the single resized photo and print or upload it where the form asks.' }
         ],
         commonProblems: [
             { problem: 'Photo was rejected by official agency', solution: 'Ensure you took the photo with flat, even lighting (no shadows across the face), a neutral expression, and a plain light background. Tool dimensions are exact, but lighting is often the cause of rejection.' }
@@ -165,7 +165,7 @@ export const toolContentMap: Record<string, ToolContent> = {
             'Office workers digitizing receipts and documents into organized PDFs',
         ],
         faqs: [
-            { question: 'How many images can I combine into one PDF?', answer: 'There is no hard limit on the number of images. You can combine dozens of images into a single PDF. For very large batches, we recommend keeping file sizes reasonable for faster processing.' },
+            { question: 'How many images can I combine into one PDF?', answer: 'Up to 30 images per run, 15 MB each, and 120 MB combined. Split a larger set into groups if you hit that cap.' },
             { question: 'Can I choose the page size for the PDF?', answer: 'Yes! Choose from A4, Letter, Legal, A3, A5, or "Fit to Image" which automatically sizes each page to match the image dimensions. You can also set portrait, landscape, or auto-detect orientation.' },
             { question: 'Will the image quality be preserved in the PDF?', answer: 'Yes, images are embedded at their original resolution. The output PDF maintains the full quality of your source images with no additional compression applied.' },
         ],
@@ -233,8 +233,8 @@ export const toolContentMap: Record<string, ToolContent> = {
     // BASIC EDITING TOOLS
     // ═══════════════════════════════════════════════════════════════════════
     'crop-image': {
-        about: 'Crop Image lets you trim and frame your photos with precision. Choose from preset aspect ratios (16:9, 4:3, 1:1, 3:2) or enter custom dimensions for exact cropping. The intuitive drag-and-drop crop area makes it easy to select exactly the region you want to keep. All processing happens directly in your browser — your images never leave your device, ensuring complete privacy. Perfect for removing unwanted edges, reframing compositions, and preparing images for specific platform dimensions.',
-        directAnswer: 'The Crop Image tool lets you trim your photos by removing unwanted outer areas to improve framing or focus on a specific subject. You can choose standard aspect ratios or set custom dimensions for precise pixel control without losing quality.',
+        about: 'Crop Image lets you trim and frame a photo in the browser. Choose a preset aspect ratio (16:9, 4:3, 1:1, 3:2) or drag the crop box. There is no exact pixel W×H lock in the current UI — after cropping, use Resize Image if you need a specific pixel size. Most crops stay on your device. HEIC files are converted on our servers first.',
+        directAnswer: 'Crop Image trims unwanted edges using aspect-ratio presets and a drag box. For an exact pixel size, crop first, then open Resize Image.',
         steps: [
             { title: 'Upload Image', description: 'Drag and drop your photo into the crop area or click to browse files from your device.' },
             { title: 'Select Crop Region', description: 'Choose a preset ratio like 16:9, or freely drag the corners of the crop box to frame your desired area.' },
@@ -242,13 +242,13 @@ export const toolContentMap: Record<string, ToolContent> = {
         ],
         commonProblems: [
             { problem: 'My cropped image looks blurry.', solution: 'Ensure you are not zooming in too much on a low-resolution original photo. Cropping reduces the overall pixel count.' },
-            { problem: 'I need an exact 800x600 size.', solution: 'Use the "Custom Dimensions" option in the settings panel to lock the crop box to those exact pixels.' }
+            { problem: 'I need an exact 800x600 size.', solution: 'Crop with the closest aspect ratio, then open Resize Image and enter 800×600 pixels.' }
         ],
-        features: ['Preset aspect ratios: 16:9, 4:3, 1:1, 3:2, and more', 'Custom dimension input for exact pixel cropping', 'Drag-and-drop crop area with handles', 'Client-side processing — images never uploaded', 'Real-time preview of cropped result'],
+        features: ['Preset aspect ratios: 16:9, 4:3, 1:1, 3:2, and more', 'Drag the crop box with handles', 'Browser canvas for typical JPG/PNG/WebP files', 'HEIC is converted on the server first', 'Download the cropped result'],
         useCases: ['Removing unwanted borders or distracting edges from photos', 'Cropping product images to consistent dimensions for e-commerce', 'Preparing social media posts with platform-specific aspect ratios', 'Reframing compositions to follow the rule of thirds'],
         faqs: [
-            { question: 'Can I crop to an exact pixel size?', answer: 'Yes! Switch to custom mode and enter exact width and height in pixels. The crop area will lock to those dimensions, ensuring precision.' },
-            { question: 'Is cropping done on my device or uploaded?', answer: 'All cropping is done 100% in your browser using client-side Canvas technology. Your images are never uploaded to any server, guaranteeing complete privacy.' },
+            { question: 'Can I crop to an exact pixel size?', answer: 'Not in this crop box. Use an aspect-ratio preset or free drag, then Resize Image if you need an exact width and height.' },
+            { question: 'Is cropping done on my device or uploaded?', answer: 'JPG, PNG, and WebP crops run in the browser. HEIC photos are converted on our servers first, then cropped locally.' },
             { question: 'Can I crop and maintain the original quality?', answer: 'Yes. Cropping only removes unwanted areas — the remaining pixels retain their original quality with no recompression.' },
         ],
         supportedFormats: 'JPG, JPEG, PNG, WebP, GIF, BMP',
@@ -340,7 +340,7 @@ export const toolContentMap: Record<string, ToolContent> = {
             { question: 'Does rotation reduce image quality?', answer: 'For 90°, 180°, and 270° rotations, quality is perfectly preserved. Custom angle rotations use high-quality interpolation that maintains near-original quality.' },
         ],
         supportedFormats: 'JPG, JPEG, PNG, WebP, GIF, BMP',
-        relatedTools: ['flip-image', 'crop-image', 'resize-image', 'straighten-image'],
+        relatedTools: ['flip-image', 'crop-image', 'resize-image'],
     },
 
     'flip-image': {
@@ -366,22 +366,22 @@ export const toolContentMap: Record<string, ToolContent> = {
     },
 
     'watermark-image': {
-        about: 'Add Watermark places custom text or image watermarks on your photos to protect your intellectual property and brand your images. Customize the font, size, color, opacity, position, and rotation of your watermark. Perfect for photographers protecting portfolio images, businesses branding marketing materials, and content creators claiming ownership of their visual content.',
-        directAnswer: 'The Watermark Image tool protects your visual content by stamping a semi-transparent logo or text over your photos. It helps photographers and businesses prevent unauthorized use and build brand recognition.',
+        about: 'Add Watermark stamps text such as © Your Name on a photo. You can change opacity, size, color, and position in the browser. Logo overlays live on Add Logo to Image — this slug is text only.',
+        directAnswer: 'Stamp text on a photo with opacity and position controls. For a logo file, use Add Logo to Image instead.',
         steps: [
             { title: 'Upload Base Image', description: 'Choose the photo you want to protect with a watermark.' },
-            { title: 'Configure Watermark', description: 'Add your text or upload a logo file, then adjust the opacity, size, and position on the canvas.' },
-            { title: 'Apply and Download', description: 'Export the final image with the watermark permanently embedded into the pixels.' }
+            { title: 'Configure Watermark', description: 'Type the stamp text, then adjust opacity, size, and position.' },
+            { title: 'Apply and Download', description: 'Export the image with the text permanently embedded.' }
         ],
         commonProblems: [
             { problem: 'My watermark is too distracting.', solution: 'Lower the opacity slider to 30-50% to make the watermark semi-transparent, allowing the main image to show through.' },
             { problem: 'I can\'t remove a watermark later.', solution: 'Once applied and downloaded, watermarks are permanently flattened into the image. Always keep a backup of your original, unwatermarked photo.' }
         ],
-        features: ['Text watermark with custom font, size, color, and opacity', 'Image watermark overlay with position and scaling control', 'Adjustable opacity from subtle to prominent', 'Multiple positioning options: center, corners, tile pattern', 'Rotation control for diagonal watermarks'],
-        useCases: ['Photographers watermarking portfolio images before sharing online', 'Businesses adding brand logos to marketing and social media visuals', 'Real estate agents branding property listing photos', 'Content creators protecting original artwork and designs'],
+        features: ['Text watermark with size, color, and opacity', 'Position the stamp on the photo', 'Adjustable opacity from subtle to prominent', 'For logos, use Add Logo to Image', 'Runs in the browser for typical JPG/PNG/WebP files'],
+        useCases: ['Photographers watermarking portfolio images before sharing online', 'Adding a name or copyright line to social photos', 'Marking drafts as SAMPLE or PREVIEW', 'Content creators labeling original artwork'],
         faqs: [
-            { question: 'Can I use my own logo as a watermark?', answer: 'Yes! Upload any PNG or JPG image as a watermark. PNG with transparent background works best for logo overlays. You can adjust the size, position, and opacity.' },
-            { question: 'Can I add a tiled watermark pattern?', answer: 'Yes, choose the "Tile" positioning option to repeat your watermark across the entire image in a diagonal pattern — commonly used by stock photography sites.' },
+            { question: 'Can I use my own logo as a watermark?', answer: 'Not on this tool. Open Add Logo to Image and upload a PNG with a transparent background.' },
+            { question: 'Can I add a tiled watermark pattern?', answer: 'The current image watermark tool places one text stamp. For a repeated CONFIDENTIAL mark on a PDF, use Add Watermark to PDF.' },
         ],
         supportedFormats: 'JPG, JPEG, PNG, WebP, GIF, BMP',
         relatedTools: ['add-text-to-image', 'add-logo-to-image', 'compress-image', 'resize-image'],
@@ -399,11 +399,11 @@ export const toolContentMap: Record<string, ToolContent> = {
             { problem: 'The text is hard to read against the background.', solution: 'Try adding a text outline (stroke) or a drop shadow. Alternatively, use a contrasting color.' },
             { problem: 'Text wraps weirdly when I resize it.', solution: 'Use the text box handles to adjust the width of the text area, which will control how the words wrap to the next line.' }
         ],
-        features: ['Dozens of premium Google Fonts to choose from', 'Custom font size, color, and opacity', 'Text effects: shadow, outline, background highlight', 'Precise drag-and-drop positioning', 'Multiple text layers on a single image'],
+        features: ['Custom text, size, color, and opacity', 'Click the image to place the caption', 'Works in the browser on the photo you upload', 'Download as PNG, JPG, or WebP'],
         useCases: ['Creating quote graphics for social media', 'Adding captions and labels to photos', 'Making event invitations and announcements', 'Building memes and captioned images'],
         faqs: [
-            { question: 'Can I add multiple text elements to one image?', answer: 'Yes! Add as many text layers as you need, each with different fonts, sizes, colors, and positions.' },
-            { question: 'What fonts are available?', answer: 'We offer dozens of Google Fonts including popular choices like Inter, Roboto, Playfair Display, Montserrat, and more. All fonts are free for commercial use.' },
+            { question: 'Can I add multiple text elements to one image?', answer: 'The current tool places one caption at a time. Add text, download, then upload that result if you need a second line in a different style.' },
+            { question: 'What fonts are available?', answer: 'Text is drawn with the standard web font stack in your browser. Pick color, size, and placement to keep it readable.' },
         ],
         supportedFormats: 'JPG, JPEG, PNG, WebP, GIF, BMP',
         relatedTools: ['watermark-image', 'add-logo-to-image', 'resize-image'],
@@ -747,18 +747,18 @@ export const toolContentMap: Record<string, ToolContent> = {
         relatedTools: ['resize-image', 'compress-image', 'upscale-image', 'increase-image-quality'],
     },
     'upscale-image': {
-        about: 'AI Upscale Image increases your photo resolution by 2x or 4x using advanced AI super-resolution technology. Unlike traditional upscaling that produces blurry results, our AI reconstructs fine details, sharpens edges, and fills in missing information. Perfect for enlarging old photos, low-resolution downloads, screenshots, and small product images.',
-        directAnswer: 'The AI Upscale Image tool artificially increases the resolution of your photos by 2x or 4x using advanced machine learning. It reconstructs missing details and sharpens edges, allowing you to enlarge small images for printing or high-resolution displays without them becoming blurry.',
+        about: 'AI Upscale Image enlarges a photo by about 2×, then you can compress the result if the file is too large. It is a practical enlarge step, not a 4× super-resolution studio. Very small or heavily compressed originals will still look soft after upscale.',
+        directAnswer: 'Upload a small photo and enlarge it by about 2×. Download the larger file, then compress if you need a smaller download.',
         steps: [
             { title: 'Upload Low-Res Image', description: 'Select the small or blurry image you want to enlarge.' },
-            { title: 'Select Upscale Factor', description: 'Choose whether you want to double (2x) or quadruple (4x) the image resolution.' },
-            { title: 'Process and Save', description: 'Let the AI rebuild the details, then download your high-resolution image.' }
+            { title: 'Run 2× upscale', description: 'The current tool enlarges by about 2×. There is no 4× option in the UI.' },
+            { title: 'Process and Save', description: 'Download the larger image, then compress if you need a smaller file.' }
         ],
         commonProblems: [
-            { problem: 'The upscaled image looks slightly painted or unnatural.', solution: 'AI upscaling tries to guess missing details. For photos with complex textures, stick to 2x upscaling rather than 4x for more natural results.' },
-            { problem: 'Processing takes a long time.', solution: 'AI super-resolution is computationally intensive. Please be patient, as the tool analyzes and reconstructs millions of pixels.' }
+            { problem: 'The upscaled image looks slightly painted or unnatural.', solution: 'The tool is guessing extra pixels. Start from the sharpest original you have, and compress after upscale if the file is huge.' },
+            { problem: 'Processing takes a long time.', solution: 'Large photos take longer. Try a smaller original if the job times out.' }
         ],
-        features: ['AI-powered 2x and 4x resolution increase', 'Detail reconstruction and edge sharpening', 'No pixelation or blurriness in upscaled output', 'Works on photos, illustrations, and screenshots', 'Preserves color accuracy and natural appearance'],
+        features: ['About 2× enlarge on the current tool', 'Useful for small photos, screenshots, and thumbnails', 'Not a 4× super-resolution picker', 'Works on common photo formats', 'Compress afterward if the file is too large'],
         useCases: ['Enlarging old family photos for large format printing', 'Upscaling product thumbnails for high-resolution displays', 'Increasing resolution of downloaded web images', 'Preparing low-resolution images for print materials'],
         faqs: [{ question: 'How does AI upscaling work?', answer: 'Our AI uses deep learning super-resolution to analyze existing pixels and predict what additional detail should exist at higher resolution, effectively filling in missing information.' }],
         supportedFormats: 'JPG, JPEG, PNG, WebP',
@@ -780,7 +780,7 @@ export const toolContentMap: Record<string, ToolContent> = {
             { problem: 'My image now has a white background instead of being transparent.', solution: 'JPEG does not support transparency. Select a different background color in the tool settings before converting if you don\'t want white.' },
             { problem: 'The image looks blurry or pixelated after conversion.', solution: 'Your JPEG quality setting is too low. Increase the quality slider to 80-90% for a better balance of file size and visual fidelity.' }
         ],
-        features: ['Adjustable JPEG quality from 1-100%', 'Significant file size reduction (5-10x smaller)', 'Custom background color for transparent PNGs', 'Preserves EXIF metadata', 'Batch conversion support'],
+        features: ['Adjustable JPEG quality from 1-100%', 'Significant file size reduction (5-10x smaller)', 'Custom background color for transparent PNGs', 'Preserves EXIF metadata', 'One file per conversion in the current upload UI'],
         useCases: ['Reducing large PNG screenshot file sizes for web upload', 'Converting PNG photos to JPEG for email attachments', 'Preparing images for platforms that require JPEG format', 'Batch converting design exports to web-friendly JPEG'],
         faqs: [{ question: 'What happens to transparency when converting PNG to JPEG?', answer: 'JPEG does not support transparency. Transparent areas will be filled with a solid color (white by default). You can choose a custom background color.' }, { question: 'What quality setting should I use?', answer: '80-85% offers excellent balance between file size and visual quality. Use 90-100% for prints. Use 60-75% for web thumbnails.' }],
         supportedFormats: 'Input: PNG — Output: JPG/JPEG',
@@ -798,7 +798,7 @@ export const toolContentMap: Record<string, ToolContent> = {
             { problem: 'The PNG file size is much larger than the original JPEG.', solution: 'This is normal. PNG is a lossless format, so it stores data uncompressed to ensure maximum quality, resulting in larger file sizes.' },
             { problem: 'Converting didn\'t fix the blurriness in my JPEG.', solution: 'Converting to PNG prevents future quality loss, but it cannot restore details that were already lost to JPEG compression artifacts.' }
         ],
-        features: ['Lossless conversion preserving every pixel', 'PNG transparency support', 'No additional compression artifacts introduced', 'Ideal for design and illustration workflows', 'Batch conversion support'],
+        features: ['Lossless conversion preserving every pixel', 'PNG transparency support', 'No additional compression artifacts introduced', 'Ideal for design and illustration workflows', 'One file per conversion in the current upload UI'],
         useCases: ['Preparing images for design work requiring lossless quality', 'Converting photos before adding transparent backgrounds', 'Archiving important images in lossless format', 'Converting product photos for design software workflows'],
         faqs: [{ question: 'Will the PNG file be larger than the JPEG?', answer: 'Yes, typically 2-10x larger. PNG uses lossless compression while JPEG uses lossy compression. The larger file size is the trade-off for perfect quality.' }],
         supportedFormats: 'Input: JPG/JPEG — Output: PNG',
@@ -816,7 +816,7 @@ export const toolContentMap: Record<string, ToolContent> = {
             { problem: 'Transparent parts of my WebP turned white.', solution: 'Since JPEG does not support transparency, any transparent areas in your WebP file will default to a solid background color.' },
             { problem: 'The image looks slightly different.', solution: 'WebP and JPEG use different compression algorithms. Ensure your quality setting is at 85% or higher to minimize visible differences.' }
         ],
-        features: ['Converts WebP to universally compatible JPEG', 'Adjustable JPEG quality output', 'Handles both lossy and lossless WebP inputs', 'Preserves image dimensions and color accuracy', 'Batch conversion support'],
+        features: ['Converts WebP to universally compatible JPEG', 'Adjustable JPEG quality output', 'Handles both lossy and lossless WebP inputs', 'Preserves image dimensions and color accuracy', 'One file per conversion in the current upload UI'],
         useCases: ['Making web-downloaded WebP images compatible with older software', 'Converting WebP screenshots for sharing', 'Preparing WebP images for print services', 'Opening WebP files on devices that lack support'],
         faqs: [{ question: 'Why can\'t I open WebP files on my computer?', answer: 'WebP is a newer Google format. While modern browsers support it, some older image viewers don\'t. Converting to JPEG ensures compatibility with virtually all software.' }],
         supportedFormats: 'Input: WebP — Output: JPG/JPEG',
@@ -832,16 +832,16 @@ export const toolContentMap: Record<string, ToolContent> = {
         ],
         commonProblems: [
             { problem: 'My Live Photos only converted as a single image.', solution: 'HEIC to JPG conversion extracts the primary still frame. The video component of Live Photos is not retained in a standard JPEG file.' },
-            { problem: 'The tool is having trouble with my large batch of photos.', solution: 'HEIC decoding takes considerable memory. Try converting in smaller batches of 10-20 images at a time for optimal stability.' }
+            { problem: 'The tool is having trouble with my photo.', solution: 'HEIC decoding is memory-heavy. Convert one file at a time in the current upload UI. Very large originals (over 25 MB) should be reduced first.' }
         ],
-        features: ['Converts Apple HEIC/HEIF to standard JPEG', 'Adjustable output quality', 'Preserves EXIF metadata from iPhone photos', 'Handles Live Photo stills and burst shots', 'Batch conversion for multiple HEIC files'],
+        features: ['Converts Apple HEIC/HEIF to standard JPEG', 'Adjustable output quality', 'Works when Windows cannot open the original HEIC', 'Handles typical iPhone still photos', 'One file per conversion in the current upload UI'],
         useCases: ['Converting iPhone photos for sharing with Android and Windows users', 'Uploading HEIC photos to websites that only accept JPEG', 'Preparing iPhone photos for editing in non-Apple software', 'Converting bulk iPhone photo libraries to JPEG'],
         faqs: [{ question: 'Why does my iPhone save photos as HEIC?', answer: 'Since iOS 11, iPhones use HEIC by default because it produces smaller files than JPEG at the same quality. You can change this in Settings > Camera > Formats.' }],
         supportedFormats: 'Input: HEIC, HEIF — Output: JPG/JPEG',
         relatedTools: ['webp-to-jpg', 'png-to-jpeg', 'compress-image'],
     },
     'image-to-text': {
-        about: 'Image to Text (OCR) extracts readable text from images using Optical Character Recognition supporting 100+ languages. Upload a photo of a document, receipt, whiteboard, or sign, and the OCR engine will recognize and output editable, copyable text. Supports printed and handwritten text in Latin, Cyrillic, Chinese, Japanese, Korean, Arabic, Hindi, and more.',
+        about: 'Image to Text (OCR) extracts readable text from photos of documents, receipts, whiteboards, and signs. The current picker includes English plus common languages such as Spanish, French, German, Chinese, Japanese, Korean, Hindi, Arabic, and Russian. Recognition is best on printed text; handwriting is hit-or-miss.',
         directAnswer: 'The Image to Text tool uses Optical Character Recognition (OCR) to scan photos and extract the text within them. It allows you to quickly convert pictures of documents, receipts, or notes into editable digital text that you can copy and paste.',
         steps: [
             { title: 'Upload Image with Text', description: 'Select a clear photo of a document, sign, or receipt.' },
@@ -852,9 +852,9 @@ export const toolContentMap: Record<string, ToolContent> = {
             { problem: 'The extracted text contains lots of errors.', solution: 'Ensure your image is well-lit, not blurry, and the text is reasonably large. Cropping out background noise before uploading can also vastly improve accuracy.' },
             { problem: 'It\'s not recognizing my handwriting.', solution: 'OCR technology works best on printed text. While it supports some handwriting, cursive or messy writing will have lower accuracy rates.' }
         ],
-        features: ['OCR text extraction supporting 100+ languages', 'Recognizes printed text, signs, documents, and receipts', 'Multiple script support: Latin, Cyrillic, CJK, Arabic, Devanagari', 'Copy extracted text to clipboard with one click', 'Client-side processing using Tesseract.js'],
+        features: ['OCR for English plus a set of common languages', 'Recognizes printed text, signs, documents, and receipts', 'Latin, Cyrillic, CJK, Arabic, and Devanagari scripts in the picker', 'Copy extracted text to clipboard with one click', 'Tesseract.js in the browser; optional server preprocess for high-accuracy mode'],
         useCases: ['Digitizing printed documents and paper forms', 'Extracting text from photos of whiteboards', 'Converting receipt photos to text for expense tracking', 'Making text in images searchable and editable'],
-        faqs: [{ question: 'What languages are supported?', answer: 'We support 100+ languages including English, Spanish, French, German, Chinese, Japanese, Korean, Hindi, Arabic, Russian, and many more.' }, { question: 'Is my document data safe?', answer: 'Completely safe. OCR processing happens entirely in your browser using Tesseract.js. Your images are never uploaded to any server.' }],
+        faqs: [{ question: 'What languages are supported?', answer: 'The OCR tool currently offers English plus a set of common languages such as Spanish, French, German, Chinese, Japanese, Korean, Hindi, Arabic, and Russian. Pick the language that matches the text in the image.' }, { question: 'Is my document data safe?', answer: 'OCR runs in your browser with Tesseract.js for the recognition step. If you turn on high-accuracy mode, the image may be preprocessed on our servers first.' }],
         supportedFormats: 'JPG, JPEG, PNG, WebP, BMP, TIFF',
         relatedTools: ['compress-image', 'resize-image', 'convert-dpi'],
     },
@@ -934,7 +934,7 @@ export const toolContentMap: Record<string, ToolContent> = {
         ],
         features: ['Full EXIF data display: camera, lens, settings', 'GPS coordinates and location data', 'Date/time information', 'Image dimensions, resolution, and color space', 'Client-side processing — images never uploaded'],
         useCases: ['Photographers reviewing camera settings of their shots', 'Verifying image authenticity and origin', 'Checking GPS location embedded in photos', 'Analyzing image technical properties'],
-        faqs: [{ question: 'What metadata can I see?', answer: 'You can view camera make/model, lens info, shutter speed, aperture, ISO, GPS coordinates, date taken, dimensions, DPI, color space, software used, and more.' }, { question: 'Can I see where a photo was taken?', answer: 'If the photo has GPS data embedded (common with smartphone photos), you\'ll see the exact coordinates and can view the location on a map.' }],
+        faqs: [{ question: 'What metadata can I see?', answer: 'The viewer shows fields the file actually contains — often format, dimensions, and any EXIF or text comments. Many shared or compressed photos have already had tags stripped.' }, { question: 'Can I see where a photo was taken?', answer: 'Only if GPS tags are still in the file. The viewer lists those values when present; it does not open an interactive map.' }],
         supportedFormats: 'JPG, JPEG, PNG, WebP, TIFF, HEIC',
         relatedTools: ['photo-exif-editor', 'remove-image-metadata', 'convert-dpi'],
     },
@@ -950,7 +950,7 @@ export const toolContentMap: Record<string, ToolContent> = {
             { problem: 'Edited dates are not showing in my photo viewer.', solution: 'Some viewers cache old data. Try refreshing the folder or using a dedicated EXIF viewer to confirm the changes.' },
             { problem: 'Cannot edit certain fields.', solution: 'Some proprietary maker notes cannot be safely modified without corrupting the file, so we restrict edits to standard EXIF tags.' }
         ],
-        features: ['Edit date/time, camera info, GPS coordinates', 'Update copyright and author information', 'Modify image description and tags', 'Batch metadata editing', 'Client-side processing for privacy'],
+        features: ['Edit title, author, copyright, and description fields', 'Works on one image at a time', 'Client-side processing for privacy'],
         useCases: ['Correcting wrong dates on photos after timezone travel', 'Adding copyright information before publishing', 'Updating GPS coordinates for location accuracy', 'Organizing photo libraries with consistent metadata'],
         faqs: [{ question: 'Can I change the date a photo was taken?', answer: 'Yes! You can modify the DateTimeOriginal and other date fields to correct timestamps, helpful when your camera date was wrong or for organizing photos.' }],
         supportedFormats: 'JPG, JPEG, PNG, WebP, TIFF',
@@ -960,7 +960,7 @@ export const toolContentMap: Record<string, ToolContent> = {
         about: 'Remove Metadata strips all EXIF and metadata from your images for privacy protection. Photos from smartphones and cameras contain hidden data including GPS location, device information, date/time, and more. Removing metadata before sharing online prevents others from seeing where, when, and with what device your photos were taken.',
         directAnswer: 'The Remove Image Metadata tool completely strips hidden EXIF data, including GPS locations and camera details, from your photos to protect your privacy before sharing them online.',
         steps: [
-            { title: 'Upload Photo', description: 'Select the image you want to sanitize. You can upload multiple files for batch processing.' },
+            { title: 'Upload Photo', description: 'Select the image you want to sanitize. One file per run in the current upload UI.' },
             { title: 'Strip Metadata', description: 'The tool instantly removes all EXIF, IPTC, and XMP tags without altering the image quality.' },
             { title: 'Download Safe Image', description: 'Save the cleaned image, which is now safe to share without revealing your private data.' }
         ],
@@ -968,7 +968,7 @@ export const toolContentMap: Record<string, ToolContent> = {
             { problem: 'The file size barely changed.', solution: 'Metadata only takes up a few kilobytes. Removing it will not significantly reduce the overall file size of a large photo.' },
             { problem: 'Image still has a timestamp.', solution: 'The visible timestamp on the photo itself is part of the image pixels, not metadata. This tool only removes hidden EXIF data.' }
         ],
-        features: ['Strips all EXIF, IPTC, and XMP metadata', 'Removes GPS location data for privacy', 'Removes camera and device information', 'Preserves image quality — only metadata is removed', 'Batch metadata removal'],
+        features: ['Strips EXIF and similar metadata from a single image', 'Removes GPS location data when it is present', 'Removes camera and device information', 'Preserves image pixels — only hidden tags are removed'],
         useCases: ['Protecting privacy before sharing photos online', 'Removing GPS location data from images', 'Stripping device information for anonymous sharing', 'Cleaning metadata before submitting to stock photography sites'],
         faqs: [{ question: 'Why should I remove metadata from photos?', answer: 'Photos contain hidden data like your GPS location, device model, and capture time. Removing this data before sharing online protects your privacy and prevents location tracking.' }, { question: 'Does removing metadata change the image?', answer: 'No. Only invisible metadata is removed. The visual content and quality of your image remain completely unchanged.' }],
         supportedFormats: 'JPG, JPEG, PNG, WebP, TIFF',
@@ -1008,9 +1008,9 @@ export const toolContentMap: Record<string, ToolContent> = {
             { problem: 'Merged file is too large.', solution: 'Combining many large PDFs will result in a huge file. Use the Compress PDF tool afterward to reduce the final file size.' },
             { problem: 'Pages are in the wrong order.', solution: 'Make sure to visually verify the file sequence in the drag-and-drop preview area before clicking the merge button.' }
         ],
-        features: ['Combine unlimited PDF files into one', 'Drag and drop to reorder files', 'Preserves original formatting and quality', 'Handles standard PDF inputs', 'Fast processing'],
+        features: ['Combine up to 20 PDF files into one', 'Drag and drop to reorder files', 'Preserves original formatting and quality', '25 MB per file, 100 MB combined', 'Fast processing'],
         useCases: ['Combining multiple report sections into one document', 'Merging scanned document pages into a single PDF', 'Creating application packages from separate files', 'Organizing invoices and receipts into monthly compilations'],
-        faqs: [{ question: 'Is there a limit on the number of PDFs I can merge?', answer: 'There is no strict limit. You can merge dozens of PDF files. For very large batches, we recommend keeping total file size under 50 MB for optimal performance.' }, { question: 'Will the formatting be preserved?', answer: 'Yes, each page retains its original formatting, fonts, images, and layout. The merge simply concatenates pages in your specified order.' }],
+        faqs: [{ question: 'Is there a limit on the number of PDFs I can merge?', answer: 'Yes. Merge PDF accepts up to 20 files per run, 25 MB each, and 100 MB combined. Split a larger set into groups if you hit that cap.' }, { question: 'Will the formatting be preserved?', answer: 'Yes, each page retains its original formatting, fonts, images, and layout. The merge simply concatenates pages in your specified order.' }],
         supportedFormats: 'Input/Output: PDF',
         relatedTools: ['split-pdf', 'compress-pdf', 'reorder-pdf-pages', 'image-to-pdf'],
     },
@@ -1026,7 +1026,7 @@ export const toolContentMap: Record<string, ToolContent> = {
             { problem: 'Cannot extract from a protected PDF.', solution: 'You cannot split an encrypted PDF. Use the Unlock PDF tool first to remove the password protection.' },
             { problem: 'Output ZIP file is corrupted.', solution: 'Ensure your download completes fully before opening the ZIP. Large splits may take a moment to generate properly.' }
         ],
-        features: ['Extract specific pages or page ranges', 'Split into equal-sized sections', 'Select individual pages with visual preview', 'Download each split section separately', 'Preserves original page quality'],
+        features: ['Extract specific pages or page ranges', 'Split every page into a ZIP (up to 20 pages)', 'Type a range such as 1-3,5,7-9', 'Download the extracted pages as a new PDF', 'Preserves original page quality'],
         useCases: ['Extracting specific chapters from e-books', 'Separating individual pages from multi-page reports', 'Breaking large documents into emailable sections', 'Isolating forms or certificates from bundled PDFs'],
         faqs: [{ question: 'Can I extract non-consecutive pages?', answer: 'Yes! Select any combination of pages — consecutive or non-consecutive. For example, extract pages 1, 3, 7-10, 15 into a single new PDF.' }],
         supportedFormats: 'Input/Output: PDF',
@@ -1044,7 +1044,7 @@ export const toolContentMap: Record<string, ToolContent> = {
             { problem: 'Text looks blurry in the JPG.', solution: 'The default resolution might be too low. Increase the DPI setting to 300 for crisp, readable text.' },
             { problem: 'Transparent backgrounds turned black.', solution: 'JPG doesn\'t support transparency. If your PDF has transparent elements, try converting to PNG instead.' }
         ],
-        features: ['Convert each PDF page to JPG or PNG', 'Adjustable output resolution and quality', 'Download individual pages or all as ZIP', 'High-quality rendering of text and graphics', 'Handles multi-page PDFs of any length'],
+        features: ['Convert each PDF page to JPG or PNG', 'Adjustable output resolution and quality', 'Download converted pages as a ZIP', 'Up to 10 pages per run', 'Encrypted PDFs need Unlock first'],
         useCases: ['Extracting pages as images for presentations', 'Converting PDF reports to images for social media sharing', 'Creating image previews of PDF documents', 'Converting PDF certificates and diplomas to image format'],
         faqs: [{ question: 'What resolution are the output images?', answer: 'You can set the output resolution. Higher DPI produces larger, sharper images. 150 DPI is good for screen viewing, 300 DPI for printing.' }],
         supportedFormats: 'Input: PDF — Output: JPG, PNG',
@@ -1069,20 +1069,20 @@ export const toolContentMap: Record<string, ToolContent> = {
         relatedTools: ['reorder-pdf-pages', 'split-pdf', 'merge-pdf'],
     },
     'add-watermark-pdf': {
-        about: 'PDF Watermark adds text or image watermarks to every page or selected pages of your PDF. Add "CONFIDENTIAL", "DRAFT", company logos, or custom text overlays. Control position, size, opacity, rotation, and color. Essential for protecting intellectual property and marking document status.',
-        directAnswer: 'PDF Watermark allows you to stamp text (like "DRAFT") or image logos across your PDF pages to protect your intellectual property and indicate document status.',
+        about: 'PDF Watermark stamps text such as CONFIDENTIAL or DRAFT on every page of a PDF. You can change opacity, rotation, color, font size, and position (center, corners, or a tiled diagonal). The tool writes a new file — your original stays unchanged. It is a status stamp, not encryption: anyone can still read the document.',
+        directAnswer: 'PDF Watermark puts a text stamp such as DRAFT or CONFIDENTIAL on every page. Adjust opacity so the text stays readable, then download a new copy.',
         steps: [
             { title: 'Upload Document', description: 'Select the PDF file you want to protect with a watermark.' },
-            { title: 'Customize Watermark', description: 'Type your text or upload a logo, then adjust the opacity, rotation, and placement on the page.' },
+            { title: 'Customize Watermark', description: 'Enter the stamp text, then set opacity, rotation, color, and position.' },
             { title: 'Apply & Download', description: 'Stamp the watermark onto your selected pages and download the finalized PDF.' }
         ],
         commonProblems: [
             { problem: 'Watermark is blocking the text.', solution: 'Reduce the opacity setting to make the watermark semi-transparent, allowing the document text to remain readable.' },
             { problem: 'Watermark only applied to the first page.', solution: 'Check your page range settings. Ensure you have selected "All Pages" if you want it applied to the entire document.' }
         ],
-        features: ['Text and image watermark options', 'Adjustable opacity, position, and rotation', 'Apply to all pages or selected pages', 'Custom font, size, and color for text watermarks', 'Diagonal and centered positioning options'],
-        useCases: ['Marking documents as CONFIDENTIAL or DRAFT', 'Adding company logos to internal documents', 'Protecting PDF content from unauthorized redistribution', 'Branding client deliverables and reports'],
-        faqs: [{ question: 'Can I watermark only specific pages?', answer: 'Yes! Choose to apply the watermark to all pages, odd pages only, even pages only, or select specific page numbers.' }],
+        features: ['Text stamps such as CONFIDENTIAL, DRAFT, or SAMPLE', 'Adjustable opacity, position, and rotation', 'Applies to every page in the current tool', 'Font size and color controls', 'Center, corner, or diagonal-repeat layouts'],
+        useCases: ['Marking documents as CONFIDENTIAL or DRAFT', 'Stamping SAMPLE on a review copy', 'Labeling internal drafts before sharing', 'Adding a status line on client reports'],
+        faqs: [{ question: 'Can I watermark only specific pages?', answer: 'The current watermark tool stamps every page. If you only need some pages marked, split those pages out first, watermark that file, then merge it back.' }],
         supportedFormats: 'Input/Output: PDF',
         relatedTools: ['protect-pdf', 'compress-pdf', 'merge-pdf'],
     },
@@ -1123,20 +1123,20 @@ export const toolContentMap: Record<string, ToolContent> = {
         relatedTools: ['protect-pdf', 'compress-pdf', 'merge-pdf'],
     },
     'reorder-pdf-pages': {
-        about: 'Reorder PDF Pages lets you rearrange the page order in your PDF document using an intuitive drag-and-drop interface. See page thumbnails, drag pages to new positions, and download the reorganized PDF. Perfect for fixing page order mistakes, reorganizing content flow, and customizing document structure.',
-        directAnswer: 'Reorder PDF Pages allows you to visually rearrange the sequence of pages in your document using a simple drag-and-drop thumbnail interface.',
+        about: 'Reorder PDF Pages rearranges the page sequence of a PDF. After you upload, the tool lists each page so you can move items up or down, then downloads a new file in that order. Useful for scanned packets that came out of sequence.',
+        directAnswer: 'Reorder PDF Pages lets you change the sequence of pages and download a new PDF. Use the up and down controls to move each page.',
         steps: [
             { title: 'Upload PDF', description: 'Select a multi-page document that needs its pages reorganized.' },
-            { title: 'Drag to Reorder', description: 'Click and drag the page thumbnails into your desired sequence.' },
-            { title: 'Apply & Download', description: 'Save the updated document with the new, permanently applied page order.' }
+            { title: 'Move pages', description: 'Use the up and down controls to place each page in the order you want.' },
+            { title: 'Apply & Download', description: 'Save the updated document with the new page order.' }
         ],
         commonProblems: [
             { problem: 'Thumbnails are too small to read.', solution: 'The thumbnails are meant for visual sorting. If you need to read the text to sort them, try zooming in on your browser or noting the page numbers beforehand.' },
-            { problem: 'Dragging is glitchy on mobile.', solution: 'If touch drag-and-drop is unresponsive, try switching to a desktop browser for easier management of large documents.' }
+            { problem: 'Reordering is slow on a long PDF.', solution: 'Use the up and down controls. For a large reshuffle, split the document into sections, then merge them in the right order.' }
         ],
-        features: ['Drag-and-drop page reordering', 'Visual page thumbnails for easy identification', 'Move single or multiple pages at once', 'Preserves page content and formatting', 'Handles multi-page PDFs'],
+        features: ['Move pages up or down in the list', 'Shows the original page number after you move it', 'Preserves page content and formatting', 'Handles multi-page PDFs within the upload size limit'],
         useCases: ['Fixing page order mistakes in scanned documents', 'Reorganizing report sections for better flow', 'Moving appendices and references to the correct position', 'Customizing document structure for different audiences'],
-        faqs: [{ question: 'Can I move multiple pages at once?', answer: 'Yes, select multiple pages and drag them to a new position as a group. This makes reorganizing large documents much faster.' }],
+        faqs: [{ question: 'Can I move multiple pages at once?', answer: 'Not as a group yet. Move pages one at a time with the up and down controls. For a large reshuffle, split the document, then merge the parts in the right order.' }],
         supportedFormats: 'Input/Output: PDF',
         relatedTools: ['split-pdf', 'merge-pdf', 'delete-pdf-pages', 'rotate-pdf'],
     },
@@ -1159,7 +1159,7 @@ export const toolContentMap: Record<string, ToolContent> = {
         relatedTools: ['reorder-pdf-pages', 'split-pdf', 'merge-pdf'],
     },
     'add-page-numbers-to-pdf': {
-        about: 'Add Page Numbers to PDF lets you automatically insert page numbers across your entire PDF document. You can customize the numbering format (e.g., "1", "Page 1", "1 of 5"), choose exactly where the numbers appear on the page (bottom, top, left, right), and adjust the font size and margins. The tool processes files completely in the browser for maximum privacy and speed.',
+        about: 'Add Page Numbers to PDF inserts consecutive numbers on every page. Choose a format such as 1, Page 1, or 1 of 5, then pick top or bottom placement and a margin. Processing is server-side. Numbers start at page 1 of the file you upload — there is no custom start offset yet.',
         directAnswer: 'Add Page Numbers to PDF automatically inserts consecutive page numbering into your document headers or footers, offering customizable formats and positioning.',
         steps: [
             { title: 'Upload Document', description: 'Select the PDF file that requires page numbering.' },
@@ -1174,10 +1174,10 @@ export const toolContentMap: Record<string, ToolContent> = {
         useCases: ['Adding page numbers to printed reports and ebooks', 'Numbering legal documents for court submissions', 'Organizing scanned documents and lecture notes', 'Bates numbering for large PDF portfolios'],
         faqs: [
             { question: 'Will this tool overwrite existing text?', answer: 'No, the page numbers are placed as an overlay on top of the PDF. We recommend using margins to ensure numbers do not overlap with existing text.' },
-            { question: 'Is it free to use?', answer: 'Yes! Our tool is 100% free with no watermarks and no limits on the number of pages.' }
+            { question: 'Is it free to use?', answer: 'Yes. Adding page numbers is free. Very large files may hit the same upload size limit shown on the tool page.' }
         ],
         supportedFormats: 'Input/Output: PDF',
-        relatedTools: ['watermark-pdf', 'merge-pdf', 'reorder-pdf-pages'],
+        relatedTools: ['add-watermark-pdf', 'merge-pdf', 'reorder-pdf-pages'],
     },
     'svg-to-png': {
         about: 'SVG to PNG Converter easily transforms your scalable vector graphics into transparent, high-quality raster PNG images. Perfect for converting web icons, logos, and illustrations into universally supported image formats that work across all software and platforms.',

@@ -2,7 +2,7 @@
 
 import dynamic from 'next/dynamic';
 import { useAppStore } from '@/store/app-store';
-import { useLayoutEffect, useRef } from 'react';
+import { useEffect, useLayoutEffect, useRef } from 'react';
 import { ErrorBoundary } from '@/components/ui/error-boundary';
 
 // Dynamically import workspace components
@@ -202,8 +202,7 @@ export function ToolPageClient({ toolId, toolName, toolDescription }: ToolPageCl
 
   // useLayoutEffect so activeTool is set before paint — workspaces return null without it
   useLayoutEffect(() => {
-    // Clear previous tool's file when navigating between tools
-    if (prevToolId.current && prevToolId.current !== toolId) {
+    if (prevToolId.current !== toolId) {
       reset();
     }
     prevToolId.current = toolId;
@@ -213,6 +212,12 @@ export function ToolPageClient({ toolId, toolName, toolDescription }: ToolPageCl
       description: toolDescription,
     });
   }, [toolId, toolName, toolDescription, setActiveTool, reset]);
+
+  useEffect(() => {
+    return () => {
+      reset();
+    };
+  }, [reset]);
 
   return (
     <ErrorBoundary>

@@ -5,7 +5,7 @@ import { Download, RotateCcw, Merge, FileText, Plus, ChevronDown, ChevronUp, Tra
 import { Button } from '@/components/ui/button';
 import { useAppStore } from '@/store/app-store';
 import { ToolPageHeader } from './tool-page-header';
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { useReducedMotion } from 'framer-motion';
 import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
@@ -27,6 +27,14 @@ export function PDFMergeWorkspace() {
   const [statusLabel, setStatusLabel] = useState<'Idle' | 'Uploading' | 'Processing' | 'Finalizing'>('Idle');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const prefersReducedMotion = useReducedMotion();
+
+  useEffect(() => {
+    return () => {
+      if (result?.pdfUrl?.startsWith('blob:')) {
+        URL.revokeObjectURL(result.pdfUrl);
+      }
+    };
+  }, [result]);
 
   const enrichPdfMeta = useCallback(async (items: PDFFile[]) => {
     try {
@@ -161,10 +169,15 @@ export function PDFMergeWorkspace() {
 
       const pageCount = Number(response.headers.get('x-page-count') || 0);
 
-      setResult({
-        pdfUrl,
-        fileName,
-        pageCount,
+      setResult((previous) => {
+        if (previous?.pdfUrl?.startsWith('blob:')) {
+          URL.revokeObjectURL(previous.pdfUrl);
+        }
+        return {
+          pdfUrl,
+          fileName,
+          pageCount,
+        };
       });
       toast.success(`Merged ${files.length} PDFs into ${pageCount || 'multiple'} pages!`);
       requestAnimationFrame(() => {

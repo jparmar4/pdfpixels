@@ -18,6 +18,8 @@ import { Button } from '@/components/ui/button';
 import { useAppStore } from '@/store/app-store';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
+import { isHeicFileName, isHeicMime, isImageFileName } from '@/lib/heic-detect';
+import { isHeicUpload, normalizeHeicFile } from '@/lib/heic-client';
 
 interface FileUploadProps {
   accept?: string;
@@ -31,7 +33,8 @@ function formatFileSize(bytes: number) {
 }
 
 function getFileType(file: File) {
-  if (file.type === 'application/pdf') return 'PDF';
+  if (file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf')) return 'PDF';
+  if (isHeicFileName(file.name) || isHeicMime(file.type)) return 'HEIC';
   const type = file.type.split('/')[1]?.toUpperCase();
   if (type === 'JPEG') return 'JPG';
   return type || file.name.split('.').pop()?.toUpperCase() || 'FILE';
@@ -40,7 +43,7 @@ function getFileType(file: File) {
 /** Determine a file category from MIME type / extension for icon selection */
 function getFileCategory(file: File): 'pdf' | 'image' | 'unknown' {
   if (file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf')) return 'pdf';
-  if (file.type.startsWith('image/')) return 'image';
+  if (file.type.startsWith('image/') || isImageFileName(file.name)) return 'image';
   return 'unknown';
 }
 
@@ -49,6 +52,8 @@ export function FileUpload({ accept = 'image/*', maxSizeMb = 25 }: FileUploadPro
   const [dragOver, setDragOver] = useState(false);
   const [imageInfo, setImageInfo] = useState<{ width: number; height: number } | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [previewFailed, setPreviewFailed] = useState(false);
+  const [isNormalizing, setIsNormalizing] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const previewUrlRef = useRef<string | null>(null);
   const dragCounter = useRef(0);
@@ -71,6 +76,9 @@ export function FileUpload({ accept = 'image/*', maxSizeMb = 25 }: FileUploadPro
     if (!uploadedFile && previewUrlRef.current) {
       URL.revokeObjectURL(previewUrlRef.current);
       previewUrlRef.current = null;
+      setPreviewUrl(null);
+      setPreviewFailed(false);
+      setImageInfo(null);
     }
   }, [uploadedFile]);
 
@@ -98,8 +106,14 @@ export function FileUpload({ accept = 'image/*', maxSizeMb = 25 }: FileUploadPro
 
   const matchesAccept = useCallback(
     (file: File) => acceptTokens.some((token) => {
-      if (token === 'image/*') return file.type.startsWith('image/');
-      if (token.startsWith('.')) return file.name.toLowerCase().endsWith(token.toLowerCase());
+      const lowerName = file.name.toLowerCase();
+      if (token === 'image/*') {
+        return file.type.startsWith('image/') || isImageFileName(file.name);
+      }
+      if (token.startsWith('.')) return lowerName.endsWith(token.toLowerCase());
+      if (token === 'image/heic' || token === 'image/heif') {
+        return file.type === token || isHeicFileName(file.name);
+      }
       return file.type === token;
     }),
     [acceptTokens],
@@ -110,9 +124,23 @@ export function FileUpload({ accept = 'image/*', maxSizeMb = 25 }: FileUploadPro
     isImageAccept ? 'JPG' : null,
     isImageAccept ? 'PNG' : null,
     isImageAccept ? 'WebP' : null,
+    isImageAccept ? 'HEIC' : null,
   ].filter(Boolean) as string[];
 
-  const handleSelectedFile = useCallback((file: File | null) => {
+  const applySelectedFile = useCallback((file: File) => {
+    if (previewUrlRef.current) {
+      URL.revokeObjectURL(previewUrlRef.current);
+    }
+
+    const nextPreviewUrl = URL.createObjectURL(file);
+    previewUrlRef.current = nextPreviewUrl;
+    setPreviewFailed(false);
+    setPreviewUrl(nextPreviewUrl);
+    setUploadedFile(file);
+    getImageInfo(file);
+  }, [getImageInfo, setUploadedFile]);
+
+  const handleSelectedFile = useCallback(async (file: File | null) => {
     if (!file) return;
 
     if (!matchesAccept(file)) {
@@ -125,16 +153,22 @@ export function FileUpload({ accept = 'image/*', maxSizeMb = 25 }: FileUploadPro
       return;
     }
 
-    if (previewUrlRef.current) {
-      URL.revokeObjectURL(previewUrlRef.current);
+    if (isImageAccept && isHeicUpload(file)) {
+      setIsNormalizing(true);
+      try {
+        const jpegFile = await normalizeHeicFile(file);
+        applySelectedFile(jpegFile);
+        toast.success('HEIC photo converted for editing.');
+      } catch (error) {
+        toast.error(error instanceof Error ? error.message : 'Could not read this HEIC photo.');
+      } finally {
+        setIsNormalizing(false);
+      }
+      return;
     }
 
-    const nextPreviewUrl = URL.createObjectURL(file);
-    previewUrlRef.current = nextPreviewUrl;
-    setPreviewUrl(nextPreviewUrl);
-    setUploadedFile(file);
-    getImageInfo(file);
-  }, [accept, acceptedLabels, getImageInfo, matchesAccept, maxBytes, maxSizeMb, setUploadedFile]);
+    applySelectedFile(file);
+  }, [accept, acceptedLabels, applySelectedFile, isImageAccept, matchesAccept, maxBytes, maxSizeMb]);
 
   const handleDragEnter = useCallback((event: React.DragEvent) => {
     event.preventDefault();
@@ -143,6 +177,11 @@ export function FileUpload({ accept = 'image/*', maxSizeMb = 25 }: FileUploadPro
     if (dragCounter.current === 1) {
       setDragOver(true);
     }
+  }, []);
+
+  const handleDragOver = useCallback((event: React.DragEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
   }, []);
 
   const handleDragLeave = useCallback((event: React.DragEvent) => {
@@ -159,11 +198,12 @@ export function FileUpload({ accept = 'image/*', maxSizeMb = 25 }: FileUploadPro
     event.stopPropagation();
     dragCounter.current = 0;
     setDragOver(false);
-    handleSelectedFile(event.dataTransfer.files?.[0] ?? null);
+    void handleSelectedFile(event.dataTransfer.files?.[0] ?? null);
   }, [handleSelectedFile]);
 
   const handleFileSelect = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    handleSelectedFile(event.target.files?.[0] ?? null);
+    void handleSelectedFile(event.target.files?.[0] ?? null);
+    event.target.value = '';
   }, [handleSelectedFile]);
 
   const handleRemove = useCallback(() => {
@@ -211,8 +251,18 @@ export function FileUpload({ accept = 'image/*', maxSizeMb = 25 }: FileUploadPro
     return 'bg-primary/10 text-primary';
   })();
 
+  const busy = isProcessing || isNormalizing;
+
   return (
     <div className="space-y-4">
+      <input
+        ref={inputRef}
+        type="file"
+        accept={accept}
+        aria-label="Choose file to upload"
+        onChange={handleFileSelect}
+        className="sr-only"
+      />
       <AnimatePresence mode="wait">
         {!uploadedFile ? (
           <motion.div
@@ -220,11 +270,20 @@ export function FileUpload({ accept = 'image/*', maxSizeMb = 25 }: FileUploadPro
             initial={{ opacity: 0, scale: 0.985 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.985 }}
+            role="button"
+            tabIndex={0}
+            onClick={() => !isNormalizing && inputRef.current?.click()}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                if (!isNormalizing) inputRef.current?.click();
+              }
+            }}
             onDragEnter={handleDragEnter}
-            onDragOver={handleDragEnter}
+            onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
-            className={`relative overflow-hidden rounded-[2rem] border-2 transition-all duration-300 ${
+            className={`relative cursor-pointer overflow-hidden rounded-[2rem] border-2 transition-all duration-300 ${
               dragOver
                 ? 'border-primary bg-primary/6 shadow-[0_18px_60px_-30px_rgba(59,130,246,0.45)]'
                 : 'border-border/60 bg-card/65 shadow-premium backdrop-blur-xl hover:border-primary/35 hover:bg-card/80'
@@ -261,15 +320,6 @@ export function FileUpload({ accept = 'image/*', maxSizeMb = 25 }: FileUploadPro
                 </svg>
               </div>
             )}
-
-            <input
-              ref={inputRef}
-              type="file"
-              accept={accept}
-              aria-label="Choose file to upload"
-              onChange={handleFileSelect}
-              className="absolute inset-0 z-20 h-full w-full cursor-pointer opacity-0"
-            />
 
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(14,76,181,0.1),transparent_30%),radial-gradient(circle_at_bottom_right,rgba(14,165,170,0.08),transparent_28%),radial-gradient(circle_at_top_right,rgba(184,134,39,0.08),transparent_24%)] pointer-events-none" />
             <div className="absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
@@ -324,7 +374,7 @@ export function FileUpload({ accept = 'image/*', maxSizeMb = 25 }: FileUploadPro
               <div className="mt-6 grid gap-3 text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground sm:grid-cols-3">
                 <span className="inline-flex items-center justify-center gap-2 rounded-full border border-border/60 bg-background/75 px-3 py-1.5">
                   <ShieldCheck className="h-3.5 w-3.5 text-emerald-500" />
-                  Private processing
+                  HTTPS upload / local canvas
                 </span>
                 <span className="inline-flex items-center justify-center gap-2 rounded-full border border-border/60 bg-background/75 px-3 py-1.5">
                   <Sparkles className="h-3.5 w-3.5 text-primary" />
@@ -348,8 +398,13 @@ export function FileUpload({ accept = 'image/*', maxSizeMb = 25 }: FileUploadPro
 
               {/* "Recently used" / file type support hint */}
               <p className="mt-4 text-xs text-muted-foreground/70">
-                Supports JPG, PNG, WebP, HEIC, PDF and more
+                {isPDFAccept && !isImageAccept
+                  ? 'PDF files up to the size limit'
+                  : 'Supports JPG, PNG, WebP, HEIC, AVIF and more'}
               </p>
+              {isNormalizing ? (
+                <p className="mt-2 text-xs font-medium text-primary">Converting HEIC photo…</p>
+              ) : null}
             </div>
           </motion.div>
         ) : (
@@ -378,11 +433,12 @@ export function FileUpload({ accept = 'image/*', maxSizeMb = 25 }: FileUploadPro
                       <p className="text-sm text-muted-foreground">PDF ready for processing</p>
                     </div>
                   </div>
-                ) : previewUrl ? (
+                ) : previewUrl && !previewFailed ? (
                   <img
                     src={previewUrl}
                     alt="Preview"
                     className="max-h-[360px] max-w-full rounded-2xl object-contain shadow-sm"
+                    onError={() => setPreviewFailed(true)}
                   />
                 ) : (
                   <div className="flex flex-col items-center gap-2 text-muted-foreground">
@@ -391,7 +447,7 @@ export function FileUpload({ accept = 'image/*', maxSizeMb = 25 }: FileUploadPro
                   </div>
                 )}
 
-                {isProcessing ? (
+                {busy ? (
                   <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
@@ -403,8 +459,12 @@ export function FileUpload({ accept = 'image/*', maxSizeMb = 25 }: FileUploadPro
                       className="h-10 w-10 rounded-full border-2 border-primary/25 border-t-primary"
                     />
                     <div className="space-y-1 text-center">
-                      <p className="text-sm font-semibold text-foreground">Processing file</p>
-                      <p className="text-xs text-muted-foreground">Preparing a high-quality result</p>
+                      <p className="text-sm font-semibold text-foreground">
+                        {isNormalizing ? 'Converting HEIC' : 'Processing file'}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {isNormalizing ? 'Decoding iPhone photo for preview' : 'Preparing a high-quality result'}
+                      </p>
                     </div>
                     <Progress value={progress} className="h-1.5 w-40" />
                   </motion.div>
@@ -469,7 +529,7 @@ export function FileUpload({ accept = 'image/*', maxSizeMb = 25 }: FileUploadPro
                     type="button"
                     variant="outline"
                     onClick={() => inputRef.current?.click()}
-                    disabled={isProcessing}
+                    disabled={busy}
                     className="h-11 flex-1 rounded-2xl"
                   >
                     <Upload className="h-4 w-4" />
@@ -479,7 +539,7 @@ export function FileUpload({ accept = 'image/*', maxSizeMb = 25 }: FileUploadPro
                     type="button"
                     variant="ghost"
                     onClick={handleRemove}
-                    disabled={isProcessing}
+                    disabled={busy}
                     className="h-11 flex-1 rounded-2xl text-muted-foreground hover:text-destructive"
                   >
                     <X className="h-4 w-4" />

@@ -54,6 +54,13 @@ export async function POST(request: NextRequest) {
       
       try {
         const pdf = await loadPdfWithTimeout(pdfBytes);
+        if (pdf.isEncrypted) {
+          skipped.push({
+            name: file.name || 'unnamed',
+            reason: 'Password-protected. Unlock it first, then merge.',
+          });
+          continue;
+        }
         const copiedPages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
         
         for (const page of copiedPages) {

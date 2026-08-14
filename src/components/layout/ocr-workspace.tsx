@@ -53,9 +53,10 @@ export function OCRWorkspace() {
         setProgress(0);
         setExtractedText('');
 
-        try {
-            let processUrl = URL.createObjectURL(uploadedFile);
+        const sourceUrl = URL.createObjectURL(uploadedFile);
+        let processUrl = sourceUrl;
 
+        try {
             if (highAccuracy) {
                 setProgress(5);
                 toast.info('Preprocessing image for accuracy...', { duration: 1500 });
@@ -74,7 +75,9 @@ export function OCRWorkspace() {
 
                 if (processRes.ok) {
                     const data = await processRes.json();
-                    processUrl = data.imageUrl;
+                    if (typeof data.imageUrl === 'string') {
+                        processUrl = data.imageUrl;
+                    }
                 }
             }
 
@@ -95,12 +98,6 @@ export function OCRWorkspace() {
                     },
                 }
             );
-
-            if (highAccuracy && processUrl.startsWith('data:')) {
-                // No need to revoke if it's base64, but if we opened a URL we should
-            } else {
-                URL.revokeObjectURL(processUrl);
-            }
             setProgress(100);
 
             const text = result.data.text.trim();
@@ -119,6 +116,7 @@ export function OCRWorkspace() {
             console.error('OCR error:', error);
             toast.error('OCR failed. Please try again with a clearer image.');
         } finally {
+            URL.revokeObjectURL(sourceUrl);
             setIsProcessing(false);
         }
     }, [uploadedFile, language, highAccuracy, setIsProcessing, setProgress]);

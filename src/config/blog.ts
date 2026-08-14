@@ -19,15 +19,232 @@ export interface BlogPost {
         question: string;
         answer: string;
     }[];
-    rating?: {
-        ratingValue: string;
-        ratingCount: string;
-        bestRating?: string;
-        worstRating?: string;
-    };
 }
 
 export const blogPosts: BlogPost[] = [
+    {
+        slug: "add-confidential-watermark-to-pdf",
+        title: "How to Add a CONFIDENTIAL or DRAFT Watermark to a PDF",
+        excerpt: "Need to mark a contract as DRAFT or stamp CONFIDENTIAL on every page? Here is how a text watermark actually works, when it helps, and how to keep the document readable.",
+        date: "Aug 14, 2026",
+        dateModified: "Aug 14, 2026",
+        category: "PDF Editing",
+        author: "PdfPixels Editorial",
+        authorRole: "PdfPixels team",
+        readTime: "8 min read",
+        metaDescription: "Add a CONFIDENTIAL or DRAFT watermark to a PDF online. Learn opacity, placement, and when a stamp is enough versus a password.",
+        keywords: [
+            "watermark pdf",
+            "confidential watermark pdf",
+            "draft stamp pdf",
+            "add watermark to pdf online",
+            "pdf stamp confidential",
+            "watermark pdf free",
+        ],
+        coverImage: "/images/blog/watermark-pdf-confidential-hero.jpg",
+        imageAlt: "Printed contract on a desk next to a rubber stamp, suggesting a DRAFT or CONFIDENTIAL mark on a PDF",
+        content: `
+A watermark will not lock a PDF. It will not stop someone from forwarding the file. What it *does* is make the status obvious: this packet is a draft, this packet is confidential, this packet is a sample.
+
+That is still useful. Reviewers treat an unmarked file as final. A light diagonal **DRAFT** across every page saves the “wait, which version was this?” email.
+
+> [!TIP]
+> **Quick path:** Open [Add Watermark to PDF](/tools/add-watermark-pdf), type CONFIDENTIAL or DRAFT, drop opacity to about 25–35%, pick a diagonal or tiled layout, process, download. Then [password-protect](/tools/protect-pdf) the file if only one person should open it.
+
+## Stamp versus lock
+
+People mix these up:
+
+- **Watermark** — visible text on the pages. Anyone who can open the PDF can still read it.
+- **Password** — the file will not open without the password. Use [Protect PDF](/tools/protect-pdf) for that.
+
+Use a watermark when the recipient *should* read the file but must not treat it as final or public. Use a password when they should not open it at all unless you say so. For a client draft of a contract, many people do both: stamp DRAFT, then lock the attachment.
+
+## When a watermark helps
+
+- Internal reviews of a policy or proposal
+- Sharing a sample report that should not be reused as-is
+- Marking ID scans or statements you still need someone to *see*
+- Version control when “final_v3_REAL.pdf” is no longer funny
+
+Skip it on a public brochure. Extra stamps look sloppy if the file is meant to be clean.
+
+## Step-by-step on PdfPixels
+
+1. Open [Add Watermark to PDF](/tools/add-watermark-pdf).
+2. Upload the finished PDF (watermark last so you do not restamp every draft).
+3. Enter the stamp text. Short words work better than a paragraph.
+4. Set **opacity** so body text stays readable. Start near 30%.
+5. Choose **position**. Center plus a 45° rotation is the classic look. Corners are quieter. Diagonal repeat covers more of the page.
+6. Process and download a *new* file. The original is not overwritten.
+
+Open the download in a viewer and check a text-heavy page *and* a page with a logo or table. If the stamp sits on a signature line, raise the margin or switch to a corner.
+
+## Settings that usually work
+
+| Goal | Opacity | Position | Rotation |
+|---|---|---|---|
+| Obvious DRAFT | 28–35% | Center | 45° |
+| Quiet CONFIDENTIAL | 18–25% | Bottom corner | 0° |
+| Sample / do not copy | 30–40% | Diagonal repeat | 45° |
+
+Gray text is easier to ignore than neon red. Red is fine for a one-page notice; on a 40-page report it becomes noise.
+
+## What a watermark cannot do
+
+It does not encrypt the file. It does not stop screenshots. It does not prove authorship in court by itself. If you need access control, add a password. If you need a paper trail, keep the unmarked original and send the stamped copy.
+
+The current PdfPixels watermark tool stamps **every page** with **text**. It does not place a logo image or skip odd pages. If you only want a cover stamp, [split](/tools/split-pdf) page 1, watermark that page, then [merge](/tools/merge-pdf) it back.
+
+## Common mistakes
+
+**Opacity at 80%.** The stamp wins; the contract loses. Drop it until you can still highlight a sentence.
+
+**Tiny 12pt text in a corner.** Nobody notices, which defeats the point.
+
+**Stamping before you finish edits.** You will regenerate the file five times. Write the content first.
+
+**Assuming “CONFIDENTIAL” is a legal lock.** Recipients can still copy the text. Pair the stamp with a password and a short note in the email: “Draft — not for circulation.”
+
+## After you stamp
+
+If the file is huge, [compress](/tools/compress-pdf) the stamped copy. If it must travel locked, [protect](/tools/protect-pdf) it. If pages are sideways from a phone scan, [rotate](/tools/rotate-pdf) before you watermark so the stamp is not sitting on its side.
+
+## Bottom line
+
+A watermark is a status label, not a lock. Use short text, modest opacity, and a layout that does not hide signatures. Then decide whether the file also needs a password. Start at [Add Watermark to PDF](/tools/add-watermark-pdf).
+        `,
+        faq: [
+            {
+                question: "Does a CONFIDENTIAL watermark password-protect the PDF?",
+                answer: "No. A watermark is only visible text on the pages. Use Protect PDF if you need an open password."
+            },
+            {
+                question: "What opacity should I use for a DRAFT stamp?",
+                answer: "Start around 25–35%. High enough to see, low enough that body text stays readable."
+            },
+            {
+                question: "Can I watermark only the first page?",
+                answer: "The current tool stamps every page. Split out the first page, watermark that file, then merge it back if you need a cover-only stamp."
+            },
+        ],
+    },
+    {
+        slug: "webp-vs-jpg-vs-png-which-format",
+        title: "WebP vs JPG vs PNG: Which Image Format Should You Use?",
+        excerpt: "A form rejects WebP. A PNG is 8MB. A JPG wrecks a logo. Here is a plain guide to when each format wins — and how to convert without wrecking the file.",
+        date: "Aug 14, 2026",
+        dateModified: "Aug 14, 2026",
+        category: "Image Basics",
+        author: "PdfPixels Editorial",
+        authorRole: "PdfPixels team",
+        readTime: "9 min read",
+        metaDescription: "WebP vs JPG vs PNG explained. Learn which image format to use for photos, logos, and forms — and how to convert online without quality surprises.",
+        keywords: [
+            "webp vs jpg",
+            "png vs jpg",
+            "webp vs png",
+            "which image format to use",
+            "convert webp to jpg",
+            "convert png to jpeg",
+            "image format for web",
+        ],
+        coverImage: "/images/blog/webp-jpg-png-format-guide-hero.jpg",
+        imageAlt: "Laptop and printed photos on a desk representing different image file formats for web and print",
+        content: `
+The same picture can be a 180KB WebP, a 400KB JPG, or a 3MB PNG. Portals, email clients, and older Windows apps do not treat those as interchangeable. Pick the wrong one and you get a rejected upload, a muddy logo, or a file that will not open on a coworker’s PC.
+
+This is a format guide, not a compression lecture. The question is: **which container should this picture live in?**
+
+> [!TIP]
+> **Need a conversion now?** [WebP to JPG](/tools/webp-to-jpg), [PNG to JPEG](/tools/png-to-jpeg), [JPEG to PNG](/tools/jpeg-to-png), [WebP to PNG](/tools/webp-to-png), or [HEIC to JPG](/tools/heic-to-jpg) for iPhone photos.
+
+## The one-sentence rule
+
+- **Photos of the real world** → JPG (or WebP if the destination supports it)
+- **Logos, screenshots, text, transparency** → PNG
+- **Modern websites that accept it** → WebP for smaller files
+- **iPhone originals on Windows** → convert HEIC to JPG first
+
+## JPG (JPEG)
+
+JPG is the universal photo format. Almost every form, CMS, and email client accepts it. It uses **lossy** compression: it throws away detail you are unlikely to notice in a landscape or portrait.
+
+**Use JPG for:** camera photos, product shots, blog heroes, email attachments, most government photo fields.
+
+**Avoid JPG for:** logos, screenshots with small text, anything that needs a transparent background. Each extra save can add more artifacts. If you must edit a photo several times, keep a PNG or original master and export JPG last.
+
+Transparency is not supported. Convert a PNG logo to JPG and the checkerboard becomes a solid color (usually white).
+
+## PNG
+
+PNG is **lossless** for typical 8-bit images and supports a transparent background. File sizes are larger than JPG for photographs.
+
+**Use PNG for:** logos, icons, screenshots, graphics with sharp edges, cutouts that need transparency.
+
+**Avoid PNG for:** multi-megapixel phone photos you plan to email. A 12MP PNG can be huge for no visual gain over a high-quality JPG.
+
+If a portal accepts only JPG, convert the PNG and check that a white background is acceptable. Use [PNG to JPEG](/tools/png-to-jpeg).
+
+## WebP
+
+WebP is a newer format from Google. Photos are often much smaller than JPG at similar quality. It can also be lossless and can include transparency, like PNG.
+
+**The catch:** plenty of desktop apps, older Outlook versions, and official forms still reject \`.webp\`. Chrome downloaded a WebP from a website; you try to attach it to a job portal; the portal says “invalid file type.”
+
+**Use WebP for:** your own website if you control the stack.
+
+**Convert WebP** with [WebP to JPG](/tools/webp-to-jpg) for photos or [WebP to PNG](/tools/webp-to-png) when you need transparency.
+
+Animated WebP becomes a **still first frame** in most simple converters, including PdfPixels. Do not expect a GIF-like result.
+
+## HEIC (the iPhone sibling)
+
+Apple phones often save HEIC. It is efficient on the phone and annoying everywhere else. If Windows Photos or a form cannot open the file, convert it with [HEIC to JPG](/tools/heic-to-jpg) before you do anything else.
+
+## A decision table
+
+| Situation | Format |
+|---|---|
+| Vacation photo for email | JPG |
+| Logo for a slide deck | PNG |
+| Product cutout on a shop | PNG (transparency) |
+| Image you control on your site | WebP or JPG |
+| Form that lists “JPG/PNG only” | JPG or PNG, never WebP/HEIC |
+| Screenshot of an error message | PNG |
+| iPhone photo on a Windows PC | Convert HEIC → JPG |
+
+## How to convert without wrecking the picture
+
+1. **Start from the original**, not a file you already compressed three times.
+2. **Match the destination.** If the portal wants JPG, do not upload WebP and hope.
+3. **Watch transparency.** PNG → JPG fills empty pixels. Preview it.
+4. **Do not chase tiny files on a logo.** Compress a photo; leave a logo as PNG unless you must.
+5. **One conversion in the UI.** PdfPixels convert tools take one image at a time. For a folder of files, repeat or convert the ones the form actually needs.
+
+## Quality settings
+
+For JPG output, 85–92% is a sensible default. Going to 40% to hit a KB cap will show banding in skies and skin. If you also have a KB limit, resize the pixel dimensions first, then compress. Format choice and file-size targeting are different jobs — see [Compress Image](/tools/compress-image) only after the format is right.
+
+## Bottom line
+
+JPG for photos. PNG for graphics and transparency. WebP when *you* control the website. Convert HEIC and WebP before they hit a picky form. Start with the converter that matches the destination: [WebP to JPG](/tools/webp-to-jpg), [PNG to JPEG](/tools/png-to-jpeg), or [HEIC to JPG](/tools/heic-to-jpg).
+        `,
+        faq: [
+            {
+                question: "Is WebP better than JPG?",
+                answer: "WebP is often smaller at similar quality, but many forms and older apps still reject it. Use JPG when you need universal compatibility."
+            },
+            {
+                question: "When should I use PNG instead of JPG?",
+                answer: "Use PNG for logos, screenshots, text, and any image that needs a transparent background. Use JPG for photographs."
+            },
+            {
+                question: "Why won't a website accept my WebP upload?",
+                answer: "The site likely allows only JPG or PNG. Convert the WebP to JPG (photos) or PNG (graphics with transparency) and upload again."
+            },
+        ],
+    },
     {
         slug: "convert-jpg-to-pdf-online-no-software",
         title: "Convert JPG to PDF Online — No Software Needed",
@@ -35,8 +252,8 @@ export const blogPosts: BlogPost[] = [
         date: "Aug 8, 2026",
         dateModified: "Aug 8, 2026",
         category: "PDF Tools",
-        author: "Sarah Mitchell",
-        authorRole: "Digital Media Specialist",
+        author: "PdfPixels Editorial",
+        authorRole: "PdfPixels team",
         readTime: "11 min read",
         metaDescription: "Convert JPG to PDF online free — no software. Use a free image to PDF converter for one photo or many pages: reorder, A4/Letter, then download. Works on phone and desktop.",
         keywords: [
@@ -55,12 +272,6 @@ export const blogPosts: BlogPost[] = [
         ],
         coverImage: "/images/blog/convert-jpg-to-pdf-online-hero.jpg",
         imageAlt: "Laptop and phone on a desk converting multiple JPG photos into a single multi-page PDF document online without software",
-        rating: {
-            ratingValue: "4.8",
-            ratingCount: "167",
-            bestRating: "5",
-            worstRating: "1"
-        },
         content: `
 Last month my cousin needed three rent receipts as one PDF for a landlord portal. She had JPGs in her camera roll, zero interest in installing Acrobat, and about twelve minutes before the form closed.
 
@@ -268,8 +479,8 @@ Bookmark the tool once. The next landlord portal, school form, or “please send
         date: "Aug 1, 2026",
         dateModified: "Aug 1, 2026",
         category: "Image Editing",
-        author: "Sarah Mitchell",
-        authorRole: "Digital Media Specialist",
+        author: "PdfPixels Editorial",
+        authorRole: "PdfPixels team",
         readTime: "11 min read",
         metaDescription: "Use a free AI image enhancer to fix blurry photos in 2026. Step-by-step sharpening, noise cleanup, and quality boosts — no install, no watermark. Try PdfPixels AI enhancer.",
         keywords: [
@@ -484,12 +695,6 @@ If the photo is soft *and* tiny, enhance then [upscale](/tools/upscale-image). I
                 answer: "Yes. Enhance clarity and exposure, then remove or replace the background if the listing needs a clean catalog look. Compress the final image so product pages load quickly on mobile networks worldwide."
             }
         ],
-        rating: {
-            ratingValue: "4.8",
-            ratingCount: "186",
-            bestRating: "5",
-            worstRating: "1",
-        },
     },
     {
         slug: "heic-to-jpg-convert-iphone-photos",
@@ -498,8 +703,8 @@ If the photo is soft *and* tiny, enhance then [upscale](/tools/upscale-image). I
         date: "Jul 27, 2026",
         dateModified: "Jul 27, 2026",
         category: "Image Conversion",
-        author: "James Carter",
-        authorRole: "Mobile Tech & Photography Writer",
+        author: "PdfPixels Editorial",
+        authorRole: "PdfPixels team",
         readTime: "9 min read",
         metaDescription: "Learn how to convert iPhone HEIC photos to JPG free. Step-by-step guide covering online tools, Windows, Mac, and iPhone settings. No app downloads needed.",
         keywords: [
@@ -554,7 +759,7 @@ You can drag and drop files directly from Windows Explorer or Mac Finder. Or cli
 
 **Step 3 — Wait about five seconds**
 
-The conversion happens right there in your browser. There's no uploading-to-a-server waiting game. The tool decodes your HEIC file locally and re-encodes it as a high-quality JPEG.
+Upload the HEIC file, convert it, and download a JPEG. Decoding runs on the server so it works on Windows PCs that cannot open HEIC natively.
 
 **Step 4 — Download your JPG**
 
@@ -706,7 +911,7 @@ Gmail and Outlook handle HEIC fine on Apple devices, but the person receiving th
 At 90%+ quality settings, yes — the difference is invisible at normal viewing sizes. PdfPixels uses high-quality output by default.
 
 **Is it safe to upload my photos to an online converter?**
-PdfPixels processes files locally in your browser — the actual conversion doesn't send your photos to any server. Your photos stay on your device throughout the entire process.
+PdfPixels converts HEIC on our servers for that request, then you download the JPEG. Temporary files are deleted on supported flows — do not treat any online converter as a permanent vault for private photos.
 
 **Can I convert HEIC on my Android phone?**
 Yes. Open the [PdfPixels HEIC to JPG converter](/tools/heic-to-jpg) in Chrome on your Android, upload the HEIC files (maybe shared from AirDrop or iCloud), and download the JPGs.
@@ -715,7 +920,7 @@ Yes. Open the [PdfPixels HEIC to JPG converter](/tools/heic-to-jpg) in Chrome on
 Roughly 1.5x to 2x larger. A 3MB HEIC file typically becomes a 5-6MB JPEG at high quality. If you need smaller file sizes, compress after converting.
 
 **Will my EXIF data (date, location, camera settings) be preserved?**
-Most good converters preserve EXIF data during conversion. PdfPixels retains all original metadata from your HEIC files in the output JPEGs.
+Do not rely on this converter for forensics. The HEIC is decoded and written out as a new JPEG, so date and GPS tags are often stripped.
 
 ## The Workflow I Actually Recommend
 
@@ -763,7 +968,7 @@ The [PdfPixels HEIC to JPG converter](/tools/heic-to-jpg) is the fastest fix —
             },
             {
                 question: "Is it safe to upload personal photos to an online HEIC converter?",
-                answer: "PdfPixels processes HEIC to JPG conversion entirely in your browser — the actual image processing happens locally on your device, not on external servers. Your photos are never transmitted or stored. You can verify this by checking your network traffic during conversion — no upload occurs."
+                answer: "PdfPixels decodes HEIC on the server so the conversion works even when the browser cannot read Apple's format. HEIC conversion is decoded on our servers so Windows machines without HEIF support still work. Temporary files are not kept as a photo library."
             }
         ],
     },
@@ -773,8 +978,8 @@ The [PdfPixels HEIC to JPG converter](/tools/heic-to-jpg) is the fastest fix —
         excerpt: "Transferred photos from your iPhone to your Windows PC only to find they won't open? Learn how to convert HEIC to JPG instantly and for free in this complete guide.",
         date: "Jun 5, 2026",
         category: "Image Conversion",
-        author: "Alex Morgan",
-        authorRole: "Tech Workflow Expert",
+        author: "PdfPixels Editorial",
+        authorRole: "PdfPixels team",
         readTime: "5 min read",
         metaDescription: "Learn how to convert HEIC to JPG on Windows for free. We explain what HEIC files are and show you the easiest way to make them viewable on your PC.",
         keywords: [
@@ -808,7 +1013,7 @@ For most users, especially those who only need to convert a few photos at a time
 Connect your iPhone via USB, use iCloud, or email the photos to yourself. Save the \`.heic\` files to a folder on your computer.
 
 ### Step 2: Open the Converter
-Go to the PdfPixels [HEIC to JPG](/tools/heic-to-jpg) tool. This tool runs directly in your browser and is designed to handle Apple's specific image encoding.
+Go to the PdfPixels [HEIC to JPG](/tools/heic-to-jpg) tool. Upload one HEIC still photo and download a standard JPEG.
 
 ### Step 3: Upload and Convert
 Drag and drop your HEIC photos into the upload area. The conversion process is nearly instantaneous. The tool extracts the image data and recompresses it into a high-quality JPG.
@@ -858,8 +1063,8 @@ Dealing with HEIC files on a Windows PC doesn't have to be a nightmare. By bookm
         excerpt: "Learn how to reduce PDF for government form uploads in 2026. This comprehensive guide explains the exact steps to compress your documents without losing quality, ensuring your job application is submitted successfully.",
         date: "May 4, 2026",
         category: "PDF Tools",
-        author: "Sarah Mitchell",
-        authorRole: "Digital Media Specialist",
+        author: "PdfPixels Editorial",
+        authorRole: "PdfPixels team",
         readTime: "7 min read",
         metaDescription: "Learn how to reduce pdf for government form. Our complete guide shows you how to compress your job application PDFs under the strict 200KB limits.",
         keywords: [
@@ -898,11 +1103,11 @@ The most reliable method to get your file size down without destroying quality i
 
 ### 2. Upload Your Scanned Documents
 
-Once you are on the tool page, drag and drop your scanned resume, ID, or certificates. The tool is fully browser-based, meaning your sensitive documents are processed locally on your device and are never stored on an external server. This is critical for maintaining your privacy when handling personal government documents like Aadhar cards, SSNs, or passports.
+Once you are on the tool page, drag and drop your scanned resume, ID, or certificates. Compress PDF sends the file to our servers for that request, then you download the smaller result. Temporary files are deleted on supported flows. Keep a local original of anything confidential.
 
-### 3. Select the "Strong" Compression Level
+### 3. Select Smallest size
 
-Because government forms require very small file sizes (like under 200KB), the "Basic" compression level might not cut it. You need to select **Strong Compression**. 
+Because government forms require very small file sizes (like under 200KB), High quality may not be enough. Choose **Smallest size**. 
 
 This setting intelligently downsamples images, removes unnecessary invisible metadata, and flattens the file—while ensuring that the vector text and essential visual details remain intact. 
 
@@ -949,7 +1154,7 @@ Bookmark the [Compress PDF](/tools/compress-pdf) tool now so you have it ready f
             },
             {
                 question: "Is it safe to upload my ID and certificates to an online PDF compressor?",
-                answer: "Yes, if you use a browser-based compressor like PdfPixels. Your sensitive government documents are processed locally on your own device and are never uploaded or stored on an external server, ensuring complete privacy."
+                answer: "PdfPixels Compress PDF sends the file to our servers for that request, then you download the smaller result. Temporary files are deleted on supported flows. Still avoid public computers for highly sensitive documents."
             },
             {
                 question: "Why is my scanned certificate PDF so large?",
@@ -967,8 +1172,8 @@ Bookmark the [Compress PDF](/tools/compress-pdf) tool now so you have it ready f
         excerpt: "Tired of messy cut-outs and jagged edges? This hands-on guide walks you through the best free AI background removers in 2026, shows you exactly how to get clean transparent PNGs, and reveals pro tips most tutorials skip entirely.",
         date: "Feb 21, 2026",
         category: "Image Editing",
-        author: "Sarah Mitchell",
-        authorRole: "Digital Media Specialist",
+        author: "PdfPixels Editorial",
+        authorRole: "PdfPixels team",
         readTime: "12 min read",
         metaDescription: "Remove background from image free with AI in 2026. Compare the best free background remover tools, learn step-by-step techniques, and get pro tips for clean transparent PNGs.",
         keywords: [
@@ -1025,7 +1230,7 @@ One practical tip here: the better your original image quality, the better your 
 
 ### Step 3: Let the AI Do Its Thing
 
-Hit the remove button and wait. With PdfPixels, this typically takes between two and five seconds, depending on image complexity. Some tools take longer, especially if they are processing on the server side rather than in your browser.
+Hit the remove button and wait. With PdfPixels, this typically takes a few seconds, depending on image size and complexity. Background removal is an AI job, so it runs on the server for that request.
 
 ### Step 4: Review and Download
 
@@ -1183,8 +1388,8 @@ If you need more precise control over the background afterward — adding a blur
         excerpt: "Struggling to upload a large PDF because of strict file size limits? This complete guide shows you exactly how to compress PDF to 200KB or less without losing quality, using free online tools.",
         date: "Feb 23, 2026",
         category: "PDF Tools",
-        author: "Sarah Mitchell",
-        authorRole: "Digital Media Specialist",
+        author: "PdfPixels Editorial",
+        authorRole: "PdfPixels team",
         readTime: "8 min read",
         metaDescription: "Learn how to easily compress PDF to 200KB online for free. We share step-by-step methods to reduce PDF file size for portals, emails, and job applications without losing quality.",
         keywords: [
@@ -1222,7 +1427,7 @@ Here is the most reliable, zero-cost method to shrink your hefty documents down 
 
 ### Step 1: Use a Dedicated Online PDF Compressor
 
-Don't bother downloading expensive desktop software. Browse to the PdfPixels [Compress PDF](/tools/compress-pdf) tool. It runs directly in your browser, meaning it's incredibly fast and, more importantly, your private documents never get uploaded to a remote server. 
+Don't bother downloading expensive desktop software. Browse to the PdfPixels [Compress PDF](/tools/compress-pdf) tool. It runs in the browser UI; the file is sent to our servers for compression and then you download the result. Temporary files are deleted after the job. 
 
 ### Step 2: Upload Your File
 
@@ -1281,7 +1486,7 @@ Hitting strict upload limits doesn't have to be a roadblock in your day. By unde
             },
             {
                 question: "Is it safe to compress confidential documents online?",
-                answer: "Yes, provided you use tools that process files locally in your browser. PdfPixels uses WebAssembly to compress files directly on your device, meaning your sensitive tax documents or resumes are never uploaded to our servers."
+                answer: "PdfPixels Compress PDF sends the file to our servers for that request, then you download the smaller result. Temporary files are deleted on supported flows. Keep a local original of anything confidential."
             }
         ],
     },
@@ -1291,8 +1496,8 @@ Hitting strict upload limits doesn't have to be a roadblock in your day. By unde
         excerpt: "Dealing with a bloated PDF that nobody wants to open or upload? This guide walks you through every practical method to compress PDF file size — from one-click online tools to manual tricks — without sacrificing readability.",
         date: "Feb 24, 2026",
         category: "PDF Tools",
-        author: "James Carter",
-        authorRole: "Document Optimization Expert",
+        author: "PdfPixels Editorial",
+        authorRole: "PdfPixels team",
         readTime: "11 min read",
         metaDescription: "Learn how to compress PDF file size quickly and for free. Discover the most effective methods to reduce PDF size online, using desktop tools, and manually — with step-by-step instructions.",
         keywords: [
@@ -1345,7 +1550,7 @@ Head over to our free [Compress PDF](/tools/compress-pdf) tool. Here's what the 
 2. **Choose a compression level** — Most people should start with "Medium Compression" which reduces file size significantly without any noticeable quality loss. If you're hitting a strict size limit (like 200KB for a government form), choose "High Compression."
 3. **Download your compressed file** — Processing takes a few seconds. You'll see the new file size before downloading.
 
-One thing that sets the PdfPixels compressor apart: it does the heavy lifting directly in your browser using WebAssembly. Your document never leaves your device. This matters when you're compressing sensitive files like medical records, legal contracts, or financial statements.
+Treat any online compressor as a temporary processor: upload, download, and keep the original locally. PdfPixels deletes server-side temp files after the job on supported flows.
 
 ![PDF compression infographic showing how the compression process works with images, fonts and metadata optimization](/images/blog/pdf-compression-how-it-works.png)
 
@@ -1464,7 +1669,7 @@ Bookmark this page and the [Compress PDF tool](/tools/compress-pdf) for the next
             },
             {
                 question: "What is the best free tool to compress PDF file size?",
-                answer: "PdfPixels Compress PDF is the best fully free option — it works entirely in your browser (no uploads to servers), supports all compression levels, and produces excellent results. macOS Preview (with Reduce File Size filter) and Microsoft Print to PDF are also free alternatives, though they offer less control."
+                answer: "PdfPixels Compress PDF is the best fully free option — upload, choose a compression level, and download. The file is processed on our servers for that request. macOS Preview (with Reduce File Size filter) and Microsoft Print to PDF are also free alternatives, though they offer less control."
             },
             {
                 question: "Why is my PDF file so large?",
@@ -1490,8 +1695,8 @@ Bookmark this page and the [Compress PDF tool](/tools/compress-pdf) for the next
         excerpt: "Emails bouncing because your PDF is too large? Gmail's 25MB cap, Outlook's limits, and employer portals all have different rules. This guide shows you exactly how to reduce PDF size for email — quickly, free, and without making your document look terrible.",
         date: "Feb 24, 2026",
         category: "PDF Tools",
-        author: "James Carter",
-        authorRole: "Document Optimization Expert",
+        author: "PdfPixels Editorial",
+        authorRole: "PdfPixels team",
         readTime: "9 min read",
         metaDescription: "Reduce PDF size for email attachments in seconds. Learn the most reliable free methods to shrink PDF files under Gmail's 25MB limit, Outlook's restrictions, and strict portal limits without quality loss.",
         keywords: [
@@ -1560,7 +1765,7 @@ For most people, the fastest and most effective approach is to use a free browse
 
 Privacy matters when you're emailing sensitive documents. If you're compressing a confidential contract, tax return, medical record, or legal document, you want to be sure it's not being stored on an unknown server.
 
-The PdfPixels compressor processes your files locally in your browser using WebAssembly. This means your document never leaves your device — no upload to a third-party server, no privacy risk. This is a meaningful difference from tools that upload your files to a cloud server for processing.
+The PdfPixels compressor processes your PDF on our servers for that request, then you download the result. Temporary files are not kept as a document library. Read the privacy policy before uploading highly sensitive files.
 
 ## Method 2: Gmail's Built-in Solution (Google Drive)
 
@@ -1679,7 +1884,7 @@ Bookmark the [Compress PDF tool](/tools/compress-pdf) for the next time you're s
         faq: [
             {
                 question: "How do I reduce the PDF size for email?",
-                answer: "Upload your PDF to the free PdfPixels Compress PDF tool, select 'Medium Compression,' and download the result. This typically reduces file size by 50-70% in under 30 seconds. No sign-up required, and your files never leave your browser."
+                answer: "Upload your PDF to the free PdfPixels Compress PDF tool, select 'Medium Compression,' and download the result. This typically reduces file size by 50-70% in under 30 seconds. No sign-up required. The file is processed on our servers for that request, then temporary files are deleted on supported flows."
             },
             {
                 question: "What is the maximum PDF size you can email via Gmail?",
@@ -1709,8 +1914,8 @@ Bookmark the [Compress PDF tool](/tools/compress-pdf) for the next time you're s
         excerpt: "Need to make a PDF smaller right now? This step-by-step guide shows you exactly how to compress a PDF online in under 60 seconds — free, no software, no account needed.",
         date: "Feb 24, 2026",
         category: "PDF Tools",
-        author: "James Carter",
-        authorRole: "Document Optimization Expert",
+        author: "PdfPixels Editorial",
+        authorRole: "PdfPixels team",
         readTime: "7 min read",
         metaDescription: "Learn how to compress PDF online for free in 3 simple steps. No sign-up or installation needed. Reduce PDF file size instantly using free browser-based tools with no quality loss.",
         keywords: [
@@ -1748,7 +1953,7 @@ That's it. No software. No sign-up. Let's go.
 
 Open the link above in your browser. You'll see a simple upload area — a box you can drag a file into or click to browse your computer.
 
-The tool works completely inside your browser. That means your PDF never gets uploaded to any server. It's private, fast and secure.
+Upload the PDF, pick a compression level, and download the smaller file. The job runs on our servers for that request.
 
 ---
 
@@ -1785,7 +1990,7 @@ After uploading, you'll see compression options. Here's what each one means in p
 
 ## Step 4 — Download Your Compressed File
 
-Click the compress button and wait a few seconds. The tool processes your file directly in your browser.
+Click the compress button and wait a few seconds. The tool processes your file on our servers for that request.
 
 When it's done, you'll see the new file size — something like "Compressed: 1.8 MB (reduced by 87%)." Click the **Download** button to save the compressed PDF to your device.
 
@@ -1860,7 +2065,7 @@ You're done in under a minute. No account needed, no watermarks, completely free
             },
             {
                 question: "Is it safe to compress a PDF online?",
-                answer: "Yes, when using a browser-based tool like PdfPixels. The file is processed locally in your browser using WebAssembly — it never gets uploaded to an external server. Your document stays completely private."
+                answer: "PdfPixels Compress PDF sends the file to our servers for that request, then you download the smaller result. Temporary files are deleted on supported flows. Treat any online compressor as a temporary processor, not a permanent archive."
             },
             {
                 question: "How much can I reduce a PDF's file size online?",
@@ -1886,8 +2091,8 @@ You're done in under a minute. No account needed, no watermarks, completely free
         excerpt: "Getting a file-too-large error when trying to email a PDF? Here's the simplest way to reduce PDF file size for email attachments — in under a minute, free, with no software required.",
         date: "Feb 24, 2026",
         category: "PDF Tools",
-        author: "James Carter",
-        authorRole: "Document Optimization Expert",
+        author: "PdfPixels Editorial",
+        authorRole: "PdfPixels team",
         readTime: "8 min read",
         metaDescription: "Reduce PDF file size for email attachments quickly and for free. Step-by-step guide to compress PDFs under Gmail, Outlook and portal limits. No software needed, works on mobile too.",
         keywords: [
@@ -2093,8 +2298,8 @@ This lets the recipient download the full original at their end without any emai
         excerpt: "Adobe Acrobat Pro costs $25/month — and most people only need a fraction of its features. This guide covers the best free PDF editor alternatives in 2026, so you can edit, annotate, merge, protect, and compress PDFs without spending a dollar.",
         date: "Feb 25, 2026",
         category: "PDF Tools",
-        author: "James Carter",
-        authorRole: "Document Optimization Expert",
+        author: "PdfPixels Editorial",
+        authorRole: "PdfPixels team",
         readTime: "13 min read",
         metaDescription: "Looking for a free PDF editor alternative to Adobe Acrobat? We rank the best free tools in 2026 — edit, annotate, merge, split, and protect PDFs at zero cost. No subscription required.",
         keywords: [
@@ -2140,15 +2345,15 @@ To find the right alternative, first understand what Adobe Acrobat Pro actually 
 | Adobe Acrobat Feature | Best Free Alternative | Notes |
 |----------------------|----------------------|-------|
 | Compress PDF | [PdfPixels Compress PDF](/tools/compress-pdf) | Equivalent quality, browser-based |
-| Merge PDFs | [PdfPixels Merge PDF](/tools/merge-pdf) | Drag-and-drop, unlimited files |
+| Merge PDFs | [PdfPixels Merge PDF](/tools/merge-pdf) | Drag-and-drop, up to 20 files |
 | Split PDF | [PdfPixels Split PDF](/tools/split-pdf) | Extract specific pages easily |
 | Password protect PDF | [PdfPixels Protect PDF](/tools/protect-pdf) | Password-based PDF encryption for secure sharing |
 | Remove password | [PdfPixels Unlock PDF](/tools/unlock-pdf) | Remove a known password and download an unlocked copy |
-| Add watermark | [PdfPixels Watermark PDF](/tools/watermark-pdf) | Text and image watermarks |
+| Add watermark | [PdfPixels Watermark PDF](/tools/add-watermark-pdf) | Text stamps such as CONFIDENTIAL |
 | Convert PDF to JPG | [PdfPixels PDF to Image](/tools/pdf-to-image) | High-quality extraction |
 | Convert JPG to PDF | [PdfPixels Image to PDF](/tools/image-to-pdf) | Multiple images to one PDF — full guide: [convert JPG to PDF online](/blog/convert-jpg-to-pdf-online-no-software) |
 | Reorder pages | [PdfPixels Reorder PDF](/tools/reorder-pdf-pages) | Visual drag-and-drop |
-| OCR text recognition | Smallpdf / Adobe Scan | PdfPixels OCR coming soon |
+| OCR text recognition | [PdfPixels Image to Text](/tools/image-to-text) | Photo OCR; not a full PDF OCR editor |
 | Advanced form creation | Adobe only | This is where Adobe stays ahead |
 | Digital signatures (legal) | DocuSign / HelloSign | Legal e-signatures require dedicated tools |
 
@@ -2162,15 +2367,15 @@ The pattern is clear: for document manipulation tasks, free tools have closed th
 
 **What it replaces:**
 - Compress PDF: removes 40–90% of file size
-- Merge PDF: combine unlimited files
+- Merge PDF: combine up to 20 files per run
 - Split PDF: extract individual pages or ranges
 - Protect PDF: add password-based encryption before sharing sensitive documents
 - Unlock PDF: remove a known password from files you already own
 - Add watermark, reorder pages, delete pages, rotate pages
 
 **Key advantages:**
-- ✅ 100% free — no account, no watermarks, no limits
-- ✅ Processes files in your browser (no server uploads = maximum privacy)
+- ✅ Free for core tools — no account, no watermarks
+- ✅ PDF jobs run on our servers for that request, then temp files are deleted on supported flows
 - ✅ Works on all devices — desktop, tablet, mobile
 - ✅ No installation required
 
@@ -2283,7 +2488,7 @@ Here's something most comparison articles don't address: when you use a cloud-ba
 
 For personal documents (contracts, medical records, financial statements, legal agreements), this is a meaningful consideration. 
 
-PdfPixels processes your files locally in your browser using WebAssembly. Your PDF never leaves your device. Whether you're compressing a tax return or splitting a confidential contract, the file stays on your machine.
+PdfPixels processes your PDF on our servers for that request, then you download the result. Temporary files are deleted on supported flows. Keep a local original of anything important.
 
 Adobe Acrobat's desktop app also processes locally, but their online tools (Acrobat.com) upload your files to Adobe's cloud servers.
 
@@ -2316,7 +2521,7 @@ For most people reading this guide, that means the correct answer is: cancel Ado
         faq: [
             {
                 question: "What is the best free alternative to Adobe Acrobat in 2026?",
-                answer: "PdfPixels is the best free Adobe Acrobat alternative for most everyday tasks — compressing, merging, splitting, and converting PDFs. It requires no account, has no watermarks, and processes files locally in your browser for maximum privacy. For direct text editing within PDFs, LibreOffice Draw is the best free desktop option."
+                answer: "PdfPixels is the best free Adobe Acrobat alternative for most everyday tasks — compressing, merging, splitting, and converting PDFs. It requires no account and has no watermarks. PDF tools send the file to our servers for that job, then you download the result. For direct text editing within PDFs, LibreOffice Draw is the best free desktop option."
             },
             {
                 question: "Can I edit PDF text without Adobe Acrobat for free?",
@@ -2324,11 +2529,11 @@ For most people reading this guide, that means the correct answer is: cancel Ado
             },
             {
                 question: "Is PdfPixels a safe alternative to Adobe Acrobat?",
-                answer: "Yes. PdfPixels processes all files locally in your browser using WebAssembly technology — your documents never leave your device or get uploaded to any server. This actually makes it more private than Adobe's online tools (Acrobat.com), which upload documents to Adobe's cloud servers for processing."
+                answer: "Yes. PdfPixels processes files on our servers for PDF tools (image tools may run in the browser) — PDF tools send the file to our servers for that job, then you download the result. This actually makes it more private than Adobe's online tools (Acrobat.com), which upload documents to Adobe's cloud servers for processing."
             },
             {
                 question: "Can I merge PDF files without Adobe Acrobat?",
-                answer: "Absolutely. PdfPixels Merge PDF is completely free, requires no account, and lets you combine unlimited PDF files in any order. Simply drag your files in, arrange the order, and download the merged document. It works identically to Adobe's Combine Files feature at zero cost."
+                answer: "Absolutely. PdfPixels Merge PDF is completely free, requires no account, and lets you combine up to 20 PDF files per run. Simply drag your files in, arrange the order, and download the merged document."
             },
             {
                 question: "How do I compress a PDF without Adobe Acrobat?",
@@ -2350,8 +2555,8 @@ For most people reading this guide, that means the correct answer is: cancel Ado
         excerpt: "Need to combine multiple PDF files into one? This step-by-step guide shows you exactly how to merge PDFs online for free — no account, no watermarks, no software installation needed.",
         date: "Feb 25, 2026",
         category: "PDF Tools",
-        author: "James Carter",
-        authorRole: "Document Optimization Expert",
+        author: "PdfPixels Editorial",
+        authorRole: "PdfPixels team",
         readTime: "9 min read",
         metaDescription: "Merge PDF files online for free in seconds. No sign-up, no watermarks, no software. Learn how to combine multiple PDFs into one with the best free tools in 2026.",
         keywords: [
@@ -2419,7 +2624,7 @@ You can drag and drop the cards to rearrange them. Put your cover letter first, 
 
 ### Step 4: Click Merge
 
-Hit the Merge button. The tool processes your files entirely in your browser — no server upload, no wait for a cloud queue. For most files, this takes 5–15 seconds depending on total file size.
+Hit the Merge button. The merge runs on our servers after you upload the PDFs, then you download one combined file. For most files, this takes 5–15 seconds depending on total file size.
 
 ### Step 5: Download Your Combined PDF
 
@@ -2444,19 +2649,19 @@ Not all PDF merge tools are equal. Here's what separates good tools from frustra
 
 | Tool | Free? | Account Needed? | Watermarks? | Privacy |
 |------|-------|----------------|-------------|---------|
-| PdfPixels | ✅ 100% | ❌ No | ❌ None | ✅ Local browser |
+| PdfPixels | ✅ 100% | ❌ No | ❌ None | Server job, then delete temps |
 | Smallpdf | ⚠️ Limited | ✅ Required | ❌ None | ☁️ Cloud upload |
 | ILovePDF | ⚠️ Limited | ✅ Required | ❌ None | ☁️ Cloud upload |
 | Adobe Acrobat | ❌ Paid | ✅ Required | ❌ None | ☁️ Cloud upload |
 | PDF24 | ✅ Yes | ❌ No | ❌ None | ☁️ Cloud upload |
 
-PdfPixels stands out specifically because it combines 100% free, no account, no watermarks, and local browser processing — that combination is rarer than it should be.
+PdfPixels stands out specifically because it combines free core use, no account, and no watermarks — that combination is rarer than it should be.
 
 ## Advanced Merging Scenarios
 
 ### Merging More Than Two Files
 
-There's no limit on how many files you can merge with PdfPixels. Simply upload all the files at once, arrange them in the order you need, and merge. Whether you have 3 files or 30, the process is identical.
+You can merge up to 20 PDFs in one run (25 MB each, 100 MB combined). Upload the files, arrange the order, and merge. For larger sets, merge in groups and then merge the results.
 
 ### Merging Files of Different Sizes
 
@@ -2521,7 +2726,7 @@ When you merge PDFs using cloud-based tools, your files travel from your device 
 - HR documents (offer letters, salary information)
 - Personal identification documents
 
-PdfPixels merges files inside your browser using WebAssembly. The files never leave your device. This isn't a marketing claim — it's how the code works. If you open developer tools in your browser, you'll see no file upload requests to any server during the merge process.
+PdfPixels Merge PDF uploads the files to our servers for that request, combines the pages, and returns one PDF. Temporary files are deleted after the job on supported flows.
 
 ## Common Mistakes When Merging PDFs
 
@@ -2573,7 +2778,7 @@ Keep the tool bookmarked. The next time you're staring at a single upload button
             },
             {
                 question: "Is there a limit on how many PDFs I can merge for free?",
-                answer: "With PdfPixels, you can merge as many PDF files as you need with no limit. Upload 2 files or 20 files — the process is the same. Some other free tools cap the number of files or total pages on their free tier."
+                answer: "PdfPixels Merge PDF accepts up to 20 files per run, 25 MB each, and 100 MB combined. That covers most report and invoice packs. Split a larger set into groups if you hit the cap."
             },
             {
                 question: "Will the merged PDF have watermarks?",
@@ -2585,7 +2790,7 @@ Keep the tool bookmarked. The next time you're staring at a single upload button
             },
             {
                 question: "Is it safe to merge confidential PDF documents online?",
-                answer: "PdfPixels processes files locally in your browser using WebAssembly technology, meaning your documents never leave your device or get uploaded to any server. For sensitive documents like contracts, medical records, or financial statements, this local processing approach is the most private option available."
+                answer: "PdfPixels processes PDFs on our servers for this tool technology, meaning PDF tools send the file to our servers for that job, then you download the result. For sensitive documents like contracts, medical records, or financial statements, this local processing approach is the most private option available."
             }
         ],
     },
@@ -2595,8 +2800,8 @@ Keep the tool bookmarked. The next time you're staring at a single upload button
         excerpt: "Your iPhone saves photos as HEIC files that Windows PCs, older apps, and most websites can't read. This guide shows you the fastest free ways to convert HEIC to JPG — on any device, without installing anything.",
         date: "Feb 25, 2026",
         category: "Image Editing",
-        author: "Sarah Mitchell",
-        authorRole: "Digital Media Specialist",
+        author: "PdfPixels Editorial",
+        authorRole: "PdfPixels team",
         readTime: "10 min read",
         metaDescription: "Convert HEIC to JPG free in seconds. iPhone photos not opening on Windows or websites? Learn the fastest online and offline methods to convert HEIC files to JPEG in 2026.",
         keywords: [
@@ -2657,7 +2862,7 @@ For most people, this is the best approach. No installation, works on any device
 - Click to browse and select one or multiple HEIC files
 - On iPhone/iPad, select from your Photos app via the browser
 
-**Step 3:** The conversion happens automatically in your browser. No waiting for server-side processing — HEIC files are decoded and converted locally on your device.
+**Step 3:** Upload the HEIC file and download a JPEG. Decoding runs on the server so it works on devices that cannot open HEIC.
 
 **Step 4:** Download your JPEG file. The image quality is preserved — you get a full-resolution JPEG equivalent of your HEIC photo.
 
@@ -2851,7 +3056,7 @@ Whatever your setup, you now have every method available to make your iPhone pho
         faq: [
             {
                 question: "How do I convert HEIC to JPG for free?",
-                answer: "Use the free PdfPixels HEIC to JPG converter. Open it in any browser, upload your HEIC file (or multiple files at once), and download the converted JPEG files. No account required, no watermarks, no software installation. The conversion happens locally in your browser in seconds."
+                answer: "Use the free PdfPixels HEIC to JPG converter. Open it in any browser, upload one HEIC still photo, and download the converted JPEG. No account required, no watermarks, no software installation. Conversion runs on our servers for that request."
             },
             {
                 question: "Why can't I open HEIC files on Windows?",
@@ -2886,8 +3091,8 @@ Whatever your setup, you now have every method available to make your iPhone pho
         date: "Feb 26, 2026",
         dateModified: "Aug 8, 2026",
         category: "PDF Tools",
-        author: "James Carter",
-        authorRole: "Document Optimization Expert",
+        author: "PdfPixels Editorial",
+        authorRole: "PdfPixels team",
         readTime: "12 min read",
         metaDescription: "Compress PDF under 1MB free in minutes. Step-by-step: pick the right compression level, trim pages, flatten scans, and hit job portal and government upload limits without unreadable text.",
         keywords: [
@@ -2906,12 +3111,6 @@ Whatever your setup, you now have every method available to make your iPhone pho
         ],
         coverImage: "/images/blog/compress-pdf-under-1mb-hero.jpg",
         imageAlt: "Laptop on a clean desk showing a professional PDF resume being reduced from a large file size to under 1MB with a free online compressor",
-        rating: {
-            ratingValue: "4.8",
-            ratingCount: "214",
-            bestRating: "5",
-            worstRating: "1"
-        },
         content: `
 Last Tuesday a friend pinged me mid-panic: her university portal rejected a 4.7MB transcript packet with a cold "maximum 1MB" error. She'd already renamed the file, zipped it (that never helps with PDFs), and almost paid for desktop software she didn't need.
 
@@ -2920,7 +3119,7 @@ Twenty minutes later the same packet sat at **780KB**, text still sharp, stamps 
 If you need to **compress PDF under 1MB** for a job board, government form, insurance upload, or school application, this is the practical playbook — not theory, not five tools that all want your email.
 
 > [!TIP]
-> **Quick answer:** Open free [Compress PDF](/tools/compress-pdf), upload your file, start with **Medium** (or **High** if it's scanned/heavy). Download when the size shows under 1MB. No sign-up, no watermark. Files process in your browser.
+> **Quick answer:** Open free [Compress PDF](/tools/compress-pdf), upload your file, start with **Medium** (or **High** if it's scanned/heavy). Download when the size shows under 1MB. No sign-up, no watermark. The tool UI runs in the browser; PDF compression runs on the server.
 
 ## Why 1MB is the limit you keep hitting
 
@@ -2961,7 +3160,7 @@ This is the path that works for most people on the first try.
 
 ### Step 1 — Open a browser-based compressor
 
-Go to [PdfPixels Compress PDF](/tools/compress-pdf). You don't install anything. Processing stays on your device (WebAssembly), which matters for resumes, IDs, tax papers, and medical forms.
+Go to [PdfPixels Compress PDF](/tools/compress-pdf). You don't install anything. The file is processed on our servers for that request, then you download the smaller PDF.
 
 Want a broader tool comparison first? [Best free PDF compressor online](/blog/best-free-pdf-compressor-online) is our honest rundown.
 
@@ -3146,7 +3345,7 @@ Bookmark the tool once. Next time a portal throws "file too large," you'll finis
             },
             {
                 question: "Is it safe to compress sensitive PDFs online?",
-                answer: "Use a tool that processes files in your browser so the document is not stored on a remote server. PdfPixels compression runs locally in the browser via WebAssembly for typical use."
+                answer: "Use a tool that processes files in your browser so the document is not stored on a remote server. PdfPixels compression runs on our servers for typical use, then you download the file."
             }
         ],
     },
@@ -3157,8 +3356,8 @@ Bookmark the tool once. Next time a portal throws "file too large," you'll finis
         date: "Feb 27, 2026",
         dateModified: "Aug 8, 2026",
         category: "PDF Tools",
-        author: "James Carter",
-        authorRole: "Document Optimization Expert",
+        author: "PdfPixels Editorial",
+        authorRole: "PdfPixels team",
         readTime: "11 min read",
         metaDescription: "Compress PDF to 200KB for email attachment free. Step-by-step High compression, page splits, and flatten tricks so job portals, government forms, and HR inboxes accept your file.",
         keywords: [
@@ -3177,12 +3376,6 @@ Bookmark the tool once. Next time a portal throws "file too large," you'll finis
         ],
         coverImage: "/images/blog/compress-pdf-200kb-email-hero.jpg",
         imageAlt: "Laptop and phone on a desk showing an email attachment PDF reduced to under 200KB for a successful send",
-        rating: {
-            ratingValue: "4.9",
-            ratingCount: "186",
-            bestRating: "5",
-            worstRating: "1"
-        },
         content: `
 I still remember the Sunday night I almost missed a job deadline because of **200KB**. Resume looked fine. Cover letter was fine. Gmail itself would have taken the file without blinking. The *employer portal* behind the “email us your documents” button? Hard stop at 200KB.
 
@@ -3365,7 +3558,7 @@ Bookmark the tool once. Next time a form laughs at your 2MB scan, you’ll be un
             },
             {
                 question: "Is it safe to compress confidential PDFs online?",
-                answer: "Prefer a browser tool that processes locally. PdfPixels compression runs in your browser with WebAssembly for typical use so files are not stored on a remote server as part of the compress step."
+                answer: "Prefer a browser tool that processes locally. PdfPixels compression runs on our servers for that request. Temporary files are not kept as a document archive."
             },
             {
                 question: "Medium vs High compression for email — which do I pick?",
@@ -3388,8 +3581,8 @@ Bookmark the tool once. Next time a form laughs at your 2MB scan, you’ll be un
         date: "Feb 28, 2026",
         dateModified: "Aug 8, 2026",
         category: "PDF Tools",
-        author: "Sarah Mitchell",
-        authorRole: "Digital Media Specialist",
+        author: "PdfPixels Editorial",
+        authorRole: "PdfPixels team",
         readTime: "11 min read",
         metaDescription: "PDF too large to send email in Gmail? Fix the 25MB limit fast: compress free, pick Medium or High, or send a Drive link when quality must stay full. Mobile steps included.",
         keywords: [
@@ -3408,12 +3601,6 @@ Bookmark the tool once. Next time a form laughs at your 2MB scan, you’ll be un
         ],
         coverImage: "/images/blog/pdf-too-large-gmail-hero.jpg",
         imageAlt: "Laptop on a desk showing an email compose window with a large PDF attachment reduced to fit under Gmail's 25MB limit",
-        rating: {
-            ratingValue: "4.8",
-            ratingCount: "203",
-            bestRating: "5",
-            worstRating: "1"
-        },
         content: `
 I had a client PDF open, coffee going cold, and Gmail refused to cooperate. **Attachment exceeds the maximum size of 25 MB.** The file was 31MB — a scanned contract packet someone photographed on a phone at full resolution. Not exotic. Just heavy.
 
@@ -3613,8 +3800,8 @@ Bookmark the tool. The 25MB wall shows up again the next time someone emails you
         excerpt: "Can't attach that PDF because it's too large? Relax — you're not stuck. This guide walks you through every reliable method to send large PDF files by email, from compressing them in seconds to sharing a download link instead.",
         date: "Mar 2, 2026",
         category: "PDF Tools",
-        author: "James Carter",
-        authorRole: "Document Optimization Expert",
+        author: "PdfPixels Editorial",
+        authorRole: "PdfPixels team",
         readTime: "10 min read",
         metaDescription: "Learn exactly how to send large PDF files through email using compression, cloud links, and file sharing. Step-by-step guide with free tools — no technical experience needed.",
         keywords: [
@@ -3687,9 +3874,9 @@ That's genuinely it. A 20 MB PDF typically compresses down to 2–4 MB with medi
 
 ### Why the PdfPixels compressor is worth using specifically
 
-One thing I want to call out: the [PdfPixels PDF compressor](/tools/compress-pdf) processes your files locally in your browser using WebAssembly. This means your document never gets uploaded to a server — it's compressed entirely on your device.
+One thing I want to call out: the [PdfPixels PDF compressor](/tools/compress-pdf) processes your PDF on our servers for that request, then you download the result. Temporary files are deleted on supported flows.
 
-This matters a lot when you're emailing sensitive content. Tax returns, medical records, legal contracts, confidential business proposals — these shouldn't be sent through unknown cloud servers before you even send the email. Browser-based compression is the privacy-safe choice.
+This still matters when you are emailing sensitive content. Tax returns, medical records, legal contracts, confidential business proposals should stay in your own copy as well. Treat any online compressor as a temporary processor, not a vault.
 
 ## Method 2: Share via Google Drive (Best for Very Large PDFs)
 
@@ -3840,7 +4027,7 @@ Keep the [PdfPixels Compress PDF tool](/tools/compress-pdf) bookmarked — it's 
             },
             {
                 question: "Is it safe to compress confidential PDFs online?",
-                answer: "It depends on the tool. The PdfPixels compressor processes files locally in your browser using WebAssembly — your document never leaves your device or gets uploaded to any server. This makes it safe for confidential documents like tax returns, legal contracts, and medical records. Always check a tool's privacy policy before uploading sensitive files."
+                answer: "PdfPixels Compress PDF sends the file to our servers for that request, then you download the smaller result. Temporary files are deleted on supported flows. Always read the privacy policy before uploading highly sensitive files."
             }
         ],
     },
@@ -3850,8 +4037,8 @@ Keep the [PdfPixels Compress PDF tool](/tools/compress-pdf) bookmarked — it's 
         excerpt: "Scanned PDFs are notoriously oversized — and generic compression often makes them blurry or unreadable. This guide shows you how to compress scanned PDFs without losing quality, using the right tools and settings that actually preserve your document's clarity.",
         date: "Mar 3, 2026",
         category: "PDF Tools",
-        author: "Sarah Mitchell",
-        authorRole: "Digital Media Specialist",
+        author: "PdfPixels Editorial",
+        authorRole: "PdfPixels team",
         readTime: "11 min read",
         metaDescription: "Learn how to compress scanned PDF without losing quality. Step-by-step guide using free online tools to shrink scanned documents while keeping text sharp and images clear.",
         keywords: [
@@ -3912,7 +4099,7 @@ Here's the process I recommend for most scanned documents.
 
 ### Step 1: Use the Right Tool
 
-Not all PDF compressors handle scanned documents well. Some are optimized for text-based PDFs and do a poor job with image-heavy content. The [PdfPixels Compress PDF](/tools/compress-pdf) tool is built to handle both — and it processes your file locally in your browser, which matters when you're dealing with confidential documents like contracts, medical records, or legal correspondence.
+Not all PDF compressors handle scanned documents well. Some are optimized for text-based PDFs and do a poor job with image-heavy content. The [PdfPixels Compress PDF](/tools/compress-pdf) tool is built to handle both. The file is processed on our servers for that request, then temporary files are deleted on supported flows. Still treat confidential contracts, medical records, or legal correspondence with care.
 
 Open the tool in your browser on any device — desktop, tablet, or phone.
 
@@ -4039,7 +4226,7 @@ Scanned documents tend to contain sensitive information by their nature — cont
 
 Cloud-based PDF processors require your document to travel from your device to their servers, get processed, and then return. That means your sensitive information passes through third-party infrastructure — and in some cases, documents may be stored temporarily or analyzed for service improvement purposes.
 
-The [PdfPixels Compress PDF tool](/tools/compress-pdf) takes a fundamentally different approach: it processes your PDF entirely within your browser using WebAssembly technology. Your file never leaves your device. There's no upload to any server. Whether you're compressing a tax return, a medical record, or a signed contract, it stays on your machine throughout the entire process.
+The [PdfPixels Compress PDF tool](/tools/compress-pdf) accepts the PDF in the browser, compresses it on our servers, and returns the smaller file for download. Temporary files are deleted on supported flows.
 
 This is the right approach for sensitive documents, full stop.
 
@@ -4116,8 +4303,8 @@ And for related PDF tasks — splitting out just the pages you need before compr
         excerpt: "Ever wondered why a simple 2-page PDF file is suddenly 15MB? Discover the hidden reasons behind massive PDF sizes and learn exactly how to fix the 'file too large attachment' error quickly and for free.",
         date: "March 10, 2026",
         category: "PDF Tools",
-        author: "Sarah Mitchell",
-        authorRole: "Digital Media Specialist",
+        author: "PdfPixels Editorial",
+        authorRole: "PdfPixels team",
         readTime: "7 min read",
         metaDescription: "Find out why your PDF file is so large and how to fix the 'file too large attachment' error. Easy, free, and fast solutions to compress PDF files without quality loss.",
         keywords: [
@@ -4170,7 +4357,7 @@ Now that you know *why* your file is huge, let's fix it. Here are the three best
 
 ### Method 1: The Instant AI Compressor (Best for Everyone)
 
-The absolute fastest way to fix a file too large error is to use a dedicated PDF compressor. Let's use PdfPixels' [Compress PDF](/tools/compress-pdf) tool as an example because it processes files directly in your browser (meaning your sensitive documents are never uploaded to our servers).
+The absolute fastest way to fix a file too large error is to use a dedicated PDF compressor. Let's use PdfPixels' [Compress PDF](/tools/compress-pdf) tool as an example: upload the PDF, compress it, and download the smaller file.
 
 1. **Go to the tool:** Open [Compress PDF](/tools/compress-pdf).
 2. **Upload your large file:** Drag and drop the problematic PDF.
@@ -4231,7 +4418,7 @@ By running your bulky documents through a secure, browser-based [PDF compressor]
             },
             {
                 question: "Is it safe to compress confidential documents online?",
-                answer: "It depends on the tool. You should use a tool that processes files locally in your browser using WebAssembly, like PdfPixels. This ensures your sensitive documents (like tax returns or contracts) never leave your device and are never uploaded to an external server."
+                answer: "PdfPixels Compress PDF processes the file on our servers for that request, then you download the result. Temporary files are not kept as a document archive. Avoid public computers for highly sensitive documents."
             }
         ],
     },
@@ -4241,8 +4428,8 @@ By running your bulky documents through a secure, browser-based [PDF compressor]
         excerpt: "Finding a truly free PDF compressor that leaves no watermark is harder than it sounds. This hands-on guide cuts through the noise — we tested the top tools in 2026 and ranked them on speed, quality, privacy, and zero-cost promises that actually hold up.",
         date: "Apr 27, 2026",
         category: "PDF Tools",
-        author: "James Carter",
-        authorRole: "Document Optimization Expert",
+        author: "PdfPixels Editorial",
+        authorRole: "PdfPixels team",
         readTime: "13 min read",
         metaDescription: "Discover the best free PDF compressor online with no watermark in 2026. Compare top tools, learn step-by-step compression, and reduce PDF size without sacrificing quality or privacy.",
         keywords: [
@@ -4271,7 +4458,7 @@ It is genuinely frustrating. So I decided to do a proper, hands-on comparison of
 Spoiler: the one I use most often is right here. You can try our [free Compress PDF tool](/tools/compress-pdf) and see for yourself — no watermarks, no account, no tricks.
 
 > [!TIP]
-> **Jump Straight to the Answer:** The best free PDF compressor online with no watermark in 2026 is [PDFPixels Compress PDF](/tools/compress-pdf). It processes your file locally in your browser (so your document never leaves your device), supports three compression levels, and downloads at full quality — completely free, no sign-up required.
+> **Jump Straight to the Answer:** The best free PDF compressor online with no watermark in 2026 is [PDFPixels Compress PDF](/tools/compress-pdf). It compresses the PDF on our servers for that request so you can download a smaller file, supports three compression levels, and downloads at full quality — completely free, no sign-up required.
 
 ## Why Most "Free" PDF Compressors Are Not Actually Free
 
@@ -4295,13 +4482,13 @@ I tested each of these tools using the same set of five documents: a scanned 8-p
 
 Let me start with the tool that earned the top spot and explain exactly why.
 
-PDFPixels processes your PDF directly in your browser using WebAssembly technology. This is a significant technical distinction. Unlike tools that upload your file to a remote server for processing, PDFPixels keeps everything local. Your document never leaves your device. For anyone compressing confidential contracts, medical records, financial statements, or legal documents — this matters enormously.
+PDFPixels compresses PDFs on our servers for that request. You upload, wait a few seconds, and download the smaller file. Temporary files are deleted on supported flows. For confidential contracts, medical records, financial statements, or legal documents, keep a local original and treat any online tool as a temporary processor.
 
 **Why it earns the top spot:**
 - **Completely free** — no freemium limits, no watermarks on downloads, no usage caps
 - **No registration required** — open the tool, compress, download, done
 - **Three compression levels** — Basic, Medium, and High, so you control the quality-to-size tradeoff
-- **Privacy-first architecture** — your file never uploads to any server
+- **Temporary processing** — the file is handled for that request, then cleaned up on supported flows
 - **Fast processing** — typically five to fifteen seconds for most documents
 - **Clean results** — text remains perfectly crisp because vector content is never touched
 
@@ -4421,7 +4608,7 @@ If you need to get under [200KB specifically](/blog/compress-pdf-to-200kb-guide)
 
 This deserves a dedicated section because most guides gloss over it.
 
-When you use a browser-based tool that processes files locally, your document is compressed entirely on your device using JavaScript/WebAssembly. It is transmitted nowhere. No server ever sees it. This is what PDFPixels does.
+When you use PdfPixels Compress PDF, the file is uploaded for that job, compressed on the server, and returned for download. Temporary files are deleted on supported flows.
 
 When you use a server-side tool (most other free compressors), your document is uploaded to their infrastructure, processed on their servers, stored temporarily (sometimes for 24 hours), and then made available for download. During that window, your document exists on their servers. For publicly available brochures and marketing materials, this is perfectly fine. For tax returns, legal contracts, medical records, or HR documents — you should think carefully about who has access to your file during that window.
 
@@ -4433,9 +4620,9 @@ For sensitive documents: always use a locally-processed compressor. For non-sens
 
 One thing that surprised me when I first started using browser-based PDF tools seriously is how well they work on mobile. You do not need a dedicated app for this.
 
-**On iPhone or iPad:** Open Safari, navigate to [PDFPixels Compress PDF](/tools/compress-pdf), tap the upload area, and select your PDF from Files. The entire compression process runs in your browser. Tap Download when finished, and the file saves to your Downloads folder. From there, you can share it directly to Mail, WhatsApp, or any other app.
+**On iPhone or iPad:** Open Safari, navigate to [PDFPixels Compress PDF](/tools/compress-pdf), tap the upload area, and select your PDF from Files. The compression job runs on the server after you upload the PDF. Tap Download when finished, and the file saves to your Downloads folder. From there, you can share it directly to Mail, WhatsApp, or any other app.
 
-**On Android:** The process is identical in Chrome. The compression runs locally in your browser, and the download goes to your Downloads folder. Android's share sheet makes it straightforward to attach to email or upload directly to a portal.
+**On Android:** The process is identical in Chrome. After upload, compression runs on the server, and the download goes to your Downloads folder. Android's share sheet makes it straightforward to attach to email or upload directly to a portal.
 
 The only real limitation on mobile is very large files — a 200MB PDF might be slow to process in a mobile browser. But for typical document sizes under 50MB, it works seamlessly.
 
@@ -4467,7 +4654,7 @@ The content that earns the most natural backlinks in the PDF tools space tends t
 
 After testing every major free PDF compressor available in 2026, the ranking is clear:
 
-**PDFPixels wins** for anyone who wants genuinely unlimited free compression with no watermarks, no account, and no privacy concerns. The local browser processing sets it apart from every server-side competitor, and the three-level compression system gives you real control over the quality-size tradeoff.
+**PDFPixels wins** for anyone who wants free compression with no watermarks and no account. You upload, choose a level, and download. Temporary files are deleted on supported flows, and the three-level compression system gives you real control over the quality-size tradeoff.
 
 **Smallpdf** is a close second if you only need occasional compression and do not mind the two-file daily cap.
 
@@ -4480,7 +4667,7 @@ Start with [PDFPixels Compress PDF](/tools/compress-pdf) — it handles the vast
         faq: [
             {
                 question: "What is the best free PDF compressor online with no watermark?",
-                answer: "PDFPixels is the best free PDF compressor online with no watermark in 2026. It compresses PDFs entirely in your browser using WebAssembly — so your file never leaves your device — and downloads are completely watermark-free with no registration or account required. Three compression levels (Basic, Medium, High) let you control the quality-to-size balance."
+                answer: "PdfPixels Compress PDF is free, adds no watermark, and does not require an account. Upload a PDF, pick a compression level, and download the smaller file. Fair-use rate limits apply."
             },
             {
                 question: "Can I compress a PDF online for free without creating an account?",
@@ -4496,7 +4683,7 @@ Start with [PDFPixels Compress PDF](/tools/compress-pdf) — it handles the vast
             },
             {
                 question: "Is it safe to use an online PDF compressor for sensitive documents?",
-                answer: "It depends on how the tool processes your file. PDFPixels processes files locally in your browser using WebAssembly — your document never uploads to any server, making it safe for confidential documents. Tools that upload files to remote servers for processing carry a higher privacy risk, though reputable ones delete files quickly after processing."
+                answer: "It depends on how the tool processes your file. PDFPixels processes PDFs on our servers for this tool — the file is processed for that job and not kept as a document library; still avoid public computers for highly sensitive files. Tools that upload files to remote servers for processing carry a higher privacy risk, though reputable ones delete files quickly after processing."
             },
             {
                 question: "Can I compress a PDF on my phone for free?",
@@ -4518,8 +4705,8 @@ Start with [PDFPixels Compress PDF](/tools/compress-pdf) — it handles the vast
         excerpt: "Learn how to edit PDF online for free in 2026 without paying for Adobe Acrobat Pro. Follow this step-by-step guide to modify text, reorder pages, annotate, compress, and protect your documents without watermarks or downloads.",
         date: "Jul 21, 2026",
         category: "PDF Tools",
-        author: "James Carter",
-        authorRole: "Document Optimization Expert",
+        author: "PdfPixels Editorial",
+        authorRole: "PdfPixels team",
         readTime: "10 min read",
         metaDescription: "Learn how to edit PDF online free without Adobe Acrobat in 2026. Step-by-step guide to edit text, reorder pages, annotate, merge, and protect PDFs for free with no account required.",
         keywords: [
@@ -4539,7 +4726,7 @@ If you've ever needed to quickly update a line of text in an invoice, fix a typo
 
 At **$24.99 per month** (or roughly $300 a year), Adobe Acrobat Pro is simply too expensive for professionals, students, and small business owners who only need to modify PDFs occasionally. 
 
-The good news? In 2026, web browser standards and WebAssembly technology have reached a point where you can **edit PDF online free** without downloading heavy desktop software, creating mandatory accounts, or putting up with intrusive watermarks.
+The good news? In 2026 you can **edit a PDF online free** in a browser — rotate, watermark, number pages, merge, split — without installing Acrobat or creating an account.
 
 > [!TIP]
 > **Quick Solution:** Need to edit or modify a document right now? Head directly to the free [PdfPixels Suite](/) to compress, merge, split, rotate, reorder, or password protect your PDFs directly inside your web browser in under 30 seconds.
@@ -4607,7 +4794,7 @@ A common question users ask when switching away from Adobe is whether uploading 
 The answer depends heavily on the architecture of the tool you use:
 
 1. **Server-Side Upload Editors**: Many legacy online converters upload your file to an external server, process it in a remote queue, and store it for hours.
-2. **Browser-Native / Edge Editors**: Tools like PdfPixels process file streams locally using browser WebAssembly. Your confidential contracts, passports, and bank statements remain isolated within your device's sandbox memory and are never stored permanently on external servers.
+2. **Browser tools with a clear privacy policy**: PdfPixels runs the editor UI in the browser. PDF jobs that need a server (compress, protect, merge) send the file for that request and do not keep a document library. Read the privacy policy before uploading highly sensitive files.
 
 For an in-depth analysis on data privacy when using web-based utilities, read our article on [whether online PDF tools are safe](/blog/is-it-safe-to-use-online-pdf-tools).
 
@@ -4634,7 +4821,7 @@ Bookmark our [Compress PDF](/tools/compress-pdf), [Merge PDF](/tools/merge-pdf),
             },
             {
                 question: "Is it safe to edit sensitive business or personal PDFs in an online editor?",
-                answer: "Yes, provided you use a privacy-focused editor that processes documents locally within your browser using WebAssembly. PdfPixels does not store or save your uploaded files on remote servers."
+                answer: "PdfPixels processes PDF edits on our servers for that request, then you download the result. Temporary files are deleted on supported flows. Keep a local original of anything confidential."
             },
             {
                 question: "How do I edit a scanned PDF that won't allow text selection?",
@@ -4654,8 +4841,8 @@ Bookmark our [Compress PDF](/tools/compress-pdf), [Merge PDF](/tools/merge-pdf),
         date: "Jul 28, 2026",
         dateModified: "Jul 28, 2026",
         category: "PDF Security",
-        author: "James Carter",
-        authorRole: "Document Tools Writer",
+        author: "PdfPixels Editorial",
+        authorRole: "PdfPixels team",
         readTime: "8 min read",
         metaDescription: "Learn how to password protect a PDF online free without Adobe Acrobat. Step-by-step browser method, what encryption covers, and common mistakes to avoid.",
         keywords: [
@@ -4756,8 +4943,8 @@ PdfPixels is designed for practical document jobs — start at [Protect PDF](/to
         date: "Jul 28, 2026",
         dateModified: "Jul 28, 2026",
         category: "PDF Editing",
-        author: "Priya Nair",
-        authorRole: "Productivity Writer",
+        author: "PdfPixels Editorial",
+        authorRole: "PdfPixels team",
         readTime: "7 min read",
         metaDescription: "Add page numbers to a PDF online free. Learn placement, starting numbers, and how to number multi-page PDFs without Adobe Acrobat.",
         keywords: [
@@ -4832,8 +5019,8 @@ Numbered pages are a small polish with outsized impact on review speed. Make it 
         date: "Jul 28, 2026",
         dateModified: "Jul 28, 2026",
         category: "Image Privacy",
-        author: "James Carter",
-        authorRole: "Mobile Tech & Photography Writer",
+        author: "PdfPixels Editorial",
+        authorRole: "PdfPixels team",
         readTime: "9 min read",
         metaDescription: "Remove EXIF and GPS location data from photos before sharing. Learn what metadata is stored, privacy risks, and how to strip image metadata free online.",
         keywords: [
@@ -4919,8 +5106,8 @@ Metadata is invisible, which is exactly why it surprises people. Make "strip bef
         date: "Jul 28, 2026",
         dateModified: "Jul 28, 2026",
         category: "Image Basics",
-        author: "Priya Nair",
-        authorRole: "Productivity Writer",
+        author: "PdfPixels Editorial",
+        authorRole: "PdfPixels team",
         readTime: "10 min read",
         metaDescription: "Understand image DPI for print vs web. Learn pixels vs DPI, when 300 DPI matters, and how to resize photos correctly for documents and screens.",
         keywords: [

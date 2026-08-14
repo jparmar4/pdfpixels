@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { AnimatedMeshBg } from '@/components/ui/animated-mesh-bg';
 import { CategorySection } from '@/components/layout/category-section';
-import { toolCategories } from '@/lib/tools-data';
+import { allTools, toolCategories } from '@/lib/tools-data';
 import { HeaderAd } from '@/components/ads/ad-banner';
 import { TypingText } from './typing-text';
 import { GeoRegion } from '@/lib/geo-data';
@@ -16,7 +16,7 @@ function ToolsHeader({ search, setSearch, region }: { search: string, setSearch:
   const floatingBadges = [
     { text: 'Free Forever', Icon: DollarSign, className: 'float-badge-1', color: 'text-emerald-500' },
     { text: 'No Signup', Icon: Zap, className: 'float-badge-2', color: 'text-primary' },
-    { text: '55+ Tools', Icon: Wrench, className: 'float-badge-3', color: 'text-violet-500' },
+    { text: `${allTools.length}+ Tools`, Icon: Wrench, className: 'float-badge-3', color: 'text-violet-500' },
     { text: 'Fast Processing', Icon: Clock, className: 'float-badge-4', color: 'text-cyan-500' },
   ];
 
@@ -61,12 +61,18 @@ function ToolsHeader({ search, setSearch, region }: { search: string, setSearch:
           >
             <Link href="/tools/linearize-pdf" className="group mb-6 inline-flex items-center gap-2 rounded-full border border-amber-500/30 bg-gradient-to-r from-amber-500/10 to-orange-500/10 px-5 py-1.5 text-sm font-bold text-amber-600 dark:text-amber-500 transition-all hover:scale-105 hover:shadow-[0_8px_30px_rgba(245,158,11,0.15)] shadow-sm">
               <Zap className="h-4 w-4 group-hover:scale-110 transition-transform" />
-              New Pro Tool: Fast Web View (Linearize)
+              New: Fast Web View (Linearize PDF)
               <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-0.5 transition-transform" />
             </Link>
-            <h1 id="home-hero-title" className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight mb-2 leading-[1.05]">
-              {region ? `Premium PDF & Image Tools for the ${region.adjective} Market` : 'Premium PDF & Image Tools'}
-            </h1>
+            {region ? (
+              <h2 id="home-hero-title" className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight mb-2 leading-[1.05]">
+                {`Tools people in ${region.name} use most`}
+              </h2>
+            ) : (
+              <h1 id="home-hero-title" className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight mb-2 leading-[1.05]">
+                Premium PDF & Image Tools
+              </h1>
+            )}
             <div className="text-lg md:text-xl mb-4 max-w-2xl mx-auto font-medium leading-relaxed text-muted-foreground">
               Try{' '}
               <TypingText />
@@ -87,7 +93,7 @@ function ToolsHeader({ search, setSearch, region }: { search: string, setSearch:
               </Link>
             </div>
 
-            <p className="text-xs text-muted-foreground">55+ tools · Free forever · Works on mobile and desktop</p>
+            <p className="text-xs text-muted-foreground">{allTools.length}+ tools · Free forever · Works on mobile and desktop</p>
           </motion.div>
 
           <motion.div
@@ -126,8 +132,8 @@ function PopularToolsMiniGrid() {
   const items = [
     { title: 'Compress PDF', href: '/tools/compress-pdf', desc: 'Reduce file size fast', icon: Minimize2 },
     { title: 'Merge PDF', href: '/tools/merge-pdf', desc: 'Combine multiple PDFs', icon: Files },
-    { title: 'Linearize PDF', href: '/tools/linearize-pdf', desc: 'Fast web view optimization', icon: Zap, isPro: true, badge: 'Pro' },
-    { title: 'Remove BG', href: '/tools/remove-image-background', desc: 'AI background removal', icon: Sparkles, isPro: true, badge: 'AI' },
+    { title: 'Linearize PDF', href: '/tools/linearize-pdf', desc: 'Fast web view optimization', icon: Zap, badge: 'New' },
+    { title: 'Remove BG', href: '/tools/remove-image-background', desc: 'AI background removal', icon: Sparkles, badge: 'AI' },
   ];
 
   return (
@@ -136,10 +142,10 @@ function PopularToolsMiniGrid() {
         <Link
           key={item.href}
           href={item.href}
-          className={`group relative rounded-2xl border ${item.isPro ? 'border-amber-500/20 shadow-[0_16px_40px_-18px_rgba(245,158,11,.2)] bg-gradient-to-b from-amber-500/[0.03] to-card/40' : 'border-border/60 bg-gradient-to-b from-card/80 to-card/40 shadow-soft'} backdrop-blur-xl p-4 hover:-translate-y-1 hover:shadow-premium transition-all duration-300`}
+          className={`group relative rounded-2xl border ${item.badge === 'New' ? 'border-amber-500/20 shadow-[0_16px_40px_-18px_rgba(245,158,11,.2)] bg-gradient-to-b from-amber-500/[0.03] to-card/40' : 'border-border/60 bg-gradient-to-b from-card/80 to-card/40 shadow-soft'} backdrop-blur-xl p-4 hover:-translate-y-1 hover:shadow-premium transition-all duration-300`}
         >
           {item.badge ? (
-             <span className={`absolute -top-2.5 -right-2 z-10 inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-[0.15em] shadow-sm text-white ${item.badge === 'Pro' ? 'bg-gradient-to-r from-amber-500 to-orange-600' : 'bg-gradient-to-r from-violet-500 to-fuchsia-600'}`}>
+             <span className={`absolute -top-2.5 -right-2 z-10 inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-[0.15em] shadow-sm text-white ${item.badge === 'New' ? 'bg-gradient-to-r from-amber-500 to-orange-600' : 'bg-gradient-to-r from-violet-500 to-fuchsia-600'}`}>
                 {item.badge}
              </span>
           ) : (
@@ -148,7 +154,7 @@ function PopularToolsMiniGrid() {
                 Popular
              </span>
           )}
-          <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-300 ${item.isPro ? 'bg-amber-500/10 text-amber-500' : 'bg-primary/10 text-primary'}`}>
+          <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-300 ${item.badge === 'New' ? 'bg-amber-500/10 text-amber-500' : 'bg-primary/10 text-primary'}`}>
             <item.icon className="w-5 h-5" />
           </div>
           <p className="font-bold text-sm flex items-center gap-1.5 text-foreground group-hover:text-primary transition-colors">

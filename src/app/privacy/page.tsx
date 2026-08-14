@@ -71,15 +71,21 @@ export default function PrivacyPolicy() {
       <section>
         <h2>4. Advertising</h2>
         <p>
-          We use Google AdSense to display advertisements. Google and other vendors may use cookies to serve ads based on prior visits to this and other websites.
+          We use Google AdSense to display advertisements that help keep PdfPixels free. Third parties, including Google, may use cookies, web beacons, and similar technologies to collect information and serve ads.
+        </p>
+        <p>
+          Google&apos;s use of advertising cookies enables it and its partners to serve ads based on your visit to this site and/or other sites on the Internet. You can opt out of personalized advertising by visiting{' '}
+          <a href="https://www.google.com/settings/ads">Google Ads Settings</a>. You can also learn how Google uses information from sites that use its services at{' '}
+          <a href="https://policies.google.com/technologies/partner-sites">How Google uses information from sites or apps that use our services</a>.
         </p>
         <ul>
           <li><a href="https://www.google.com/settings/ads">Google Ads Settings</a></li>
+          <li><a href="https://policies.google.com/technologies/partner-sites">Google partner sites policy</a></li>
           <li><a href="https://www.aboutads.info/choices/">Digital Advertising Alliance</a></li>
           <li><a href="https://www.networkadvertising.org/choices/">Network Advertising Initiative</a></li>
         </ul>
         <p>
-          You can opt out of certain personalized advertising experiences using the links above.
+          You can also reject advertising cookies in our cookie banner. Essential cookies still work if you reject ads and analytics.
         </p>
       </section>
 

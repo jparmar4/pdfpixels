@@ -1,8 +1,30 @@
+import { geoRegions } from '@/lib/geo-data';
 import { allTools } from '@/lib/tools-data';
 
 export const SITE_URL = 'https://www.pdfpixels.com';
 export const DEFAULT_OG_IMAGE_PATH = '/opengraph-image';
 export const DEFAULT_OG_IMAGE_URL = `${SITE_URL}${DEFAULT_OG_IMAGE_PATH}`;
+/** Stable sitemap lastmod for evergreen pages — do not use `new Date()` per request. */
+export const SITE_CONTENT_UPDATED = new Date('2026-08-14T00:00:00.000Z');
+
+export function organizationId() {
+  return `${SITE_URL}/#organization`;
+}
+
+export function websiteId() {
+  return `${SITE_URL}/#website`;
+}
+
+/** Shared hreflang cluster: homepage is x-default, geo hubs are locale targets. */
+export function getGeoLanguageAlternates(): Record<string, string> {
+  const languages: Record<string, string> = {
+    'x-default': '/',
+  };
+  for (const region of geoRegions) {
+    languages[region.locale] = `/${region.code}`;
+  }
+  return languages;
+}
 
 const homepageFeaturedToolIds = [
   'compress',
@@ -44,5 +66,5 @@ export function getHomepageFeaturedTools() {
 }
 
 export function getSiteSearchUrlTemplate() {
-  return `${SITE_URL}/?search={search_term_string}`;
+  return `${SITE_URL}/tools?q={search_term_string}`;
 }

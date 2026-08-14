@@ -62,9 +62,9 @@ export function isGhostscriptMissingError(error: unknown): boolean {
   const code = (err as NodeJS.ErrnoException | undefined)?.code;
   return (
     code === 'ENOENT' ||
-    message.includes('spawn') ||
     message.includes('not recognized') ||
-    message.toLowerCase().includes('ghostscript is not available')
+    message.toLowerCase().includes('ghostscript is not available') ||
+    /spawn .* ENOENT/i.test(message)
   );
 }
 
@@ -79,13 +79,19 @@ export function runGhostscript(
   const captureStderr = options.captureStderr !== false;
 
   return new Promise<void>((resolve, reject) => {
-    const proc = spawn(command, args);
+    const proc = spawn(command, args, { stdio: ['ignore', 'ignore', 'pipe'] });
     let stderr = '';
+    const maxStderr = 16 * 1024;
 
     if (captureStderr) {
       proc.stderr?.on('data', (chunk) => {
-        stderr += chunk.toString();
+        if (stderr.length < maxStderr) {
+          stderr += chunk.toString();
+          if (stderr.length > maxStderr) stderr = stderr.slice(0, maxStderr);
+        }
       });
+    } else {
+      proc.stderr?.resume();
     }
 
     const timeout = setTimeout(() => {

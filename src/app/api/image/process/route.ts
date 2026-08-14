@@ -1,4 +1,5 @@
 import { apiError } from '@/lib/api-response';
+import { decodeHeicIfNeeded, isImageUpload } from '@/lib/heic';
 import { NextRequest, NextResponse } from 'next/server';
 
 // Cache control for API responses
@@ -32,8 +33,17 @@ export async function POST(request: NextRequest) {
       return apiError('File too large. Maximum size is 25 MB', 400);
     }
 
+    if (file.type && !isImageUpload(file)) {
+      return apiError('Only image files are supported', 400);
+    }
+
     const arrayBuffer = await file.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
+    let buffer: Buffer = Buffer.from(arrayBuffer);
+    try {
+      buffer = (await decodeHeicIfNeeded(buffer, file.name, file.type)).buffer;
+    } catch (error) {
+      return apiError(error instanceof Error ? error.message : 'Could not decode this HEIC photo', 400);
+    }
 
     const sharpModule = await import('sharp');
     const sharp = sharpModule.default;
@@ -138,21 +148,25 @@ function parseParams(formData: FormData) {
     height: parsePositiveInt(formData.get('height')),
     fit: (formData.get('fit') as string) || 'inside',
     withoutEnlargement: formData.get('withoutEnlargement') !== 'false',
-    targetSize: parsePositiveInt(formData.get('targetSize')),
+    targetSize: (() => {
+      const n = parsePositiveInt(formData.get('targetSize'));
+      if (n === undefined) return undefined;
+      return Math.min(n, 10 * 1024); // 10 MB cap (value is KB)
+    })(),
     compressionLevel: Math.min(9, Math.max(0, parseInt(formData.get('compressionLevel') as string) || 6)),
     rotate: parseInt(formData.get('rotate') as string) || 0,
     flip: formData.get('flip') === 'true',
     flop: formData.get('flop') === 'true',
-    cropLeft: parsePositiveInt(formData.get('cropLeft')),
-    cropTop: parsePositiveInt(formData.get('cropTop')),
+    cropLeft: parseNonNegativeInt(formData.get('cropLeft')),
+    cropTop: parseNonNegativeInt(formData.get('cropTop')),
     cropWidth: parsePositiveInt(formData.get('cropWidth')),
     cropHeight: parsePositiveInt(formData.get('cropHeight')),
-    brightness: parseFloat(formData.get('brightness') as string) || undefined,
-    contrast: parseFloat(formData.get('contrast') as string) || undefined,
-    saturation: parseFloat(formData.get('saturation') as string) || undefined,
-    hue: parseInt(formData.get('hue') as string) || undefined,
-    blur: parseFloat(formData.get('blur') as string) || undefined,
-    sharpen: parseFloat(formData.get('sharpen') as string) || undefined,
+    brightness: parseOptionalFloat(formData.get('brightness')),
+    contrast: parseOptionalFloat(formData.get('contrast')),
+    saturation: parseOptionalFloat(formData.get('saturation')),
+    hue: parseOptionalInt(formData.get('hue')),
+    blur: parseOptionalFloat(formData.get('blur')),
+    sharpen: parseOptionalFloat(formData.get('sharpen')),
     grayscale: formData.get('grayscale') === 'true',
     negate: formData.get('negate') === 'true',
     sepia: formData.get('sepia') === 'true',
@@ -166,8 +180,26 @@ function parseParams(formData: FormData) {
 
 function parsePositiveInt(value: FormDataEntryValue | null): number | undefined {
   if (!value) return undefined;
-  const n = parseInt(value as string);
-  return n > 0 ? n : undefined;
+  const n = parseInt(value as string, 10);
+  return Number.isFinite(n) && n > 0 ? n : undefined;
+}
+
+function parseNonNegativeInt(value: FormDataEntryValue | null): number | undefined {
+  if (value === null || value === undefined || value === '') return undefined;
+  const n = parseInt(value as string, 10);
+  return Number.isInteger(n) && n >= 0 ? n : undefined;
+}
+
+function parseOptionalFloat(value: FormDataEntryValue | null): number | undefined {
+  if (value === null || value === undefined || value === '') return undefined;
+  const n = parseFloat(value as string);
+  return Number.isFinite(n) ? n : undefined;
+}
+
+function parseOptionalInt(value: FormDataEntryValue | null): number | undefined {
+  if (value === null || value === undefined || value === '') return undefined;
+  const n = parseInt(value as string, 10);
+  return Number.isFinite(n) ? n : undefined;
 }
 
 // ─── Transformations ───────────────────────────────────────────────────────────

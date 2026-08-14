@@ -1,5 +1,5 @@
 import { apiError } from '@/lib/api-response';
-import { loadPdfWithTimeout, parsePageSelection, validatePdfUpload } from '@/lib/pdf-api';
+import { openEditablePdf, parsePageSelection } from '@/lib/pdf-api';
 import { NextRequest, NextResponse } from 'next/server';
 import { PDFDocument } from 'pdf-lib';
 
@@ -16,12 +16,9 @@ export async function POST(request: NextRequest) {
     const pageRange = (formData.get('pageRange') as string) || '';
     const singlePage = (formData.get('singlePage') as string) || '';
 
-    const validation = validatePdfUpload(file);
-    if (!validation.ok) return validation.response;
-
-    const arrayBuffer = await file!.arrayBuffer();
-    const pdfBytes = new Uint8Array(arrayBuffer);
-    const pdf = await loadPdfWithTimeout(pdfBytes);
+    const opened = await openEditablePdf(file);
+    if (!opened.ok) return opened.response;
+    const { pdf } = opened;
     const totalPages = pdf.getPageCount();
 
     let pagesToExtract: number[] = [];
@@ -33,6 +30,9 @@ export async function POST(request: NextRequest) {
       }
       pagesToExtract = [pageNum - 1];
     } else if (mode === 'range') {
+      if (!pageRange.trim()) {
+        return apiError('Enter a page range such as 1-3,5,7-9.', 400);
+      }
       pagesToExtract = parsePageSelection(pageRange, totalPages);
       if (pagesToExtract.length === 0) {
         return apiError('No valid pages in range. Use formats like 1-3,5,7-9.', 400);
@@ -68,7 +68,7 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    pagesToExtract = Array.from(new Set(pagesToExtract)).slice(0, MAX_SPLIT_PAGES);
+    pagesToExtract = Array.from(new Set(pagesToExtract));
 
     if (pagesToExtract.length === 0) {
       return apiError('No valid pages selected.', 400);

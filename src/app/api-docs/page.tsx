@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import { APISchema } from '@/components/seo/json-ld';
 import { ApiDocsPage } from './api-docs-page';
 
 export const metadata: Metadata = {
@@ -20,5 +21,10 @@ export const metadata: Metadata = {
 };
 
 export default function ApiDocs() {
-  return <ApiDocsPage />;
+  return (
+    <>
+      <APISchema />
+      <ApiDocsPage />
+    </>
+  );
 }

@@ -2,13 +2,14 @@
 
 import { motion } from 'framer-motion';
 import { DollarSign, Files, Server, Wrench } from 'lucide-react';
+import { allTools } from '@/lib/tools-data';
 import { AnimatedCounter } from './animated-counter';
 
 export function StatsBanner() {
   const stats = [
-    { value: 55, suffix: '+', label: 'Free Tools', icon: Wrench, gradient: 'from-indigo-500 to-violet-500' },
-    { value: 99, suffix: '.9%', label: 'Uptime', icon: Server, gradient: 'from-emerald-500 to-teal-500' },
+    { value: allTools.length, suffix: '+', label: 'Free Tools', icon: Wrench, gradient: 'from-indigo-500 to-violet-500' },
     { value: 8, suffix: '+', label: 'File Formats', icon: Files, gradient: 'from-fuchsia-500 to-pink-500' },
+    { value: 0, suffix: '', label: 'Account required', display: 'None', icon: Server, gradient: 'from-emerald-500 to-teal-500' },
     { value: 0, suffix: '', label: 'Cost', display: 'Free', icon: DollarSign, gradient: 'from-cyan-500 to-blue-500' },
   ];
 

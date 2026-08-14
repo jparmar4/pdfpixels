@@ -36,6 +36,7 @@ interface ResizeResult {
   imageUrl: string;
   originalDimensions: { width: number; height: number };
   newDimensions: { width: number; height: number };
+  format?: string;
 }
 
 const presetSizes = [
@@ -62,6 +63,10 @@ export function ResizeWorkspace() {
   const [activeTab, setActiveTab] = useState('dimensions');
   const [scalePercent, setScalePercent] = useState(100);
   const [result, setResult] = useState<ResizeResult | null>(null);
+
+  useEffect(() => {
+    setResult(null);
+  }, [uploadedFile]);
 
   const aspectRatio = originalDimensions.width / originalDimensions.height || 1;
   const isPassport = activeTool?.id === 'passport-photo';
@@ -93,30 +98,40 @@ export function ResizeWorkspace() {
     const objectUrl = URL.createObjectURL(uploadedFile);
     image.onload = () => {
       setOriginalDimensions({ width: image.width, height: image.height });
-      setWidth(image.width);
-      setHeight(image.height);
       setScalePercent(100);
+      if (isPassport) {
+        setWidth(3.5);
+        setHeight(4.5);
+      } else if (isDpiTool) {
+        setWidth(Math.round((image.width / dpi) * 100) / 100);
+        setHeight(Math.round((image.height / dpi) * 100) / 100);
+      } else {
+        setWidth(image.width);
+        setHeight(image.height);
+      }
       URL.revokeObjectURL(objectUrl);
     };
     image.onerror = () => URL.revokeObjectURL(objectUrl);
     image.src = objectUrl;
 
     return () => URL.revokeObjectURL(objectUrl);
-  }, [uploadedFile]);
+  }, [isDpiTool, isPassport, uploadedFile]);
 
   const handleWidthChange = useCallback((nextWidth: number) => {
     setWidth(nextWidth);
     if (maintainRatio && nextWidth > 0) {
-      setHeight(Math.round(nextWidth / aspectRatio));
+      const nextHeight = nextWidth / aspectRatio;
+      setHeight(unit === 'px' ? Math.round(nextHeight) : Math.round(nextHeight * 100) / 100);
     }
-  }, [aspectRatio, maintainRatio]);
+  }, [aspectRatio, maintainRatio, unit]);
 
   const handleHeightChange = useCallback((nextHeight: number) => {
     setHeight(nextHeight);
     if (maintainRatio && nextHeight > 0) {
-      setWidth(Math.round(nextHeight * aspectRatio));
+      const nextWidth = nextHeight * aspectRatio;
+      setWidth(unit === 'px' ? Math.round(nextWidth) : Math.round(nextWidth * 100) / 100);
     }
-  }, [aspectRatio, maintainRatio]);
+  }, [aspectRatio, maintainRatio, unit]);
 
   const handleScaleChange = useCallback((percent: number) => {
     setScalePercent(percent);
@@ -192,6 +207,7 @@ export function ResizeWorkspace() {
         imageUrl: data.imageUrl,
         originalDimensions: data.originalDimensions,
         newDimensions: { width: pixelDimensions.width, height: pixelDimensions.height },
+        format: data.format || data.mimeType?.split('/')[1],
       });
       setProcessedImage(data.imageUrl);
       toast.success(`Image resized to ${pixelDimensions.width} x ${pixelDimensions.height} pixels.`);
@@ -211,12 +227,13 @@ export function ResizeWorkspace() {
     const base = uploadedFile?.name?.replace(/\.[^.]+$/, '') || 'image';
     const link = document.createElement('a');
     link.href = processedImage;
-    link.download = `${base}-${pixelDimensions.width}x${pixelDimensions.height}.jpg`;
+    const extension = (result?.format || 'jpg').replace('jpeg', 'jpg');
+    link.download = `${base}-${pixelDimensions.width}x${pixelDimensions.height}.${extension}`;
     document.body.appendChild(link);
     link.click();
     link.remove();
     toast.success('Download started');
-  }, [pixelDimensions.height, pixelDimensions.width, processedImage, uploadedFile]);
+  }, [pixelDimensions.height, pixelDimensions.width, processedImage, result?.format, uploadedFile]);
 
   const handleReset = useCallback(() => {
     reset();

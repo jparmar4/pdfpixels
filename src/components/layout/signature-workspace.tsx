@@ -30,6 +30,8 @@ export function SignatureWorkspace() {
   const [sigScale, setSigScale] = useState(35);
   const [sigOpacity, setSigOpacity] = useState(100);
   const [sigPosition, setSigPosition] = useState<'bottom-right' | 'bottom-left' | 'center'>('bottom-right');
+  const [resizePreset, setResizePreset] = useState<'scale' | '6x2cm' | '3x1cm' | '600x200'>('6x2cm');
+  const sigFileRef = useRef<HTMLInputElement>(null);
   const lastPos = useRef<{ x: number; y: number } | null>(null);
 
   const toolId = activeTool?.id || 'generate-signature';
@@ -151,10 +153,41 @@ export function SignatureWorkspace() {
     }
     try {
       const img = await loadImage(uploadedFile);
-      const scale = sigScale / 100;
-      // Interpret scale as relative width against a 600px reference canvas
-      const targetW = Math.max(40, Math.round(img.width * scale));
-      const targetH = Math.max(20, Math.round((img.height / img.width) * targetW));
+      const ratio = img.height / Math.max(1, img.width);
+      let targetW: number;
+      let targetH: number;
+      if (resizePreset === '6x2cm') {
+        targetW = Math.round((6 / 2.54) * 300);
+        targetH = Math.round((2 / 2.54) * 300);
+      } else if (resizePreset === '3x1cm') {
+        targetW = Math.round((3 / 2.54) * 300);
+        targetH = Math.round((1 / 2.54) * 300);
+      } else if (resizePreset === '600x200') {
+        targetW = 600;
+        targetH = 200;
+      } else {
+        targetW = Math.max(40, Math.round(img.width * (sigScale / 100)));
+        targetH = Math.max(20, Math.round(targetW * ratio));
+      }
+
+      if (resizePreset !== 'scale') {
+        const fit = Math.min(targetW / img.width, targetH / img.height);
+        const drawW = Math.max(1, Math.round(img.width * fit));
+        const drawH = Math.max(1, Math.round(img.height * fit));
+        const out = document.createElement('canvas');
+        out.width = targetW;
+        out.height = targetH;
+        const ctx = out.getContext('2d');
+        if (!ctx) throw new Error('Canvas unavailable');
+        ctx.clearRect(0, 0, targetW, targetH);
+        ctx.drawImage(img, Math.round((targetW - drawW) / 2), Math.round((targetH - drawH) / 2), drawW, drawH);
+        const data = out.toDataURL('image/png');
+        setSignatureData(data);
+        setProcessedImage(data);
+        toast.success(`Signature resized to ${targetW}×${targetH}px`);
+        return;
+      }
+
       const out = document.createElement('canvas');
       out.width = targetW;
       out.height = targetH;
@@ -169,6 +202,24 @@ export function SignatureWorkspace() {
       toast.error(e instanceof Error ? e.message : 'Resize failed');
     }
   };
+
+  const handleSignatureFile = useCallback(async (file: File | null) => {
+    if (!file) return;
+    try {
+      const img = await loadImage(file);
+      const canvas = document.createElement('canvas');
+      canvas.width = img.width;
+      canvas.height = img.height;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) throw new Error('Canvas unavailable');
+      ctx.drawImage(img, 0, 0);
+      const data = canvas.toDataURL('image/png');
+      setSignatureData(data);
+      toast.success('Signature image loaded');
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : 'Could not read signature image');
+    }
+  }, []);
 
   const handleMergePhotoSignature = async () => {
     if (!uploadedFile) {
@@ -422,6 +473,23 @@ export function SignatureWorkspace() {
 
             {(isResize || isMerge) ? (
               <div className="space-y-4 p-5">
+                {isResize ? (
+                  <div className="space-y-2">
+                    <Label>Size preset</Label>
+                    <Select value={resizePreset} onValueChange={(v) => setResizePreset(v as typeof resizePreset)}>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="6x2cm">6 × 2 cm at 300 DPI</SelectItem>
+                        <SelectItem value="3x1cm">3 × 1 cm at 300 DPI</SelectItem>
+                        <SelectItem value="600x200">600 × 200 px</SelectItem>
+                        <SelectItem value="scale">Custom scale %</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                ) : null}
+                {(isMerge || resizePreset === 'scale') ? (
                 <div className="space-y-2">
                   <div className="flex justify-between">
                     <Label>{isResize ? 'Output size' : 'Signature size on photo'}</Label>
@@ -429,6 +497,36 @@ export function SignatureWorkspace() {
                   </div>
                   <Slider value={[sigScale]} onValueChange={([v]) => setSigScale(v)} min={10} max={90} step={1} />
                 </div>
+                ) : null}
+                {isMerge ? (
+                  <div className="space-y-2">
+                    <Label>Signature image</Label>
+                    <input
+                      ref={sigFileRef}
+                      type="file"
+                      accept="image/png,image/webp,image/jpeg,.png,.webp,.jpg"
+                      className="sr-only"
+                      onChange={(event) => {
+                        void handleSignatureFile(event.target.files?.[0] ?? null);
+                        event.target.value = '';
+                      }}
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="w-full rounded-xl"
+                      onClick={() => sigFileRef.current?.click()}
+                    >
+                      <ImagePlus className="mr-2 h-4 w-4" />
+                      {signatureData ? 'Replace signature PNG' : 'Upload signature PNG'}
+                    </Button>
+                    {signatureData ? (
+                      <p className="text-xs text-muted-foreground">Signature loaded. You can still adjust size and position.</p>
+                    ) : (
+                      <p className="text-xs text-muted-foreground">Upload a transparent PNG, or create one in Signature Maker first.</p>
+                    )}
+                  </div>
+                ) : null}
                 {isMerge ? (
                   <>
                     <div className="space-y-2">
@@ -456,7 +554,7 @@ export function SignatureWorkspace() {
                 <Button
                   className="w-full btn-premium rounded-xl py-6"
                   onClick={isResize ? handleResizeSignature : handleMergePhotoSignature}
-                  disabled={!uploadedFile}
+                  disabled={!uploadedFile || (isMerge && !signatureData)}
                 >
                   <ImagePlus className="mr-2 h-4 w-4" />
                   {isResize ? 'Resize signature' : 'Merge photo + signature'}
@@ -485,13 +583,13 @@ export function SignatureWorkspace() {
               ) : isResize ? (
                 <>
                   <li className="flex gap-2"><ChevronRight className="mt-0.5 h-4 w-4 shrink-0 text-primary" />Upload a signature image</li>
-                  <li className="flex gap-2"><ChevronRight className="mt-0.5 h-4 w-4 shrink-0 text-primary" />Choose output scale</li>
+                  <li className="flex gap-2"><ChevronRight className="mt-0.5 h-4 w-4 shrink-0 text-primary" />Pick a print size (6×2 cm) or custom scale</li>
                   <li className="flex gap-2"><ChevronRight className="mt-0.5 h-4 w-4 shrink-0 text-primary" />Download resized PNG</li>
                 </>
               ) : (
                 <>
                   <li className="flex gap-2"><ChevronRight className="mt-0.5 h-4 w-4 shrink-0 text-primary" />Upload a photo</li>
-                  <li className="flex gap-2"><ChevronRight className="mt-0.5 h-4 w-4 shrink-0 text-primary" />Draw/save a signature</li>
+                  <li className="flex gap-2"><ChevronRight className="mt-0.5 h-4 w-4 shrink-0 text-primary" />Upload a signature PNG</li>
                   <li className="flex gap-2"><ChevronRight className="mt-0.5 h-4 w-4 shrink-0 text-primary" />Merge and download</li>
                 </>
               )}

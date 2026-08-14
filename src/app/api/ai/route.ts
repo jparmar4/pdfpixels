@@ -1,4 +1,5 @@
 import { apiError } from '@/lib/api-response';
+import { decodeHeicIfNeeded } from '@/lib/heic';
 import { NextRequest, NextResponse } from 'next/server';
 import { segmentForeground } from '@/lib/ai/pipelines/segmentation';
 import { applyBackgroundBlur, applyRegionBlur, applyTransparentBackground } from '@/lib/ai/pipelines/compositor';
@@ -87,7 +88,12 @@ export async function POST(request: NextRequest) {
 
     const sharpModule = await import('sharp');
     const sharp = sharpModule.default;
-    let input = Buffer.from(await file.arrayBuffer());
+    let input: Buffer = Buffer.from(await file.arrayBuffer());
+    try {
+      input = (await decodeHeicIfNeeded(input, file.name, file.type)).buffer;
+    } catch (error) {
+      return apiError(error instanceof Error ? error.message : 'Could not decode this HEIC photo', 400);
+    }
 
     // Normalize orientation + cap working resolution for speed/stability
     const meta = await sharp(input, { failOn: 'none' }).metadata();

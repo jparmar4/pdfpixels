@@ -13,7 +13,7 @@ import { allTools } from '@/lib/tools-data';
 
 /* ─── Animated Counter ────────────────────────────────────────────── */
 function AnimatedCounter({ end, suffix = '', duration = 2000 }: { end: number; suffix?: string; duration?: number }) {
-  const [count, setCount] = useState(0);
+  const [count, setCount] = useState(end);
   const ref = useRef<HTMLDivElement>(null);
   const hasAnimated = useRef(false);
 
@@ -145,7 +145,11 @@ export function AboutPageContent() {
               Alongside the tools, we publish long-form how-to articles (PDF size limits, HEIC conversion, form photo sizes, and more) so people can learn the “why” as well as click a button. That combination of working utilities and real educational content is the foundation of the site.
             </p>
             <p>
-              If something breaks, a limit is unclear, or a tool should work differently, use the contact page. Product decisions are driven by real upload errors and form requirements people hit every day.
+              If something breaks, a limit is unclear, or a tool should work differently, use the{' '}
+              <Link href="/contact" className="font-semibold text-primary hover:underline">contact page</Link>
+              {' '}or email{' '}
+              <a href="mailto:support@pdfpixels.com" className="font-semibold text-primary hover:underline">support@pdfpixels.com</a>
+              . Product decisions come from real upload errors and form requirements people hit every day.
             </p>
           </div>
         </div>
@@ -160,12 +164,28 @@ export function AboutPageContent() {
               Reliable tool behavior with clearer constraints and better output states.
             </div>
             <div className="legal-callout">
-              SEO, AEO, and GEO-friendly page structures that still feel premium to humans.
+              Honest pages: we describe what each tool actually does, including file limits.
             </div>
             <div className="legal-callout">
-              A deployment-ready Next.js codebase suited for production hosting.
+              Guides written around real upload errors — Gmail size caps, HEIC on Windows, form KB limits.
             </div>
           </div>
+        </div>
+      </section>
+
+      <section className="mt-8 rounded-[2rem] border border-border/50 bg-card/70 p-6 md:p-8">
+        <h2 className="text-2xl font-bold text-foreground">How the site stays free</h2>
+        <div className="premium-prose mt-4">
+          <p>
+            PdfPixels is free for everyday personal use. We plan to fund the servers with Google AdSense
+            advertisements after approval. Ads will sit beside or below tool instructions — never as the only
+            thing on a page. You can reject advertising cookies in the cookie banner.
+          </p>
+          <p>
+            We do not sell uploaded files. Server-side jobs process a file for that request and then delete it
+            on supported flows. Browser tools stay on your device. Details are in the{' '}
+            <Link href="/privacy" className="font-semibold text-primary hover:underline">privacy policy</Link>.
+          </p>
         </div>
       </section>
 
@@ -341,7 +361,7 @@ export function AboutPageContent() {
               Ready to transform your workflow?
             </h2>
             <p className="mt-4 text-muted-foreground max-w-xl mx-auto text-base md:text-lg leading-relaxed">
-              Join thousands of users who rely on PdfPixels for fast, free, and professional image and PDF processing.
+              Open a tool, upload a file, and download the result — no account required for core workflows.
             </p>
             <div className="mt-8 flex flex-wrap gap-3 justify-center">
               <Button asChild size="lg" className="btn-premium rounded-2xl px-8 py-6 text-base">

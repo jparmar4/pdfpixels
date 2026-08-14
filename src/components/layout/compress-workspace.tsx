@@ -41,6 +41,10 @@ export function CompressWorkspace() {
   const [result, setResult] = useState<CompressionResult | null>(null);
 
   useEffect(() => {
+    setResult(null);
+  }, [uploadedFile]);
+
+  useEffect(() => {
     const toolId = activeTool?.id || '';
     const sizeMatch = toolId.match(/(\d+)kb/);
     if (sizeMatch) {
@@ -109,7 +113,11 @@ export function CompressWorkspace() {
       setProcessedImage(data.imageUrl);
       toast.success(
         isIncrease
-          ? `Increased file size to ${formatSize(data.processedSize)} (target ${targetSize} KB).`
+          ? data.processedSize >= Number.parseInt(targetSize, 10) * 1024
+            ? data.processedSize <= data.originalSize
+              ? `File is already ${formatSize(data.processedSize)} (at or above the ${targetSize} KB target).`
+              : `Increased file size to ${formatSize(data.processedSize)} (target ${targetSize} KB).`
+            : `Reached ${formatSize(data.processedSize)} (target ${targetSize} KB).`
           : `Compressed successfully. Saved ${savedPercent}% file size.`,
       );
       requestAnimationFrame(() => {
@@ -256,7 +264,7 @@ export function CompressWorkspace() {
             <motion.div id="image-compress-result" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -16 }} className="space-y-4 pt-2">
               <div className="flex flex-wrap items-center gap-3">
                 <Badge className="rounded-full border border-emerald-500/20 bg-emerald-500/10 px-4 py-2 text-sm font-bold text-emerald-700 hover:bg-emerald-500/15 dark:text-emerald-300">
-                  Saved {result.savedPercent}%
+                  {isIncrease ? `Increased ${result.savedPercent}%` : `Saved ${result.savedPercent}%`}
                 </Badge>
                 <Badge variant="secondary" className="rounded-full px-4 py-2 text-sm font-semibold">
                   {formatSize(result.originalSize)}
@@ -266,10 +274,14 @@ export function CompressWorkspace() {
               </div>
 
               <ResultCard
-                title="Image compression complete"
-                description="Your optimized image is ready for upload, email, and faster page delivery."
+                title={isIncrease ? 'Image size increased' : 'Image compression complete'}
+                description={
+                  isIncrease
+                    ? 'Your file now meets the target size and is ready to upload.'
+                    : 'Your optimized image is ready for upload, email, and faster page delivery.'
+                }
                 onDownload={handleDownload}
-                downloadLabel="Download compressed image"
+                downloadLabel={isIncrease ? 'Download increased image' : 'Download compressed image'}
                 primaryMeta={`${uploadedFile.name} - ${formatSize(result.originalSize)} to ${formatSize(result.processedSize)}`}
                 nextActions={[
                   { label: 'Resize image', href: '/tools/resize-image' },

@@ -3,7 +3,7 @@
 ## Step 1: Confirm current SEO baseline (indexing, canonical, sitemap, robots)
 - [x] Inspect dynamic routes (tools/blog/compare) for canonical + metadata consistency.
 - [x] Inspect dynamic routes (use-cases) for canonical + metadata consistency.
-- [ ] Validate src/app/sitemap.ts and src/app/robots.ts behavior.
+- [x] Validate src/app/sitemap.ts and src/app/robots.ts behavior.
 
 ## Step 2: Ensure JSON-LD coverage on all key pages
 - [x] Verify tool pages inject rich JSON-LD (WebPage/SoftwareApplication/HowTo/FAQ/Breadcrumb).

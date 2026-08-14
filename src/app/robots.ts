@@ -8,43 +8,48 @@ export default function robots(): MetadataRoute.Robots {
     rules: [
       {
         userAgent: '*',
-        allow: ['/', '/llms.txt', '/llms-full.txt', '/openapi.yaml', '/feed'],
+        allow: '/',
         disallow: ['/api/', '/_next/', '/_static/'],
       },
-      // Explicitly welcome major AI / answer-engine crawlers (AEO / GEO)
+      // Answer-engine / training crawlers: all public pages, not only llms.txt
       {
         userAgent: 'GPTBot',
-        allow: ['/', '/llms.txt', '/llms-full.txt', '/blog/', '/tools/', '/use-cases/', '/compare/'],
+        allow: '/',
         disallow: ['/api/'],
       },
       {
         userAgent: 'ChatGPT-User',
-        allow: ['/', '/llms.txt', '/llms-full.txt'],
+        allow: '/',
         disallow: ['/api/'],
       },
       {
         userAgent: 'Google-Extended',
-        allow: ['/', '/llms.txt', '/llms-full.txt', '/blog/', '/tools/'],
+        allow: '/',
         disallow: ['/api/'],
       },
       {
         userAgent: 'Anthropic-ai',
-        allow: ['/', '/llms.txt', '/llms-full.txt'],
+        allow: '/',
         disallow: ['/api/'],
       },
       {
         userAgent: 'ClaudeBot',
-        allow: ['/', '/llms.txt', '/llms-full.txt'],
+        allow: '/',
         disallow: ['/api/'],
       },
       {
         userAgent: 'PerplexityBot',
-        allow: ['/', '/llms.txt', '/llms-full.txt', '/blog/', '/tools/'],
+        allow: '/',
         disallow: ['/api/'],
       },
       {
         userAgent: 'Applebot-Extended',
-        allow: ['/', '/llms.txt', '/llms-full.txt'],
+        allow: '/',
+        disallow: ['/api/'],
+      },
+      {
+        userAgent: 'OAI-SearchBot',
+        allow: '/',
         disallow: ['/api/'],
       },
     ],

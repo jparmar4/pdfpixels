@@ -2,6 +2,7 @@ import {
   loadPdfWithTimeout,
   pdfBinaryResponse,
   readAndValidatePdfFile,
+  rejectEncryptedPdf,
   validatePdfUpload,
 } from '@/lib/pdf-api';
 
@@ -36,7 +37,7 @@ function getQpdfCandidates() {
 
 function runCommand(command: string, args: string[]) {
   return new Promise<void>((resolve, reject) => {
-    const proc = spawn(command, args);
+    const proc = spawn(command, args, { stdio: ['ignore', 'ignore', 'pipe'] });
     let stderr = '';
     const timeout = setTimeout(() => {
       proc.kill('SIGKILL');
@@ -44,7 +45,9 @@ function runCommand(command: string, args: string[]) {
     }, 45_000);
 
     proc.stderr.on('data', (chunk) => {
-      stderr += chunk.toString();
+      if (stderr.length < 16 * 1024) {
+        stderr += chunk.toString();
+      }
     });
 
     proc.on('error', (error) => {
@@ -109,6 +112,8 @@ export async function POST(request: NextRequest) {
 
     // Quick check to load up PDF properties (also ensures basic validity)
     const srcPdf = await loadPdfWithTimeout(inputBuffer);
+    const encrypted = rejectEncryptedPdf(srcPdf);
+    if (encrypted) return encrypted;
     const pageCount = srcPdf.getPageCount();
 
     const tempDir = os.tmpdir();
@@ -117,9 +122,8 @@ export async function POST(request: NextRequest) {
     outputPath = path.join(tempDir, `${id}-linearized.pdf`);
     fs.writeFileSync(inputPath, inputBuffer);
 
-    // Run linearization using qpdf, with pdf-lib object-stream fallback if qpdf is unavailable
+    // Fast Web View requires qpdf --linearize. Do not pretend pdf-lib object streams are linearized.
     let outputBuffer: Buffer;
-    let engine = 'qpdf';
 
     try {
       await runQpdf([
@@ -131,22 +135,18 @@ export async function POST(request: NextRequest) {
     } catch (qpdfErr) {
       const qMsg = qpdfErr instanceof Error ? qpdfErr.message : '';
       if (qMsg.toLowerCase().includes('qpdf is not available') || qMsg.includes('ENOENT') || qMsg.includes('spawn')) {
-        // Fallback: Use pdf-lib object stream optimization
-        const fallbackBytes = await srcPdf.save({
-          useObjectStreams: true,
-          addDefaultPage: false,
-          objectsPerTick: 100,
-        });
-        outputBuffer = Buffer.from(fallbackBytes);
-        engine = 'pdf-lib-fallback';
-      } else {
-        throw qpdfErr;
+        return jsonError(
+          'Fast Web View needs the qpdf engine, which is not available on this server. Compress PDF can still reduce file size.',
+          503,
+          qMsg,
+        );
       }
+      throw qpdfErr;
     }
 
     return pdfBinaryResponse(outputBuffer, `fast-web-view-${Date.now()}.pdf`, {
         'X-Page-Count': String(pageCount),
-        'X-Linearize-Engine': engine,
+        'X-Linearize-Engine': 'qpdf',
     });
   } catch (error) {
     console.error('PDF linearize error:', error);
@@ -159,7 +159,11 @@ export async function POST(request: NextRequest) {
 
     return jsonError('Failed to format PDF for Fast Web View', 500, message);
   } finally {
-    if (inputPath && fs.existsSync(inputPath)) fs.unlinkSync(inputPath);
-    if (outputPath && fs.existsSync(outputPath)) fs.unlinkSync(outputPath);
+    try {
+      if (inputPath && fs.existsSync(inputPath)) fs.unlinkSync(inputPath);
+    } catch { /* ignore cleanup errors */ }
+    try {
+      if (outputPath && fs.existsSync(outputPath)) fs.unlinkSync(outputPath);
+    } catch { /* ignore cleanup errors */ }
   }
 }

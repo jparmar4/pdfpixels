@@ -3,7 +3,8 @@
 import { useState, useEffect, useRef } from 'react';
 
 export function AnimatedCounter({ end, suffix = '', duration = 2000 }: { end: number; suffix?: string; duration?: number }) {
-  const [count, setCount] = useState(0);
+  // Start at the final value so crawlers and first paint never show "0+" / "0.9%"
+  const [count, setCount] = useState(end);
   const ref = useRef<HTMLDivElement>(null);
   const hasAnimated = useRef(false);
 

@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useAppStore } from '@/store/app-store';
 import { ToolPageHeader } from './tool-page-header';
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { useReducedMotion } from 'framer-motion';
 import { toast } from 'sonner';
 import { ToolLimitNotice } from './tool-limit-notice';
@@ -46,6 +46,20 @@ export function PDFSplitWorkspace() {
   const [statusLabel, setStatusLabel] = useState<'Idle' | 'Uploading' | 'Processing' | 'Finalizing'>('Idle');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const prefersReducedMotion = useReducedMotion();
+
+  const revokeResult = useCallback((value: SplitResult | null) => {
+    if (!value) return;
+    if (value.pdfUrl?.startsWith('blob:')) URL.revokeObjectURL(value.pdfUrl);
+    value.pages?.forEach((page) => {
+      if (page.pdfUrl.startsWith('blob:')) URL.revokeObjectURL(page.pdfUrl);
+    });
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      revokeResult(result);
+    };
+  }, [result, revokeResult]);
 
   const loadPdfMeta = useCallback(async (selectedFile: File) => {
     setFile(selectedFile);
@@ -152,7 +166,7 @@ export function PDFSplitWorkspace() {
         const JSZip = (await import('jszip')).default;
         const blob = await response.blob();
         const zip = await JSZip.loadAsync(blob);
-        const pages = [];
+        const pages: Array<{ pageNumber: number; pdfUrl: string; fileName: string }> = [];
         let i = 1;
         
         for (const [relativePath, zipEntry] of Object.entries(zip.files)) {
@@ -170,11 +184,14 @@ export function PDFSplitWorkspace() {
         const totalPages = Number(response.headers.get('x-total-pages') || 0);
         const truncated = response.headers.get('x-truncated') === 'true';
         
-        setResult({
-          mode: 'split-all',
-          totalPages,
-          pages,
-          truncated,
+        setResult((previous) => {
+          revokeResult(previous);
+          return {
+            mode: 'split-all',
+            totalPages,
+            pages,
+            truncated,
+          };
         });
         
         toast.success(`Split into ${pages.length} files!`);
@@ -193,12 +210,15 @@ export function PDFSplitWorkspace() {
           ? extractedPagesHeader.split(',').map((n) => parseInt(n, 10)).filter((n) => !Number.isNaN(n))
           : [];
 
-        setResult({
-          mode: 'extract',
-          totalPages,
-          extractedPages,
-          fileName,
-          pdfUrl,
+        setResult((previous) => {
+          revokeResult(previous);
+          return {
+            mode: 'extract',
+            totalPages,
+            extractedPages,
+            fileName,
+            pdfUrl,
+          };
         });
         toast.success(`Extracted ${extractedPages.length || 1} pages!`);
       }

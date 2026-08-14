@@ -5,7 +5,6 @@ import {
   Shield,
   Lock,
   Award,
-  Star,
   Users,
   Zap,
   CheckCircle2,
@@ -62,47 +61,31 @@ function AnimatedStat({ value, icon: Icon, label }: { value: string; icon: React
   );
 }
 
-// Testimonials data
-const testimonials = [
+const workflows = [
   {
-    name: 'Sarah K.',
-    role: 'Graphic Designer',
-    avatar: 'SK',
-    avatarColor: 'bg-violet-500',
-    rating: 5,
-    text: 'PdfPixels is my go-to tool for compressing images before sending to clients. The quality is incredible and it\'s so fast — I save hours every week!',
+    title: 'Compress PDF',
+    audience: 'Email and portals',
+    text: 'Shrink a large PDF for Gmail, job sites, and government forms, then download the smaller file.',
   },
   {
-    name: 'Marcus T.',
-    role: 'Content Creator',
-    avatar: 'MT',
-    avatarColor: 'bg-blue-500',
-    rating: 5,
-    text: 'I\'ve tried dozens of image tools but nothing comes close. The PDF merge feature is flawless and I love that there\'s no signup needed.',
+    title: 'Merge PDF',
+    audience: 'Reports and invoices',
+    text: 'Combine up to 20 PDFs into one file, with a 25 MB per-file and 100 MB combined cap.',
   },
   {
-    name: 'Priya R.',
-    role: 'Small Business Owner',
-    avatar: 'PR',
-    avatarColor: 'bg-emerald-500',
-    rating: 5,
-    text: 'Converting my product images to WebP cut my website load time in half. Absolutely essential tool — and it\'s completely free!',
+    title: 'HEIC to JPG',
+    audience: 'iPhone photos',
+    text: 'Convert one HEIC still photo at a time so Windows, Android, and web forms can open it.',
   },
   {
-    name: 'James L.',
-    role: 'Web Developer',
-    avatar: 'JL',
-    avatarColor: 'bg-amber-500',
-    rating: 5,
-    text: 'The batch processing and format conversion tools are top-notch. I use PdfPixels daily for client projects. Highly recommend!',
+    title: 'Compress image',
+    audience: 'KB limits',
+    text: 'Hit a target size such as 50 KB or 200 KB for ID photos and application uploads.',
   },
   {
-    name: 'Aisha M.',
-    role: 'Marketing Manager',
-    avatar: 'AM',
-    avatarColor: 'bg-rose-500',
-    rating: 5,
-    text: 'Finally a tool that respects my privacy! Files are deleted automatically and there\'s no account required. The resize tool is perfect for social media.',
+    title: 'Remove background',
+    audience: 'Listings and headshots',
+    text: 'Run an AI cutout on the server for that request, then download a transparent PNG.',
   },
 ];
 
@@ -122,9 +105,9 @@ export function TrustSection() {
   ];
 
   const awards = [
-    'G2 High Performer 2024',
-    'ProductHunt #1 Product of the Day',
-    'Capterra Top Rated 2024',
+    'No signup for core tools',
+    'Honest file limits on each page',
+    'Guides for common PDF and photo jobs',
   ];
 
   return (
@@ -209,47 +192,26 @@ Trust signals users can understand quickly
           <div className="text-center mb-8">
             <div className="flex items-center justify-center gap-2 mb-2">
               <Quote className="w-5 h-5 text-primary" />
-              <h3 className="text-xl font-bold">What Our Users Say</h3>
-            </div>
-            <div className="flex items-center justify-center gap-1 mb-1">
-              {[1, 2, 3, 4, 5].map(i => (
-                <Star key={i} className="w-4 h-4 text-amber-400 fill-amber-400" />
-              ))}
-              <span className="ml-2 text-sm font-semibold text-muted-foreground">4.9/5 average rating</span>
+              <h3 className="text-xl font-bold">Common jobs these tools cover</h3>
             </div>
           </div>
 
           <div className="scroll-carousel px-2 pb-4">
-            {testimonials.map((t, i) => (
+            {workflows.map((item, i) => (
               <motion.div
-                key={t.name}
+                key={item.title}
                 initial={{ opacity: 0, x: 20 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.08 }}
                 className="testimonial-card"
               >
-                {/* Stars */}
-                <div className="flex items-center gap-0.5 mb-3">
-                  {Array.from({ length: t.rating }).map((_, j) => (
-                    <Star key={j} className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
-                  ))}
-                </div>
-
-                {/* Quote */}
                 <p className="text-sm text-muted-foreground leading-relaxed mb-4 line-clamp-4">
-                  &ldquo;{t.text}&rdquo;
+                  {item.text}
                 </p>
-
-                {/* Author */}
-                <div className="flex items-center gap-3">
-                  <div className={`w-9 h-9 rounded-full ${t.avatarColor} flex items-center justify-center text-white text-xs font-bold flex-shrink-0`}>
-                    {t.avatar}
-                  </div>
-                  <div>
-                    <div className="text-sm font-semibold">{t.name}</div>
-                    <div className="text-xs text-muted-foreground">{t.role}</div>
-                  </div>
+                <div>
+                  <div className="text-sm font-semibold">{item.title}</div>
+                  <div className="text-xs text-muted-foreground">{item.audience}</div>
                 </div>
               </motion.div>
             ))}
@@ -265,7 +227,7 @@ Trust signals users can understand quickly
         >
           <div className="flex items-center justify-center gap-2 mb-6">
             <Award className="w-5 h-5 text-primary" />
-            <h3 className="text-lg font-bold">Trusted & Recognized</h3>
+            <h3 className="text-lg font-bold">What you can count on</h3>
           </div>
           <div className="flex flex-wrap justify-center gap-3">
             {awards.map((award, i) => (
@@ -294,8 +256,8 @@ Trust signals users can understand quickly
           <div className="gradient-divider mb-8" />
           <p className="text-muted-foreground leading-relaxed">
             <strong className="text-foreground">PdfPixels</strong> is committed to providing
-            the highest quality image and PDF processing tools. Our platform serves millions of users
-            worldwide with enterprise-grade security, instant processing, and free-to-use core workflows.
+            free image and PDF processing tools. Core workflows stay free, with honest file limits
+            and privacy-aware processing instead of fake ratings or invented awards.
           </p>
           <div className="flex flex-wrap justify-center gap-6 mt-6">
             {seoConfig.trustSignals.slice(0, 4).map((signal) => (
