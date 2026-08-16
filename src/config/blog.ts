@@ -2187,7 +2187,7 @@ To find the right alternative, first understand what Adobe Acrobat Pro actually 
 | Password protect PDF | [PdfPixels Protect PDF](/tools/protect-pdf) | Password-based PDF encryption for secure sharing |
 | Remove password | [PdfPixels Unlock PDF](/tools/unlock-pdf) | Remove a known password and download an unlocked copy |
 | Add watermark | [PdfPixels Watermark PDF](/tools/add-watermark-pdf) | Text stamps such as CONFIDENTIAL |
-| Convert PDF to JPG | [PdfPixels PDF to Image](/tools/pdf-to-image) | High-quality extraction |
+| Convert PDF to JPG | [PdfPixels PDF to JPG](/tools/pdf-to-jpg) | High-quality extraction |
 | Convert JPG to PDF | [PdfPixels Image to PDF](/tools/image-to-pdf) | Multiple images to one PDF — full guide: [convert JPG to PDF online](/blog/convert-jpg-to-pdf-online-no-software) |
 | Reorder pages | [PdfPixels Reorder PDF](/tools/reorder-pdf-pages) | Visual drag-and-drop |
 | OCR text recognition | [PdfPixels Image to Text](/tools/image-to-text) | Photo OCR; not a full PDF OCR editor |
@@ -4330,7 +4330,7 @@ Make your desired changes in real time:
 - Type page number stamps (e.g., "Page 1 of 10") with custom position and font options.
 - Apply security restrictions using strong encryption before sharing sensitive financial or legal data.
 
-If security is a primary concern for your workflow, check out our guide on [how to password protect a PDF for free](/blog/password-protect-pdf-free-safe).
+If security is a primary concern for your workflow, check out our guide on [how to password protect a PDF for free](/blog/password-protect-pdf-online-free).
 
 ### Step 4: Optimize and Compress the Edited Output
 
@@ -4351,11 +4351,11 @@ The answer depends heavily on the architecture of the tool you use:
 1. **Server-Side Upload Editors**: Many legacy online converters upload your file to an external server, process it in a remote queue, and store it for hours.
 2. **Browser tools with a clear privacy policy**: PdfPixels runs the editor UI in the browser. PDF jobs that need a server (compress, protect, merge) send the file for that request and do not keep a document library. Read the privacy policy before uploading highly sensitive files.
 
-For an in-depth analysis on data privacy when using web-based utilities, read our article on [whether online PDF tools are safe](/blog/is-it-safe-to-use-online-pdf-tools).
+For details on how uploads are handled when a job needs the server, see the [PdfPixels privacy policy](/privacy).
 
 ## Advanced Tips for Editing PDF Files Without Adobe
 
-- **Working with Scanned Documents**: If your PDF is a non-searchable image scan, run it through an [OCR Image to Text Tool](/blog/image-to-text-ocr-extract-text) first to extract editable plaintext.
+- **Working with Scanned Documents**: If your PDF is a non-searchable image scan, run it through the [Image to Text OCR tool](/tools/image-to-text) first to extract editable plaintext.
 - **Handling Form Fields**: If you are filling out government job applications, read our targeted tutorial on [compressing PDFs for government form uploads](/blog/compress-pdf-for-government-job-form-upload).
 - **Converting Image Files**: If your pages are currently JPEGs or PNGs, convert them first using our free [Image to PDF](/tools/image-to-pdf) tool before editing. Walkthrough: [image to PDF converter / JPG to PDF online](/blog/convert-jpg-to-pdf-online-no-software).
 

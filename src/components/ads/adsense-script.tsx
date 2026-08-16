@@ -5,42 +5,26 @@ import { adsConfig, hasAdvertisingConsent } from '@/lib/ads-config';
 import { useEffect, useState } from 'react';
 
 // Google AdSense Script Component
-// Add this to your layout.tsx to load AdSense
+//
+// The loader script MUST render unconditionally in production: AdSense verifies
+// the code's presence when reviewing the site, and ads cannot serve without it.
+// Personalization stays consent-controlled — without advertising consent we push
+// requestNonPersonalizedAds: 1 (Google's documented fallback for consent-gated
+// traffic), and personalization resumes once consent is granted.
 export function AdSenseScript() {
-  const [hasConsent, setHasConsent] = useState(() => {
-    if (typeof window === 'undefined') return false;
-    return hasAdvertisingConsent();
-  });
+  const [adConsent, setAdConsent] = useState(false);
 
   useEffect(() => {
     const handleConsentUpdate = () => {
-      setHasConsent(hasAdvertisingConsent());
+      setAdConsent(hasAdvertisingConsent());
     };
-
+    handleConsentUpdate();
     window.addEventListener('cookie-consent-updated', handleConsentUpdate);
     return () => {
       window.removeEventListener('cookie-consent-updated', handleConsentUpdate);
     };
   }, []);
 
-  // Don't load if ads are disabled, publisher missing, or no consent
-  if (!adsConfig.enabled || !adsConfig.publisherId || !hasConsent) {
-    return null;
-  }
-
-  return (
-    <Script
-      id="adsense-loader"
-      async
-      src={adsConfig.scriptUrl}
-      crossOrigin="anonymous"
-      strategy="afterInteractive"
-    />
-  );
-}
-
-// Non-personalized ads version (for users without personalized consent)
-export function AdSenseScriptNonPersonalized() {
   if (!adsConfig.enabled || !adsConfig.publisherId) {
     return null;
   }
@@ -48,25 +32,26 @@ export function AdSenseScriptNonPersonalized() {
   return (
     <>
       <Script
-        id="adsense-loader-np"
+        id="adsense-loader"
         async
         src={adsConfig.scriptUrl}
         crossOrigin="anonymous"
         strategy="afterInteractive"
       />
-      <Script
-        id="adsense-config-np"
-        strategy="afterInteractive"
-        dangerouslySetInnerHTML={{
-          __html: `
-            (adsbygoogle = window.adsbygoogle || []).push({
-              google_ad_client: "${adsConfig.publisherId}",
-              enable_page_level_ads: true,
-              requestNonPersonalizedAds: 1
-            });
-          `,
-        }}
-      />
+      {!adConsent && (
+        <Script
+          id="adsense-npa"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              (adsbygoogle = window.adsbygoogle || []).push({
+                google_ad_client: "${adsConfig.publisherId}",
+                requestNonPersonalizedAds: 1
+              });
+            `,
+          }}
+        />
+      )}
     </>
   );
 }
