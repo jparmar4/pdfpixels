@@ -118,6 +118,39 @@ function getToolJsonLd(tool: ReturnType<typeof getToolBySlug>) {
   const isAI = tool.isAI;
   const contentData = toolContentMap[tool.slug];
   const features = contentData?.features ?? [];
+  const howToSteps = contentData?.steps?.length
+    ? contentData.steps.map((step, index) => ({
+        '@type': 'HowToStep' as const,
+        position: index + 1,
+        name: normalizeDisplayText(step.title),
+        text: normalizeDisplayText(step.description),
+      }))
+    : [
+        {
+          '@type': 'HowToStep' as const,
+          position: 1,
+          name: 'Open the tool page',
+          text: `Go to ${url} and review the accepted file types and workflow notes.`,
+        },
+        {
+          '@type': 'HowToStep' as const,
+          position: 2,
+          name: 'Upload your file',
+          text: 'Add the image or PDF file required for this workflow.',
+        },
+        {
+          '@type': 'HowToStep' as const,
+          position: 3,
+          name: 'Adjust the settings',
+          text: `Configure the ${cleanName.toLowerCase()} options based on your output requirements.`,
+        },
+        {
+          '@type': 'HowToStep' as const,
+          position: 4,
+          name: 'Process and download',
+          text: 'Run the workflow and download the finished file once processing completes.',
+        },
+      ];
   const faqEntities = contentData?.faqs?.length
     ? contentData.faqs.map((faq) => ({
         '@type': 'Question' as const,
@@ -200,32 +233,7 @@ function getToolJsonLd(tool: ReturnType<typeof getToolBySlug>) {
       name: `How to use ${cleanName}`,
       description: `Step-by-step guide for using the ${cleanName} workflow on PdfPixels.`,
       totalTime: isAI ? 'PT30S' : 'PT2M',
-      step: [
-        {
-          '@type': 'HowToStep',
-          position: 1,
-          name: 'Open the tool page',
-          text: `Go to ${url} and review the accepted file types and workflow notes.`,
-        },
-        {
-          '@type': 'HowToStep',
-          position: 2,
-          name: 'Upload your file',
-          text: 'Add the image or PDF file required for this workflow.',
-        },
-        {
-          '@type': 'HowToStep',
-          position: 3,
-          name: 'Adjust the settings',
-          text: `Configure the ${cleanName.toLowerCase()} options based on your output requirements.`,
-        },
-        {
-          '@type': 'HowToStep',
-          position: 4,
-          name: 'Process and download',
-          text: 'Run the workflow and download the finished file once processing completes.',
-        },
-      ],
+      step: howToSteps,
       tool: {
         '@type': 'HowToTool',
         name: 'PdfPixels',

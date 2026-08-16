@@ -27,7 +27,7 @@ export const blogPosts: BlogPost[] = [
         title: "How to Add a CONFIDENTIAL or DRAFT Watermark to a PDF",
         excerpt: "Need to mark a contract as DRAFT or stamp CONFIDENTIAL on every page? Here is how a text watermark actually works, when it helps, and how to keep the document readable.",
         date: "Aug 14, 2026",
-        dateModified: "Aug 14, 2026",
+        dateModified: "Aug 16, 2026",
         category: "PDF Editing",
         author: "PdfPixels Editorial",
         authorRole: "PdfPixels team",
@@ -96,6 +96,27 @@ It does not encrypt the file. It does not stop screenshots. It does not prove au
 
 The current PdfPixels watermark tool stamps **every page** with **text**. It does not place a logo image or skip odd pages. If you only want a cover stamp, [split](/tools/split-pdf) page 1, watermark that page, then [merge](/tools/merge-pdf) it back.
 
+## Watermarks in specific workflows
+
+**Legal and contract review** — stamp every negotiation round: DRAFT v1, DRAFT v2. When both sides finally sign the clean version, the stamped history makes it obvious which copy circulated earlier and none of them can be mistaken for the executed agreement.
+
+**Real estate and mortgage packets** — appraisal drafts and inspection reports often carry CONFIDENTIAL because they contain income data and addresses. A corner stamp at low opacity keeps pages scannable for the lender while marking the packet clearly.
+
+**Photography and design proofs** — a diagonal repeat across a proof gallery says "preview, not final delivery" without hiding the work itself. Keep opacity modest; clients still need to judge focus and color.
+
+**Engineering and construction drawings** — SUPERSEDED or PRELIMINARY stamps on revised drawings prevent an outdated sheet from being built. Corners work best here — title blocks already claim the bottom of the page.
+
+## Where watermarking sits in the document pipeline
+
+Order matters more than people expect:
+
+1. **Finish the content** — write, edit, reorder pages, number them if needed ([add page numbers](/blog/add-page-numbers-to-pdf-online)).
+2. **Compress** the final file if it faces an upload or email limit ([compress PDF](/blog/how-to-compress-pdf-file-size)).
+3. **Watermark** the compressed file.
+4. **Protect with a password** last, if the file also needs a lock.
+
+Stamping early means restamping after every change. Protecting before watermarking means re-encrypting too. One pass, in the right order, and you are done.
+
 ## Common mistakes
 
 **Opacity at 80%.** The stamp wins; the contract loses. Drop it until you can still highlight a sentence.
@@ -127,6 +148,14 @@ A watermark is a status label, not a lock. Use short text, modest opacity, and a
                 question: "Can I watermark only the first page?",
                 answer: "The current tool stamps every page. Split out the first page, watermark that file, then merge it back if you need a cover-only stamp."
             },
+            {
+                question: "Does the watermark stay on the PDF when it is printed?",
+                answer: "Yes. The stamp becomes part of the page content, so it prints exactly like the rest of the document. That is also why opacity matters — a heavy stamp is just as heavy on paper, and ink coverage can make the page harder to read in hard copy."
+            },
+            {
+                question: "Can I use my company logo as a watermark?",
+                answer: "The current tool places text stamps, not images. A workable text alternative for branding is a light corner stamp with your company name. A true logo overlay would need to be baked into the document before it becomes a PDF."
+            },
         ],
     },
     {
@@ -134,7 +163,7 @@ A watermark is a status label, not a lock. Use short text, modest opacity, and a
         title: "WebP vs JPG vs PNG: Which Image Format Should You Use?",
         excerpt: "A form rejects WebP. A PNG is 8MB. A JPG wrecks a logo. Here is a plain guide to when each format wins — and how to convert without wrecking the file.",
         date: "Aug 14, 2026",
-        dateModified: "Aug 14, 2026",
+        dateModified: "Aug 16, 2026",
         category: "Image Basics",
         author: "PdfPixels Editorial",
         authorRole: "PdfPixels team",
@@ -214,6 +243,26 @@ Apple phones often save HEIC. It is efficient on the phone and annoying everywhe
 | Screenshot of an error message | PNG |
 | iPhone photo on a Windows PC | Convert HEIC → JPG |
 
+## File-size reality check
+
+Same 12-megapixel phone photo, saved three ways (your numbers will vary, but the pattern holds):
+
+| Format | Typical size | Best for |
+|---|---|---|
+| PNG | 15–25MB | Never for photos like this |
+| JPG @ 90% | 3–5MB | Universal sharing |
+| WebP @ 90% | 1.5–3MB | Your own website |
+
+Flip it around for a logo: PNG wins on quality, and the size gap disappears because flat graphics compress efficiently in PNG. This is why the rule is *photos → JPG/WebP, graphics → PNG* rather than "always pick the smallest file."
+
+## Why websites serve WebP when forms reject it
+
+Bandwidth. A site serving a million images a month cuts its image traffic roughly in half by switching JPGs to WebP — that is real money on hosting and real speed on mobile. The site controls its own stack, so the "unsupported app" problem never bites. A job portal accepting uploads is the mirror image: it cannot control which ancient viewer a clerk opens files in, so it sticks to JPG and PNG. Same format, opposite constraints, and you are the one stuck converting between them.
+
+## What about AVIF?
+
+AVIF is the next-generation format after WebP — smaller still, and already supported in Chrome, Firefox, and Safari. Expect the same pattern as WebP: modern browsers yes, older forms and desktop apps no. The practical advice does not change: keep originals, export AVIF/WebP for sites you control, and keep a JPG handy for everything else.
+
 ## How to convert without wrecking the picture
 
 1. **Start from the original**, not a file you already compressed three times.
@@ -242,6 +291,14 @@ JPG for photos. PNG for graphics and transparency. WebP when *you* control the w
             {
                 question: "Why won't a website accept my WebP upload?",
                 answer: "The site likely allows only JPG or PNG. Convert the WebP to JPG (photos) or PNG (graphics with transparency) and upload again."
+            },
+            {
+                question: "Which format should I use for email attachments?",
+                answer: "JPG for photos, PNG for screenshots and graphics. Avoid WebP and HEIC in email — recipients on older Outlook versions or desktop apps may see a file they cannot open."
+            },
+            {
+                question: "Does converting between formats reduce quality?",
+                answer: "Converting to JPG re-compresses the image once, which is invisible at 85-92% quality. Converting to PNG is lossless. The real quality killer is converting back and forth repeatedly — always start from the best original you have, convert once, and keep the original."
             },
         ],
     },
@@ -4337,7 +4394,7 @@ Bookmark our [Compress PDF](/tools/compress-pdf), [Merge PDF](/tools/merge-pdf),
         title: "How to Password Protect a PDF Online Free (Without Acrobat)",
         excerpt: "Need to send a contract or bank statement as a PDF without leaving it open to anyone with the link? Here is a clear, free way to add a password in your browser — and what protection actually does (and does not) cover.",
         date: "Jul 28, 2026",
-        dateModified: "Jul 28, 2026",
+        dateModified: "Aug 16, 2026",
         category: "PDF Security",
         author: "PdfPixels Editorial",
         authorRole: "PdfPixels team",
@@ -4395,6 +4452,22 @@ That separation matters. Putting the password in the same email as the attachmen
 
 A long passphrase is easier to remember and harder to guess than a short complex string. If you protect files often, a password manager helps you generate and store unique passwords per document.
 
+## What the recipient experiences
+
+Useful to know before you explain it to them: a password-protected PDF behaves the same everywhere. The recipient double-clicks the attachment, and instead of the document, they get a password prompt. Once they enter the password you sent them, the file opens normally in Adobe Reader, macOS Preview, a phone PDF viewer, or a mainstream browser.
+
+Two practical wrinkles. First, the prompt appears in *their* app — so if they claim "the file is broken," it is usually the password (case-sensitive, or autocorrected on their phone keyboard). Second, the password gates opening, not screenshotting: once unlocked, they can photograph the screen. Encryption protects the file in transit and storage, not the eyeballs of a person you chose to trust.
+
+## Three levels of "protecting" a PDF
+
+| Method | What it stops | What it does not stop |
+|---|---|---|
+| Open password (encrypt) | Anyone without the password opening the file | Screenshots after unlock; sharing by an authorized reader |
+| Permissions password | Casual printing/copying via the flags | Determined users with restriction-stripping tools |
+| Watermark (DRAFT, CONFIDENTIAL) | Nothing technical — it signals status | Everything a lock would stop |
+
+For real confidentiality, the open password is the layer that matters. A permissions-only lock is a polite request; a watermark is a label. Stack them when the situation calls for it: encrypt the contract, then stamp DRAFT on the review copy (full stamp walkthrough in [how to add a CONFIDENTIAL watermark](/blog/add-confidential-watermark-to-pdf)).
+
 ## Common mistakes
 
 **Using the same password for every client file.** If one password leaks, every past attachment is exposed.
@@ -4431,6 +4504,14 @@ PdfPixels is designed for practical document jobs — start at [Protect PDF](/to
             {
                 question: "Should I put the password in the same email as the PDF?",
                 answer: "No. Send the file and the password through different channels so an intercepted email alone is not enough to open the document."
+            },
+            {
+                question: "Can I remove the password from a PDF later?",
+                answer: "Yes, if you know the password. Run the protected file through an Unlock PDF tool, enter the password, and download an unlocked copy. If you have forgotten the password, there is no reliable recovery — that is the point of the encryption."
+            },
+            {
+                question: "Will a password-protected PDF open on a phone?",
+                answer: "Yes. Modern phone PDF apps and browsers prompt for the password and open the file once it is entered. If a recipient has trouble, it is almost always a typo or autocorrect issue — passwords are case-sensitive."
             },
         ],
     },

@@ -57,7 +57,13 @@ export function Footer() {
     { name: 'Terms', href: '/terms' },
     { name: 'Disclaimer', href: '/disclaimer' },
     { name: 'DMCA', href: '/dmca' },
+    { name: 'API Docs', href: '/api-docs' },
   ];
+
+  const categoryLinks = toolCategories.map((cat) => ({
+    name: cat.name,
+    href: `/tools/category/${cat.id}`,
+  }));
 
   const regionLinks = geoRegions.map((region) => ({
     name: region.name,
@@ -272,6 +278,26 @@ export function Footer() {
             <div className="hidden lg:block">
               <FooterColumn title="Company & Legal" links={legalLinks} />
             </div>
+          </div>
+        </div>
+
+        {/* ── Category index (crawlable links to every category page) ── */}
+        <div className="border-t border-border/30">
+          <div className="container mx-auto px-4 py-4 lg:px-8">
+            <nav
+              aria-label="Tool categories"
+              className="flex flex-wrap items-center justify-center gap-x-1.5 gap-y-1 text-xs text-muted-foreground"
+            >
+              <span className="mr-1 font-semibold uppercase tracking-[0.14em]">Categories</span>
+              {categoryLinks.map((link, i) => (
+                <span key={link.href} className="flex items-center gap-1.5">
+                  {i > 0 && <span aria-hidden="true" className="text-border">·</span>}
+                  <Link href={link.href} className="transition-colors hover:text-primary">
+                    {link.name}
+                  </Link>
+                </span>
+              ))}
+            </nav>
           </div>
         </div>
 
