@@ -168,6 +168,8 @@ export const toolContentMap: Record<string, ToolContent> = {
             { question: 'How many images can I combine into one PDF?', answer: 'Up to 30 images per run, 15 MB each, and 120 MB combined. Split a larger set into groups if you hit that cap.' },
             { question: 'Can I choose the page size for the PDF?', answer: 'Yes! Choose from A4, Letter, Legal, A3, A5, or "Fit to Image" which automatically sizes each page to match the image dimensions. You can also set portrait, landscape, or auto-detect orientation.' },
             { question: 'Will the image quality be preserved in the PDF?', answer: 'Yes, images are embedded at their original resolution. The output PDF maintains the full quality of your source images with no additional compression applied.' },
+            { question: 'What is the difference between "Contain" and "Fill" fit modes?', answer: 'Contain shrinks the whole image to fit inside the page with no cropping — you may see white margins. Fill enlarges the image to cover the entire page and crops the overflow — no margins, but edges are trimmed.' },
+            { question: 'Should I resize images before converting to PDF?', answer: 'Only if you need to. Photos straight from a phone camera print sharply at A4 because they carry plenty of pixels. Resize first when the images are oversized for an upload limit or when every page must match specific dimensions.' }
         ],
         steps: [
             { title: 'Upload images', description: 'Select one or more images (JPG, PNG, WebP) you want to include in your PDF.' },
@@ -175,7 +177,9 @@ export const toolContentMap: Record<string, ToolContent> = {
             { title: 'Generate PDF', description: 'Click process to embed the images into a single PDF document and save it.' }
         ],
         commonProblems: [
-            { problem: 'Images are cut off in the PDF', solution: 'If your images are cut off, try changing the "Fit" setting to "Contain" so the entire image shrinks to fit the page without cropping.' }
+            { problem: 'Images are cut off in the PDF', solution: 'If your images are cut off, try changing the "Fit" setting to "Contain" so the entire image shrinks to fit the page without cropping.' },
+            { problem: 'The PDF is too large to upload', solution: 'Photos embedded at full resolution make heavy PDFs. Run the finished PDF through Compress PDF, or compress the images before converting — compressing images first gives finer control per page.' },
+            { problem: 'My HEIC photos are rejected', solution: 'Convert HEIC files to JPG first with the HEIC to JPG tool, then bring the JPGs here. HEIC is not a direct input format for this tool.' }
         ],
         supportedFormats: 'Input: JPG, JPEG, PNG, WebP, BMP — Output: PDF',
         relatedTools: ['compress-image', 'resize-image', 'merge-pdf', 'compress-pdf'],
@@ -823,7 +827,7 @@ export const toolContentMap: Record<string, ToolContent> = {
         relatedTools: ['png-to-jpeg', 'heic-to-jpg', 'compress-image'],
     },
     'heic-to-jpg': {
-        about: 'HEIC to JPG converts iPhone\'s HEIC/HEIF photo format to standard JPEG that works everywhere. Since iOS 11, Apple devices save photos in HEIC format — a newer format that offers better compression but isn\'t universally supported on Windows, Android, and many websites. Convert your iPhone photos to JPG for easy sharing, uploading, and editing.',
+        about: 'HEIC to JPG converts iPhone\'s HEIC/HEIF photo format to standard JPEG that works everywhere. Since iOS 11, Apple devices save photos in HEIC format — a newer format that offers better compression but isn\'t universally supported on Windows, Android, and many websites. Decoding runs on our servers, which is exactly why it works on the Windows PC that cannot open the original file — the browser never has to understand HEIC. Expect the output JPG to be roughly 1.5-2x larger than the HEIC source (JPEG is the less efficient format); if the larger size matters for an upload, run the JPG through Compress Image afterward rather than converting at low quality. Portals and job forms that require JPEG will accept the result directly.',
         directAnswer: 'The HEIC to JPG tool converts Apple\'s high-efficiency photo format into standard JPEGs. It solves compatibility issues, allowing you to easily view, edit, and upload iPhone photos on Windows PCs, Android devices, and websites that don\'t support HEIC.',
         steps: [
             { title: 'Upload iPhone Photos', description: 'Select the HEIC files directly from your Apple device or computer.' },
@@ -832,11 +836,18 @@ export const toolContentMap: Record<string, ToolContent> = {
         ],
         commonProblems: [
             { problem: 'My Live Photos only converted as a single image.', solution: 'HEIC to JPG conversion extracts the primary still frame. The video component of Live Photos is not retained in a standard JPEG file.' },
-            { problem: 'The tool is having trouble with my photo.', solution: 'HEIC decoding is memory-heavy. Convert one file at a time in the current upload UI. Very large originals (over 25 MB) should be reduced first.' }
+            { problem: 'The tool is having trouble with my photo.', solution: 'HEIC decoding is memory-heavy. Convert one file at a time in the current upload UI. Very large originals (over 25 MB) should be reduced first.' },
+            { problem: 'Windows says it cannot open my .heic file before I even upload.', solution: 'That is expected — Windows lacks native HEIC support without Store extensions. It does not block conversion: upload the file here and the decoding happens on the server, so the original never needs to open on your PC.' }
         ],
         features: ['Converts Apple HEIC/HEIF to standard JPEG', 'Adjustable output quality', 'Works when Windows cannot open the original HEIC', 'Handles typical iPhone still photos', 'One file per conversion in the current upload UI'],
         useCases: ['Converting iPhone photos for sharing with Android and Windows users', 'Uploading HEIC photos to websites that only accept JPEG', 'Preparing iPhone photos for editing in non-Apple software', 'Converting bulk iPhone photo libraries to JPEG'],
-        faqs: [{ question: 'Why does my iPhone save photos as HEIC?', answer: 'Since iOS 11, iPhones use HEIC by default because it produces smaller files than JPEG at the same quality. You can change this in Settings > Camera > Formats.' }],
+        faqs: [
+            { question: 'Why does my iPhone save photos as HEIC?', answer: 'Since iOS 11, iPhones use HEIC by default because it produces smaller files than JPEG at the same quality. You can change this in Settings > Camera > Formats.' },
+            { question: 'Will converting HEIC to JPG reduce my photo quality?', answer: 'At high quality settings the difference is invisible at normal viewing sizes. Avoid converting at low quality and then re-compressing — if you need a smaller file, convert at high quality first, then use Compress Image with a target size.' },
+            { question: 'Why is my converted JPG bigger than the original HEIC?', answer: 'HEIC is the more efficient format — that is why Apple uses it. A JPEG of the same photo typically lands 1.5-2x larger. The size increase is normal; compress the JPG afterward if an upload limit requires it.' },
+            { question: 'Do date and location (EXIF) details survive the conversion?', answer: 'Do not count on it — conversion decodes the image and writes a new JPEG, so metadata like capture date and GPS is often stripped. If the location stamp matters to you, note it before converting.' },
+            { question: 'How do I stop needing this tool for every transfer?', answer: 'On your iPhone, Settings > Photos > Transfer to Mac or PC > Automatic converts photos to JPEG automatically during USB transfers. Settings > Camera > Formats > Most Compatible makes the camera shoot JPEG natively.' }
+        ],
         supportedFormats: 'Input: HEIC, HEIF — Output: JPG/JPEG',
         relatedTools: ['webp-to-jpg', 'png-to-jpeg', 'compress-image'],
     },
@@ -979,7 +990,7 @@ export const toolContentMap: Record<string, ToolContent> = {
     // PDF TOOLS
     // ═══════════════════════════════════════════════════════════════════════
     'compress-pdf': {
-        about: 'Compress PDF reduces your PDF file size significantly while maintaining readable quality. Upload large PDFs and choose compression levels — low (best quality, moderate reduction), medium (balanced), or high (maximum compression). Perfect for email attachments with size limits, uploading to portals, and reducing storage usage. Handles text-heavy, image-heavy, and mixed PDFs.',
+        about: 'Compress PDF reduces your PDF file size significantly while maintaining readable quality. Upload large PDFs and choose compression levels — low (best quality, moderate reduction), medium (balanced), or high (maximum compression). Compression works by re-encoding the images inside the PDF at lower resolution and stripping redundant structural data; the text layer itself is never re-rendered, which is why paragraphs stay sharp at every level. A 30MB scanned contract usually lands under 5MB on high; a text-only export from Word may barely shrink because there is little to reclaim. Pick low when quality matters most (print-ready files, portfolios), medium for email attachments around the 10-25MB mark, and high for strict portal limits measured in single megabytes or kilobytes. Handles text-heavy, image-heavy, and mixed PDFs.',
         directAnswer: 'Compress PDF drastically reduces the file size of large PDF documents by optimizing internal images and structures, making them small enough to send via email without losing readability.',
         steps: [
             { title: 'Upload PDF', description: 'Select a large PDF document that you need to make smaller for sharing.' },
@@ -987,17 +998,26 @@ export const toolContentMap: Record<string, ToolContent> = {
             { title: 'Download PDF', description: 'Save the compressed PDF, which is now optimized and ready for email attachments.' }
         ],
         commonProblems: [
-            { problem: 'PDF didn\'t compress much.', solution: 'Text-heavy PDFs are already highly optimized. Compression works best on PDFs containing large or uncompressed images.' },
-            { problem: 'Images look blurry after compression.', solution: 'High compression reduces image resolution. Try using the Medium or Low compression setting to preserve better image quality.' }
+            { problem: 'PDF didn\'t compress much.', solution: 'Text-heavy PDFs are already highly optimized. Compression works best on PDFs containing large or uncompressed images. If you must shrink further, split off pages you do not need, then compress again.' },
+            { problem: 'Images look blurry after compression.', solution: 'High compression reduces image resolution. Try using the Medium or Low compression setting to preserve better image quality.' },
+            { problem: 'The tool rejected my file.', solution: 'Password-protected PDFs must be unlocked first (use Unlock PDF with the password). Also check the upload size limit — split very large files into parts, compress each, then merge.' },
+            { problem: 'I need a specific target like 200KB.', solution: 'Start with high compression, then check the result size. For hard caps (200KB-1MB), remove unnecessary pages first with Split PDF — fewer pages compress below the limit far more reliably than re-compressing an already-compressed file.' }
         ],
-        features: ['Three compression levels: low, medium, high', 'Handles text-heavy and image-heavy PDFs', 'Maintains readable text quality', 'Significant file size reduction (50-90%)', 'Secure processing with automatic cleanup'],
+        features: ['Three compression levels: low, medium, high', 'Handles text-heavy and image-heavy PDFs', 'Maintains readable text quality', 'Significant file size reduction (50-90%) on image-heavy files', 'No signup and no watermark'],
         useCases: ['Reducing PDF size for email attachments under 10 MB', 'Compressing scanned documents for upload portals', 'Optimizing large reports for web distribution', 'Reducing storage usage for PDF archives'],
-        faqs: [{ question: 'How much can I compress a PDF?', answer: 'Compression depends on content type. Image-heavy PDFs can be reduced by 50-90%. Text-only PDFs have less room for compression. Try different levels to find the best balance.' }, { question: 'Will compressed PDFs still be readable?', answer: 'Yes. Text remains sharp and readable at all compression levels. Images may show slight quality reduction at high compression but remain clear.' }],
+        faqs: [
+            { question: 'How much can I compress a PDF?', answer: 'Compression depends on content type. Image-heavy PDFs can be reduced by 50-90%. Text-only PDFs have less room for compression. Try different levels to find the best balance.' },
+            { question: 'Will compressed PDFs still be readable?', answer: 'Yes. Text remains sharp and readable at all compression levels. Images may show slight quality reduction at high compression but remain clear.' },
+            { question: 'Which compression level should I choose for email?', answer: 'For Gmail\'s 25MB attachment cap, medium is usually enough and keeps images clean. For corporate mail servers with 10MB limits or stricter, medium to high. For portal caps measured in kilobytes, use high and consider splitting off unneeded pages first.' },
+            { question: 'Does compressing a PDF reduce its quality permanently?', answer: 'The compressed file replaces image detail with smaller re-encoded versions, so yes — download quality is what you keep. Always retain your original for future edits, and open the compressed file to check readability before sending it anywhere important.' },
+            { question: 'Why did my scanned PDF shrink so much more than my Word export?', answer: 'Scans are images — usually high-resolution photos of paper — so there is a lot of resolution to reclaim. A Word or Google Docs export stores text as compact vector data and embeds modest images, so there is far less to remove.' },
+            { question: 'Is it safe to compress confidential documents here?', answer: 'The file is processed for this request and you download the result; temporary files are deleted on supported flows. Keep a local original, and read the privacy policy before uploading anything highly sensitive.' }
+        ],
         supportedFormats: 'Input/Output: PDF',
         relatedTools: ['merge-pdf', 'split-pdf', 'compress-image'],
     },
     'merge-pdf': {
-        about: 'Merge PDF combines multiple PDF files into a single document. Upload PDFs, drag to reorder, and download the merged result. Perfect for combining report sections, merging scanned pages, creating document packages, and organizing multi-part files into one cohesive PDF.',
+        about: 'Merge PDF combines multiple PDF files into a single document. Upload PDFs, drag to reorder, and download the merged result. Merging keeps every page exactly as it was — fonts, images, page sizes, and orientations carry over untouched, so a packet mixing A4 pages with scanned letter-size pages simply keeps those mixed dimensions. Files join in the order you arrange, which makes this the natural last step (or middle step) of a packet workflow: merge, then add page numbers, then compress if the result needs to fit an upload limit. Combining first and compressing after is usually more effective than compressing pieces separately when the final file has one size budget.',
         directAnswer: 'Merge PDF allows you to combine multiple PDF files into a single continuous document. You can easily drag and drop files to reorder them before joining them together.',
         steps: [
             { title: 'Select PDFs', description: 'Upload two or more PDF files that you want to combine into a single document.' },
@@ -1006,16 +1026,23 @@ export const toolContentMap: Record<string, ToolContent> = {
         ],
         commonProblems: [
             { problem: 'Merged file is too large.', solution: 'Combining many large PDFs will result in a huge file. Use the Compress PDF tool afterward to reduce the final file size.' },
-            { problem: 'Pages are in the wrong order.', solution: 'Make sure to visually verify the file sequence in the drag-and-drop preview area before clicking the merge button.' }
+            { problem: 'Pages are in the wrong order.', solution: 'Make sure to visually verify the file sequence in the drag-and-drop preview area before clicking the merge button.' },
+            { problem: 'One of my files failed to upload.', solution: 'Check whether that file is password-protected — unlock it first with Unlock PDF, then merge the unlocked copy. Also confirm each file is within the per-file size limit.' }
         ],
         features: ['Combine up to 20 PDF files into one', 'Drag and drop to reorder files', 'Preserves original formatting and quality', '25 MB per file, 100 MB combined', 'Fast processing'],
         useCases: ['Combining multiple report sections into one document', 'Merging scanned document pages into a single PDF', 'Creating application packages from separate files', 'Organizing invoices and receipts into monthly compilations'],
-        faqs: [{ question: 'Is there a limit on the number of PDFs I can merge?', answer: 'Yes. Merge PDF accepts up to 20 files per run, 25 MB each, and 100 MB combined. Split a larger set into groups if you hit that cap.' }, { question: 'Will the formatting be preserved?', answer: 'Yes, each page retains its original formatting, fonts, images, and layout. The merge simply concatenates pages in your specified order.' }],
+        faqs: [
+            { question: 'Is there a limit on the number of PDFs I can merge?', answer: 'Yes. Merge PDF accepts up to 20 files per run, 25 MB each, and 100 MB combined. Split a larger set into groups if you hit that cap.' },
+            { question: 'Will the formatting be preserved?', answer: 'Yes, each page retains its original formatting, fonts, images, and layout. The merge simply concatenates pages in your specified order.' },
+            { question: 'Should I compress before or after merging?', answer: 'Compress after merging, once. If each piece must also stay small individually (for example, separate email attachments), compress each first instead — but for one combined upload, a single compression pass on the merged file is simpler and usually smaller.' },
+            { question: 'Can I merge PDFs that have different page sizes?', answer: 'Yes. Mixed page sizes (A4 plus letter, portrait plus landscape) merge fine — the combined PDF keeps each page\'s original dimensions rather than forcing one size.' },
+            { question: 'Why are my page numbers wrong after merging?', answer: 'If the source files were numbered individually (1, 2, 3 in each), the merged packet keeps those original stamps. Add continuous page numbers as the final step after merging if the packet needs one consistent sequence.' }
+        ],
         supportedFormats: 'Input/Output: PDF',
         relatedTools: ['split-pdf', 'compress-pdf', 'reorder-pdf-pages', 'image-to-pdf'],
     },
     'split-pdf': {
-        about: 'Split PDF lets you extract specific pages or divide a PDF into multiple smaller files. Select individual pages, page ranges, or split at fixed intervals. Perfect for extracting chapters from books, separating specific pages from reports, and breaking large PDFs into manageable sections.',
+        about: 'Split PDF lets you extract specific pages or divide a PDF into multiple smaller files. Select individual pages, page ranges, or split at fixed intervals. Extraction copies pages into a brand-new PDF — links and interactive form fields from the source may not carry over, but the visual content, text, and images arrive exactly as they appear. Two modes cover most needs: pull a selection (pages 1, 3, 7-9) into one new file, or explode the document into single pages delivered as a ZIP. Splitting is also the standard first move when a file is too large to compress under a hard limit — fewer pages means a smaller baseline to compress.',
         directAnswer: 'Split PDF helps you break a large PDF document into smaller files or extract specific pages and page ranges into a brand new PDF document.',
         steps: [
             { title: 'Upload PDF', description: 'Select a multi-page PDF document that you want to separate or extract pages from.' },
@@ -1024,16 +1051,22 @@ export const toolContentMap: Record<string, ToolContent> = {
         ],
         commonProblems: [
             { problem: 'Cannot extract from a protected PDF.', solution: 'You cannot split an encrypted PDF. Use the Unlock PDF tool first to remove the password protection.' },
-            { problem: 'Output ZIP file is corrupted.', solution: 'Ensure your download completes fully before opening the ZIP. Large splits may take a moment to generate properly.' }
+            { problem: 'Output ZIP file is corrupted.', solution: 'Ensure your download completes fully before opening the ZIP. Large splits may take a moment to generate properly.' },
+            { problem: 'My page numbers do not match the selector.', solution: 'The tool counts physical positions (1 = first page). Documents with printed page numbers that start later (the cover counts as page 1) can be off by one or more — check the thumbnail preview before extracting.' }
         ],
         features: ['Extract specific pages or page ranges', 'Split every page into a ZIP (up to 20 pages)', 'Type a range such as 1-3,5,7-9', 'Download the extracted pages as a new PDF', 'Preserves original page quality'],
         useCases: ['Extracting specific chapters from e-books', 'Separating individual pages from multi-page reports', 'Breaking large documents into emailable sections', 'Isolating forms or certificates from bundled PDFs'],
-        faqs: [{ question: 'Can I extract non-consecutive pages?', answer: 'Yes! Select any combination of pages — consecutive or non-consecutive. For example, extract pages 1, 3, 7-10, 15 into a single new PDF.' }],
+        faqs: [
+            { question: 'Can I extract non-consecutive pages?', answer: 'Yes! Select any combination of pages — consecutive or non-consecutive. For example, extract pages 1, 3, 7-10, 15 into a single new PDF.' },
+            { question: 'What is the difference between Split PDF and Delete PDF Pages?', answer: 'Both produce a smaller PDF, but they work in opposite directions. Split keeps the pages you select; Delete removes the pages you select and keeps the rest. Use whichever requires selecting fewer pages.' },
+            { question: 'How do I split a long document into chapters?', answer: 'Run the tool once per chapter, extracting that chapter\'s page range each time (for example 1-12, then 13-30). You get one PDF per chapter and nothing is lost between runs.' },
+            { question: 'Will splitting reduce the file size of each part?', answer: 'Each part is smaller than the whole because it contains fewer pages, yes. But splitting alone does not recompress anything — if each part must fit a strict size cap, compress the extracted files afterward.' }
+        ],
         supportedFormats: 'Input/Output: PDF',
         relatedTools: ['merge-pdf', 'compress-pdf', 'delete-pdf-pages', 'reorder-pdf-pages'],
     },
     'pdf-to-jpg': {
-        about: 'PDF to JPG converts each page of your PDF document into high-quality JPG or PNG images. Set the output resolution and quality, then download individual page images or all pages as a ZIP file. Perfect for extracting images from PDFs, creating presentation slides from PDF reports, and sharing PDF content as images on social media.',
+        about: 'PDF to JPG converts each page of your PDF document into high-quality JPG or PNG images. Set the output resolution and quality, then download individual page images or all pages as a ZIP file. Resolution works exactly like scanning in reverse: 150 DPI renders each page crisp enough for screens and email, while 300 DPI produces print-sharp images at roughly four times the pixel count and file size. Pick JPG for photographs and everyday sharing; pick PNG when a page contains sharp text, line art, or transparency that must stay pixel-perfect. Because each page becomes a standalone image, this is also the reliable way to put a PDF page into a slide deck, a message thread, or a platform that only accepts image uploads.',
         directAnswer: 'PDF to JPG extracts every page of your PDF document and converts them into high-quality JPEG images, perfect for sharing document previews on social media.',
         steps: [
             { title: 'Upload PDF', description: 'Select the PDF document you wish to convert into image files.' },
@@ -1042,11 +1075,17 @@ export const toolContentMap: Record<string, ToolContent> = {
         ],
         commonProblems: [
             { problem: 'Text looks blurry in the JPG.', solution: 'The default resolution might be too low. Increase the DPI setting to 300 for crisp, readable text.' },
-            { problem: 'Transparent backgrounds turned black.', solution: 'JPG doesn\'t support transparency. If your PDF has transparent elements, try converting to PNG instead.' }
+            { problem: 'Transparent backgrounds turned black.', solution: 'JPG doesn\'t support transparency. If your PDF has transparent elements, try converting to PNG instead.' },
+            { problem: 'The images are too large to upload.', solution: 'Lower the DPI (150 is plenty for screens) or run the downloaded images through Compress Image to hit a specific KB target.' }
         ],
         features: ['Convert each PDF page to JPG or PNG', 'Adjustable output resolution and quality', 'Download converted pages as a ZIP', 'Up to 10 pages per run', 'Encrypted PDFs need Unlock first'],
         useCases: ['Extracting pages as images for presentations', 'Converting PDF reports to images for social media sharing', 'Creating image previews of PDF documents', 'Converting PDF certificates and diplomas to image format'],
-        faqs: [{ question: 'What resolution are the output images?', answer: 'You can set the output resolution. Higher DPI produces larger, sharper images. 150 DPI is good for screen viewing, 300 DPI for printing.' }],
+        faqs: [
+            { question: 'What resolution are the output images?', answer: 'You can set the output resolution. Higher DPI produces larger, sharper images. 150 DPI is good for screen viewing, 300 DPI for printing.' },
+            { question: 'Should I choose JPG or PNG output?', answer: 'JPG for photo-like pages and everyday sharing — smaller files. PNG for pages that are mostly text, line art, or logos, and anywhere transparency matters — sharper edges but larger files.' },
+            { question: 'How many pages can I convert at once?', answer: 'Up to 10 pages per run. For longer documents, split the PDF into chunks first, convert each chunk, and combine the downloads.' },
+            { question: 'Is a page image searchable like the PDF?', answer: 'No — an image is a picture of the page, so text inside it is not selectable or searchable. If you need the text rather than a picture of it, use an OCR (image to text) tool instead.' }
+        ],
         supportedFormats: 'Input: PDF — Output: JPG, PNG',
         relatedTools: ['image-to-pdf', 'compress-pdf', 'split-pdf'],
     },
@@ -1087,7 +1126,7 @@ export const toolContentMap: Record<string, ToolContent> = {
         relatedTools: ['protect-pdf', 'compress-pdf', 'merge-pdf'],
     },
     'protect-pdf': {
-        about: 'Protect PDF secures your document with password-based encryption so only people with the password can open it. Upload a PDF, set a password, and download a protected copy for private sharing, client handoffs, or internal document control.',
+        about: 'Protect PDF secures your document with password-based encryption so only people with the password can open it. Upload a PDF, set a password, and download a protected copy for private sharing, client handoffs, or internal document control. Two clarifications that matter in practice. First, a password is not a watermark: encryption controls who can open the file, while a stamp like CONFIDENTIAL tells readers how to treat it — for both, protect first, then watermark. Second, there is no recovery path: encryption is only as strong as your memory of the password, so keep the unprotected original somewhere safe. When you send the protected file, share the password through a different channel than the file itself (password by phone or SMS, document by email) — sending both in the same email defeats the purpose.',
         directAnswer: 'Protect PDF encrypts your document with a secure password, ensuring that unauthorized users cannot open, read, or print the file without the correct credentials.',
         steps: [
             { title: 'Upload PDF', description: 'Select the sensitive PDF document you want to lock.' },
@@ -1096,11 +1135,18 @@ export const toolContentMap: Record<string, ToolContent> = {
         ],
         commonProblems: [
             { problem: 'I forgot the password I just set.', solution: 'Because the encryption is secure, we cannot recover forgotten passwords. Keep a backup of the original unencrypted file.' },
-            { problem: 'File won\'t encrypt.', solution: 'Ensure the PDF isn\'t already encrypted or corrupted. Try opening it in a standard viewer first.' }
+            { problem: 'File won\'t encrypt.', solution: 'Ensure the PDF isn\'t already encrypted or corrupted. Try opening it in a standard viewer first.' },
+            { problem: 'My recipient cannot open the protected file.', solution: 'Have them enter the password exactly as set — passwords are case-sensitive. Very old PDF reader apps may struggle with newer encryption; a current version of Adobe Reader, Preview, or any mainstream browser handles it fine.' }
         ],
         features: ['Password-based PDF encryption', 'Creates a separate protected copy for download', 'Works for private sharing, client delivery, and access control', 'Simple password entry and confirmation flow'],
         useCases: ['Protecting contracts, invoices, and reports before sharing', 'Sending private PDF attachments with access control', 'Securing internal documents before upload or distribution'],
-        faqs: [{ question: 'How does Protect PDF work?', answer: 'Upload your PDF, enter a password, and download a newly encrypted copy. Anyone opening that protected file will need the password.' }, { question: 'Does Protect PDF change my original file?', answer: 'No. The original file is left unchanged. The tool creates a separate protected PDF for download.' }],
+        faqs: [
+            { question: 'How does Protect PDF work?', answer: 'Upload your PDF, enter a password, and download a newly encrypted copy. Anyone opening that protected file will need the password.' },
+            { question: 'Does Protect PDF change my original file?', answer: 'No. The original file is left unchanged. The tool creates a separate protected PDF for download.' },
+            { question: 'What is the difference between password protection and a watermark?', answer: 'A password stops people from opening the file at all. A watermark (like DRAFT or CONFIDENTIAL) is visible to anyone who opens it and signals status instead of restricting access. For sensitive documents, combine both: encrypt, then watermark.' },
+            { question: 'What makes a strong PDF password?', answer: 'Length beats complexity: a phrase of 12+ characters with mixed case and a number is far stronger than a short scramble like "P@ss1". Avoid anything guessable from the document itself — your name, the client\'s name, or the document title are the first things someone tries.' },
+            { question: 'Can I remove the password later?', answer: 'Yes, if you know the password — run the protected file through Unlock PDF, enter the password, and download an unlocked copy.' }
+        ],
         supportedFormats: 'Input/Output: PDF',
         relatedTools: ['unlock-pdf', 'add-watermark-pdf', 'compress-pdf'],
     },

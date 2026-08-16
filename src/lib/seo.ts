@@ -4,8 +4,10 @@ import { allTools } from '@/lib/tools-data';
 export const SITE_URL = 'https://www.pdfpixels.com';
 export const DEFAULT_OG_IMAGE_PATH = '/opengraph-image';
 export const DEFAULT_OG_IMAGE_URL = `${SITE_URL}${DEFAULT_OG_IMAGE_PATH}`;
-/** Stable sitemap lastmod for evergreen pages — do not use `new Date()` per request. */
-export const SITE_CONTENT_UPDATED = new Date('2026-08-14T00:00:00.000Z');
+/** Stable sitemap lastmod for evergreen pages — do not use `new Date()` per request.
+ *  Bump this only when evergreen pages (home/tools/use-cases) actually change,
+ *  so lastmod stays truthful for crawlers. */
+export const SITE_CONTENT_UPDATED = new Date('2026-08-16T00:00:00.000Z');
 
 export function organizationId() {
   return `${SITE_URL}/#organization`;

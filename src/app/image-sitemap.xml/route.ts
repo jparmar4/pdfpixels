@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getAllBlogPosts } from '@/config/blog';
+import { allTools } from '@/lib/tools-data';
 import { absoluteUrl } from '@/lib/seo';
 
 export async function GET() {
@@ -12,6 +13,14 @@ export async function GET() {
     title: post.title,
   }));
 
+  // Tool pages carry a dynamically generated OG image at /tools/{slug}/opengraph-image
+  const toolImages = allTools.map((tool) => ({
+    pageUrl: absoluteUrl(`/tools/${tool.slug}`),
+    imageUrl: absoluteUrl(`/tools/${tool.slug}/opengraph-image`),
+    caption: `${tool.name} — free online tool`,
+    title: tool.name,
+  }));
+
   // Also include the main OG image on the homepage
   images.unshift({
     pageUrl: absoluteUrl('/'),
@@ -20,10 +29,12 @@ export async function GET() {
     title: 'PdfPixels Homepage',
   });
 
+  const allImages = [...images, ...toolImages];
+
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
-${images.map((img) => `  <url>
+${allImages.map((img) => `  <url>
     <loc>${img.pageUrl}</loc>
     <image:image>
       <image:loc>${img.imageUrl}</image:loc>
