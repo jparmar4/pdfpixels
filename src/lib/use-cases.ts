@@ -381,7 +381,7 @@ export const useCasePages: UseCasePage[] = [
     targetToolSlug: 'compress-pdf',
     intent: 'compress pdf to 300kb',
     overview:
-      'Some application portals enforce very small PDF limits such as 300KB. That is tight for multi-page scans but achievable for short text PDFs or heavily optimized scans. Strategy: remove unnecessary pages, use stronger compression, and ensure the source is not a 600 DPI color scan of a simple form. PdfPixels helps you iterate quickly until the file is under 300KB.',
+      'Some application portals enforce very small PDF limits such as 300KB. That is tight for multi-page scans but achievable for short text PDFs or heavily optimized scans. Set expectations by content: 300KB comfortably holds 1–3 pages of digital text, one well-compressed black-and-white scan, or a single page with a small photo — not a 10-page color scan set. Strategy: remove unnecessary pages, use stronger compression, and ensure the source is not a 600 DPI color scan of a simple form. PdfPixels helps you iterate quickly until the file is under 300KB.',
     whoItsFor: [
       'Applicants facing strict portal file caps',
       'Users uploading single-form PDFs to government sites',
@@ -400,6 +400,7 @@ export const useCasePages: UseCasePage[] = [
     ],
     faqs: [
       { question: 'Will 300KB be accepted everywhere?', answer: 'Only if that is your portal’s rule. Always follow the specific limit shown on the form.' },
+      { question: 'How many pages fit in a 300KB PDF?', answer: 'One to three pages of digital text, or one optimized scan. Image-heavy pages consume the budget fastest, so drop photos you do not strictly need before compressing.' },
     ],
   },
   {
@@ -409,7 +410,7 @@ export const useCasePages: UseCasePage[] = [
     targetToolSlug: 'compress-pdf',
     intent: 'compress pdf to 100kb',
     overview:
-      'A 100KB PDF limit is extreme and usually applies to single-page forms or tiny receipts. Multi-page color scans will not survive at readable quality. Treat 100KB as a special case: one page, minimal graphics, strong compression, or recreate the content as a cleaner digital PDF when possible. Use PdfPixels to try compression first, then fall back to fewer pages or a fresh export from the original document.',
+      'A 100KB PDF limit is extreme and usually applies to single-page forms or tiny receipts. Multi-page color scans will not survive at readable quality. Treat 100KB as a special case: one page, minimal graphics, strong compression, or recreate the content as a cleaner digital PDF when possible. The deciding factor is how the PDF was born: a text page exported from Word or Google Docs is already close to the floor, while a photographed page carries a full image that eats the entire budget. Use PdfPixels to try compression first, then fall back to fewer pages or a fresh export from the original document.',
     whoItsFor: [
       'Users with unusually strict 100KB upload fields',
       'People submitting simple one-page declarations',
@@ -427,6 +428,7 @@ export const useCasePages: UseCasePage[] = [
     ],
     faqs: [
       { question: 'Is 100KB realistic for a passport scan?', answer: 'Rarely at good quality. Check whether the portal allows 200–500KB or image formats instead.' },
+      { question: 'Why will my scanned PDF not compress to 100KB?', answer: 'A scan stores each page as an image, and 100KB is smaller than most usable photos. Retype the content or re-export it digitally if the source document exists on your computer.' },
     ],
   },
   {
@@ -436,7 +438,7 @@ export const useCasePages: UseCasePage[] = [
     targetToolSlug: 'compress-image',
     intent: 'compress image to 200kb',
     overview:
-      '200KB is a comfortable target for many web images, email photos, and application uploads. You can usually keep good detail on a resized photo. Think of it as “web quality”: sharp enough for screens, small enough for slow connections. Set the PdfPixels target to 200KB after choosing sensible dimensions for the destination.',
+      '200KB is a comfortable target for many web images, email photos, and application uploads. You can usually keep good detail on a resized photo. Think of it as "web quality": sharp enough for screens, small enough for slow connections. Pair the size budget with sensible dimensions — a 200KB photo looks great at 800–1600px wide, but pushing a 4000px camera original into 200KB forces heavy quality loss that no target can hide. For document scans, 200KB covers roughly one page of text at screen resolution; multi-page scans need PDF compression instead. Set the PdfPixels target to 200KB after choosing dimensions that match where the image will actually be shown.',
     whoItsFor: [
       'Bloggers and marketers preparing web images',
       'Users attaching photos under common 200KB rules',
@@ -448,12 +450,15 @@ export const useCasePages: UseCasePage[] = [
     ],
     tips: [
       'For full-width website heroes you may need more than 200KB — follow your site’s performance budget.',
+      'Resize very large originals down to display dimensions first, then apply the 200KB target — quality holds up noticeably better.',
     ],
     pitfalls: [
       { problem: 'Slightly over 200KB', solution: 'Target 190KB to allow for encoder variance.' },
     ],
     faqs: [
       { question: 'Is WebP better than JPEG at 200KB?', answer: 'Often yes for web, but only if your destination accepts WebP.' },
+      { question: 'What image dimensions work best at 200KB?', answer: 'Around 800–1600 pixels wide for photos. If your original is a 4000px+ camera shot, resize to display size first — forcing a huge image into 200KB produces visible blur no compressor can avoid.' },
+      { question: 'Can I compress a scanned document image to 200KB?', answer: 'A single page of black-and-white text usually fits. Color scans of forms work better as a PDF run through PDF compression, which handles multi-page documents more predictably.' },
     ],
   },
   {
@@ -517,7 +522,7 @@ export const useCasePages: UseCasePage[] = [
     targetToolSlug: 'heic-to-jpg',
     intent: 'convert heic to jpg windows',
     overview:
-      'Windows does not always open HEIC out of the box. Microsoft Store codecs help, but an online converter is often faster when you just need a JPG for a form or email. Transfer the photo from iPhone (cable, OneDrive, email, or chat), then convert on the PC. PdfPixels runs in the browser on Windows 10/11 with Chrome, Edge, or Firefox — no extra codec required for the conversion step.',
+      'Windows does not always open HEIC out of the box. Microsoft Store codecs help, but an online converter is often faster when you just need a JPG for a form or email — and it sidesteps the codec maze entirely (some HEIC files need a separate paid HEVC extension even after the free one is installed). Transfer the photo from iPhone (cable, OneDrive, email, or chat), then convert on the PC. If you transfer by cable often, flip iPhone Settings → Photos → Transfer to Mac or PC to "Automatic" and iOS converts to JPEG during transfer. PdfPixels runs in the browser on Windows 10/11 with Chrome, Edge, or Firefox — no extra codec required for the conversion step.',
     whoItsFor: [
       'Windows users receiving iPhone photos',
       'Offices standardizing on JPG for records',
@@ -535,6 +540,7 @@ export const useCasePages: UseCasePage[] = [
     ],
     faqs: [
       { question: 'Does this work offline?', answer: 'The online tool needs a network connection. For offline, install a local HEIC codec or app.' },
+      { question: 'Why does Windows show a codec error for my HEIC file?', answer: 'Some HEIC photos use HEVC encoding, which needs a separate extension Windows does not include by default. An online converter decodes on the server, so it works regardless of which codecs your PC has.' },
     ],
   },
   {
@@ -544,7 +550,7 @@ export const useCasePages: UseCasePage[] = [
     targetToolSlug: 'compress-image',
     intent: 'reduce photo size for email',
     overview:
-      'Modern phone photos are several megabytes each. A handful of originals can exceed email limits or clog inboxes. For email, you rarely need full camera resolution — a 1280–1920px wide JPEG at moderate quality is usually enough to view on phones and desktops. Compress Image on PdfPixels reduces weight quickly; resize first if you are sending many pictures.',
+      'Modern phone photos are several megabytes each. A handful of originals can exceed email limits or clog inboxes. For email, you rarely need full camera resolution — a 1280–1920px wide JPEG at moderate quality is usually enough to view on phones and desktops. Budget by message, not by photo: Gmail caps a message around 25MB of attachments and Outlook.com around 20MB, so ten 2MB photos fit — thirty do not. Compress Image on PdfPixels reduces weight quickly; resize first if you are sending many pictures, and consider a shared album link when the set runs into dozens of photos.',
     whoItsFor: [
       'Families sharing event photos by email',
       'Workers sending site or receipt photos to colleagues',
@@ -562,6 +568,7 @@ export const useCasePages: UseCasePage[] = [
     ],
     faqs: [
       { question: 'Should I use ZIP for photos?', answer: 'ZIP rarely helps already-compressed JPEGs. Resize/compress images instead.' },
+      { question: 'What file size should each photo be for email?', answer: 'Roughly 100–500KB per photo keeps a batch sendable and still looks good on screens. Reserve multi-MB originals for cloud links where the recipient needs full resolution.' },
     ],
   },
   {
@@ -571,7 +578,7 @@ export const useCasePages: UseCasePage[] = [
     targetToolSlug: 'merge-pdf',
     intent: 'merge pdf files windows',
     overview:
-      'Windows users often look for “free PDF merger” software and end up with toolbars or trials. A browser-based merge avoids installs on locked work PCs. Upload PDFs from File Explorer into PdfPixels Merge PDF, order them, and download a single document. That is usually enough for office and school tasks without admin rights to install apps.',
+      'Windows users often look for "free PDF merger" software and end up with toolbars or trials. A browser-based merge avoids installs on locked work PCs. Windows 10 and 11 have no built-in way to combine several existing PDFs — Microsoft Edge can print a single file to PDF, but joining multiple documents is not part of the OS. Upload PDFs from File Explorer into PdfPixels Merge PDF, order them, and download a single document. That is usually enough for office and school tasks without admin rights to install apps, and the same flow works identically in Edge, Chrome, and Firefox.',
     whoItsFor: [
       'Windows office users without install permissions',
       'Students combining assignment PDFs on a PC',
@@ -589,6 +596,7 @@ export const useCasePages: UseCasePage[] = [
     ],
     faqs: [
       { question: 'Is this a Windows app?', answer: 'No — it is a web tool that runs in your Windows browser.' },
+      { question: 'Does Windows 11 have a built-in PDF merger?', answer: 'No. Windows can print to PDF and open PDFs in Edge, but combining multiple PDF files into one requires a separate tool — a browser merger needs no installation.' },
     ],
   },
   {
@@ -598,7 +606,7 @@ export const useCasePages: UseCasePage[] = [
     targetToolSlug: 'image-to-pdf',
     intent: 'jpg to pdf converter',
     overview:
-      'Turning images into a PDF is ideal for applications that only accept PDF uploads: photo sets, signed forms photographed on a phone, or multi-page scans. Order the images as pages, then export one PDF. PdfPixels Image to PDF keeps the flow simple for phone and desktop users who do not want a full desktop publisher.',
+      'Turning images into a PDF is ideal for applications that only accept PDF uploads: photo sets, signed forms photographed on a phone, or multi-page scans. Order the images as pages, then export one PDF. Three settings decide how usable the result is: page size (A4 or Letter keeps documents printable; fit-to-image preserves photos exactly), orientation, and the fit mode — contain shrinks each image to show fully, while fill crops edges to cover the page. If the portal also caps file size, compress the finished PDF rather than degrading every photo individually. PdfPixels Image to PDF keeps the flow simple for phone and desktop users who do not want a full desktop publisher.',
     whoItsFor: [
       'Users submitting photo evidence as PDF',
       'Anyone converting scans to a single PDF packet',
@@ -610,12 +618,15 @@ export const useCasePages: UseCasePage[] = [
     ],
     tips: [
       'Capture pages straight-on with good light to avoid unreadable scans.',
+      'Photograph documents against a dark mat — auto-crop and page edges become far cleaner.',
     ],
     pitfalls: [
       { problem: 'PDF too large', solution: 'Compress images before conversion or compress the PDF after.' },
     ],
     faqs: [
       { question: 'Can I mix PNG and JPG?', answer: 'Yes on most converters, including typical image-to-PDF workflows.' },
+      { question: 'What page size will my photos get?', answer: 'You choose: A4, Letter, Legal, A3, A5, or fit-to-image, which sizes each page to the photo itself. Portrait/landscape can be auto-detected or forced.' },
+      { question: 'Why is my PDF much larger than the photos combined?', answer: 'Usually it is not — images are embedded at original quality. If the PDF faces a strict upload cap, compress the finished PDF; one compression pass on the final file beats re-saving every photo.' },
     ],
   },
   {
@@ -625,7 +636,7 @@ export const useCasePages: UseCasePage[] = [
     targetToolSlug: 'jpeg-to-png',
     intent: 'jpeg to png converter online',
     overview:
-      'JPEG to PNG is useful when you need a lossless-style export for editing, or a format some tools prefer. Converting JPEG to PNG does not magically restore quality lost in the original JPEG, and PNG files are often larger. Transparency is only available if you add it later (JPEG has no alpha). Use this conversion when a workflow requires PNG, not as a general way to shrink files.',
+      'JPEG to PNG is useful when you need a lossless-style export for editing, or a format some tools prefer. Converting JPEG to PNG does not magically restore quality lost in the original JPEG, and PNG files are often larger. Transparency is only available if you add it later (JPEG has no alpha). The conversion earns its keep in specific spots: design tools that prefer PNG imports, archives where the file will be edited and re-saved many times (PNG avoids stacking JPEG artifacts), and workflows that require a "PNG only" upload. Use this conversion when a workflow requires PNG, not as a general way to shrink files.',
     whoItsFor: [
       'Editors who need PNG for a design tool',
       'Users meeting a “PNG only” upload requirement',
@@ -642,6 +653,8 @@ export const useCasePages: UseCasePage[] = [
     ],
     faqs: [
       { question: 'Will PNG fix blurry JPEG artifacts?', answer: 'No. Artifacts remain; PNG just stores them in another container.' },
+      { question: 'Why does my file size triple after converting to PNG?', answer: 'PNG stores photos less efficiently than JPEG by design. For camera images, a 2MB JPEG commonly becomes a 5–8MB PNG. The size jump is normal and does not mean quality improved.' },
+      { question: 'Can I get a transparent PNG from a JPEG?', answer: 'Not from the conversion alone — JPEG has no transparency, so the converted PNG gets a solid background. Use a background remover on the PNG if you need a transparent cutout.' },
     ],
   },
   {
@@ -678,7 +691,7 @@ export const useCasePages: UseCasePage[] = [
     targetToolSlug: 'remove-image-metadata',
     intent: 'remove image metadata online',
     overview:
-      'Photos can embed EXIF metadata: camera model, timestamps, and sometimes GPS location. Before publishing sensitive images online, many people strip metadata for privacy. Removing metadata does not change what is visible in the picture itself — it clears hidden fields. Use PdfPixels metadata tools when you want a cleaner file for public posts or client delivery.',
+      'Photos can embed EXIF metadata: camera model, timestamps, and sometimes GPS location. Before publishing sensitive images online, many people strip metadata for privacy. The risk concentrates on the paths that deliver your original file: email attachments, cloud drive links, smaller classifieds sites, and images you upload to your own site keep metadata, while major social networks strip it on upload. Removing metadata does not change what is visible in the picture itself — it clears hidden fields. Use PdfPixels metadata tools when you want a cleaner file for public posts or client delivery, and keep the unstripped original in a private archive if you shoot professionally.',
     whoItsFor: [
       'Users sharing photos publicly without location data',
       'Professionals delivering files without camera EXIF clutter',
@@ -696,6 +709,7 @@ export const useCasePages: UseCasePage[] = [
     ],
     faqs: [
       { question: 'Is metadata removal permanent?', answer: 'For the exported file yes. Keep the original separately if you still need EXIF for your archive.' },
+      { question: 'Do social networks remove EXIF automatically?', answer: 'Facebook, Instagram, X, and WhatsApp strip metadata on upload. The riskier paths are direct sharing — email attachments, cloud drive links, and smaller websites — which usually deliver your original file untouched.' },
     ],
   },
   {
@@ -705,7 +719,7 @@ export const useCasePages: UseCasePage[] = [
     targetToolSlug: 'passport-size-photo',
     intent: 'create passport size photo free',
     overview:
-      'Studio passport photos are convenient but not always necessary for a first draft. With a clear selfie or portrait, a plain background, and correct crop ratios, you can produce a free passport-size photo at home for many applications. Rules differ by country (size, expression, glasses, background). Use PdfPixels to get dimensions right, then validate against the official checklist for your document type.',
+      'Studio passport photos are convenient but not always necessary for a first draft. With a clear selfie or portrait, a plain background, and correct crop ratios, you can produce a free passport-size photo at home for many applications. Rules differ by country and document: the classic US passport photo is 2×2 inches with the head between 1 and 1⅜ inches; India commonly uses 3.5×4.5 cm; many visa applications now specify pixel dimensions for digital uploads (the US diversity visa lottery, for example, wants a square image within a defined pixel range). Use PdfPixels to get dimensions right, then validate against the official checklist for your document type — acceptance depends on meeting the rules, not on who cropped the photo.',
     whoItsFor: [
       'Travelers drafting passport or visa photos',
       'Users renewing IDs with standard photo sizes',
@@ -717,12 +731,14 @@ export const useCasePages: UseCasePage[] = [
     ],
     tips: [
       'Read the latest official photo guide — automated crops help size, not every legal rule.',
+      'Digital uploads often specify pixels and KB limits; check those numbers before printing 4×6 sheets.',
     ],
     pitfalls: [
       { problem: 'Rejected for shadows or background', solution: 'Retake the photo; editing cannot always fix poor lighting acceptably.' },
     ],
     faqs: [
       { question: 'Is a free online passport photo always accepted?', answer: 'Acceptance depends on meeting official rules, not on the tool brand. Always verify requirements.' },
+      { question: 'What size is a US passport photo?', answer: '2×2 inches (51×51 mm) with the head measuring 1 to 1⅜ inches from chin to crown. Requirements differ by country and visa type, so confirm against the official checklist for your application.' },
     ],
   },
 ];
