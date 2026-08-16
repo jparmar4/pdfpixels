@@ -198,6 +198,18 @@ const nextConfig: NextConfig = {
           },
         ],
       },
+      // HTML pages - keep CDN cache short so content updates and new posts
+      // are visible to crawlers and users quickly (default for prerendered
+      // pages is s-maxage=31536000, which pins stale HTML for a year)
+      {
+        source: '/((?!_next/static|_next/image|api|.*\\..*).*)',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, s-maxage=3600, stale-while-revalidate=604800',
+          },
+        ],
+      },
       // Sitemap
       {
         source: '/sitemap.xml',
@@ -246,6 +258,14 @@ const nextConfig: NextConfig = {
   // Redirects for common paths
   async redirects() {
     return [
+      // Canonicalize host: non-www -> www (must be first to win evaluation order).
+      // Without this, both hosts serve full 200 copies and Google sees two duplicate sites.
+      {
+        source: '/:path*',
+        has: [{ type: 'host', value: 'pdfpixels.com' }],
+        destination: 'https://www.pdfpixels.com/:path*',
+        permanent: true,
+      },
       {
         source: '/api/v1/:path*',
         destination: '/api/:path*',
@@ -322,6 +342,10 @@ const nextConfig: NextConfig = {
       // Old sitemap redirects
       { source: '/sitemap-images.xml', destination: '/image-sitemap.xml', permanent: true },
       { source: '/sitemap-news.xml', destination: '/sitemap.xml', permanent: true },
+      // Consolidated duplicate blog posts (merged into their canonical posts)
+      { source: '/blog/heic-to-jpg-converter-guide', destination: '/blog/heic-to-jpg-convert-iphone-photos', permanent: true },
+      { source: '/blog/reduce-pdf-file-size-for-email', destination: '/blog/reduce-pdf-size-for-email', permanent: true },
+      { source: '/blog/compress-pdf-to-200kb-guide', destination: '/blog/compress-pdf-to-200kb-email-attachment', permanent: true },
     ];
   },
 

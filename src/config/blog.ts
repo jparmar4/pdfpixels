@@ -250,7 +250,7 @@ JPG for photos. PNG for graphics and transparency. WebP when *you* control the w
         title: "Convert JPG to PDF Online — No Software Needed",
         excerpt: "Need a PDF from phone photos or scanned JPGs without installing anything? Here's the free image to PDF converter workflow I actually use — order pages, pick A4/Letter, then compress if email or portals push back.",
         date: "Aug 8, 2026",
-        dateModified: "Aug 8, 2026",
+        dateModified: "Aug 16, 2026",
         category: "PDF Tools",
         author: "PdfPixels Editorial",
         authorRole: "PdfPixels team",
@@ -698,10 +698,10 @@ If the photo is soft *and* tiny, enhance then [upscale](/tools/upscale-image). I
     },
     {
         slug: "heic-to-jpg-convert-iphone-photos",
-        title: "HEIC to JPG: How to Convert iPhone Photos to JPEG Free",
+        title: "HEIC to JPG: How to Convert iPhone Photos to JPEG Free (2026 Guide)",
         excerpt: "Sent iPhone photos to a friend and they couldn't open them? That's the HEIC problem — and it's more common than you think. Here's every method to convert HEIC to JPG in seconds, completely free, on any device.",
         date: "Jul 27, 2026",
-        dateModified: "Jul 27, 2026",
+        dateModified: "Aug 16, 2026",
         category: "Image Conversion",
         author: "PdfPixels Editorial",
         authorRole: "PdfPixels team",
@@ -828,6 +828,18 @@ If you're connecting your iPhone to your Mac via USB to import photos:
 
 This is arguably the cleanest workflow because the photos convert during import. You never even have HEIC files sitting on your Mac.
 
+### Bulk Conversion with Automator (for Large Backlogs)
+
+Already have hundreds of HEIC files sitting on your Mac? Don't convert them one by one — build a one-click Finder action:
+
+1. Open **Automator** (in your Applications folder) and choose **Quick Action**
+2. Set "Workflow receives current" to **image files** in **Finder**
+3. Add the **Copy Finder Items** action first (so your originals stay untouched) and pick a destination folder
+4. Add the **Change Type of Images** action and set it to **JPEG**
+5. Save the workflow with a name like "HEIC to JPG"
+
+Now select any batch of HEIC files in Finder, right-click, and run your action. Everything converts in place — no uploads, no size limits, no repeated steps.
+
 ![Step-by-step comparison showing HEIC file on left being converted to JPG file on right using PdfPixels online tool](/images/blog/heic-to-jpg-iphone-photos-steps.jpg)
 
 ## Convert HEIC to JPG Directly From Your iPhone
@@ -851,7 +863,23 @@ If you'd rather your iPhone just take JPEG photos to begin with:
 3. Tap **Formats**
 4. Select **Most Compatible** instead of "High Efficiency"
 
-From this point on, every photo you take will be a JPEG. You'll use more storage, but zero conversion headaches, ever. Worth considering if you frequently share photos with Windows users or upload to websites.
+From this point on, every photo you take will be a JPEG. You'll use more storage, but zero conversion headaches, ever.
+
+**Who should switch to "Most Compatible":** people who frequently share photos with Windows or Android users, anyone who regularly uploads to websites and portals, and business users who drop photos into client reports.
+
+**Who should keep HEIC:** anyone with a smaller iPhone (64–128GB) who needs the storage savings, and people who mostly view, edit, and share within the Apple ecosystem.
+
+## Just Need to View a HEIC File? (No Conversion Required)
+
+If someone sent you a HEIC file and you only need to *see* it — not share or upload it — you don't have to convert anything:
+
+- **Windows:** install the free **HEIF Image Extensions** from the Microsoft Store, and the Photos app plus File Explorer thumbnails start working immediately
+- **iCloud for Windows:** if the sender uses iCloud Photos, images synced to your PC arrive as JPEG automatically
+- **iCloud.com:** open the album in any browser and download the photo — it comes down as JPEG
+- **VLC** (Windows/Mac/Linux) opens HEIC files as a viewer in a pinch
+- **IrfanView** (free, Windows) with its HEIC plugin is a solid batch-viewing option
+
+Conversion only becomes necessary when the file needs to *leave* your device — a website upload, an email attachment, or non-Apple software.
 
 ## HEIC vs JPG: Why JPG Still Wins for Sharing
 
@@ -868,6 +896,10 @@ Let's be direct about the comparison, because the internet has a lot of vague an
 | Professional software | Spotty | Universal |
 | Email sharing | Can cause issues | Always works |
 | Editing in older apps | Often unsupported | Always supported |
+| Color depth | 16-bit support | 8-bit (typically) |
+| HDR photos | Built-in support | Limited |
+| Transparency | Supported | Not supported |
+| Live Photos | Supported | Not supported |
 
 The bottom line: HEIC is genuinely the better format technically. But "better format" doesn't mean much when half the world can't open the files. JPG is the language everyone speaks.
 
@@ -977,10 +1009,11 @@ The [PdfPixels HEIC to JPG converter](/tools/heic-to-jpg) is the fastest fix —
         title: "How to Convert HEIC to JPG on Windows for Free",
         excerpt: "Transferred photos from your iPhone to your Windows PC only to find they won't open? Learn how to convert HEIC to JPG instantly and for free in this complete guide.",
         date: "Jun 5, 2026",
+        dateModified: "Aug 16, 2026",
         category: "Image Conversion",
         author: "PdfPixels Editorial",
         authorRole: "PdfPixels team",
-        readTime: "5 min read",
+        readTime: "8 min read",
         metaDescription: "Learn how to convert HEIC to JPG on Windows for free. We explain what HEIC files are and show you the easiest way to make them viewable on your PC.",
         keywords: [
             "convert heic to jpg windows",
@@ -1021,6 +1054,38 @@ Drag and drop your HEIC photos into the upload area. The conversion process is n
 ### Step 4: Download the JPG
 Click download, and you now have a standard JPG file that you can open, edit, email, or post anywhere without compatibility issues.
 
+Because decoding runs on the server, this route works **even when Windows itself refuses to open the file** — which is precisely the situation you are in. It also sidesteps the codec problems below entirely.
+
+## Method 2: Native Windows Support (HEIF Extensions)
+
+If you would rather open HEIC files directly on your PC going forward, Windows can do it with a pair of Store extensions:
+
+1. Open the **Microsoft Store** and install **HEIF Image Extensions** (free, from Microsoft). This adds HEIC support to the Photos app and File Explorer thumbnails.
+2. Some HEIC files — those recorded using HEVC encoding — additionally need **HEVC Video Extensions**. Microsoft charges around $0.99 for it, though many PCs ship with a free manufacturer version already installed (check your app list for "HEVC Video Extensions from Device Manufacturer" before buying).
+3. Once installed, double-clicking a \`.heic\` file opens it in Photos like any image.
+
+To convert after that: open the file in **Photos** → click the three-dot menu (**...**) → **Save a copy** → set format to JPEG. Or right-click the file → **Open with → Paint** → **File → Save as → JPEG picture** — Paint's export is full-quality and dependable for one-off jobs.
+
+The catch: this is per-PC. Extensions you install on your desktop do nothing for the laptop you borrow at work, and organizations that lock the Microsoft Store make this route impossible. An online converter has none of those dependencies.
+
+## Method 3: Bulk Conversion of Large Photo Collections
+
+Inherited an entire vacation's worth of HEIC files? Two practical paths:
+
+- **Online batches:** select all the files at once in the [converter's](/tools/heic-to-jpg) upload dialog — batch upload converts the whole set in one pass.
+- **Offline bulk (IrfanView):** if you would rather not upload hundreds of personal photos at all, the free IrfanView viewer with its plugin pack converts folders of HEIC to JPG locally. Install the plugins, open one photo, use File → Batch Conversion, point it at the folder, and set the output format to JPG. Slower to set up, but everything stays on your machine.
+
+The offline route is the better fit when the photos are sensitive and numerous; the online route wins on convenience for everything else.
+
+## Getting the Files Onto Windows in the First Place
+
+The transfer method decides how much converting you will do later:
+
+- **USB cable + iPhone set to "Keep Originals":** files arrive as HEIC — you will need one of the methods above.
+- **USB cable + iPhone set to "Automatic":** iOS converts to JPEG during transfer; nothing to do afterward. (Change it at Settings → Photos → Transfer to Mac or PC.)
+- **iCloud for Windows:** the iCloud Photos integration downloads copies in a compatible format by default — often the smoothest option if you back up to iCloud anyway.
+- **Email to yourself:** attachments sent from Apple Mail may arrive as HEIC on Windows. Messaging apps like WhatsApp usually re-compress to JPEG automatically.
+
 ## Pro Tip: Change Your iPhone Settings
 
 If you are tired of having to convert your photos every time you transfer them to your Windows PC, you can actually tell your iPhone to shoot in JPG natively, or to automatically convert them during transfer.
@@ -1036,16 +1101,25 @@ If you are tired of having to convert your photos every time you transfer them t
 1. Open **Settings**.
 2. Go to **Photos**.
 3. Scroll down to the *Transfer to Mac or PC* section.
-4. Select **Automatic**. 
+4. Select **Automatic**.
+
+## Which Method Should You Pick?
+
+| Your situation | Best choice |
+|---|---|
+| One or a few photos, right now | Online converter — zero setup |
+| This PC, forever, and Store access works | Install HEIF extensions, use Photos/Paint |
+| Hundreds of private photos, offline preference | IrfanView batch conversion |
+| You transfer via USB often | Flip iPhone to "Automatic" transfer and stop converting altogether |
 
 ## Summary
 
-Dealing with HEIC files on a Windows PC doesn't have to be a nightmare. By bookmarking a reliable online converter like our [HEIC to JPG](/tools/heic-to-jpg) tool, you can seamlessly bridge the gap between your iPhone and your computer in seconds.
+Dealing with HEIC files on a Windows PC doesn't have to be a nightmare. By bookmarking a reliable online converter like our [HEIC to JPG](/tools/heic-to-jpg) tool, you can seamlessly bridge the gap between your iPhone and your computer in seconds. For a deeper tour of every platform — Mac, Android, batch workflows — the full [HEIC to JPG guide](/blog/heic-to-jpg-convert-iphone-photos) covers the rest.
         `,
         faq: [
             {
                 question: "Is it safe to convert my personal HEIC photos online?",
-                answer: "Yes, provided you use a secure tool like PdfPixels. Our converter uses encrypted connections and files are processed and then immediately deleted. Your photos are never stored permanently."
+                answer: "For everyday photos, yes — use an HTTPS tool and avoid uploading images you would not share with a stranger. PdfPixels converts the file for that request and you download the result; temporary files are deleted on supported flows. For highly sensitive photos, an offline converter like IrfanView keeps everything on your PC."
             },
             {
                 question: "Do I lose quality when converting HEIC to JPG?",
@@ -1054,6 +1128,14 @@ Dealing with HEIC files on a Windows PC doesn't have to be a nightmare. By bookm
             {
                 question: "Why does Apple use HEIC instead of JPG?",
                 answer: "HEIC uses advanced compression algorithms to store photos at half the file size of a traditional JPG without losing image quality. It's a great space-saver for your phone's storage."
+            },
+            {
+                question: "Why do some HEIC files still not open after installing the free HEIF extension?",
+                answer: "Some HEIC files are encoded with HEVC, which needs the separate HEVC Video Extensions codec. That codec costs about $0.99 from the Microsoft Store unless your PC already includes the free manufacturer version. An online converter decodes on the server, so it works without any codecs installed."
+            },
+            {
+                question: "Can Windows convert HEIC to JPG without installing anything?",
+                answer: "Not on its own — native conversion needs the Store extensions. But a browser-based converter needs no installation at all: open it in Edge or Chrome, upload the HEIC, download the JPG. That is the cleanest no-install path on a locked-down or borrowed PC."
             }
         ],
     },
@@ -1137,7 +1219,7 @@ If you are using a mobile scanning app or a physical flatbed scanner, check the 
 
 ## A Word on Link Building and SEO for Bloggers
 
-If you operate an educational or job-preparation blog and want to help your readers navigate the frustrating world of application uploads, linking to high-quality PDF tools is a great way to earn quality backlinks and add value. In the SEO world, providing practical solutions—like a guide on [how to compress PDF to 200KB](/blog/compress-pdf-to-200kb-guide)—signals to search engines that your content is genuinely helpful. 
+If you operate an educational or job-preparation blog and want to help your readers navigate the frustrating world of application uploads, linking to high-quality PDF tools is a great way to earn quality backlinks and add value. In the SEO world, providing practical solutions—like a guide on [how to compress PDF to 200KB](/blog/compress-pdf-to-200kb-email-attachment)—signals to search engines that your content is genuinely helpful. 
 
 When you build backlinks to utility pages from job portals or educational forums, ensure the anchor text is natural and directly relevant to the user's immediate problem. For instance, instead of a generic "click here," use descriptive anchors like "compress your scanned certificates" or "reduce PDF size for the SSC portal." This approach not only aids your own site's SEO but creates a significantly better user experience.
 
@@ -1383,114 +1465,6 @@ If you need more precise control over the background afterward — adding a blur
         ],
     },
     {
-        slug: "compress-pdf-to-200kb-guide",
-        title: "How to Compress PDF Files Under 200KB — Complete Guide",
-        excerpt: "Struggling to upload a large PDF because of strict file size limits? This complete guide shows you exactly how to compress PDF to 200KB or less without losing quality, using free online tools.",
-        date: "Feb 23, 2026",
-        category: "PDF Tools",
-        author: "PdfPixels Editorial",
-        authorRole: "PdfPixels team",
-        readTime: "8 min read",
-        metaDescription: "Learn how to easily compress PDF to 200KB online for free. We share step-by-step methods to reduce PDF file size for portals, emails, and job applications without losing quality.",
-        keywords: [
-            "compress pdf to 200kb",
-            "reduce pdf size under 200kb",
-            "compress pdf online free",
-            "how to shrink a pdf",
-            "pdf compressor 200kb limit"
-        ],
-        coverImage: "/images/blog/compress-pdf-200kb-guide.png",
-        imageAlt: "A laptop displaying a PDF document with a glowing 200KB limit, illustrating PDF compression",
-        content: `
-We've all been there: you've finally finished filling out that crucial form, your resume is polished, or your signed contract is ready to send. You click "Upload," only to be greeted by a frustrating red error message: *"File too large. Maximum size allowed is 200KB."*
-
-If you are wondering how to **compress PDF to 200KB** without making the text unreadable or the document looking like it was printed in 1995, you are in the right place. In this complete guide, I will walk you through the easiest, free ways to significantly reduce your PDF file sizes so you never have to deal with upload errors again.
-
-> [!TIP]
-> **Quick Fix:** Need it done right now? Jump straight to our free [Compress PDF](/tools/compress-pdf) tool. Just upload your document, choose the compression level, and you'll have a file under 200KB in seconds.
-
-## Why the 200KB Limit Exists
-
-It might seem arbitrary in an era where smartphones shoot 4K video, but the 200KB file size limit is incredibly common. Government portals, university admission systems, job application platforms, and automated email processing systems often impose strict limits. 
-
-They do this to save server storage costs, ensure lightning-fast loading speeds for administrators reviewing thousands of documents, and prevent database crashes. When an organization processes ten thousand applications a day, the difference between a 200KB file and a 5MB file is massive.
-
-## The Challenge: Shrinking Without Destroying
-
-When trying to compress a PDF to 200KB, you are fighting a battle between file size and legibility. A PDF is essentially a container. It holds text, fonts, vector graphics, and—the biggest culprit of all—images. 
-
-If your document is just a standard text contract saved from Microsoft Word, getting it under 200KB is usually a breeze. But if you've scanned a physical document using your phone, or if your PDF contains logos, signatures, and photos, hitting that 200KB target requires a smart compression algorithm that knows exactly what data to discard without sacrificing visual quality.
-
-## Step-by-Step: How to Compress PDF to 200KB
-
-Here is the most reliable, zero-cost method to shrink your hefty documents down to size.
-
-### Step 1: Use a Dedicated Online PDF Compressor
-
-Don't bother downloading expensive desktop software. Browse to the PdfPixels [Compress PDF](/tools/compress-pdf) tool. It runs in the browser UI; the file is sent to our servers for compression and then you download the result. Temporary files are deleted after the job. 
-
-### Step 2: Upload Your File
-
-Drag and drop your large PDF file into the upload zone. You can also click to browse your computer or mobile device. The tool accepts files of almost any originating size.
-
-### Step 3: Choose Your Compression Level
-
-To guarantee you **compress your PDF to 200KB**, you will typically want to select the "High Compression" or "Strong" setting. 
-
-- **Basic Compression:** Great for reducing a 5MB file to 1MB. Keeps images relatively sharp.
-- **Strong Compression:** The setting you need for strict 200KB limits. This dramatically downsamples background images and flattens invisible data.
-
-![PDF shrinking process showing a document funneling into a smaller optimized file size](/images/blog/pdf-compression-process.png)
-
-### Step 4: Preview and Download
-
-After a few seconds of processing, the tool will show you the new file size. If it sits comfortably under 200KB, hit download! If it is still slightly too large, the tool usually offers a "maximum" compression aggressiveness slider. 
-
-Check the downloaded file to ensure the text remains crisp and the signatures are legible. In 99% of cases, the AI-driven compression algorithms retain perfect readability.
-
-## Pro Tips for the Smallest Possible PDFs
-
-If you've run your file through a compressor and it's still stubbornly hovering around 300KB, here are some advanced tricks.
-
-### 1. Remove Unnecessary Pages
-Do you really need to upload the entire 15-page handbook if the portal only requires the signature page? Use a [Split PDF](/tools/split-pdf) tool to extract only the pages that matter. Fewer pages instantly mean a smaller file size.
-
-### 2. Check Your Scan Settings
-If you are generating the PDF by scanning physical paper with your phone or a traditional scanner, look at your DPI (Dots Per Inch) settings. Scanning a text document at 600 DPI will create a massive file. Drop the scanner setting to **150 DPI or 200 DPI**. This is more than enough resolution for text, and it makes the baseline file infinitely easier to compress.
-
-### 3. Print to PDF (The Old-School Trick)
-Sometimes, PDFs exported from graphic design software contain layers, embedded fonts, and excessive metadata. A quick way to "flatten" the file is to open it in your browser, select 'Print', and choose 'Save as PDF'. This strips out invisible bloat and gives you a cleaner file to run through the compressor.
-
-## What About Multiple Documents?
-
-Sometimes a portal asks you to upload your ID, your resume, and a cover letter—but it only provides *one* upload button with a total 500KB limit! 
-
-In this scenario, you first need to combine the files using a [Merge PDF](/tools/merge-pdf) tool. Once the files are combined into a single document, run that master file through the compressor. 
-
-## Final Thoughts
-
-Hitting strict upload limits doesn't have to be a roadblock in your day. By understanding why files get bloated and utilizing browser-based tools, you can **compress PDF to 200KB** in literally seconds. If your portal is a bit more generous and only needs **under 1MB**, use the lighter path in [how to compress PDF under 1MB](/blog/compress-pdf-under-1mb) instead of maxing out quality loss. Shipping as an email-style attachment under a hard 200KB cap? Use the dedicated walkthrough [compress PDF to 200KB for email attachment](/blog/compress-pdf-to-200kb-email-attachment). Keep this workflow bookmarked the next time you are applying for a job, submitting taxes, or fighting with an outdated government portal!
-`,
-        faq: [
-            {
-                question: "How do I compress a PDF to exactly 200KB?",
-                answer: "You can use a free online PDF compressor like PdfPixels. Upload your file, select 'Strong Compression', and the tool will automatically reduce image DPI and remove unnecessary metadata to bring the file size under 200KB while maintaining readability."
-            },
-            {
-                question: "Will compressing a PDF make it blurry?",
-                answer: "With smart compression, text remains perfectly crisp because vector data is preserved. Images and scanned elements will be downsampled, but they generally remain clear enough for on-screen reading and professional submissions."
-            },
-            {
-                question: "How do I compress a scanned PDF document?",
-                answer: "Scanned PDFs are usually large because they consist entirely of high-resolution images. To compress them, you must use a tool that utilizes image downsampling. Running it through the PdfPixels Compress PDF tool using the 'High' setting is the most effective method."
-            },
-            {
-                question: "Is it safe to compress confidential documents online?",
-                answer: "PdfPixels Compress PDF sends the file to our servers for that request, then you download the smaller result. Temporary files are deleted on supported flows. Keep a local original of anything confidential."
-            }
-        ],
-    },
-    {
         slug: "how-to-compress-pdf-file-size",
         title: "How to Compress PDF File Size (Fast & Free Methods That Actually Work)",
         excerpt: "Dealing with a bloated PDF that nobody wants to open or upload? This guide walks you through every practical method to compress PDF file size — from one-click online tools to manual tricks — without sacrificing readability.",
@@ -1694,6 +1668,7 @@ Bookmark this page and the [Compress PDF tool](/tools/compress-pdf) for the next
         title: "How to Reduce PDF Size for Email Attachments (Under Any Limit)",
         excerpt: "Emails bouncing because your PDF is too large? Gmail's 25MB cap, Outlook's limits, and employer portals all have different rules. This guide shows you exactly how to reduce PDF size for email — quickly, free, and without making your document look terrible.",
         date: "Feb 24, 2026",
+        dateModified: "Aug 16, 2026",
         category: "PDF Tools",
         author: "PdfPixels Editorial",
         authorRole: "PdfPixels team",
@@ -1741,6 +1716,18 @@ Different email services have different limits, and some submission portals are 
 | Government submission portals | Often 200KB–2MB — hard 200KB path: [compress PDF to 200KB for email attachment](/blog/compress-pdf-to-200kb-email-attachment) |
 
 The key insight: **email services aren't the tightest restriction.** If you're submitting to a university admissions system, a job portal, or a government website, the limit might be 1MB or even 200KB. That requires more aggressive compression than a Gmail attachment.
+
+## What Actually Makes PDFs So Large?
+
+Understanding this helps you pick the right compression level the first time.
+
+**Images are almost always the culprit.** Every photo, logo, or background graphic inside your PDF is stored at full resolution. A Word document with three embedded photos can easily export as a 15–20MB PDF.
+
+**Scanned documents are especially heavy.** When you photograph or scan paper with your phone, every page becomes a high-resolution image. A 5-page scanned document can easily weigh 10–15MB.
+
+**Design software adds invisible data.** PDFs exported from InDesign, Illustrator, Photoshop, or Canva often carry embedded fonts, color profiles, and layer metadata that can quietly double the file size.
+
+**The text itself is almost never the problem.** Text in a PDF is stored as vector data and is tiny — a 100-page plain-text document can be under 500KB. If your PDF is huge, it's the images. This is also why compressors can shrink image-heavy files so dramatically without ever touching the sharpness of your text.
 
 ## The Fastest Method: One-Click Online Compression
 
@@ -2082,213 +2069,6 @@ You're done in under a minute. No account needed, no watermarks, completely free
             {
                 question: "Do I need to create an account to compress a PDF online?",
                 answer: "No. PdfPixels Compress PDF requires zero sign-up. Upload, compress and download — that's it. No email, no password, no subscription needed."
-            }
-        ],
-    },
-    {
-        slug: "reduce-pdf-file-size-for-email",
-        title: "How to Reduce PDF File Size for Email (Simple Steps That Always Work)",
-        excerpt: "Getting a file-too-large error when trying to email a PDF? Here's the simplest way to reduce PDF file size for email attachments — in under a minute, free, with no software required.",
-        date: "Feb 24, 2026",
-        category: "PDF Tools",
-        author: "PdfPixels Editorial",
-        authorRole: "PdfPixels team",
-        readTime: "8 min read",
-        metaDescription: "Reduce PDF file size for email attachments quickly and for free. Step-by-step guide to compress PDFs under Gmail, Outlook and portal limits. No software needed, works on mobile too.",
-        keywords: [
-            "reduce pdf file size for email",
-            "pdf too large for email",
-            "compress pdf for email",
-            "make pdf smaller for email",
-            "pdf attachment too large",
-            "shrink pdf for email",
-            "how to send large pdf email",
-            "pdf size limit email",
-            "compress pdf gmail",
-            "reduce pdf size free"
-        ],
-        coverImage: "/images/blog/reduce-pdf-file-size-email-hero.png",
-        imageAlt: "Before and after comparison of a large 20MB PDF being compressed to 900KB for email attachment",
-        content: `
-You finished the document. Polished, signed, ready to send. You hit attach… and your email says the file is too large.
-
-Frustrating? Absolutely. But it's a problem you can fix in about 60 seconds.
-
-This guide walks you through the exact steps to reduce PDF file size for email — using a free tool that works in your browser, right now, with no sign-up.
-
----
-
-## Why Emails Reject Large PDF Attachments
-
-Every email platform puts a cap on attachment size. Here's what you're up against:
-
-| Email Service | Attachment Limit |
-|--------------|-----------------|
-| Gmail | 25 MB — see [reduce PDF size for Gmail (25MB fix)](/blog/reduce-pdf-size-gmail-25mb-fix) |
-| Outlook / Hotmail | 20 MB |
-| Yahoo Mail | 25 MB |
-| Corporate email servers | Often 10 MB or less |
-| Job / university portals | Often 1–5 MB |
-| Government portals | Often 200 KB–2 MB (see [compress PDF to 200KB for email attachment](/blog/compress-pdf-to-200kb-email-attachment)) |
-
-These limits exist because email servers would grind to a halt processing thousands of massive files every second. The annoying reality is that your carefully prepared document may be 3× larger than the platform will accept.
-
-The fix: compress the PDF before you attach it.
-
----
-
-## The Fastest Fix — Use a Free Online Compressor
-
-👉 **[Try our free Compress PDF tool: https://www.pdfpixels.com/tools/compress-pdf](https://www.pdfpixels.com/tools/compress-pdf)**
-
-This is the quickest method available and it works on desktop and mobile.
-
-![4-step workflow for reducing PDF size for email - upload, compress, download, send](/images/blog/reduce-pdf-file-size-email-steps.png)
-
-### Step 1 — Upload Your PDF
-
-Open the [Compress PDF tool](https://www.pdfpixels.com/tools/compress-pdf) and drag your PDF file into the upload zone, or click to browse and select it from your device.
-
-The tool immediately shows you the current file size.
-
-### Step 2 — Pick the Right Compression Level
-
-Choose based on where you're sending the file:
-
-- **Sending via Gmail or Outlook** (25 MB limit): Use **Basic** or **Medium** compression. A 30 MB PDF will drop well under the limit.
-- **Sending to a corporate server** (10 MB limit): Use **Medium** compression.
-- **Submitting to a job portal** (5 MB limit): Use **Medium** or **High** compression.
-- **Submitting to a government portal** (200 KB–2 MB limit): Use **High** compression and read the extra tips below.
-
-### Step 3 — Download the Compressed File
-
-Click compress and wait 5–15 seconds. Download the result when it's ready. Check the new file size — it will be shown clearly.
-
-### Step 4 — Attach and Send
-
-Attach the downloaded compressed file to your email as normal. You're done.
-
-> [!TIP]
-> Always open the compressed PDF before sending it. A quick scroll through the document takes 20 seconds and makes sure everything looks right before it reaches the recipient.
-
----
-
-## What Actually Makes PDFs So Large?
-
-Understanding this helps you get better results from compression.
-
-**Images are almost always the culprit.** Every photo, logo, or background graphic inside your PDF is stored at full resolution. A Word document with three embedded photos can easily become a 15–20 MB PDF.
-
-**Scanned documents are especially large.** When you photograph or scan a physical document with your phone, the resulting PDF is basically a series of high-resolution photos. A 5-page scanned document might be 10–15 MB.
-
-**Design software adds extra data.** PDFs created from InDesign, Illustrator, or Photoshop often contain embedded fonts, colour profiles, and layer metadata that can double the file size invisibly.
-
-**The text itself is almost never the problem.** Plain text in a PDF is stored as vector data and is tiny. You could have a 100-page text document that's under 500 KB. It's always the images.
-
----
-
-## Still Too Large? Try These Extra Steps
-
-If you've compressed and the file is still over the limit, here are three techniques that work:
-
-### Remove Unnecessary Pages
-
-If you only need to submit certain pages — like a signature page from a long contract, or the first two pages of your CV — use the [Split PDF tool](/tools/split-pdf) to extract just those pages. Fewer pages means a smaller file, and a smaller starting file compresses more aggressively.
-
-### Compress Before You Merge
-
-If you need to combine several documents into one attachment, always compress each file individually first, then combine them using the [Merge PDF tool](/tools/merge-pdf). Two compressed files merged together stay small. Two uncompressed files merged together stay large.
-
-### Try the "Print to PDF" Trick
-
-Open your PDF in Chrome or Firefox, press Ctrl+P (or Cmd+P on Mac), select **Save as PDF** as the printer, and save. This strips out embedded layers, metadata and redundant data that software sometimes bakes in. Then run the result through the [compressor](https://www.pdfpixels.com/tools/compress-pdf). The two-step approach often gets dramatically better results than compressing the original alone.
-
----
-
-## How to Compress a PDF for Email on Your Phone
-
-This works on both iPhone and Android.
-
-1. Open Safari (iPhone) or Chrome (Android)
-2. Go to [pdfpixels.com/tools/compress-pdf](https://www.pdfpixels.com/tools/compress-pdf)
-3. Tap the upload area and select your PDF from the Files app (iPhone) or your file manager (Android)
-4. Choose Medium or High compression
-5. Download the compressed file
-6. Open your email app and attach the downloaded file
-
-No separate app needed. The browser version works perfectly on mobile.
-
----
-
-## Will Compressing Ruin My PDF?
-
-Let's be straightforward about this.
-
-**Text:** Never affected. ZIP text stays 100% sharp regardless of how much you compress the document.
-
-**Logos and line art:** Usually unaffected by medium compression. These are often stored as vectors inside PDFs, which compressors don't alter.
-
-**Photographs:** Medium compression is usually invisible at normal reading size. High compression is slightly more noticeable if you zoom way in, but completely acceptable for a CV, application form, or invoice.
-
-**Scanned black-and-white documents:** Even high compression looks very clean on these, because high contrast makes any minor quality reduction invisible.
-
-The bottom line: for everything you'd actually email — resumes, contracts, invoices, reports, application forms — compressed PDFs look professional and completely acceptable.
-
----
-
-## When to Just Send a Link Instead
-
-Sometimes even high compression isn't enough, or you genuinely need the recipient to receive the file at full quality (print-ready designs, for example).
-
-In those cases, the right move is to upload the PDF to Google Drive, Dropbox, or WeTransfer, and email the download link instead of the file itself.
-
-- **Google Drive** — Free, 15 GB included with any Google account
-- **Dropbox** — Free tier with 2 GB storage
-- **WeTransfer** — Free, up to 2 GB per transfer, no account needed
-
-This lets the recipient download the full original at their end without any email size constraints.
-
----
-
-## Quick Reference
-
-| Your situation | What to do |
-|---------------|-----------|
-| Gmail bouncing your PDF | [Medium compression](https://www.pdfpixels.com/tools/compress-pdf) |
-| Corporate email limit (10 MB) | Medium compression |
-| Job portal limit (2–5 MB) | High compression |
-| Government portal (200 KB) | High compression + [Split PDF](/tools/split-pdf) |
-| Need full quality preserved | Google Drive / Dropbox link |
-| Compressing on your phone | Mobile browser + [pdfpixels.com](https://www.pdfpixels.com/tools/compress-pdf) |
-
----
-
-👉 **Ready to fix it right now? [Compress your PDF for free — no account needed.](https://www.pdfpixels.com/tools/compress-pdf)**
-`,
-        faq: [
-            {
-                question: "How do I reduce PDF size for email for free?",
-                answer: "Go to PdfPixels Compress PDF (pdfpixels.com/tools/compress-pdf), upload your PDF, select Medium or High compression depending on your target size, and download the result. The whole process takes under 60 seconds and is completely free with no sign-up."
-            },
-            {
-                question: "What is the maximum PDF size I can attach to Gmail?",
-                answer: "Gmail's attachment limit is 25 MB. If your file exceeds this, Gmail will prompt you to send it via Google Drive link instead. To attach it directly, use a PDF compressor to reduce it below 25 MB first."
-            },
-            {
-                question: "How do I make a PDF smaller to email on my iPhone?",
-                answer: "Open Safari on your iPhone, go to pdfpixels.com/tools/compress-pdf, tap the upload area and select your PDF from the Files app. Choose compression level, download the result, and attach it to your email. No app installation needed."
-            },
-            {
-                question: "Why is my PDF so large when I try to email it?",
-                answer: "Large PDFs are almost always caused by embedded high-resolution images, photos, or scanned pages. Scanned documents are the biggest culprit — each page is stored as a photo. PDFs from design tools often also contain hidden metadata and embedded font data that adds significant size."
-            },
-            {
-                question: "Will reducing PDF size for email make it unreadable?",
-                answer: "No. PDF text is vector-based and is never affected by compression — it stays perfectly sharp. Images in the PDF may be slightly downsampled but remain clear and professional at normal reading sizes. Even at maximum compression, text documents look completely acceptable."
-            },
-            {
-                question: "My PDF is still too large after compression — what can I do?",
-                answer: "Try these steps: (1) Use High compression if you used Medium. (2) Remove unnecessary pages using a Split PDF tool before compressing — fewer pages means a smaller baseline. (3) Use the Print to PDF trick in Chrome to flatten the file first, then compress. (4) If all else fails, upload to Google Drive or WeTransfer and send a link instead."
             }
         ],
     },
@@ -2795,301 +2575,11 @@ Keep the tool bookmarked. The next time you're staring at a single upload button
         ],
     },
     {
-        slug: "heic-to-jpg-converter-guide",
-        title: "HEIC to JPG: How to Convert iPhone Photos to JPEG Free (2026)",
-        excerpt: "Your iPhone saves photos as HEIC files that Windows PCs, older apps, and most websites can't read. This guide shows you the fastest free ways to convert HEIC to JPG — on any device, without installing anything.",
-        date: "Feb 25, 2026",
-        category: "Image Editing",
-        author: "PdfPixels Editorial",
-        authorRole: "PdfPixels team",
-        readTime: "10 min read",
-        metaDescription: "Convert HEIC to JPG free in seconds. iPhone photos not opening on Windows or websites? Learn the fastest online and offline methods to convert HEIC files to JPEG in 2026.",
-        keywords: [
-            "heic to jpg converter",
-            "convert heic to jpg",
-            "heic to jpeg converter free",
-            "iphone photo heic to jpg",
-            "open heic files on windows",
-            "how to convert heic to jpg",
-            "heic to jpg online free",
-            "convert heic photos",
-            "heic file converter",
-            "iphone photos not opening windows",
-            "heic to jpg no software",
-            "best heic converter 2026"
-        ],
-        coverImage: "/images/blog/heic-to-jpg-converter-hero.png",
-        imageAlt: "iPhone showing a HEIC photo file transforming into a JPG format with glowing conversion effect — HEIC to JPG converter illustration",
-        content: `
-You took a great photo on your iPhone, transferred it to your Windows PC, and now it shows as an unknown file that nothing will open. Or you tried to upload it to a website, and it rejected the format. Or a client told you they can't open your photos.
-
-This happens to millions of people every day, and the cause is always the same: Apple's HEIC format.
-
-Your iPhone has been saving photos as HEIC (High-Efficiency Image Container) since iOS 11 in 2017. It's a brilliant format — same visual quality as JPEG at roughly half the file size, which is why Apple adopted it. The problem is compatibility. JPEGs open everywhere. HEIC files don't.
-
-This guide gives you every practical method to convert HEIC to JPG, from the fastest one-click online tool to built-in OS options — whichever fits your situation.
-
-> [!TIP]
-> **Fastest Method:** Use the free [PdfPixels HEIC to JPG converter](/tools/heic-to-jpg). Upload your HEIC file (or multiple files), and download standard JPEG files instantly. No account, no watermarks, no installation.
-
-## What Is HEIC and Why Does It Cause Problems?
-
-HEIC stands for High-Efficiency Image Container. It's based on the HEIF (High-Efficiency Image Format) standard developed by the MPEG group and adopted by Apple starting with iOS 11 and macOS High Sierra (2017).
-
-Here's why Apple loves it:
-- An iPhone HEIC photo is typically **40–50% smaller** than an equivalent JPEG
-- It preserves the same visual quality (sometimes better, especially in HDR)
-- It supports transparency, Live Photos, and image sequences in a single file
-
-Here's why it creates headaches:
-- **Windows 10/11** opens HEIC only if you install the Microsoft HEIC extension from the Store (and many people don't know to do this)
-- **Most websites** don't accept HEIC uploads — Instagram, Facebook, LinkedIn, Google Sites, job portals, and most CMSes expect JPEG or PNG
-- **Older software** including many image editors, government portals, and document systems has no HEIC support
-- **Clients and colleagues** with Windows devices or older Macs often can't open files you share
-
-The solution is converting HEIC to JPG — the universal image format that opens on literally every device and platform since 1992.
-
-## Method 1: Convert HEIC to JPG Online (Fastest, No Software)
-
-For most people, this is the best approach. No installation, works on any device, takes 30 seconds.
-
-### Step-by-Step: PdfPixels HEIC to JPG Converter
-
-**Step 1:** Open [PdfPixels HEIC to JPG](/tools/heic-to-jpg) in any browser.
-
-**Step 2:** Upload your HEIC file. You can:
-- Drag and drop from your file explorer
-- Click to browse and select one or multiple HEIC files
-- On iPhone/iPad, select from your Photos app via the browser
-
-**Step 3:** Upload the HEIC file and download a JPEG. Decoding runs on the server so it works on devices that cannot open HEIC.
-
-**Step 4:** Download your JPEG file. The image quality is preserved — you get a full-resolution JPEG equivalent of your HEIC photo.
-
-The entire process typically takes under 10 seconds per file.
-
-### Batch Converting Multiple HEIC Files
-
-If you have multiple iPhone photos to convert, you don't need to do them one at a time. Select all your HEIC files at once during the upload step. Each gets converted and you can download them individually or as a ZIP package.
-
-This is particularly useful when:
-- You've synced a full album from iPhone to Windows
-- You need to send a batch of photos to someone
-- You're uploading multiple photos to a website
-
-## Method 2: Convert HEIC to JPG on Windows 10/11
-
-Windows has a couple of built-in solutions, though they're less intuitive than a dedicated converter:
-
-### Option A: Install the HEIC Extension from Microsoft Store
-
-1. Open the **Microsoft Store** on Windows
-2. Search for **"HEIF Image Extensions"** (it's free from Microsoft)
-3. Install it — this adds native HEIC support to Windows Photos and File Explorer
-4. Now you can open HEIC files directly in Windows Photos
-5. To convert: Open the HEIC in Photos → **Save as copy** → choose JPEG format
-
-**Advantage:** Once installed, HEIC files work natively going forward  
-**Limitation:** Requires one-time Store installation; some organizations restrict Store access
-
-### Option B: Use Microsoft Photos to Convert
-
-If you already have the HEIF extension installed:
-1. Right-click the HEIC file → **Open with → Photos**
-2. Click the **three-dot menu (...)** at the top right
-3. Select **Save a copy** or **Print** → Save as PDF is not what you want here; look for Image format options
-4. Choose JPEG and pick a save location
-
-### Option C: Use Paint (The Surprising Free Method)
-
-If you have the HEIF extension installed, this works:
-1. Open the HEIC file in **Microsoft Paint** (yes, regular Paint)
-2. Go to **File → Save as**
-3. Select **JPEG picture** from the format dropdown
-4. Save
-
-Simple and effective for one-off conversions.
-
-## Method 3: Convert HEIC to JPG on Mac
-
-Mac users have it easier — Apple's own ecosystem handles HEIC natively.
-
-### Using Preview (Built-in, Free)
-
-1. Open your HEIC file in **Preview** — it opens natively since macOS High Sierra
-2. Go to **File → Export**
-3. In the Format dropdown, select **JPEG**
-4. Adjust quality slider if needed (80–90% is usually ideal)
-5. Click **Save**
-
-This is the cleanest method on Mac. Preview is free, pre-installed, and the conversion quality is excellent.
-
-### Using Image Capture for Batch Conversion
-
-If you're importing photos directly from your iPhone via USB:
-1. Open **Image Capture** (search in Spotlight)
-2. Connect your iPhone
-3. In the Format dropdown at the bottom of the window, select **JPEG**
-4. Import photos — they'll arrive as JPEGs automatically
-
-This is the most elegant Mac workflow: photos convert during import, before they ever hit your drive as HEIC.
-
-### Using Automator for Bulk Batch Conversion
-
-For converting large numbers of HEIC files already on your Mac:
-1. Open **Automator**
-2. Choose **Quick Action**
-3. Set **receives current** to **image files** in **Finder**
-4. Add **Change Type of Images** action → set to JPEG
-5. Add **Copy Finder Items** action → choose destination folder
-6. Save the workflow
-
-Now right-click any selection of HEIC files in Finder and run your custom action.
-
-## Method 4: Stop iPhone From Taking HEIC Photos
-
-The most permanent solution is to make your iPhone take JPEGs in the first place:
-
-1. Open **Settings** on your iPhone
-2. Tap **Camera**
-3. Tap **Formats**
-4. Select **Most Compatible** instead of "High Efficiency"
-
-After this change, your iPhone saves photos as JPEG instead of HEIC. You lose the storage efficiency benefit (JPEGs are larger), but you gain universal compatibility.
-
-**Who should use this setting:**
-- People who frequently share photos with Windows users
-- Those who regularly upload to websites
-- Business users who send photos in client reports or documentation
-
-**Who should keep HEIC:**
-- Those with limited iPhone storage who need the efficiency
-- People who primarily view photos on Apple devices
-- Professional photographers who convert manually as part of their workflow
-
-![iPhone camera settings showing format selection between High Efficiency HEIC and Most Compatible JPEG](/images/blog/heic-to-jpg-converter-hero.png)
-
-## HEIC vs JPG: Which Is Actually Better?
-
-Let's settle this properly with a comparison:
-
-| Feature | HEIC | JPEG/JPG |
-|---------|------|----------|
-| File size | ~40–50% smaller | Larger |
-| Image quality | Equal or better | Excellent |
-| Compatibility | Apple devices | Universal |
-| Windows support | Requires extension | Native |
-| Web upload support | Rarely supported | Universally supported |
-| Color depth | 16-bit support | 8-bit (typically) |
-| HDR support | ✅ Built-in | ❌ Limited |
-| Transparency | ✅ Supported | ❌ Not supported |
-| Live Photos | ✅ Supported | ❌ Not supported |
-
-**Summary:** HEIC is technically superior. JPG is universally compatible. For personal use on Apple devices, HEIC is better. For sharing, uploading, and cross-platform use, JPG is the standard.
-
-## How to Open HEIC Files Without Converting
-
-If you just need to *view* HEIC files on Windows without converting:
-
-- **Microsoft HEIF Extensions** (free in Microsoft Store) adds native HEIC support
-- **iCloud for Windows** — if you use iCloud Photos, synced photos are automatically converted to JPEG during download
-- **Apple iCloud.com** — upload HEIC to iCloud.com and download as JPEG
-- **VLC Media Player** — can open HEIC files as a viewer
-- **IrfanView** (free) with HEIC plugin — powerful free image viewer with HEIC support
-
-## Maintaining Image Quality During Conversion
-
-This is a question I get often: does converting HEIC to JPG reduce quality?
-
-The honest answer: **minimally, with a good converter.** Here's what actually happens:
-
-HEIC and JPEG use different compression algorithms. Converting from HEIC to JPEG involves decoding the HEIC and re-encoding as JPEG. This introduces a small amount of generation loss — but at 90%+ JPEG quality settings, the difference is invisible to the human eye.
-
-What controls quality loss:
-- **The quality setting during conversion** — higher = better quality + larger file
-- **Whether you compress aggressively** — always opt for high quality during HEIC→JPG conversion
-- **The converter tool's implementation** — good tools use quality-preserving settings by default
-
-PdfPixels defaults to high-quality JPEG output (equivalent to 90–95% quality), which preserves essentially all visible detail from your original HEIC photo.
-
-If you need to reduce the JPEG file size after conversion, use the [PdfPixels Compress Image tool](/tools/compress-image) as a separate step — this gives you control over quality vs. size without affecting the conversion process.
-
-## HEIC to JPG for Specific Use Cases
-
-### For uploading ID photos to portals
-
-Government portals, job applications, and official forms almost universally require JPEG or PNG format. Convert your iPhone photo via [HEIC to JPG](/tools/heic-to-jpg) and then resize it to the required dimensions using the [Resize Image tool](/tools/resize-image) for portrait requirements (like passport photos — see our [Passport Photo guide](/tools/passport-size-photo)).
-
-### For sending photos on WhatsApp / Telegram
-
-Both apps handle HEIC on iOS automatically. On Android and desktop, HEIC might not display. Converting to JPG before sending ensures cross-platform compatibility in all chat apps.
-
-### For e-commerce product photos
-
-If you're uploading product photos taken on iPhone to Shopify, Etsy, or Amazon, most platforms expect JPG or PNG. Convert the HEIC files, then use the [Remove Background tool](/tools/remove-image-background) to create clean product images on white backgrounds.
-
-### For social media uploads
-
-Instagram, Facebook, Twitter/X, and LinkedIn all accept JPEG natively. Some have started accepting HEIC on iOS specifically (since the app can handle it), but JPEG is still the safest format for guaranteed compatibility across all platforms.
-
-## The Recommended Workflow for iPhone Photo Compatibility
-
-Here's the cleanest approach for people who want to keep HEIC on iPhone but share JPEGs:
-
-1. **Keep phone settings on High Efficiency** to preserve storage
-2. **Use AirDrop to Mac** — Mac handles HEIC natively and can export JPEG
-3. **For Windows sharing:** Use [PdfPixels HEIC to JPG](/tools/heic-to-jpg) for on-the-spot conversion
-4. **For website uploads:** Always check format requirements and convert with one click before uploading
-
-This keeps your iPhone storage lean while ensuring compatibility everywhere you need it.
-
-## Wrapping Up
-
-HEIC is a great format — just not a universal one. While Apple devices handle it seamlessly, the rest of the world is still on JPEG, and that's unlikely to change soon given how entrenched the format is.
-
-The simplest solution is always going to be the [PdfPixels HEIC to JPG converter](/tools/heic-to-jpg) for on-demand conversion — no software to install, works on any device, and preserves your photo quality completely.
-
-For permanent compatibility, switching your iPhone camera to "Most Compatible" format in Settings eliminates the problem at the source. And if you're on a Mac, Preview's export feature handles everything elegantly without any third-party tools.
-
-Whatever your setup, you now have every method available to make your iPhone photos work everywhere they need to.
-`,
-        faq: [
-            {
-                question: "How do I convert HEIC to JPG for free?",
-                answer: "Use the free PdfPixels HEIC to JPG converter. Open it in any browser, upload one HEIC still photo, and download the converted JPEG. No account required, no watermarks, no software installation. Conversion runs on our servers for that request."
-            },
-            {
-                question: "Why can't I open HEIC files on Windows?",
-                answer: "Windows doesn't natively support HEIC format without an extension. You have two options: (1) Install the free Microsoft HEIF Image Extensions from the Microsoft Store to add native HEIC support, or (2) Convert your HEIC files to JPG using a free online tool like PdfPixels, which works in any browser without installation."
-            },
-            {
-                question: "How do I stop my iPhone from taking HEIC photos?",
-                answer: "Go to iPhone Settings → Camera → Formats → select 'Most Compatible'. This makes your iPhone save all new photos as JPEG instead of HEIC, ensuring universal compatibility. You'll lose some storage efficiency (JPEGs are about 40-50% larger than equivalent HEICs), but all your photos will open anywhere."
-            },
-            {
-                question: "Does converting HEIC to JPG reduce image quality?",
-                answer: "Minimally, when using a high-quality converter. Converting involves decoding HEIC and re-encoding as JPEG, which introduces a very small amount of generation loss. However, at 90%+ JPEG quality settings (which PdfPixels uses by default), the difference is invisible to the human eye. Your converted photos will look identical to the originals at normal viewing sizes."
-            },
-            {
-                question: "How do I convert HEIC to JPG on Mac?",
-                answer: "Open the HEIC file in Preview (built-in on all Macs), then go to File → Export → select JPEG from the Format dropdown → Save. This is the fastest free method on Mac. Alternatively, use Image Capture when importing directly from iPhone via USB — set Format to JPEG and photos convert automatically during import."
-            },
-            {
-                question: "Can I convert multiple HEIC files to JPG at once?",
-                answer: "Yes. PdfPixels HEIC to JPG supports batch conversion — select or drag multiple HEIC files at once and all are converted simultaneously. Download them individually or as a ZIP file. On Mac, you can also use Automator to create a batch conversion workflow for large numbers of files."
-            },
-            {
-                question: "What is the difference between HEIC and JPG?",
-                answer: "HEIC is Apple's modern image format (used by iPhone since 2017) that offers 40-50% smaller file sizes at equivalent quality — making it great for phone storage. JPG is the universal image format supported by every device, website, and operating system since 1992. HEIC is technically superior but only natively supported on Apple devices and modern software. JPG has universal compatibility. For sharing and uploading, always use JPG."
-            }
-        ],
-    },
-    {
         slug: "compress-pdf-under-1mb",
         title: "How to Compress PDF Under 1MB (Step-by-Step)",
         excerpt: "Need a PDF under 1MB for a job portal, government form, or university upload? Here's the exact free workflow I use — compression levels, page trimming, and what to do when the file still won't budge.",
         date: "Feb 26, 2026",
-        dateModified: "Aug 8, 2026",
+        dateModified: "Aug 16, 2026",
         category: "PDF Tools",
         author: "PdfPixels Editorial",
         authorRole: "PdfPixels team",
@@ -3221,7 +2711,7 @@ If you still have the source Word/Google Doc or separate JPGs, run big images th
 
 ### 5. Need a harder limit (200KB)?
 
-Some government and exam portals don't stop at 1MB — they want **200KB**. That's a different fight. Use [how to compress PDF under 200KB](/blog/compress-pdf-to-200kb-guide), the email-attachment path [compress PDF to 200KB for email](/blog/compress-pdf-to-200kb-email-attachment), and the [government job form upload guide](/blog/compress-pdf-for-government-job-form-upload).
+Some government and exam portals don't stop at 1MB — they want **200KB**. That's a different fight. Use [how to compress PDF under 200KB](/blog/compress-pdf-to-200kb-email-attachment), the email-attachment path [compress PDF to 200KB for email](/blog/compress-pdf-to-200kb-email-attachment), and the [government job form upload guide](/blog/compress-pdf-for-government-job-form-upload).
 
 ## Scan smarter next time (so you never hit 1MB)
 
@@ -3304,7 +2794,7 @@ If you run a career blog, exam-prep site, or student newsletter, a short "how to
 - "shrink your resume PDF before Easy Apply"  
 - "reduce scanned certificates for the form"
 
-Linking to a useful guide (this one or our [200KB compression guide](/blog/compress-pdf-to-200kb-guide)) is the kind of resource page that earns **editorial backlinks** because it solves a concrete upload error — not because someone begged for a link exchange. Forums, Reddit threads, and Quora answers about "file too large 1MB" are also fair places to share the free tool when you're actually helping, not spamming.
+Linking to a useful guide (this one or our [200KB compression guide](/blog/compress-pdf-to-200kb-email-attachment)) is the kind of resource page that earns **editorial backlinks** because it solves a concrete upload error — not because someone begged for a link exchange. Forums, Reddit threads, and Quora answers about "file too large 1MB" are also fair places to share the free tool when you're actually helping, not spamming.
 
 If you cite us from your site, use a descriptive URL: [https://www.pdfpixels.com/blog/compress-pdf-under-1mb](https://www.pdfpixels.com/blog/compress-pdf-under-1mb) or the live tool at [https://www.pdfpixels.com/tools/compress-pdf](https://www.pdfpixels.com/tools/compress-pdf).
 
@@ -3354,7 +2844,7 @@ Bookmark the tool once. Next time a portal throws "file too large," you'll finis
         title: "Compress PDF to 200KB for Email Attachment",
         excerpt: "Portal or HR mailbox wants a PDF under 200KB and yours is 2MB? Here's the free email-attachment workflow I use — High compression, page trims, and what to do when the file still won't drop.",
         date: "Feb 27, 2026",
-        dateModified: "Aug 8, 2026",
+        dateModified: "Aug 16, 2026",
         category: "PDF Tools",
         author: "PdfPixels Editorial",
         authorRole: "PdfPixels team",
@@ -3410,6 +2900,14 @@ Text almost never does it. **Images do.**
 - Print-ready exports (Word “best quality,” Canva, InDesign) pack 300 DPI graphics nobody needs on a form.  
 - Logos, signatures as images, color backgrounds — all add weight.  
 - Design leftovers: layers, color profiles, extra fonts you never see.
+
+### Why portals impose 200KB in the first place
+
+It feels arbitrary when a phone photo alone is 3MB, but there's logic behind it. Government portals, university admissions systems, and job platforms process **thousands of uploads a day**. At that volume, the difference between a 200KB file and a 5MB file is real storage money, real backup time, and real loading speed for the staff who review every submission. A strict cap also forces files that are small enough to open instantly on any clerk's aging computer. You can't change the limit — but you can absolutely hit it.
+
+### Fix the problem at the source: scan at 150–200 DPI
+
+If you're creating the PDF yourself by photographing or scanning paper, check your scanner app's DPI setting **before** you scan. Text documents captured at 600 DPI produce enormous files that fight you all the way down. **150–200 DPI is plenty for readable text** and gives the compressor a much smaller baseline to work with — often the difference between landing at 400KB and landing at 180KB on the first pass.
 
 If every page is a photo, you’re in scan territory — pair this article with [compress scanned PDF without losing quality](/blog/compress-scanned-pdf-without-losing-quality). For the “why is this huge?” rabbit hole, [why is my PDF so large?](/blog/why-is-pdf-file-so-large-fix) spells it out.
 
@@ -3472,7 +2970,7 @@ Still have the Word/Google Doc? Compress big images with [Compress Image](/tools
 - **Grayscale** if color isn’t required  
 - Document mode, not “photo of desk”
 
-Need the ultra-strict portal playbook? [Compress PDF for government job form upload](/blog/compress-pdf-for-government-job-form-upload) and the general [compress PDF to 200KB guide](/blog/compress-pdf-to-200kb-guide) go deeper on exam/form systems.
+Need the ultra-strict portal playbook? [Compress PDF for government job form upload](/blog/compress-pdf-for-government-job-form-upload) and the general [compress PDF to 200KB guide](/blog/compress-pdf-to-200kb-email-attachment) go deeper on exam/form systems.
 
 ## Does High compression ruin the look?
 
@@ -3523,7 +3021,7 @@ Useful resource URLs you can cite:
 
 - This guide: [https://www.pdfpixels.com/blog/compress-pdf-to-200kb-email-attachment](https://www.pdfpixels.com/blog/compress-pdf-to-200kb-email-attachment)  
 - Live tool: [https://www.pdfpixels.com/tools/compress-pdf](https://www.pdfpixels.com/tools/compress-pdf)  
-- Related deep dive: [200KB complete guide](/blog/compress-pdf-to-200kb-guide)
+- Related deep dive: [200KB complete guide](/blog/compress-pdf-to-200kb-email-attachment)
 
 Editorial links earn when they fix a real error message — forums, Reddit “file too large 200KB” threads, Quora, and campus WhatsApp FAQs — not from spammy link swaps.
 
@@ -3579,7 +3077,7 @@ Bookmark the tool once. Next time a form laughs at your 2MB scan, you’ll be un
         title: "Reduce PDF Size for Gmail (Fix 25MB Limit)",
         excerpt: "PDF too large to send email through Gmail? That 25MB wall is fixable in about a minute — free compression, Drive links when you must keep full quality, and the mistakes that waste people's evenings.",
         date: "Feb 28, 2026",
-        dateModified: "Aug 8, 2026",
+        dateModified: "Aug 16, 2026",
         category: "PDF Tools",
         author: "PdfPixels Editorial",
         authorRole: "PdfPixels team",
@@ -4602,7 +4100,7 @@ This question comes up constantly, so let me give you a decision framework.
 - It is a scanned black-and-white document (text scans hold up well under aggressive compression)
 - You have already tried Medium and still need to go smaller
 
-If you need to get under [200KB specifically](/blog/compress-pdf-to-200kb-guide), we have a dedicated guide that covers every technique for hitting that target — including page splitting, scan resolution changes, and DPI management. If your primary concern is [email attachments](/blog/reduce-pdf-size-for-email), that guide walks through Gmail and Outlook scenarios specifically.
+If you need to get under [200KB specifically](/blog/compress-pdf-to-200kb-email-attachment), we have a dedicated guide that covers every technique for hitting that target — including page splitting, scan resolution changes, and DPI management. If your primary concern is [email attachments](/blog/reduce-pdf-size-for-email), that guide walks through Gmail and Outlook scenarios specifically.
 
 ## Privacy and Security: What Happens to Your PDF?
 
@@ -4941,11 +4439,11 @@ PdfPixels is designed for practical document jobs — start at [Protect PDF](/to
         title: "How to Add Page Numbers to a PDF Online (Free)",
         excerpt: "Contracts, study notes, and multi-page applications are easier to review when every page is numbered. Here is how to add page numbers to a PDF in your browser — plus placement tips so numbers do not cover stamps or signatures.",
         date: "Jul 28, 2026",
-        dateModified: "Jul 28, 2026",
+        dateModified: "Aug 16, 2026",
         category: "PDF Editing",
         author: "PdfPixels Editorial",
         authorRole: "PdfPixels team",
-        readTime: "7 min read",
+        readTime: "9 min read",
         metaDescription: "Add page numbers to a PDF online free. Learn placement, starting numbers, and how to number multi-page PDFs without Adobe Acrobat.",
         keywords: [
             "add page numbers to pdf",
@@ -4987,13 +4485,50 @@ Page numbers follow the order of pages in the file. If sections are out of seque
 
 Leave a margin so numbers do not sit on signatures, stamps, or form fields. Watch scanned pages with dark edges that can hide light numbers. For covers, some teams leave the cover unnumbered and start 1 on the first content page.
 
+## Numbering styles and when to use them
+
+Different documents conventionally use different numbering styles. Pick the one your reviewers expect:
+
+- **Plain numbers (1, 2, 3…)** — the default for most documents. Clean and unobtrusive.
+- **"Page X of Y"** — best for anything reviewed in hard copy or emailed around, because it instantly shows when pages are missing. "Page 7 of 24" tells the reviewer the packet is complete.
+- **Roman numerals for front matter (i, ii, iii…)** — theses and formal reports often number the title page, table of contents, and acknowledgments in Roman numerals, then restart Arabic numbering at 1 on the first real chapter. If your tool cannot restart numbering, split the front matter into a separate file, number each part with a different start value, then merge.
+- **Custom start number** — appendices ("A-1, A-2"), deposition exhibits, or a packet that continues a larger report can start at any number you set.
+
+## Where to place the number on the page
+
+| Document type | Recommended position | Why |
+|---|---|---|
+| Contracts and legal packs | Bottom center | Traditional, away from signature blocks that usually sit at bottom right |
+| Business reports | Bottom right | Familiar, leaves the bottom-left clear for footnotes |
+| Bound documents (spine on left) | Outer margins if supported, else bottom | Avoids the binding edge swallowing the number |
+| Scanned forms | Test first — try top right | Scans often have dark edges, stamps, or handwriting near the bottom |
+| Drafts circulated for comment | Bottom center + draft watermark | Numbers plus a [watermark](/tools/add-watermark-pdf) prevent draft pages leaking as final |
+
+Whatever position you choose, leave at least a quarter-inch of clear space. A number printed over a signature, a court stamp, or a QR code creates a document that has to be redone.
+
+## How PDF numbering actually works
+
+A useful mental model: a PDF is a fixed printout, not a flowing document. Unlike a Word file, there is no "footer field" hiding in the file that you can switch on. Page numbers in a PDF are drawn elements — ink on the virtual page — just like the text and images.
+
+That is why page-number tools work by stamping a new layer onto each page, and why the practical workflow is: get the page order right first (merge, split, [reorder](/tools/reorder-pdf-pages), [rotate](/tools/rotate-pdf)), then stamp numbers once at the very end. Every structural change after numbering is a chance for the numbers and the content to drift out of sync.
+
+It also explains the one thing numbering tools cannot fix: if the original document already has printed numbers (a scanned book, for example), a new stamp will sit alongside the old ones. For scanned packets, cover the old numbers by cropping, or re-scan without the source numbering when possible.
+
 ## Combining with other PDF jobs
 
 A realistic order for application packets: merge, delete blanks, rotate scans, add page numbers, compress if needed, protect with a password only if required.
 
 ## Troubleshooting
 
-If numbers are wrong after a merge, you numbered too early — merge first, number once. If the file is huge, compress after pagination; numbering itself rarely bloats files.
+**Numbers restart or jump after merging** — you numbered the parts individually before merging. Undo, merge everything first, then number the combined file once.
+
+**Numbers cover a signature or stamp** — re-run with a different position. Bottom center is the safest all-round choice.
+
+**The cover page shows "1"** — if you want the cover clean, split off page 1, number the remaining pages starting at 2, then merge back together.
+
+**File got larger after numbering** — numbering adds only a tiny layer; if size ballooned, it is usually the merge or scan step. Run a [compression](/tools/compress-pdf) pass as the final step for upload-limited portals.
+
+**Scanned pages are crooked, so numbers look uneven** — straighten pages with rotate first; numbers follow the page box, not the crooked content.
 
 Numbered pages are a small polish with outsized impact on review speed. Make it a habit for any PDF longer than a few pages.
         `,
@@ -5010,6 +4545,14 @@ Numbered pages are a small polish with outsized impact on review speed. Make it 
                 question: "Can I start page numbers at a number other than 1?",
                 answer: "Many tools allow a custom start index — useful for appendices or documents that continue a larger report."
             },
+            {
+                question: "Can I add 'Page X of Y' style numbers to a PDF?",
+                answer: "It depends on the tool. Some page-number tools stamp the current page number only; others support 'Page X of Y'. If yours stamps plain numbers, reviewers can still see the total page count in any PDF reader — but for printed packets, 'of Y' formatting is worth checking for specifically."
+            },
+            {
+                question: "Why can't I just double-click and type a page number like in Word?",
+                answer: "A PDF is a fixed-layout format — there is no live footer field to toggle. Page numbers must be stamped onto the pages as a new layer, which is exactly what online page-number tools do: they render the number onto each page at the position you choose."
+            },
         ],
     },
     {
@@ -5017,7 +4560,7 @@ Numbered pages are a small polish with outsized impact on review speed. Make it 
         title: "How to Remove EXIF and GPS Data from Photos Before You Share Them",
         excerpt: "Your photo can reveal more than the picture: camera model, timestamps, and sometimes exact GPS location. Learn what EXIF is, when to strip it, and how to remove image metadata online before posting or emailing.",
         date: "Jul 28, 2026",
-        dateModified: "Jul 28, 2026",
+        dateModified: "Aug 16, 2026",
         category: "Image Privacy",
         author: "PdfPixels Editorial",
         authorRole: "PdfPixels team",
@@ -5044,6 +4587,44 @@ If you post a family photo, a new apartment, or a travel picture from your front
 ## What is EXIF?
 
 EXIF is a common way cameras store metadata inside JPEG and other image files: date and time, camera model, exposure settings, orientation, and sometimes GPS latitude/longitude. Screenshots and some chat apps strip a lot of this automatically. Originals from the Camera roll often keep it.
+
+### What is actually inside your photo's metadata
+
+| Field | What it reveals | Privacy concern level |
+|---|---|---|
+| GPS coordinates | Where the photo was taken — often within a few meters | High |
+| Date and time taken | When you were somewhere, plus routines over many photos | Medium |
+| Camera model and lens | Your device; serial number on some cameras | Low–medium |
+| Exposure settings (ISO, shutter, aperture) | Mostly technical, harmless | Low |
+| Software used to edit | Which editor touched the file last | Low |
+| Thumbnail embed | A small preview — can contain a crop of something you deleted | Medium |
+
+Not every photo carries every field. But a single original iPhone photo with location services enabled can contain your precise position at a precise time — which is why "strip before share" is worth making automatic.
+
+### How to check what your own photo reveals
+
+Before worrying, look. On **Windows**: right-click the photo → Properties → Details tab. On **macOS**: click the photo in Finder → press Cmd+I (Get Info). On **iPhone**: open the photo → swipe up (or tap the ⓘ icon) to see the map — if a pin appears, GPS is embedded. What you see there is a preview of what anyone else can extract with the same steps or a free EXIF viewer.
+
+### EXIF is not the only metadata format
+
+You may also run into **IPTC** (captions, credits, keywords added by photographers) and **XMP** (Adobe editing history). A thorough metadata remover clears all three families, not just EXIF — worth checking if your concern is editing traces rather than GPS.
+
+## Who strips metadata for you (and who does not)
+
+This is where intuition fails people. Big social platforms mostly protect you; direct sharing mostly does not:
+
+| Where the photo goes | Does metadata survive? |
+|---|---|
+| Facebook, Instagram, X/Twitter uploads | Stripped by the platform when you upload |
+| WhatsApp | Stripped by default |
+| Telegram (photos sent as photos) | Stripped; files sent as "File" keep metadata |
+| Email attachments | Kept — the recipient gets your original |
+| Google Photos / iCloud links | Kept on the service; viewers may see capture info |
+| Marketplace listings (Craigslist, Facebook Marketplace) | Facebook strips; smaller classifieds sites vary — assume kept |
+| Cloud drives (Drive, Dropbox, OneDrive) | Kept — the stored file is your original |
+| Your own website | Kept if you upload the original — strip first |
+
+Translation: the risky paths are email, cloud links, smaller sites, and your own uploads. That is exactly where a strip step before sharing matters.
 
 ## Why metadata can be a problem
 
@@ -5097,6 +4678,14 @@ Metadata is invisible, which is exactly why it surprises people. Make "strip bef
                 question: "Is EXIF the same as the image quality?",
                 answer: "No. EXIF is extra descriptive data. Removing it does not meaningfully improve or destroy visual quality the way heavy compression does."
             },
+            {
+                question: "Does Facebook or WhatsApp keep the GPS data in my photos?",
+                answer: "Major platforms like Facebook, Instagram, X, and WhatsApp strip EXIF metadata when you upload. The riskier paths are direct sharing: email attachments, cloud drive links, smaller classifieds sites, and photos you upload to your own website. Those usually deliver your original file with metadata intact."
+            },
+            {
+                question: "What is the difference between EXIF, IPTC, and XMP metadata?",
+                answer: "EXIF holds camera capture data (time, settings, GPS). IPTC holds descriptive info photographers add (captions, credits, keywords). XMP is a modern sidecar format that records editing history, often added by tools like Lightroom. A complete metadata removal clears all three."
+            },
         ],
     },
     {
@@ -5104,7 +4693,7 @@ Metadata is invisible, which is exactly why it surprises people. Make "strip bef
         title: "Image DPI Explained: Print vs Web (What Actually Matters)",
         excerpt: "DPI confuses everyone the first time a form asks for 300 DPI. Here is a plain-English guide to DPI vs pixels, when 72 vs 300 matters, and how to resize images correctly for print, web, and ID photos.",
         date: "Jul 28, 2026",
-        dateModified: "Jul 28, 2026",
+        dateModified: "Aug 16, 2026",
         category: "Image Basics",
         author: "PdfPixels Editorial",
         authorRole: "PdfPixels team",
@@ -5144,6 +4733,26 @@ Browsers display CSS pixels, not the EXIF DPI field. For web performance, optimi
 
 Ink on paper has no responsive layout. If you print a 300-pixel image three inches wide, you only have 100 pixels per inch — soft and blocky. 300 DPI is a common sweet spot for small photo prints and documents. A 2 by 2 inch photo at 300 DPI needs 600 by 600 pixels.
 
+### The formula, with worked examples
+
+**Print size (inches) = pixels ÷ DPI** — or flip it: **pixels needed = print size × DPI**.
+
+| Target | Math | Pixels you need |
+|---|---|---|
+| 2×2 inch ID photo @ 300 DPI | 2 × 300 | 600 × 600 |
+| 4×6 inch print @ 300 DPI | 4 × 300, 6 × 300 | 1200 × 1800 |
+| 8×10 inch print @ 300 DPI | 8 × 300, 10 × 300 | 2400 × 3000 |
+| A4 full page @ 300 DPI | 8.27 × 300, 11.69 × 300 | 2481 × 3508 |
+| 6 inch web-width photo @ 2× screen | 6 × 2 × 96 | ~1152 wide (no DPI needed) |
+
+Modern phone cameras (12MP and up) shoot roughly 4000–6000 pixels wide — comfortably enough for an 8×10 at 300 DPI. Where people get caught is *cropping*: crop a group photo down to one face and you may be left with 800 pixels, which prints soft beyond about 2.5 inches wide at 300 DPI.
+
+### Changing the DPI tag does not resize your image
+
+Here is the trap that catches almost everyone. Changing an image's DPI from 72 to 300 **does not add a single pixel** — it only rewrites the metadata suggestion of how big to print it. A 1200×1800 photo tagged 72 DPI and the same photo tagged 300 DPI contain identical detail; one says "print me 16 inches wide," the other says "print me 4 inches wide."
+
+That is why "make it 300 DPI" is really two questions: *how many pixels do you have?* and *how large will it print?* If a form wants a 300 DPI, 2×2 inch photo, what it mathematically wants is a 600×600 pixel image with a 300 DPI tag. [Resize Image](/tools/resize-image) fixes the pixels; [Convert DPI](/tools/convert-dpi) fixes the tag. Portals that reject your file usually measured one of the two.
+
 ## Forms that demand 300 DPI
 
 Portals sometimes check the DPI metadata field, the pixel dimensions, the file size in KB, or all three. When a form is picky: set width and height first, set DPI to the requested value, then [compress](/tools/compress-image) to the KB limit. Order matters.
@@ -5158,6 +4767,16 @@ Portals sometimes check the DPI metadata field, the pixel dimensions, the file s
 ## DPI vs file size (KB)
 
 DPI is not the same as kilobytes. A 300 DPI image can be 50KB or 5MB depending on pixel count and compression. Portals that want 300 DPI and under 100KB need resize plus compress together.
+
+## DPI when you scan (the other direction)
+
+Everything above is about *output*. Scanning is about *input*: how many pixels you capture per inch of paper. And here more is usually worse for documents.
+
+- **Text documents and forms: 150–200 DPI** is fully readable, keeps files small, and makes the result far easier to compress under portal limits. Scanning at 600 DPI mostly produces a enormous file with invisible extra detail — the classic cause of "why is my scanned PDF 15MB?" (more in [why is my PDF so large](/blog/why-is-pdf-file-so-large-fix)).
+- **Photos or documents with fine print: 300 DPI** captures what the eye can resolve at reading distance.
+- **Small originals you will enlarge** (a stamp, a receipt thumbnail): scan at 600 DPI so the enlargement has real pixels behind it.
+
+Rule of thumb: match scan DPI to what the document actually contains, not the scanner's maximum. Your future self — the one fighting a 200KB upload limit — will thank you. The tight-limit playbook is in [compress PDF to 200KB for email attachment](/blog/compress-pdf-to-200kb-email-attachment).
 
 ## Bottom line
 
@@ -5177,6 +4796,14 @@ Once you separate those ideas, "set to 300 DPI" becomes a sizing problem you can
             {
                 question: "What size is a 2x2 inch photo at 300 DPI?",
                 answer: "2 by 2 inches at 300 DPI is 600 by 600 pixels."
+            },
+            {
+                question: "If I change my image from 72 to 300 DPI, does it get sharper?",
+                answer: "No. Changing the DPI tag rewrites metadata only — the pixel count and the actual detail stay identical. '300 DPI' is really shorthand for 'enough pixels for the print size at 300 pixels per inch.' If your image is too soft, you need more pixels (a larger original or AI upscaling), not a different DPI tag."
+            },
+            {
+                question: "What DPI should I scan documents at?",
+                answer: "150–200 DPI for plain text documents and forms — readable and easy to compress under upload limits. 300 DPI for photos or very fine print. Reserve 600 DPI for small originals you plan to enlarge."
             },
         ],
     },

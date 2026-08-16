@@ -22,18 +22,18 @@ info:
     
     ## Support
     Email: support@pdfpixels.com
-    Website: https://pdfpixels.com
+    Website: https://www.pdfpixels.com
   version: 1.0.0
   contact:
     name: PdfPixels Support
     email: support@pdfpixels.com
-    url: https://pdfpixels.com
+    url: https://www.pdfpixels.com
   license:
     name: Free to Use
-    url: https://pdfpixels.com/#terms
+    url: https://www.pdfpixels.com/#terms
 
 servers:
-  - url: https://pdfpixels.com/api
+  - url: https://www.pdfpixels.com/api
     description: Production server
 
 tags:
@@ -544,4 +544,4 @@ components:
 
 externalDocs:
   description: PdfPixels Documentation
-  url: https://pdfpixels.com/api-docs
+  url: https://www.pdfpixels.com/api-docs
