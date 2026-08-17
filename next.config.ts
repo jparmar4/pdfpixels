@@ -339,7 +339,17 @@ const nextConfig: NextConfig = {
       { source: '/linearize-pdf', destination: '/tools/linearize-pdf', permanent: true },
       { source: '/add-page-numbers-pdf', destination: '/tools/add-page-numbers-to-pdf', permanent: true },
       
+      // Deleted root /api route (was removed in Phase 6, still indexed by Google)
+      { source: '/api', destination: '/api-docs', permanent: true },
+      // Missing root redirect for full tool slug
+      { source: '/add-page-numbers-to-pdf', destination: '/tools/add-page-numbers-to-pdf', permanent: true },
+      // Common RSS/feed discovery paths
+      { source: '/feed.xml', destination: '/feed', permanent: true },
+      { source: '/rss.xml', destination: '/feed', permanent: true },
+      { source: '/rss', destination: '/feed', permanent: true },
+      { source: '/atom.xml', destination: '/feed', permanent: true },
       // Old sitemap redirects
+      { source: '/sitemap-0.xml', destination: '/sitemap.xml', permanent: true },
       { source: '/sitemap-images.xml', destination: '/image-sitemap.xml', permanent: true },
       { source: '/sitemap-news.xml', destination: '/sitemap.xml', permanent: true },
       // Consolidated duplicate blog posts (merged into their canonical posts)
