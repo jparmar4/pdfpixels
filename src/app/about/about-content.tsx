@@ -327,6 +327,65 @@ export function AboutPageContent() {
         </div>
       </motion.section>
 
+      {/* ── Editorial Standards & Team Transparency ───────────────── */}
+      <section className="mt-12 section-panel rounded-[2rem] p-6 md:p-8 lg:p-10">
+        <div className="text-center mb-8">
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-primary mb-3">Our Standards</p>
+          <h2 className="text-2xl font-bold text-foreground md:text-3xl">Editorial & Engineering Integrity</h2>
+          <p className="mt-3 text-sm text-muted-foreground max-w-xl mx-auto">
+            PdfPixels is engineered and maintained by a dedicated team of full-stack software engineers, graphic specialists, and digital publishing professionals.
+          </p>
+        </div>
+
+        <div className="grid gap-6 md:grid-cols-3">
+          <div className="rounded-2xl border border-border/50 bg-background/70 p-6 shadow-soft">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-500/10 text-blue-500 mb-4">
+              <Code2 className="h-6 w-6" />
+            </div>
+            <h3 className="text-lg font-bold text-foreground">Rigorous Tool Testing</h3>
+            <p className="mt-2 text-sm leading-6 text-muted-foreground">
+              Every tool and compression pipeline is benchmarked across hundreds of real-world test files (scanned PDFs, multi-gigabyte photos, transparent graphics) to prevent visual corruption and data loss.
+            </p>
+          </div>
+
+          <div className="rounded-2xl border border-border/50 bg-background/70 p-6 shadow-soft">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-500/10 text-emerald-500 mb-4">
+              <Shield className="h-6 w-6" />
+            </div>
+            <h3 className="text-lg font-bold text-foreground">Security by Default</h3>
+            <p className="mt-2 text-sm leading-6 text-muted-foreground">
+              We operate under a strict zero-retention policy. Browser-native tools keep your data on your device, and server-assisted jobs process files in memory with automatic hourly purging.
+            </p>
+          </div>
+
+          <div className="rounded-2xl border border-border/50 bg-background/70 p-6 shadow-soft">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-violet-500/10 text-violet-500 mb-4">
+              <Users className="h-6 w-6" />
+            </div>
+            <h3 className="text-lg font-bold text-foreground">Human-Authored Guides</h3>
+            <p className="mt-2 text-sm leading-6 text-muted-foreground">
+              All guides, tutorials, and comparison articles are written and verified by real practitioners based on actual form requirements, email attachment caps, and print specifications.
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-8 rounded-2xl border border-border/40 bg-muted/20 p-6">
+          <h3 className="text-base font-bold text-foreground">Publisher & Contact Information</h3>
+          <div className="mt-3 grid gap-3 text-sm text-muted-foreground sm:grid-cols-2">
+            <div>
+              <p><strong className="text-foreground">Platform:</strong> PdfPixels (pdfpixels.com)</p>
+              <p><strong className="text-foreground">Publisher:</strong> PdfPixels Team</p>
+              <p><strong className="text-foreground">Contact Email:</strong> <a href="mailto:support@pdfpixels.com" className="text-primary hover:underline">support@pdfpixels.com</a></p>
+            </div>
+            <div>
+              <p><strong className="text-foreground">Inquiries & Support:</strong> 24-48 hour response SLA</p>
+              <p><strong className="text-foreground">Office / Operating Hours:</strong> Monday – Friday, 9:00 AM – 6:00 PM IST (Global Support 24/7)</p>
+              <p><strong className="text-foreground">Official Channels:</strong> Web contact form, GitHub, and Twitter / X</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ── Platform Direction ───────────────────────────────────── */}
       <section className="mt-8 section-panel rounded-[2rem] p-6 md:p-8 lg:p-10">
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">

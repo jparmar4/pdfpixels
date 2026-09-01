@@ -125,13 +125,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }));
 
-  const geoEntries: MetadataRoute.Sitemap = geoRegions.map((region) => ({
-    url: absoluteUrl(`/${region.code}`),
-    lastModified: evergreen,
-    changeFrequency: 'weekly' as const,
-    priority: 0.7,
-  }));
-
   const categoryEntries: MetadataRoute.Sitemap = toolCategories.map((category) => ({
     url: absoluteUrl(`/tools/category/${category.id}`),
     lastModified: evergreen,
@@ -141,7 +134,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   return [
     ...corePages,
-    ...geoEntries,
     ...categoryEntries,
     ...toolPages,
     ...useCaseEntries,

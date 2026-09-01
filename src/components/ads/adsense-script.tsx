@@ -32,26 +32,22 @@ export function AdSenseScript() {
   return (
     <>
       <Script
+        id="adsense-npa"
+        strategy="beforeInteractive"
+        dangerouslySetInnerHTML={{
+          __html: `
+            window.adsbygoogle = window.adsbygoogle || [];
+            ${!adConsent ? 'window.adsbygoogle.requestNonPersonalizedAds = 1;' : 'window.adsbygoogle.requestNonPersonalizedAds = 0;'}
+          `,
+        }}
+      />
+      <Script
         id="adsense-loader"
         async
         src={adsConfig.scriptUrl}
         crossOrigin="anonymous"
         strategy="afterInteractive"
       />
-      {!adConsent && (
-        <Script
-          id="adsense-npa"
-          strategy="afterInteractive"
-          dangerouslySetInnerHTML={{
-            __html: `
-              (adsbygoogle = window.adsbygoogle || []).push({
-                google_ad_client: "${adsConfig.publisherId}",
-                requestNonPersonalizedAds: 1
-              });
-            `,
-          }}
-        />
-      )}
     </>
   );
 }

@@ -1,4 +1,4 @@
-﻿import { Metadata } from "next";
+import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import NextImage from "next/image";
 import Link from "next/link";
@@ -348,6 +348,34 @@ export default async function BlogPostPage({
                                     </div>
                                 </div>
                             )}
+
+                            {/* Author Profile & Editorial Fact-Check */}
+                            <div className="mt-12 p-6 md:p-8 bg-card rounded-2xl border border-border shadow-sm flex flex-col sm:flex-row items-start sm:items-center gap-5">
+                                <div className="w-16 h-16 shrink-0 rounded-2xl flex items-center justify-center text-primary-foreground font-bold text-xl shadow-md ring-2 ring-primary/20"
+                                    style={{ background: 'linear-gradient(135deg, var(--color-primary), #8b5cf6)' }}
+                                >
+                                    {post.author.charAt(0)}
+                                </div>
+                                <div className="flex-1">
+                                    <div className="flex flex-wrap items-center gap-2 mb-1">
+                                        <h3 className="font-bold text-base text-foreground">{post.author}</h3>
+                                        <span className="text-xs font-medium px-2.5 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20">
+                                            {post.authorRole}
+                                        </span>
+                                    </div>
+                                    <p className="text-xs leading-5 text-muted-foreground">
+                                        Published by the PdfPixels technical writing and engineering team. All guides and technical tutorials undergo rigorous testing across Windows, macOS, iOS, and Android environments to guarantee accuracy and workflow reliability.
+                                    </p>
+                                    <div className="mt-3 flex items-center gap-4 text-xs font-semibold text-primary">
+                                        <Link href="/about" className="hover:underline">
+                                            About PdfPixels Team →
+                                        </Link>
+                                        <Link href="/contact" className="hover:underline text-muted-foreground">
+                                            Suggest a Correction
+                                        </Link>
+                                    </div>
+                                </div>
+                            </div>
 
                             {/* FAQ Section */}
                             {post.faq && post.faq.length > 0 && (

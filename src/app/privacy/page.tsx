@@ -69,23 +69,28 @@ export default function PrivacyPolicy() {
       </section>
 
       <section>
-        <h2>4. Advertising</h2>
+        <h2>4. Advertising & Google AdSense Disclosures</h2>
         <p>
-          We use Google AdSense to display advertisements that help keep PdfPixels free. Third parties, including Google, may use cookies, web beacons, and similar technologies to collect information and serve ads.
+          We use Google AdSense and other third-party advertising vendors to serve advertisements when you visit our website. These companies may use cookies, web beacons, and similar tracking technologies to collect non-personally identifiable information (such as browser type, IP address, time and date, subject of advertisements clicked or scrolled over) during your visits to this and other websites in order to provide advertisements about goods and services likely to be of greater interest to you.
+        </p>
+        <h3>4.1 Google DoubleClick DART Cookie</h3>
+        <p>
+          Google, as a third-party vendor, uses cookies to serve ads on PdfPixels. Google&apos;s use of the DART cookie enables it to serve ads to our users based on their visit to our site and other sites on the Internet. Users may opt out of the use of the DART cookie by visiting the Google Ad and Content Network Privacy Policy at{' '}
+          <a href="https://policies.google.com/technologies/ads" target="_blank" rel="noopener noreferrer">https://policies.google.com/technologies/ads</a>.
         </p>
         <p>
-          Google&apos;s use of advertising cookies enables it and its partners to serve ads based on your visit to this site and/or other sites on the Internet. You can opt out of personalized advertising by visiting{' '}
-          <a href="https://www.google.com/settings/ads">Google Ads Settings</a>. You can also learn how Google uses information from sites that use its services at{' '}
-          <a href="https://policies.google.com/technologies/partner-sites">How Google uses information from sites or apps that use our services</a>.
+          You can customize or opt out of personalized advertising at any time by visiting{' '}
+          <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener noreferrer">Google Ads Settings</a>. You can also learn how Google processes data across its partner network at{' '}
+          <a href="https://policies.google.com/technologies/partner-sites" target="_blank" rel="noopener noreferrer">How Google uses information from sites or apps that use our services</a>.
         </p>
         <ul>
-          <li><a href="https://www.google.com/settings/ads">Google Ads Settings</a></li>
-          <li><a href="https://policies.google.com/technologies/partner-sites">Google partner sites policy</a></li>
-          <li><a href="https://www.aboutads.info/choices/">Digital Advertising Alliance</a></li>
-          <li><a href="https://www.networkadvertising.org/choices/">Network Advertising Initiative</a></li>
+          <li><a href="https://www.google.com/settings/ads" target="_blank" rel="noopener noreferrer">Google Ads Settings</a></li>
+          <li><a href="https://policies.google.com/technologies/partner-sites" target="_blank" rel="noopener noreferrer">Google Partner Sites Policy</a></li>
+          <li><a href="https://www.aboutads.info/choices/" target="_blank" rel="noopener noreferrer">Digital Advertising Alliance (DAA) Opt-Out</a></li>
+          <li><a href="https://www.networkadvertising.org/choices/" target="_blank" rel="noopener noreferrer">Network Advertising Initiative (NAI) Opt-Out</a></li>
         </ul>
         <p>
-          You can also reject advertising cookies in our cookie banner. Essential cookies still work if you reject ads and analytics.
+          You can also configure or revoke your advertising cookie consent at any time via the cookie preferences button in our footer or banner. Non-personalized ads (NPA) will be served when consent is withheld.
         </p>
       </section>
 
@@ -132,17 +137,28 @@ export default function PrivacyPolicy() {
       </section>
 
       <section>
-        <h2>9. Your Rights</h2>
-        <p>Depending on your jurisdiction, you may have rights that include:</p>
+        <h2>9. Your Privacy Rights (GDPR, UK GDPR, CCPA/CPRA)</h2>
+        <h3>9.1 European Economic Area (EEA) and UK Residents (GDPR)</h3>
+        <p>If you are an EEA or UK resident, you have the following data protection rights under the General Data Protection Regulation (GDPR):</p>
         <ul>
-          <li>Access to personal data we hold about you.</li>
-          <li>Correction of inaccurate data.</li>
-          <li>Deletion of certain personal data.</li>
-          <li>Restriction or objection to certain processing.</li>
-          <li>Data portability where applicable.</li>
-          <li>Opt-out rights under applicable regional law.</li>
+          <li><strong>Right of Access:</strong> Request a copy of personal information we maintain.</li>
+          <li><strong>Right to Rectification:</strong> Request correction of inaccurate personal data.</li>
+          <li><strong>Right to Erasure:</strong> Request deletion of your personal information.</li>
+          <li><strong>Right to Restrict or Object:</strong> Object to processing or request restricted handling.</li>
+          <li><strong>Right to Withdraw Consent:</strong> Revoke cookie or marketing consent at any time.</li>
         </ul>
-        <p>To make a request, contact <a href="mailto:support@pdfpixels.com">support@pdfpixels.com</a>.</p>
+
+        <h3>9.2 California Residents (CCPA / CPRA)</h3>
+        <p>
+          Under the California Consumer Privacy Act (CCPA) and California Privacy Rights Act (CPRA), California consumers have specific rights:
+        </p>
+        <ul>
+          <li><strong>Right to Know:</strong> Know what categories of personal information are collected and how they are used.</li>
+          <li><strong>Right to Delete:</strong> Request deletion of personal information collected from you.</li>
+          <li><strong>Do Not Sell or Share My Personal Information:</strong> We do not sell user personal data or file contents. We use third-party advertising partners like Google AdSense who may collect browsing identifiers. You may opt out of personalized ads via our cookie consent settings or through global privacy control signals.</li>
+          <li><strong>Non-Discrimination:</strong> We will not discriminate against you for exercising your privacy rights.</li>
+        </ul>
+        <p>To exercise any of these rights, contact us at <a href="mailto:support@pdfpixels.com">support@pdfpixels.com</a>.</p>
       </section>
 
       <section>

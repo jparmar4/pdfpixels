@@ -57,7 +57,7 @@ export async function generateMetadata({ params }: GeoPageProps): Promise<Metada
     title,
     description,
     alternates: {
-      canonical: `${siteConfig.url}${url}`,
+      canonical: `${siteConfig.url}/`,
       languages: getGeoLanguageAlternates(),
     },
     openGraph: {
@@ -68,13 +68,11 @@ export async function generateMetadata({ params }: GeoPageProps): Promise<Metada
       siteName: siteConfig.name,
     },
     robots: {
-      index: true,
+      index: false,
       follow: true,
       googleBot: {
-        index: true,
+        index: false,
         follow: true,
-        'max-image-preview': 'large',
-        'max-snippet': -1,
       },
     },
   };
