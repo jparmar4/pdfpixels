@@ -54,13 +54,15 @@ export default function TermsOfService() {
           <li>Use the platform to violate applicable laws or rights of others.</li>
         </ul>
 
-        <h3>3.2 File Uploads</h3>
-        <p>By uploading files, you confirm that:</p>
+        <h3>3.2 File Uploads & Retention</h3>
+        <p>By uploading files to the Service, you confirm and agree that:</p>
         <ul>
-          <li>You have the right to upload and process them.</li>
-          <li>The files do not contain prohibited content.</li>
-          <li>You understand quality and output may vary by workflow.</li>
-          <li>You are responsible for keeping your own backups.</li>
+          <li>You own or have the necessary rights and permissions to upload, process, and download the content.</li>
+          <li>The files do not contain illegal material, malware, malicious scripts, or unauthorized proprietary data.</li>
+          <li>Files processed locally in your browser remain on your device and are never uploaded to our servers.</li>
+          <li>Files uploaded for server-side processing are held temporarily in volatile memory solely to perform the requested workflow and are automatically purged within 60 minutes.</li>
+          <li>PdfPixels acquires no ownership or intellectual property rights over your uploaded files.</li>
+          <li>You are responsible for maintaining your own original copies and backups of all files.</li>
         </ul>
       </section>
 

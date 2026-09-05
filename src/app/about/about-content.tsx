@@ -174,16 +174,13 @@ export function AboutPageContent() {
       </section>
 
       <section className="mt-8 rounded-[2rem] border border-border/50 bg-card/70 p-6 md:p-8">
-        <h2 className="text-2xl font-bold text-foreground">How the site stays free</h2>
+        <h2 className="text-2xl font-bold text-foreground">How the platform stays free</h2>
         <div className="premium-prose mt-4">
           <p>
-            PdfPixels is free for everyday personal use. We plan to fund the servers with Google AdSense
-            advertisements after approval. Ads will sit beside or below tool instructions — never as the only
-            thing on a page. You can reject advertising cookies in the cookie banner.
+            PdfPixels is maintained as a free public utility supported through privacy-conscious advertising and digital partnerships. We adhere to strict quality standards: advertisements are strictly separated from primary document actions, never obscure user interfaces, and never mimic conversion buttons or download links. Users maintain complete granular control over advertising cookies through our consent manager.
           </p>
           <p>
-            We do not sell uploaded files. Server-side jobs process a file for that request and then delete it
-            on supported flows. Browser tools stay on your device. Details are in the{' '}
+            We never sell, broker, or monetize user data or uploaded file contents. Server-side conversion jobs process files ephemerally for the requested task and purge them automatically within 60 minutes. Browser-native tools execute entirely on your device with zero server transmission. Full technical details are documented in our{' '}
             <Link href="/privacy" className="font-semibold text-primary hover:underline">privacy policy</Link>.
           </p>
         </div>
@@ -375,11 +372,12 @@ export function AboutPageContent() {
             <div>
               <p><strong className="text-foreground">Platform:</strong> PdfPixels (pdfpixels.com)</p>
               <p><strong className="text-foreground">Publisher:</strong> PdfPixels Team</p>
-              <p><strong className="text-foreground">Contact Email:</strong> <a href="mailto:support@pdfpixels.com" className="text-primary hover:underline">support@pdfpixels.com</a></p>
+              <p><strong className="text-foreground">Headquarters / Operations:</strong> Gujarat, India (Serving users globally)</p>
+              <p><strong className="text-foreground">Official Support:</strong> <a href="mailto:support@pdfpixels.com" className="text-primary hover:underline">support@pdfpixels.com</a></p>
             </div>
             <div>
               <p><strong className="text-foreground">Inquiries & Support:</strong> 24-48 hour response SLA</p>
-              <p><strong className="text-foreground">Office / Operating Hours:</strong> Monday – Friday, 9:00 AM – 6:00 PM IST (Global Support 24/7)</p>
+              <p><strong className="text-foreground">Operating Hours:</strong> Monday – Friday, 9:00 AM – 6:00 PM IST (Automated tools 24/7)</p>
               <p><strong className="text-foreground">Official Channels:</strong> Web contact form, GitHub, and Twitter / X</p>
             </div>
           </div>

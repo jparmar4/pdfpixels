@@ -1,6 +1,6 @@
 'use client';
 
-import { AdBanner, SidebarAd } from '@/components/ads/ad-banner';
+import { SidebarAd } from '@/components/ads/ad-banner';
 import { adsConfig } from '@/lib/ads-config';
 
 /**
@@ -34,27 +34,6 @@ export function ToolSidebarAd() {
             <SidebarAd />
           </div>
         </aside>
-      ) : null}
-
-      {/* Only show mobile/tablet unit when there is no sticky rail or when sidebar missing */}
-      {hasInContent ? (
-        <div
-          className={hasSidebar ? 'block min-[1400px]:hidden' : 'block'}
-          aria-label="Sponsored"
-        >
-          <div className="container mx-auto px-4 py-3 lg:px-8">
-            <div className="mx-auto flex max-w-3xl justify-center rounded-2xl border border-border/40 bg-card/40 px-3 py-3">
-              <AdBanner
-                slot={adsConfig.slots.inContent}
-                format="horizontal"
-                responsive
-                minHeight={100}
-                labeled
-                className="w-full max-w-[728px]"
-              />
-            </div>
-          </div>
-        </div>
       ) : null}
     </>
   );

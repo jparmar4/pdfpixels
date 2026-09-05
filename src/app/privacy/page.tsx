@@ -32,13 +32,14 @@ export default function PrivacyPolicy() {
 
       <section>
         <h2>2. Information We Collect</h2>
-        <h3>2.1 Files You Upload</h3>
-        <p>When you use image or PDF tools, files may be uploaded for processing. We aim to keep that handling narrow and temporary:</p>
+        <h3>2.1 Files You Upload & Data Handling</h3>
+        <p>When you use image or PDF tools on PdfPixels, we strictly prioritize your document privacy through minimal, temporary processing:</p>
         <ul>
-          <li>Uploaded files are processed for the requested workflow and deleted automatically on supported server-side flows.</li>
-          <li>We do not treat uploaded files as user content for publication or indexing.</li>
-          <li>Uploaded files are not shared with third parties except where required for infrastructure operation.</li>
-          <li>Transport is secured using encrypted connections.</li>
+          <li><strong>Client-Side Processing (Zero Server Transmission):</strong> The majority of our browser tools (such as image cropping, resizing, canvas filtering, rotation, and client-side PDF utilities) execute entirely inside your local web browser via HTML5 Canvas and WebAssembly. Your files stay on your local device and are never transmitted to or processed by our servers.</li>
+          <li><strong>Server-Side Processing:</strong> For advanced workflows that require backend computing (such as HEIC photo decoding, optical character recognition (OCR), or complex multi-page PDF rendering), files are transmitted to our secure servers solely to complete the requested operation.</li>
+          <li><strong>Zero Permanent Storage (60-Minute Purge SLA):</strong> Files uploaded for server processing are stored in isolated, temporary volatile storage for the duration of your session. Temporary files are automatically deleted immediately upon task completion or purged by automated cleanup cycles within 60 minutes. We never store, archive, or retain your files permanently.</li>
+          <li><strong>No Content Inspection or Indexing:</strong> We do not inspect, read, sell, share, or use your uploaded files or document contents for artificial intelligence training, search engine indexing, or public distribution.</li>
+          <li><strong>Encrypted in Transit:</strong> All data transmitted between your browser and our servers is protected using industry-standard TLS 1.3 / HTTPS encryption.</li>
         </ul>
 
         <h3>2.2 Automatically Collected Information</h3>
@@ -112,13 +113,14 @@ export default function PrivacyPolicy() {
         <h2>6. Data Security</h2>
         <p>We use reasonable technical and organizational measures to protect information, including:</p>
         <ul>
-          <li>Encrypted transport for website and tool interactions.</li>
-          <li>Infrastructure-level access controls and monitoring.</li>
-          <li>Temporary handling and cleanup of processed files on supported flows.</li>
-          <li>Ongoing operational review as the platform evolves.</li>
+          <li><strong>TLS 1.3 Transport Encryption:</strong> End-to-end cryptographic protection for all browser-to-server data transfers.</li>
+          <li><strong>Ephemeral Processing:</strong> In-memory and volatile execution environments where files are automatically expunged after processing.</li>
+          <li><strong>Automated 60-Minute Purge:</strong> Scheduled daemon processes that scrub all temporary directories on backend servers every hour.</li>
+          <li><strong>Restricted Infrastructure Access:</strong> Principle of least privilege, strict network firewalls, and comprehensive intrusion monitoring.</li>
+          <li><strong>Zero Persistent Storage:</strong> No permanent relational database or object bucket storage of customer file payloads.</li>
         </ul>
         <p>
-          No internet-connected system is perfectly secure, so we cannot guarantee absolute security.
+          While no digital transmission or electronic storage method can guarantee 100% absolute security, we engineer our pipelines with security-by-default and zero-retention principles to minimize risk.
         </p>
       </section>
 

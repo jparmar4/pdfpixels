@@ -53,10 +53,12 @@ export function Footer() {
   const legalLinks = [
     { name: 'About Us', href: '/about' },
     { name: 'Contact Us', href: '/contact' },
-    { name: 'Privacy', href: '/privacy' },
-    { name: 'Terms', href: '/terms' },
+    { name: 'Guides & Blog', href: '/blog' },
+    { name: 'Free Pricing', href: '/pricing' },
+    { name: 'Privacy Policy', href: '/privacy' },
+    { name: 'Terms of Service', href: '/terms' },
     { name: 'Disclaimer', href: '/disclaimer' },
-    { name: 'DMCA', href: '/dmca' },
+    { name: 'DMCA Policy', href: '/dmca' },
     { name: 'API Docs', href: '/api-docs' },
   ];
 
@@ -127,7 +129,7 @@ export function Footer() {
                 A faster front door for PDF and image workflows.
               </h2>
               <p className="text-base leading-7 text-muted-foreground">
-                PdfPixels gives you {allTools.length}+ tools with cleaner UX, reliable output, and a deployment-friendly Next.js stack that is ready for production hosting.
+                PdfPixels provides {allTools.length}+ tools designed for fast, privacy-friendly document and image processing directly in your browser without requiring an account.
               </p>
 
               {/* Newsletter Signup */}

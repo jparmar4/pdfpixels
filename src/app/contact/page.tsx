@@ -92,10 +92,10 @@ export default function ContactPage() {
     },
     {
       icon: Globe,
-      title: 'Global Platform',
-      description: 'Serving users across the US, UK, Canada, Australia, India & worldwide.',
-      value: 'Global Web Service',
-      href: '#',
+      title: 'Operations & Transparency',
+      description: 'Engineered in Gujarat, India, delivering web-native document tools worldwide.',
+      value: 'Gujarat, India (Global)',
+      href: '/about',
       gradient: 'from-amber-500 to-orange-600',
     },
   ];

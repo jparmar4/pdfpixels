@@ -22,7 +22,6 @@ import { FileUpload } from './file-upload';
 import { ResultCard } from './result-card';
 import { ToolLimitNotice } from './tool-limit-notice';
 import { ToolPageHeader } from './tool-page-header';
-import { InContentAd } from '@/components/ads/ad-banner';
 import {
   Select,
   SelectContent,
@@ -632,10 +631,6 @@ export function ConvertWorkspace() {
               <li><strong>PNG:</strong> logos, UI assets, and transparency.</li>
               <li><strong>WebP / AVIF:</strong> modern delivery when file size matters most.</li>
             </ul>
-          </div>
-          
-          <div className="rounded-[1.75rem] border border-border/60 bg-card/75 p-4 shadow-soft backdrop-blur-xl">
-            <InContentAd />
           </div>
         </div>
       </div>

@@ -21,7 +21,6 @@ import {
 } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { SpotlightCard } from '@/components/ui/spotlight-card';
-import { InContentAd } from '@/components/ads/ad-banner';
 
 function hexFromRgb(r: number, g: number, b: number) {
   return `#${[r, g, b].map((value) => value.toString(16).padStart(2, '0')).join('')}`;
@@ -925,10 +924,6 @@ export function ToolWorkspace() {
               </div>
             </div>
           </SpotlightCard>
-
-          <div className="rounded-2xl border border-border/40 bg-card/60 backdrop-blur-xl overflow-hidden shadow-premium p-4">
-            <InContentAd />
-          </div>
 
           {/* Info Card */}
           <div className="rounded-2xl border border-border bg-gradient-to-br from-primary/5 to-transparent p-4 space-y-3">

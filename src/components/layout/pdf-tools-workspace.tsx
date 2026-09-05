@@ -13,7 +13,6 @@ import { useAppStore } from '@/store/app-store';
 import { FileUpload } from './file-upload';
 import { ToolPageHeader } from './tool-page-header';
 import { ToolLimitNotice } from './tool-limit-notice';
-import { InContentAd } from '@/components/ads/ad-banner';
 import { useState, useCallback, useEffect } from 'react';
 import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
@@ -830,10 +829,6 @@ return (
                             </Button>
                         </div>
                     </div>
-                </div>
-
-                <div className="rounded-2xl border border-border/40 bg-card/60 backdrop-blur-xl overflow-hidden shadow-premium p-4">
-                    <InContentAd />
                 </div>
 
                 <div className="rounded-2xl border border-border/40 bg-gradient-to-br from-primary/5 to-transparent p-5 space-y-3">

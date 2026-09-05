@@ -12,7 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { getToolBySlug, allTools, toolCategories } from '@/lib/tools-data';
 import type { UseCasePage } from '@/lib/use-cases';
-import { HeaderAd, InContentAd, FooterAd } from '@/components/ads/ad-banner';
+import { InContentAd, FooterAd } from '@/components/ads/ad-banner';
 
 interface UseCaseDetailContentProps {
   entry: UseCasePage;
@@ -102,10 +102,6 @@ export function UseCaseDetailContent({
             </div>
           </div>
         </section>
-
-        <div className="container mx-auto px-4 lg:px-8 py-6">
-          <HeaderAd />
-        </div>
 
         <div className="container mx-auto max-w-5xl px-4 py-8 lg:px-8">
           {/* Unique overview — primary quality signal */}
