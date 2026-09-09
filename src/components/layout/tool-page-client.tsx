@@ -116,6 +116,36 @@ const PDFToExcelWorkspace = dynamic(
   { loading: () => <WorkspaceLoading />, ssr: false }
 );
 
+const BankStatementWorkspace = dynamic(
+  () => import('@/components/layout/bank-statement-workspace').then(mod => ({ default: mod.BankStatementWorkspace })),
+  { loading: () => <WorkspaceLoading />, ssr: false }
+);
+
+const BatesNumberingWorkspace = dynamic(
+  () => import('@/components/layout/bates-numbering-workspace').then(mod => ({ default: mod.BatesNumberingWorkspace })),
+  { loading: () => <WorkspaceLoading />, ssr: false }
+);
+
+const SanitizePdfWorkspace = dynamic(
+  () => import('@/components/layout/sanitize-pdf-workspace').then(mod => ({ default: mod.SanitizePdfWorkspace })),
+  { loading: () => <WorkspaceLoading />, ssr: false }
+);
+
+const ComparePdfWorkspace = dynamic(
+  () => import('@/components/layout/compare-pdf-workspace').then(mod => ({ default: mod.ComparePdfWorkspace })),
+  { loading: () => <WorkspaceLoading />, ssr: false }
+);
+
+const CmykPdfWorkspace = dynamic(
+  () => import('@/components/layout/cmyk-pdf-workspace').then(mod => ({ default: mod.CmykPdfWorkspace })),
+  { loading: () => <WorkspaceLoading />, ssr: false }
+);
+
+const HeicToPdfWorkspace = dynamic(
+  () => import('@/components/layout/heic-to-pdf-workspace').then(mod => ({ default: mod.HeicToPdfWorkspace })),
+  { loading: () => <WorkspaceLoading />, ssr: false }
+);
+
 const OCRWorkspace = dynamic(
   () => import('@/components/layout/ocr-workspace').then(mod => ({ default: mod.OCRWorkspace })),
   { loading: () => <WorkspaceLoading />, ssr: false }
@@ -210,6 +240,17 @@ function getWorkspaceComponent(toolId: string) {
   if (toolId === 'word-to-pdf') return <WordToPDFWorkspace />;
   if (toolId === 'pdf-to-word') return <PDFToWordWorkspace />;
   if (toolId === 'pdf-to-excel') return <PDFToExcelWorkspace />;
+  if (toolId === 'bank-statement-to-excel') return <BankStatementWorkspace />;
+  if (toolId === 'bates-numbering-pdf') return <BatesNumberingWorkspace />;
+  if (toolId === 'sanitize-pdf') return <SanitizePdfWorkspace />;
+  if (toolId === 'compare-pdf') return <ComparePdfWorkspace />;
+  if (toolId === 'cmyk-pdf-converter') return <CmykPdfWorkspace />;
+  if (toolId === 'heic-to-pdf') return <HeicToPdfWorkspace />;
+  if (toolId === 'compress-pdf-to-100kb') return <PDFCompressWorkspace targetPreset="100kb" />;
+  if (toolId === 'compress-pdf-to-200kb') return <PDFCompressWorkspace targetPreset="200kb" />;
+  if (toolId === 'compress-pdf-to-300kb') return <PDFCompressWorkspace targetPreset="300kb" />;
+  if (toolId === 'compress-pdf-to-500kb') return <PDFCompressWorkspace targetPreset="500kb" />;
+  if (toolId === 'compress-pdf-under-1mb') return <PDFCompressWorkspace targetPreset="1mb" />;
   if (['pdf-rotate', 'pdf-watermark', 'pdf-protect', 'pdf-unlock', 'pdf-delete-pages', 'pdf-reorder', 'pdf-linearize', 'pdf-add-page-numbers'].includes(toolId)) {
     return <PDFToolsWorkspace />;
   }

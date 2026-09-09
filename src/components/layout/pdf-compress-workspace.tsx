@@ -59,11 +59,49 @@ function formatSize(bytes: number) {
   return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
 }
 
-export function CompressPDFWorkspace() {
+interface CompressPDFWorkspaceProps {
+  targetPreset?: '100kb' | '200kb' | '300kb' | '500kb' | '1mb';
+}
+
+const presetMeta: Record<string, { title: string; description: string; limitText: string; defaultLevel: CompressionLevel }> = {
+  '100kb': {
+    title: 'Compress PDF to 100KB Online',
+    description: 'Reduce PDF file size to under 100KB for strict government portal uploads, job applications, and student admissions.',
+    limitText: 'Tuned for 100KB portal ceilings · applies maximum stream and image reduction',
+    defaultLevel: 'extreme',
+  },
+  '200kb': {
+    title: 'Compress PDF to 200KB Online',
+    description: 'Compress PDF documents to exactly 200KB or less for official passport, visa, and licensing portal limits.',
+    limitText: 'Tuned for 200KB government visa & passport portals',
+    defaultLevel: 'extreme',
+  },
+  '300kb': {
+    title: 'Compress PDF to 300KB Online',
+    description: 'Reduce PDF file size to under 300KB while preserving high visual quality for resumes, portfolios, and loan applications.',
+    limitText: 'Tuned for 300KB recruitment & ATS portals',
+    defaultLevel: 'recommended',
+  },
+  '500kb': {
+    title: 'Compress PDF to 500KB Online',
+    description: 'Reduce PDF file size to 500KB or less for corporate email attachments and municipal form submissions.',
+    limitText: 'Tuned for 500KB corporate email & attachment limits',
+    defaultLevel: 'recommended',
+  },
+  '1mb': {
+    title: 'Compress PDF Under 1MB Online',
+    description: 'Compress multi-page PDFs to under 1MB quickly for frictionless email delivery and swift mobile viewing.',
+    limitText: 'Tuned for 1MB Outlook, Gmail, and upload portal ceilings',
+    defaultLevel: 'recommended',
+  },
+};
+
+export function CompressPDFWorkspace({ targetPreset }: CompressPDFWorkspaceProps = {}) {
   const { activeTool, uploadedFile, isProcessing, progress, reset, setIsProcessing, setProgress } = useAppStore();
+  const preset = targetPreset ? presetMeta[targetPreset] : null;
   const [result, setResult] = useState<CompressionResult | null>(null);
   const [statusLabel, setStatusLabel] = useState<'Idle' | 'Uploading' | 'Processing' | 'Finalizing'>('Idle');
-  const [compressionLevel, setCompressionLevel] = useState<CompressionLevel>('recommended');
+  const [compressionLevel, setCompressionLevel] = useState<CompressionLevel>(preset ? preset.defaultLevel : 'recommended');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [canForce, setCanForce] = useState(false);
   const [pdfMeta, setPdfMeta] = useState<{ pages: number } | null>(null);
@@ -237,8 +275,8 @@ export function CompressPDFWorkspace() {
   return (
     <div aria-busy={isProcessing} className="container mx-auto max-w-5xl px-4 py-8 lg:px-8 md:py-12">
       <ToolPageHeader
-        title="Compress PDF"
-        description="Reduce PDF size while protecting text clarity. Choose a quality profile tuned for email, forms, or maximum savings."
+        title={preset ? preset.title : "Compress PDF"}
+        description={preset ? preset.description : "Reduce PDF size while protecting text clarity. Choose a quality profile tuned for email, forms, or maximum savings."}
         icon={<Minimize2 className="h-7 w-7 text-white" />}
         onReset={handleReset}
       />
@@ -248,7 +286,7 @@ export function CompressPDFWorkspace() {
         <ToolLimitNotice
           limits={[
             'PDF only · max 25 MB',
-            'Image-heavy / scanned PDFs compress best',
+            preset ? preset.limitText : 'Image-heavy / scanned PDFs compress best',
             'Vector text stays sharp; photos are downsampled by preset',
           ]}
         />

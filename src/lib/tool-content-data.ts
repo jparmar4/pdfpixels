@@ -2469,4 +2469,389 @@ export const toolContentMap: Record<string, ToolContent> = {
         supportedFormats: 'Input: PDF | Output: XLSX, CSV',
         relatedTools: ['pdf-to-word', 'pdf-to-text', 'fill-pdf', 'compress-pdf'],
     },
+    'bank-statement-to-excel': {
+        about: 'Bank Statement to Excel Converter transforms digital PDF bank statements, credit card bills, and investment summaries into clean, structured Microsoft Excel (.xlsx) spreadsheets and CSV files. Reconciling accounts and preparing tax returns manually often requires hours of tedious copy-pasting and manual data entry, leading to transposition errors and unbalanced ledgers. Our financial parsing engine automatically identifies date patterns, transaction descriptions, check numbers, withdrawal debits, deposit credits, and running balances across single or multi-page PDF statements from major banks (Chase, Bank of America, Wells Fargo, Barclays, RBC, ANZ, and regional credit unions). The resulting spreadsheet is mathematically structured with native numeric formats, ready for immediate import into QuickBooks, Xero, Sage, or custom financial models.',
+        directAnswer: 'Bank Statement to Excel automatically extracts transaction dates, descriptions, deposits, withdrawals, and balances from PDF statements into structured Excel (.xlsx) and CSV files for instant accounting and tax prep.',
+        steps: [
+            { title: 'Upload bank statement PDF', description: 'Select your checking, savings, credit card, or brokerage PDF statement.' },
+            { title: 'Automatic transaction detection', description: 'Our financial engine parses tabular columns: Date, Description, Debit, Credit, and Balance.' },
+            { title: 'Review parsed summary', description: 'Inspect detected transactions, row counts, and column classifications in the preview.' },
+            { title: 'Download Excel (.xlsx) or CSV', description: 'Save your file and import directly into QuickBooks, Xero, or financial spreadsheets.' }
+        ],
+        commonProblems: [
+            { problem: 'Transactions split across multiple lines in description', solution: 'Our smart transaction parser joins multi-line payee descriptions and memo text into single cohesive transaction rows.' },
+            { problem: 'Negative amounts or debits not calculating properly', solution: 'Amounts are converted to true floating-point numbers with debit/credit separation, enabling direct =SUM() calculations in Excel.' }
+        ],
+        features: [
+            'Automated column recognition for Date, Description, Check Number, Debit, Credit, and Balance',
+            'Full support for multi-page statements spanning multiple months or fiscal quarters',
+            'Dual export options: Styled Microsoft Excel (.xlsx) workbook and universal CSV format',
+            'Compatible with major Tier-1 institutions: Chase, Wells Fargo, BofA, Citibank, Barclays, HSBC',
+            '100% private financial processing with automatic file purging upon completion'
+        ],
+        useCases: [
+            'Bookkeepers preparing year-end tax returns and reconciling client accounts with QuickBooks or Xero',
+            'Mortgage underwriters and loan officers analyzing bank statements for borrower income verification',
+            'Small business owners categorizing deductible business expenses from credit card statements',
+            'Auditors and forensic accountants reviewing financial histories across multi-year PDF archives'
+        ],
+        faqs: [
+            { question: 'Does Bank Statement to Excel work with all banks?', answer: 'Yes. It supports digital PDF statements from virtually all major banks worldwide, including Chase, Bank of America, Wells Fargo, Citi, Barclays, TD Bank, RBC, and credit unions.' },
+            { question: 'Are my confidential financial transactions kept private?', answer: 'Absolutely. We do not store, view, or train models on your financial data. All processing is transient and files are deleted immediately after conversion.' },
+            { question: 'Can I import the resulting CSV into QuickBooks or Xero?', answer: 'Yes. The generated CSV follows standard bank feed formatting (Date, Description, Amount) compatible with QuickBooks Online, Xero, and Wave.' },
+            { question: 'Can it handle scanned paper bank statements?', answer: 'If your PDF is a digital statement issued by your online banking portal, it works instantly. For scanned paper copies, run our OCR tool first to make text selectable.' }
+        ],
+        supportedFormats: 'Input: PDF | Output: XLSX, CSV',
+        relatedTools: ['pdf-to-excel', 'pdf-to-word', 'pdf-to-text', 'flatten-pdf'],
+    },
+    'bates-numbering-pdf': {
+        about: 'Bates Numbering PDF is a specialized legal document processing tool designed for law firms, litigators, corporate paralegals, and court filers. Bates stamping (also known as Bates numbering) applies unique, sequential identification numbers, prefixes, and confidential disclaimers to each page of legal discovery sets, trial exhibits, deposition packets, and government subpoena responses. In high-stakes litigation across federal (PACER) and state jurisdictions in the US, UK, Canada, and Australia, courts mandate precise document indexing to ensure parties can reference exact pages during depositions and trials. Our tool provides complete control over alphanumeric prefixes (e.g. "CONFIDENTIAL-", "DEFENDANT-"), starting numbers, digit padding (e.g. 6 digits: 000001), font sizes, and 6 positioning presets across document margins.',
+        directAnswer: 'Bates Numbering PDF adds sequential legal identification numbers, custom case prefixes, and confidentiality labels to PDF discovery sets and trial exhibits with full positioning control.',
+        steps: [
+            { title: 'Upload legal documents', description: 'Select the deposition, trial exhibit, contract dossier, or discovery packet.' },
+            { title: 'Configure Bates sequence', description: 'Specify custom prefix (e.g. "CASE-"), starting number (e.g. 1), and digit padding (e.g. 6 digits).' },
+            { title: 'Choose placement & style', description: 'Select positioning (Top-Right, Bottom-Right, etc.), font size, and optional confidentiality banner.' },
+            { title: 'Download stamped PDF', description: 'Save your court-ready Bates-stamped PDF ready for filing and exchange.' }
+        ],
+        commonProblems: [
+            { problem: 'Bates stamp overlaps existing document footer or page number', solution: 'Adjust the placement preset (e.g. move from Bottom-Right to Top-Right) or reduce font size to prevent overlapping original text.' },
+            { problem: 'Prefix characters appear cut off', solution: 'Select a standard alphanumeric prefix or choose a smaller font size to fit neatly within standard 0.5-inch margins.' }
+        ],
+        features: [
+            'Customizable alphanumeric prefixes (e.g. "PLAINTIFF-", "EXHIBIT-A-", "CONFIDENTIAL-")',
+            'Configurable starting sequence number and digit padding up to 8 digits (e.g. 000001)',
+            '6 precise positioning presets: Top-Left, Top-Center, Top-Right, Bottom-Left, Bottom-Center, Bottom-Right',
+            'Optional legal confidentiality disclaimer banner applied above or below the Bates stamp',
+            'Fully compliant with US Federal Court (PACER), UK High Court, and Australian court e-filing rules'
+        ],
+        useCases: [
+            'Law firms preparing discovery productions and interrogatory exhibits for opposing counsel',
+            'Paralegals organizing trial binder exhibits with uniform sequential pagination',
+            'Corporate legal departments stamping confidential internal audit reports for board review',
+            'Government compliance officers indexing documents in response to FOIA requests and subpoenas'
+        ],
+        faqs: [
+            { question: 'What is Bates numbering and why is it required in legal practice?', answer: 'Bates numbering is a method of labeling each page of a legal document collection with a unique sequential identifier (e.g. "PLTF-000452"). It ensures lawyers and judges can pinpoint exact evidentiary pages during proceedings without ambiguity.' },
+            { question: 'Can I add a prefix like "DEF-EXHIBIT-" before the number?', answer: 'Yes. You can enter any custom alphanumeric prefix, which will be prepended to the padded sequential number on every page.' },
+            { question: 'Does Bates stamping alter the underlying text of my PDF?', answer: 'No. The stamp is overlaid into the document margin without altering the underlying text, vector graphics, or embedded digital signatures.' },
+            { question: 'Can I stamp multi-hundred-page productions?', answer: 'Yes. The Bates numbering engine processes large documents quickly across hundreds of pages.' }
+        ],
+        supportedFormats: 'Input: PDF | Output: PDF',
+        relatedTools: ['add-page-numbers-to-pdf', 'redact-pdf', 'flatten-pdf', 'sign-pdf'],
+    },
+    'sanitize-pdf': {
+        about: 'Sanitize PDF permanently cleans and purges hidden metadata, author information, revision histories, software signatures, GPS coordinates, and tracking streams from PDF documents before public distribution. Standard PDF creation tools like Microsoft Word, Adobe InDesign, and Google Docs embed invisible metadata inside the Document Information Dictionary and XMP (Extensible Metadata Platform) streams. This hidden data often reveals the author\'s full name, company name, local computer username, file directory paths, creation dates, software versions, and even previous draft revisions. When sharing contracts, press releases, investigative reports, or legal filings, unscrubbed metadata poses severe privacy and security risks. Sanitize PDF purges all non-essential metadata and flattens invisible layers, producing a clean, risk-free document.',
+        directAnswer: 'Sanitize PDF purges all hidden metadata, author names, software fingerprints, GPS data, and revision histories from PDF files, ensuring 100% privacy and security compliance.',
+        steps: [
+            { title: 'Upload PDF to sanitize', description: 'Select the contract, government filing, press release, or sensitive report.' },
+            { title: 'Inspect detected metadata', description: 'Review the live audit showing detected author, creation date, software producer, and XMP streams.' },
+            { title: 'Execute one-click purge', description: 'Our engine wipes the Document Info Dictionary and deletes all embedded XMP metadata packets.' },
+            { title: 'Download sanitized PDF', description: 'Save your cleaned, untraceable PDF document ready for public distribution or court filing.' }
+        ],
+        commonProblems: [
+            { problem: 'External metadata viewers still show creation dates', solution: 'Sanitize PDF completely strips or resets creation/modification dates to standard epoch defaults (0) to eliminate all timing correlation.' },
+            { problem: 'Will sanitizing PDF alter visible document text or images?', solution: 'No. Sanitization only removes hidden invisible properties and metadata streams. Your visible document pages, layouts, and typography remain 100% untouched.' }
+        ],
+        features: [
+            'Live metadata inspection showing detected author, software, timestamps, and custom properties',
+            'Permanent removal of Title, Author, Subject, Keywords, Creator, and Producer attributes',
+            'Complete deletion of embedded XMP XML metadata packets containing editing history',
+            'Optional form field flattening to prevent extraction of historical form inputs',
+            'Essential for HIPAA compliance, legal eDiscovery sanitization, and cybersecurity hygiene'
+        ],
+        useCases: [
+            'Journalists and whistleblowers removing identifying author fingerprints from leaked documents',
+            'Law firms scrubbing internal document metadata before filing public court pleadings and exhibits',
+            'Corporate PR teams cleaning press releases and annual reports before public website publication',
+            'Government contractors stripping internal network file paths and system details from bids'
+        ],
+        faqs: [
+            { question: 'What hidden information is stored inside PDF files?', answer: 'PDFs commonly store author names, computer usernames, organization names, software versions (e.g. "Microsoft Word 2021 for Mac"), file creation dates, modification timestamps, and editing histories in XMP streams.' },
+            { question: 'Is clearing document properties in Acrobat the same as sanitizing?', answer: 'Manual property clearing often misses deeply embedded XMP streams and object revision histories. Sanitize PDF performs a comprehensive purge of both the Info dictionary and all XMP streams.' },
+            { question: 'Does sanitizing break hyperlinks or bookmarks?', answer: 'No. Document structure, interactive hyperlinks, and table-of-contents bookmarks remain fully functional.' },
+            { question: 'Is this required by courts and government agencies?', answer: 'Many courts (including US Federal Courts via PACER) and government tender portals strongly advise or mandate sanitizing submitted PDFs to prevent data leaks.' }
+        ],
+        supportedFormats: 'Input: PDF | Output: PDF',
+        relatedTools: ['redact-pdf', 'flatten-pdf', 'protect-pdf', 'pdf-to-pdfa'],
+    },
+    'compare-pdf': {
+        about: 'Compare PDF Documents provides side-by-side visual and textual redline comparison between two versions of a PDF file. During contract negotiations, legal drafting, architectural revisions, and policy updates, identifying subtle text changes, clause additions, and removed stipulations between document drafts is critical. Manually reading through dozens of pages side-by-side is slow and error-prone. Our comparison engine extracts content streams from both files, computes granular word-level and line-level diffs, and displays a responsive redline view highlighting additions in green, deletions in red, and unchanged text. You can inspect revision metrics, jump between changed sections, and export a clear comparison report.',
+        directAnswer: 'Compare PDF highlights differences, additions, and deletions between two document versions with side-by-side visual redline diffing in seconds.',
+        steps: [
+            { title: 'Upload Original PDF', description: 'Upload the initial baseline agreement, draft, or version 1 document.' },
+            { title: 'Upload Revised PDF', description: 'Upload the modified version, counter-proposal, or version 2 document.' },
+            { title: 'Automatic redline diffing', description: 'Our comparison engine analyzes text streams and maps word-level additions and deletions.' },
+            { title: 'Review side-by-side diff', description: 'Inspect highlighted changes (green for added, red for removed) and download comparison report.' }
+        ],
+        commonProblems: [
+            { problem: 'Formatting changes triggered false positive text diffs', solution: 'Our diff algorithm normalizes whitespace, line breaks, and hyphenation to focus exclusively on meaningful substantive content changes.' },
+            { problem: 'Scanned document cannot be compared', solution: 'Ensure both documents contain selectable text. If one is an image scan, run our OCR tool first before comparing.' }
+        ],
+        features: [
+            'Dual upload dropzone for effortless Version 1 (Original) and Version 2 (Revised) comparison',
+            'Word-level and sentence-level redline highlighting (Green = Added, Red = Deleted)',
+            'Change breakdown dashboard showing total additions, deletions, and percentage similarity',
+            'Synchronized side-by-side document viewer for rapid clause auditing',
+            'Zero account creation required with fully private, temporary document analysis'
+        ],
+        useCases: [
+            'Corporate attorneys reviewing counterparty contract revisions and redline proposals',
+            'Procurement teams comparing vendor RFP bids, statements of work, and price schedules',
+            'Real estate agents auditing purchase agreements against standard board contract templates',
+            'Authors and editors tracking manuscript revisions across multiple editorial drafts'
+        ],
+        faqs: [
+            { question: 'How does the PDF comparison engine detect changes?', answer: 'The engine decompresses and extracts text streams from both PDF files, normalizes formatting, and applies Myers diff algorithm to identify exact insertions, deletions, and modifications at the word level.' },
+            { question: 'Can I compare contracts with different page counts?', answer: 'Yes. The comparison engine is content-driven rather than page-bound, meaning it accurately identifies added or deleted clauses even if pagination has shifted.' },
+            { question: 'Is my confidential contract data secure during comparison?', answer: 'Yes. All comparison operations are transiently processed with end-to-end encryption and immediately purged from memory.' },
+            { question: 'Can I download the redline comparison as a report?', answer: 'Yes. You can export the diff summary and text changes directly to clipboard or a text report.' }
+        ],
+        supportedFormats: 'Input: 2x PDF | Output: Visual Diff & Report',
+        relatedTools: ['pdf-to-text', 'pdf-to-word', 'bates-numbering-pdf', 'sign-pdf'],
+    },
+    'cmyk-pdf-converter': {
+        about: 'CMYK PDF Converter prepares digital PDF files for commercial offset printing, Amazon KDP publishing, and professional prepress production by converting RGB color spaces into standard 4-color DeviceCMYK (Cyan, Magenta, Yellow, Key/Black). Digital cameras, scanners, and design apps (like Canva, Google Slides, and web-based tools) export graphics in RGB (Red, Green, Blue) color space, which is designed for illuminated screens. When RGB files are sent directly to commercial printing presses or print-on-demand services, the automatic color conversion often produces muddy, washed-out, or wildly inaccurate colors. CMYK PDF Converter converts all embedded vector shapes, photographs, and text into balanced DeviceCMYK color channels with high-fidelity color matching, ensuring your printed brochures, book covers, and business cards match professional print standards.',
+        directAnswer: 'CMYK PDF Converter transforms RGB documents into prepress-ready CMYK color space with 300 DPI preservation for flawless commercial and Amazon KDP printing.',
+        steps: [
+            { title: 'Upload RGB PDF document', description: 'Select the book cover, brochure, poster, flyer, or business card PDF.' },
+            { title: 'Select prepress profile', description: 'Choose DeviceCMYK color conversion with 300 DPI resolution preservation.' },
+            { title: 'Process color separation', description: 'Our Ghostscript prepress engine separates RGB channels into calibrated Cyan, Magenta, Yellow, and Black.' },
+            { title: 'Download print-ready PDF', description: 'Save the CMYK PDF ready for upload to Amazon KDP, VistaPrint, MOO, or local print shops.' }
+        ],
+        commonProblems: [
+            { problem: 'Vibrant neon green or bright blue looks slightly darker', solution: 'The CMYK physical ink gamut is smaller than the digital RGB screen gamut. Our perceptual rendering intent minimizes color shift while remaining strictly within printable ink limits.' },
+            { problem: 'Small black text turned into 4-color composite black', solution: 'Our engine preserves pure 100% K black for typography, preventing registration blur on commercial presses.' }
+        ],
+        features: [
+            'Converts all DeviceRGB and sRGB elements into calibrated DeviceCMYK color channels',
+            'Preserves 300 DPI high-resolution bitmap assets and razor-sharp vector typography',
+            'Fully compliant with Amazon KDP, IngramSpark, VistaPrint, and Blurb submission requirements',
+            'Prevents expensive printing press rejects and unwanted color shifting on paper',
+            'Robust Ghostscript prepress engine ensuring industry-grade color space compliance'
+        ],
+        useCases: [
+            'Independent authors formatting book covers and interior pages for Amazon KDP print-on-demand',
+            'Marketing agencies preparing promotional flyers, brochures, and catalogs for offset press runs',
+            'Designers converting Canva exports (which default to RGB) into print-ready CMYK PDFs',
+            'Commercial print shops validating and converting customer-submitted PDF artwork'
+        ],
+        faqs: [
+            { question: 'Why do commercial print shops require CMYK instead of RGB?', answer: 'Physical printing presses use four ink plates: Cyan, Magenta, Yellow, and Black (CMYK). RGB is an additive light model for screens. Sending RGB to a press forces uncalibrated on-the-fly conversion that frequently ruins color accuracy.' },
+            { question: 'Will converting to CMYK satisfy Amazon KDP requirements?', answer: 'Yes! Amazon KDP strongly recommends CMYK color mode for paperback and hardcover interiors and covers to prevent unexpected color shifts.' },
+            { question: 'Does CMYK conversion reduce text sharpness or image resolution?', answer: 'No. Vector fonts and lines remain scalable vectors, and images are preserved at full 300 DPI resolution.' },
+            { question: 'Can I convert multi-page PDF catalogs to CMYK?', answer: 'Yes. The converter processes all pages of your publication uniformly.' }
+        ],
+        supportedFormats: 'Input: PDF | Output: PDF (CMYK)',
+        relatedTools: ['grayscale-pdf', 'compress-pdf', 'crop-pdf', 'pdf-to-pdfa'],
+    },
+    'heic-to-pdf': {
+        about: 'HEIC to PDF Converter transforms Apple High Efficiency Image Container (.heic and .heif) photos from iPhones and iPads directly into universally accessible standard PDF documents. Starting with iOS 11, iPhones default to capturing photos in HEIC format to save storage space. However, most government portals, school submission systems, job boards, and Windows PCs cannot view or open HEIC files without specialized codecs. HEIC to PDF allows you to select single or multiple iPhone photos, receipts, or document scans, adjust page orientation (Portrait or Landscape), and compile them into a single, clean PDF file in seconds without quality loss.',
+        directAnswer: 'HEIC to PDF converts Apple iPhone HEIC and HEIF photos into high-resolution standard PDF documents with custom page orientation and multi-image merging.',
+        steps: [
+            { title: 'Upload iPhone HEIC photos', description: 'Select one or more .heic or .heif photos from your iPhone, iPad, Mac, or PC.' },
+            { title: 'Arrange & configure pages', description: 'Reorder image thumbnails, choose Portrait or Landscape orientation, and set margins.' },
+            { title: 'Convert to high-res PDF', description: 'Our decoding engine converts Apple HEIC color streams into high-resolution PDF pages.' },
+            { title: 'Download compiled PDF', description: 'Save your standardized PDF, compatible with every operating system, device, and upload portal.' }
+        ],
+        commonProblems: [
+            { problem: 'Photo orientation appears sideways or inverted', solution: 'Our converter automatically reads Apple EXIF orientation tags and rotates each photo to display right-side-up.' },
+            { problem: 'Large iPhone camera files take time to upload', solution: 'We support instant multi-file batch selection with client-assisted chunked uploading.' }
+        ],
+        features: [
+            'Direct decoding of Apple HEIC and HEIF image formats without requiring third-party plugins',
+            'Batch support: merge multiple iPhone photos and receipts into a single sequential PDF',
+            'Automatic EXIF orientation correction ensuring photos never display sideways or upside-down',
+            'Configurable page orientation (Portrait / Landscape) and customizable margin padding',
+            'Preserves full camera resolution for crisp document text, passport scans, and receipts'
+        ],
+        useCases: [
+            'iPhone users converting camera photos of receipts and tax documents for employer reimbursement',
+            'Students taking photos of handwritten homework and submitting assignments as clean PDFs',
+            'Homebuyers photographing identity documents (driver license, passport) for mortgage applications',
+            'Insurance policyholders submitting accident scene photos and damage estimates to claim portals'
+        ],
+        faqs: [
+            { question: 'Why does my iPhone take photos in HEIC format instead of JPG?', answer: 'Apple introduced HEIC in iOS 11 because it provides advanced compression that cuts file size in half compared to JPEG while preserving superior color depth.' },
+            { question: 'Can I combine multiple HEIC photos into a single PDF document?', answer: 'Yes! You can upload multiple HEIC photos at once and our tool will merge them into a single, beautifully organized multi-page PDF.' },
+            { question: 'Do I need a Mac or iPhone to use this converter?', answer: 'No. You can upload HEIC files from any device (Windows, Android, Mac, Linux, or Chromebook) and convert them freely.' },
+            { question: 'Will the converted PDF lose image quality?', answer: 'No. The converter decodes full-resolution image data to ensure documents, text, and photos remain clear and sharp.' }
+        ],
+        supportedFormats: 'Input: HEIC, HEIF | Output: PDF',
+        relatedTools: ['jpg-to-pdf', 'image-to-pdf', 'compress-pdf', 'pdf-merge'],
+    },
+    'compress-pdf-to-100kb': {
+        about: 'Compress PDF to 100KB reduces the file size of PDF documents to 100 kilobytes or less while maintaining readable text and recognizable graphics. Strict upload portals for government exams, state public service commissions, university admissions, and overseas employment applications enforce rigid 100KB file size limits. Attempting to upload a 105KB document results in immediate rejection by automated web portals. Our 100KB compression profile employs intelligent grayscale conversion, downsampling, and stream deflating to shrink your file below the 100KB threshold while keeping essential signatures, seal stamps, and text completely legible.',
+        directAnswer: 'Compress PDF to 100KB reduces your document file size below 100 kilobytes online for strict government portal, job application, and exam submission limits.',
+        steps: [
+            { title: 'Upload PDF document', description: 'Select the certificate, mark sheet, resume, or application form.' },
+            { title: 'Automatic 100KB optimization', description: 'Our engine applies specialized 100KB profile compression to downsample heavy assets.' },
+            { title: 'Verify resulting file size', description: 'Check the real-time size readout to confirm the file is under 100KB.' },
+            { title: 'Download 100KB PDF', description: 'Save your compressed document and upload it successfully to any strict portal.' }
+        ],
+        commonProblems: [
+            { problem: 'Document has 20+ photo pages and cannot reach 100KB', solution: 'For very large multi-page photo brochures, 100KB may degrade image quality. Consider extracting only the necessary required pages using our Extract PDF Pages tool before compressing.' },
+            { problem: 'File is 102KB and portal still rejects it', solution: 'Use the "Extreme" compression level toggle in the options panel to squeeze out additional kilobytes.' }
+        ],
+        features: [
+            'Dedicated compression algorithm calibrated specifically to meet 100KB web portal ceilings',
+            'Maintains crisp vector text and readable font glyphs even at maximum compression ratios',
+            'Real-time before-and-after file size counter with exact byte reduction percentages',
+            'Instant client-side optimization with zero queue wait times and no email sign-up required',
+            '100% private and confidential document handling with automatic file deletion'
+        ],
+        useCases: [
+            'Submitting identity proofs and certificates to state licensing and civil service examination portals',
+            'Uploading academic transcripts and diplomas to university international student portals',
+            'Applying for government job vacancies that automatically enforce 100KB upload constraints',
+            'Sending lightweight documents over low-bandwidth mobile connections and messaging apps'
+        ],
+        faqs: [
+            { question: 'Will my text still be readable after compressing to 100KB?', answer: 'Yes. Our algorithm prioritizes font definitions and text vectors, keeping typography crisp while aggressively compressing high-resolution background graphics.' },
+            { question: 'What should I do if my multi-page PDF is still slightly over 100KB?', answer: 'Try converting color scans to black & white using our Grayscale PDF tool first, or split unnecessary pages before compressing.' },
+            { question: 'Is it safe to compress sensitive personal certificates here?', answer: 'Yes. All data is processed securely over encrypted connections and automatically deleted from our servers.' },
+            { question: 'How much smaller will my PDF become?', answer: 'Depending on the original file\'s image content, compression ratios frequently exceed 70% to 90% size reduction.' }
+        ],
+        supportedFormats: 'Input: PDF | Output: PDF (< 100KB)',
+        relatedTools: ['compress-pdf-to-200kb', 'grayscale-pdf', 'extract-pdf-pages', 'crop-pdf'],
+    },
+    'compress-pdf-to-200kb': {
+        about: 'Compress PDF to 200KB optimizes and reduces PDF documents to under 200 kilobytes for official government filings, passport renewals, visa application portals, and corporate recruiting systems. Many municipal and federal agencies set a 200KB upload ceiling to balance visual legibility with server storage economy. If you scan a document at home at standard 300 DPI, the file frequently ends up between 1MB and 5MB—far too large for 200KB upload limits. Compress PDF to 200KB re-encodes color images at balanced 150 DPI, strips redundant font subsets, and applies FlateDecode compression to achieve a compliant file size with near-lossless clarity.',
+        directAnswer: 'Compress PDF to 200KB shrinks document size to under 200KB for government visa portals, passport renewals, and college admissions without noticeable loss of quality.',
+        steps: [
+            { title: 'Upload PDF file', description: 'Select the passport scan, visa application, proof of address, or tax form.' },
+            { title: 'Apply 200KB compression profile', description: 'Our balanced engine downsamples images to 150 DPI and cleans unreferenced streams.' },
+            { title: 'Inspect size & visual quality', description: 'Verify that the resulting file is under 200KB and visually sharp.' },
+            { title: 'Download compliant PDF', description: 'Save the file and complete your online application without upload errors.' }
+        ],
+        commonProblems: [
+            { problem: 'File is slightly over 200KB on a multi-page document', solution: 'Switch to the "Extreme" level in the compression workspace to reach the sub-200KB mark.' },
+            { problem: 'Photos appear slightly softer', solution: 'A 200KB limit requires balanced JPEG compression; text vectors remain 100% sharp and legible.' }
+        ],
+        features: [
+            'Precision-engineered 200KB target profile ideal for visa, passport, and embassy portals',
+            'Preserves signature lines, official rubber stamps, and small font legal fine print',
+            'Real-time before-and-after file size verification readout',
+            'Fast processing with no watermarks, no account registration, and zero hidden fees',
+            'Fully secure HTTPS TLS 1.3 processing with automated file purge'
+        ],
+        useCases: [
+            'Uploading passports, bank statements, and utility bills to national visa and consular portals',
+            'Submitting state bar, nursing, and medical board licensing renewal packets',
+            'Uploading scholarship portfolios and financial aid proof to university portals',
+            'Sending signed legal agreements through restrictive enterprise email gateways'
+        ],
+        faqs: [
+            { question: 'Why do government portals enforce a 200KB file limit?', answer: 'Agencies process millions of submissions annually. Limiting files to 200KB prevents server storage overload while remaining sufficient for clear, readable documents.' },
+            { question: 'Can I compress a 10-page document to 200KB?', answer: 'Yes, provided the document primarily contains text and scanned forms. For graphic-heavy documents, converting to grayscale first helps maximize quality.' },
+            { question: 'Will this tool add any watermark to my official document?', answer: 'No. PdfPixels never adds watermarks or branding to your processed documents.' },
+            { question: 'Is my data stored or shared?', answer: 'Never. Your documents are processed transiently in memory and permanently deleted immediately after your session.' }
+        ],
+        supportedFormats: 'Input: PDF | Output: PDF (< 200KB)',
+        relatedTools: ['compress-pdf-to-100kb', 'compress-pdf-to-300kb', 'pdf-compress', 'grayscale-pdf'],
+    },
+    'compress-pdf-to-300kb': {
+        about: 'Compress PDF to 300KB strikes the ideal equilibrium between significant file size reduction and high-resolution visual quality. A 300KB ceiling is standard across recruitment portals, human resources management systems (Workday, Taleo, Greenhouse), and banking loan applications. At 300KB, documents can preserve vibrant color photography, complex corporate branding, and crisp typography without the aggressive downsampling required for 100KB limits. Our intelligent compression engine analyzes page elements individually, applying differential compression to optimize images while preserving high-contrast text integrity.',
+        directAnswer: 'Compress PDF to 300KB reduces file size to under 300KB while preserving rich colors, sharp typography, and high visual appeal for job applications and loan submissions.',
+        steps: [
+            { title: 'Upload your PDF document', description: 'Select your resume, CV, portfolio, project proposal, or mortgage application.' },
+            { title: 'Apply 300KB balanced compression', description: 'Our engine compresses embedded media while preserving high-resolution font subsets.' },
+            { title: 'Preview size savings', description: 'Verify that the file size is under 300KB with significant percentage reductions.' },
+            { title: 'Download 300KB PDF', description: 'Submit your file confidently to any job portal or enterprise upload form.' }
+        ],
+        commonProblems: [
+            { problem: 'Original PDF was already under 300KB', solution: 'Our smart engine detects when a file is already optimized and avoids unnecessary re-compression.' },
+            { problem: 'Embedded charts look pixelated', solution: 'Vector charts remain perfectly sharp; only photographic bitmaps are compressed.' }
+        ],
+        features: [
+            'Optimized 300KB target profile ideal for executive resumes, CVs, and professional portfolios',
+            'Preserves full color fidelity for corporate logos, charts, and applicant headshots',
+            'Substantial file reduction often shrinking 5MB–10MB files by up to 90%',
+            'Compatible with all enterprise ATS (Applicant Tracking Systems) and HR portals',
+            'Completely free with no limits on document uploads or daily usage'
+        ],
+        useCases: [
+            'Job applicants uploading resumes and design portfolios to Greenhouse, Lever, and Workday',
+            'Mortgage applicants submitting pay stubs and W-2 forms to online banking portals',
+            'Contractors emailing proposals, cost estimates, and scopes of work to prospective clients',
+            'Educators uploading lesson plans and research papers to academic conference portals'
+        ],
+        faqs: [
+            { question: 'Will my headshot photo on my resume look blurry at 300KB?', answer: 'No. 300KB provides ample headroom to maintain sharp, professional-grade portrait photos while staying well under portal limits.' },
+            { question: 'Can ATS (Applicant Tracking Systems) still read text in the compressed PDF?', answer: 'Yes. Text streams, searchable keywords, and font encodings remain 100% intact for automated ATS parsing.' },
+            { question: 'How many pages can a 300KB PDF hold?', answer: 'Standard text documents can easily span 20 to 50 pages under 300KB. Documents with color photos typically fit 3 to 8 pages comfortably.' },
+            { question: 'Is the compression irreversible?', answer: 'We never overwrite your original file; a newly compressed copy is generated for download.' }
+        ],
+        supportedFormats: 'Input: PDF | Output: PDF (< 300KB)',
+        relatedTools: ['compress-pdf-to-200kb', 'compress-pdf-to-500kb', 'pdf-compress', 'pdf-to-word'],
+    },
+    'compress-pdf-to-500kb': {
+        about: 'Compress PDF to 500KB optimizes medium-to-large business documents, presentations, quarterly reports, and legal briefs down to 500KB. A 500KB file size is the universally accepted standard for corporate email distribution, municipal form portals, and commercial client communications. Documents under 500KB download virtually instantaneously even on congested mobile networks, bypass restrictive firewall attachment filters, and consume minimal inbox storage. Our 500KB compression profile maintains high-DPI image fidelity, pristine vector illustrations, and full color vibrancy while eliminating redundant metadata, unreferenced PDF objects, and uncompressed streams.',
+        directAnswer: 'Compress PDF to 500KB shrinks business documents, presentations, and legal filings to under 500KB for lightning-fast email delivery and seamless portal uploads.',
+        steps: [
+            { title: 'Upload PDF file', description: 'Select the business proposal, financial audit, presentation slide deck, or legal brief.' },
+            { title: 'Select 500KB target profile', description: 'Our engine applies balanced compression preserving high-resolution graphics.' },
+            { title: 'Inspect file metrics', description: 'Review the file size reduction and ensure the document meets your requirements.' },
+            { title: 'Download 500KB PDF', description: 'Distribute via email or upload to municipal and enterprise portals without rejection.' }
+        ],
+        commonProblems: [
+            { problem: 'Slide deck with 50+ slides still exceeds 500KB', solution: 'Select the "Smallest size" compression setting to apply more aggressive image downsampling.' },
+            { problem: 'Embedded hyperlinks stopped working', solution: 'Our compression engine preserves all interactive annotations, bookmarks, and URLs.' }
+        ],
+        features: [
+            'Generous 500KB ceiling maintaining vibrant colors, detailed graphs, and crisp typography',
+            'Bypasses strict corporate email attachment limits and spam filter quarantines',
+            'Optimizes slide decks, annual reports, and illustrated business proposals',
+            'Eliminates ghost objects, duplicate embedded fonts, and uncompressed overhead',
+            'Unlimited free usage with no account creation or credit card required'
+        ],
+        useCases: [
+            'Sales representatives emailing pitch decks and product brochures to corporate clients',
+            'Law firms transmitting multi-page motions and discovery summaries to court clerk portals',
+            'Accountants distributing comprehensive tax packets and audit reports to clients',
+            'Real estate professionals sending property brochures and floor plans via email'
+        ],
+        faqs: [
+            { question: 'Why is 500KB considered the golden standard for email attachments?', answer: '500KB documents open instantly on mobile phones, never trigger inbox storage warnings, and reliably pass through corporate spam firewalls without delay.' },
+            { question: 'Will complex vector diagrams and charts remain sharp?', answer: 'Yes. Vector shapes, CAD lines, and font typography scale mathematically and retain 100% vector sharpness regardless of compression.' },
+            { question: 'Can I compress password-protected PDFs to 500KB?', answer: 'Unlock the file using our Unlock PDF tool first, then apply 500KB compression.' },
+            { question: 'Does this tool store copies of my business documents?', answer: 'No. All processing is transient and files are deleted from memory immediately upon completion.' }
+        ],
+        supportedFormats: 'Input: PDF | Output: PDF (< 500KB)',
+        relatedTools: ['compress-pdf-under-1mb', 'compress-pdf-to-300kb', 'pdf-compress', 'pdf-merge'],
+    },
+    'compress-pdf-under-1mb': {
+        about: 'Compress PDF Under 1MB optimizes heavy PDF files, photo catalogs, architectural drawings, and academic dissertations to under 1 megabyte. While modern PDF files often swell to 25MB–50MB due to high-resolution camera scans and uncompressed artwork, most major email providers (including Microsoft Outlook, Gmail, and Yahoo Mail) and corporate web forms impose strict limits on attachment sizes. A 1MB limit provides ample space for dozens of high-quality pages while ensuring swift delivery, fast rendering across mobile devices, and zero upload timeouts. Our smart multi-stage compression engine strips redundant embedded resources, resamples images to optimal display resolution, and rewrites internal cross-reference tables.',
+        directAnswer: 'Compress PDF Under 1MB reduces heavy documents and catalogs to under 1 megabyte for frictionless email sharing and swift mobile viewing.',
+        steps: [
+            { title: 'Upload large PDF document', description: 'Select any heavy PDF file up to 100MB in size.' },
+            { title: 'Run 1MB multi-stage optimization', description: 'Our engine compresses oversized images, prunes font subsets, and compacts streams.' },
+            { title: 'Verify final file size', description: 'Confirm that your document is now comfortably under 1MB.' },
+            { title: 'Download optimized PDF', description: 'Share freely via email, Slack, Teams, or cloud portals without size restrictions.' }
+        ],
+        commonProblems: [
+            { problem: 'File was 50MB and only compressed to 1.2MB', solution: 'For massive 50MB+ scanned archives, run the file through our Grayscale tool first to drop color channel overhead, then compress under 1MB.' },
+            { problem: 'Document contains embedded video or audio', solution: 'Multimedia annotations inflate file size significantly; our engine focuses on visual print and page elements.' }
+        ],
+        features: [
+            'Slashes 10MB–50MB files down to under 1MB with exceptional visual quality retention',
+            'Perfect for multi-page contracts, academic theses, architectural packets, and photo portfolios',
+            'Ensures guaranteed compatibility with Outlook, Gmail, Apple Mail, and messaging platforms',
+            'Linearizes internal PDF structure for fast web streaming and instant first-page display',
+            '100% private, browser-safe, and completely free with no usage limits'
+        ],
+        useCases: [
+            'Graduate students submitting multi-chapter master\'s theses and dissertations to university archives',
+            'Architects and contractors emailing blueprint sets and project schedules to clients',
+            'Corporate HR teams distributing company handbooks and benefits packets to employees',
+            'Non-profit organizations emailing annual impact reports and fundraising brochures'
+        ],
+        faqs: [
+            { question: 'Why should I compress PDFs to under 1MB before emailing?', answer: 'Many corporate email servers throttle or reject attachments over 1MB or 2MB. Files under 1MB deliver instantly without bouncing and open rapidly on mobile devices.' },
+            { question: 'Will full-color photographs still look good under 1MB?', answer: 'Yes! 1MB provides generous data allocation, allowing full-color photographs to retain rich detail and vibrant saturation.' },
+            { question: 'Can I compress scanned books and magazines under 1MB?', answer: 'Yes. Our engine dramatically reduces scanned page bulk while keeping all text razor-sharp and easily readable.' },
+            { question: 'Is there a limit on how many files I can compress per day?', answer: 'None whatsoever. PdfPixels is completely free with unlimited conversions.' }
+        ],
+        supportedFormats: 'Input: PDF | Output: PDF (< 1MB)',
+        relatedTools: ['compress-pdf-to-500kb', 'pdf-compress', 'grayscale-pdf', 'pdf-split'],
+    },
 };
