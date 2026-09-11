@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useCallback, useEffect } from 'react';
-import { Download, RotateCcw, FileSpreadsheet, FileText, CheckCircle2, Table as TableIcon, Loader2, ArrowRight } from 'lucide-react';
+import { Download, RotateCcw, FileSpreadsheet, FileText, Table as TableIcon, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useAppStore } from '@/store/app-store';
@@ -198,6 +198,7 @@ export function BankStatementWorkspace() {
             </div>
           </div>
 
+          <p className="text-sm text-muted-foreground">Review every row against the original statement. Debit and credit direction is inferred from signed amounts; unsigned amounts are treated as credits. Amounts are shown without currency conversion.</p>
           {/* Transactions Preview Table */}
           <div className="border rounded-2xl bg-card shadow-sm overflow-hidden">
             <div className="px-6 py-4 border-b bg-muted/30 flex items-center justify-between">
@@ -225,13 +226,13 @@ export function BankStatementWorkspace() {
                       <td className="p-3 font-mono text-muted-foreground whitespace-nowrap">{row.date || '—'}</td>
                       <td className="p-3 font-medium text-foreground">{row.description || '—'}</td>
                       <td className="p-3 text-right font-mono text-rose-600 dark:text-rose-400">
-                        {row.debit ? `$${row.debit}` : '—'}
+                        {row.debit ? row.debit : '—'}
                       </td>
                       <td className="p-3 text-right font-mono text-emerald-600 dark:text-emerald-400">
-                        {row.credit ? `$${row.credit}` : '—'}
+                        {row.credit ? row.credit : '—'}
                       </td>
                       <td className="p-3 text-right font-mono text-foreground font-semibold">
-                        {row.balance ? `$${row.balance}` : '—'}
+                        {row.balance ? row.balance : '—'}
                       </td>
                     </tr>
                   ))}

@@ -43,6 +43,7 @@ export function parsePageSelection(
       continue;
     }
 
+    if (!/^\d+$/.test(token)) continue;
     const page = parseInt(token, 10);
     if (!Number.isFinite(page)) continue;
     const idx = page - 1;
@@ -71,7 +72,7 @@ export function validatePdfUpload(
   const maxBytes = options.maxBytes ?? PDF_MAX_FILE_SIZE;
   const requireType = options.requireType !== false;
 
-  if (!file) {
+  if (!file || typeof file.arrayBuffer !== 'function') {
     return {
       ok: false,
       response: NextResponse.json(
@@ -171,7 +172,7 @@ export async function openEditablePdf(
   if (!read.ok) return read;
 
   try {
-    const pdf = await loadPdfWithTimeout(read.buffer);
+    const pdf = await loadPdfWithTimeout(read.buffer, { ignoreEncryption: true, updateMetadata: false });
     const encrypted = rejectEncryptedPdf(pdf);
     if (encrypted) return { ok: false, response: encrypted };
     return { ok: true, pdf, buffer: read.buffer };

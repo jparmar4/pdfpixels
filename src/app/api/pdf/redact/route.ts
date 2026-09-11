@@ -1,7 +1,8 @@
 import { apiError } from '@/lib/api-response';
 import { openEditablePdf, pdfBinaryResponse } from '@/lib/pdf-api';
 import { NextRequest } from 'next/server';
-import { rgb } from 'pdf-lib';
+import { rasterizePdf } from '@/lib/pdf-raster';
+import { rgb, PDFName } from 'pdf-lib';
 
 export const maxDuration = 60;
 export const runtime = 'nodejs';
@@ -29,10 +30,12 @@ export async function POST(request: NextRequest) {
       try {
         redactions = JSON.parse(redactionsJson);
       } catch {
-        // ignore parse error
+        return apiError('Invalid redaction boxes.', 400);
       }
     }
 
+    if (!Array.isArray(redactions)) return apiError('Redactions must be an array.', 400);
+    if (redactionsJson && !redactions.length) return apiError('Add at least one redaction box.', 400);
     if (redactions.length === 0) {
       const pageNumber = parseInt(String(formData.get('pageNumber') || '1'), 10);
       const x = parseFloat(String(formData.get('x') || '50'));
@@ -44,17 +47,30 @@ export async function POST(request: NextRequest) {
 
     const totalPages = pdf.getPageCount();
 
+    if (pdf.getPages().some(page => { const box = page.getCropBox(); return box.width * box.height * (150 / 72) ** 2 > 25_000_000; })) return apiError('Page dimensions are too large to redact safely. Resize the PDF first.', 422);
+    if (totalPages > 50) return apiError('Please split PDFs over 50 pages before redacting.', 422);
+    for (const box of redactions) {
+      if (!box || !Number.isInteger(box.pageNumber) || box.pageNumber < 1 || box.pageNumber > totalPages ||
+          ![box.x, box.y, box.width, box.height].every(Number.isFinite) || box.x < 0 || box.y < 0 || box.width <= 0 || box.height <= 0) {
+        return apiError('A redaction box has invalid coordinates or page number.', 400);
+      }
+      const page = pdf.getPage(box.pageNumber - 1);
+      const crop = page.getCropBox();
+      if (page.getRotation().angle !== 0 || crop.x !== 0 || crop.y !== 0) return apiError('Normalize rotated or offset pages before redacting to ensure accurate placement.', 422);
+      if (box.x + box.width > crop.width || box.y + box.height > crop.height) return apiError('Redaction boxes must fit inside the page.', 400);
+    }
+    // Form appearances must be painted before covering the sensitive area.
+    try { pdf.getForm().flatten(); } catch { return apiError('Could not safely flatten this form.', 422); }
+    for (const page of pdf.getPages()) page.node.delete(PDFName.of('Annots'));
     for (const box of redactions) {
       const pageIdx = box.pageNumber - 1;
       if (pageIdx < 0 || pageIdx >= totalPages) continue;
 
       const page = pdf.getPage(pageIdx);
-      const { height: pageHeight } = page.getSize();
+      const { height: pageHeight } = page.getCropBox();
 
       // Convert coordinates if provided from top-left
-      const yPos = box.y > 0 && box.y < pageHeight && box.y + box.height <= pageHeight
-        ? pageHeight - box.y - box.height
-        : box.y;
+      const yPos = pageHeight - box.y - box.height;
 
       // Draw white rectangle to visually blank the area first
       page.drawRectangle({
@@ -79,19 +95,11 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // Flatten any interactive forms so redacted areas cannot have active field text
-    try {
-      const form = pdf.getForm();
-      if (form) form.flatten();
-    } catch {
-      // ignore if no form exists
-    }
-
-    const outBytes = await pdf.save();
+    const outBytes = await rasterizePdf(await pdf.save(), totalPages);
     const fileName = file!.name ? file!.name.replace(/\.pdf$/i, '-redacted.pdf') : `redacted-${Date.now()}.pdf`;
 
     return pdfBinaryResponse(outBytes, fileName, {
-      'x-redaction-type': 'visual-overlay',
+      'x-redaction-type': 'rasterized',
       'x-redaction-count': String(redactions.length),
     });
   } catch (error) {

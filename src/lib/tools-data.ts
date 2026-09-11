@@ -51,7 +51,6 @@ import {
   FileSignature,
   EyeOff,
   FileSpreadsheet,
-  CheckSquare,
 } from 'lucide-react';
 
 export type Tool = {
@@ -964,7 +963,7 @@ export const toolCategories: ToolCategory[] = [
         id: 'sanitize-pdf',
         slug: 'sanitize-pdf',
         name: 'Sanitize PDF',
-        description: 'Permanently remove hidden metadata, author details, GPS tags, revision history, and tracking information from PDF documents.',
+        description: 'Remove PDF document properties, author details, timestamps, and PDF XMP metadata.',
         icon: Shield,
         category: 'pdf-tools',
         keywords: ['sanitize pdf', 'remove metadata from pdf', 'strip pdf author', 'clean pdf metadata', 'pdf privacy tool', 'delete hidden pdf properties'],
@@ -976,7 +975,7 @@ export const toolCategories: ToolCategory[] = [
         id: 'compare-pdf',
         slug: 'compare-pdf',
         name: 'Compare PDF',
-        description: 'Compare two PDF documents side-by-side to highlight text differences, contract revisions, additions, and deletions with redline diff.',
+        description: 'Compare selectable text in two PDF documents with line-by-line redline highlighting for additions and deletions.',
         icon: ArrowLeftRight,
         category: 'pdf-tools',
         keywords: ['compare pdf', 'compare two pdf files', 'pdf diff online', 'pdf redline tool', 'contract comparison pdf', 'find differences in pdf'],

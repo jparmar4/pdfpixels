@@ -101,7 +101,7 @@ export function WordToPDFWorkspace() {
       <ToolLimitNotice
         limits={[
           'Microsoft Word (.docx) · max 25 MB',
-          'Renders paragraphs, headers, and bullet formatting into vector PDF',
+          'Text conversion: headings and paragraphs; images and complex layouts are not retained',
           'Instant client-safe conversion and automatic file cleanup',
         ]}
       />
@@ -188,7 +188,7 @@ export function WordToPDFWorkspace() {
                   </div>
                   <ul className="space-y-2 text-muted-foreground list-disc pl-4 leading-relaxed">
                     <li><strong className="text-foreground">Universal Compatibility:</strong> Anyone can open and view a PDF without needing Microsoft Office installed.</li>
-                    <li><strong className="text-foreground">Preserved Formatting:</strong> Eliminates font substitution and layout shifting issues across different computers.</li>
+                    <li><strong className="text-foreground">Preserved Formatting:</strong> Uses a standard font and a new page layout. Export from Word when exact layout, tables, images, or multilingual fonts must be preserved.</li>
                     <li><strong className="text-foreground">Read-Only Security:</strong> Perfect for sending resumes, contracts, and proposals that should not be edited.</li>
                   </ul>
                 </div>

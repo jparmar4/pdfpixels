@@ -1,7 +1,7 @@
 import { apiError } from '@/lib/api-response';
 import { openEditablePdf, pdfBinaryResponse, sanitizeDownloadFileName } from '@/lib/pdf-api';
 import { NextRequest, NextResponse } from 'next/server';
-import { PDFName } from 'pdf-lib';
+import { PDFName, PDFDict, PDFStream, PDFRef } from 'pdf-lib';
 
 export const maxDuration = 60;
 export const runtime = 'nodejs';
@@ -48,30 +48,27 @@ export async function POST(request: NextRequest) {
     }
 
     // ── Sanitize mode ──
-    pdf.setTitle('');
-    pdf.setAuthor('');
-    pdf.setSubject('');
-    pdf.setKeywords([]);
-    pdf.setProducer('');
-    pdf.setCreator('');
-    pdf.setCreationDate(new Date(0));
-    pdf.setModificationDate(new Date(0));
-
-    // Remove catalog XMP Metadata stream
-    if (hasXmp) {
-      try {
-        catalog.delete(PDFName.of('Metadata'));
-      } catch (e) {
-        console.warn('Could not delete XMP metadata stream:', e);
-      }
+    const info = pdf.context.trailerInfo.Info;
+    if (info instanceof PDFRef) pdf.context.delete(info);
+    pdf.context.trailerInfo.Info = undefined;
+    // Delete metadata objects as well as references: orphan bytes are recoverable.
+    const metadataRefs = new Set<PDFRef>();
+    for (const [ref, object] of pdf.context.enumerateIndirectObjects()) {
+      const dict = object instanceof PDFStream ? object.dict : object instanceof PDFDict ? object : null;
+      if (!dict) continue;
+      const metadata = dict.get(PDFName.of('Metadata'));
+      if (metadata instanceof PDFRef) metadataRefs.add(metadata);
+      dict.delete(PDFName.of('Metadata'));
+      if (dict.get(PDFName.of('Type')) === PDFName.of('Metadata')) metadataRefs.add(ref);
     }
+    for (const ref of metadataRefs) pdf.context.delete(ref);
 
     // Optional form flattening
     if (flatten) {
       try {
         const form = pdf.getForm();
         if (form) form.flatten();
-      } catch {}
+      } catch { return apiError('Could not flatten this form. No sanitized file was produced.', 422); }
     }
 
     const outBytes = await pdf.save({ useObjectStreams: false });

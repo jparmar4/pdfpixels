@@ -117,10 +117,11 @@ export async function POST(request: NextRequest) {
     const formData = await request.formData();
     const file = formData.get('file') as File | null;
 
-    if (!file) {
+    if (!file || typeof file.arrayBuffer !== 'function') {
       return apiError('No Word (.docx) file provided', 400);
     }
 
+    if (file.size > 25 * 1024 * 1024) return apiError('Word files must be 25MB or smaller.', 400);
     const name = file.name.toLowerCase();
     if (!name.endsWith('.docx')) {
       return apiError('Only .docx Word documents are supported', 400);
@@ -175,6 +176,7 @@ export async function POST(request: NextRequest) {
         font = boldFont;
       }
 
+      try { font.encodeText(p.text); } catch { return apiError('This basic converter cannot render one or more document characters. Export this document to PDF from Word to preserve all languages.', 422); }
       const lines = wrapText(p.text, contentWidth, font, fontSize);
 
       for (const line of lines) {
@@ -184,7 +186,7 @@ export async function POST(request: NextRequest) {
           currentY = pageHeight - margin;
         }
 
-        const safeLine = line.replace(/[^\x20-\x7E]/g, '?');
+        const safeLine = line;
         currentPage.drawText(safeLine, {
           x: margin,
           y: currentY - fontSize,

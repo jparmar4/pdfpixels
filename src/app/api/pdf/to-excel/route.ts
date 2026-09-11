@@ -2,94 +2,10 @@ import { apiError } from '@/lib/api-response';
 import { openEditablePdf, sanitizeDownloadFileName } from '@/lib/pdf-api';
 import { NextRequest, NextResponse } from 'next/server';
 import JSZip from 'jszip';
-import { inflateSync } from 'zlib';
+import { extractPdfLines } from '@/lib/pdf-text';
 
 export const maxDuration = 60;
 export const runtime = 'nodejs';
-
-function extractLinesFromPdfBuffer(buffer: Buffer): string[] {
-  const content = buffer.toString('latin1');
-  const lines: string[] = [];
-
-  // Extract and decompress all stream content
-  const allStreams: string[] = [];
-  const streamRegex = /stream\r?\n([\s\S]*?)\r?\nendstream/g;
-  let sMatch: RegExpExecArray | null;
-
-  while ((sMatch = streamRegex.exec(content)) !== null) {
-    const rawBytes = Buffer.from(sMatch[1], 'latin1');
-    let decoded: string;
-    try {
-      decoded = inflateSync(rawBytes).toString('latin1');
-    } catch {
-      decoded = sMatch[1];
-    }
-    allStreams.push(decoded);
-  }
-
-  const fullContent = allStreams.join('\n');
-
-  const btEtRegex = /BT[\s\S]*?ET/g;
-  let match: RegExpExecArray | null;
-
-  while ((match = btEtRegex.exec(fullContent)) !== null) {
-    const stream = match[0];
-    const tjRegex = /\((.*?)\)\s*(?:Tj|'|")/g;
-    let tjMatch: RegExpExecArray | null;
-    while ((tjMatch = tjRegex.exec(stream)) !== null) {
-      const decoded = decodePdfString(tjMatch[1]);
-      if (decoded.trim()) lines.push(decoded.trim());
-    }
-
-    const tjArrayRegex = /\[(.*?)\]\s*TJ/g;
-    let arrayMatch: RegExpExecArray | null;
-    while ((arrayMatch = tjArrayRegex.exec(stream)) !== null) {
-      const inner = arrayMatch[1];
-      const strRegex = /\((.*?)\)/g;
-      let innerMatch: RegExpExecArray | null;
-      let line = '';
-      while ((innerMatch = strRegex.exec(inner)) !== null) {
-        line += decodePdfString(innerMatch[1]);
-      }
-      if (line.trim()) lines.push(line.trim());
-    }
-  }
-
-  if (lines.length === 0) {
-    const rawParenRegex = /\(([A-Za-z0-9 .,;:!?'"/\-_#@$%&*+=<>()]{3,})\)/g;
-    let rawMatch: RegExpExecArray | null;
-    while ((rawMatch = rawParenRegex.exec(fullContent)) !== null) {
-      const decoded = decodePdfString(rawMatch[1]);
-      if (decoded.length > 2 && !/^Font|ColorSpace|Metadata|Encoding|ProcSet/i.test(decoded)) {
-        lines.push(decoded.trim());
-      }
-    }
-  }
-
-  return lines;
-}
-
-function decodePdfString(str: string): string {
-  let decoded = str.replace(/\\([0-7]{1,3})/g, (_, oct) => String.fromCharCode(parseInt(oct, 8)));
-  decoded = decoded
-    .replace(/\\n/g, '\n')
-    .replace(/\\r/g, '\r')
-    .replace(/\\t/g, '\t')
-    .replace(/\\b/g, '\b')
-    .replace(/\\f/g, '\f')
-    .replace(/\\\(/g, '(')
-    .replace(/\\\)/g, ')')
-    .replace(/\\\\/g, '\\');
-
-  if (decoded.startsWith('\xFE\xFF')) {
-    let utf16 = '';
-    for (let i = 2; i < decoded.length; i += 2) {
-      utf16 += String.fromCharCode((decoded.charCodeAt(i) << 8) | decoded.charCodeAt(i + 1));
-    }
-    return utf16;
-  }
-  return decoded;
-}
 
 function escapeXml(unsafe: string): string {
   return unsafe
@@ -185,7 +101,7 @@ async function buildXlsxZip(rows: string[][]): Promise<Buffer> {
     for (let c = 0; c < row.length; c++) {
       const cellRef = `${colIndexToLetters(c)}${rowNumber}`;
       const rawVal = row[c];
-      const isNum = Number.isFinite(Number(rawVal)) && rawVal.trim() !== '';
+      const isNum = /^-?(?:0|[1-9]\d*)(?:\.\d+)?$/.test(rawVal) && rawVal.replace(/[^0-9]/g, '').length <= 15;
 
       if (isNum) {
         rowCellsXml += `<c r="${cellRef}"><v>${rawVal.trim()}</v></c>`;
@@ -219,20 +135,19 @@ export async function POST(request: NextRequest) {
     if (!opened.ok) return opened.response;
     const { buffer } = opened;
 
-    const rawLines = extractLinesFromPdfBuffer(buffer);
+    const rawLines = await extractPdfLines(buffer);
 
     // Parse lines into table rows & columns
     const tableRows: string[][] = [];
     for (const line of rawLines) {
       let cols: string[] = [];
       if (line.includes('\t')) {
-        cols = line.split('\t').map(c => c.trim()).filter(Boolean);
+        cols = line.split('\t').map(c => c.trim());
       } else if (line.includes('|')) {
-        cols = line.split('|').map(c => c.trim()).filter(Boolean);
-      } else if (line.includes(',') && !line.startsWith('"')) {
-        cols = line.split(',').map(c => c.trim()).filter(Boolean);
+        cols = line.split('|').map(c => c.trim());
+
       } else if (/\s{2,}/.test(line)) {
-        cols = line.split(/\s{2,}/).map(c => c.trim()).filter(Boolean);
+        cols = line.split(/\s{2,}/).map(c => c.trim());
       } else {
         cols = [line.trim()];
       }
@@ -243,7 +158,7 @@ export async function POST(request: NextRequest) {
     }
 
     if (tableRows.length === 0) {
-      tableRows.push(['No tabular data could be identified in the uploaded PDF.']);
+      return apiError('No selectable text found. Run OCR on scanned PDFs first.', 422);
     }
 
     const baseName = file?.name ? file.name.replace(/\.pdf$/i, '') : 'financial-table';

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useCallback, useEffect } from 'react';
-import { Download, RotateCcw, Shield, ShieldCheck, ShieldAlert, CheckCircle2, Lock, Trash2, Eye } from 'lucide-react';
+import { Download, RotateCcw, Shield, ShieldCheck, Trash2, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useAppStore } from '@/store/app-store';
@@ -119,7 +119,7 @@ export function SanitizePdfWorkspace() {
       const baseName = uploadedFile.name.replace(/\.pdf$/i, '');
       setSanitizedFileName(`${baseName}-sanitized.pdf`);
       setProgress(100);
-      toast.success('All metadata, tracking streams, and software fingerprints removed!');
+      toast.success('Document properties and PDF XMP metadata removed.');
     } catch (err: any) {
       toast.error(err.message || 'Failed to sanitize document');
     } finally {
@@ -150,7 +150,7 @@ export function SanitizePdfWorkspace() {
         limits={[
           'PDF only · contracts, legal briefs, leaked documents',
           'Wipes Document Info Dictionary (Author, Creator, Timestamps)',
-          'Permanently purges XMP XML streams & flattens interactive layers',
+          'Removes document properties and PDF XMP streams; optional form flattening',
         ]}
       />
 
@@ -214,7 +214,7 @@ export function SanitizePdfWorkspace() {
                 className="rounded accent-primary w-4 h-4 cursor-pointer"
               />
               <label htmlFor="flatten-check" className="text-xs text-muted-foreground cursor-pointer select-none">
-                Flatten form fields & comments (prevents recovery of hidden draft inputs)
+                Flatten form fields (turn current values into page content)
               </label>
             </div>
 
@@ -234,7 +234,7 @@ export function SanitizePdfWorkspace() {
                     <Download className="w-4 h-4" /> Download Sanitized PDF
                   </Button>
                   <div className="flex items-center gap-1.5 text-xs text-emerald-600 dark:text-emerald-400 font-medium">
-                    <ShieldCheck className="w-4 h-4" /> 100% Sanitized & Anonymized
+                    <ShieldCheck className="w-4 h-4" /> Document Metadata Removed
                   </div>
                 </div>
               )}

@@ -40,12 +40,14 @@ export async function POST(request: NextRequest) {
     }
 
     if (targetPages.length === 0) {
-      targetPages = Array.from({ length: totalPages }, (_, i) => i);
+      return apiError('No valid pages selected.', 400);
     }
+
+    if (![topMargin, rightMargin, bottomMargin, leftMargin].every(v => Number.isFinite(v) && v >= 0) || [customX, customY, customW, customH].some(v => v !== null && !Number.isFinite(v))) return apiError('Crop dimensions must be finite, non-negative numbers.', 400);
 
     for (const pageIdx of targetPages) {
       const page = pdf.getPage(pageIdx);
-      const { width, height } = page.getSize();
+      const { x: originX, y: originY, width, height } = page.getCropBox();
 
       let cropX = 0;
       let cropY = 0;
@@ -62,13 +64,14 @@ export async function POST(request: NextRequest) {
         // Margins supplied
         cropX = Math.max(0, leftMargin);
         cropY = Math.max(0, bottomMargin);
-        cropWidth = Math.max(10, width - leftMargin - rightMargin);
-        cropHeight = Math.max(10, height - topMargin - bottomMargin);
+        cropWidth = width - leftMargin - rightMargin;
+        cropHeight = height - topMargin - bottomMargin;
       }
 
       if (cropWidth > 0 && cropHeight > 0) {
-        page.setCropBox(cropX, cropY, cropWidth, cropHeight);
-        page.setMediaBox(cropX, cropY, cropWidth, cropHeight);
+        page.setCropBox(originX + cropX, originY + cropY, cropWidth, cropHeight);
+      } else {
+        return apiError('Crop margins leave no visible page area.', 400);
       }
     }
 

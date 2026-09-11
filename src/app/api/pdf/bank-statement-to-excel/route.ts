@@ -2,7 +2,7 @@ import { apiError } from '@/lib/api-response';
 import { openEditablePdf, sanitizeDownloadFileName } from '@/lib/pdf-api';
 import { NextRequest, NextResponse } from 'next/server';
 import JSZip from 'jszip';
-import { inflateSync } from 'zlib';
+import { extractPdfLines } from '@/lib/pdf-text';
 
 export const maxDuration = 60;
 export const runtime = 'nodejs';
@@ -18,87 +18,6 @@ interface TransactionRow {
 /**
  * Decompresses and extracts lines from a PDF buffer.
  */
-function extractLinesFromPdfBuffer(buffer: Buffer): string[] {
-  const content = buffer.toString('latin1');
-  const allStreams: string[] = [];
-  const streamRegex = /stream\r?\n([\s\S]*?)\r?\nendstream/g;
-  let sMatch: RegExpExecArray | null;
-
-  while ((sMatch = streamRegex.exec(content)) !== null) {
-    const rawBytes = Buffer.from(sMatch[1], 'latin1');
-    let decoded: string;
-    try {
-      decoded = inflateSync(rawBytes).toString('latin1');
-    } catch {
-      decoded = sMatch[1];
-    }
-    allStreams.push(decoded);
-  }
-
-  const fullContent = allStreams.join('\n');
-  const lines: string[] = [];
-  const btEtRegex = /BT[\s\S]*?ET/g;
-  let match: RegExpExecArray | null;
-
-  while ((match = btEtRegex.exec(fullContent)) !== null) {
-    const stream = match[0];
-    const tjRegex = /\((.*?)\)\s*(?:Tj|'|")/g;
-    let tjMatch: RegExpExecArray | null;
-    while ((tjMatch = tjRegex.exec(stream)) !== null) {
-      const decoded = decodePdfString(tjMatch[1]);
-      if (decoded.trim()) lines.push(decoded.trim());
-    }
-
-    const tjArrayRegex = /\[(.*?)\]\s*TJ/g;
-    let arrayMatch: RegExpExecArray | null;
-    while ((arrayMatch = tjArrayRegex.exec(stream)) !== null) {
-      const inner = arrayMatch[1];
-      const strRegex = /\((.*?)\)/g;
-      let innerMatch: RegExpExecArray | null;
-      let line = '';
-      while ((innerMatch = strRegex.exec(inner)) !== null) {
-        line += decodePdfString(innerMatch[1]);
-      }
-      if (line.trim()) lines.push(line.trim());
-    }
-  }
-
-  if (lines.length === 0) {
-    const rawParenRegex = /\(([A-Za-z0-9 .,;:!?'"/\-_#@$%&*+=<>()]{3,})\)/g;
-    let rawMatch: RegExpExecArray | null;
-    while ((rawMatch = rawParenRegex.exec(fullContent)) !== null) {
-      const decoded = decodePdfString(rawMatch[1]);
-      if (decoded.length > 2 && !/^Font|ColorSpace|Metadata|Encoding|ProcSet/i.test(decoded)) {
-        lines.push(decoded.trim());
-      }
-    }
-  }
-
-  return lines;
-}
-
-function decodePdfString(str: string): string {
-  let decoded = str.replace(/\\([0-7]{1,3})/g, (_, oct) => String.fromCharCode(parseInt(oct, 8)));
-  decoded = decoded
-    .replace(/\\n/g, '\n')
-    .replace(/\\r/g, '\r')
-    .replace(/\\t/g, '\t')
-    .replace(/\\b/g, '\b')
-    .replace(/\\f/g, '\f')
-    .replace(/\\\(/g, '(')
-    .replace(/\\\)/g, ')')
-    .replace(/\\\\/g, '\\');
-
-  if (decoded.startsWith('\xFE\xFF')) {
-    let utf16 = '';
-    for (let i = 2; i < decoded.length; i += 2) {
-      utf16 += String.fromCharCode((decoded.charCodeAt(i) << 8) | decoded.charCodeAt(i + 1));
-    }
-    return utf16;
-  }
-  return decoded;
-}
-
 function escapeXml(unsafe: string): string {
   return unsafe
     .replace(/&/g, '&amp;')
@@ -110,7 +29,7 @@ function escapeXml(unsafe: string): string {
 
 function parseFinancialTransactions(lines: string[]): TransactionRow[] {
   const transactions: TransactionRow[] = [];
-  const datePattern = /^(?:\d{1,2}[/-]\d{1,2}(?:[/-]\d{2,4})?|(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]* \d{1,2}(?:, \d{4})?|\d{1,2} (?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*(?: \d{4})?)/i;
+  const datePattern = /^(?:\d{4}-\d{2}-\d{2}|\d{1,2}[/-]\d{1,2}(?:[/-]\d{2,4})?|(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]* \d{1,2}(?:, \d{4})?|\d{1,2} (?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*(?: \d{4})?)/i;
   const moneyPattern = /(?:-?\$?\s*(?:\d{1,3}(?:,\d{3})*|\d+)\.\d{2})/g;
 
   let currentDate = '';
@@ -136,7 +55,7 @@ function parseFinancialTransactions(lines: string[]): TransactionRow[] {
       // Extract all monetary figures in the rest of line
       const matchedMoney = rest.match(moneyPattern);
       if (matchedMoney) {
-        amounts.push(...matchedMoney.map(m => m.replace(/[$\s]/g, '')));
+        amounts.push(...matchedMoney.map(m => m.replace(/[$,\s]/g, '')));
         const descWithoutMoney = rest.replace(moneyPattern, '').trim();
         if (descWithoutMoney) currentDescParts.push(descWithoutMoney);
       } else if (rest) {
@@ -146,7 +65,7 @@ function parseFinancialTransactions(lines: string[]): TransactionRow[] {
       // Line continuation
       const matchedMoney = trimmed.match(moneyPattern);
       if (matchedMoney) {
-        amounts.push(...matchedMoney.map(m => m.replace(/[$\s]/g, '')));
+        amounts.push(...matchedMoney.map(m => m.replace(/[$,\s]/g, '')));
         const descWithoutMoney = trimmed.replace(moneyPattern, '').trim();
         if (descWithoutMoney) currentDescParts.push(descWithoutMoney);
       } else {
@@ -161,23 +80,6 @@ function parseFinancialTransactions(lines: string[]): TransactionRow[] {
   // Save the last row
   if (currentDate && amounts.length > 0) {
     saveRow(transactions, currentDate, currentDescParts.join(' '), amounts);
-  }
-
-  // If no structured financial pattern matched, fallback to raw tabular line chunks
-  if (transactions.length === 0) {
-    for (let i = 0; i < lines.length; i++) {
-      const line = lines[i];
-      const cols = line.split(/\t|\||\s{2,}/).map(c => c.trim()).filter(Boolean);
-      if (cols.length >= 2) {
-        transactions.push({
-          date: cols[0] || `Row ${i + 1}`,
-          description: cols[1] || '',
-          debit: cols[2] || '',
-          credit: cols[3] || '',
-          balance: cols[4] || '',
-        });
-      }
-    }
   }
 
   return transactions;
@@ -276,7 +178,7 @@ async function buildFinancialXlsx(rows: TransactionRow[]): Promise<Buffer> {
 <styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
   <fonts count="2">
     <font><name val="Calibri"/><sz val="11"/></font>
-    <font><b/><name val="Calibri"/><sz val="11"/><color rgb="FFFFFFFF"/></font>
+    <font><b/><name val="Calibri"/><sz val="11"/><color rgb="FF1F4E79"/></font>
   </fonts>
   <fills count="2">
     <fill><patternFill patternType="none"/></fill>
@@ -295,7 +197,7 @@ async function buildFinancialXlsx(rows: TransactionRow[]): Promise<Buffer> {
   let sheetDataXml = '<row r="1">';
   for (let c = 0; c < headers.length; c++) {
     const cellRef = `${colIndexToLetters(c)}1`;
-    sheetDataXml += `<c r="${cellRef}" t="inlineStr"><is><t>${escapeXml(headers[c])}</t></is></c>`;
+    sheetDataXml += `<c r="${cellRef}" s="1" t="inlineStr"><is><t>${escapeXml(headers[c])}</t></is></c>`;
   }
   sheetDataXml += '</row>';
 
@@ -308,7 +210,7 @@ async function buildFinancialXlsx(rows: TransactionRow[]): Promise<Buffer> {
     for (let c = 0; c < vals.length; c++) {
       const cellRef = `${colIndexToLetters(c)}${rowNum}`;
       const rawVal = vals[c];
-      const isNum = Number.isFinite(Number(rawVal)) && rawVal.trim() !== '';
+      const isNum = c >= 2 && Number.isFinite(Number(rawVal)) && rawVal.trim() !== '';
 
       if (isNum) {
         rowXml += `<c r="${cellRef}"><v>${rawVal.trim()}</v></c>`;
@@ -349,17 +251,11 @@ export async function POST(request: NextRequest) {
     if (!opened.ok) return opened.response;
     const { buffer } = opened;
 
-    const rawLines = extractLinesFromPdfBuffer(buffer);
+    const rawLines = await extractPdfLines(buffer);
     const transactions = parseFinancialTransactions(rawLines);
 
     if (transactions.length === 0) {
-      transactions.push({
-        date: new Date().toLocaleDateString(),
-        description: 'No explicit transaction rows detected in PDF. The document may be an image scan.',
-        debit: '',
-        credit: '',
-        balance: '',
-      });
+      return apiError('No reliable transaction rows found. Use a text-based statement with dates and decimal amounts, or run OCR first.', 422);
     }
 
     const baseName = file?.name ? file.name.replace(/\.pdf$/i, '') : 'bank-statement';
@@ -369,7 +265,7 @@ export async function POST(request: NextRequest) {
         transactions,
         totalRows: transactions.length,
         fileName: `${sanitizeDownloadFileName(baseName)}.xlsx`,
-      });
+      }, { headers: { 'Cache-Control': 'no-store' } });
     }
 
     if (format === 'csv') {

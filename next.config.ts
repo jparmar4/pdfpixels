@@ -36,7 +36,11 @@ const nextConfig: NextConfig = {
     } : false,
   },
 
-  serverExternalPackages: ['heic-convert', 'heic-decode', 'libheif-js', 'jpeg-js', 'pngjs'],
+  serverExternalPackages: ['pdfjs-dist', '@napi-rs/canvas', 'heic-convert', 'heic-decode', 'libheif-js', 'jpeg-js', 'pngjs'],
+
+  outputFileTracingIncludes: {
+    '/api/pdf/*': ['./node_modules/pdfjs-dist/legacy/build/*.mjs', './node_modules/pdfjs-dist/standard_fonts/**/*', './node_modules/pdfjs-dist/cmaps/**/*'],
+  },
 
   // Experimental features for performance
   experimental: {

@@ -23,7 +23,8 @@ export async function POST(request: NextRequest) {
         form.flatten();
       }
     } catch (e) {
-      console.warn('Form flatten notice:', e);
+      console.warn('Form flatten failed:', e);
+      return apiError('Could not flatten all fields in this PDF. No output was produced.', 422);
     }
 
     const outBytes = await pdf.save();

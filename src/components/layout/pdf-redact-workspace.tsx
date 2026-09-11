@@ -307,7 +307,7 @@ export function PDFRedactWorkspace() {
                 <div className="p-3 bg-muted/40 rounded-xl text-xs text-muted-foreground space-y-1.5 border">
                   <p className="font-semibold text-foreground">How PDFPixels Redaction Works:</p>
                   <p>
-                    Unlike standard PDF readers that simply hide text with a black visual layer, PDFPixels strips the underlying text tokens and vector streams and renders an irreversible opaque rectangle.
+                    Redacted PDFs are rebuilt as image pages at 150 DPI. Covered text, interactive fields, and original hidden data are removed. Text in the output is no longer selectable.
                   </p>
                 </div>
 
@@ -395,7 +395,7 @@ export function PDFRedactWorkspace() {
                   <div>
                     <h4 className="font-semibold text-base">Redaction Completed!</h4>
                     <p className="text-xs text-muted-foreground mt-1">
-                      Blackout boxes are permanently applied and underlying text layers destroyed.
+                      Blackout boxes are permanently applied. All pages become images with no selectable text.
                     </p>
                   </div>
                   <Button onClick={handleDownload} className="w-full font-semibold gap-2 rounded-xl">

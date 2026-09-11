@@ -1,9 +1,8 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { Download, RotateCcw, ArrowLeftRight, FileText, CheckCircle2, Plus, Minus, Equal, Copy, Check } from 'lucide-react';
+import { RotateCcw, ArrowLeftRight, FileText, Plus, Minus, Copy, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { ToolPageHeader } from './tool-page-header';
 import { ToolLimitNotice } from './tool-limit-notice';
 import { toast } from 'sonner';
@@ -116,7 +115,7 @@ export function ComparePdfWorkspace() {
                   <FileText className="w-5 h-5 text-primary shrink-0" />
                   <span className="font-medium text-xs truncate">{fileA.name}</span>
                 </div>
-                <Button size="sm" variant="ghost" onClick={() => setFileA(null)} className="text-xs text-muted-foreground h-7">
+                <Button size="sm" variant="ghost" onClick={() => { setFileA(null); setStats(null); setDiffItems([]); }} className="text-xs text-muted-foreground h-7">
                   Change
                 </Button>
               </div>
@@ -151,7 +150,7 @@ export function ComparePdfWorkspace() {
                   <FileText className="w-5 h-5 text-emerald-500 shrink-0" />
                   <span className="font-medium text-xs truncate">{fileB.name}</span>
                 </div>
-                <Button size="sm" variant="ghost" onClick={() => setFileB(null)} className="text-xs text-muted-foreground h-7">
+                <Button size="sm" variant="ghost" onClick={() => { setFileB(null); setStats(null); setDiffItems([]); }} className="text-xs text-muted-foreground h-7">
                   Change
                 </Button>
               </div>
@@ -194,6 +193,7 @@ export function ComparePdfWorkspace() {
         {/* Results & Redline Diff Display */}
         {stats && (
           <div className="space-y-6">
+            <p className="text-sm text-muted-foreground">Compares selectable text line by line. Image, layout, and formatting changes are not included in the similarity score.</p>
             {/* Stats Overview */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               <div className="bg-card border rounded-xl p-4 text-center">

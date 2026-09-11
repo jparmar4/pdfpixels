@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
 
     const prefix = String(formData.get('prefix') || '').trim();
     const suffix = String(formData.get('suffix') || '').trim();
-    const startNumber = parseInt(String(formData.get('startNumber') || '1'), 10) || 1;
+    const startNumber = Number(formData.get('startNumber') ?? '1');
     const padding = Math.max(1, Math.min(10, parseInt(String(formData.get('padding') || '6'), 10) || 6));
     const position = (String(formData.get('position') || 'bottom-right').toLowerCase() as BatesPosition);
     const fontSize = Math.max(6, Math.min(24, parseFloat(String(formData.get('fontSize') || '10')) || 10));
@@ -27,18 +27,23 @@ export async function POST(request: NextRequest) {
 
     const font = await pdf.embedFont(StandardFonts.HelveticaBold);
     const totalPages = pdf.getPageCount();
+    if (!Number.isSafeInteger(startNumber) || startNumber < 0 || !Number.isSafeInteger(startNumber + totalPages - 1)) return apiError('Start number must be a non-negative safe integer.', 400);
     const margin = 36; // 0.5 inch
 
     for (let i = 0; i < totalPages; i++) {
       const page = pdf.getPage(i);
-      const { width, height } = page.getSize();
+      const { x: originX, y: originY, width, height } = page.getCropBox();
       const currentNum = startNumber + i;
       const paddedNum = String(currentNum).padStart(padding, '0');
       const batesLabel = `${prefix}${paddedNum}${suffix}`;
       const displayText = banner ? `${banner} | ${batesLabel}` : batesLabel;
 
-      const textWidth = font.widthOfTextAtSize(displayText, fontSize);
-      const textHeight = font.heightAtSize(fontSize);
+      let textWidth: number;
+      try { textWidth = font.widthOfTextAtSize(displayText, fontSize); } catch { return apiError('Use Latin characters in Bates labels and banners.', 400); }
+      const fittedSize = Math.min(fontSize, fontSize * Math.max(1, width - margin * 2) / Math.max(1, textWidth));
+      if (fittedSize < 6 || height < margin * 2 + fittedSize) return apiError('Bates label is too long or the page is too small. Shorten the label.', 400);
+      textWidth = font.widthOfTextAtSize(displayText, fittedSize);
+      const textHeight = font.heightAtSize(fittedSize);
 
       let x = margin;
       let y = margin;
@@ -71,6 +76,8 @@ export async function POST(request: NextRequest) {
           break;
       }
 
+      x += originX;
+      y += originY;
       // Draw subtle white backing rectangle for legibility over colored exhibits
       page.drawRectangle({
         x: Math.max(0, x - 4),
@@ -84,7 +91,7 @@ export async function POST(request: NextRequest) {
       page.drawText(displayText, {
         x: Math.max(0, x),
         y: Math.max(0, y),
-        size: fontSize,
+        size: fittedSize,
         font,
         color: rgb(0.1, 0.1, 0.1),
       });

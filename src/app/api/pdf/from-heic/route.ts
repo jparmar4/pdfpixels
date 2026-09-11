@@ -22,8 +22,10 @@ export async function POST(request: NextRequest) {
     }
 
     const orientation = (formData.get('orientation') as string) || 'auto'; // 'auto', 'portrait', 'landscape'
-    const margin = parseInt(String(formData.get('margin') || '20'), 10); // in points
+    const margin = Number(formData.get('margin') ?? '20'); // in points
 
+    if (!['auto', 'portrait', 'landscape'].includes(orientation) || !Number.isFinite(margin) || margin < 0 || margin > 100) return apiError('Choose a valid orientation and a margin from 0 to 100 points.', 400);
+    if (files.length > 30 || files.some(file => typeof file.arrayBuffer !== 'function' || !/\.(heic|heif)$/i.test(file.name) || file.size === 0 || file.size > 25 * 1024 * 1024) || files.reduce((sum, file) => sum + file.size, 0) > 100 * 1024 * 1024) return apiError('Upload up to 30 HEIC/HEIF photos, at most 25MB each and 100MB total.', 400);
     const pdfDoc = await PDFDocument.create();
 
     for (const file of files) {
@@ -43,7 +45,7 @@ export async function POST(request: NextRequest) {
       } catch (convErr) {
         console.warn('heic-convert failed, trying sharp fallback:', convErr);
         try {
-          jpegBuf = await sharp(inputBuf).jpeg({ quality: 92 }).toBuffer();
+          jpegBuf = await sharp(inputBuf).rotate().jpeg({ quality: 92 }).toBuffer();
         } catch (sharpErr) {
           console.error('Sharp HEIC conversion also failed:', sharpErr);
           throw new Error(`Failed to decode HEIC image "${file.name}". Ensure the file is a valid HEIC/HEIF photo.`);
@@ -75,6 +77,7 @@ export async function POST(request: NextRequest) {
         }
       }
 
+      if (orientation === 'auto') { pageWidth += margin * 2; pageHeight += margin * 2; }
       const page = pdfDoc.addPage([pageWidth, pageHeight]);
 
       // Calculate fitted dimensions preserving aspect ratio with margin

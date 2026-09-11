@@ -216,7 +216,8 @@ export async function POST(req: NextRequest) {
 
         if (remoteResp.ok) {
           const ab = await remoteResp.arrayBuffer()
-          const out = Buffer.from(ab)
+          const candidate = Buffer.from(ab)
+          const out = candidate.length < originalBuffer.length ? candidate : originalBuffer
           const magic = validatePdfBuffer(out)
           if (!magic.ok) {
             throw new Error('Remote compressor returned a non-PDF response')
@@ -296,7 +297,7 @@ export async function POST(req: NextRequest) {
 
     // Prefer the smaller of compressed vs original when forced
     let finalBytes = compressed
-    if (compressed.length >= originalBuffer.length && engine === 'local-fallback') {
+    if (compressed.length >= originalBuffer.length) {
       finalBytes = originalBuffer
     }
 

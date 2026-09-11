@@ -68,17 +68,16 @@ export async function POST(request: NextRequest) {
 
     return pdfBinaryResponse(processedBytes, fileName, {
       'x-color-space': 'DeviceCMYK',
-      'x-prepress': 'Amazon-KDP-Ready',
     });
   } catch (error) {
     console.error('CMYK PDF error:', error);
     return apiError(error instanceof Error ? error.message : 'Failed to convert PDF to CMYK', 500);
   } finally {
     if (tempInputPath && fs.existsSync(tempInputPath)) {
-      try { await fs.promises.unlink(tempInputPath); } catch {}
+      try { await fs.promises.unlink(tempInputPath); } catch { /* Best-effort temporary file cleanup. */ }
     }
     if (tempOutputPath && fs.existsSync(tempOutputPath)) {
-      try { await fs.promises.unlink(tempOutputPath); } catch {}
+      try { await fs.promises.unlink(tempOutputPath); } catch { /* Best-effort temporary file cleanup. */ }
     }
   }
 }

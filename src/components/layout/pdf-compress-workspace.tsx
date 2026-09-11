@@ -72,7 +72,7 @@ const presetMeta: Record<string, { title: string; description: string; limitText
   },
   '200kb': {
     title: 'Compress PDF to 200KB Online',
-    description: 'Compress PDF documents to exactly 200KB or less for official passport, visa, and licensing portal limits.',
+    description: 'Compress PDF documents toward a 200KB upload limit for official passport, visa, and licensing portal limits.',
     limitText: 'Tuned for 200KB government visa & passport portals',
     defaultLevel: 'extreme',
   },
@@ -99,6 +99,7 @@ const presetMeta: Record<string, { title: string; description: string; limitText
 export function CompressPDFWorkspace({ targetPreset }: CompressPDFWorkspaceProps = {}) {
   const { activeTool, uploadedFile, isProcessing, progress, reset, setIsProcessing, setProgress } = useAppStore();
   const preset = targetPreset ? presetMeta[targetPreset] : null;
+  const targetBytes = targetPreset ? ({ '100kb': 100_000, '200kb': 200_000, '300kb': 300_000, '500kb': 500_000, '1mb': 1_000_000 }[targetPreset]) : undefined;
   const [result, setResult] = useState<CompressionResult | null>(null);
   const [statusLabel, setStatusLabel] = useState<'Idle' | 'Uploading' | 'Processing' | 'Finalizing'>('Idle');
   const [compressionLevel, setCompressionLevel] = useState<CompressionLevel>(preset ? preset.defaultLevel : 'recommended');
@@ -135,7 +136,7 @@ export function CompressPDFWorkspace({ targetPreset }: CompressPDFWorkspaceProps
     const formData = new FormData();
     formData.append('file', uploadedFile);
     formData.append('level', compressionLevel);
-    if (force) formData.append('force', '1');
+    if (force || targetBytes) formData.append('force', '1');
 
     let progressInterval: ReturnType<typeof setInterval> | undefined;
     try {
@@ -194,7 +195,9 @@ export function CompressPDFWorkspace({ targetPreset }: CompressPDFWorkspaceProps
       setErrorMessage(null);
       setCanForce(false);
 
-      if (savedPercent < 1) {
+      if (targetBytes && processedSize > targetBytes) {
+        toast.warning(`Output is ${formatSize(processedSize)}, above the requested limit. Try Smallest size or split the PDF.`);
+      } else if (savedPercent < 1) {
         toast.message('File returned with little size change — it may already be optimized.');
       } else {
         toast.success(`PDF compressed by ${savedPercent}% (${formatSize(originalSize)} → ${formatSize(processedSize)}).`);
@@ -211,7 +214,7 @@ export function CompressPDFWorkspace({ targetPreset }: CompressPDFWorkspaceProps
       setIsProcessing(false);
       setStatusLabel('Idle');
     }
-  }, [compressionLevel, setIsProcessing, setProgress, uploadedFile]);
+  }, [compressionLevel, setIsProcessing, setProgress, uploadedFile, targetBytes]);
 
   const handleProcess = useCallback(() => runCompress(false), [runCompress]);
   const handleForce = useCallback(() => runCompress(true), [runCompress]);
@@ -448,6 +451,7 @@ export function CompressPDFWorkspace({ targetPreset }: CompressPDFWorkspaceProps
               ) : null}
             </div>
 
+            {targetBytes && <p role="status" className="text-sm font-medium">{result.processedSize <= targetBytes ? 'Target size met.' : `Target size not met: output is ${formatSize(result.processedSize)}. Try Smallest size or split the PDF. A specific size cannot be guaranteed without losing content or quality.`}</p>}
             {/* Visual size comparison bar */}
             <div className="rounded-2xl border border-border/50 bg-card/60 p-4">
               <div className="mb-2 flex items-center justify-between text-xs font-semibold text-muted-foreground">

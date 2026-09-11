@@ -2540,24 +2540,24 @@ export const toolContentMap: Record<string, ToolContent> = {
         relatedTools: ['add-page-numbers-to-pdf', 'redact-pdf', 'flatten-pdf', 'sign-pdf'],
     },
     'sanitize-pdf': {
-        about: 'Sanitize PDF permanently cleans and purges hidden metadata, author information, revision histories, software signatures, GPS coordinates, and tracking streams from PDF documents before public distribution. Standard PDF creation tools like Microsoft Word, Adobe InDesign, and Google Docs embed invisible metadata inside the Document Information Dictionary and XMP (Extensible Metadata Platform) streams. This hidden data often reveals the author\'s full name, company name, local computer username, file directory paths, creation dates, software versions, and even previous draft revisions. When sharing contracts, press releases, investigative reports, or legal filings, unscrubbed metadata poses severe privacy and security risks. Sanitize PDF purges all non-essential metadata and flattens invisible layers, producing a clean, risk-free document.',
-        directAnswer: 'Sanitize PDF purges all hidden metadata, author names, software fingerprints, GPS data, and revision histories from PDF files, ensuring 100% privacy and security compliance.',
+        about: 'Sanitize PDF removes the document information dictionary, including author, title, software, dates, and custom properties, together with PDF XMP metadata streams. Optional form flattening turns current form values into visible page content. This is a metadata cleaner, not a complete anonymization tool: visible content, attachments, comments, hidden layers, and metadata inside embedded images may still contain private information. Inspect the resulting document before sharing it.',
+        directAnswer: 'Remove document properties and PDF XMP metadata while retaining page content. Review other sources of private information separately.',
         steps: [
             { title: 'Upload PDF to sanitize', description: 'Select the contract, government filing, press release, or sensitive report.' },
             { title: 'Inspect detected metadata', description: 'Review the live audit showing detected author, creation date, software producer, and XMP streams.' },
             { title: 'Execute one-click purge', description: 'Our engine wipes the Document Info Dictionary and deletes all embedded XMP metadata packets.' },
-            { title: 'Download sanitized PDF', description: 'Save your cleaned, untraceable PDF document ready for public distribution or court filing.' }
+            { title: 'Download sanitized PDF', description: 'Download the cleaned PDF and review its visible content, comments, and attachments before sharing.' }
         ],
         commonProblems: [
-            { problem: 'External metadata viewers still show creation dates', solution: 'Sanitize PDF completely strips or resets creation/modification dates to standard epoch defaults (0) to eliminate all timing correlation.' },
+            { problem: 'External metadata viewers still show creation dates', solution: 'Document creation and modification date properties are removed rather than replaced with placeholder dates.' },
             { problem: 'Will sanitizing PDF alter visible document text or images?', solution: 'No. Sanitization only removes hidden invisible properties and metadata streams. Your visible document pages, layouts, and typography remain 100% untouched.' }
         ],
         features: [
-            'Live metadata inspection showing detected author, software, timestamps, and custom properties',
+            'Live metadata inspection showing standard author, software, and timestamp properties',
             'Permanent removal of Title, Author, Subject, Keywords, Creator, and Producer attributes',
             'Complete deletion of embedded XMP XML metadata packets containing editing history',
-            'Optional form field flattening to prevent extraction of historical form inputs',
-            'Essential for HIPAA compliance, legal eDiscovery sanitization, and cybersecurity hygiene'
+            'Optional form field flattening to make current values part of page content',
+            'A metadata cleanup step before sharing; does not certify compliance or anonymity'
         ],
         useCases: [
             'Journalists and whistleblowers removing identifying author fingerprints from leaked documents',
@@ -2567,7 +2567,7 @@ export const toolContentMap: Record<string, ToolContent> = {
         ],
         faqs: [
             { question: 'What hidden information is stored inside PDF files?', answer: 'PDFs commonly store author names, computer usernames, organization names, software versions (e.g. "Microsoft Word 2021 for Mac"), file creation dates, modification timestamps, and editing histories in XMP streams.' },
-            { question: 'Is clearing document properties in Acrobat the same as sanitizing?', answer: 'Manual property clearing often misses deeply embedded XMP streams and object revision histories. Sanitize PDF performs a comprehensive purge of both the Info dictionary and all XMP streams.' },
+            { question: 'Is clearing document properties in Acrobat the same as sanitizing?', answer: 'The tool removes the Info dictionary and PDF XMP metadata streams. Private information in page content, attachments, comments, or embedded images is not removed.' },
             { question: 'Does sanitizing break hyperlinks or bookmarks?', answer: 'No. Document structure, interactive hyperlinks, and table-of-contents bookmarks remain fully functional.' },
             { question: 'Is this required by courts and government agencies?', answer: 'Many courts (including US Federal Courts via PACER) and government tender portals strongly advise or mandate sanitizing submitted PDFs to prevent data leaks.' }
         ],
@@ -2575,23 +2575,23 @@ export const toolContentMap: Record<string, ToolContent> = {
         relatedTools: ['redact-pdf', 'flatten-pdf', 'protect-pdf', 'pdf-to-pdfa'],
     },
     'compare-pdf': {
-        about: 'Compare PDF Documents provides side-by-side visual and textual redline comparison between two versions of a PDF file. During contract negotiations, legal drafting, architectural revisions, and policy updates, identifying subtle text changes, clause additions, and removed stipulations between document drafts is critical. Manually reading through dozens of pages side-by-side is slow and error-prone. Our comparison engine extracts content streams from both files, computes granular word-level and line-level diffs, and displays a responsive redline view highlighting additions in green, deletions in red, and unchanged text. You can inspect revision metrics, jump between changed sections, and export a clear comparison report.',
-        directAnswer: 'Compare PDF highlights differences, additions, and deletions between two document versions with side-by-side visual redline diffing in seconds.',
+        about: 'Compare PDF Documents provides line-by-line text comparison between two versions of a PDF file. During contract negotiations, legal drafting, architectural revisions, and policy updates, identifying subtle text changes, clause additions, and removed stipulations between document drafts is critical. Manually reading through dozens of pages side-by-side is slow and error-prone. Our comparison engine extracts content streams from both files, computes line-level diffs, and displays a responsive redline view highlighting additions in green, deletions in red, and unchanged text. You can inspect revision metrics, and copy the redline text to your clipboard.',
+        directAnswer: 'Compare PDF highlights differences, additions, and deletions between two document versions with line-by-line redline diffing in seconds.',
         steps: [
             { title: 'Upload Original PDF', description: 'Upload the initial baseline agreement, draft, or version 1 document.' },
             { title: 'Upload Revised PDF', description: 'Upload the modified version, counter-proposal, or version 2 document.' },
-            { title: 'Automatic redline diffing', description: 'Our comparison engine analyzes text streams and maps word-level additions and deletions.' },
-            { title: 'Review side-by-side diff', description: 'Inspect highlighted changes (green for added, red for removed) and download comparison report.' }
+            { title: 'Automatic redline diffing', description: 'Our comparison engine analyzes text streams and maps line-level additions and deletions.' },
+            { title: 'Review text diff', description: 'Inspect highlighted changes (green for added, red for removed) and copy the redline text.' }
         ],
         commonProblems: [
-            { problem: 'Formatting changes triggered false positive text diffs', solution: 'Our diff algorithm normalizes whitespace, line breaks, and hyphenation to focus exclusively on meaningful substantive content changes.' },
+            { problem: 'Formatting changes triggered false positive text diffs', solution: 'Comparison trims line edges. Reflowed paragraphs and hyphenation can appear as changes; review the originals for context.' },
             { problem: 'Scanned document cannot be compared', solution: 'Ensure both documents contain selectable text. If one is an image scan, run our OCR tool first before comparing.' }
         ],
         features: [
             'Dual upload dropzone for effortless Version 1 (Original) and Version 2 (Revised) comparison',
-            'Word-level and sentence-level redline highlighting (Green = Added, Red = Deleted)',
+            'Line-level redline highlighting (Green = Added, Red = Deleted)',
             'Change breakdown dashboard showing total additions, deletions, and percentage similarity',
-            'Synchronized side-by-side document viewer for rapid clause auditing',
+            'Scrollable text comparison; images, layout, and formatting are not compared',
             'Zero account creation required with fully private, temporary document analysis'
         ],
         useCases: [
@@ -2601,10 +2601,10 @@ export const toolContentMap: Record<string, ToolContent> = {
             'Authors and editors tracking manuscript revisions across multiple editorial drafts'
         ],
         faqs: [
-            { question: 'How does the PDF comparison engine detect changes?', answer: 'The engine decompresses and extracts text streams from both PDF files, normalizes formatting, and applies Myers diff algorithm to identify exact insertions, deletions, and modifications at the word level.' },
+            { question: 'How does the PDF comparison engine detect changes?', answer: 'The engine extracts selectable text in page order and compares added and removed lines. Large inputs are rejected rather than silently truncated.' },
             { question: 'Can I compare contracts with different page counts?', answer: 'Yes. The comparison engine is content-driven rather than page-bound, meaning it accurately identifies added or deleted clauses even if pagination has shifted.' },
-            { question: 'Is my confidential contract data secure during comparison?', answer: 'Yes. All comparison operations are transiently processed with end-to-end encryption and immediately purged from memory.' },
-            { question: 'Can I download the redline comparison as a report?', answer: 'Yes. You can export the diff summary and text changes directly to clipboard or a text report.' }
+            { question: 'Is my confidential contract data secure during comparison?', answer: 'Yes. Files are sent to the server over HTTPS and processed for this request. Comparison responses are marked no-store.' },
+            { question: 'Can I download the redline comparison as a report?', answer: 'Yes. Use Copy Redline to copy the text changes, then paste them into your own report.' }
         ],
         supportedFormats: 'Input: 2x PDF | Output: Visual Diff & Report',
         relatedTools: ['pdf-to-text', 'pdf-to-word', 'bates-numbering-pdf', 'sign-pdf'],

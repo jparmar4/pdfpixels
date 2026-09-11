@@ -58,12 +58,13 @@ export async function POST(request: NextRequest) {
                 }
               }
             } catch {
-              // Field might be of different type or not found
+              return apiError(`Could not fill field: ${name}. Check its name and field type.`, 400);
             }
           }
         }
       } catch (e) {
         console.warn('Error parsing AcroForm fields:', e);
+        return apiError('Invalid form fields or unsupported field values.', 400);
       }
     }
 
@@ -76,16 +77,16 @@ export async function POST(request: NextRequest) {
 
         for (const entry of textEntries) {
           const pageIdx = entry.pageNumber - 1;
-          if (pageIdx < 0 || pageIdx >= totalPages) continue;
+          if (!Number.isInteger(entry.pageNumber) || pageIdx < 0 || pageIdx >= totalPages || !Number.isFinite(entry.x) || !Number.isFinite(entry.y) || entry.x < 0 || entry.y < 0 || typeof entry.text !== 'string') return apiError('Invalid text entry position or page.', 400);
 
           const page = pdf.getPage(pageIdx);
           const { height: pageHeight } = page.getSize();
-          const size = entry.fontSize || 12;
+          const size = entry.fontSize ?? 12;
+          if (!Number.isFinite(size) || size < 6 || size > 96) return apiError('Font size must be between 6 and 96 points.', 400);
           const colorObj = entry.color ? hexToRgb(entry.color) : { r: 0, g: 0, b: 0 };
 
-          const yPos = entry.y > 0 && entry.y < pageHeight
-            ? pageHeight - entry.y - size
-            : entry.y;
+          const yPos = pageHeight - entry.y - size;
+          if (yPos < 0 || entry.x >= page.getWidth()) return apiError('Text entries must fit inside the page.', 400);
 
           page.drawText(entry.text || '', {
             x: Math.max(0, entry.x),
@@ -98,9 +99,11 @@ export async function POST(request: NextRequest) {
         }
       } catch (e) {
         console.warn('Error drawing freeform text entries:', e);
+        return apiError('Could not render every text entry. Check the text and positions.', 422);
       }
     }
 
+    if (!filledCount) return apiError('Provide at least one field or text entry to fill.', 400);
     const outBytes = await pdf.save();
     const fileName = file!.name ? file!.name.replace(/\.pdf$/i, '-filled.pdf') : `filled-${Date.now()}.pdf`;
 

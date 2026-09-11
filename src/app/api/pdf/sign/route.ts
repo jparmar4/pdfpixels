@@ -32,9 +32,11 @@ export async function POST(request: NextRequest) {
       try {
         items = JSON.parse(signaturesJson);
       } catch {
-        // ignore parse error
+        return apiError('Invalid signatures data.', 400);
       }
     }
+
+    if (!Array.isArray(items)) return apiError('Signatures must be an array.', 400);
 
     // Support single signature fallback if signatures array not provided
     if (items.length === 0) {
@@ -60,7 +62,7 @@ export async function POST(request: NextRequest) {
 
     for (const item of items) {
       const pageIdx = item.pageNumber - 1;
-      if (pageIdx < 0 || pageIdx >= totalPages) continue;
+      if (!Number.isInteger(item.pageNumber) || pageIdx < 0 || pageIdx >= totalPages || ![item.x, item.y, item.width, item.height].every(Number.isFinite) || item.x < 0 || item.y < 0 || item.width <= 0 || item.height <= 0) return apiError('Invalid signature position.', 400);
 
       const page = pdf.getPage(pageIdx);
       const { height: pageHeight } = page.getSize();
@@ -70,6 +72,7 @@ export async function POST(request: NextRequest) {
         imgBytes = Buffer.from(item.dataUrl.split(',')[1], 'base64');
       }
 
+      if (!imgBytes?.length) return apiError('Please provide a valid signature image.', 400);
       if (imgBytes && imgBytes.length > 0) {
         try {
           // Attempt PNG embedding first, then JPG fallback
@@ -82,9 +85,8 @@ export async function POST(request: NextRequest) {
 
           // PDF coordinate system origin is bottom-left
           // If y was supplied from top-left (canvas viewport), invert it
-          const yPos = item.y > 0 && item.y < pageHeight && item.y + item.height <= pageHeight
-            ? pageHeight - item.y - item.height
-            : item.y;
+          const yPos = pageHeight - item.y - item.height;
+          if (yPos < 0 || item.x + item.width > page.getWidth()) return apiError('Signature must fit inside the page.', 400);
 
           page.drawImage(embeddedImage, {
             x: Math.max(0, item.x),
@@ -104,6 +106,7 @@ export async function POST(request: NextRequest) {
           }
         } catch (embedError) {
           console.error('Failed to embed signature image:', embedError);
+          return apiError('Could not apply the signature image. Use PNG or JPEG.', 422);
         }
       }
     }
