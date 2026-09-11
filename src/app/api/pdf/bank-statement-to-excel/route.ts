@@ -1,23 +1,13 @@
 import { apiError } from '@/lib/api-response';
+import { parseBankStatement, parseFailureMessage, type TransactionRow } from '@/lib/bank-statement';
 import { openEditablePdf, sanitizeDownloadFileName } from '@/lib/pdf-api';
-import { NextRequest, NextResponse } from 'next/server';
+import { extractPdfTextItems, itemsToLines, itemsToTableRows } from '@/lib/pdf-text';
 import JSZip from 'jszip';
-import { extractPdfLines } from '@/lib/pdf-text';
+import { NextRequest, NextResponse } from 'next/server';
 
 export const maxDuration = 60;
 export const runtime = 'nodejs';
 
-interface TransactionRow {
-  date: string;
-  description: string;
-  debit: string;
-  credit: string;
-  balance: string;
-}
-
-/**
- * Decompresses and extracts lines from a PDF buffer.
- */
 function escapeXml(unsafe: string): string {
   return unsafe
     .replace(/&/g, '&amp;')
@@ -25,99 +15,6 @@ function escapeXml(unsafe: string): string {
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&apos;');
-}
-
-function parseFinancialTransactions(lines: string[]): TransactionRow[] {
-  const transactions: TransactionRow[] = [];
-  const datePattern = /^(?:\d{4}-\d{2}-\d{2}|\d{1,2}[/-]\d{1,2}(?:[/-]\d{2,4})?|(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]* \d{1,2}(?:, \d{4})?|\d{1,2} (?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*(?: \d{4})?)/i;
-  const moneyPattern = /(?:-?\$?\s*(?:\d{1,3}(?:,\d{3})*|\d+)\.\d{2})/g;
-
-  let currentDate = '';
-  let currentDescParts: string[] = [];
-  let amounts: string[] = [];
-
-  for (const line of lines) {
-    const trimmed = line.trim();
-    if (!trimmed) continue;
-
-    // Check if line starts with a date
-    const dateMatch = trimmed.match(datePattern);
-    if (dateMatch) {
-      // Save previous transaction if pending
-      if (currentDate && amounts.length > 0) {
-        saveRow(transactions, currentDate, currentDescParts.join(' '), amounts);
-      }
-      currentDate = dateMatch[0];
-      const rest = trimmed.slice(dateMatch[0].length).trim();
-      currentDescParts = [];
-      amounts = [];
-
-      // Extract all monetary figures in the rest of line
-      const matchedMoney = rest.match(moneyPattern);
-      if (matchedMoney) {
-        amounts.push(...matchedMoney.map(m => m.replace(/[$,\s]/g, '')));
-        const descWithoutMoney = rest.replace(moneyPattern, '').trim();
-        if (descWithoutMoney) currentDescParts.push(descWithoutMoney);
-      } else if (rest) {
-        currentDescParts.push(rest);
-      }
-    } else if (currentDate) {
-      // Line continuation
-      const matchedMoney = trimmed.match(moneyPattern);
-      if (matchedMoney) {
-        amounts.push(...matchedMoney.map(m => m.replace(/[$,\s]/g, '')));
-        const descWithoutMoney = trimmed.replace(moneyPattern, '').trim();
-        if (descWithoutMoney) currentDescParts.push(descWithoutMoney);
-      } else {
-        // Skip obvious header words
-        if (!/^(Page \d|Statement Period|Account Number|Balance Summary)/i.test(trimmed)) {
-          currentDescParts.push(trimmed);
-        }
-      }
-    }
-  }
-
-  // Save the last row
-  if (currentDate && amounts.length > 0) {
-    saveRow(transactions, currentDate, currentDescParts.join(' '), amounts);
-  }
-
-  return transactions;
-}
-
-function saveRow(rows: TransactionRow[], date: string, desc: string, amounts: string[]) {
-  let debit = '';
-  let credit = '';
-  let balance = '';
-
-  if (amounts.length === 1) {
-    const val = parseFloat(amounts[0]);
-    if (val < 0) {
-      debit = Math.abs(val).toFixed(2);
-    } else {
-      credit = val.toFixed(2);
-    }
-  } else if (amounts.length === 2) {
-    const val1 = parseFloat(amounts[0]);
-    if (val1 < 0) {
-      debit = Math.abs(val1).toFixed(2);
-    } else {
-      credit = val1.toFixed(2);
-    }
-    balance = amounts[1];
-  } else if (amounts.length >= 3) {
-    debit = amounts[0];
-    credit = amounts[1];
-    balance = amounts[2];
-  }
-
-  rows.push({
-    date: date.trim(),
-    description: desc.trim() || 'Transaction Item',
-    debit,
-    credit,
-    balance,
-  });
 }
 
 function colIndexToLetters(col: number): string {
@@ -128,6 +25,13 @@ function colIndexToLetters(col: number): string {
     temp = Math.floor(temp / 26) - 1;
   }
   return letter;
+}
+
+function scoreParse(rows: TransactionRow[]): number {
+  if (rows.length === 0) return -1;
+  const directed = rows.filter(row => row.debit || row.credit).length;
+  const withBalance = rows.filter(row => row.balance).length;
+  return rows.length * 10 + directed * 2 + withBalance;
 }
 
 async function buildFinancialXlsx(rows: TransactionRow[]): Promise<Buffer> {
@@ -167,7 +71,7 @@ async function buildFinancialXlsx(rows: TransactionRow[]): Promise<Buffer> {
     `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
   <sheets>
-    <sheet name="Statement Transactions" sheetId="1" r:id="rId1"/>
+    <sheet name="Bank Statement" sheetId="1" r:id="rId1"/>
   </sheets>
 </workbook>`
   );
@@ -176,44 +80,59 @@ async function buildFinancialXlsx(rows: TransactionRow[]): Promise<Buffer> {
     'xl/styles.xml',
     `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
-  <fonts count="2">
+  <numFmts count="1"><numFmt numFmtId="164" formatCode="#,##0.00"/></numFmts>
+  <fonts count="3">
     <font><name val="Calibri"/><sz val="11"/></font>
-    <font><b/><name val="Calibri"/><sz val="11"/><color rgb="FF1F4E79"/></font>
+    <font><b/><name val="Calibri"/><sz val="11"/><color rgb="FFFFFFFF"/></font>
+    <font><b/><name val="Calibri"/><sz val="11"/></font>
   </fonts>
-  <fills count="2">
+  <fills count="3">
     <fill><patternFill patternType="none"/></fill>
     <fill><patternFill patternType="gray125"/></fill>
+    <fill><patternFill patternType="solid"><fgColor rgb="FF1F4E79"/></patternFill></fill>
   </fills>
-  <borders count="1"><border/></borders>
+  <borders count="2">
+    <border><left/><right/><top/><bottom/><diagonal/></border>
+    <border><left/><right/><top style="thin"><color auto="1"/></top><bottom style="double"><color auto="1"/></bottom><diagonal/></border>
+  </borders>
   <cellStyleXfs count="1"><xf/></cellStyleXfs>
-  <cellXfs count="2">
+  <cellXfs count="5">
     <xf fontId="0" fillId="0" borderId="0"/>
-    <xf fontId="1" fillId="0" borderId="0" applyFont="1"/>
+    <xf fontId="1" fillId="2" borderId="0" applyFont="1" applyFill="1"/>
+    <xf fontId="0" fillId="0" borderId="0" numFmtId="164" applyNumberFormat="1"/>
+    <xf fontId="2" fillId="0" borderId="1" applyFont="1" applyBorder="1"/>
+    <xf fontId="2" fillId="0" borderId="1" numFmtId="164" applyFont="1" applyNumberFormat="1" applyBorder="1"/>
   </cellXfs>
 </styleSheet>`
   );
 
   const headers = ['Date', 'Description', 'Withdrawals (Debit)', 'Deposits (Credit)', 'Ending Balance'];
-  let sheetDataXml = '<row r="1">';
+  let sheetDataXml = '<row r="1" ht="26" customHeight="1">';
   for (let c = 0; c < headers.length; c++) {
     const cellRef = `${colIndexToLetters(c)}1`;
     sheetDataXml += `<c r="${cellRef}" s="1" t="inlineStr"><is><t>${escapeXml(headers[c])}</t></is></c>`;
   }
   sheetDataXml += '</row>';
 
+  let sumDebits = 0;
+  let sumCredits = 0;
+
   for (let r = 0; r < rows.length; r++) {
     const rowNum = r + 2;
     const item = rows[r];
     const vals = [item.date, item.description, item.debit, item.credit, item.balance];
 
+    if (item.debit && Number.isFinite(Number(item.debit))) sumDebits += Number(item.debit);
+    if (item.credit && Number.isFinite(Number(item.credit))) sumCredits += Number(item.credit);
+
     let rowXml = `<row r="${rowNum}">`;
     for (let c = 0; c < vals.length; c++) {
       const cellRef = `${colIndexToLetters(c)}${rowNum}`;
-      const rawVal = vals[c];
+      const rawVal = vals[c] || '';
       const isNum = c >= 2 && Number.isFinite(Number(rawVal)) && rawVal.trim() !== '';
 
       if (isNum) {
-        rowXml += `<c r="${cellRef}"><v>${rawVal.trim()}</v></c>`;
+        rowXml += `<c r="${cellRef}" s="2"><v>${rawVal.trim()}</v></c>`;
       } else {
         rowXml += `<c r="${cellRef}" t="inlineStr"><is><t>${escapeXml(rawVal)}</t></is></c>`;
       }
@@ -222,18 +141,38 @@ async function buildFinancialXlsx(rows: TransactionRow[]): Promise<Buffer> {
     sheetDataXml += rowXml;
   }
 
+  // Add summary total row if transactions exist
+  if (rows.length > 0) {
+    const totalRowNum = rows.length + 2;
+    const lastDataRow = rows.length + 1;
+    sheetDataXml += `<row r="${totalRowNum}" ht="20" customHeight="1">
+      <c r="A${totalRowNum}" s="3" t="inlineStr"><is><t></t></is></c>
+      <c r="B${totalRowNum}" s="3" t="inlineStr"><is><t>Total</t></is></c>
+      <c r="C${totalRowNum}" s="4"><f>SUM(C2:C${lastDataRow})</f><v>${sumDebits.toFixed(2)}</v></c>
+      <c r="D${totalRowNum}" s="4"><f>SUM(D2:D${lastDataRow})</f><v>${sumCredits.toFixed(2)}</v></c>
+      <c r="E${totalRowNum}" s="3" t="inlineStr"><is><t></t></is></c>
+    </row>`;
+  }
+
+  const lastRow = Math.max(2, rows.length + 1);
   const sheetXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+  <sheetViews>
+    <sheetView tabSelected="1" workbookViewId="0">
+      <pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/>
+    </sheetView>
+  </sheetViews>
   <cols>
     <col min="1" max="1" width="14" customWidth="1"/>
-    <col min="2" max="2" width="42" customWidth="1"/>
-    <col min="3" max="3" width="20" customWidth="1"/>
-    <col min="4" max="4" width="20" customWidth="1"/>
-    <col min="5" max="5" width="20" customWidth="1"/>
+    <col min="2" max="2" width="46" customWidth="1"/>
+    <col min="3" max="3" width="22" customWidth="1"/>
+    <col min="4" max="4" width="22" customWidth="1"/>
+    <col min="5" max="5" width="22" customWidth="1"/>
   </cols>
   <sheetData>
     ${sheetDataXml}
   </sheetData>
+  <autoFilter ref="A1:E${lastRow}"/>
 </worksheet>`;
 
   zip.file('xl/worksheets/sheet1.xml', sheetXml);
@@ -246,32 +185,85 @@ export async function POST(request: NextRequest) {
     const formData = await request.formData();
     const file = formData.get('file') as File | null;
     const format = (formData.get('format') as string) || 'xlsx';
+    const customRowsJson = formData.get('transactions') as string | null;
 
-    const opened = await openEditablePdf(file);
-    if (!opened.ok) return opened.response;
-    const { buffer } = opened;
-
-    const rawLines = await extractPdfLines(buffer);
-    const transactions = parseFinancialTransactions(rawLines);
-
-    if (transactions.length === 0) {
-      return apiError('No reliable transaction rows found. Use a text-based statement with dates and decimal amounts, or run OCR first.', 422);
-    }
-
+    let transactions: TransactionRow[] = [];
+    let summary: import('@/lib/bank-statement').StatementSummary | undefined;
     const baseName = file?.name ? file.name.replace(/\.pdf$/i, '') : 'bank-statement';
 
+    // If client supplied edited transactions for download
+    if (customRowsJson) {
+      try {
+        transactions = JSON.parse(customRowsJson);
+      } catch {
+        // Fallback to parsing file if JSON parse fails
+      }
+    }
+
+    // Parse PDF if no custom transactions provided
+    if (transactions.length === 0) {
+      const opened = await openEditablePdf(file);
+      if (!opened.ok) return opened.response;
+      const { buffer } = opened;
+
+      const items = await extractPdfTextItems(buffer);
+
+      // Detect scanned (image-only) PDF
+      if (items.length === 0 || items.every(item => !item.str.trim())) {
+        return NextResponse.json(
+          {
+            error: 'No selectable text found. This document appears to be a scanned PDF. Please use our OCR tool to extract text, or upload a digital PDF statement.',
+            failure: 'scanned_pdf',
+            isScannedPdf: true,
+          },
+          { status: 422, headers: { 'Cache-Control': 'no-store' } }
+        );
+      }
+
+      const tableLines = itemsToTableRows(items).map(row => row.join('\t'));
+      const plainLines = itemsToLines(items);
+      const tableParsed = parseBankStatement(tableLines);
+      const lineParsed = parseBankStatement(plainLines);
+
+      const parsed = scoreParse(tableParsed.transactions) >= scoreParse(lineParsed.transactions)
+        ? tableParsed
+        : lineParsed;
+
+      transactions = parsed.transactions;
+      summary = parsed.summary;
+
+      if (transactions.length === 0) {
+        const failureCode = parsed.failure || tableParsed.failure || lineParsed.failure;
+        return NextResponse.json(
+          {
+            error: parseFailureMessage(failureCode),
+            failure: failureCode,
+            isScannedPdf: failureCode === 'empty' || failureCode === 'scanned_pdf',
+          },
+          { status: 422, headers: { 'Cache-Control': 'no-store' } }
+        );
+      }
+    }
+
     if (format === 'json') {
-      return NextResponse.json({
-        transactions,
-        totalRows: transactions.length,
-        fileName: `${sanitizeDownloadFileName(baseName)}.xlsx`,
-      }, { headers: { 'Cache-Control': 'no-store' } });
+      return NextResponse.json(
+        {
+          transactions,
+          totalRows: transactions.length,
+          summary,
+          fileName: `${sanitizeDownloadFileName(baseName)}.xlsx`,
+        },
+        { headers: { 'Cache-Control': 'no-store' } }
+      );
     }
 
     if (format === 'csv') {
       const csvHeader = 'Date,Description,Withdrawal (Debit),Deposit (Credit),Balance\n';
       const csvBody = transactions
-        .map(t => `"${t.date.replace(/"/g, '""')}","${t.description.replace(/"/g, '""')}","${t.debit}","${t.credit}","${t.balance}"`)
+        .map(
+          t =>
+            `"${(t.date || '').replace(/"/g, '""')}","${(t.description || '').replace(/"/g, '""')}","${t.debit || ''}","${t.credit || ''}","${t.balance || ''}"`
+        )
         .join('\n');
 
       return new NextResponse(csvHeader + csvBody, {
@@ -300,3 +292,4 @@ export async function POST(request: NextRequest) {
     return apiError(error instanceof Error ? error.message : 'Failed to convert bank statement to Excel', 500);
   }
 }
+

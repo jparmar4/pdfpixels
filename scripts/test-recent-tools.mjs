@@ -68,8 +68,28 @@ const text = await call('to-text', source);
 assert.equal(text.status, 200); assert.match((await text.json()).text, /Café résumé/);
 const bank = await call('bank-statement-to-excel', source, { format: 'json' });
 assert.equal(bank.status, 200);
-const tx = (await bank.json()).transactions[0];
+const bankJson = await bank.json();
+const tx = bankJson.transactions[0];
 assert.equal(tx.debit, '1234.56'); assert.equal(tx.balance, '9876.54');
+assert.equal(bankJson.summary.totalDebits, 1234.56);
+
+// Test custom transactions override on export
+const customExport = await call('bank-statement-to-excel', null, {
+  format: 'xlsx',
+  transactions: JSON.stringify([{ date: '01/01/2026', description: 'CUSTOM OVERRIDE ROW', debit: '250.00', credit: '', balance: '1000.00' }])
+});
+assert.equal(customExport.status, 200);
+const customZip = await JSZip.loadAsync(await customExport.arrayBuffer());
+const customXml = await customZip.file('xl/worksheets/sheet1.xml').async('string');
+assert.match(customXml, /CUSTOM OVERRIDE ROW/);
+
+// Test Indian lakhs statement
+const indianSource = await fixture(['15-Jan-2026 UPI Payment 1,25,000.00 15,50,000.00']);
+const indianBank = await call('bank-statement-to-excel', indianSource, { format: 'json' });
+assert.equal(indianBank.status, 200);
+const indTx = (await indianBank.json()).transactions[0];
+assert.equal(indTx.debit, '125000.00');
+
 for (const tool of ['to-word', 'to-excel', 'bank-statement-to-excel']) {
   const response = await call(tool, source); assert.equal(response.status, 200);
   const zip = await JSZip.loadAsync(await response.arrayBuffer());
@@ -77,7 +97,13 @@ for (const tool of ['to-word', 'to-excel', 'bank-statement-to-excel']) {
   assert.match(xml, tool === 'bank-statement-to-excel' ? /1234.56/ : /Café résumé/);
 }
 const blank = await fixture([]);
-for (const tool of ['to-text', 'to-word', 'to-excel', 'bank-statement-to-excel']) assert.equal((await call(tool, blank)).status, 422, tool);
+for (const tool of ['to-text', 'to-word', 'to-excel', 'bank-statement-to-excel']) {
+  const blankRes = await call(tool, blank);
+  assert.equal(blankRes.status, 422, tool);
+  if (tool === 'bank-statement-to-excel') {
+    assert.equal((await blankRes.json()).isScannedPdf, true);
+  }
+}
 const lines = Array.from({ length: 520 }, (_, i) => `Line ${i}`);
 const revised = [...lines]; revised[515] = 'Changed after line 500';
 const comparison = await call('compare', null, { fileA: await fixture(lines), fileB: await fixture(revised) });
