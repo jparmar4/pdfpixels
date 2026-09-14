@@ -80,6 +80,10 @@ export function ScrollToTop() {
   }, []);
 
   useEffect(() => {
+    // Intentional: sync initial visibility from the external scroll system on mount
+    // and whenever the route changes. (Refactor to useSyncExternalStore is possible
+    // but out of scope here.)
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     updateVisibility();
     window.addEventListener('scroll', updateVisibility, { passive: true });
     window.addEventListener('resize', updateVisibility, { passive: true });

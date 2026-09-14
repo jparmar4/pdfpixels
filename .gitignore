@@ -52,3 +52,5 @@ server.log
 /skills/
 # Generated PDF regression fixtures
 /tmp/pdfs/
+# Local scratch + diagnostics (never commit)
+/tmp/

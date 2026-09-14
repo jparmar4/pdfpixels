@@ -1,5 +1,6 @@
 import nextCoreWebVitals from "eslint-config-next/core-web-vitals";
 import nextTypescript from "eslint-config-next/typescript";
+import reactHooks from "eslint-plugin-react-hooks";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
 
@@ -7,6 +8,10 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const eslintConfig = [...nextCoreWebVitals, ...nextTypescript, {
+  // eslint-config-next@16 no longer registers the react-hooks plugin for the
+  // flat config, so the rule reference below failed to resolve. Register it
+  // explicitly (the package ships with eslint-config-next already).
+  plugins: { "react-hooks": reactHooks },
   rules: {
     // TypeScript rules
     "@typescript-eslint/no-explicit-any": "off",
@@ -37,6 +42,12 @@ const eslintConfig = [...nextCoreWebVitals, ...nextTypescript, {
     "no-useless-escape": "warn",
   },
 }, {
+  // Standalone Node maintenance scripts are CommonJS by design; require() is fine there.
+  files: ["**/*.cjs"],
+  rules: {
+    "@typescript-eslint/no-require-imports": "off",
+  },
+}, {
   ignores: [
     "node_modules/**",
     ".next/**",
@@ -48,6 +59,7 @@ const eslintConfig = [...nextCoreWebVitals, ...nextTypescript, {
     "check.js",
     "examples/**",
     "skills",
+    "tmp/**",
   ]
 }];
 
