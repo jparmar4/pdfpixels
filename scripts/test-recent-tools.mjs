@@ -29,6 +29,7 @@ registerHooks({
   },
 });
 const { extractPdfLines } = await import('../src/lib/pdf-text.ts');
+const { parseBankStatement } = await import('../src/lib/bank-statement.ts');
 const out = path.join(root, 'tmp', 'pdfs', 'recent-tools');
 mkdirSync(out, { recursive: true });
 async function fixture(lines, metadata = false) {
@@ -45,6 +46,18 @@ async function fixture(lines, metadata = false) {
     const stream = doc.context.stream('<xmp>PRIVATE_XMP</xmp>', { Type: 'Metadata', Subtype: 'XML' });
     doc.catalog.set(PDFName.of('Metadata'), doc.context.register(stream));
   }
+  return doc.save();
+}
+async function columnFixture(header, xs, rows) {
+  const doc = await PDFDocument.create();
+  const font = await doc.embedFont(StandardFonts.Helvetica);
+  const page = doc.addPage([842, 595]);
+  header.forEach((h, i) => page.drawText(h, { x: xs[i], y: 540, size: 11, font, color: rgb(0.1, 0.1, 0.1) }));
+  page.drawLine({ start: { x: 40, y: 530 }, end: { x: 800, y: 530 }, thickness: 1, color: rgb(0.5, 0.5, 0.5) });
+  rows.forEach((r, idx) => {
+    const y = 505 - idx * 22;
+    r.forEach((cell, i) => page.drawText(cell, { x: xs[i], y, size: 10, font }));
+  });
   return doc.save();
 }
 async function call(tool, bytes, fields = {}) {
@@ -89,6 +102,105 @@ const indianBank = await call('bank-statement-to-excel', indianSource, { format:
 assert.equal(indianBank.status, 200);
 const indTx = (await indianBank.json()).transactions[0];
 assert.equal(indTx.debit, '125000.00');
+
+// Tab-delimited input must reach splitCells with tabs intact (empty Debit/Credit columns preserved)
+const tabRows = parseBankStatement([
+  'Date\tDescription\tDebit\tCredit\tBalance',
+  '01/05/2026\tCREDIT REVERSAL\t54.23\t\t1,000.00',
+]).transactions;
+assert.equal(tabRows.length, 1);
+assert.equal(tabRows[0].debit, '54.23');
+assert.equal(tabRows[0].credit, '');
+assert.equal(tabRows[0].balance, '1000.00');
+assert.equal(tabRows[0].description, 'CREDIT REVERSAL');
+
+// EU decimal-comma single-line must not match date fragments as money
+const euPlain = parseBankStatement(['02.01.2026 SUPERMARKT 45,50 1.954,50']).transactions;
+assert.equal(euPlain.length, 1);
+assert.equal(euPlain[0].debit, '45.50');
+assert.equal(euPlain[0].credit, '');
+assert.equal(euPlain[0].balance, '1954.50');
+assert.equal(euPlain[0].description, 'SUPERMARKT');
+
+// Undated Opening/Closing Balance rows are captured and feed the summary
+const balanceRows = parseBankStatement([
+  'Opening Balance 5,000.00',
+  '01/05/2026\tCoffee Shop\t4.50\t\t4,995.50',
+  '01/06/2026\tRefund\t\t10.00\t5,005.50',
+  'Closing Balance 5,005.50',
+]);
+assert.equal(balanceRows.transactions.length, 4);
+assert.equal(balanceRows.summary.openingBalance, 5000);
+assert.equal(balanceRows.summary.closingBalance, 5005.5);
+assert.ok(balanceRows.transactions.some(t => t.description === 'Opening Balance' && t.date === '' && t.balance === '5000.00'));
+assert.ok(balanceRows.transactions.some(t => t.description === 'Closing Balance' && t.date === '' && t.balance === '5005.50'));
+
+// A balance-only fragment must still fail (no-dates), not become a successful parse
+const balanceOnly = await call('bank-statement-to-excel', await fixture(['Opening Balance 5,000.00', 'Closing Balance 5,005.50']), { format: 'json' });
+assert.equal(balanceOnly.status, 422);
+assert.equal((await balanceOnly.json()).failure, 'no-dates');
+
+// EU column-aligned statement end-to-end
+const euPdf = await columnFixture(
+  ['Datum', 'Omschrijving', 'Debet', 'Credit', 'Saldo'],
+  [40, 140, 430, 550, 660],
+  [
+    ['02.01.2026', 'SUPERMARKT ALBERT HEIJN 2345', '45,50', '', '1.954,50'],
+    ['03.01.2026', 'SALARIS JANUARI', '', '3.200,00', '5.154,50'],
+    ['05.01.2026', 'TREIN NS UTRECHT', '28,40', '', '5.126,10'],
+    ['07.01.2026', 'HUUR MAAND JANUARI', '950,00', '', '4.176,10'],
+  ]
+);
+const euBank = await call('bank-statement-to-excel', euPdf, { format: 'json' });
+assert.equal(euBank.status, 200);
+const euJson = await euBank.json();
+const euExpect = [
+  { date: '02.01.2026', description: 'SUPERMARKT ALBERT HEIJN 2345', debit: '45.50', credit: '', balance: '1954.50' },
+  { date: '03.01.2026', description: 'SALARIS JANUARI', debit: '', credit: '3200.00', balance: '5154.50' },
+  { date: '05.01.2026', description: 'TREIN NS UTRECHT', debit: '28.40', credit: '', balance: '5126.10' },
+  { date: '07.01.2026', description: 'HUUR MAAND JANUARI', debit: '950.00', credit: '', balance: '4176.10' },
+];
+assert.equal(euJson.transactions.length, euExpect.length);
+euExpect.forEach((want, i) => {
+  const got = euJson.transactions[i];
+  assert.equal(got.date, want.date);
+  assert.equal(got.description, want.description);
+  assert.equal(got.debit, want.debit);
+  assert.equal(got.credit, want.credit);
+  assert.equal(got.balance, want.balance);
+});
+
+// US column-aligned statement end-to-end (unchanged behavior)
+const usPdf = await columnFixture(
+  ['Date', 'Description', 'Withdrawals', 'Deposits', 'Balance'],
+  [40, 140, 400, 520, 640],
+  [
+    ['01/02/2026', 'POS PURCHASE - WHOLE FOODS MARKET', '86.42', '', '4,913.58'],
+    ['01/03/2026', 'ONLINE TRANSFER FROM SAVINGS', '', '1,200.00', '6,113.58'],
+    ['01/05/2026', 'ELECTRIC BILL AUTOPAY', '154.37', '', '5,959.21'],
+    ['01/07/2026', 'PAYROLL DEPOSIT ACME CORP', '', '3,250.00', '9,209.21'],
+    ['01/09/2026', 'ATM WITHDRAWAL #4471', '200.00', '', '9,009.21'],
+    ['01/12/2026', 'COFFEE SHOP', '6.75', '', '9,002.46'],
+  ]
+);
+const usBank = await call('bank-statement-to-excel', usPdf, { format: 'json' });
+assert.equal(usBank.status, 200);
+const usJson = await usBank.json();
+const usExpect = [
+  { debit: '86.42', credit: '', balance: '4913.58' },
+  { debit: '', credit: '1200.00', balance: '6113.58' },
+  { debit: '154.37', credit: '', balance: '5959.21' },
+  { debit: '', credit: '3250.00', balance: '9209.21' },
+  { debit: '200.00', credit: '', balance: '9009.21' },
+  { debit: '6.75', credit: '', balance: '9002.46' },
+];
+assert.equal(usJson.transactions.length, usExpect.length);
+usExpect.forEach((want, i) => {
+  const got = usJson.transactions[i];
+  assert.equal(got.debit, want.debit);
+  assert.equal(got.credit, want.credit);
+  assert.equal(got.balance, want.balance);
+});
 
 for (const tool of ['to-word', 'to-excel', 'bank-statement-to-excel']) {
   const response = await call(tool, source); assert.equal(response.status, 200);

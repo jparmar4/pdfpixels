@@ -80,7 +80,7 @@ function normalizeLine(line: string): string {
     .replace(/\u00a0/g, ' ')
     .replace(/[\u2212\u2013\u2014\uff0d]/g, '-')
     .replace(/[\u200b-\u200d\ufeff]/g, '')
-    .replace(/[ \t]+/g, ' ')
+    .replace(/ +/g, ' ')
     .trim();
 }
 
@@ -202,7 +202,15 @@ function findMoney(text: string, decimal: '.' | ',', allowBareInteger = false): 
   );
 
   let match: RegExpExecArray | null;
+  const dateSpans = findDates(text);
   while ((match = re.exec(text))) {
+    const start = match.index;
+    const end = match.index + match[0].length;
+    if (match.index === re.lastIndex) re.lastIndex += 1;
+
+    // Never treat a date fragment (e.g. "01.202" inside "02.01.2026") as money.
+    if (dateSpans.some(span => start < span.end && end > span.start)) continue;
+
     const raw = match[0].trim();
     const hasDecimal = decimal === ','
       ? /,\d{1,2}\s*(?:[€£$₹¥]|CR|DR|Cr\.|Dr\.)?\s*[-+]?\)?$/i.test(raw)
@@ -231,11 +239,9 @@ function findMoney(text: string, decimal: '.' | ',', allowBareInteger = false): 
         signed,
         explicitSign: explicitPositive || signed < 0,
       },
-      start: match.index,
-      end: match.index + match[0].length,
+      start,
+      end,
     });
-
-    if (match.index === re.lastIndex) re.lastIndex += 1;
   }
 
   return hits;
@@ -447,6 +453,22 @@ function parseByContent(cells: string[], decimal: '.' | ','): DraftRow | null {
   });
 }
 
+function parseBalanceOnly(cells: string[], decimal: '.' | ','): DraftRow | null {
+  const line = cells.join(' ').trim();
+  if (!line || findDates(line).length > 0) return null;
+  if (!BALANCE_LABEL.test(line)) return null;
+  const money = findMoney(line, decimal);
+  if (money.length !== 1) return null;
+  const kind = /clos|end/i.test(line) ? 'closing' : 'opening';
+  return {
+    date: '',
+    description: stripMatched(line, money),
+    amounts: [],
+    balance: money[0].amount.value,
+    kind,
+  };
+}
+
 function collapseEmptyAmounts(amounts: Amount[]): Amount[] {
   let start = 0;
   let end = amounts.length;
@@ -482,7 +504,7 @@ function applyAmountPattern(draft: DraftRow): DraftRow {
 
   // 3 filled amounts: [Debit, Credit, Balance] or [Amount, Balance, ...]
   if (filled.length >= 3) {
-    draft.debit = filled[0].signed < 0 ? filled[0].value : filled[0].value;
+    draft.debit = filled[0].value;
     draft.credit = filled[1].value;
     draft.balance = filled[2].value;
     draft.amounts = filled;
@@ -600,7 +622,7 @@ function formatAmount(value: number | undefined): string {
 }
 
 function finalize(row: DraftRow): TransactionRow | null {
-  if (!row.date) return null;
+  if (!row.date && !row.kind) return null;
   if (row.debit === undefined && row.credit === undefined && row.balance === undefined) return null;
   const description = row.description.replace(/[ \t]{2,}/g, ' ').trim() || (row.kind === 'opening' ? 'Opening Balance' : row.kind === 'closing' ? 'Closing Balance' : 'Transaction');
   if (JUNK_RE.test(description) && row.kind === 'normal') return null;
@@ -696,6 +718,14 @@ export function parseBankStatement(lines: string[]): BankStatementParseResult {
       if (activeSection && !parsed.section) parsed.section = activeSection;
     }
 
+    if (!parsed) {
+      const balanceOnly = parseBalanceOnly(cells, decimal);
+      if (balanceOnly) {
+        drafts.push(balanceOnly);
+        continue;
+      }
+    }
+
     if (parsed?.date && (parsed.amounts.some(amount => !amount.empty) || parsed.debit !== undefined || parsed.credit !== undefined || parsed.balance !== undefined)) {
       pushPending();
       drafts.push(parsed);
@@ -741,7 +771,8 @@ export function parseBankStatement(lines: string[]): BankStatementParseResult {
   classifyWithBalance(drafts);
 
   const transactions = drafts.map(finalize).filter((row): row is TransactionRow => row !== null);
-  if (transactions.length === 0) {
+  const datedRows = transactions.filter(row => row.date);
+  if (datedRows.length === 0) {
     return { transactions: [], failure: !hadDates ? 'no-dates' : !hadMoney ? 'no-amounts' : 'no-rows' };
   }
 
