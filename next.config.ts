@@ -39,7 +39,19 @@ const nextConfig: NextConfig = {
   serverExternalPackages: ['pdfjs-dist', '@napi-rs/canvas', 'heic-convert', 'heic-decode', 'libheif-js', 'jpeg-js', 'pngjs'],
 
   outputFileTracingIncludes: {
-    '/api/pdf/*': ['./node_modules/pdfjs-dist/legacy/build/*.mjs', './node_modules/pdfjs-dist/standard_fonts/**/*', './node_modules/pdfjs-dist/cmaps/**/*'],
+    '/api/pdf/*': [
+      './node_modules/pdfjs-dist/legacy/build/*.mjs',
+      './node_modules/pdfjs-dist/standard_fonts/**/*',
+      './node_modules/pdfjs-dist/cmaps/**/*',
+      // pdfjs-dist's Node polyfill loads DOMMatrix/Path2D/ImageData from
+      // @napi-rs/canvas; without these files traced into the standalone build,
+      // module init crashes with "ReferenceError: DOMMatrix is not defined"
+      // (canvas-<platform> entries carry the optional platform binaries).
+      './node_modules/@napi-rs/canvas/**',
+      './node_modules/@napi-rs/canvas-*/**',
+      // Ghostscript's sRGB profile, bundled for PDF/A OutputIntents (to-pdfa).
+      './iccprofiles/**',
+    ],
   },
 
   // Experimental features for performance

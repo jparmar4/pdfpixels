@@ -7,6 +7,7 @@ import {
 } from '@/lib/pdf-api';
 
 export const maxDuration = 60;
+import { runGhostscriptWithFallback } from '@/lib/ghostscript';
 import { NextRequest, NextResponse } from 'next/server';
 import { spawn } from 'child_process';
 import fs from 'fs';
@@ -135,13 +136,30 @@ export async function POST(request: NextRequest) {
     } catch (qpdfErr) {
       const qMsg = qpdfErr instanceof Error ? qpdfErr.message : '';
       if (qMsg.toLowerCase().includes('qpdf is not available') || qMsg.includes('ENOENT') || qMsg.includes('spawn')) {
-        return jsonError(
-          'Fast Web View needs the qpdf engine, which is not available on this server. Compress PDF can still reduce file size.',
-          503,
-          qMsg,
-        );
+        // qpdf missing on this host? Ghostscript's pdfwrite can emit Fast Web View too.
+        console.warn('qpdf unavailable, falling back to Ghostscript fast web view');
+        try {
+          await runGhostscriptWithFallback([
+            '-sDEVICE=pdfwrite',
+            '-dFastWebView=true',
+            '-dNOPAUSE',
+            '-dBATCH',
+            '-dQUIET',
+            `-sOutputFile=${outputPath}`,
+            inputPath,
+          ], { timeoutMs: 45_000, timeoutMessage: 'PDF linearize operation timed out.' });
+          outputBuffer = fs.readFileSync(outputPath);
+        } catch (gsErr) {
+          console.warn('Ghostscript fast web view fallback failed:', gsErr);
+          return jsonError(
+            'Fast Web View needs the qpdf engine, which is not available on this server. Compress PDF can still reduce file size.',
+            503,
+            qMsg,
+          );
+        }
+      } else {
+        throw qpdfErr;
       }
-      throw qpdfErr;
     }
 
     return pdfBinaryResponse(outputBuffer, `fast-web-view-${Date.now()}.pdf`, {

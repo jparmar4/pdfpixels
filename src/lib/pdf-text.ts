@@ -25,7 +25,267 @@ function sanitizeFragment(str: string): string {
   return str.replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, '');
 }
 
+/** 2D affine matrix in DOMMatrix order: [a, b, c, d, e, f]. */
+type Affine2D = [number, number, number, number, number, number];
+
+const THREE_D_ONLY = [0, 0, 0, 0, 0, 0, 1, 0, 0, 1]; // m13,m14,m23,m24,m31,m32,m33,m34,m43,m44
+
+/**
+ * LAST-RESORT pure-JS DOMMatrix polyfill for runtimes where neither the browser
+ * global nor `@napi-rs/canvas` is reachable (e.g. a standalone build that did
+ * not trace the optional native package). pdfjs-dist 5.x evaluates
+ * `new DOMMatrix()` at module top level (`SCALE_MATRIX`) even for text-only use,
+ * so module init needs the global to exist at all. Implements the standard 2D
+ * surface with real matrix math; 3D-only operations throw, because text
+ * extraction never renders and this stub is never the primary implementation.
+ */
+class MinimalDomMatrix {
+  #m: Affine2D;
+
+  constructor(init?: unknown, ...rest: number[]) {
+    if (init === undefined || init === null) {
+      this.#m = [1, 0, 0, 1, 0, 0];
+      return;
+    }
+
+    let values: number[];
+    if (typeof init === 'number') {
+      values = [init, ...rest];
+    } else if (typeof init === 'string') {
+      throw new TypeError('Fallback DOMMatrix cannot parse CSS string transforms.');
+    } else if (Array.isArray(init) || ArrayBuffer.isView(init)) {
+      values = Array.from(init as ArrayLike<number>);
+    } else if (typeof init === 'object') {
+      values = MinimalDomMatrix.read2DInit(init as Record<string, unknown>);
+    } else {
+      throw new TypeError('Unsupported DOMMatrix init.');
+    }
+
+    if (values.length === 6) {
+      this.#m = [values[0], values[1], values[2], values[3], values[4], values[5]];
+      return;
+    }
+    if (values.length === 16) {
+      throw new Error('3D matrices are not supported by the fallback DOMMatrix.');
+    }
+    throw new TypeError(`DOMMatrix init expects 6 or 16 values, received ${values.length}.`);
+  }
+
+  /** Read a DOMMatrixInit ({a..f}); reject 3D-only members with non-default values. */
+  private static read2DInit(init: Record<string, unknown>): number[] {
+    if (init.is2D === false || MinimalDomMatrix.looksThreeD(init)) {
+      throw new Error('3D matrices are not supported by the fallback DOMMatrix.');
+    }
+    const num = (value: unknown, fallback: number) => (typeof value === 'number' ? value : fallback);
+    return [
+      num(init.a, 1),
+      num(init.b, 0),
+      num(init.c, 0),
+      num(init.d, 1),
+      num(init.e, 0),
+      num(init.f, 0),
+    ];
+  }
+
+  private static looksThreeD(init: Record<string, unknown>): boolean {
+    const keys = ['m13', 'm14', 'm23', 'm24', 'm31', 'm32', 'm33', 'm34', 'm43', 'm44'];
+    return keys.some((key, index) => {
+      const value = init[key];
+      return value !== undefined && value !== THREE_D_ONLY[index];
+    });
+  }
+
+  /** this × other with the column-vector convention. */
+  private static compose(left: Affine2D, right: Affine2D): Affine2D {
+    const [la, lb, lc, ld, le, lf] = left;
+    const [ra, rb, rc, rd, re, rf] = right;
+    return [
+      la * ra + lc * rb,
+      lb * ra + ld * rb,
+      la * rc + lc * rd,
+      lb * rc + ld * rd,
+      la * re + lc * rf + le,
+      lb * re + ld * rf + lf,
+    ];
+  }
+
+  private static to2D(value: unknown): Affine2D {
+    if (value instanceof MinimalDomMatrix) return [...value.#m];
+    return MinimalDomMatrix.read2DInit((value ?? {}) as Record<string, unknown>) as Affine2D;
+  }
+
+  // a–f are writable in the DOMMatrix spec, and pdfjs mutates them directly
+  // (e.g. `SCALE_MATRIX.a = 1 / scaleX` in its canvas path), so the fallback
+  // must expose setters or strict-mode assignment throws.
+  get a() { return this.#m[0]; }
+  set a(value: number) { this.#m[0] = value; }
+  get b() { return this.#m[1]; }
+  set b(value: number) { this.#m[1] = value; }
+  get c() { return this.#m[2]; }
+  set c(value: number) { this.#m[2] = value; }
+  get d() { return this.#m[3]; }
+  set d(value: number) { this.#m[3] = value; }
+  get e() { return this.#m[4]; }
+  set e(value: number) { this.#m[4] = value; }
+  get f() { return this.#m[5]; }
+  set f(value: number) { this.#m[5] = value; }
+
+  get m11() { return this.#m[0]; }
+  set m11(value: number) { this.#m[0] = value; }
+  get m12() { return this.#m[1]; }
+  set m12(value: number) { this.#m[1] = value; }
+  get m13() { return 0; }
+  get m14() { return 0; }
+  get m21() { return this.#m[2]; }
+  set m21(value: number) { this.#m[2] = value; }
+  get m22() { return this.#m[3]; }
+  set m22(value: number) { this.#m[3] = value; }
+  get m23() { return 0; }
+  get m24() { return 0; }
+  get m31() { return 0; }
+  get m32() { return 0; }
+  get m33() { return 1; }
+  get m34() { return 0; }
+  get m41() { return this.#m[4]; }
+  set m41(value: number) { this.#m[4] = value; }
+  get m42() { return this.#m[5]; }
+  set m42(value: number) { this.#m[5] = value; }
+  get m43() { return 0; }
+  get m44() { return 1; }
+
+  get is2D() { return true; }
+
+  get isIdentity() {
+    const [a, b, c, d, e, f] = this.#m;
+    return a === 1 && b === 0 && c === 0 && d === 1 && e === 0 && f === 0;
+  }
+
+  translate(tx = 0, ty = 0, tz = 0): MinimalDomMatrix {
+    if (tz) throw new Error('3D translate is not supported by the fallback DOMMatrix.');
+    return new MinimalDomMatrix(MinimalDomMatrix.compose(this.#m, [1, 0, 0, 1, tx, ty]));
+  }
+
+  scale(scaleX = 1, scaleY = scaleX, originX = 0, originY = 0, originZ = 0): MinimalDomMatrix {
+    if (originZ) throw new Error('3D scale is not supported by the fallback DOMMatrix.');
+    const op: Affine2D = [scaleX, 0, 0, scaleY, originX * (1 - scaleX), originY * (1 - scaleY)];
+    return new MinimalDomMatrix(MinimalDomMatrix.compose(this.#m, op));
+  }
+
+  rotate(rotX = 0, rotY = 0, rotZ = 0): MinimalDomMatrix {
+    if (rotY || rotZ) throw new Error('3D rotate is not supported by the fallback DOMMatrix.');
+    const radians = (rotX * Math.PI) / 180;
+    const cos = Math.cos(radians);
+    const sin = Math.sin(radians);
+    return new MinimalDomMatrix(MinimalDomMatrix.compose(this.#m, [cos, sin, -sin, cos, 0, 0]));
+  }
+
+  skewX(angle = 0): MinimalDomMatrix {
+    return new MinimalDomMatrix(MinimalDomMatrix.compose(this.#m, [1, 0, Math.tan((angle * Math.PI) / 180), 1, 0, 0]));
+  }
+
+  skewY(angle = 0): MinimalDomMatrix {
+    return new MinimalDomMatrix(MinimalDomMatrix.compose(this.#m, [1, Math.tan((angle * Math.PI) / 180), 0, 1, 0, 0]));
+  }
+
+  multiply(other: unknown): MinimalDomMatrix {
+    return new MinimalDomMatrix(MinimalDomMatrix.compose(this.#m, MinimalDomMatrix.to2D(other)));
+  }
+
+  flipX(): MinimalDomMatrix {
+    return new MinimalDomMatrix(MinimalDomMatrix.compose(this.#m, [-1, 0, 0, 1, 0, 0]));
+  }
+
+  flipY(): MinimalDomMatrix {
+    return new MinimalDomMatrix(MinimalDomMatrix.compose(this.#m, [1, 0, 0, -1, 0, 0]));
+  }
+
+  /** Spec name (non-mutating). */
+  inverse(): MinimalDomMatrix {
+    return this.invert();
+  }
+
+  /** Spec name (mutating in place). */
+  invertSelf(): MinimalDomMatrix {
+    this.#m = this.invert().#m;
+    return this;
+  }
+
+  invert(): MinimalDomMatrix {
+    const [a, b, c, d, e, f] = this.#m;
+    const determinant = a * d - b * c;
+    if (determinant === 0) throw new Error('The matrix is not invertible.');
+    return new MinimalDomMatrix([
+      d / determinant,
+      -b / determinant,
+      -c / determinant,
+      a / determinant,
+      (c * f - d * e) / determinant,
+      (b * e - a * f) / determinant,
+    ]);
+  }
+
+  transformPoint(point?: { x?: number; y?: number; z?: number; w?: number }) {
+    const x = point?.x ?? 0;
+    const y = point?.y ?? 0;
+    if (point?.z || (point?.w !== undefined && point.w !== 1)) {
+      throw new Error('3D points are not supported by the fallback DOMMatrix.');
+    }
+    const [a, b, c, d, e, f] = this.#m;
+    return { x: a * x + c * y + e, y: b * x + d * y + f, z: 0, w: 1 };
+  }
+
+  toString(): string {
+    return `matrix(${this.#m.join(', ')})`;
+  }
+
+  static fromMatrix(other: unknown): MinimalDomMatrix {
+    return new MinimalDomMatrix(other);
+  }
+
+  static fromFloat32Array(values: ArrayLike<number>): MinimalDomMatrix {
+    return new MinimalDomMatrix(Array.from(values));
+  }
+
+  static fromFloat64Array(values: ArrayLike<number>): MinimalDomMatrix {
+    return new MinimalDomMatrix(Array.from(values));
+  }
+}
+
+let canvasGlobalsTask: Promise<void> | null = null;
+
+/**
+ * Ensure the canvas globals pdfjs-dist touches during module init exist before
+ * the legacy build is imported. Prefers the real native implementations from
+ * @napi-rs/canvas (making the optional dependency explicit for tracing) and
+ * falls back to the pure-JS stub above. Never overwrites an existing global.
+ */
+async function ensurePdfJsCanvasGlobals(): Promise<void> {
+  canvasGlobalsTask ??= (async () => {
+    const globals = globalThis as unknown as {
+      DOMMatrix?: unknown;
+      ImageData?: unknown;
+      Path2D?: unknown;
+    };
+    if (globals.DOMMatrix && globals.ImageData && globals.Path2D) return;
+
+    try {
+      const canvas = await import('@napi-rs/canvas');
+      globals.DOMMatrix ??= canvas.DOMMatrix;
+      globals.ImageData ??= canvas.ImageData;
+      globals.Path2D ??= canvas.Path2D;
+    } catch {
+      // Native canvas is not installed/traced here; the stub below keeps
+      // pdfjs module init working for non-rendering (text) paths.
+    }
+
+    if (!globals.DOMMatrix) globals.DOMMatrix = MinimalDomMatrix;
+  })();
+
+  return canvasGlobalsTask;
+}
+
 async function openPdfJsDocument(buffer: Buffer): Promise<PdfJsTask> {
+  await ensurePdfJsCanvasGlobals();
   const { getDocument } = await import('pdfjs-dist/legacy/build/pdf.mjs');
   const require = createRequire(path.join(process.cwd(), 'package.json'));
   const root = path.dirname(require.resolve('pdfjs-dist/package.json'));
@@ -160,7 +420,6 @@ function mergeRowCells(rowItems: PdfTextItem[]): TableCell[] {
   for (const item of sorted) {
     const prev = cells[cells.length - 1];
     const gap = prev ? item.x - (prev.x + prev.width) : 0;
-    const mergeGap = Math.max(3.5, item.height * 0.45);
     // Allow natural word gaps to merge within the same column cell, but avoid merging large column gaps
     if (prev && gap <= Math.max(14, item.height * 1.5) && gap < 26) {
       const space = gap > 1.2 && !/\s$/.test(prev.text) && !/^\s/.test(item.str) ? ' ' : '';
@@ -197,9 +456,8 @@ function computeColumnBoundariesFromHeader(header: TableCell[]): ColumnBoundary[
     const cur = sorted[i];
     const curRight = cur.x + cur.width;
     const next = sorted[i + 1];
-    const prev = sorted[i - 1];
 
-    let left = i === 0 ? Number.NEGATIVE_INFINITY : bounds[i - 1].right;
+    const left = i === 0 ? Number.NEGATIVE_INFINITY : bounds[i - 1].right;
 
     let right: number;
     if (!next) {

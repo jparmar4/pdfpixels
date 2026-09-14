@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { apiError } from '@/lib/api-response';
 import { loadPdfWithTimeout, readAndValidatePdfFile, validatePdfUpload } from '@/lib/pdf-api';
+import { runGhostscriptWithFallback } from '@/lib/ghostscript';
 
 import { spawn } from 'child_process';
 import fs from 'fs';
@@ -14,6 +15,26 @@ const CACHE_HEADERS = {
 };
 
 export const runtime = 'nodejs';
+
+/** Thrown when Ghostscript reports the supplied unlock password is wrong. */
+class IncorrectPasswordError extends Error {
+  constructor() {
+    super('The provided PDF password is incorrect.');
+    this.name = 'IncorrectPasswordError';
+  }
+}
+
+/** Same engine-unavailable pattern linearize uses for qpdf (ENOENT / spawn miss / sentinel). */
+function isQpdfUnavailableError(error: unknown): boolean {
+  const code = (error as NodeJS.ErrnoException | null)?.code;
+  const message = String((error as Error | null)?.message || '');
+  return (
+    code === 'ENOENT' ||
+    message.includes('not recognized') ||
+    message.includes('spawn') ||
+    message.includes('qpdf is not available')
+  );
+}
 
 function getQpdfCandidates() {
   const configured = process.env.QPDF_PATH?.trim();
@@ -84,6 +105,66 @@ async function runQpdf(args: string[]) {
   throw lastError ?? new Error('qpdf is not available in the current environment.');
 }
 
+/**
+ * Ghostscript fallback for protect when qpdf is missing. Prefer AES-256 (R=6)
+ * and downgrade to R=3/128-bit only when the installed gs refuses it (older
+ * gs pdfwrite builds answer "Encryption revisions 2 and 3 are only supported").
+ * R=3 output is still enforced by pdf.js and mainstream viewers, but qpdf's
+ * AES-256 remains the preferred primary engine.
+ */
+async function runGhostscriptProtect(inputPath: string, outputPath: string, password: string) {
+  const baseArgs = [
+    '-sDEVICE=pdfwrite',
+    '-dNOPAUSE',
+    '-dBATCH',
+    '-dQUIET',
+    `-sOwnerPassword=${password}`,
+    `-sUserPassword=${password}`,
+    `-sOutputFile=${outputPath}`,
+    inputPath,
+  ];
+  try {
+    await runGhostscriptWithFallback([
+      '-dCompatibilityLevel=1.7',
+      ...baseArgs.slice(0, 3),
+      ...baseArgs.slice(3, 6),
+      '-dEncryptionR=6',
+      '-dKeyLength=256',
+      '-dPermissions=-1',
+      ...baseArgs.slice(6),
+    ], { timeoutMs: 45_000, timeoutMessage: 'PDF security operation timed out.' });
+    return;
+  } catch (aesError) {
+    const aesMessage = String((aesError as Error | null)?.message || '');
+    if (!/encryption revision/i.test(aesMessage)) throw aesError;
+  }
+  await runGhostscriptWithFallback([
+    '-dCompatibilityLevel=1.4',
+    ...baseArgs.slice(0, 3),
+    ...baseArgs.slice(3, 6),
+    '-dEncryptionR=3',
+    '-dKeyLength=128',
+    ...baseArgs.slice(6),
+  ], { timeoutMs: 45_000, timeoutMessage: 'PDF security operation timed out.' });
+}
+
+/** Ghostscript fallback for unlock when qpdf is missing (re-emits decrypted). */
+async function runGhostscriptUnlock(inputPath: string, outputPath: string, password: string) {
+  // gs cannot decrypt without the password; callers guarantee password is set
+  // for encrypted inputs (see the PASSWORD_REQUIRED pre-check below).
+  const args = password ? [`-sPDFPassword=${password}`] : [];
+  args.push(
+    '-sDEVICE=pdfwrite',
+    '-dEncryptionR=0',
+    '-dNOPAUSE',
+    '-dBATCH',
+    '-dQUIET',
+    `-sOutputFile=${outputPath}`,
+    inputPath,
+  );
+  await runGhostscriptWithFallback(args, { timeoutMs: 45_000, timeoutMessage: 'PDF security operation timed out.' });
+}
+
 
 export async function POST(request: NextRequest) {
   let inputPath = '';
@@ -132,15 +213,22 @@ export async function POST(request: NextRequest) {
 
     if (action === 'protect') {
       // qpdf requires encrypt passwords as arguments; unlock uses a temp file instead.
-      await runQpdf([
-        '--encrypt',
-        password,
-        password,
-        '256',
-        '--',
-        inputPath,
-        outputPath,
-      ]);
+      try {
+        await runQpdf([
+          '--encrypt',
+          password,
+          password,
+          '256',
+          '--',
+          inputPath,
+          outputPath,
+        ]);
+      } catch (qpdfError) {
+        // qpdf missing on this host? Re-encrypt with Ghostscript (AES-256, R=6).
+        if (!isQpdfUnavailableError(qpdfError)) throw qpdfError;
+        console.warn('qpdf unavailable, falling back to Ghostscript encryption');
+        await runGhostscriptProtect(inputPath, outputPath, password);
+      }
     } else if (action === 'unlock') {
       const args = ['--decrypt', inputPath, outputPath];
       if (password) {
@@ -148,7 +236,24 @@ export async function POST(request: NextRequest) {
         fs.writeFileSync(passwordPath, password, { encoding: 'utf8', mode: 0o600 });
         args.unshift(`--password-file=${passwordPath}`);
       }
-      await runQpdf(args);
+      try {
+        await runQpdf(args);
+      } catch (qpdfError) {
+        if (!isQpdfUnavailableError(qpdfError)) throw qpdfError;
+        // gs can only re-emit a decrypted copy when it can OPEN the input, which
+        // requires the password for encrypted files.
+        if (srcPdf.isEncrypted && !password) {
+          return apiError('This PDF requires a valid password before it can be unlocked.', 401, 'PASSWORD_REQUIRED');
+        }
+        console.warn('qpdf unavailable, falling back to Ghostscript decryption');
+        try {
+          await runGhostscriptUnlock(inputPath, outputPath, password);
+        } catch (gsError) {
+          const gsMessage = String((gsError as Error | null)?.message || '');
+          if (gsMessage.toLowerCase().includes('password')) throw new IncorrectPasswordError();
+          throw gsError;
+        }
+      }
     } else {
       return apiError('Unsupported PDF security action');
     }
@@ -170,7 +275,7 @@ export async function POST(request: NextRequest) {
     console.error('PDF protect/unlock error:', error);
     const message = error instanceof Error ? error.message : 'Unknown error';
 
-    if (message.toLowerCase().includes('invalid password')) {
+    if (message.toLowerCase().includes('invalid password') || (error instanceof IncorrectPasswordError)) {
       return apiError('The provided PDF password is incorrect.', 401, 'INVALID_PASSWORD');
     }
 
@@ -178,7 +283,11 @@ export async function POST(request: NextRequest) {
       return apiError('This PDF requires a valid password before it can be unlocked.', 401, 'PASSWORD_REQUIRED');
     }
 
-    if (message.toLowerCase().includes('qpdf is not available')) {
+    if (
+      message.toLowerCase().includes('qpdf is not available') ||
+      message.includes('No PDF security engine is available') ||
+      message.toLowerCase().includes('ghostscript is not available')
+    ) {
       return apiError('PDF security engine is not available in the current environment.', 503, 'ENGINE_UNAVAILABLE');
     }
 

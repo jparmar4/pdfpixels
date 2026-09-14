@@ -1,5 +1,9 @@
 import { apiError } from '@/lib/api-response';
-import { runGhostscriptWithFallback, getGhostscriptCandidates } from '@/lib/ghostscript';
+import {
+  runGhostscriptWithFallbackResult,
+  getGhostscriptCandidates,
+  sanitizeGhostscriptDiagnostics,
+} from '@/lib/ghostscript';
 import { openEditablePdf, pdfBinaryResponse, sanitizeDownloadFileName } from '@/lib/pdf-api';
 import { NextRequest } from 'next/server';
 import fs from 'fs';
@@ -9,6 +13,49 @@ import crypto from 'crypto';
 
 export const maxDuration = 60;
 export const runtime = 'nodejs';
+
+/**
+ * Resolve sRGB ICC profile bytes for the PDF/A OutputIntent.
+ * Prefers the profile bundled with the app (traced into the standalone build
+ * via next.config.ts) so no filesystem search is needed in production; falls
+ * back to host locations (Debian/Ubuntu ship gs profiles under versioned dirs)
+ * only when the bundled asset is missing.
+ */
+function resolveProfileBytes(): Buffer | null {
+  const bundled = [
+    path.join(process.cwd(), 'iccprofiles', 'srgb.icc'),
+    path.join(process.cwd(), '..', 'iccprofiles', 'srgb.icc'),
+  ];
+  for (const candidate of bundled) {
+    try {
+      if (fs.existsSync(candidate)) return fs.readFileSync(candidate);
+    } catch { /* try the next candidate */ }
+  }
+
+  let versionedLinux: string[] = [];
+  try {
+    versionedLinux = fs.readdirSync('/usr/share/ghostscript', { withFileTypes: true })
+      .filter((d) => d.isDirectory())
+      .map((d) => `/usr/share/ghostscript/${d.name}/iccprofiles/srgb.icc`);
+  } catch { /* not a Linux host with a versioned gs layout */ }
+
+  const candidates = [
+    process.env.PDFA_ICC_PROFILE,
+    ...getGhostscriptCandidates()
+      .filter((p) => path.isAbsolute(p))
+      .map((p) => path.resolve(path.dirname(p), '..', 'iccprofiles', 'srgb.icc')),
+    '/usr/share/color/icc/ghostscript/srgb.icc',
+    '/usr/share/ghostscript/iccprofiles/srgb.icc',
+    ...versionedLinux,
+  ].filter(Boolean) as string[];
+
+  for (const candidate of candidates) {
+    try {
+      if (fs.existsSync(candidate)) return fs.readFileSync(candidate);
+    } catch { /* try the next candidate */ }
+  }
+  return null;
+}
 
 export async function POST(request: NextRequest) {
   let tempInputPath = '';
@@ -33,26 +80,22 @@ export async function POST(request: NextRequest) {
 
     const pdfaLevel = conformance === '1b' ? '1' : '2';
 
-    const candidates = [
-      process.env.PDFA_ICC_PROFILE,
-      ...getGhostscriptCandidates().filter(p => path.isAbsolute(p)).map(p => path.resolve(path.dirname(p), '..', 'iccprofiles', 'srgb.icc')),
-      '/usr/share/color/icc/ghostscript/srgb.icc',
-      '/usr/share/ghostscript/iccprofiles/srgb.icc',
-    ];
-    const profile = candidates.find(p => p && fs.existsSync(p));
-    if (!profile) return apiError('PDF/A needs an sRGB ICC profile on this server. Configure PDFA_ICC_PROFILE.', 503);
-    const profilePath = path.resolve(profile).replace(/\\/g, '/');
-    const psPath = profilePath.replace(/([()\\])/g, '\\$1');
+    const profileBytes = resolveProfileBytes();
+    if (!profileBytes) return apiError('PDF/A needs an sRGB ICC profile on this server. Configure PDFA_ICC_PROFILE.', 503);
+    // Embed the profile bytes directly in the pdfmark as a hex string so gs
+    // never reads the filesystem for it (no --permit-file-read needed, works
+    // under -dSAFER and on hosts where the profile path differs).
+    const profileHex = profileBytes.toString('hex').toUpperCase();
     definitionPath = path.join(os.tmpdir(), `pdfa-def-${randId}.ps`);
     await fs.promises.writeFile(definitionPath, `%!
 [/_objdef {icc_PDFA} /type /stream /OBJ pdfmark
 [{icc_PDFA} << /N 3 >> /PUT pdfmark
-[{icc_PDFA} (${psPath}) (r) file /PUT pdfmark
+[{icc_PDFA} <${profileHex}> /PUT pdfmark
 [/_objdef {OutputIntent_PDFA} /type /dict /OBJ pdfmark
 [{OutputIntent_PDFA} << /Type /OutputIntent /S /GTS_PDFA1 /DestOutputProfile {icc_PDFA} /OutputConditionIdentifier (sRGB) >> /PUT pdfmark
 [{Catalog} << /OutputIntents [{OutputIntent_PDFA}] >> /PUT pdfmark
 `);
-    const gsArgs = ['--permit-file-read=' + profilePath,
+    const gsArgs = [
       '-sDEVICE=pdfwrite',
       `-dPDFA=${pdfaLevel}`,
       '-dPDFACompatibilityPolicy=2',
@@ -69,23 +112,29 @@ export async function POST(request: NextRequest) {
     ];
 
     let processedBytes: Buffer | Uint8Array | null = null;
+    let gsOutput = '';
 
     try {
-      await runGhostscriptWithFallback(gsArgs, {
+      const gsResult = await runGhostscriptWithFallbackResult(gsArgs, {
         timeoutMs: 45_000,
         timeoutMessage: 'PDF/A conversion timed out.',
       });
+      gsOutput = [gsResult.stderr, gsResult.stdout].filter(Boolean).join('\n');
 
       if (fs.existsSync(tempOutputPath)) {
         processedBytes = await fs.promises.readFile(tempOutputPath);
       }
     } catch (gsError) {
+      gsOutput = gsError instanceof Error ? gsError.message : String(gsError);
       console.warn('Ghostscript PDF/A conversion failed:', gsError);
     }
 
     if (!processedBytes || processedBytes.length === 0) {
+      // Full diagnostics server-side, sanitized short slice to the client.
+      console.error('Ghostscript PDF/A conversion produced no output.', gsOutput.slice(0, 4000));
+      const detail = sanitizeGhostscriptDiagnostics(gsOutput);
       return apiError(
-        'PDF/A conversion requires Ghostscript which is not available on this server. Please try again later.',
+        `PDF/A conversion requires Ghostscript which is not available on this server. Please try again later.${detail ? ` (${detail})` : ''}`,
         503
       );
     }

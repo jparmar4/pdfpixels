@@ -10,7 +10,19 @@ export type RunGhostscriptOptions = {
   timeoutMessage?: string;
   /** Capture stderr for better failure messages. Default true. */
   captureStderr?: boolean;
+  /** Optional sink for stderr chunks (in addition to internal capture). */
+  onStderr?: (chunk: string) => void;
+  /** Optional sink for stdout chunks (gs writes some diagnostics there). */
+  onStdout?: (chunk: string) => void;
 };
+
+/** Captured Ghostscript output returned by {@link runGhostscriptWithFallbackResult}. */
+export type GhostscriptRunResult = {
+  stderr: string;
+  stdout: string;
+};
+
+const MAX_CAPTURE_BYTES = 16 * 1024;
 
 /**
  * Resolve Ghostscript binaries to try, in preference order.
@@ -79,19 +91,26 @@ export function runGhostscript(
   const captureStderr = options.captureStderr !== false;
 
   return new Promise<void>((resolve, reject) => {
-    const proc = spawn(command, args, { stdio: ['ignore', 'ignore', 'pipe'] });
+    const proc = spawn(command, args, { stdio: ['ignore', 'pipe', 'pipe'] });
     let stderr = '';
-    const maxStderr = 16 * 1024;
 
-    if (captureStderr) {
+    if (captureStderr || options.onStderr) {
       proc.stderr?.on('data', (chunk) => {
-        if (stderr.length < maxStderr) {
-          stderr += chunk.toString();
-          if (stderr.length > maxStderr) stderr = stderr.slice(0, maxStderr);
+        const text = chunk.toString();
+        options.onStderr?.(text);
+        if (captureStderr && stderr.length < MAX_CAPTURE_BYTES) {
+          stderr += text;
+          if (stderr.length > MAX_CAPTURE_BYTES) stderr = stderr.slice(0, MAX_CAPTURE_BYTES);
         }
       });
     } else {
       proc.stderr?.resume();
+    }
+
+    if (options.onStdout) {
+      proc.stdout?.on('data', (chunk) => options.onStdout!(chunk.toString()));
+    } else {
+      proc.stdout?.resume();
     }
 
     const timeout = setTimeout(() => {
@@ -119,17 +138,25 @@ export function runGhostscript(
 /**
  * Try each Ghostscript candidate until one succeeds.
  * Skips missing binaries; rethrows non-ENOENT failures from a found binary.
+ * Returns whatever Ghostscript wrote to stderr/stdout so callers can surface
+ * real failure causes (e.g. when gs exits 0 but produces no output file).
  */
-export async function runGhostscriptWithFallback(
+export async function runGhostscriptWithFallbackResult(
   args: string[],
   options: RunGhostscriptOptions = {},
-): Promise<void> {
+): Promise<GhostscriptRunResult> {
+  let stderr = '';
+  let stdout = '';
   let lastError: Error | NodeJS.ErrnoException | null = null;
 
   for (const candidate of getGhostscriptCandidates()) {
     try {
-      await runGhostscript(candidate, args, options);
-      return;
+      await runGhostscript(candidate, args, {
+        ...options,
+        onStderr: (chunk) => { if (stderr.length < MAX_CAPTURE_BYTES) stderr += chunk; },
+        onStdout: (chunk) => { if (stdout.length < MAX_CAPTURE_BYTES) stdout += chunk; },
+      });
+      return { stderr, stdout };
     } catch (error) {
       lastError = error as Error | NodeJS.ErrnoException;
       if (isGhostscriptMissingError(lastError)) {
@@ -140,4 +167,34 @@ export async function runGhostscriptWithFallback(
   }
 
   throw lastError ?? new Error('Ghostscript is not available in the current environment.');
+}
+
+/**
+ * Try each Ghostscript candidate until one succeeds.
+ * Skips missing binaries; rethrows non-ENOENT failures from a found binary.
+ */
+export async function runGhostscriptWithFallback(
+  args: string[],
+  options: RunGhostscriptOptions = {},
+): Promise<void> {
+  await runGhostscriptWithFallbackResult(args, options);
+}
+
+/**
+ * Short, sanitized Ghostscript diagnostics safe for API error bodies:
+ * collapses whitespace, caps length, and replaces temp-dir paths so
+ * absolute paths from the server filesystem are never leaked to clients.
+ */
+export function sanitizeGhostscriptDiagnostics(raw: string, maxLength = 200): string {
+  const tempRoots = new Set<string>();
+  for (const root of [os.tmpdir(), process.env.TEMP, process.env.TMP]) {
+    if (!root) continue;
+    tempRoots.add(root);
+    tempRoots.add(root.replace(/\\/g, '/'));
+  }
+  let text = raw.replace(/\s+/g, ' ').trim();
+  for (const root of tempRoots) {
+    text = text.split(root).join('[temp]');
+  }
+  return text.slice(0, maxLength).trim();
 }
