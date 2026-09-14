@@ -278,6 +278,34 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
           <script key={index} type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
         ))}
 
+        {/* Server-rendered breadcrumb + page H1. The tool workspace (and its
+            client-only header) hydrates after JS, so without this the served
+            HTML contained no <h1> at all - a real on-page SEO gap on every
+            tool page. Mirrors the BreadcrumbList JSON-LD above. */}
+        <nav aria-label="Breadcrumb" className="container mx-auto px-4 pt-8 lg:px-8">
+          <ol className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+            <li>
+              <Link href="/" className="transition-colors hover:text-foreground">
+                Home
+              </Link>
+            </li>
+            <li aria-hidden="true" className="text-border">
+              /
+            </li>
+            <li>
+              <Link href="/tools" className="transition-colors hover:text-foreground">
+                Tools
+              </Link>
+            </li>
+            <li aria-hidden="true" className="text-border">
+              /
+            </li>
+            <li>
+              <h1 className="text-xs font-bold uppercase tracking-[0.16em] text-foreground">{cleanToolName}</h1>
+            </li>
+          </ol>
+        </nav>
+
         <Suspense fallback={<WorkspaceLoading />}>
           <ToolPageClient toolId={tool.id} toolName={cleanToolName} toolDescription={normalizeDisplayText(tool.description)} />
         </Suspense>

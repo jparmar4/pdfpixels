@@ -14,12 +14,14 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const entry = useCasePages.find((useCase) => useCase.slug === slug);
-  if (!entry) return { title: 'Use case not found | PdfPixels' };
+  if (!entry) return { title: 'Use case not found' };
 
   const url = absoluteUrl(`/use-cases/${entry.slug}`);
 
   return {
-    title: `${entry.title} | PdfPixels`,
+    // Root layout applies the `%s | PdfPixels` title template — adding the site
+    // name here too produced duplicated titles like "X | PdfPixels | PdfPixels".
+    title: entry.title,
     description: entry.description,
     alternates: { canonical: `/use-cases/${entry.slug}` },
     openGraph: {

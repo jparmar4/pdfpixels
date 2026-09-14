@@ -16,7 +16,7 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const item = comparisonPages.find((comparison) => comparison.slug === slug);
-  if (!item) return { title: 'Comparison not found | PdfPixels' };
+  if (!item) return { title: 'Comparison not found' };
 
   return {
     title: `${item.title} | PdfPixels`,

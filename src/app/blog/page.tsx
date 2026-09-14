@@ -10,7 +10,7 @@ import { AnimatedMeshBg } from "@/components/ui/animated-mesh-bg";
 import { SpotlightCard } from "@/components/ui/spotlight-card";
 
 export const metadata: Metadata = {
-    title: "Blog - Image & PDF Tips, Guides & Tutorials | PdfPixels",
+    title: "Blog - Image & PDF Tips, Guides & Tutorials",
     description:
         "Expert guides on image editing, PDF tools, AI photo enhancement, background removal, and more. Free tutorials to help you master image and document processing in 2026.",
     keywords: [

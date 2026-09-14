@@ -7,13 +7,13 @@ import { useCasePages } from '@/lib/use-cases';
 import { UseCasesClient } from './use-cases-client';
 
 export const metadata: Metadata = {
-  title: 'PDF & Image Use Cases & Step-by-Step Guides | PdfPixels',
+  title: 'PDF & Image Use Cases & Step-by-Step Guides',
   description: 'Find intent-driven guides and workflows for common PDF and image tasks: compress to target KB, passport photo maker, background removal, and format conversion.',
   alternates: {
     canonical: '/use-cases',
   },
   openGraph: {
-    title: 'PDF & Image Use Cases & Step-by-Step Guides | PdfPixels',
+    title: 'PDF & Image Use Cases & Step-by-Step Guides',
     description: 'Find intent-driven guides and workflows for common PDF and image tasks.',
     url: absoluteUrl('/use-cases'),
     siteName: siteConfig.name,
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'PDF & Image Use Cases & Step-by-Step Guides | PdfPixels',
+    title: 'PDF & Image Use Cases & Step-by-Step Guides',
     description: 'Find intent-driven guides and workflows for common PDF and image tasks.',
     images: [DEFAULT_OG_IMAGE_URL],
   },

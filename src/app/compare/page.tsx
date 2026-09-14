@@ -9,11 +9,11 @@ import { SITE_URL, absoluteUrl, DEFAULT_OG_IMAGE_URL } from '@/lib/seo';
 import { siteConfig } from '@/lib/seo-config';
 
 export const metadata: Metadata = {
-    title: 'Tool Comparisons & Guides | PdfPixels',
+    title: 'Tool Comparisons & Guides',
     description: 'Objective comparisons of PdfPixels with popular online tools for image and PDF workflows.',
     alternates: { canonical: '/compare' },
     openGraph: {
-        title: 'Tool Comparisons & Guides | PdfPixels',
+        title: 'Tool Comparisons & Guides',
         description: 'Objective comparisons of PdfPixels with popular online tools for image and PDF workflows.',
         url: absoluteUrl('/compare'),
         siteName: siteConfig.name,
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     },
     twitter: {
         card: 'summary_large_image',
-        title: 'Tool Comparisons & Guides | PdfPixels',
+        title: 'Tool Comparisons & Guides',
         description: 'Objective comparisons of PdfPixels with popular online tools for image and PDF workflows.',
         images: [DEFAULT_OG_IMAGE_URL],
     },

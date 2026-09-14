@@ -109,9 +109,12 @@ export function ToolPageHeader({
 
             <div className="space-y-3">
               <div className="flex flex-wrap items-center gap-2.5">
-                <h1 className="text-3xl font-bold tracking-tight text-foreground md:text-4xl">
+                {/* The page-level <h1> is server-rendered in app/tools/[slug]/page.tsx.
+                    Keeping this duplicate as a styled paragraph avoids two competing
+                    H1s once the client workspace hydrates. */}
+                <p className="text-3xl font-bold tracking-tight text-foreground md:text-4xl">
                   {safeTitle}
-                </h1>
+                </p>
                 {isAI ? (
                   <Badge className="rounded-full border-0 bg-gradient-to-r from-violet-500 to-sky-500 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em] text-white">
                     AI powered

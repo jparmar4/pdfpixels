@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Contact PdfPixels - Support, Feedback, and Partnerships',
+  title: 'Contact Us - Support, Feedback & Partnerships',
   description:
     'Contact PdfPixels for product support, feature requests, or business questions. We typically reply within one business day.',
   alternates: {

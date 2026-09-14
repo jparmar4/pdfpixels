@@ -39,7 +39,7 @@ export async function generateMetadata({ params }: { params: Promise<{ categoryS
   const category = toolCategories.find((c) => c.id === categorySlug);
 
   if (!category) {
-    return { title: 'Category Not Found | PdfPixels' };
+    return { title: 'Category Not Found' };
   }
 
   const cleanName = normalizeDisplayText(category.name);
