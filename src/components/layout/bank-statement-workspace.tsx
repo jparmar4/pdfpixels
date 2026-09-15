@@ -49,7 +49,7 @@ interface StatementSummary {
 export function BankStatementWorkspace() {
   const { uploadedFile, isProcessing, setIsProcessing, setProgress, reset } = useAppStore();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [summary, setSummary] = useState<StatementSummary | null>(null);
+  const [_summary, setSummary] = useState<StatementSummary | null>(null);
   const [isExporting, setIsExporting] = useState<boolean>(false);
   const [errorState, setErrorState] = useState<{ message: string; isScanned?: boolean } | null>(null);
   const [searchTerm, setSearchTerm] = useState<string>('');
@@ -165,14 +165,11 @@ export function BankStatementWorkspace() {
 
   // Swap debit and credit for an individual row
   const handleSwapDebitCredit = (index: number) => {
-    setTransactions(prev => {
-      const updated = [...prev];
-      const row = updated[index];
-      const tempDebit = row.debit;
-      row.debit = row.credit;
-      row.credit = tempDebit;
-      return updated;
-    });
+    setTransactions(prev =>
+      prev.map((row, i) =>
+        i === index ? { ...row, debit: row.credit, credit: row.debit } : row,
+      ),
+    );
     toast.success('Swapped Debit ↔ Credit for selected transaction');
   };
 

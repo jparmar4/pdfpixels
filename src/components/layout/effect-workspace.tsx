@@ -497,7 +497,6 @@ export function EffectWorkspace() {
         const sctx = scaled.getContext('2d');
         if (!sctx) return;
         sctx.drawImage(img, 0, 0, w, h);
-        const scaledImg = new Image();
         // Use the scaled canvas as image source via blob-free path: apply on scaled canvas directly
         // Re-implement: draw img scaled then run effect using scaled dimensions
         const proxy = {
@@ -834,7 +833,7 @@ export function EffectWorkspace() {
                   onPointerUp={onOverlayPointerUp}
                   onPointerCancel={onOverlayPointerUp}
                 >
-                  <img src={previewUrl} alt="Source" className="max-h-[520px] max-w-full select-none rounded-lg" draggable={false} />
+                  <img src={previewUrl} alt="Original upload preview — drag to select censor area" className="max-h-[520px] max-w-full select-none rounded-lg" draggable={false} />
                   {regionStyle ? (
                     <div
                       className="pointer-events-none absolute border-2 border-dashed border-red-500 bg-red-500/20"
@@ -919,7 +918,7 @@ export function EffectWorkspace() {
                       Original
                     </p>
                     <div className="flex min-h-[220px] items-center justify-center">
-                      <img src={previewUrl} alt="Original" className="max-h-[400px] max-w-full rounded-lg object-contain" />
+                      <img src={previewUrl} alt="Original upload preview" loading="lazy" decoding="async" className="max-h-[400px] max-w-full rounded-lg object-contain" />
                     </div>
                   </div>
                   <div className="p-4">
@@ -927,7 +926,7 @@ export function EffectWorkspace() {
                       Result
                     </p>
                     <div className="flex min-h-[220px] items-center justify-center">
-                      <img src={processedImage} alt="Result" className="max-h-[400px] max-w-full rounded-lg object-contain" />
+                      <img src={processedImage} alt="Edited result preview" loading="lazy" decoding="async" className="max-h-[400px] max-w-full rounded-lg object-contain" />
                     </div>
                   </div>
                 </div>

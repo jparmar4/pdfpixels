@@ -1,5 +1,5 @@
 import { apiError } from '@/lib/api-response';
-import { openEditablePdf, sanitizeDownloadFileName } from '@/lib/pdf-api';
+import { openEditablePdf, pdfTextErrorMessage, pdfTextErrorStatus, sanitizeDownloadFileName } from '@/lib/pdf-api';
 import { NextRequest, NextResponse } from 'next/server';
 import { extractPdfLines } from '@/lib/pdf-text';
 
@@ -47,6 +47,9 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error('PDF to text error:', error);
-    return apiError(error instanceof Error ? error.message : 'Failed to extract text from PDF', 500);
+    return apiError(
+      pdfTextErrorMessage(error, 'Failed to extract text from PDF'),
+      pdfTextErrorStatus(error),
+    );
   }
 }

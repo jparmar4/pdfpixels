@@ -148,6 +148,11 @@ export function FileUpload({ accept = 'image/*', maxSizeMb = 25 }: FileUploadPro
       return;
     }
 
+    if (file.size === 0) {
+      toast.error('This file is empty (0 bytes). Please choose a valid file.');
+      return;
+    }
+
     if (file.size > maxBytes) {
       toast.error(`File too large. Maximum size is ${maxSizeMb} MB.`);
       return;
@@ -198,7 +203,11 @@ export function FileUpload({ accept = 'image/*', maxSizeMb = 25 }: FileUploadPro
     event.stopPropagation();
     dragCounter.current = 0;
     setDragOver(false);
-    void handleSelectedFile(event.dataTransfer.files?.[0] ?? null);
+    const dropped = event.dataTransfer.files;
+    if (dropped && dropped.length > 1) {
+      toast.info('Only the first file was added — this tool processes one file at a time.');
+    }
+    void handleSelectedFile(dropped?.[0] ?? null);
   }, [handleSelectedFile]);
 
   const handleFileSelect = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
@@ -260,6 +269,8 @@ export function FileUpload({ accept = 'image/*', maxSizeMb = 25 }: FileUploadPro
         type="file"
         accept={accept}
         aria-label="Choose file to upload"
+        aria-hidden="true"
+        tabIndex={-1}
         onChange={handleFileSelect}
         className="sr-only"
       />
@@ -272,6 +283,7 @@ export function FileUpload({ accept = 'image/*', maxSizeMb = 25 }: FileUploadPro
             exit={{ opacity: 0, scale: 0.985 }}
             role="button"
             tabIndex={0}
+            aria-label={uploadHeading}
             onClick={() => !isNormalizing && inputRef.current?.click()}
             onKeyDown={(event) => {
               if (event.key === 'Enter' || event.key === ' ') {
@@ -436,7 +448,8 @@ export function FileUpload({ accept = 'image/*', maxSizeMb = 25 }: FileUploadPro
                 ) : previewUrl && !previewFailed ? (
                   <img
                     src={previewUrl}
-                    alt="Preview"
+                    alt={uploadedFile ? `Original upload preview — ${uploadedFile.name}` : 'Original upload preview'}
+                    decoding="async"
                     className="max-h-[360px] max-w-full rounded-2xl object-contain shadow-sm"
                     onError={() => setPreviewFailed(true)}
                   />

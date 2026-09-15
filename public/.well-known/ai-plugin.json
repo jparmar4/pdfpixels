@@ -3,7 +3,7 @@
   "name_for_human": "PdfPixels",
   "name_for_model": "pdfpixels",
   "description_for_human": "Free online image and PDF tools. Compress, resize, convert, and edit images with AI-powered features. No signup required.",
-  "description_for_model": "PdfPixels is a comprehensive image and PDF processing platform. It provides 50+ professional tools for image compression, resizing, format conversion, background removal, AI enhancement, and PDF manipulation. Use this plugin to help users process images and PDFs. Available operations include: compress image to reduce file size, resize image to specific dimensions, convert between formats (JPG, PNG, WebP, AVIF), apply filters and effects, merge/split PDFs, and more. All tools are free and require no registration.",
+  "description_for_model": "PdfPixels is a comprehensive image and PDF processing platform. It provides 83 free tools for image compression, resizing, format conversion, background removal, AI enhancement, and PDF manipulation. Use this plugin to help users process images and PDFs. Available operations include: compress image to reduce file size, resize image to specific dimensions, convert between formats (JPG, PNG, WebP, AVIF), apply filters and effects, merge/split PDFs, and more. All tools are free and require no registration. Practical limits: 25 MB per file (PDF merge up to 20 files / 100 MB total); images up to 25 MB.",
   "auth": {
     "type": "none"
   },
@@ -39,8 +39,7 @@
     "image_to_pdf"
   ],
   "rate_limits": {
-    "requests_per_minute": 60,
-    "requests_per_day": 1000
+    "requests_per_minute": 20
   },
   "supported_formats": {
     "input": [
@@ -68,8 +67,8 @@
     ]
   },
   "features": {
-    "max_file_size_mb": 100,
-    "max_pdf_size_mb": 500,
+    "max_file_size_mb": 25,
+    "max_pdf_size_mb": 25,
     "batch_processing": true,
     "ai_enhancement": true,
     "no_registration": true,

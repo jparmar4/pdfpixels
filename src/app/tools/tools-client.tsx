@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { Suspense, useEffect, useState, useMemo } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -94,9 +94,22 @@ function getProcessingMeta(tool: (typeof allTools)[0]) {
   };
 }
 
-export function ToolsClient() {
+/**
+ * Applies a ?q= deep link after hydration. Kept in its own Suspense subtree
+ * with a null fallback so useSearchParams never suspends the page prerender —
+ * the hero H1 and all tool cards must be present in served HTML.
+ */
+function InitialQuerySync({ onQuery }: { onQuery: (q: string) => void }) {
   const searchParams = useSearchParams();
-  const [searchQuery, setSearchQuery] = useState(() => searchParams.get('q') || '');
+  const q = searchParams.get('q') || '';
+  useEffect(() => {
+    if (q) onQuery(q);
+  }, [q, onQuery]);
+  return null;
+}
+
+export function ToolsClient() {
+  const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('all');
   const setActiveTool = useAppStore((state) => state.setActiveTool);
 
@@ -126,6 +139,9 @@ export function ToolsClient() {
 
   return (
     <>
+      <Suspense fallback={null}>
+        <InitialQuerySync onQuery={setSearchQuery} />
+      </Suspense>
       {/* ─── Hero Section ─── */}
       <section className="relative overflow-hidden">
         <AnimatedMeshBg />

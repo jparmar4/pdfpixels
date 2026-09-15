@@ -7,16 +7,31 @@ export function isHeicUpload(file: File): boolean {
 }
 
 /** Decode a HEIC/HEIF file to a JPEG File so canvas tools and previews work. */
-export async function normalizeHeicFile(file: File): Promise<File> {
+export async function normalizeHeicFile(file: File, signal?: AbortSignal): Promise<File> {
   if (!isHeicUpload(file)) return file;
 
   const formData = new FormData();
   formData.append('file', file);
 
-  const response = await fetch('/api/image/heic', {
-    method: 'POST',
-    body: formData,
-  });
+  const timeout = new AbortController();
+  const timeoutId = setTimeout(() => timeout.abort(), 30_000);
+  const combinedSignal = signal ?? timeout.signal;
+
+  let response: Response;
+  try {
+    response = await fetch('/api/image/heic', {
+      method: 'POST',
+      body: formData,
+      signal: combinedSignal,
+    });
+  } catch (error) {
+    if (error instanceof DOMException && error.name === 'AbortError') {
+      throw new Error('HEIC conversion timed out. Try a smaller photo.');
+    }
+    throw error;
+  } finally {
+    clearTimeout(timeoutId);
+  }
 
   if (!response.ok) {
     let message = 'Could not read this HEIC photo';

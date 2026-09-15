@@ -1,18 +1,29 @@
 
+import dynamic from 'next/dynamic';
 import { HomePageSchemas } from '@/components/seo/json-ld';
 import { ToolsSection } from '@/components/home/tools-section';
 import { StatsBanner } from '@/components/home/stats-banner';
 import { AnswerEngineSection } from '@/components/home/answer-engine-section';
 
-import { HowItWorks } from '@/components/home/how-it-works';
-import { TestimonialsSection } from '@/components/home/testimonials-section';
-import { FeaturesSection } from '@/components/home/features-section';
-import { FAQSection } from '@/components/home/faq-section';
-import { GuidesSection } from '@/components/home/guides-section';
-import { CTASection } from '@/components/home/cta-section';
+// Below-fold sections load after first paint, mirroring src/app/[region]/page.tsx.
+const HowItWorks = dynamic(() => import('@/components/home/how-it-works').then(m => m.HowItWorks), {
+  loading: () => <div className="h-72 animate-pulse bg-muted/20 rounded-2xl mx-4" />,
+});
+const TestimonialsSection = dynamic(() => import('@/components/home/testimonials-section').then(m => m.TestimonialsSection), {
+  loading: () => <div className="h-96 animate-pulse bg-muted/20 rounded-2xl mx-4" />,
+});
+const FeaturesSection = dynamic(() => import('@/components/home/features-section').then(m => m.FeaturesSection), {
+  loading: () => <div className="h-80 animate-pulse bg-muted/20 rounded-2xl mx-4" />,
+});
+const GuidesSection = dynamic(() => import('@/components/home/guides-section').then(m => m.GuidesSection), {
+  loading: () => <div className="h-80 animate-pulse bg-muted/20 rounded-2xl mx-4" />,
+});
+const FAQSection = dynamic(() => import('@/components/home/faq-section').then(m => m.FAQSection), {
+  loading: () => <div className="h-64 animate-pulse bg-muted/20 rounded-2xl mx-4" />,
+});
+const CTASection = dynamic(() => import('@/components/home/cta-section').then(m => m.CTASection));
 
 import { Metadata } from 'next';
-import { getGeoLanguageAlternates } from '@/lib/seo';
 import { siteConfig, seoConfig } from '@/lib/seo-config';
 
 export const metadata: Metadata = {
@@ -20,7 +31,6 @@ export const metadata: Metadata = {
   description: seoConfig.description,
   alternates: {
     canonical: '/',
-    languages: getGeoLanguageAlternates(),
   },
   openGraph: {
     title: `${siteConfig.name} - Free Online PDF & Image Tools`,

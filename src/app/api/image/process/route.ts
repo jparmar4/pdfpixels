@@ -23,17 +23,21 @@ export async function POST(request: NextRequest) {
 
   try {
     const formData = await request.formData();
-    const file = formData.get('image') as File;
+    const file = (formData.get('image') || formData.get('file')) as File | null;
 
-    if (!file) {
+    if (!file || typeof file.arrayBuffer !== 'function') {
       return apiError('No image provided', 400);
+    }
+
+    if (file.size === 0) {
+      return apiError('This image is empty (0 bytes). Please choose a valid file.', 400);
     }
 
     if (file.size > MAX_IMAGE_SIZE) {
       return apiError('File too large. Maximum size is 25 MB', 400);
     }
 
-    if (file.type && !isImageUpload(file)) {
+    if (!isImageUpload(file)) {
       return apiError('Only image files are supported', 400);
     }
 
@@ -66,6 +70,11 @@ export async function POST(request: NextRequest) {
       (metadata.height && metadata.height > MAX_DIMENSION)
     ) {
       return apiError('Image dimensions too large. Maximum is 20,000 px per side.', 400);
+    }
+
+    const totalPixels = (metadata.width || 0) * (metadata.height || 0);
+    if (totalPixels > 50_000_000) {
+      return apiError('Image has too many pixels (50MP max). Resize it to a smaller resolution first.', 413);
     }
 
     // ── Fix 1: Convert non-sRGB colorspaces to sRGB ───────────────────────────
@@ -124,13 +133,15 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     console.error('Image processing error:', error);
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    const status = /corrupt|unsupported|invalid|too large|too many pixels|empty/i.test(message) ? 400 : 500;
     return NextResponse.json(
       {
-        error: 'Failed to process image',
-        details: error instanceof Error ? error.message : 'Unknown error',
+        error: status === 400 ? message : 'Failed to process image',
+        details: status === 400 ? undefined : message,
         success: false,
       },
-      { status: 500, headers: CACHE_HEADERS }
+      { status, headers: CACHE_HEADERS }
     );
   }
 }

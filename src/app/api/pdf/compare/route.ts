@@ -1,5 +1,5 @@
 import { apiError } from '@/lib/api-response';
-import { openEditablePdf } from '@/lib/pdf-api';
+import { openEditablePdf, pdfTextErrorMessage, pdfTextErrorStatus } from '@/lib/pdf-api';
 import { NextRequest, NextResponse } from 'next/server';
 import { extractPdfLines } from '@/lib/pdf-text';
 
@@ -63,13 +63,32 @@ export async function POST(request: NextRequest) {
       return apiError('Please upload both an original PDF (fileA) and a revised PDF (fileB) to compare.', 400);
     }
 
+    if (
+      fileA.size === fileB.size &&
+      fileA.name === fileB.name &&
+      fileA.lastModified === fileB.lastModified
+    ) {
+      return apiError('Please upload two different PDFs to compare.', 400);
+    }
+
     const openedA = await openEditablePdf(fileA);
     if (!openedA.ok) return openedA.response;
     const openedB = await openEditablePdf(fileB);
     if (!openedB.ok) return openedB.response;
 
-    const linesA = await extractPdfLines(openedA.buffer);
-    const linesB = await extractPdfLines(openedB.buffer);
+    let linesA: string[];
+    let linesB: string[];
+    try {
+      [linesA, linesB] = await Promise.all([
+        extractPdfLines(openedA.buffer),
+        extractPdfLines(openedB.buffer),
+      ]);
+    } catch (error) {
+      return apiError(
+        pdfTextErrorMessage(error, 'Failed to extract text for comparison'),
+        pdfTextErrorStatus(error),
+      );
+    }
 
     if (!linesA.length || !linesB.length) return apiError('Both PDFs must contain selectable text. Run OCR on scanned PDFs first.', 422);
     if (linesA.length * linesB.length > 4_000_000) return apiError('These documents contain too many lines to compare at once. Split them into smaller sections.', 422);
@@ -106,6 +125,9 @@ export async function POST(request: NextRequest) {
     }, { headers: { 'Cache-Control': 'no-store' } });
   } catch (error) {
     console.error('PDF compare error:', error);
-    return apiError(error instanceof Error ? error.message : 'Failed to compare PDF documents', 500);
+    return apiError(
+      pdfTextErrorMessage(error, 'Failed to compare PDF documents'),
+      pdfTextErrorStatus(error),
+    );
   }
 }

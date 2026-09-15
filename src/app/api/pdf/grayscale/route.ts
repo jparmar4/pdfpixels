@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
 
     const opened = await openEditablePdf(file);
     if (!opened.ok) return opened.response;
-    const { pdf, buffer } = opened;
+    const { buffer } = opened;
 
     const randId = crypto.randomBytes(8).toString('hex');
     tempInputPath = path.join(os.tmpdir(), `gs-in-${randId}.pdf`);
@@ -72,10 +72,10 @@ export async function POST(request: NextRequest) {
     return apiError(error instanceof Error ? error.message : 'Failed to convert PDF to grayscale', 500);
   } finally {
     if (tempInputPath && fs.existsSync(tempInputPath)) {
-      try { await fs.promises.unlink(tempInputPath); } catch {}
+      try { await fs.promises.unlink(tempInputPath); } catch { /* ignore cleanup errors */ }
     }
     if (tempOutputPath && fs.existsSync(tempOutputPath)) {
-      try { await fs.promises.unlink(tempOutputPath); } catch {}
+      try { await fs.promises.unlink(tempOutputPath); } catch { /* ignore cleanup errors */ }
     }
   }
 }

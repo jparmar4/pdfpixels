@@ -7,8 +7,9 @@
  */
 export function AnimatedMeshBg() {
     return (
-        <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
-            {/* Static gradient base - no JS animation, pure CSS */}
+        <div aria-hidden="true" className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+            {/* Static gradient base - no JS animation, pure CSS.
+                Motion is further gated by prefers-reduced-motion in globals.css. */}
             <div className="absolute inset-0 mesh-gradient-blobs" />
         </div>
     );

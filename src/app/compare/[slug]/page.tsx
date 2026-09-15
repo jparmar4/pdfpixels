@@ -1,13 +1,14 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { GitCompareArrows, ArrowRight, Check, X, Trophy, Sparkles, Zap, Shield } from 'lucide-react';
+import { GitCompareArrows, ArrowRight, Check, Trophy, Sparkles, Zap, Shield } from 'lucide-react';
 import { AnimatedMeshBg } from '@/components/ui/animated-mesh-bg';
 
 
 import { Button } from '@/components/ui/button';
 import { comparisonPages } from '@/lib/comparisons';
 import { getToolBySlug } from '@/lib/tools-data';
+import { DEFAULT_OG_IMAGE_URL, SITE_CONTENT_UPDATED } from '@/lib/seo';
 
 export function generateStaticParams() {
   return comparisonPages.map((comparison) => ({ slug: comparison.slug }));
@@ -27,6 +28,20 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       description: item.description,
       url: `https://www.pdfpixels.com/compare/${item.slug}`,
       type: 'article',
+      images: [
+        {
+          url: DEFAULT_OG_IMAGE_URL,
+          width: 1200,
+          height: 630,
+          alt: item.title,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${item.title} | PdfPixels`,
+      description: item.description,
+      images: [DEFAULT_OG_IMAGE_URL],
     },
     robots: {
       index: true,
@@ -58,6 +73,14 @@ export default async function ComparisonPage({ params }: { params: Promise<{ slu
     headline: item.title,
     description: item.description,
     mainEntityOfPage: `https://www.pdfpixels.com/compare/${item.slug}`,
+    image: DEFAULT_OG_IMAGE_URL,
+    datePublished: SITE_CONTENT_UPDATED.toISOString(),
+    dateModified: SITE_CONTENT_UPDATED.toISOString(),
+    author: {
+      '@type': 'Organization',
+      name: 'PdfPixels',
+      url: 'https://www.pdfpixels.com/about',
+    },
     about: [tool.name, ...item.alternatives],
     mentions: {
       '@type': 'SoftwareApplication',
@@ -104,7 +127,7 @@ export default async function ComparisonPage({ params }: { params: Promise<{ slu
                 <div className="mb-4 flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-primary/70 text-primary-foreground shadow-xl ring-2 ring-primary/20">
                   <ToolIcon className="h-10 w-10" />
                 </div>
-                <h2 className="text-2xl font-extrabold text-foreground">PdfPixels</h2>
+                <p className="text-2xl font-extrabold text-foreground">PdfPixels</p>
                 <p className="mt-1 text-sm text-muted-foreground">{tool.name}</p>
               </div>
               <div className="flex h-16 w-16 items-center justify-center rounded-full border-2 border-border bg-muted shadow-lg">
@@ -114,7 +137,7 @@ export default async function ComparisonPage({ params }: { params: Promise<{ slu
                 <div className="mb-4 flex h-20 w-20 items-center justify-center rounded-2xl border-2 border-border bg-muted text-muted-foreground shadow-xl">
                   <span className="px-2 text-center text-sm font-bold leading-tight">{altName}</span>
                 </div>
-                <h2 className="text-2xl font-extrabold text-foreground">{altName}</h2>
+                <p className="text-2xl font-extrabold text-foreground">{altName}</p>
                 <p className="mt-1 text-sm text-muted-foreground">Alternative</p>
               </div>
             </div>

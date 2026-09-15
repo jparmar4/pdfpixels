@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { apiError } from '@/lib/api-response';
 import { loadPdfWithTimeout, readAndValidatePdfFile, validatePdfUpload } from '@/lib/pdf-api';
-import { runGhostscriptWithFallback } from '@/lib/ghostscript';
+import { runGhostscriptWithFallback, runGhostscriptWithFallbackResult } from '@/lib/ghostscript';
 
 import { spawn } from 'child_process';
 import fs from 'fs';
@@ -162,7 +162,14 @@ async function runGhostscriptUnlock(inputPath: string, outputPath: string, passw
     `-sOutputFile=${outputPath}`,
     inputPath,
   );
-  await runGhostscriptWithFallback(args, { timeoutMs: 45_000, timeoutMessage: 'PDF security operation timed out.' });
+  const { stderr, stdout } = await runGhostscriptWithFallbackResult(args, { timeoutMs: 45_000, timeoutMessage: 'PDF security operation timed out.' });
+  // Ghostscript exits 0 even when the password is wrong — it just emits a
+  // garbage undecryptable file. The only signal is stderr ("Password did not
+  // work" / "Cannot decrypt PDF file"), so treat that as a wrong password
+  // instead of returning a corrupted PDF with 200.
+  if (/password did not work|cannot decrypt|invalid password|password.{0,20}required|need a password/i.test(`${stderr}\n${stdout}`)) {
+    throw new IncorrectPasswordError();
+  }
 }
 
 
@@ -180,6 +187,10 @@ export async function POST(request: NextRequest) {
     const validation = validatePdfUpload(file);
     if (!validation.ok) return validation.response;
 
+    if (action !== 'protect' && action !== 'unlock') {
+      return apiError('Unsupported PDF security action');
+    }
+
     if (action === 'protect') {
       if (password.length < 4) {
         return apiError('Please enter a password with at least 4 characters');
@@ -189,6 +200,9 @@ export async function POST(request: NextRequest) {
       }
       if (/[\r\n\0]/.test(password)) {
         return apiError('Password contains invalid characters');
+      }
+      if (password.startsWith('-')) {
+        return apiError('Password cannot start with a dash (-).');
       }
     } else if (password && (/[\r\n\0]/.test(password) || password.length > 128)) {
       return apiError('Password is invalid');
@@ -254,8 +268,6 @@ export async function POST(request: NextRequest) {
           throw gsError;
         }
       }
-    } else {
-      return apiError('Unsupported PDF security action');
     }
 
     const outputBuffer = fs.readFileSync(outputPath);

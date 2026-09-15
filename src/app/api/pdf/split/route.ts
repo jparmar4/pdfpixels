@@ -7,6 +7,8 @@ export const maxDuration = 60;
 export const runtime = 'nodejs';
 
 const MAX_SPLIT_PAGES = 20;
+const MAX_EXTRACT_PAGES = 50;
+const MAX_SELECTION_CHARS = 2000;
 
 export async function POST(request: NextRequest) {
   try {
@@ -15,6 +17,13 @@ export async function POST(request: NextRequest) {
     const mode = (formData.get('mode') as string) || 'all'; // 'all', 'range', 'single'
     const pageRange = (formData.get('pageRange') as string) || '';
     const singlePage = (formData.get('singlePage') as string) || '';
+
+    if (!['all', 'range', 'single'].includes(mode)) {
+      return apiError('Invalid split mode. Use all, range, or single.', 400);
+    }
+    if (pageRange.length > MAX_SELECTION_CHARS || singlePage.length > 100) {
+      return apiError('Page selection is too long. Keep it under 2000 characters.', 413);
+    }
 
     const opened = await openEditablePdf(file);
     if (!opened.ok) return opened.response;
@@ -72,6 +81,13 @@ export async function POST(request: NextRequest) {
 
     if (pagesToExtract.length === 0) {
       return apiError('No valid pages selected.', 400);
+    }
+
+    if (pagesToExtract.length > MAX_EXTRACT_PAGES) {
+      return apiError(
+        `Too many pages selected (${pagesToExtract.length}). Maximum ${MAX_EXTRACT_PAGES} pages per extract — split into smaller ranges.`,
+        413,
+      );
     }
 
     const newPdf = await PDFDocument.create();

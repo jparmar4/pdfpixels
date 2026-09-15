@@ -54,3 +54,16 @@ server.log
 /tmp/pdfs/
 # Local scratch + diagnostics (never commit)
 /tmp/
+# Local dev databases (recreated via prisma db push; may contain real data)
+/db/*.db
+/prisma/*.db
+*.db-journal
+# Root-level scratch artifacts (kept on disk, never committed)
+/compressed-test.pdf
+/out.pdf
+/out*.json
+/test-*.pdf
+/test-push-access.txt
+/check.js
+/compress-headers.txt
+/remote-server.js

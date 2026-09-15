@@ -8,12 +8,20 @@ import { PDFDocument } from 'pdf-lib';
 const MAX_FILES = 20;
 const MAX_FILE_SIZE = 25 * 1024 * 1024;
 const MAX_TOTAL_SIZE = 100 * 1024 * 1024;
+const MAX_TOTAL_PAGES = 1000;
 
 export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
-    const files = formData.getAll('files') as File[];
-    
+    const rawFiles = formData.getAll('files');
+    const files = rawFiles.filter(
+      (entry): entry is File => typeof entry !== 'string' && typeof (entry as File).arrayBuffer === 'function',
+    );
+
+    if (rawFiles.length !== files.length) {
+      return apiError('Invalid upload: expected PDF files only.', 400);
+    }
+
     if (!files || files.length === 0) {
       return apiError('No PDF files provided', 400);
     }
@@ -22,7 +30,19 @@ export async function POST(request: NextRequest) {
       return apiError(`Too many files. Maximum ${MAX_FILES} PDFs allowed per request.`, 400);
     }
 
+    for (const file of files) {
+      if (!file.name || file.size === 0) {
+        return apiError(`File "${file.name || 'unnamed'}" is empty. Please choose a valid PDF.`, 400);
+      }
+      if (!Number.isFinite(file.size)) {
+        return apiError(`File "${file.name || 'unnamed'}" is invalid. Please re-upload it.`, 400);
+      }
+    }
+
     const totalSize = files.reduce((sum, file) => sum + file.size, 0);
+    if (!Number.isFinite(totalSize)) {
+      return apiError('Invalid upload sizes. Please re-upload your PDFs.', 400);
+    }
     if (totalSize > MAX_TOTAL_SIZE) {
       return apiError('Total upload size too large (100MB max).', 400);
     }
@@ -39,7 +59,7 @@ export async function POST(request: NextRequest) {
         return apiError(`File "${file.name}" is too large (25MB max per file).`, 400);
       }
 
-      if (!isPdfFile(file) && file.type) {
+      if (!isPdfFile(file)) {
         skipped.push({ name: file.name || 'unnamed', reason: 'Not a PDF file' });
         continue;
       }
@@ -61,8 +81,15 @@ export async function POST(request: NextRequest) {
           });
           continue;
         }
-        const copiedPages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
-        
+        const pageIndices = pdf.getPageIndices();
+        if (addedPages + pageIndices.length > MAX_TOTAL_PAGES) {
+          return apiError(
+            `Merged PDF would exceed ${MAX_TOTAL_PAGES} pages. Split your files into smaller merges.`,
+            413,
+          );
+        }
+        const copiedPages = await mergedPdf.copyPages(pdf, pageIndices);
+
         for (const page of copiedPages) {
           mergedPdf.addPage(page);
           addedPages += 1;

@@ -206,7 +206,9 @@ export function BlurBackgroundWorkspace() {
               <div className="flex min-h-[240px] items-center justify-center bg-muted/25 p-4">
                 <img
                   src={sourcePreview}
-                  alt="Source"
+                  alt="Original upload preview — background not yet blurred"
+                  loading="lazy"
+                  decoding="async"
                   className="max-h-[420px] max-w-full rounded-xl object-contain"
                 />
               </div>
@@ -273,7 +275,9 @@ export function BlurBackgroundWorkspace() {
                       <div className="flex min-h-[260px] items-center justify-center bg-muted/20">
                         <img
                           src={sourcePreview}
-                          alt="Original"
+                          alt="Original upload preview"
+                          loading="lazy"
+                          decoding="async"
                           className="max-h-[440px] max-w-full rounded-xl object-contain"
                         />
                       </div>

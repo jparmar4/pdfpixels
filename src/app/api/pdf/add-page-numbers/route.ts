@@ -10,12 +10,26 @@ export async function POST(request: NextRequest) {
     try {
         const formData = await request.formData();
         const file = formData.get('file') as File;
-        const position = (formData.get('position') as string) || 'bottom-center';
-        const format = (formData.get('format') as string) || '{n}';
+        const rawPosition = ((formData.get('position') as string) || 'bottom-center').toLowerCase();
+        const position = [
+          'bottom-center',
+          'bottom-left',
+          'bottom-right',
+          'top-center',
+          'top-left',
+          'top-right',
+        ].includes(rawPosition)
+          ? rawPosition
+          : 'bottom-center';
+        const rawFormat = String(formData.get('format') ?? '{n}');
+        if (rawFormat.length > 100) {
+          return apiError('Page number format is too long (100 characters max).', 400);
+        }
+        const format = rawFormat || '{n}';
         const marginRaw = parseInt(String(formData.get('margin') ?? ''), 10);
         const margin = Number.isFinite(marginRaw) ? Math.max(0, Math.min(200, marginRaw)) : 30;
         const fontSizeRaw = parseInt(String(formData.get('fontSize') ?? ''), 10);
-        const fontSize = Number.isFinite(fontSizeRaw) ? fontSizeRaw : 12;
+        const fontSize = Number.isFinite(fontSizeRaw) ? Math.max(6, Math.min(72, fontSizeRaw)) : 12;
 
         const opened = await openEditablePdf(file);
         if (!opened.ok) return opened.response;
@@ -32,7 +46,7 @@ export async function POST(request: NextRequest) {
             const text = format
                 .replace(/\{n\}/g, (i + 1).toString())
                 .replace(/\{total\}/g, totalPages.toString())
-                .replace(/[^\x20-\x7E]/g, '?');
+                .replace(/[^\x20-\xFF]/g, '?');
             const textWidth = font.widthOfTextAtSize(text, fontSize);
             const textHeight = font.heightAtSize(fontSize);
 

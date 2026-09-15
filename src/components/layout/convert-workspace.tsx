@@ -75,9 +75,9 @@ function ComparisonSlider({ before, after }: { before: string; after: string }) 
       onMouseMove={handleMove}
       onTouchMove={handleMove}
     >
-      <img src={after} alt="After" className="absolute inset-0 h-full w-full object-contain" />
+      <img src={after} alt="Converted result preview" loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-contain" />
       <div className="absolute inset-0 overflow-hidden" style={{ width: `${safeSliderPos}%`, borderRight: '2px solid white' }}>
-        <img src={before} alt="Before" className="absolute inset-0 h-full w-full max-w-none object-contain" style={{ width: `${10000 / safeSliderPos}%` }} />
+        <img src={before} alt="Original upload preview" loading="lazy" decoding="async" className="absolute inset-0 h-full w-full max-w-none object-contain" style={{ width: `${10000 / safeSliderPos}%` }} />
       </div>
       <div className="absolute inset-y-0 z-10 w-0.5 bg-white shadow-[0_0_10px_rgba(0,0,0,0.4)]" style={{ left: `${safeSliderPos}%` }}>
         <div className="absolute left-1/2 top-1/2 flex h-8 w-8 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white shadow-lg">
@@ -103,6 +103,13 @@ export function ConvertWorkspace() {
   const [processingStats, setProcessingStats] = useState<{ originalSize: number; processedSize: number; savedPercent: number } | null>(null);
   const [objectUrl, setObjectUrl] = useState<string | null>(null);
   const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
+  const inFlightRef = useRef<AbortController | null>(null);
+
+  useEffect(() => {
+    return () => {
+      inFlightRef.current?.abort();
+    };
+  }, []);
 
   useEffect(() => {
     if (!uploadedFile) {
@@ -189,8 +196,17 @@ export function ConvertWorkspace() {
   }, [revokeBlobUrls]);
 
   const handleProcess = useCallback(async () => {
+    if (isProcessing || inFlightRef.current) return;
     if (!uploadedFile) {
       toast.error(isPdfToImage ? 'Please upload a PDF first' : 'Please upload an image first');
+      return;
+    }
+    if (uploadedFile.size === 0) {
+      toast.error('This file is empty. Please choose a valid file.');
+      return;
+    }
+    if (uploadedFile.size > 25 * 1024 * 1024) {
+      toast.error('File too large. Maximum size is 25 MB.');
       return;
     }
 
@@ -202,7 +218,7 @@ export function ConvertWorkspace() {
     setDownloadUrl(null);
 
     const formData = new FormData();
-    formData.append('file', uploadedFile);
+    formData.append(isPdfToImage ? 'file' : 'image', uploadedFile);
     formData.append('format', safeFormat);
     formData.append('quality', quality.toString());
 
@@ -210,10 +226,10 @@ export function ConvertWorkspace() {
     if (isPdfToImage) {
       formData.append('dpi', dpi.toString());
       formData.append('pages', 'all');
-    } else {
-      formData.append('image', uploadedFile);
     }
 
+    const controller = new AbortController();
+    inFlightRef.current = controller;
     let progressInterval: ReturnType<typeof setInterval> | undefined;
     try {
       progressInterval = setInterval(() => {
@@ -224,6 +240,7 @@ export function ConvertWorkspace() {
       const response = await fetch(endpoint, {
         method: 'POST',
         body: formData,
+        signal: controller.signal,
       });
 
       setProgress(100);
@@ -301,12 +318,17 @@ export function ConvertWorkspace() {
         toast.success(`Image converted to ${formatInfo[safeFormat].name}.`);
       }
     } catch (error) {
+      if (error instanceof DOMException && error.name === 'AbortError') {
+        toast.info('Conversion cancelled.');
+        return;
+      }
       toast.error(error instanceof Error ? error.message : (isPdfToImage ? 'Failed to convert PDF. Please try again.' : 'Failed to convert image. Please try again.'));
     } finally {
       if (progressInterval) clearInterval(progressInterval);
+      inFlightRef.current = null;
       setIsProcessing(false);
     }
-  }, [isPdfToImage, outputFormat, quality, dpi, revokeBlobUrls, setIsProcessing, setProcessedImage, setProgress, uploadedFile]);
+  }, [isPdfToImage, isProcessing, outputFormat, quality, dpi, revokeBlobUrls, setIsProcessing, setProcessedImage, setProgress, uploadedFile]);
 
   const handleDownload = useCallback(() => {
     if (!processedImage && !downloadUrl) return;
@@ -450,7 +472,7 @@ export function ConvertWorkspace() {
                   {viewMode === 'compare' && objectUrl && !isPdfToImage ? (
                     <ComparisonSlider before={objectUrl} after={processedImage} />
                   ) : (
-                    <div className="flex aspect-video items-center justify-center rounded-[1.35rem] bg-muted/25">                      <img src={processedImage} alt="Converted" className="max-h-full max-w-full object-contain" />
+                    <div className="flex aspect-video items-center justify-center rounded-[1.35rem] bg-muted/25">                      <img src={processedImage} alt="Converted result preview" loading="lazy" decoding="async" className="max-h-full max-w-full object-contain" />
                     </div>
                   )}
                 </div>

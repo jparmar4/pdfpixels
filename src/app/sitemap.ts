@@ -4,7 +4,9 @@ import { comparisonPages } from '@/lib/comparisons';
 import { SITE_CONTENT_UPDATED, absoluteUrl } from '@/lib/seo';
 import { allTools, toolCategories } from '@/lib/tools-data';
 import { useCasePages } from '@/lib/use-cases';
-import { geoRegions } from '@/lib/geo-data';
+// NOTE: /{us,uk,ca,au,in} geo hubs are noindex by design, so they stay out
+// of the sitemap. The hreflang cluster in seo.ts points at them for locale
+// targeting; do not re-add them here without flipping them to index:true.
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const evergreen = SITE_CONTENT_UPDATED;

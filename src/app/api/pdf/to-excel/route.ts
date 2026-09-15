@@ -1,8 +1,23 @@
 import { apiError } from '@/lib/api-response';
-import { openEditablePdf, sanitizeDownloadFileName } from '@/lib/pdf-api';
+import { openEditablePdf, pdfTextErrorMessage, pdfTextErrorStatus, sanitizeDownloadFileName } from '@/lib/pdf-api';
 import { NextRequest, NextResponse } from 'next/server';
 import JSZip from 'jszip';
 import { extractPdfLines } from '@/lib/pdf-text';
+
+function parseCellNumber(rawVal: string): string | null {
+  const trimmed = rawVal.trim();
+  if (!trimmed) return null;
+  // Strip currency symbols, spaces and thousand separators; keep trailing % as /100.
+  const isPercent = trimmed.endsWith('%');
+  const cleaned = trimmed
+    .replace(/[$€£¥₹\s,']/g, '')
+    .replace(/%$/, '');
+  if (!/^-?(?:0|[1-9]\d*)(?:\.\d+)?$/.test(cleaned)) return null;
+  if (cleaned.replace(/[^0-9]/g, '').length > 15) return null;
+  const num = Number(cleaned);
+  if (!Number.isFinite(num)) return null;
+  return String(isPercent ? num / 100 : num);
+}
 
 export const maxDuration = 60;
 export const runtime = 'nodejs';
@@ -100,11 +115,12 @@ async function buildXlsxZip(rows: string[][]): Promise<Buffer> {
 
     for (let c = 0; c < row.length; c++) {
       const cellRef = `${colIndexToLetters(c)}${rowNumber}`;
-      const rawVal = row[c];
-      const isNum = /^-?(?:0|[1-9]\d*)(?:\.\d+)?$/.test(rawVal) && rawVal.replace(/[^0-9]/g, '').length <= 15;
+      const rawVal = row[c] ?? '';
+      // inlineStr cells never evaluate as formulas, so =/+/-/@ prefixes stay inert strings.
+      const numeric = parseCellNumber(rawVal);
 
-      if (isNum) {
-        rowCellsXml += `<c r="${cellRef}"><v>${rawVal.trim()}</v></c>`;
+      if (numeric !== null) {
+        rowCellsXml += `<c r="${cellRef}"><v>${numeric}</v></c>`;
       } else {
         rowCellsXml += `<c r="${cellRef}" t="inlineStr"><is><t>${escapeXml(rawVal)}</t></is></c>`;
       }
@@ -188,6 +204,9 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error('PDF to Excel error:', error);
-    return apiError(error instanceof Error ? error.message : 'Failed to convert PDF to Excel spreadsheet', 500);
+    return apiError(
+      pdfTextErrorMessage(error, 'Failed to convert PDF to Excel spreadsheet'),
+      pdfTextErrorStatus(error),
+    );
   }
 }

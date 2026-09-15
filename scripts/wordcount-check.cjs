@@ -1,7 +1,8 @@
 const fs = require('fs');
 const src = fs.readFileSync('src/config/blog.ts', 'utf8');
 const re = /slug: "([^"]+)"[\s\S]*?content: `([\s\S]*?)`,\s*\n\s*faq:/g;
-let m, rows = [];
+let m;
+const rows = [];
 while ((m = re.exec(src)) !== null) {
   const words = m[2]
     .replace(/[#>*`[\]()|_-]/g, ' ')

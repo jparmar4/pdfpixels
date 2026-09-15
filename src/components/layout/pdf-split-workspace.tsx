@@ -62,6 +62,14 @@ export function PDFSplitWorkspace() {
   }, [result, revokeResult]);
 
   const loadPdfMeta = useCallback(async (selectedFile: File) => {
+    if (selectedFile.size === 0) {
+      toast.error('This file is empty (0 bytes). Please choose a valid PDF.');
+      return;
+    }
+    if (selectedFile.size > 25 * 1024 * 1024) {
+      toast.error('File too large. Maximum size is 25 MB.');
+      return;
+    }
     setFile(selectedFile);
     setResult(null);
     setPdfInfo({
@@ -73,6 +81,9 @@ export function PDFSplitWorkspace() {
       const { PDFDocument } = await import('pdf-lib');
       const bytes = await selectedFile.arrayBuffer();
       const pdf = await PDFDocument.load(bytes, { ignoreEncryption: true });
+      if (pdf.isEncrypted) {
+        toast.warning('This PDF is password-protected — unlock it before splitting.');
+      }
       const pageCount = pdf.getPageCount();
       setPdfInfo({
         name: selectedFile.name,
@@ -81,7 +92,7 @@ export function PDFSplitWorkspace() {
       });
       toast.success(`PDF added · ${pageCount} page${pageCount === 1 ? '' : 's'}`);
     } catch {
-      toast.success('PDF file added');
+      toast.warning('Could not preview this PDF — it may be corrupt. Splitting may fail.');
     }
   }, []);
 
@@ -232,7 +243,7 @@ export function PDFSplitWorkspace() {
       setIsProcessing(false);
       setStatusLabel('Idle');
     }
-  }, [file, mode, pageRange, singlePage, setIsProcessing, setProgress]);
+  }, [file, mode, pageRange, singlePage, setIsProcessing, setProgress, revokeResult]);
 
   const handleDownload = useCallback((pdfUrl?: string, fileName?: string) => {
     const url = pdfUrl || result?.pdfUrl;

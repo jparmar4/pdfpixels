@@ -254,7 +254,7 @@ export function AIWorkspace() {
                 <Badge variant="secondary">Ready</Badge>
               </div>
               <div className={`flex min-h-[240px] items-center justify-center p-4 ${isRemoveBg ? checker : 'bg-muted/25'}`}>
-                <img src={sourcePreview} alt="Source" className="max-h-[420px] max-w-full rounded-xl object-contain" />
+                <img src={sourcePreview} alt="Original upload preview" loading="lazy" decoding="async" className="max-h-[420px] max-w-full rounded-xl object-contain" />
               </div>
             </div>
           ) : null}
@@ -298,7 +298,7 @@ export function AIWorkspace() {
                     <div className="border-b border-border/40 p-4 sm:border-b-0 sm:border-r">
                       <p className="mb-2 text-center text-[11px] font-bold uppercase tracking-[0.16em] text-muted-foreground">Original</p>
                       <div className={`flex min-h-[240px] items-center justify-center ${isRemoveBg ? checker : 'bg-muted/20'}`}>
-                        <img src={sourcePreview} alt="Original" className="max-h-[420px] max-w-full rounded-xl object-contain" />
+                        <img src={sourcePreview} alt="Original upload preview" loading="lazy" decoding="async" className="max-h-[420px] max-w-full rounded-xl object-contain" />
                       </div>
                     </div>
                     <div className="p-4">

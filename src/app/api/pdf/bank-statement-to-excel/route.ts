@@ -1,7 +1,30 @@
 import { apiError } from '@/lib/api-response';
 import { parseBankStatement, parseFailureMessage, type TransactionRow } from '@/lib/bank-statement';
-import { openEditablePdf, sanitizeDownloadFileName } from '@/lib/pdf-api';
+import { openEditablePdf, pdfTextErrorMessage, pdfTextErrorStatus, sanitizeDownloadFileName } from '@/lib/pdf-api';
 import { extractPdfTextItems, itemsToLines, itemsToTableRows } from '@/lib/pdf-text';
+
+const MAX_CUSTOM_TRANSACTIONS = 10000;
+const MAX_TRANSACTION_FIELD_CHARS = 500;
+
+function sanitizeCustomTransactions(value: unknown): TransactionRow[] | null {
+  if (!Array.isArray(value)) return null;
+  if (value.length > MAX_CUSTOM_TRANSACTIONS) return null;
+  return value.map((row) => {
+    const record = (row ?? {}) as Record<string, unknown>;
+    const pick = (key: string) => {
+      const raw = record[key];
+      if (raw === null || raw === undefined) return '';
+      return String(raw).slice(0, MAX_TRANSACTION_FIELD_CHARS);
+    };
+    return {
+      date: pick('date'),
+      description: pick('description'),
+      debit: pick('debit'),
+      credit: pick('credit'),
+      balance: pick('balance'),
+    } as TransactionRow;
+  });
+}
 import JSZip from 'jszip';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -193,10 +216,21 @@ export async function POST(request: NextRequest) {
 
     // If client supplied edited transactions for download
     if (customRowsJson) {
+      if (customRowsJson.length > 5_000_000) {
+        return apiError('Edited transactions are too large (5MB max).', 413);
+      }
       try {
-        transactions = JSON.parse(customRowsJson);
+        const parsed = JSON.parse(customRowsJson);
+        const sanitized = sanitizeCustomTransactions(parsed);
+        if (sanitized) {
+          transactions = sanitized;
+        }
+        // Invalid JSON falls back to parsing the PDF below.
       } catch {
         // Fallback to parsing file if JSON parse fails
+      }
+      if (Array.isArray(transactions) && transactions.length > MAX_CUSTOM_TRANSACTIONS) {
+        return apiError(`Too many transactions (${transactions.length}). Maximum ${MAX_CUSTOM_TRANSACTIONS} rows.`, 413);
       }
     }
 
@@ -289,7 +323,10 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error('Bank statement to Excel error:', error);
-    return apiError(error instanceof Error ? error.message : 'Failed to convert bank statement to Excel', 500);
+    return apiError(
+      pdfTextErrorMessage(error, 'Failed to convert bank statement to Excel'),
+      pdfTextErrorStatus(error),
+    );
   }
 }
 

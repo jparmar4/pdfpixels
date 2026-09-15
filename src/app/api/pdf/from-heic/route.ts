@@ -25,7 +25,15 @@ export async function POST(request: NextRequest) {
     const margin = Number(formData.get('margin') ?? '20'); // in points
 
     if (!['auto', 'portrait', 'landscape'].includes(orientation) || !Number.isFinite(margin) || margin < 0 || margin > 100) return apiError('Choose a valid orientation and a margin from 0 to 100 points.', 400);
-    if (files.length > 30 || files.some(file => typeof file.arrayBuffer !== 'function' || !/\.(heic|heif)$/i.test(file.name) || file.size === 0 || file.size > 25 * 1024 * 1024) || files.reduce((sum, file) => sum + file.size, 0) > 100 * 1024 * 1024) return apiError('Upload up to 30 HEIC/HEIF photos, at most 25MB each and 100MB total.', 400);
+    if (files.length > 30) return apiError('Too many photos: upload up to 30 HEIC/HEIF files at a time.', 400);
+    const badType = files.find((file) => typeof file.arrayBuffer !== 'function' || !/\.(heic|heif)$/i.test(file.name || ''));
+    if (badType) return apiError(`"${badType.name || 'unnamed'}" is not a .heic/.heif file.`, 400);
+    const emptyFile = files.find((file) => file.size === 0);
+    if (emptyFile) return apiError(`"${emptyFile.name || 'unnamed'}" is empty (0 bytes).`, 400);
+    const oversized = files.find((file) => file.size > 25 * 1024 * 1024);
+    if (oversized) return apiError(`"${oversized.name || 'unnamed'}" exceeds 25MB per file.`, 400);
+    const totalSize = files.reduce((sum, file) => sum + file.size, 0);
+    if (!Number.isFinite(totalSize) || totalSize > 100 * 1024 * 1024) return apiError('Total upload size too large (100MB max).', 400);
     const pdfDoc = await PDFDocument.create();
 
     for (const file of files) {
@@ -108,6 +116,10 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error('HEIC to PDF error:', error);
-    return apiError(error instanceof Error ? error.message : 'Failed to convert HEIC to PDF', 500);
+    const message = error instanceof Error ? error.message : 'Failed to convert HEIC to PDF';
+    if (/failed to decode|valid HEIC|corrupt|invalid|too large|empty|not a \.heic/i.test(message)) {
+      return apiError(message, 400);
+    }
+    return apiError('Failed to convert HEIC to PDF', 500);
   }
 }

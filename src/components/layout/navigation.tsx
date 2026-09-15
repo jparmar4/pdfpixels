@@ -209,10 +209,15 @@ export function Navigation() {
                     className="relative group py-1.5"
                     onMouseEnter={() => openMega(category.id)}
                     onMouseLeave={closeMega}
+                    onFocus={() => openMega(category.id)}
+                    onBlur={closeMega}
                   >
                     <button
                       type="button"
                       onClick={() => handleHomeLink(category.id)}
+                      aria-expanded={isActive}
+                      aria-controls={`mega-menu-${category.id}`}
+                      aria-haspopup="true"
                       className={`relative z-10 inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-[14px] font-bold transition-all duration-200 ${isActive ? 'text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
                     >
                       {category.name === 'Most Popular Tools' ? 'Popular Tools' : category.name === 'Basic Editing' ? 'Image Editor' : normalizeDisplayText(category.name)}
@@ -282,6 +287,8 @@ export function Navigation() {
                 className="h-10 w-10 rounded-full lg:hidden text-foreground"
                 onClick={() => setMobileMenuOpen((current) => !current)}
                 aria-label="Toggle menu"
+                aria-expanded={mobileMenuOpen}
+                aria-controls="mobile-menu"
               >
                 {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
               </Button>
@@ -322,6 +329,8 @@ export function Navigation() {
           <AnimatePresence>
             {activeCategory ? (
               <motion.div
+                id={`mega-menu-${activeCategory.id}`}
+                role="menu"
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -8 }}
@@ -375,6 +384,7 @@ export function Navigation() {
           <AnimatePresence>
             {mobileMenuOpen ? (
               <motion.div
+                id="mobile-menu"
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: 'auto' }}
                 exit={{ opacity: 0, height: 0 }}
@@ -453,6 +463,9 @@ export function Navigation() {
             <button type="button" className="absolute inset-0 bg-background/95" onClick={closeSearch} aria-label="Close search" />
 
             <motion.div
+              role="dialog"
+              aria-modal="true"
+              aria-label="Search tools"
               initial={{ opacity: 0, y: -18, scale: 0.985 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -10, scale: 0.985 }}

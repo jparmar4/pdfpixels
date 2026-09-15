@@ -11,9 +11,6 @@ import {
   MessageCircle,
   Send,
   Sparkles,
-  Twitter,
-  Github,
-  Linkedin,
   ChevronRight,
 } from 'lucide-react';
 import { toast } from 'sonner';
@@ -123,10 +120,10 @@ export default function ContactPage() {
     },
   ];
 
+  // NOTE: social profile links removed — those handles don't exist yet.
+  // Re-add them here once the real accounts are live.
   const socialLinks = [
-    { icon: Twitter, href: 'https://twitter.com/pdfpixels', label: 'Twitter' },
-    { icon: Github, href: 'https://github.com/pdfpixels', label: 'GitHub' },
-    { icon: Linkedin, href: 'https://linkedin.com/company/pdfpixels', label: 'LinkedIn' },
+    { icon: Mail, href: 'mailto:support@pdfpixels.com', label: 'Email' },
   ];
 
   return (
@@ -446,7 +443,7 @@ export default function ContactPage() {
               ))}
             </div>
             <p className="mt-4 text-xs text-muted-foreground">
-              Follow us for updates, tips, and announcements.
+              Prefer email? Reach us at support@pdfpixels.com.
             </p>
           </motion.div>
         </section>

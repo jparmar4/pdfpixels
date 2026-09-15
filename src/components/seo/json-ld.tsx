@@ -1,10 +1,11 @@
 import { faqData, organizationData, webAppData, howToData } from '@/lib/seo-config';
-import { absoluteUrl, DEFAULT_OG_IMAGE_URL, getHomepageFeaturedTools, getSiteSearchUrlTemplate, organizationId, websiteId } from '@/lib/seo';
+import { absoluteUrl, DEFAULT_OG_IMAGE_URL, getHomepageFeaturedTools, getSiteSearchUrlTemplate, organizationId, websiteId, SITE_CONTENT_UPDATED } from '@/lib/seo';
 
 const featuredTools = getHomepageFeaturedTools();
 
 function KnowledgeGraphSchema() {
-  const today = new Date().toISOString();
+  // Stable dateModified so HTML + sitemap cache stays valid across requests.
+  const today = SITE_CONTENT_UPDATED.toISOString();
 
   const schema = {
     '@context': 'https://schema.org',
@@ -185,23 +186,6 @@ function HomepageCollectionSchema() {
   return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />;
 }
 
-function BreadcrumbSchema() {
-  const schema = {
-    '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
-    itemListElement: [
-      {
-        '@type': 'ListItem',
-        position: 1,
-        name: 'Home',
-        item: absoluteUrl('/'),
-      },
-    ],
-  };
-
-  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />;
-}
-
 function SpeakableSchema() {
   const schema = {
     '@context': 'https://schema.org',
@@ -312,7 +296,6 @@ export function HomePageSchemas() {
       <FAQSchema />
       <HowToSchemas />
       <ServiceSchema />
-      <BreadcrumbSchema />
       <SpeakableSchema />
     </>
   );

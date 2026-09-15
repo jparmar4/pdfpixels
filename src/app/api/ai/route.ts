@@ -246,7 +246,8 @@ export async function POST(request: NextRequest) {
         // Natural = mild polish; Vivid/high = stronger contrast + color
         out = await base
           .clone()
-          .blur(mode === 'balanced' ? 0.28 : 0.18)
+          // Sharp rejects blur sigma below 0.3 — floor the soften pass there.
+          .blur(0.3)
           .sharpen({
             sigma: 0.9 * strength,
             m1: 0.5,

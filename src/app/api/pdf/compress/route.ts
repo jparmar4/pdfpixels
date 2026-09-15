@@ -111,7 +111,7 @@ async function compressWithGhostscript(inputPath: string, outputPath: string, pr
   ]
 
   await runGhostscriptWithFallback(args, {
-    timeoutMs: 45_000,
+    timeoutMs: 30_000,
     timeoutMessage: 'Compression timed out. Please try a smaller PDF.',
   })
   return fs.readFileSync(outputPath)
@@ -122,28 +122,28 @@ function toSavedPercent(before: number, after: number) {
   return Math.max(0, Math.round((1 - after / before) * 1000) / 10)
 }
 
-async function compressWithPdfLibFallback(originalBuffer: Buffer) {
+async function compressWithPdfLibFallback(originalBuffer: Buffer, srcDoc?: PDFDocument) {
   // pdf-lib fallback: rebuilds the PDF structure with object streams
   // This removes unused objects, deduplicates resources, and optimizes the cross-reference table
-  const srcDoc = await loadPdfWithTimeout(originalBuffer, {
+  const src = srcDoc ?? (await loadPdfWithTimeout(originalBuffer, {
     ignoreEncryption: true,
     updateMetadata: false,
-  })
+  }))
   const outDoc = await PDFDocument.create()
 
-  const pages = await outDoc.copyPages(srcDoc, srcDoc.getPageIndices())
+  const pages = await outDoc.copyPages(src, src.getPageIndices())
   for (const page of pages) {
     outDoc.addPage(page)
   }
 
   // Copy metadata from source
-  const srcTitle = srcDoc.getTitle()
-  const srcAuthor = srcDoc.getAuthor()
-  const srcSubject = srcDoc.getSubject()
-  const srcCreator = srcDoc.getCreator()
-  const srcProducer = srcDoc.getProducer()
-  const srcCreationDate = srcDoc.getCreationDate()
-  const srcModDate = srcDoc.getModificationDate()
+  const srcTitle = src.getTitle()
+  const srcAuthor = src.getAuthor()
+  const srcSubject = src.getSubject()
+  const srcCreator = src.getCreator()
+  const srcProducer = src.getProducer()
+  const srcCreationDate = src.getCreationDate()
+  const srcModDate = src.getModificationDate()
   if (srcTitle) outDoc.setTitle(srcTitle)
   if (srcAuthor) outDoc.setAuthor(srcAuthor)
   if (srcSubject) outDoc.setSubject(srcSubject)
@@ -203,7 +203,7 @@ export async function POST(req: NextRequest) {
       if (force) remoteForm.append('force', '1')
 
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 25_000);
+      const timeoutId = setTimeout(() => controller.abort(), 20_000);
 
       try {
         const remoteResp = await fetch(`${remoteUrl.replace(/\/$/, '')}/compress`, {
@@ -275,7 +275,7 @@ export async function POST(req: NextRequest) {
     const id = crypto.randomUUID()
     inputPath = path.join(tempDir, `${id}.pdf`)
     outputPath = path.join(tempDir, `${id}-compressed.pdf`)
-    fs.writeFileSync(inputPath, originalBuffer)
+    await fs.promises.writeFile(inputPath, originalBuffer)
 
     let compressed: Buffer | null = null
     let engine = 'ghostscript'
@@ -284,7 +284,7 @@ export async function POST(req: NextRequest) {
       compressed = await compressWithGhostscript(inputPath, outputPath, profile)
     } catch (error) {
       if (isGhostscriptMissingError(error)) {
-        compressed = await compressWithPdfLibFallback(originalBuffer)
+        compressed = await compressWithPdfLibFallback(originalBuffer, srcPdf)
         engine = 'local-fallback'
       } else {
         throw error

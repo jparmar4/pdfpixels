@@ -44,7 +44,7 @@ export function PDFFlattenWorkspace() {
             if (form) {
               fieldsFound = form.getFields().length;
             }
-          } catch {}
+          } catch { /* no interactive form — fieldsFound stays 0 */ }
           setFieldCount(fieldsFound);
           toast.success(`PDF analyzed: ${fieldsFound} interactive form field${fieldsFound === 1 ? '' : 's'} detected.`);
         }

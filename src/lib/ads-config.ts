@@ -95,10 +95,17 @@ export function saveConsent(consent: Omit<CookieConsent, 'timestamp'>): void {
 
   localStorage.setItem(cookieConfig.cookieName, JSON.stringify(fullConsent));
 
-  // Also set a lightweight cookie so server components can optionally read preference later
+  // Also set a lightweight cookie so server components can optionally read preference later.
+  // Encodes the actual choice (1 = granted advertising/analytics, 0 = rejected)
+  // instead of a constant, so SSR never mistakes a rejection for consent.
   try {
     const maxAge = cookieConfig.cookieExpiration * 24 * 60 * 60;
-    document.cookie = `${cookieConfig.cookieName}=1; path=/; max-age=${maxAge}; SameSite=Lax`;
+    const granted = consent.analytics || consent.advertising ? '1' : '0';
+    const payload = encodeURIComponent(
+      JSON.stringify({ a: consent.analytics ? 1 : 0, d: consent.advertising ? 1 : 0 }),
+    );
+    document.cookie = `${cookieConfig.cookieName}=${granted}; path=/; max-age=${maxAge}; SameSite=Lax`;
+    document.cookie = `${cookieConfig.cookieName}-prefs=${payload}; path=/; max-age=${maxAge}; SameSite=Lax`;
   } catch {
     // ignore cookie write failures
   }

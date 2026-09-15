@@ -40,7 +40,24 @@ export function ComparePdfWorkspace() {
       toast.error('Please select both the Original PDF and the Revised PDF to compare');
       return;
     }
+    if (fileA.size === 0 || fileB.size === 0) {
+      toast.error('One of your PDFs is empty. Please choose valid files.');
+      return;
+    }
+    if (fileA.size > 25 * 1024 * 1024 || fileB.size > 25 * 1024 * 1024) {
+      toast.error('Each PDF must be 25MB or smaller.');
+      return;
+    }
+    if (
+      fileA.name === fileB.name &&
+      fileA.size === fileB.size &&
+      fileA.lastModified === fileB.lastModified
+    ) {
+      toast.error('Please upload two different PDFs to compare.');
+      return;
+    }
 
+    if (isProcessing) return;
     setIsProcessing(true);
 
     try {
@@ -69,7 +86,7 @@ export function ComparePdfWorkspace() {
     }
   };
 
-  const handleCopyDiff = () => {
+  const handleCopyDiff = async () => {
     if (diffItems.length === 0) return;
     const text = diffItems
       .map((d) => {
@@ -79,10 +96,14 @@ export function ComparePdfWorkspace() {
       })
       .join('\n');
 
-    navigator.clipboard.writeText(text);
-    setCopied(true);
-    toast.success('Redline diff copied to clipboard!');
-    setTimeout(() => setCopied(false), 2000);
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(true);
+      toast.success('Redline diff copied to clipboard!');
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      toast.error('Could not access clipboard. Select and copy manually.');
+    }
   };
 
   return (

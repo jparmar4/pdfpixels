@@ -21,14 +21,23 @@ export const runtime = 'nodejs';
  * back to host locations (Debian/Ubuntu ship gs profiles under versioned dirs)
  * only when the bundled asset is missing.
  */
+let cachedProfileBytes: Buffer | null | undefined;
+let cachedProfileHex: string | null | undefined;
+
 function resolveProfileBytes(): Buffer | null {
+  if (cachedProfileBytes !== undefined) return cachedProfileBytes;
+  // NOTE: keep every candidate scoped inside process.cwd() — a '..' entry
+  // makes Turbopack trace the whole project into the standalone output.
+  // At runtime cwd is the standalone root, where ./iccprofiles is traced.
   const bundled = [
     path.join(process.cwd(), 'iccprofiles', 'srgb.icc'),
-    path.join(process.cwd(), '..', 'iccprofiles', 'srgb.icc'),
   ];
   for (const candidate of bundled) {
     try {
-      if (fs.existsSync(candidate)) return fs.readFileSync(candidate);
+      if (fs.existsSync(candidate)) {
+        cachedProfileBytes = fs.readFileSync(candidate);
+        return cachedProfileBytes;
+      }
     } catch { /* try the next candidate */ }
   }
 
@@ -41,9 +50,10 @@ function resolveProfileBytes(): Buffer | null {
 
   const candidates = [
     process.env.PDFA_ICC_PROFILE,
+    // Runtime-only host lookups — never part of the standalone trace.
     ...getGhostscriptCandidates()
       .filter((p) => path.isAbsolute(p))
-      .map((p) => path.resolve(path.dirname(p), '..', 'iccprofiles', 'srgb.icc')),
+      .map((p) => path.resolve(/*turbopackIgnore: true*/ path.dirname(p), '..', 'iccprofiles', 'srgb.icc')),
     '/usr/share/color/icc/ghostscript/srgb.icc',
     '/usr/share/ghostscript/iccprofiles/srgb.icc',
     ...versionedLinux,
@@ -51,10 +61,22 @@ function resolveProfileBytes(): Buffer | null {
 
   for (const candidate of candidates) {
     try {
-      if (fs.existsSync(candidate)) return fs.readFileSync(candidate);
+      if (fs.existsSync(candidate)) {
+        cachedProfileBytes = fs.readFileSync(candidate);
+        return cachedProfileBytes;
+      }
     } catch { /* try the next candidate */ }
   }
+  cachedProfileBytes = null;
   return null;
+}
+
+function resolveProfileHex(profileBytes: Buffer): string {
+  if (cachedProfileHex === undefined || cachedProfileHex === null) {
+    // ~300KB ICC → ~600KB hex; compute once per process instead of per request.
+    cachedProfileHex = profileBytes.toString('hex').toUpperCase();
+  }
+  return cachedProfileHex;
 }
 
 export async function POST(request: NextRequest) {
@@ -85,7 +107,7 @@ export async function POST(request: NextRequest) {
     // Embed the profile bytes directly in the pdfmark as a hex string so gs
     // never reads the filesystem for it (no --permit-file-read needed, works
     // under -dSAFER and on hosts where the profile path differs).
-    const profileHex = profileBytes.toString('hex').toUpperCase();
+    const profileHex = resolveProfileHex(profileBytes);
     definitionPath = path.join(os.tmpdir(), `pdfa-def-${randId}.ps`);
     await fs.promises.writeFile(definitionPath, `%!
 [/_objdef {icc_PDFA} /type /stream /OBJ pdfmark

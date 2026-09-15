@@ -10,9 +10,16 @@ export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
     const file = formData.get('file') as File | null;
-    const angleRaw = parseInt(String(formData.get('angle') ?? '90'), 10);
-    const angle = Number.isFinite(angleRaw) ? angleRaw : 90;
+    const angleInput = formData.get('angle');
+    const angleRaw = angleInput === null || angleInput === '' ? 90 : parseInt(String(angleInput), 10);
+    if (!Number.isFinite(angleRaw) || angleRaw % 90 !== 0) {
+      return apiError('Rotation angle must be a multiple of 90 (e.g. 90, 180, 270).', 400);
+    }
+    const angle = ((angleRaw % 360) + 360) % 360;
     const pages = String(formData.get('pages') || 'all');
+    if (pages.length > 2000) {
+      return apiError('Page selection is too long. Keep it under 2000 characters.', 413);
+    }
 
     const opened = await openEditablePdf(file);
     if (!opened.ok) return opened.response;

@@ -236,7 +236,9 @@ export function BlurFaceWorkspace() {
               <div className="flex min-h-[240px] items-center justify-center bg-muted/25 p-4">
                 <img
                   src={sourcePreview}
-                  alt="Source"
+                  alt="Original upload preview — faces not yet blurred"
+                  loading="lazy"
+                  decoding="async"
                   className="max-h-[420px] max-w-full rounded-xl object-contain"
                 />
               </div>
@@ -306,7 +308,7 @@ export function BlurFaceWorkspace() {
                         Original
                       </p>
                       <div className="flex min-h-[260px] items-center justify-center bg-muted/20">
-                        <img src={sourcePreview} alt="Original" className="max-h-[440px] max-w-full rounded-xl object-contain" />
+                        <img src={sourcePreview} alt="Original upload preview" loading="lazy" decoding="async" className="max-h-[440px] max-w-full rounded-xl object-contain" />
                       </div>
                     </div>
                     <div className="p-4">

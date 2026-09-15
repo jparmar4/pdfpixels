@@ -18,9 +18,10 @@ import {
 export function CookieConsentBanner() {
   const [isVisible, setIsVisible] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  // GDPR opt-in: optional categories default off until the user enables them.
   const [preferences, setPreferences] = useState({
-    analytics: true,
-    advertising: true,
+    analytics: false,
+    advertising: false,
   });
 
   useEffect(() => {
@@ -67,6 +68,10 @@ export function CookieConsentBanner() {
   return (
     <AnimatePresence>
       <motion.div
+        role="dialog"
+        aria-modal="false"
+        aria-label="Cookie preferences"
+        aria-live="polite"
         initial={{ opacity: 0, y: 100 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: 100 }}
@@ -92,7 +97,7 @@ export function CookieConsentBanner() {
                   <button
                     onClick={handleRejectAll}
                     className="text-muted-foreground hover:text-foreground transition-colors"
-                    aria-label="Close"
+                    aria-label="Reject all and close"
                   >
                     <X className="w-5 h-5" />
                   </button>

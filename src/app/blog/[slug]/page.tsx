@@ -56,6 +56,7 @@ export async function generateMetadata({
             title: post.title,
             description: post.metaDescription,
             type: "article",
+            url: `/blog/${slug}`,
             publishedTime: isoDate,
             modifiedTime: isoModifiedDate,
             authors: [post.author],
@@ -113,7 +114,7 @@ export default async function BlogPostPage({
     // Article Schema
     const articleSchema = {
         "@context": "https://schema.org",
-        "@type": "Article",
+        "@type": "BlogPosting",
         headline: post.title,
         description: post.metaDescription,
         author: {
@@ -128,7 +129,9 @@ export default async function BlogPostPage({
             url: siteConfig.url,
             logo: {
                 "@type": "ImageObject",
-                url: `${siteConfig.url}/logo.svg`,
+                url: `${siteConfig.url}/icon-512.png`,
+                width: 512,
+                height: 512,
             },
         },
         datePublished: isoDate,

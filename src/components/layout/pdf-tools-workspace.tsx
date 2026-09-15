@@ -303,10 +303,16 @@ function ReorderSettings({ order, setOrder, totalPages }: {
     order: number[]; setOrder: (o: number[]) => void; totalPages: number;
 }) {
     useEffect(() => {
-        if (totalPages > 0 && order.length !== totalPages) {
-            setOrder(Array.from({ length: totalPages }, (_, i) => i + 1));
+        if (totalPages <= 0) return;
+        const expected = Array.from({ length: totalPages }, (_, i) => i + 1);
+        const inRange = order.length === totalPages && order.every((value) => value >= 1 && value <= totalPages);
+        const isPermutation = inRange && new Set(order).size === totalPages;
+        if (order.length === 0 || !isPermutation) {
+            // Empty (fresh file, see parent reset) or stale/out-of-range → re-init.
+            // A valid user reordering is a permutation, so it is preserved.
+            setOrder(expected);
         }
-    }, [totalPages, order.length, setOrder]);
+    }, [totalPages, order, setOrder]);
 
     const moveUp = (idx: number) => {
         if (idx === 0) return;
@@ -471,21 +477,41 @@ export function PDFToolsWorkspace() {
 
     // Get page count from uploaded PDF
     useEffect(() => {
+        // Fresh file → clear per-file selections so a prior file of the same
+        // page count can't leak its reorder/delete state into the new file.
+        setPageOrder([]);
+        setDeletePages('');
         if (!uploadedFile || !uploadedFile.name.toLowerCase().endsWith('.pdf')) {
             setTotalPages(0);
             return;
         }
+        if (uploadedFile.size === 0) {
+            toast.error('This PDF is empty (0 bytes). Please choose a valid file.');
+            setTotalPages(0);
+            return;
+        }
         // Read PDF page count using pdf-lib on client
+        let cancelled = false;
         (async () => {
             try {
                 const { PDFDocument } = await import('pdf-lib');
                 const ab = await uploadedFile.arrayBuffer();
                 const pdf = await PDFDocument.load(new Uint8Array(ab), { ignoreEncryption: true });
+                if (cancelled) return;
+                if (pdf.isEncrypted) {
+                    toast.warning('This PDF is password-protected — unlock it first for full editing.');
+                }
                 setTotalPages(pdf.getPageCount());
             } catch {
-                setTotalPages(0);
+                if (!cancelled) {
+                    toast.warning('Could not preview this PDF — it may be corrupt. Processing may still fail.');
+                    setTotalPages(0);
+                }
             }
         })();
+        return () => {
+            cancelled = true;
+        };
     }, [uploadedFile]);
 
     const handleProcess = useCallback(async () => {
@@ -520,8 +546,9 @@ export function PDFToolsWorkspace() {
                 fd.append('position', wmPosition);
                 fd.append('rotation', wmRotation.toString());
             } else if (tid === 'pdf-protect') {
-                if (!password) { toast.error('Please enter a password'); return null; }
+                if (password.length < 4) { toast.error('Please enter a password with at least 4 characters'); return null; }
                 if (password !== confirmPassword) { toast.error('Passwords do not match'); return null; }
+                if (password.startsWith('-')) { toast.error('Password cannot start with a dash (-)'); return null; }
                 fd.append('password', password);
                 fd.append('action', 'protect');
             } else if (tid === 'pdf-unlock') {

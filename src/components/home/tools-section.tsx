@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, Suspense } from 'react';
+import { useDeferredValue, useState, Suspense } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight, ArrowUpRight, Clock, DollarSign, Files, Minimize2, Search, Sparkles, Star, Wrench, X, Zap } from 'lucide-react';
 import Link from 'next/link';
@@ -170,14 +170,17 @@ function PopularToolsMiniGrid() {
 
 function ToolsSectionInner({ region, initialSearch = '' }: { region?: GeoRegion; initialSearch?: string }) {
   const [search, setSearch] = useState(initialSearch);
+  // Defer heavy category filtering so typing stays responsive (INP).
+  const deferredSearch = useDeferredValue(search);
+  const query = deferredSearch.trim().toLowerCase();
 
-  const filteredCategories = search.trim()
+  const filteredCategories = query
     ? toolCategories.map(cat => ({
       ...cat,
       tools: cat.tools.filter(t =>
-        t.name.toLowerCase().includes(search.toLowerCase()) ||
-        t.description.toLowerCase().includes(search.toLowerCase()) ||
-        t.keywords.some(k => k.includes(search.toLowerCase()))
+        t.name.toLowerCase().includes(query) ||
+        t.description.toLowerCase().includes(query) ||
+        t.keywords.some(k => k.includes(query))
       ),
     })).filter(cat => cat.tools.length > 0)
     : toolCategories;

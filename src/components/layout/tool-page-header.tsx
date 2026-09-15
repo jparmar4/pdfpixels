@@ -109,10 +109,11 @@ export function ToolPageHeader({
 
             <div className="space-y-3">
               <div className="flex flex-wrap items-center gap-2.5">
-                {/* The page-level <h1> is server-rendered in app/tools/[slug]/page.tsx.
-                    Keeping this duplicate as a styled paragraph avoids two competing
-                    H1s once the client workspace hydrates. */}
-                <p className="text-3xl font-bold tracking-tight text-foreground md:text-4xl">
+                {/* The page-level <h1> is server-rendered in app/tools/[slug]/page.tsx
+                    (workspaces are ssr:false, so this header never reaches served
+                    HTML). Keeping this duplicate as a styled paragraph avoids two
+                    competing H1s once the client workspace hydrates. */}
+                <p className="tool-hero-title text-3xl font-bold tracking-tight text-foreground md:text-4xl">
                   {safeTitle}
                 </p>
                 {isAI ? (

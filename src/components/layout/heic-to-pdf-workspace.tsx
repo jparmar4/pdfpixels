@@ -1,9 +1,8 @@
 'use client';
 
 import { useState, useCallback, useEffect } from 'react';
-import { Download, RotateCcw, FileImage, CheckCircle2, Smartphone, Layers, Plus } from 'lucide-react';
+import { Download, RotateCcw, FileImage, CheckCircle2, Smartphone, Layers } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { ToolPageHeader } from './tool-page-header';
 import { ToolLimitNotice } from './tool-limit-notice';
 import { toast } from 'sonner';

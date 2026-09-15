@@ -22,13 +22,37 @@ export async function POST(request: NextRequest) {
       return apiError('No images provided', 400);
     }
 
+    if (files.some((file) => typeof file.arrayBuffer !== 'function')) {
+      return apiError('Invalid upload: expected image files only.', 400);
+    }
+
     if (files.length > MAX_FILES) {
       return apiError(`Too many images. Maximum ${MAX_FILES} files allowed.`, 400);
     }
 
+    if (files.some((file) => file.size === 0)) {
+      return apiError('One of your images is empty (0 bytes). Please re-select your files.', 400);
+    }
+
     const totalSize = files.reduce((sum, file) => sum + file.size, 0);
+    if (!Number.isFinite(totalSize)) {
+      return apiError('Invalid upload sizes. Please re-select your images.', 400);
+    }
     if (totalSize > MAX_TOTAL_SIZE) {
       return apiError('Total upload size too large (120MB max).', 400);
+    }
+
+    const VALID_PAGE_SIZES = new Set(['a4', 'letter', 'legal', 'a3', 'a5', 'fit']);
+    const VALID_ORIENTATIONS = new Set(['portrait', 'landscape', 'auto']);
+    const VALID_FIT_MODES = new Set(['contain', 'fill', 'stretch']);
+    if (!VALID_PAGE_SIZES.has(pageSize)) {
+      return apiError('Invalid page size. Use a4, letter, legal, a3, a5, or fit.', 400);
+    }
+    if (!VALID_ORIENTATIONS.has(orientation)) {
+      return apiError('Invalid orientation. Use portrait, landscape, or auto.', 400);
+    }
+    if (!VALID_FIT_MODES.has(fitMode)) {
+      return apiError('Invalid fit mode. Use contain, fill, or stretch.', 400);
     }
 
     // Page sizes in points (1 inch = 72 points)
@@ -59,10 +83,18 @@ export async function POST(request: NextRequest) {
         return apiError(`Could not read "${file.name}". If it is HEIC, try converting it first.`, 400);
       }
       const imageBytes = new Uint8Array(decoded.buffer);
-      
+
       // Get image metadata
-      const image = sharp(decoded.buffer, { failOn: 'none' });
-      const metadata = await image.metadata();
+      let metadata;
+      try {
+        const image = sharp(decoded.buffer, { failOn: 'none' });
+        metadata = await image.metadata();
+      } catch {
+        return apiError(`Could not read "${file.name}". The image may be corrupt.`, 400);
+      }
+      if (!metadata.width || !metadata.height) {
+        return apiError(`Could not read "${file.name}". The image may be corrupt.`, 400);
+      }
       
       // Normalize all non-JPEG/PNG inputs through Sharp so GIF/HEIC/AVIF/BMP work
       const isPng = file.type === 'image/png' || (metadata.format === 'png');
@@ -186,6 +218,11 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error('Image to PDF error:', error);
+    const message = error instanceof Error ? error.message : 'Failed to convert images to PDF';
+    // Sharp/metadata failures are client data problems, not server crashes.
+    if (/corrupt|unsupported|invalid|too large/i.test(message)) {
+      return apiError(message, 400);
+    }
     return apiError('Failed to convert images to PDF', 500);
   }
 }

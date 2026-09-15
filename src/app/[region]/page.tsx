@@ -4,7 +4,7 @@ import { Metadata } from 'next';
 import dynamic from 'next/dynamic';
 import { geoRegions, getRegionByCode } from '@/lib/geo-data';
 import { siteConfig } from '@/lib/seo-config';
-import { absoluteUrl, getGeoLanguageAlternates, websiteId } from '@/lib/seo';
+import { absoluteUrl, websiteId } from '@/lib/seo';
 import { ToolsSection } from '@/components/home/tools-section';
 import { StatsBanner } from '@/components/home/stats-banner';
 import { AnswerEngineSection } from '@/components/home/answer-engine-section';
@@ -58,7 +58,6 @@ export async function generateMetadata({ params }: GeoPageProps): Promise<Metada
     description,
     alternates: {
       canonical: `${siteConfig.url}/`,
-      languages: getGeoLanguageAlternates(),
     },
     openGraph: {
       title,

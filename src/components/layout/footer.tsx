@@ -4,12 +4,9 @@ import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useCallback } from 'react';
 import {
-  Github,
-  Linkedin,
   Mail,
   ShieldCheck,
   Sparkles,
-  Twitter,
   Zap,
   Globe,
   ArrowRight,
@@ -73,10 +70,10 @@ export function Footer() {
     href: `/${region.code}`,
   }));
 
+  // NOTE: profile links (X/LinkedIn/GitHub/YouTube) were removed — those
+  // handles don't exist yet and 404 links hurt trust signals. Re-add them
+  // here once the real accounts are live.
   const socialLinks = [
-    { icon: Twitter, href: 'https://twitter.com/pdfpixels', label: 'Follow us on Twitter / X', tooltip: 'Twitter' },
-    { icon: Github, href: 'https://github.com/pdfpixels', label: 'View our open-source projects on GitHub', tooltip: 'GitHub' },
-    { icon: Linkedin, href: 'https://linkedin.com/company/pdfpixels', label: 'Connect with us on LinkedIn', tooltip: 'LinkedIn' },
     { icon: Mail, href: 'mailto:support@pdfpixels.com', label: 'Send us an email', tooltip: 'Email Us' },
   ];
 
@@ -126,9 +123,9 @@ export function Footer() {
                 <Sparkles className="h-3.5 w-3.5" />
                 Premium web workflow
               </p>
-              <h2 className="text-3xl font-extrabold tracking-tight text-foreground md:text-4xl">
+              <p className="text-3xl font-extrabold tracking-tight text-foreground md:text-4xl">
                 A faster front door for PDF and image workflows.
-              </h2>
+              </p>
               <p className="text-base leading-7 text-muted-foreground">
                 PdfPixels provides {allTools.length}+ tools designed for fast, privacy-friendly document and image processing directly in your browser without requiring an account.
               </p>
@@ -171,7 +168,7 @@ export function Footer() {
                   </button>
                 </div>
                 {subscribeError && (
-                  <p className="text-xs text-destructive mt-1">{subscribeError}</p>
+                  <p role="alert" className="text-xs text-destructive mt-1">{subscribeError}</p>
                 )}
               </div>
             </div>

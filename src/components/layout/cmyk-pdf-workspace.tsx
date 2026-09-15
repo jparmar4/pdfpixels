@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useCallback, useEffect } from 'react';
-import { Download, RotateCcw, Palette, Printer, CheckCircle2, ShieldCheck, Sparkles } from 'lucide-react';
+import { Download, RotateCcw, Palette, Printer, CheckCircle2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useAppStore } from '@/store/app-store';

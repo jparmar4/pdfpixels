@@ -249,6 +249,56 @@ export function NativeAd({ className }: { className?: string }) {
 }
 
 export function MultiplexAd({ className }: { className?: string }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const pushed = useRef(false);
+  const [hasConsent, setHasConsent] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return hasAdvertisingConsent();
+  });
+  const [inView, setInView] = useState(
+    () => typeof window === 'undefined' || typeof IntersectionObserver === 'undefined',
+  );
+
+  useEffect(() => {
+    const handleConsentUpdate = () => {
+      setHasConsent(hasAdvertisingConsent());
+    };
+    window.addEventListener('cookie-consent-updated', handleConsentUpdate);
+    return () => {
+      window.removeEventListener('cookie-consent-updated', handleConsentUpdate);
+    };
+  }, []);
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el || typeof IntersectionObserver === 'undefined') return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          setInView(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: '200px 0px', threshold: 0.01 },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!adsConfig.enabled || !hasConsent || !inView || pushed.current) return;
+    const id = requestAnimationFrame(() => {
+      try {
+        window.adsbygoogle = window.adsbygoogle || [];
+        window.adsbygoogle.push({});
+        pushed.current = true;
+      } catch {
+        // Silently handle ad errors
+      }
+    });
+    return () => cancelAnimationFrame(id);
+  }, [hasConsent, inView]);
+
   if (!adsConfig.enabled || !adsConfig.slots.native || adsConfig.testMode) {
     if (adsConfig.testMode) {
       return (
@@ -261,16 +311,23 @@ export function MultiplexAd({ className }: { className?: string }) {
     return null;
   }
 
+  // Consent-gated like AdBanner: no personalized unit without opt-in.
+  if (!hasConsent) return null;
+
   return (
-    <div className={cn('w-full min-h-[280px]', className)} aria-label="Advertisement" role="complementary">
+    <div ref={containerRef} className={cn('w-full min-h-[280px]', className)} aria-label="Advertisement" role="complementary">
       <AdLabel />
-      <ins
-        className="adsbygoogle"
-        style={{ display: 'block', minHeight: 280 }}
-        data-ad-format="autorelaxed"
-        data-ad-client={adsConfig.publisherId}
-        data-ad-slot={adsConfig.slots.native}
-      />
+      {inView ? (
+        <ins
+          className="adsbygoogle"
+          style={{ display: 'block', minHeight: 280 }}
+          data-ad-format="autorelaxed"
+          data-ad-client={adsConfig.publisherId}
+          data-ad-slot={adsConfig.slots.native}
+        />
+      ) : (
+        <ReservedSpace minHeight={280} />
+      )}
     </div>
   );
 }

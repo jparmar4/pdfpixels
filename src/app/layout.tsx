@@ -33,15 +33,11 @@ export const metadata: Metadata = {
     template: `%s | ${siteConfig.name}`,
   },
   description: seoConfig.longDescription,
-  keywords: [
-    ...seoConfig.primaryKeywords,
-    ...seoConfig.secondaryKeywords,
-    ...seoConfig.longTailKeywords,
-  ],
   authors: [{ name: siteConfig.creator, url: siteConfig.url }],
   creator: siteConfig.creator,
   publisher: siteConfig.publisher,
   alternates: {
+    canonical: '/',
     types: {
       'application/rss+xml': '/feed',
     },

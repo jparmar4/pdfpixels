@@ -1,5 +1,5 @@
 import { apiError } from '@/lib/api-response';
-import { openEditablePdf, sanitizeDownloadFileName } from '@/lib/pdf-api';
+import { openEditablePdf, pdfTextErrorMessage, pdfTextErrorStatus, sanitizeDownloadFileName } from '@/lib/pdf-api';
 import { NextRequest, NextResponse } from 'next/server';
 import JSZip from 'jszip';
 import { extractPdfLines } from '@/lib/pdf-text';
@@ -73,10 +73,12 @@ async function buildDocxZip(lines: string[]): Promise<Buffer> {
   );
 
   // 5. word/document.xml
+  const MAX_DOCX_LINES = 20000;
+  const cappedLines = lines.length > MAX_DOCX_LINES ? lines.slice(0, MAX_DOCX_LINES) : lines;
   let bodyXml = '';
-  for (const line of lines) {
+  for (const line of cappedLines) {
     const escaped = escapeXml(line);
-    const isHeading = escaped.length < 50 && /^[A-Z0-9\s:.-]{4,}$/.test(line);
+    const isHeading = line.length < 50 && /^[A-Z0-9\s:.-]{4,}$/.test(line);
 
     if (isHeading) {
       bodyXml += `<w:p><w:pPr><w:pStyle w:val="Heading1"/><w:spacing w:before="240" w:after="120"/></w:pPr><w:r><w:rPr><w:b/><w:sz w:val="32"/><w:color w:val="1F4E79"/></w:rPr><w:t>${escaped}</w:t></w:r></w:p>`;
@@ -131,6 +133,9 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error('PDF to Word error:', error);
-    return apiError(error instanceof Error ? error.message : 'Failed to convert PDF to Word document', 500);
+    return apiError(
+      pdfTextErrorMessage(error, 'Failed to convert PDF to Word document'),
+      pdfTextErrorStatus(error),
+    );
   }
 }

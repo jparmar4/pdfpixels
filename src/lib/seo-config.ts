@@ -169,11 +169,10 @@ export const organizationData = {
   logo: absoluteUrl('/icon-512.png'),
   description: 'Free online PDF and image processing platform with browser and server workflows.',
   foundingDate: '2025',
-  sameAs: [
-    'https://twitter.com/pdfpixels',
-    'https://www.linkedin.com/company/pdfpixels',
-    'https://www.youtube.com/@pdfpixels'
-  ],
+  // sameAs intentionally empty: the X/LinkedIn/YouTube handles don't exist
+  // yet (all 404 as of 2026-09-15). Re-add real profile URLs here once live —
+  // fake sameAs links hurt rather than help trust signals.
+  sameAs: [] as string[],
   contactPoint: {
     type: 'CustomerService',
     availableLanguage: ['English'],

@@ -253,15 +253,27 @@ export function CompressPDFWorkspace({ targetPreset }: CompressPDFWorkspaceProps
       setErrorMessage(null);
       return;
     }
+    if (uploadedFile.size === 0) {
+      toast.warning('This file is empty (0 bytes). Please choose a valid PDF.');
+      setPdfMeta(null);
+      return;
+    }
     let cancelled = false;
     (async () => {
       try {
         const { PDFDocument } = await import('pdf-lib');
         const bytes = await uploadedFile.arrayBuffer();
         const pdf = await PDFDocument.load(bytes, { ignoreEncryption: true });
-        if (!cancelled) setPdfMeta({ pages: pdf.getPageCount() });
+        if (cancelled) return;
+        if (pdf.isEncrypted) {
+          toast.warning('This PDF is password-protected — unlock it before compressing.');
+        }
+        setPdfMeta({ pages: pdf.getPageCount() });
       } catch {
-        if (!cancelled) setPdfMeta(null);
+        if (!cancelled) {
+          toast.warning('Could not preview this PDF — it may be corrupt.');
+          setPdfMeta(null);
+        }
       }
     })();
     return () => {

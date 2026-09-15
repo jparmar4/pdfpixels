@@ -10,7 +10,7 @@ import { FooterAd } from '@/components/ads/ad-banner';
 import { comparisonPages } from '@/lib/comparisons';
 import { normalizeDisplayText } from '@/lib/display-text';
 import { siteConfig } from '@/lib/seo-config';
-import { absoluteUrl, dedupeKeywords, DEFAULT_OG_IMAGE_URL } from '@/lib/seo';
+import { absoluteUrl, dedupeKeywords } from '@/lib/seo';
 import { toolContentMap } from '@/lib/tool-content-data';
 import { allTools, getToolBySlug } from '@/lib/tools-data';
 import { useCasePages } from '@/lib/use-cases';
@@ -192,13 +192,13 @@ function getToolJsonLd(tool: ReturnType<typeof getToolBySlug>) {
       },
       primaryImageOfPage: {
         '@type': 'ImageObject',
-        url: DEFAULT_OG_IMAGE_URL,
+        url: absoluteUrl(`/tools/${tool.slug}/opengraph-image`),
         width: 1200,
         height: 630,
       },
       speakable: {
         '@type': 'SpeakableSpecification',
-        cssSelector: ['h1', '.tool-hero-description'],
+        cssSelector: ['.tool-hero-title', '.tool-hero-description'],
       },
       mainEntity: {
         '@id': `${url}#software`,
@@ -278,10 +278,12 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
           <script key={index} type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
         ))}
 
-        {/* Server-rendered breadcrumb + page H1. The tool workspace (and its
-            client-only header) hydrates after JS, so without this the served
-            HTML contained no <h1> at all - a real on-page SEO gap on every
-            tool page. Mirrors the BreadcrumbList JSON-LD above. */}
+        {/* Server-rendered breadcrumb + page H1. Workspaces render with
+            ssr:false and depend on activeTool (set in useLayoutEffect), so
+            the client ToolPageHeader never reaches served HTML — this H1
+            guarantees exactly one H1 for no-JS crawlers and view-source.
+            The client header keeps its title as a styled paragraph to avoid
+            a second H1 after hydration. Mirrors the BreadcrumbList JSON-LD. */}
         <nav aria-label="Breadcrumb" className="container mx-auto px-4 pt-8 lg:px-8">
           <ol className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
             <li>

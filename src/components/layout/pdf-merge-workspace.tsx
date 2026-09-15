@@ -27,9 +27,11 @@ export function PDFMergeWorkspace() {
   const [statusLabel, setStatusLabel] = useState<'Idle' | 'Uploading' | 'Processing' | 'Finalizing'>('Idle');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const prefersReducedMotion = useReducedMotion();
+  const inFlightRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
     return () => {
+      inFlightRef.current?.abort();
       if (result?.pdfUrl?.startsWith('blob:')) {
         URL.revokeObjectURL(result.pdfUrl);
       }
@@ -44,8 +46,13 @@ export function PDFMergeWorkspace() {
           try {
             const bytes = await item.file.arrayBuffer();
             const pdf = await PDFDocument.load(bytes, { ignoreEncryption: true });
+            if (pdf.isEncrypted) {
+              toast.warning(`"${item.name}" is password-protected — unlock it before merging.`);
+              return item;
+            }
             return { ...item, pageCount: pdf.getPageCount() };
           } catch {
+            toast.warning(`"${item.name}" could not be read and may fail to merge.`);
             return item;
           }
         }),
@@ -63,20 +70,33 @@ export function PDFMergeWorkspace() {
       toast.error('Please add PDF files only');
       return;
     }
+    const empty = pdfs.filter((f) => f.size === 0);
+    if (empty.length > 0) {
+      toast.error(`${empty.length} empty file(s) were skipped`);
+    }
     const oversized = pdfs.filter((f) => f.size > 25 * 1024 * 1024);
     if (oversized.length > 0) {
       toast.error(`${oversized.length} file(s) exceed 25 MB and were skipped`);
     }
-    const ok = pdfs.filter((f) => f.size <= 25 * 1024 * 1024).slice(0, 20);
+    const ok = pdfs.filter((f) => f.size > 0 && f.size <= 25 * 1024 * 1024).slice(0, 20);
     if (ok.length === 0) return;
 
     const base: PDFFile[] = ok.map((f) => ({ file: f, name: f.name, size: f.size }));
     const enriched = await enrichPdfMeta(base);
+    let dropped = 0;
     setFiles((prev) => {
       const next = [...prev, ...enriched].slice(0, 20);
+      dropped = prev.length + enriched.length - next.length;
+      const totalSize = next.reduce((sum, f) => sum + f.size, 0);
+      if (totalSize > 100 * 1024 * 1024) {
+        toast.error('Total size exceeds 100 MB — remove some files before merging.');
+      }
       return next;
     });
     setResult(null);
+    if (dropped > 0) {
+      toast.warning(`${dropped} file(s) skipped: maximum 20 PDFs per merge.`);
+    }
     const pages = enriched.reduce((sum, f) => sum + (f.pageCount || 0), 0);
     toast.success(
       pages > 0
@@ -114,8 +134,14 @@ export function PDFMergeWorkspace() {
   }, []);
 
   const handleProcess = useCallback(async () => {
+    if (isProcessing || inFlightRef.current) return;
     if (files.length < 2) {
       toast.error('Please add at least 2 PDF files to merge');
+      return;
+    }
+    const totalSize = files.reduce((sum, f) => sum + f.size, 0);
+    if (totalSize > 100 * 1024 * 1024) {
+      toast.error('Total size exceeds 100 MB. Remove some files before merging.');
       return;
     }
 
@@ -128,6 +154,8 @@ export function PDFMergeWorkspace() {
       formData.append('files', f.file);
     });
 
+    const controller = new AbortController();
+    inFlightRef.current = controller;
     let progressInterval: ReturnType<typeof setInterval> | undefined;
     try {
       progressInterval = setInterval(() => {
@@ -138,6 +166,7 @@ export function PDFMergeWorkspace() {
       const response = await fetch('/api/pdf/merge', {
         method: 'POST',
         body: formData,
+        signal: controller.signal,
       });
 
       setStatusLabel('Finalizing');
@@ -184,13 +213,18 @@ export function PDFMergeWorkspace() {
         document.getElementById('merge-result')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       });
     } catch (error) {
+      if (error instanceof DOMException && error.name === 'AbortError') {
+        toast.info('Merge cancelled.');
+        return;
+      }
       toast.error(error instanceof Error ? error.message : 'Failed to merge PDFs. Please try again.');
     } finally {
       if (progressInterval) clearInterval(progressInterval);
+      inFlightRef.current = null;
       setIsProcessing(false);
       setStatusLabel('Idle');
     }
-  }, [files, setIsProcessing, setProgress]);
+  }, [files, isProcessing, setIsProcessing, setProgress]);
 
   const handleDownload = useCallback(() => {
     if (result) {

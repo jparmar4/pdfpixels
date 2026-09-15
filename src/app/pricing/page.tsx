@@ -3,12 +3,34 @@ import Link from 'next/link';
 import { Check, ShieldCheck, Sparkles, Heart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { siteConfig } from '@/lib/seo-config';
+import { DEFAULT_OG_IMAGE_URL } from '@/lib/seo';
 
 export const metadata: Metadata = {
   title: `Pricing — Free Online PDF & Image Tools | ${siteConfig.name}`,
   description:
     'PdfPixels tools are free for everyday PDF and image tasks. No paid Pro tier required for core compress, convert, merge, and resize workflows.',
   alternates: { canonical: '/pricing' },
+  openGraph: {
+    title: `Pricing — Free Online PDF & Image Tools | ${siteConfig.name}`,
+    description:
+      'PdfPixels tools are free for everyday PDF and image tasks. No paid Pro tier required.',
+    url: '/pricing',
+    images: [
+      {
+        url: DEFAULT_OG_IMAGE_URL,
+        width: 1200,
+        height: 630,
+        alt: 'PdfPixels pricing — free tools',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: `Pricing — Free Online PDF & Image Tools | ${siteConfig.name}`,
+    description:
+      'PdfPixels tools are free for everyday PDF and image tasks.',
+    images: [DEFAULT_OG_IMAGE_URL],
+  },
   robots: {
     index: true,
     follow: true,

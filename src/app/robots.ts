@@ -56,6 +56,26 @@ export default function robots(): MetadataRoute.Robots {
         allow: '/',
         disallow: ['/api/'],
       },
+      {
+        userAgent: 'Meta-ExternalAgent',
+        allow: '/',
+        disallow: ['/api/'],
+      },
+      {
+        userAgent: 'Bytespider',
+        allow: '/',
+        disallow: ['/api/'],
+      },
+      {
+        userAgent: 'MistralAI-User',
+        allow: '/',
+        disallow: ['/api/'],
+      },
+      {
+        userAgent: 'DuckAssistBot',
+        allow: '/',
+        disallow: ['/api/'],
+      },
     ],
     sitemap: [`${siteConfig.url}/sitemap.xml`, `${siteConfig.url}/image-sitemap.xml`],
     host,

@@ -89,15 +89,53 @@ async function parseDocxContent(buffer: Buffer): Promise<ParagraphItem[]> {
 /**
  * Word wraps text to fit within a given maxWidth at a given font & fontSize.
  */
+function toWinAnsi(text: string): string {
+  // StandardFonts use WinAnsiEncoding: printable ASCII plus the Latin-1
+  // supplement (é, ü, ñ, …) all survive. Only characters outside U+00FF
+  // (emoji, CJK, Arabic, …) cannot be encoded and become '?'.
+  return text.replace(/[^\x20-\xFF]/g, '?');
+}
+
+/** Probe whether pdf-lib can encode this line; degrade leftovers if not. */
+function encodeSafeLine(font: { encodeText: (text: string) => unknown }, line: string): string {
+  const safe = toWinAnsi(line);
+  try {
+    font.encodeText(safe);
+    return safe;
+  } catch {
+    // Rare undefined WinAnsi slots (e.g. U+0081) — degrade just those.
+    return safe.replace(/[^\x20-\x7E\xA0-\xFF]/g, '?');
+  }
+}
+
+function splitLongWord(word: string, maxWidth: number, font: any, fontSize: number): string[] {
+  const safe = toWinAnsi(word);
+  if (font.widthOfTextAtSize(safe, fontSize) <= maxWidth) return [word];
+  // Greedy character split so a single long token can't overflow the page.
+  const parts: string[] = [];
+  let current = '';
+  for (const char of word) {
+    const test = current + char;
+    if (font.widthOfTextAtSize(toWinAnsi(test), fontSize) <= maxWidth || !current) {
+      current = test;
+    } else {
+      parts.push(current);
+      current = char;
+    }
+  }
+  if (current) parts.push(current);
+  return parts;
+}
+
 function wrapText(text: string, maxWidth: number, font: any, fontSize: number): string[] {
-  const words = text.split(/\s+/);
+  const words = text.split(/\s+/).flatMap((word) => splitLongWord(word, maxWidth, font, fontSize));
   const lines: string[] = [];
   let currentLine = '';
 
   for (const word of words) {
     const testLine = currentLine ? `${currentLine} ${word}` : word;
     // Strip non-latin1 characters for StandardFonts compatibility
-    const safeTest = testLine.replace(/[^\x20-\x7E]/g, '?');
+    const safeTest = toWinAnsi(testLine);
     const width = font.widthOfTextAtSize(safeTest, fontSize);
 
     if (width <= maxWidth) {
@@ -121,6 +159,7 @@ export async function POST(request: NextRequest) {
       return apiError('No Word (.docx) file provided', 400);
     }
 
+    if (file.size === 0) return apiError('This Word file is empty. Please choose a valid .docx file.', 400);
     if (file.size > 25 * 1024 * 1024) return apiError('Word files must be 25MB or smaller.', 400);
     const name = file.name.toLowerCase();
     if (!name.endsWith('.docx')) {
@@ -128,7 +167,15 @@ export async function POST(request: NextRequest) {
     }
 
     const buffer = Buffer.from(await file.arrayBuffer());
-    const paragraphs = await parseDocxContent(buffer);
+    let paragraphs: ParagraphItem[];
+    try {
+      paragraphs = await parseDocxContent(buffer);
+    } catch {
+      return apiError('This .docx file could not be read. It may be corrupt — try re-saving it from Word.', 400);
+    }
+    if (paragraphs.length > 5000) {
+      return apiError('This Word document is too long (5000 paragraph max). Split it into smaller files.', 413);
+    }
 
     if (paragraphs.length === 0) {
       return apiError('The Word document is empty or text could not be parsed', 400);
@@ -176,17 +223,20 @@ export async function POST(request: NextRequest) {
         font = boldFont;
       }
 
-      try { font.encodeText(p.text); } catch { return apiError('This basic converter cannot render one or more document characters. Export this document to PDF from Word to preserve all languages.', 422); }
-      const lines = wrapText(p.text, contentWidth, font, fontSize);
+      const safeParagraph = toWinAnsi(p.text);
+      const lines = wrapText(safeParagraph, contentWidth, font, fontSize);
 
       for (const line of lines) {
         // If out of space on current page, create a new page
         if (currentY - lineSpacing < margin) {
+          if (pdf.getPageCount() > 500) {
+            return apiError('This Word document is too long (500 page max). Split it into smaller files.', 413);
+          }
           currentPage = pdf.addPage([pageWidth, pageHeight]);
           currentY = pageHeight - margin;
         }
 
-        const safeLine = line;
+        const safeLine = encodeSafeLine(font, line);
         currentPage.drawText(safeLine, {
           x: margin,
           y: currentY - fontSize,

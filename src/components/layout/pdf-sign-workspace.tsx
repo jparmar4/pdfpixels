@@ -1,8 +1,8 @@
 'use client';
 
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import {
-  Download, RotateCcw, PenTool, Type, Trash2, ChevronRight,
+  Download, RotateCcw, PenTool, Type, Trash2,
   Sparkles, FileSignature, Calendar, ArrowLeft, ArrowRight, Check
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -357,8 +357,7 @@ export function PDFSignWorkspace() {
                     }}
                   >
                     <div className="relative">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={createdSigDataUrl} alt="Signature" style={{ width: `${sigW}px`, height: `${sigH}px` }} className="object-contain pointer-events-none" />
+                      <img src={createdSigDataUrl} alt="Created signature preview" style={{ width: `${sigW}px`, height: `${sigH}px` }} className="object-contain pointer-events-none" />
                       {includeDate && (
                         <p className="text-[10px] font-mono text-zinc-600 dark:text-zinc-300 mt-1 pointer-events-none">
                           Date: {dateText}

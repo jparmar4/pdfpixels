@@ -15,7 +15,8 @@ function hexToRgb(hex: string): { r: number; g: number; b: number } {
 
 /** Keep WinAnsi-safe text for StandardFonts; strip unsupported chars. */
 function sanitizeWatermarkText(text: string): string {
-    return text.replace(/[^\x20-\x7E]/g, '?').trim() || 'CONFIDENTIAL';
+    // WinAnsi keeps the Latin-1 supplement (é, ü, ñ…); only non-latin1 degrades.
+    return text.replace(/[^\x20-\xFF]/g, '?').trim() || 'CONFIDENTIAL';
 }
 
 export async function POST(request: NextRequest) {
@@ -26,11 +27,22 @@ export async function POST(request: NextRequest) {
         const opacityRaw = parseFloat(String(formData.get('opacity') ?? ''));
         const opacity = Number.isFinite(opacityRaw) ? Math.min(1, Math.max(0.05, opacityRaw)) : 0.3;
         const fontSizeRaw = parseInt(String(formData.get('fontSize') ?? ''), 10);
-        const fontSize = Number.isFinite(fontSizeRaw) ? fontSizeRaw : 48;
-        const colorHex = (formData.get('color') as string) || '#808080';
+        const fontSize = Number.isFinite(fontSizeRaw) ? Math.min(200, Math.max(8, fontSizeRaw)) : 48;
+        const rawColor = ((formData.get('color') as string) || '#808080').trim();
+        const colorHex = /^#?[0-9a-fA-F]{6}$/.test(rawColor) ? rawColor : '#808080';
         const rotationRaw = parseInt(String(formData.get('rotation') ?? ''), 10);
-        const rotation = Number.isFinite(rotationRaw) ? rotationRaw : 45;
-        const position = (formData.get('position') as string) || 'center';
+        const rotation = Number.isFinite(rotationRaw) ? ((rotationRaw % 360) + 360) % 360 : 45;
+        const rawPosition = ((formData.get('position') as string) || 'center').toLowerCase();
+        const position = [
+          'center',
+          'diagonal',
+          'top-left',
+          'top-right',
+          'bottom-left',
+          'bottom-right',
+        ].includes(rawPosition)
+          ? rawPosition
+          : 'center';
 
         const opened = await openEditablePdf(file);
         if (!opened.ok) return opened.response;

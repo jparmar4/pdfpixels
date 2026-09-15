@@ -5,17 +5,29 @@ export const PDF_CACHE_HEADERS = {
   'Cache-Control': 'no-store, max-age=0',
 } as const;
 
+const PDF_MIME_TYPES = new Set([
+  'application/pdf',
+  'application/x-pdf',
+  'application/acrobat',
+  'applications/pdf',
+  'binary/octet-stream',
+  'application/octet-stream',
+]);
+
 export function isPdfFile(file: File): boolean {
   const name = file.name?.toLowerCase() || '';
   if (name.endsWith('.pdf')) return true;
   if (!file.type) return false;
-  return file.type === 'application/pdf' || file.type === 'application/x-pdf';
+  return PDF_MIME_TYPES.has(file.type.toLowerCase());
 }
 
 /**
  * Parse a human page selection like "1,3,5-7" into 0-based indices.
  * Invalid tokens are skipped. Out-of-range indices are filtered.
  */
+export const MAX_PAGE_SELECTION_CHARS = 2000;
+export const MAX_PAGE_SELECTION_ITEMS = 500;
+
 export function parsePageSelection(
   input: string,
   totalPages: number,
@@ -24,8 +36,13 @@ export function parsePageSelection(
     return Array.from({ length: totalPages }, (_, i) => i);
   }
 
+  // Guard against CPU-DoS via megabyte-long selection strings.
+  const capped = input.length > MAX_PAGE_SELECTION_CHARS
+    ? input.slice(0, MAX_PAGE_SELECTION_CHARS)
+    : input;
+
   const indices = new Set<number>();
-  const tokens = input.split(',').map((t) => t.trim()).filter(Boolean);
+  const tokens = capped.split(',').map((t) => t.trim()).filter(Boolean).slice(0, MAX_PAGE_SELECTION_ITEMS);
 
   for (const token of tokens) {
     const rangeMatch = token.match(/^(\d+)\s*-\s*(\d+)$/);
@@ -82,6 +99,26 @@ export function validatePdfUpload(
     };
   }
 
+  if (!file.name) {
+    return {
+      ok: false,
+      response: NextResponse.json(
+        { error: 'No PDF file provided' },
+        { status: 400, headers: PDF_CACHE_HEADERS },
+      ),
+    };
+  }
+
+  if (file.size === 0) {
+    return {
+      ok: false,
+      response: NextResponse.json(
+        { error: 'This file is empty (0 bytes). Please choose a valid PDF.' },
+        { status: 400, headers: PDF_CACHE_HEADERS },
+      ),
+    };
+  }
+
   if (file.size > maxBytes) {
     const mb = Math.round(maxBytes / (1024 * 1024));
     return {
@@ -95,7 +132,7 @@ export function validatePdfUpload(
 
   // Allow empty MIME (some browsers omit it); isPdfFile accepts .pdf extension
   // and common PDF content types including application/octet-stream.
-  if (requireType && file.type && !isPdfFile(file)) {
+  if (requireType && !isPdfFile(file)) {
     return {
       ok: false,
       response: NextResponse.json(
@@ -194,6 +231,26 @@ export function pdfJsonError(message: string, status = 400, details?: string) {
     details ? { error: message, details } : { error: message },
     { status, headers: PDF_CACHE_HEADERS },
   );
+}
+
+/**
+ * pdf-text extraction throws plain Errors for oversized inputs
+ * ("Please split PDFs over 500 pages...", "Too much text...").
+ * Those must surface as 422/413 — not 500 — so clients don't retry.
+ */
+export function pdfTextErrorStatus(error: unknown): 422 | 413 | 500 {
+  const message = error instanceof Error ? error.message : String(error ?? '');
+  if (/split .* (over )?500 pages|too much text/i.test(message)) return 422;
+  if (/too large|too many lines/i.test(message)) return 422;
+  return 500;
+}
+
+export function pdfTextErrorMessage(error: unknown, fallback: string): string {
+  if (error instanceof Error && error.message) {
+    if (pdfTextErrorStatus(error) !== 500) return error.message;
+    return fallback;
+  }
+  return fallback;
 }
 
 /** Build a browser-downloadable PDF data URL from raw bytes. */

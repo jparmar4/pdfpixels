@@ -219,7 +219,7 @@ export function FilterWorkspace() {
                     <span className="text-sm font-medium">Original</span>
                   </div>
                   <div className="aspect-video bg-muted/50 flex items-center justify-center">
-                    <img src={originalUrl} alt="Original" className="max-w-full max-h-full object-contain" />
+                    <img src={originalUrl} alt="Original upload preview" loading="lazy" decoding="async" className="max-w-full max-h-full object-contain" />
                   </div>
                 </div>
 
@@ -229,7 +229,7 @@ export function FilterWorkspace() {
                       <span className="text-sm font-medium text-primary">Filtered</span>
                     </div>
                     <div className="aspect-video bg-muted/50 flex items-center justify-center">
-                      <img src={processedImage} alt="Filtered" className="max-w-full max-h-full object-contain" />
+                      <img src={processedImage} alt="Filtered result preview" loading="lazy" decoding="async" className="max-w-full max-h-full object-contain" />
                     </div>
                   </div>
                 )}
@@ -253,7 +253,9 @@ export function FilterWorkspace() {
               <div className="aspect-video bg-muted/50 flex items-center justify-center">
                 <img
                   src={processedImage}
-                  alt="Filtered"
+                  alt="Filtered result preview"
+                  loading="lazy"
+                  decoding="async"
                   className="max-w-full max-h-full object-contain"
                 />
               </div>
