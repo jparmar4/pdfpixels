@@ -1,4 +1,4 @@
-import { apiError } from '@/lib/api-response';
+import { apiError, apiInternalError } from '@/lib/api-response';
 import { decodeHeicIfNeeded, isImageUpload } from '@/lib/heic';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -15,6 +15,9 @@ const LOSSY_FORMATS = new Set(['jpg', 'jpeg']);
 // Maximum file sizes
 const MAX_IMAGE_SIZE = 25 * 1024 * 1024; // 25 MB (keeps base64 JSON responses manageable)
 const MAX_DIMENSION = 20_000;
+
+export const runtime = 'nodejs';
+export const maxDuration = 60;
 
 // ─── POST handler ─────────────────────────────────────────────────────────────
 
@@ -132,17 +135,15 @@ export async function POST(request: NextRequest) {
     }, { headers: CACHE_HEADERS });
 
   } catch (error) {
-    console.error('Image processing error:', error);
     const message = error instanceof Error ? error.message : 'Unknown error';
-    const status = /corrupt|unsupported|invalid|too large|too many pixels|empty/i.test(message) ? 400 : 500;
-    return NextResponse.json(
-      {
-        error: status === 400 ? message : 'Failed to process image',
-        details: status === 400 ? undefined : message,
-        success: false,
-      },
-      { status, headers: CACHE_HEADERS }
-    );
+    if (/corrupt|unsupported|invalid|too large|too many pixels|empty/i.test(message)) {
+      console.error('Image processing error:', error);
+      return NextResponse.json(
+        { error: message, success: false },
+        { status: 400, headers: CACHE_HEADERS }
+      );
+    }
+    return apiInternalError(error, 'Failed to process image', 'Image processing error');
   }
 }
 

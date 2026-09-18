@@ -301,28 +301,3 @@ export function HomePageSchemas() {
   );
 }
 
-export function ToolSchema({ tool }: { tool: { id: string; slug?: string; name: string; description: string; keywords: string[] } }) {
-  const toolPath = tool.slug ?? tool.id;
-  const schema = {
-    '@context': 'https://schema.org',
-    '@type': 'SoftwareApplication',
-    name: tool.name,
-    description: tool.description,
-    url: absoluteUrl(`/tools/${toolPath}`),
-    applicationCategory: 'UtilitiesApplication',
-    operatingSystem: 'Any',
-    isAccessibleForFree: true,
-    offers: {
-      '@type': 'Offer',
-      price: '0',
-      priceCurrency: 'USD',
-    },
-    keywords: tool.keywords.join(', '),
-    isPartOf: {
-      '@id': `${absoluteUrl('/')}/#webapp`,
-    },
-  };
-
-  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />;
-}
-

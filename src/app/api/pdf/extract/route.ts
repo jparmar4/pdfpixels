@@ -1,4 +1,4 @@
-import { apiError } from '@/lib/api-response';
+import { apiError, apiInternalError } from '@/lib/api-response';
 import { openEditablePdf, parsePageSelection, pdfBinaryResponse } from '@/lib/pdf-api';
 import { NextRequest } from 'next/server';
 import { PDFDocument } from 'pdf-lib';
@@ -35,7 +35,6 @@ export async function POST(request: NextRequest) {
       'x-total-pages': String(selectedIndices.length),
     });
   } catch (error) {
-    console.error('PDF extract error:', error);
-    return apiError(error instanceof Error ? error.message : 'Failed to extract PDF pages', 500);
+    return apiInternalError(error, 'Failed to extract PDF pages', 'PDF extract error');
   }
 }

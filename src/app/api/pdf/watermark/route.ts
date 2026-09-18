@@ -1,5 +1,5 @@
-import { apiError } from '@/lib/api-response';
-import { openEditablePdf, pdfBinaryResponse } from '@/lib/pdf-api';
+import { apiInternalError } from '@/lib/api-response';
+import { openEditablePdf, pdfBinaryResponse, sanitizeDownloadFileName, toSafeWinAnsi } from '@/lib/pdf-api';
 import { NextRequest } from 'next/server';
 import { rgb, StandardFonts, degrees } from 'pdf-lib';
 
@@ -13,10 +13,9 @@ function hexToRgb(hex: string): { r: number; g: number; b: number } {
         : { r: 0.5, g: 0.5, b: 0.5 };
 }
 
-/** Keep WinAnsi-safe text for StandardFonts; strip unsupported chars. */
+/** Keep WinAnsi-safe text for StandardFonts; transliterate quotes/dashes. */
 function sanitizeWatermarkText(text: string): string {
-    // WinAnsi keeps the Latin-1 supplement (é, ü, ñ…); only non-latin1 degrades.
-    return text.replace(/[^\x20-\xFF]/g, '?').trim() || 'CONFIDENTIAL';
+    return toSafeWinAnsi(text).trim() || 'CONFIDENTIAL';
 }
 
 export async function POST(request: NextRequest) {
@@ -93,11 +92,11 @@ export async function POST(request: NextRequest) {
         }
 
         const outBytes = await pdf.save();
-        const fileName = file!.name ? file!.name.replace(/\.pdf$/i, '-watermarked.pdf') : `watermarked-${Date.now()}.pdf`;
+        const baseName = file?.name ? file.name.replace(/\.pdf$/i, '') : 'document';
+        const fileName = `${sanitizeDownloadFileName(baseName)}-watermarked.pdf`;
 
         return pdfBinaryResponse(outBytes, fileName);
     } catch (error) {
-        console.error('PDF watermark error:', error);
-        return apiError(error instanceof Error ? error.message : 'Failed to watermark PDF', 500);
+        return apiInternalError(error, 'Failed to watermark PDF', 'PDF watermark error');
     }
 }

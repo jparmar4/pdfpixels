@@ -1,4 +1,4 @@
-import { apiError } from '@/lib/api-response';
+import { apiError, apiInternalError } from '@/lib/api-response';
 import { pdfBinaryResponse, sanitizeDownloadFileName } from '@/lib/pdf-api';
 import { NextRequest } from 'next/server';
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
@@ -257,7 +257,6 @@ export async function POST(request: NextRequest) {
 
     return pdfBinaryResponse(outBytes, sanitizeDownloadFileName(fileName));
   } catch (error) {
-    console.error('Word to PDF error:', error);
-    return apiError(error instanceof Error ? error.message : 'Failed to convert Word document to PDF', 500);
+    return apiInternalError(error, 'Failed to convert Word document to PDF', 'Word to PDF error');
   }
 }

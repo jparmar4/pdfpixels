@@ -7,14 +7,6 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-dm-sans);
-  --color-sidebar-ring: var(--sidebar-ring);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar: var(--sidebar);
   --color-chart-5: var(--chart-5);
   --color-chart-4: var(--chart-4);
   --color-chart-3: var(--chart-3);
@@ -535,31 +527,6 @@ h6 {
     radial-gradient(ellipse 70% 40% at 50% 80%, rgba(96, 165, 250, 0.08), transparent);
 }
 
-/* ========== DROP ZONE ========== */
-
-.drop-zone {
-  border: 2px dashed var(--border);
-  background-color: var(--secondary);
-  transition: all 0.2s ease;
-}
-
-.drop-zone:hover,
-.drop-zone.drag-over {
-  border-color: var(--primary);
-  background-color: rgba(79, 70, 229, 0.02);
-}
-
-.dark .drop-zone {
-  border-color: var(--border);
-  background-color: var(--secondary);
-}
-
-.dark .drop-zone:hover,
-.dark .drop-zone.drag-over {
-  border-color: var(--primary);
-  background-color: rgba(129, 140, 248, 0.05);
-}
-
 /* ========== CARD HOVER ========== */
 
 .card-hover {
@@ -731,7 +698,12 @@ h6 {
   .animate-border-glow,
   .text-shimmer,
   .rainbow-border::before,
-  .aurora-bg::before {
+  .aurora-bg::before,
+  /* Continuous, GPU-heavy decorations: freeze to their static first frame on
+     tablets/phones. The gradients still render; only the motion stops. */
+  .mesh-gradient-blobs,
+  .badge-gradient::before,
+  .connector-flow {
     animation: none !important;
   }
 }
@@ -940,27 +912,6 @@ h6 {
   animation: dashFlow 1.5s linear infinite;
 }
 
-/* ========== AVATAR STACK ========== */
-
-.avatar-ring {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  border: 2px solid var(--background);
-  margin-left: -8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 11px;
-  font-weight: 700;
-  color: white;
-  flex-shrink: 0;
-}
-
-.avatar-ring:first-child {
-  margin-left: 0;
-}
-
 /* ========== TYPEWRITER / ROTATING TEXT ========== */
 
 @keyframes typeIn {
@@ -1026,11 +977,6 @@ h6 {
       rgba(129, 140, 248, 0.2) 80%,
       transparent 100%);
   background-size: 200% 100%;
-}
-
-.testimonial-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 12px 32px -8px rgba(79, 70, 229, 0.12);
 }
 
 /* ========== SCROLL CAROUSEL ========== */
@@ -1589,23 +1535,6 @@ h6 {
   background: rgba(17, 24, 39, 0.88);
   border-color: rgba(148, 163, 184, 0.16);
   box-shadow: 0 10px 28px -16px rgba(0, 0, 0, 0.6), 0 1px 2px rgba(0, 0, 0, 0.35);
-}
-
-.testimonial-card {
-  background: rgba(255, 255, 255, 0.9);
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-  border: 1px solid rgba(226, 232, 240, 0.5);
-  border-radius: 1.25rem;
-  padding: 1.5rem;
-  flex-shrink: 0;
-  width: 300px;
-  transition: all 0.3s ease;
-}
-
-.dark .testimonial-card {
-  background: rgba(15, 23, 42, 0.85);
-  border-color: rgba(30, 41, 59, 0.5);
 }
 
 .glass {

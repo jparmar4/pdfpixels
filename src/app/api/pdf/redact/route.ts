@@ -1,5 +1,5 @@
-import { apiError } from '@/lib/api-response';
-import { openEditablePdf, pdfBinaryResponse } from '@/lib/pdf-api';
+import { apiError, apiInternalError } from '@/lib/api-response';
+import { openEditablePdf, pdfBinaryResponse, sanitizeDownloadFileName } from '@/lib/pdf-api';
 import { NextRequest } from 'next/server';
 import { rasterizePdf } from '@/lib/pdf-raster';
 import { rgb, PDFName } from 'pdf-lib';
@@ -96,14 +96,14 @@ export async function POST(request: NextRequest) {
     }
 
     const outBytes = await rasterizePdf(await pdf.save(), totalPages);
-    const fileName = file!.name ? file!.name.replace(/\.pdf$/i, '-redacted.pdf') : `redacted-${Date.now()}.pdf`;
+    const baseName = file?.name ? file.name.replace(/\.pdf$/i, '') : 'document';
+    const fileName = `${sanitizeDownloadFileName(baseName)}-redacted.pdf`;
 
     return pdfBinaryResponse(outBytes, fileName, {
       'x-redaction-type': 'rasterized',
       'x-redaction-count': String(redactions.length),
     });
   } catch (error) {
-    console.error('PDF redact error:', error);
-    return apiError(error instanceof Error ? error.message : 'Failed to redact PDF', 500);
+    return apiInternalError(error, 'Failed to redact PDF', 'PDF redact error');
   }
 }

@@ -313,7 +313,7 @@ export function PDFSplitWorkspace() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       aria-busy={isProcessing}
-      className="container mx-auto px-4 lg:px-8 py-8"
+      className={`container mx-auto px-4 lg:px-8 py-8 ${file && !result ? 'pb-24 md:pb-8' : ''}`}
     >
       <ToolPageHeader
         title={activeTool.name}
@@ -508,8 +508,8 @@ export function PDFSplitWorkspace() {
 
                 <TabsContent value="range" className="space-y-4 mt-4">
                   <div className="space-y-2">
-                    <Label>Page range</Label>
-                    <Input
+                    <Label htmlFor="page-range">Page range</Label>
+                    <Input id="page-range"
                       placeholder="e.g., 1-3,5,7-9"
                       value={pageRange}
                       onChange={(e) => setPageRange(e.target.value)}
@@ -549,8 +549,8 @@ export function PDFSplitWorkspace() {
 
                 <TabsContent value="single" className="space-y-4 mt-4">
                   <div className="space-y-2">
-                    <Label>Page number</Label>
-                    <Input
+                    <Label htmlFor="page-number">Page number</Label>
+                    <Input id="page-number"
                       type="number"
                       min={1}
                       max={pdfInfo?.pageCount || undefined}
@@ -646,3 +646,4 @@ export function PDFSplitWorkspace() {
     </motion.div >
   );
 }
+

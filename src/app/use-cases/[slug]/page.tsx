@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import Script from 'next/script';
 import { useCasePages } from '@/lib/use-cases';
 import { getToolBySlug } from '@/lib/tools-data';
-import { absoluteUrl } from '@/lib/seo';
+import { absoluteUrl, DEFAULT_OG_IMAGE_URL } from '@/lib/seo';
 import { siteConfig } from '@/lib/seo-config';
 import { UseCaseDetailContent } from './use-case-detail-content';
 
@@ -29,6 +29,14 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       description: entry.description,
       url,
       type: 'article',
+      images: [
+        {
+          url: DEFAULT_OG_IMAGE_URL,
+          width: 1200,
+          height: 630,
+          alt: `${entry.title} | PdfPixels`,
+        },
+      ],
     },
     robots: {
       index: true,

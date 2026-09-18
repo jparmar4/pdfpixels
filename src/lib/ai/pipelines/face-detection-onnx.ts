@@ -7,6 +7,56 @@ type OrthoBox = { x1: number; y1: number; x2: number; y2: number; score: number 
 
 type OrtTensorLike = { data?: Float32Array; dims?: number[] };
 
+/** Bound model load + single inference so a stalled runtime fails fast. */
+const ONNX_SESSION_TIMEOUT_MS = 20_000;
+const ONNX_RUN_TIMEOUT_MS = 15_000;
+
+type CachedFaceSession = { session: any; inputName: string };
+const faceSessionCache = new Map<string, CachedFaceSession>();
+const faceSessionInflight = new Map<string, Promise<CachedFaceSession>>();
+let cachedOrtModule: any = null;
+
+async function loadOrtModule(): Promise<any> {
+  if (cachedOrtModule) return cachedOrtModule;
+  cachedOrtModule = await import('onnxruntime-node');
+  return cachedOrtModule;
+}
+
+function withTimeout<T>(work: Promise<T>, timeoutMs: number, message: string): Promise<T> {
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const timeout = new Promise<never>((_, reject) => {
+    timer = setTimeout(() => reject(new Error(message)), timeoutMs);
+  });
+  return Promise.race([work, timeout]).finally(() => {
+    if (timer) clearTimeout(timer);
+  }) as Promise<T>;
+}
+
+async function getFaceSession(ort: any, modelPath: string, modelType: string): Promise<CachedFaceSession> {
+  const cacheKey = `${modelPath}::${modelType}`;
+  const cached = faceSessionCache.get(cacheKey);
+  if (cached) return cached;
+  const pending = faceSessionInflight.get(cacheKey);
+  if (pending) return pending;
+
+  const created = (async () => {
+    try {
+      const session = await withTimeout<any>(
+        ort.InferenceSession.create(modelPath, { graphOptimizationLevel: 'all' }) as Promise<any>,
+        ONNX_SESSION_TIMEOUT_MS,
+        'Face-detection model loading timed out.',
+      );
+      const entry = { session, inputName: session.inputNames[0] };
+      faceSessionCache.set(cacheKey, entry);
+      return entry;
+    } finally {
+      faceSessionInflight.delete(cacheKey);
+    }
+  })();
+  faceSessionInflight.set(cacheKey, created);
+  return created;
+}
+
 function clamp(v: number, min: number, max: number) {
   return Math.max(min, Math.min(max, v));
 }
@@ -38,7 +88,7 @@ export async function detectFaceRegionsONNX(image: RGBAImage, mode: FaceOnnxMode
 
   let ort: any;
   try {
-    ort = await import('onnxruntime-node');
+    ort = await loadOrtModule();
   } catch {
     return null;
   }
@@ -51,13 +101,15 @@ export async function detectFaceRegionsONNX(image: RGBAImage, mode: FaceOnnxMode
     const resized = resizeRGBA(image, inputW, inputH);
     const chw = toInputTensor(resized, inputW, inputH, modelType);
 
-    const session = await ort.InferenceSession.create(modelPath, {
-      graphOptimizationLevel: 'all',
-    });
-
-    const inputName = session.inputNames[0];
+    // Reuse the loaded session across requests instead of re-reading the
+    // model file on every call (memory/CPU thrash under concurrency).
+    const { session, inputName } = await getFaceSession(ort, modelPath, modelType);
     const tensor = new ort.Tensor('float32', chw, [1, 3, inputH, inputW]);
-    const raw = await session.run({ [inputName]: tensor });
+    const raw = await withTimeout<Record<string, unknown>>(
+      session.run({ [inputName]: tensor }) as Promise<Record<string, unknown>>,
+      ONNX_RUN_TIMEOUT_MS,
+      'Face detection timed out.',
+    );
 
     const decoded = decodeFaceOutputs(raw, inputW, inputH, image.width, image.height, mode);
     if (!decoded.length) return null;

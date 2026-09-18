@@ -1,9 +1,10 @@
-import { apiError } from '@/lib/api-response';
+import { apiError, apiInternalError } from '@/lib/api-response';
 import {
   loadPdfWithTimeout,
   parsePageSelection,
   readAndValidatePdfFile,
   rejectEncryptedPdf,
+  sanitizeDownloadFileName,
   validatePdfUpload,
   PDF_MAX_FILE_SIZE,
 } from '@/lib/pdf-api';
@@ -159,14 +160,15 @@ export async function POST(request: NextRequest) {
     }
 
     const zipBuffer = zip.toBuffer();
-    const fileName = `converted-images-${Date.now()}.zip`;
+    const baseName = file?.name ? file.name.replace(/\.pdf$/i, '') : 'converted';
+    const fileName = `${baseName}-${safeFormat}.zip`;
     const truncated = convertedPages < requestedPages || selected.length > MAX_PAGES;
 
     return new NextResponse(zipBuffer as unknown as BodyInit, {
       status: 200,
       headers: {
         'Content-Type': 'application/zip',
-        'Content-Disposition': `attachment; filename="${fileName}"`,
+        'Content-Disposition': `attachment; filename="${sanitizeDownloadFileName(fileName)}"`,
         ...CACHE_HEADERS,
         'X-Total-Pages': String(totalPages),
         'X-Requested-Pages': String(requestedPages),
@@ -178,7 +180,6 @@ export async function POST(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error('PDF to image error:', error);
     if (inputPath && fs.existsSync(inputPath)) {
       try {
         fs.unlinkSync(inputPath);
@@ -186,11 +187,14 @@ export async function POST(request: NextRequest) {
         // ignore cleanup errors
       }
     }
-    const details = error instanceof Error ? error.message : 'Unknown error';
-    const status = details.includes('Ghostscript is not available') ? 503 : 500;
-    return NextResponse.json(
-      { error: 'Failed to convert PDF to images', details },
-      { status, headers: CACHE_HEADERS },
-    );
+    const message = error instanceof Error ? error.message : '';
+    if (message.includes('Ghostscript is not available')) {
+      console.error('PDF to image error:', error);
+      return NextResponse.json(
+        { error: 'The image conversion engine is not available in the current environment.' },
+        { status: 503, headers: CACHE_HEADERS },
+      );
+    }
+    return apiInternalError(error, 'Failed to convert PDF to images', 'PDF to image error');
   }
 }

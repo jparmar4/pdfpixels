@@ -398,11 +398,16 @@ export function FileUpload({ accept = 'image/*', maxSizeMb = 25 }: FileUploadPro
                 </span>
               </div>
 
-              {/* Prominent upload button */}
+              {/* Prominent upload button — presentational only. The dropzone
+                  itself is the keyboard-focusable control (role="button"), so
+                  this nested button stays out of the tab order and ARIA tree
+                  to avoid a dead control and a nested-interactive violation. */}
               <Button
                 size="lg"
                 className="btn-premium btn-shimmer mt-8 h-13 rounded-2xl px-10 text-base font-bold pointer-events-none shadow-primary"
                 type="button"
+                tabIndex={-1}
+                aria-hidden="true"
               >
                 <Upload className="h-5 w-5" />
                 {uploadLabel}

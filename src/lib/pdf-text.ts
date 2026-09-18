@@ -1,6 +1,11 @@
 import path from 'node:path';
 import { createRequire } from 'node:module';
 
+/** Upper bound on a single pdfjs parse. Pathological inputs can stall
+ *  parsing indefinitely; without this the request hangs until the platform
+ *  maxDuration, billing the whole window for a file we will never read. */
+const PDFJS_PARSE_TIMEOUT_MS = 20_000;
+
 export interface PdfTextItem {
   str: string;
   x: number;
@@ -289,7 +294,7 @@ async function openPdfJsDocument(buffer: Buffer): Promise<PdfJsTask> {
   const { getDocument } = await import('pdfjs-dist/legacy/build/pdf.mjs');
   const require = createRequire(path.join(process.cwd(), 'package.json'));
   const root = path.dirname(require.resolve('pdfjs-dist/package.json'));
-  return getDocument({
+  const task = getDocument({
     data: new Uint8Array(buffer),
     isEvalSupported: false,
     useSystemFonts: false,
@@ -298,13 +303,34 @@ async function openPdfJsDocument(buffer: Buffer): Promise<PdfJsTask> {
     cMapPacked: true,
     verbosity: 0,
   }) as PdfJsTask;
+
+  return task;
+}
+
+/** Race a pdfjs promise against a timeout. A crafted or pathological PDF can
+ *  stall parsing indefinitely, which would otherwise hang the request until
+ *  the platform maxDuration (billing the full window). Bound it so the
+ *  request fails fast instead. NOTE: the task object itself is never mutated
+ *  (its `promise` is getter-only); the race happens at each await site. */
+function awaitPdfJs<T>(promise: Promise<T>, timeoutMs: number, message: string): Promise<T> {
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const timeout = new Promise<never>((_, reject) => {
+    timer = setTimeout(() => reject(new Error(message)), timeoutMs);
+  });
+  return Promise.race([promise, timeout]).finally(() => {
+    if (timer) clearTimeout(timer);
+  }) as Promise<T>;
 }
 
 /** Positioned glyphs so table tools can rebuild columns; never guess from raw PDF bytes. */
 export async function extractPdfTextItems(buffer: Buffer): Promise<PdfTextItem[]> {
   const task = await openPdfJsDocument(buffer);
   try {
-    const pdf = await task.promise;
+    const pdf = await awaitPdfJs(
+      task.promise,
+      PDFJS_PARSE_TIMEOUT_MS,
+      'PDF parsing timed out. Please try a smaller or simpler file.',
+    );
     if (pdf.numPages > 500) throw new Error('Please split PDFs over 500 pages before extracting text.');
     const items: PdfTextItem[] = [];
     let characters = 0;

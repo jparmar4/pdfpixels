@@ -6,6 +6,7 @@ import { AnimatedMeshBg } from '@/components/ui/animated-mesh-bg';
 
 
 import { Button } from '@/components/ui/button';
+import { InContentAd, FooterAd } from '@/components/ads/ad-banner';
 import { comparisonPages } from '@/lib/comparisons';
 import { getToolBySlug } from '@/lib/tools-data';
 import { DEFAULT_OG_IMAGE_URL, SITE_CONTENT_UPDATED } from '@/lib/seo';
@@ -20,7 +21,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   if (!item) return { title: 'Comparison not found' };
 
   return {
-    title: `${item.title} | PdfPixels`,
+    // Root layout appends `| PdfPixels` via the title template.
+    title: item.title,
     description: item.description,
     alternates: { canonical: `/compare/${item.slug}` },
     openGraph: {
@@ -103,12 +105,29 @@ export default async function ComparisonPage({ params }: { params: Promise<{ slu
         }
       : null;
 
+  // Matches the visible breadcrumb trail rendered above the hero.
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://www.pdfpixels.com' },
+      { '@type': 'ListItem', position: 2, name: 'Compare', item: 'https://www.pdfpixels.com/compare' },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: item.title,
+        item: `https://www.pdfpixels.com/compare/${item.slug}`,
+      },
+    ],
+  };
+
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
       {faqSchema && (
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
       )}
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
 
       <main id="main-content" className="min-h-screen bg-background">
         <section className="relative overflow-hidden border-b border-border/40">
@@ -157,6 +176,8 @@ export default async function ComparisonPage({ params }: { params: Promise<{ slu
               <h2 className="text-2xl font-bold text-foreground">Honest overview</h2>
               <p className="mt-4 text-sm leading-7 text-muted-foreground md:text-base">{item.overview}</p>
             </section>
+
+            <InContentAd />
 
             <section className="overflow-hidden rounded-[2rem] border border-border bg-card shadow-sm">
               <div className="border-b border-border bg-muted/30 p-6 md:p-8">
@@ -268,6 +289,8 @@ export default async function ComparisonPage({ params }: { params: Promise<{ slu
             </section>
           </div>
         </div>
+
+        <FooterAd />
       </main>
     </>
   );

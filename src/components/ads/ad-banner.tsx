@@ -61,16 +61,19 @@ export function AdBanner({
   const adRef = useRef<HTMLModElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const isLoaded = useRef(false);
-  const [hasConsent, setHasConsent] = useState(() => {
-    if (typeof window === 'undefined') return false;
-    return hasAdvertisingConsent();
-  });
-  // Default true when IO missing; observer flips true when near viewport
-  const [inView, setInView] = useState(
-    () => typeof window === 'undefined' || typeof IntersectionObserver === 'undefined',
-  );
+  // Initialize to server-consistent values and read the real values in
+  // effects. Reading document.cookie / IntersectionObserver during render
+  // made the server HTML differ from the client's first paint for consented
+  // visitors (hydration mismatch), so this is deferred to useEffect.
+  const [hasConsent, setHasConsent] = useState(false);
+  const [inView, setInView] = useState(false);
 
   useEffect(() => {
+    // Hydration-safe: read browser-only state after mount so the server HTML
+    // matches the client's first render (see the comment on useState above).
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setHasConsent(hasAdvertisingConsent());
+
     const handleConsentUpdate = () => {
       setHasConsent(hasAdvertisingConsent());
     };
@@ -81,10 +84,17 @@ export function AdBanner({
     };
   }, []);
 
-  // Lazy-init: only push ads when near viewport (better CWV + fill rate)
+  // Lazy-init: only push ads when near viewport (better CWV + fill rate).
+  // Re-runs when consent flips so the observer can attach once the container
+  // actually renders (it stays null while consent is false).
   useEffect(() => {
     const el = containerRef.current;
-    if (!el || typeof IntersectionObserver === 'undefined') {
+    if (!el) return;
+    if (typeof IntersectionObserver === 'undefined') {
+      // No IO support: load eagerly. Server-consistent initial state is false,
+      // so this only runs on the client after mount.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setInView(true);
       return;
     }
 
@@ -100,7 +110,7 @@ export function AdBanner({
 
     observer.observe(el);
     return () => observer.disconnect();
-  }, []);
+  }, [hasConsent]);
 
   useEffect(() => {
     if (!adsConfig.enabled || !hasConsent || !slot || !inView || isLoaded.current) return;
@@ -244,90 +254,6 @@ export function NativeAd({ className }: { className?: string }) {
   return (
     <div className={cn('w-full', className)} aria-label="Advertisement" role="complementary">
       <AdBanner slot={adsConfig.slots.native} format="auto" responsive minHeight={200} labeled />
-    </div>
-  );
-}
-
-export function MultiplexAd({ className }: { className?: string }) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const pushed = useRef(false);
-  const [hasConsent, setHasConsent] = useState(() => {
-    if (typeof window === 'undefined') return false;
-    return hasAdvertisingConsent();
-  });
-  const [inView, setInView] = useState(
-    () => typeof window === 'undefined' || typeof IntersectionObserver === 'undefined',
-  );
-
-  useEffect(() => {
-    const handleConsentUpdate = () => {
-      setHasConsent(hasAdvertisingConsent());
-    };
-    window.addEventListener('cookie-consent-updated', handleConsentUpdate);
-    return () => {
-      window.removeEventListener('cookie-consent-updated', handleConsentUpdate);
-    };
-  }, []);
-
-  useEffect(() => {
-    const el = containerRef.current;
-    if (!el || typeof IntersectionObserver === 'undefined') return;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries.some((e) => e.isIntersecting)) {
-          setInView(true);
-          observer.disconnect();
-        }
-      },
-      { rootMargin: '200px 0px', threshold: 0.01 },
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
-
-  useEffect(() => {
-    if (!adsConfig.enabled || !hasConsent || !inView || pushed.current) return;
-    const id = requestAnimationFrame(() => {
-      try {
-        window.adsbygoogle = window.adsbygoogle || [];
-        window.adsbygoogle.push({});
-        pushed.current = true;
-      } catch {
-        // Silently handle ad errors
-      }
-    });
-    return () => cancelAnimationFrame(id);
-  }, [hasConsent, inView]);
-
-  if (!adsConfig.enabled || !adsConfig.slots.native || adsConfig.testMode) {
-    if (adsConfig.testMode) {
-      return (
-        <div className={cn('w-full', className)}>
-          <AdLabel />
-          <ReservedSpace minHeight={280} className="border border-dashed border-border/40" />
-        </div>
-      );
-    }
-    return null;
-  }
-
-  // Consent-gated like AdBanner: no personalized unit without opt-in.
-  if (!hasConsent) return null;
-
-  return (
-    <div ref={containerRef} className={cn('w-full min-h-[280px]', className)} aria-label="Advertisement" role="complementary">
-      <AdLabel />
-      {inView ? (
-        <ins
-          className="adsbygoogle"
-          style={{ display: 'block', minHeight: 280 }}
-          data-ad-format="autorelaxed"
-          data-ad-client={adsConfig.publisherId}
-          data-ad-slot={adsConfig.slots.native}
-        />
-      ) : (
-        <ReservedSpace minHeight={280} />
-      )}
     </div>
   );
 }

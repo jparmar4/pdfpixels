@@ -1,5 +1,5 @@
-import { apiError } from '@/lib/api-response';
-import { openEditablePdf, pdfBinaryResponse } from '@/lib/pdf-api';
+import { apiError, apiInternalError } from '@/lib/api-response';
+import { openEditablePdf, pdfBinaryResponse, toSafeWinAnsi } from '@/lib/pdf-api';
 import { NextRequest } from 'next/server';
 import { rgb, StandardFonts } from 'pdf-lib';
 
@@ -63,7 +63,7 @@ export async function POST(request: NextRequest) {
           }
         }
       } catch (e) {
-        console.warn('Error parsing AcroForm fields:', e);
+        console.warn('Error parsing AcroForm fields:', e instanceof Error ? e.message : e);
         return apiError('Invalid form fields or unsupported field values.', 400);
       }
     }
@@ -88,7 +88,8 @@ export async function POST(request: NextRequest) {
           const yPos = pageHeight - entry.y - size;
           if (yPos < 0 || entry.x >= page.getWidth()) return apiError('Text entries must fit inside the page.', 400);
 
-          page.drawText(entry.text || '', {
+          const safeText = toSafeWinAnsi(entry.text || '');
+          page.drawText(safeText, {
             x: Math.max(0, entry.x),
             y: Math.max(0, yPos),
             size,
@@ -111,7 +112,6 @@ export async function POST(request: NextRequest) {
       'x-filled-count': String(filledCount),
     });
   } catch (error) {
-    console.error('PDF form fill error:', error);
-    return apiError(error instanceof Error ? error.message : 'Failed to fill PDF form', 500);
+    return apiInternalError(error, 'Failed to fill PDF form', 'PDF form fill error');
   }
 }

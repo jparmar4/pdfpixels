@@ -7,7 +7,7 @@ export const DEFAULT_OG_IMAGE_URL = `${SITE_URL}${DEFAULT_OG_IMAGE_PATH}`;
 /** Stable sitemap lastmod for evergreen pages — do not use `new Date()` per request.
  *  Bump this only when evergreen pages (home/tools/use-cases) actually change,
  *  so lastmod stays truthful for crawlers. */
-export const SITE_CONTENT_UPDATED = new Date('2026-09-14T00:00:00.000Z');
+export const SITE_CONTENT_UPDATED = new Date('2026-09-18T00:00:00.000Z');
 
 export function organizationId() {
   return `${SITE_URL}/#organization`;

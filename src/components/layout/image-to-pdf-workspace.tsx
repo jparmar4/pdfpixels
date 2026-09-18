@@ -450,8 +450,8 @@ export function ImageToPDFWorkspace() {
             <div className="p-5 space-y-5">
               {/* Page Size */}
               <div className="space-y-2">
-                <Label>Page Size</Label>
-                <Select value={pageSize} onValueChange={setPageSize}>
+                <Label id="pageSize">Page Size</Label>
+                <Select aria-labelledby="pageSize" value={pageSize} onValueChange={setPageSize}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
@@ -468,8 +468,8 @@ export function ImageToPDFWorkspace() {
 
               {/* Orientation */}
               <div className="space-y-2">
-                <Label>Orientation</Label>
-                <Select value={orientation} onValueChange={setOrientation}>
+                <Label id="orientation">Orientation</Label>
+                <Select aria-labelledby="orientation" value={orientation} onValueChange={setOrientation}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
@@ -483,8 +483,8 @@ export function ImageToPDFWorkspace() {
 
               {/* Fit Mode */}
               <div className="space-y-2">
-                <Label>Image Fit</Label>
-                <Select value={fitMode} onValueChange={setFitMode}>
+                <Label id="fitMode">Image Fit</Label>
+                <Select aria-labelledby="fitMode" value={fitMode} onValueChange={setFitMode}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
@@ -569,3 +569,4 @@ export function ImageToPDFWorkspace() {
     </motion.div>
   );
 }
+

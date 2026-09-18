@@ -12,6 +12,7 @@ export const runtime = 'nodejs';
  */
 function escapeXml(unsafe: string): string {
   return unsafe
+    .replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, '')
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')

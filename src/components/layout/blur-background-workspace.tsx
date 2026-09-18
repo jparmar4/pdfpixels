@@ -377,12 +377,12 @@ export function BlurBackgroundWorkspace() {
 
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <Label>Custom strength</Label>
+                  <Label htmlFor="custom-strength">Custom strength</Label>
                   <span className="rounded-lg bg-violet-500/10 px-2.5 py-0.5 font-mono text-sm font-bold text-violet-600 dark:text-violet-300 tabular-nums">
                     {blurStrength}%
                   </span>
                 </div>
-                <Slider
+                <Slider id="custom-strength"
                   value={[blurStrength]}
                   onValueChange={([v]) => {
                     setBlurStrength(v);
@@ -486,3 +486,4 @@ export function BlurBackgroundWorkspace() {
     </motion.div>
   );
 }
+

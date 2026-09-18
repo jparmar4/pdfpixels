@@ -812,7 +812,7 @@ export const toolCategories: ToolCategory[] = [
         keywords: ['sign pdf', 'esign pdf', 'sign pdf online', 'sign document online', 'electronic signature pdf', 'sign contracts free'],
         popular: true,
         badge: 'Popular',
-        processing: 'client',
+        processing: 'server',
       },
       {
         id: 'pdf-redact',
@@ -823,7 +823,7 @@ export const toolCategories: ToolCategory[] = [
         category: 'pdf-tools',
         keywords: ['redact pdf', 'blackout pdf', 'hide sensitive info pdf', 'redact text online', 'pdf redaction tool', 'black out text in pdf'],
         badge: 'Secure',
-        processing: 'client',
+        processing: 'server',
       },
       {
         id: 'pdf-flatten',
@@ -834,7 +834,7 @@ export const toolCategories: ToolCategory[] = [
         category: 'pdf-tools',
         keywords: ['flatten pdf', 'flatten fillable pdf', 'flatten pdf pacer', 'lock pdf form fields', 'flatten pdf online', 'flatten acroforms'],
         badge: 'Essential',
-        processing: 'client',
+        processing: 'server',
       },
       {
         id: 'pdf-crop',
@@ -844,7 +844,7 @@ export const toolCategories: ToolCategory[] = [
         icon: Crop,
         category: 'pdf-tools',
         keywords: ['crop pdf', 'crop pdf pages', 'trim pdf margins', 'cut pdf margins', 'remove white borders pdf', 'crop pdf online'],
-        processing: 'client',
+        processing: 'server',
       },
       {
         id: 'pdf-extract',
@@ -854,7 +854,7 @@ export const toolCategories: ToolCategory[] = [
         icon: Scissors,
         category: 'pdf-tools',
         keywords: ['extract pdf pages', 'save specific pages pdf', 'extract pages from pdf', 'take pages out of pdf', 'pdf page extractor'],
-        processing: 'client',
+        processing: 'server',
       },
       {
         id: 'pdf-fill',
@@ -866,7 +866,7 @@ export const toolCategories: ToolCategory[] = [
         keywords: ['fill pdf', 'fill out pdf form', 'fill pdf online', 'edit pdf form', 'pdf form filler', 'type on pdf', 'complete pdf form'],
         popular: true,
         badge: 'Popular',
-        processing: 'client',
+        processing: 'server',
       },
       {
         id: 'pdf-grayscale',
@@ -876,7 +876,7 @@ export const toolCategories: ToolCategory[] = [
         icon: Contrast,
         category: 'pdf-tools',
         keywords: ['grayscale pdf', 'convert pdf to black and white', 'monochrome pdf', 'black and white pdf', 'save printer ink pdf', 'pdf grayscale'],
-        processing: 'client',
+        processing: 'server',
       },
       {
         id: 'pdf-to-text',
@@ -886,7 +886,7 @@ export const toolCategories: ToolCategory[] = [
         icon: FileText,
         category: 'pdf-tools',
         keywords: ['pdf to text', 'extract text from pdf', 'convert pdf to txt', 'pdf text extractor', 'copy text from pdf', 'pdf to plain text'],
-        processing: 'client',
+        processing: 'server',
       },
       {
         id: 'pdf-to-pdfa',

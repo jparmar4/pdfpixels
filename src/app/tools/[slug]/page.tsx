@@ -12,26 +12,81 @@ import { normalizeDisplayText } from '@/lib/display-text';
 import { siteConfig } from '@/lib/seo-config';
 import { absoluteUrl, dedupeKeywords } from '@/lib/seo';
 import { toolContentMap } from '@/lib/tool-content-data';
-import { allTools, getToolBySlug } from '@/lib/tools-data';
+import { allTools, getToolBySlug, type Tool } from '@/lib/tools-data';
 import { useCasePages } from '@/lib/use-cases';
 
-function WorkspaceLoading() {
+function WorkspaceLoading({ tool, containerClass = 'container mx-auto px-4 lg:px-8' }: { tool: Tool; containerClass?: string }) {
+  const cleanName = normalizeDisplayText(tool.name);
+  const cleanDescription = normalizeDisplayText(tool.description);
+  const Icon = tool.icon;
+  const processingMeta = tool.processing === 'client'
+    ? { label: 'Browser-native', tone: 'text-emerald-600 dark:text-emerald-300' }
+    : tool.processing === 'ai' || tool.isAI
+      ? { label: 'AI-enhanced', tone: 'text-violet-600 dark:text-violet-300' }
+      : { label: 'Server-optimized', tone: 'text-sky-600 dark:text-sky-300' };
+
   return (
-    <div className="container mx-auto px-4 py-8 lg:px-8">
-      <div className="mb-6 flex items-center gap-3">
-        <div className="h-10 w-10 animate-pulse rounded-lg bg-muted" />
-        <div className="space-y-2">
-          <div className="h-5 w-40 animate-pulse rounded bg-muted" />
-          <div className="h-3 w-56 animate-pulse rounded bg-muted" />
+    <div className={`${containerClass} py-8`}>
+      <div className="relative mb-8 overflow-hidden rounded-[2rem] border border-border/50 bg-card/75 p-5 shadow-premium backdrop-blur-xl md:p-7">
+        <div className="relative z-10 flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
+          <div className="space-y-5">
+            <div className="flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+              <span className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-background/75 px-3 py-1.5">
+                Workspace
+              </span>
+              {tool.badge && (
+                <>
+                  <span className="hidden h-1 w-1 rounded-full bg-border md:block" />
+                  <span className="hidden md:block">{tool.badge}</span>
+                </>
+              )}
+            </div>
+
+            <div className="flex items-start gap-4">
+              <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-[1.35rem] border border-primary/20 bg-gradient-to-br from-primary to-sky-500 shadow-lg shadow-primary/20">
+                <Icon className="h-8 w-8 text-white" />
+              </div>
+
+              <div className="space-y-3">
+                <div className="flex flex-wrap items-center gap-2.5">
+                  <h1 className="tool-hero-title text-3xl font-bold tracking-tight text-foreground md:text-4xl">
+                    {cleanName}
+                  </h1>
+                  {tool.isAI && (
+                    <span className="rounded-full border-0 bg-gradient-to-r from-violet-500 to-sky-500 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em] text-white">
+                      AI powered
+                    </span>
+                  )}
+                </div>
+
+                <p className="tool-hero-description max-w-3xl text-sm font-medium leading-6 text-muted-foreground md:text-base">
+                  {cleanDescription}
+                </p>
+
+                <div className="flex flex-wrap gap-2.5 text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+                  <span className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-background/75 px-3 py-1.5">
+                    Fast workflow
+                  </span>
+                  <span className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-background/75 px-3 py-1.5">
+                    Private processing
+                  </span>
+                  <span className={`inline-flex items-center gap-2 rounded-full border border-border/60 bg-background/75 px-3 py-1.5 ${processingMeta.tone}`}>
+                    {processingMeta.label}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-      <div className="grid gap-6 lg:grid-cols-3">
-        <div className="lg:col-span-2">
-          <div className="aspect-video animate-pulse rounded-xl bg-muted" />
-        </div>
-        <div className="space-y-4">
-          <div className="h-56 animate-pulse rounded-xl bg-muted" />
-          <div className="h-28 animate-pulse rounded-xl bg-muted" />
+
+      <div className="rounded-[2rem] border-2 border-dashed border-border/60 bg-card/40 p-12 text-center">
+        <div className="mx-auto flex max-w-md flex-col items-center justify-center space-y-4">
+          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+            <Icon className="h-8 w-8 animate-pulse" />
+          </div>
+          <p className="text-lg font-semibold text-foreground">Loading {cleanName} Workspace...</p>
+          <p className="text-sm text-muted-foreground">Preparing fast, browser-accelerated processing engine</p>
         </div>
       </div>
     </div>
@@ -41,6 +96,42 @@ function WorkspaceLoading() {
 export function generateStaticParams() {
   return allTools.map((tool) => ({ slug: tool.slug }));
 }
+
+// Matches the loading skeleton's width to the real workspace container so the
+// skeleton→workspace swap doesn't shift layout on desktop (CLS). Keep in sync
+// with the root `container …` class of each workspace component and the
+// tool→workspace dispatch in `components/layout/tool-page-client.tsx`.
+// Tools not listed here use full-width workspaces (the skeleton default).
+const WORKSPACE_CONTAINER_CLASS: Record<string, string> = {
+  // max-w-6xl workspaces
+  'pdf-sign': 'container mx-auto px-4 lg:px-8 max-w-6xl',
+  'pdf-redact': 'container mx-auto px-4 lg:px-8 max-w-6xl',
+  'pdf-crop': 'container mx-auto px-4 lg:px-8 max-w-6xl',
+  'pdf-extract': 'container mx-auto px-4 lg:px-8 max-w-6xl',
+  'pdf-fill': 'container mx-auto px-4 lg:px-8 max-w-6xl',
+  // max-w-5xl workspaces
+  'pdf-compress': 'container mx-auto px-4 lg:px-8 max-w-5xl',
+  'compress-pdf-to-100kb': 'container mx-auto px-4 lg:px-8 max-w-5xl',
+  'compress-pdf-to-200kb': 'container mx-auto px-4 lg:px-8 max-w-5xl',
+  'compress-pdf-to-300kb': 'container mx-auto px-4 lg:px-8 max-w-5xl',
+  'compress-pdf-to-500kb': 'container mx-auto px-4 lg:px-8 max-w-5xl',
+  'compress-pdf-under-1mb': 'container mx-auto px-4 lg:px-8 max-w-5xl',
+  'pdf-flatten': 'container mx-auto px-4 lg:px-8 max-w-5xl',
+  'pdf-grayscale': 'container mx-auto px-4 lg:px-8 max-w-5xl',
+  'pdf-to-text': 'container mx-auto px-4 lg:px-8 max-w-5xl',
+  'pdf-to-pdfa': 'container mx-auto px-4 lg:px-8 max-w-5xl',
+  'word-to-pdf': 'container mx-auto px-4 lg:px-8 max-w-5xl',
+  'pdf-to-word': 'container mx-auto px-4 lg:px-8 max-w-5xl',
+  'pdf-to-excel': 'container mx-auto px-4 lg:px-8 max-w-5xl',
+  'bank-statement-to-excel': 'container mx-auto px-4 lg:px-8 max-w-5xl',
+  'bates-numbering-pdf': 'container mx-auto px-4 lg:px-8 max-w-5xl',
+  'compare-pdf': 'container mx-auto px-4 lg:px-8 max-w-5xl',
+  'compress': 'container mx-auto px-4 lg:px-8 max-w-5xl',
+  // max-w-4xl workspaces
+  'sanitize-pdf': 'container mx-auto px-4 lg:px-8 max-w-4xl',
+  'cmyk-pdf-converter': 'container mx-auto px-4 lg:px-8 max-w-4xl',
+  'heic-to-pdf': 'container mx-auto px-4 lg:px-8 max-w-4xl',
+};
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
@@ -278,12 +369,7 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
           <script key={index} type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
         ))}
 
-        {/* Server-rendered breadcrumb + page H1. Workspaces render with
-            ssr:false and depend on activeTool (set in useLayoutEffect), so
-            the client ToolPageHeader never reaches served HTML — this H1
-            guarantees exactly one H1 for no-JS crawlers and view-source.
-            The client header keeps its title as a styled paragraph to avoid
-            a second H1 after hydration. Mirrors the BreadcrumbList JSON-LD. */}
+        {/* Server-rendered breadcrumb. Mirrors the BreadcrumbList JSON-LD. */}
         <nav aria-label="Breadcrumb" className="container mx-auto px-4 pt-8 lg:px-8">
           <ol className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
             <li>
@@ -303,12 +389,12 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
               /
             </li>
             <li>
-              <h1 className="text-xs font-bold uppercase tracking-[0.16em] text-foreground">{cleanToolName}</h1>
+              <span className="text-xs font-bold uppercase tracking-[0.16em] text-foreground">{cleanToolName}</span>
             </li>
           </ol>
         </nav>
 
-        <Suspense fallback={<WorkspaceLoading />}>
+        <Suspense fallback={<WorkspaceLoading tool={tool} containerClass={WORKSPACE_CONTAINER_CLASS[tool.id]} />}>
           <ToolPageClient toolId={tool.id} toolName={cleanToolName} toolDescription={normalizeDisplayText(tool.description)} />
         </Suspense>
 

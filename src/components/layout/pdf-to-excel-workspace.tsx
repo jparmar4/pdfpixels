@@ -152,8 +152,8 @@ export function PDFToExcelWorkspace() {
 
               <div className="space-y-4">
                 <div className="space-y-2">
-                  <Label className="text-xs">Select Output Format:</Label>
-                  <Select value={format} onValueChange={(v: any) => setFormat(v)}>
+                  <Label id="format" className="text-xs">Select Output Format:</Label>
+                  <Select aria-labelledby="format" value={format} onValueChange={(v: any) => setFormat(v)}>
                     <SelectTrigger className="text-xs">
                       <SelectValue placeholder="Format" />
                     </SelectTrigger>
@@ -235,3 +235,4 @@ export function PDFToExcelWorkspace() {
     </div>
   );
 }
+

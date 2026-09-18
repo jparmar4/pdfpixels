@@ -413,8 +413,8 @@ export function SignatureWorkspace() {
                 </div>
                 <TabsContent value="draw" className="space-y-4 p-5">
                   <div className="space-y-2">
-                    <Label>Pen color</Label>
-                    <div className="flex gap-2">
+                    <Label id="pen-color">Pen color</Label>
+                    <div role="group" aria-labelledby="pen-color" className="flex gap-2">
                       {['#000000', '#1e40af', '#dc2626', '#059669', '#7c3aed'].map((hex) => (
                         <button
                           key={hex}
@@ -430,20 +430,20 @@ export function SignatureWorkspace() {
                   </div>
                   <div className="space-y-2">
                     <div className="flex justify-between">
-                      <Label>Pen size</Label>
+                      <Label htmlFor="penSize">Pen size</Label>
                       <span className="text-sm font-bold text-primary">{penSize}px</span>
                     </div>
-                    <Slider value={[penSize]} onValueChange={([v]) => setPenSize(v)} min={1} max={12} step={1} />
+                    <Slider id="penSize" value={[penSize]} onValueChange={([v]) => setPenSize(v)} min={1} max={12} step={1} />
                   </div>
                 </TabsContent>
                 <TabsContent value="type" className="space-y-4 p-5">
                   <div className="space-y-2">
-                    <Label>Your name</Label>
-                    <Input value={typedText} onChange={(e) => setTypedText(e.target.value)} placeholder="Type your name…" />
+                    <Label htmlFor="typedText">Your name</Label>
+                    <Input id="typedText" value={typedText} onChange={(e) => setTypedText(e.target.value)} placeholder="Type your name…" />
                   </div>
                   <div className="space-y-2">
-                    <Label>Font style</Label>
-                    <Select value={selectedFont} onValueChange={setSelectedFont}>
+                    <Label id="selectedFont">Font style</Label>
+                    <Select aria-labelledby="selectedFont" value={selectedFont} onValueChange={setSelectedFont}>
                       <SelectTrigger>
                         <SelectValue />
                       </SelectTrigger>
@@ -458,10 +458,10 @@ export function SignatureWorkspace() {
                   </div>
                   <div className="space-y-2">
                     <div className="flex justify-between">
-                      <Label>Font size</Label>
+                      <Label htmlFor="fontSize">Font size</Label>
                       <span className="text-sm font-bold text-primary">{fontSize}px</span>
                     </div>
-                    <Slider value={[fontSize]} onValueChange={([v]) => setFontSize(v)} min={24} max={96} step={2} />
+                    <Slider id="fontSize" value={[fontSize]} onValueChange={([v]) => setFontSize(v)} min={24} max={96} step={2} />
                   </div>
                   <Button onClick={generateFromText} className="w-full btn-premium rounded-xl">
                     <Type className="mr-2 h-4 w-4" />
@@ -475,8 +475,8 @@ export function SignatureWorkspace() {
               <div className="space-y-4 p-5">
                 {isResize ? (
                   <div className="space-y-2">
-                    <Label>Size preset</Label>
-                    <Select value={resizePreset} onValueChange={(v) => setResizePreset(v as typeof resizePreset)}>
+                    <Label id="resizePreset">Size preset</Label>
+                    <Select aria-labelledby="resizePreset" value={resizePreset} onValueChange={(v) => setResizePreset(v as typeof resizePreset)}>
                       <SelectTrigger>
                         <SelectValue />
                       </SelectTrigger>
@@ -492,16 +492,16 @@ export function SignatureWorkspace() {
                 {(isMerge || resizePreset === 'scale') ? (
                 <div className="space-y-2">
                   <div className="flex justify-between">
-                    <Label>{isResize ? 'Output size' : 'Signature size on photo'}</Label>
+                    <Label htmlFor="sigScale">{isResize ? 'Output size' : 'Signature size on photo'}</Label>
                     <span className="text-sm font-bold text-primary">{sigScale}%</span>
                   </div>
-                  <Slider value={[sigScale]} onValueChange={([v]) => setSigScale(v)} min={10} max={90} step={1} />
+                  <Slider id="sigScale" value={[sigScale]} onValueChange={([v]) => setSigScale(v)} min={10} max={90} step={1} />
                 </div>
                 ) : null}
                 {isMerge ? (
                   <div className="space-y-2">
-                    <Label>Signature image</Label>
-                    <input
+                    <Label htmlFor="signature-image">Signature image</Label>
+                    <input id="signature-image"
                       ref={sigFileRef}
                       type="file"
                       accept="image/png,image/webp,image/jpeg,.png,.webp,.jpg"
@@ -531,14 +531,14 @@ export function SignatureWorkspace() {
                   <>
                     <div className="space-y-2">
                       <div className="flex justify-between">
-                        <Label>Signature opacity</Label>
+                        <Label htmlFor="sigOpacity">Signature opacity</Label>
                         <span className="text-sm font-bold text-primary">{sigOpacity}%</span>
                       </div>
-                      <Slider value={[sigOpacity]} onValueChange={([v]) => setSigOpacity(v)} min={20} max={100} step={5} />
+                      <Slider id="sigOpacity" value={[sigOpacity]} onValueChange={([v]) => setSigOpacity(v)} min={20} max={100} step={5} />
                     </div>
                     <div className="space-y-2">
-                      <Label>Position</Label>
-                      <Select value={sigPosition} onValueChange={(v) => setSigPosition(v as typeof sigPosition)}>
+                      <Label id="sigPosition">Position</Label>
+                      <Select aria-labelledby="sigPosition" value={sigPosition} onValueChange={(v) => setSigPosition(v as typeof sigPosition)}>
                         <SelectTrigger>
                           <SelectValue />
                         </SelectTrigger>
@@ -600,3 +600,5 @@ export function SignatureWorkspace() {
     </motion.div>
   );
 }
+
+

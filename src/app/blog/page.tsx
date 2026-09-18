@@ -8,6 +8,7 @@ import { allTools } from "@/lib/tools-data";
 import { Clock, ArrowRight, BookOpen, Sparkles, CalendarDays } from "lucide-react";
 import { AnimatedMeshBg } from "@/components/ui/animated-mesh-bg";
 import { SpotlightCard } from "@/components/ui/spotlight-card";
+import { InContentAd, FooterAd } from "@/components/ads/ad-banner";
 
 export const metadata: Metadata = {
     title: "Blog - Image & PDF Tips, Guides & Tutorials",
@@ -215,6 +216,13 @@ export default function BlogPage() {
                     </div>
                 )}
 
+                {/* In-content ad at the natural break between featured and grid */}
+                {otherPosts.length > 0 && (
+                    <div className="container mx-auto px-4 lg:px-8 max-w-5xl py-10">
+                        <InContentAd />
+                    </div>
+                )}
+
                 {/* Other Posts Grid */}
                 {otherPosts.length > 0 && (
                     <section className="py-24 bg-muted/10">
@@ -313,6 +321,8 @@ export default function BlogPage() {
                         </div>
                     </div>
                 </section>
+
+                <FooterAd />
             </main>
 
             

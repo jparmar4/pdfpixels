@@ -262,7 +262,7 @@ export function PDFMergeWorkspace() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       aria-busy={isProcessing}
-      className="container mx-auto px-4 lg:px-8 py-8"
+      className={`container mx-auto px-4 lg:px-8 py-8 ${files.length >= 2 && !result ? 'pb-24 md:pb-8' : ''}`}
     >
       <ToolPageHeader
         title={activeTool.name}

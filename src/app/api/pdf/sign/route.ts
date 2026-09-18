@@ -1,4 +1,4 @@
-import { apiError } from '@/lib/api-response';
+import { apiError, apiInternalError } from '@/lib/api-response';
 import { openEditablePdf, pdfBinaryResponse } from '@/lib/pdf-api';
 import { NextRequest } from 'next/server';
 import { rgb, StandardFonts } from 'pdf-lib';
@@ -80,7 +80,11 @@ export async function POST(request: NextRequest) {
           try {
             embeddedImage = await pdf.embedPng(imgBytes);
           } catch {
-            embeddedImage = await pdf.embedJpg(imgBytes);
+            try {
+              embeddedImage = await pdf.embedJpg(imgBytes);
+            } catch {
+              return apiError('Unsupported signature image format. Please use a valid PNG or JPG image.', 400);
+            }
           }
 
           // PDF coordinate system origin is bottom-left
@@ -116,7 +120,6 @@ export async function POST(request: NextRequest) {
 
     return pdfBinaryResponse(outBytes, fileName);
   } catch (error) {
-    console.error('PDF sign error:', error);
-    return apiError(error instanceof Error ? error.message : 'Failed to sign PDF', 500);
+    return apiInternalError(error, 'Failed to sign PDF', 'PDF sign error');
   }
 }

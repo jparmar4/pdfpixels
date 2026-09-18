@@ -1,5 +1,6 @@
 import { apiError } from '@/lib/api-response';
 import { decodeHeicIfNeeded, isImageUpload } from '@/lib/heic';
+import { sanitizeDownloadFileName } from '@/lib/pdf-api';
 import { NextRequest, NextResponse } from 'next/server';
 import { PDFDocument } from 'pdf-lib';
 import sharp from 'sharp';
@@ -7,6 +8,9 @@ import sharp from 'sharp';
 const MAX_FILES = 30;
 const MAX_FILE_SIZE = 15 * 1024 * 1024;
 const MAX_TOTAL_SIZE = 120 * 1024 * 1024;
+
+export const runtime = 'nodejs';
+export const maxDuration = 60;
 
 export async function POST(request: NextRequest) {
   try {
@@ -205,7 +209,9 @@ export async function POST(request: NextRequest) {
     }
 
     const pdfBytes = await pdfDoc.save();
-    const fileName = `images-to-pdf-${Date.now()}.pdf`;
+    const firstBase = files[0]?.name ? files[0].name.replace(/\.[^/.]+$/, '') : 'image';
+    const safeBase = sanitizeDownloadFileName(firstBase);
+    const fileName = files.length === 1 ? `${safeBase}.pdf` : `${safeBase}-and-${files.length - 1}-more.pdf`;
 
     return new NextResponse(Buffer.from(pdfBytes), {
       status: 200,

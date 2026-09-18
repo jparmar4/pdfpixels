@@ -288,7 +288,7 @@ export function CompressPDFWorkspace({ targetPreset }: CompressPDFWorkspaceProps
     : 0;
 
   return (
-    <div aria-busy={isProcessing} className="container mx-auto max-w-5xl px-4 py-8 lg:px-8 md:py-12">
+    <div aria-busy={isProcessing} className={`container mx-auto max-w-5xl px-4 py-8 lg:px-8 md:py-12 ${uploadedFile && !result ? 'pb-24 md:pb-12' : ''}`}>
       <ToolPageHeader
         title={preset ? preset.title : "Compress PDF"}
         description={preset ? preset.description : "Reduce PDF size while protecting text clarity. Choose a quality profile tuned for email, forms, or maximum savings."}

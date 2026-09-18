@@ -238,8 +238,9 @@ export function pdfJsonError(message: string, status = 400, details?: string) {
  * ("Please split PDFs over 500 pages...", "Too much text...").
  * Those must surface as 422/413 — not 500 — so clients don't retry.
  */
-export function pdfTextErrorStatus(error: unknown): 422 | 413 | 500 {
+export function pdfTextErrorStatus(error: unknown): 422 | 413 | 408 | 500 {
   const message = error instanceof Error ? error.message : String(error ?? '');
+  if (/timed out|timed-out|timeout/i.test(message)) return 408;
   if (/split .* (over )?500 pages|too much text/i.test(message)) return 422;
   if (/too large|too many lines/i.test(message)) return 422;
   return 500;
@@ -262,6 +263,23 @@ export function pdfBytesToDataUrl(bytes: Uint8Array | Buffer): string {
 export function sanitizeDownloadFileName(fileName: string, fallback = 'download.pdf') {
   const cleaned = fileName.replace(/["\r\n\\]/g, '').replace(/[^\w.\- ()[\]]+/g, '_').trim();
   return cleaned || fallback;
+}
+
+/**
+ * Transliterates common Unicode typographic symbols (smart quotes, dashes, ellipsis,
+ * non-breaking spaces, bullets) to safe WinAnsi equivalents so pdf-lib's standard fonts
+ * (Helvetica, TimesRoman, Courier) do not throw runtime encoding exceptions.
+ */
+export function toSafeWinAnsi(text: string): string {
+  if (!text) return '';
+  return text
+    .replace(/[\u2018\u2019]/g, "'")
+    .replace(/[\u201C\u201D]/g, '"')
+    .replace(/[\u2013\u2014]/g, '-')
+    .replace(/\u2026/g, '...')
+    .replace(/\u00A0/g, ' ')
+    .replace(/[\u2022\u2023\u25E6]/g, '*')
+    .replace(/[^\x20-\xFF]/g, '?');
 }
 
 export function pdfBinaryResponse(

@@ -1,4 +1,4 @@
-import { apiError } from '@/lib/api-response';
+import { apiError, apiInternalError } from '@/lib/api-response';
 import { openEditablePdf, pdfBinaryResponse, sanitizeDownloadFileName } from '@/lib/pdf-api';
 import { NextRequest } from 'next/server';
 import { rgb, StandardFonts } from 'pdf-lib';
@@ -107,7 +107,6 @@ export async function POST(request: NextRequest) {
       'x-bates-pages': String(totalPages),
     });
   } catch (error) {
-    console.error('Bates numbering error:', error);
-    return apiError(error instanceof Error ? error.message : 'Failed to apply Bates numbering', 500);
+    return apiInternalError(error, 'Failed to apply Bates numbering', 'Bates numbering error');
   }
 }

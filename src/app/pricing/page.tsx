@@ -4,9 +4,11 @@ import { Check, ShieldCheck, Sparkles, Heart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { siteConfig } from '@/lib/seo-config';
 import { DEFAULT_OG_IMAGE_URL } from '@/lib/seo';
+import { allTools } from '@/lib/tools-data';
 
 export const metadata: Metadata = {
-  title: `Pricing — Free Online PDF & Image Tools | ${siteConfig.name}`,
+  // Root layout appends `| PdfPixels` via the title template.
+  title: 'Pricing — Free Online PDF & Image Tools',
   description:
     'PdfPixels tools are free for everyday PDF and image tasks. No paid Pro tier required for core compress, convert, merge, and resize workflows.',
   alternates: { canonical: '/pricing' },
@@ -38,7 +40,7 @@ export const metadata: Metadata = {
 };
 
 const freeIncludes = [
-  '50+ online PDF and image tools',
+  `${allTools.length} online PDF and image tools`,
   'No account required for core workflows',
   'Compress, merge, split, convert, resize, and more',
   'Practical guides and use-case walkthroughs',

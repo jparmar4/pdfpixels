@@ -292,13 +292,13 @@ export function FilterWorkspace() {
                   {/* Brightness */}
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <Label className="flex items-center gap-2">
+                      <Label htmlFor="brightness" className="flex items-center gap-2">
                         <Sun className="w-4 h-4 text-muted-foreground" />
                         Brightness
                       </Label>
                       <span className="text-sm font-mono text-primary">{filters.brightness}%</span>
                     </div>
-                    <Slider
+                    <Slider id="brightness"
                       value={[filters.brightness]}
                       onValueChange={([v]) => handleFilterChange('brightness', v)}
                       min={0}
@@ -310,13 +310,13 @@ export function FilterWorkspace() {
                   {/* Contrast */}
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <Label className="flex items-center gap-2">
+                      <Label htmlFor="contrast" className="flex items-center gap-2">
                         <Contrast className="w-4 h-4 text-muted-foreground" />
                         Contrast
                       </Label>
                       <span className="text-sm font-mono text-primary">{filters.contrast}%</span>
                     </div>
-                    <Slider
+                    <Slider id="contrast"
                       value={[filters.contrast]}
                       onValueChange={([v]) => handleFilterChange('contrast', v)}
                       min={0}
@@ -328,13 +328,13 @@ export function FilterWorkspace() {
                   {/* Saturation */}
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <Label className="flex items-center gap-2">
+                      <Label htmlFor="saturation" className="flex items-center gap-2">
                         <Droplets className="w-4 h-4 text-muted-foreground" />
                         Saturation
                       </Label>
                       <span className="text-sm font-mono text-primary">{filters.saturation}%</span>
                     </div>
-                    <Slider
+                    <Slider id="saturation"
                       value={[filters.saturation]}
                       onValueChange={([v]) => handleFilterChange('saturation', v)}
                       min={0}
@@ -346,13 +346,13 @@ export function FilterWorkspace() {
                   {/* Blur */}
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <Label className="flex items-center gap-2">
+                      <Label htmlFor="blur-amount" className="flex items-center gap-2">
                         <Circle className="w-4 h-4 text-muted-foreground" />
                         Blur
                       </Label>
                       <span className="text-sm font-mono text-primary">{filters.blur}px</span>
                     </div>
-                    <Slider
+                    <Slider id="blur-amount"
                       value={[filters.blur]}
                       onValueChange={([v]) => handleFilterChange('blur', v)}
                       min={0}
@@ -364,13 +364,13 @@ export function FilterWorkspace() {
                   {/* Hue Rotate */}
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <Label className="flex items-center gap-2">
+                      <Label htmlFor="hue-rotate" className="flex items-center gap-2">
                         <Palette className="w-4 h-4 text-muted-foreground" />
                         Hue Rotate
                       </Label>
                       <span className="text-sm font-mono text-primary">{filters.hueRotate}°</span>
                     </div>
-                    <Slider
+                    <Slider id="hue-rotate"
                       value={[filters.hueRotate]}
                       onValueChange={([v]) => handleFilterChange('hueRotate', v)}
                       min={0}
@@ -495,3 +495,4 @@ export function FilterWorkspace() {
     </motion.div>
   );
 }
+

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import NextImage from "next/image";
 import { allTools } from "@/lib/tools-data";
+import { getPublicImageDimensions } from "@/lib/image-dims";
 
 // Map of keywords to tool URLs for auto-linking
 const keywordMap: Record<string, string> = {};
@@ -157,7 +158,7 @@ export function processContent(content: string): React.ReactNode[] {
 
     /** Turn bare http(s) URLs in plain text into clickable anchors. */
     const linkifyBareUrls = (text: string, keyPrefix: string): React.ReactNode[] => {
-        const urlPattern = /(https?:\/\/[^\s<>\[\]()`'",.]+[^\s<>\[\]()`'",.!?;:])/g;
+        const urlPattern = /(https?:\/\/[^\s<>[\]()`'",.]+[^\s<>[\]()`'",.!?;:])/g;
         const nodes: React.ReactNode[] = [];
         let lastIndex = 0;
         let match: RegExpExecArray | null;
@@ -191,14 +192,17 @@ export function processContent(content: string): React.ReactNode[] {
                 if (match) {
                     const alt = match[1];
                     const src = match[2];
+                    // Read the true aspect ratio from the local file so tall
+                    // infographics are never force-cropped into a 16:9 box.
+                    const dims = getPublicImageDimensions(src);
                     nodes.push(
                         <div key={key} className="my-10 relative rounded-2xl overflow-hidden shadow-xl">
                             <NextImage
                                 src={src}
                                 alt={alt}
-                                width={800}
-                                height={450}
-                                className="w-full h-auto object-cover"
+                                width={dims.width}
+                                height={dims.height}
+                                className="w-full h-auto"
                             />
                             {alt && <p className="text-center text-sm text-muted-foreground mt-3 italic">{alt}</p>}
                         </div>

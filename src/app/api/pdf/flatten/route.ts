@@ -1,5 +1,5 @@
-import { apiError } from '@/lib/api-response';
-import { openEditablePdf, pdfBinaryResponse } from '@/lib/pdf-api';
+import { apiError, apiInternalError } from '@/lib/api-response';
+import { openEditablePdf, pdfBinaryResponse, sanitizeDownloadFileName } from '@/lib/pdf-api';
 import { NextRequest } from 'next/server';
 
 export const maxDuration = 60;
@@ -28,13 +28,13 @@ export async function POST(request: NextRequest) {
     }
 
     const outBytes = await pdf.save();
-    const fileName = file!.name ? file!.name.replace(/\.pdf$/i, '-flattened.pdf') : `flattened-${Date.now()}.pdf`;
+    const baseName = file?.name ? file.name.replace(/\.pdf$/i, '') : 'document';
+    const fileName = `${sanitizeDownloadFileName(baseName)}-flattened.pdf`;
 
     return pdfBinaryResponse(outBytes, fileName, {
       'x-flattened-fields': String(fieldCount),
     });
   } catch (error) {
-    console.error('PDF flatten error:', error);
-    return apiError(error instanceof Error ? error.message : 'Failed to flatten PDF', 500);
+    return apiInternalError(error, 'Failed to flatten PDF', 'PDF flatten error');
   }
 }

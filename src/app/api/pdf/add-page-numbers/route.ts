@@ -1,5 +1,5 @@
-import { apiError } from '@/lib/api-response';
-import { openEditablePdf, pdfBinaryResponse } from '@/lib/pdf-api';
+import { apiError, apiInternalError } from '@/lib/api-response';
+import { openEditablePdf, pdfBinaryResponse, sanitizeDownloadFileName } from '@/lib/pdf-api';
 import { NextRequest } from 'next/server';
 import { rgb, StandardFonts } from 'pdf-lib';
 
@@ -80,11 +80,12 @@ export async function POST(request: NextRequest) {
         }
 
         const savedPdfBytes = await pdf.save();
-        return pdfBinaryResponse(savedPdfBytes, `numbered-${Date.now()}.pdf`, {
+        const baseName = file.name ? file.name.replace(/\.pdf$/i, '') : 'document';
+        const fileName = `${baseName}-numbered.pdf`;
+        return pdfBinaryResponse(savedPdfBytes, sanitizeDownloadFileName(fileName), {
             'X-Page-Count': String(totalPages),
         });
     } catch (error) {
-        console.error('PDF add page numbers error:', error);
-        return apiError('Failed to add page numbers', 500);
+        return apiInternalError(error, 'Failed to add page numbers', 'PDF add page numbers error');
     }
 }

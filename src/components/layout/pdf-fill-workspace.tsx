@@ -364,11 +364,11 @@ export function PDFFillWorkspace() {
                 {/* Detected AcroForm Fields if available */}
                 {detectedFields.length > 0 && (
                   <div className="space-y-3 border-t pt-4 max-h-60 overflow-y-auto">
-                    <Label className="text-xs font-semibold">Detected AcroForm Fields:</Label>
+                    <Label htmlFor="detected-acroform-fields" className="text-xs font-semibold">Detected AcroForm Fields:</Label>
                     {detectedFields.slice(0, 10).map((field) => (
                       <div key={field.name} className="space-y-1">
                         <span className="text-[11px] text-muted-foreground font-mono">{field.name}</span>
-                        <Input
+                        <Input id="detected-acroform-fields"
                           placeholder={`Enter ${field.name}...`}
                           value={String(fieldValues[field.name] || '')}
                           onChange={(e) => setFieldValues(prev => ({ ...prev, [field.name]: e.target.value }))}
@@ -427,3 +427,4 @@ export function PDFFillWorkspace() {
     </div>
   );
 }
+

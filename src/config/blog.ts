@@ -54,7 +54,7 @@ It usually happens at the worst possible moment: 11:45 PM on a Sunday before a m
 
 The job portal or government grant system has exactly one upload button: *"Upload Combined Dossier (PDF only, max 25MB)"*.
 
-Ten years ago, solving this meant printing everything out, physically sorting the papers on your carpet, and running the whole stack through an office multi-function scanner. Five years ago, it meant downloading a trial of Adobe Acrobat Pro, only to find yourself entering credit card details for a recurring \$24.99 monthly subscription you knew you would forget to cancel.
+Ten years ago, solving this meant printing everything out, physically sorting the papers on your carpet, and running the whole stack through an office multi-function scanner. Five years ago, it meant downloading a trial of Adobe Acrobat Pro, only to find yourself entering credit card details for a recurring $24.99 monthly subscription you knew you would forget to cancel.
 
 Today, you can **merge multiple PDFs into one** directly in your web browser in under thirty seconds. No account creation, no spam emails, no credit card prompts, and no ugly watermarks stamped across your first page.
 
@@ -161,7 +161,7 @@ Here is how the leading options compare in 2026:
 
 | Feature / Criteria | PdfPixels | Adobe Acrobat Online | Smallpdf | ILovePDF | PDF24 |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Price** | **100% Free** | Free trial / \$24.99/mo | Limited free (2 tasks/day) | Limited free (hourly caps) | Free |
+| **Price** | **100% Free** | Free trial / $24.99/mo | Limited free (2 tasks/day) | Limited free (hourly caps) | Free |
 | **Sign-Up Required?** | ❌ **No account needed** | ✅ Mandatory Adobe ID | ⚠️ Required for repeat use | ⚠️ Required for higher limits | ❌ No |
 | **Watermarks Added?** | ❌ **Zero watermarks** | ❌ None | ❌ None | ❌ None | ❌ None |
 | **File Size Limit** | **100MB total** | 100MB (logged in) | ~15MB on free tier | ~25MB on free tier | Unlimited |

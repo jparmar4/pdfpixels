@@ -1,4 +1,4 @@
-import { apiError } from '@/lib/api-response';
+import { apiError, apiInternalError } from '@/lib/api-response';
 import { isPdfFile, loadPdfWithTimeout, validatePdfBuffer } from '@/lib/pdf-api';
 
 export const maxDuration = 60;
@@ -140,7 +140,6 @@ export async function POST(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error('PDF merge error:', error);
-    return apiError('Failed to merge PDFs', 500);
+    return apiInternalError(error, 'Failed to merge PDFs', 'PDF merge error');
   }
 }

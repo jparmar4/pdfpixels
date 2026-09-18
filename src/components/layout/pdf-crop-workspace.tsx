@@ -263,8 +263,8 @@ export function PDFCropWorkspace() {
 
                 {/* Quick Presets */}
                 <div className="space-y-2">
-                  <Label className="text-xs">Quick Margin Presets:</Label>
-                  <div className="grid grid-cols-3 gap-2">
+                  <Label id="quick-margin-presets" className="text-xs">Quick Margin Presets:</Label>
+                  <div role="group" aria-labelledby="quick-margin-presets" className="grid grid-cols-3 gap-2">
                     <Button type="button" size="sm" variant="outline" onClick={() => applyPreset(18)}>
                       Narrow (0.25&quot;)
                     </Button>
@@ -314,8 +314,8 @@ export function PDFCropWorkspace() {
 
                 {/* Scope Selection */}
                 <div className="space-y-2 border-t pt-4">
-                  <Label className="text-xs">Apply Crop To:</Label>
-                  <Select value={applyScope} onValueChange={(v: any) => setApplyScope(v)}>
+                  <Label id="applyScope" className="text-xs">Apply Crop To:</Label>
+                  <Select aria-labelledby="applyScope" value={applyScope} onValueChange={(v: any) => setApplyScope(v)}>
                     <SelectTrigger className="text-xs">
                       <SelectValue placeholder="Scope" />
                     </SelectTrigger>
@@ -376,3 +376,5 @@ export function PDFCropWorkspace() {
     </div>
   );
 }
+
+

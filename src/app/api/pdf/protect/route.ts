@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { apiError } from '@/lib/api-response';
-import { loadPdfWithTimeout, readAndValidatePdfFile, validatePdfUpload } from '@/lib/pdf-api';
+import { loadPdfWithTimeout, readAndValidatePdfFile, sanitizeDownloadFileName, validatePdfUpload } from '@/lib/pdf-api';
 import { runGhostscriptWithFallback, runGhostscriptWithFallbackResult } from '@/lib/ghostscript';
+import { isQpdfUnavailableError, runQpdf } from '@/lib/qpdf';
 
-import { spawn } from 'child_process';
 import fs from 'fs';
 import os from 'os';
 import path from 'path';
@@ -15,6 +15,7 @@ const CACHE_HEADERS = {
 };
 
 export const runtime = 'nodejs';
+export const maxDuration = 60;
 
 /** Thrown when Ghostscript reports the supplied unlock password is wrong. */
 class IncorrectPasswordError extends Error {
@@ -24,85 +25,36 @@ class IncorrectPasswordError extends Error {
   }
 }
 
-/** Same engine-unavailable pattern linearize uses for qpdf (ENOENT / spawn miss / sentinel). */
-function isQpdfUnavailableError(error: unknown): boolean {
-  const code = (error as NodeJS.ErrnoException | null)?.code;
-  const message = String((error as Error | null)?.message || '');
-  return (
-    code === 'ENOENT' ||
-    message.includes('not recognized') ||
-    message.includes('spawn') ||
-    message.includes('qpdf is not available')
-  );
+/**
+ * qpdf rejects an `@path` word it cannot expand (ancient builds predate
+ * response-file support). Only in that case is the legacy positional form
+ * retried, which briefly exposes the password in the child argv.
+ */
+function isAtFileUnsupportedError(error: unknown): boolean {
+  const message = String((error as Error | null)?.message || '').toLowerCase();
+  return message.includes('@') && /unknown|unrecogn|invalid|no such|can't|cannot|not supported/.test(message);
 }
 
-function getQpdfCandidates() {
-  const configured = process.env.QPDF_PATH?.trim();
-
-  if (process.platform !== 'win32') {
-    return [configured, 'qpdf'].filter(Boolean) as string[];
-  }
-
-  return [
-    configured,
-    'C:\\Program Files\\qpdf 12.2.0\\bin\\qpdf.exe',
-    'C:\\Program Files\\qpdf 12.1.0\\bin\\qpdf.exe',
-    'C:\\Program Files\\qpdf 11.9.1\\bin\\qpdf.exe',
-    'qpdf',
-  ].filter(Boolean) as string[];
-}
-
-function runCommand(command: string, args: string[]) {
-  return new Promise<void>((resolve, reject) => {
-    const proc = spawn(command, args, { stdio: ['ignore', 'ignore', 'pipe'] });
-    let stderr = '';
-    const timeout = setTimeout(() => {
-      proc.kill('SIGKILL');
-      reject(new Error('PDF security operation timed out.'));
-    }, 45_000);
-
-    proc.stderr.on('data', (chunk) => {
-      if (stderr.length < 16 * 1024) {
-        stderr += chunk.toString();
-      }
+/**
+ * Encrypt with the passwords supplied via a response file (one password per
+ * line) so they never appear in the child process argv, which is visible in
+ * host process listings. Falls back to the legacy positional form only when
+ * the qpdf build cannot expand `@file` words.
+ */
+async function runQpdfEncrypt(inputPath: string, outputPath: string, password: string, passwordPath: string) {
+  try {
+    await runQpdf(['--encrypt', `@${passwordPath}`, '256', '--', inputPath, outputPath], {
+      timeoutMessage: 'PDF security operation timed out.',
     });
-
-    proc.on('error', (error) => {
-      clearTimeout(timeout);
-      reject(error);
-    });
-
-    proc.on('close', (code) => {
-      clearTimeout(timeout);
-      if (code === 0) {
-        resolve();
-        return;
-      }
-
-      reject(new Error(stderr.trim() || `qpdf failed with exit code ${code}`));
-    });
-  });
-}
-
-async function runQpdf(args: string[]) {
-  let lastError: Error | NodeJS.ErrnoException | null = null;
-
-  for (const candidate of getQpdfCandidates()) {
-    try {
-      await runCommand(candidate, args);
+  } catch (error) {
+    if (isAtFileUnsupportedError(error)) {
+      await runQpdf(['--encrypt', password, password, '256', '--', inputPath, outputPath], {
+        timeoutMessage: 'PDF security operation timed out.',
+      });
       return;
-    } catch (error) {
-      lastError = error as Error | NodeJS.ErrnoException;
-      const errno = lastError as NodeJS.ErrnoException;
-      const message = `${lastError.message || ''}`;
-      if (errno.code === 'ENOENT' || message.includes('not recognized') || message.includes('spawn')) {
-        continue;
-      }
-      throw lastError;
     }
+    throw error;
   }
-
-  throw lastError ?? new Error('qpdf is not available in the current environment.');
 }
 
 /**
@@ -226,17 +178,13 @@ export async function POST(request: NextRequest) {
     fs.writeFileSync(inputPath, inputBuffer);
 
     if (action === 'protect') {
-      // qpdf requires encrypt passwords as arguments; unlock uses a temp file instead.
+      passwordPath = path.join(tempDir, `${id}.pwd`);
+      // Two lines (user + owner password), NO trailing newline: qpdf expands
+      // each line to exactly one argument, and a trailing newline would
+      // become a spurious empty argument after the passwords.
+      fs.writeFileSync(passwordPath, `${password}\n${password}`, { encoding: 'utf8', mode: 0o600 });
       try {
-        await runQpdf([
-          '--encrypt',
-          password,
-          password,
-          '256',
-          '--',
-          inputPath,
-          outputPath,
-        ]);
+        await runQpdfEncrypt(inputPath, outputPath, password, passwordPath);
       } catch (qpdfError) {
         // qpdf missing on this host? Re-encrypt with Ghostscript (AES-256, R=6).
         if (!isQpdfUnavailableError(qpdfError)) throw qpdfError;
@@ -251,7 +199,7 @@ export async function POST(request: NextRequest) {
         args.unshift(`--password-file=${passwordPath}`);
       }
       try {
-        await runQpdf(args);
+        await runQpdf(args, { timeoutMessage: 'PDF security operation timed out.' });
       } catch (qpdfError) {
         if (!isQpdfUnavailableError(qpdfError)) throw qpdfError;
         // gs can only re-emit a decrypted copy when it can OPEN the input, which
@@ -271,7 +219,8 @@ export async function POST(request: NextRequest) {
     }
 
     const outputBuffer = fs.readFileSync(outputPath);
-    const fileName = `${action === 'protect' ? 'protected' : 'unlocked'}-${Date.now()}.pdf`;
+    const baseName = file?.name ? file.name.replace(/\.pdf$/i, '') : (action === 'protect' ? 'protected' : 'unlocked');
+    const fileName = `${sanitizeDownloadFileName(baseName)}-${action === 'protect' ? 'protected' : 'unlocked'}.pdf`;
 
     return new NextResponse(outputBuffer, {
       status: 200,

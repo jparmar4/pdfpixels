@@ -1,5 +1,5 @@
-import { apiError } from '@/lib/api-response';
-import { openEditablePdf, parsePageSelection, pdfBinaryResponse } from '@/lib/pdf-api';
+import { apiError, apiInternalError } from '@/lib/api-response';
+import { openEditablePdf, parsePageSelection, pdfBinaryResponse, sanitizeDownloadFileName } from '@/lib/pdf-api';
 import { NextRequest } from 'next/server';
 import { degrees } from 'pdf-lib';
 
@@ -38,13 +38,14 @@ export async function POST(request: NextRequest) {
     }
 
     const savedPdfBytes = await pdf.save();
-    return pdfBinaryResponse(savedPdfBytes, `rotated-${Date.now()}.pdf`, {
+    const baseName = file?.name ? file.name.replace(/\.pdf$/i, '') : 'document';
+    const fileName = `${baseName}-rotated.pdf`;
+    return pdfBinaryResponse(savedPdfBytes, sanitizeDownloadFileName(fileName), {
       'X-Page-Count': String(totalPages),
       'X-Rotated-Pages': pageIndices.map((i) => i + 1).join(','),
       'X-Rotation-Angle': String(angle),
     });
   } catch (error) {
-    console.error('PDF rotate error:', error);
-    return apiError('Failed to rotate PDF', 500);
+    return apiInternalError(error, 'Failed to rotate PDF', 'PDF rotate error');
   }
 }

@@ -254,8 +254,8 @@ export function OCRWorkspace() {
 
                         <div className="p-5 space-y-6">
                             <div className="space-y-2">
-                                <Label>Document Language</Label>
-                                <Select value={language} onValueChange={setLanguage}>
+                                <Label id="language">Document Language</Label>
+                                <Select aria-labelledby="language" value={language} onValueChange={setLanguage}>
                                     <SelectTrigger>
                                         <SelectValue />
                                     </SelectTrigger>
@@ -274,13 +274,14 @@ export function OCRWorkspace() {
 
                             <div className="flex items-center justify-between p-3 rounded-lg border bg-muted/30">
                                 <div className="space-y-0.5">
-                                    <Label className="text-sm">High Accuracy Mode</Label>
+                                    <Label id="highAccuracy" className="text-sm">High Accuracy Mode</Label>
                                     <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-tight">AI Preprocessing</p>
                                 </div>
                                 <Button
                                     variant={highAccuracy ? 'default' : 'outline'}
                                     size="sm"
                                     onClick={() => setHighAccuracy(!highAccuracy)}
+                                    aria-labelledby="highAccuracy"
                                     className="h-8"
                                 >
                                     {highAccuracy ? 'Enabled' : 'Disabled'}
@@ -354,3 +355,4 @@ export function OCRWorkspace() {
         </motion.div>
     );
 }
+

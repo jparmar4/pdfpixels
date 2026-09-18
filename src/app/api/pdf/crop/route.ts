@@ -1,5 +1,5 @@
-import { apiError } from '@/lib/api-response';
-import { openEditablePdf, parsePageSelection, pdfBinaryResponse } from '@/lib/pdf-api';
+import { apiError, apiInternalError } from '@/lib/api-response';
+import { openEditablePdf, parsePageSelection, pdfBinaryResponse, sanitizeDownloadFileName } from '@/lib/pdf-api';
 import { NextRequest } from 'next/server';
 
 export const maxDuration = 60;
@@ -76,11 +76,11 @@ export async function POST(request: NextRequest) {
     }
 
     const outBytes = await pdf.save();
-    const fileName = file!.name ? file!.name.replace(/\.pdf$/i, '-cropped.pdf') : `cropped-${Date.now()}.pdf`;
+    const baseName = file?.name ? file.name.replace(/\.pdf$/i, '') : 'document';
+    const fileName = `${sanitizeDownloadFileName(baseName)}-cropped.pdf`;
 
     return pdfBinaryResponse(outBytes, fileName);
   } catch (error) {
-    console.error('PDF crop error:', error);
-    return apiError(error instanceof Error ? error.message : 'Failed to crop PDF', 500);
+    return apiInternalError(error, 'Failed to crop PDF', 'PDF crop error');
   }
 }

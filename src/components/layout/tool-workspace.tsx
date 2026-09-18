@@ -668,8 +668,8 @@ export function ToolWorkspace() {
                   {(toolId === 'watermark' || toolId === 'add-text') && (
                     <div className="space-y-4 rounded-2xl border border-border/60 bg-background/75 p-4">
                       <div className="space-y-2">
-                        <Label>{toolId === 'watermark' ? 'Watermark text' : 'Text'}</Label>
-                        <Input
+                        <Label htmlFor="toolid-watermark-watermark-text-text">{toolId === 'watermark' ? 'Watermark text' : 'Text'}</Label>
+                        <Input id="toolid-watermark-watermark-text-text"
                           value={watermarkText}
                           onChange={(event) => setWatermarkText(event.target.value)}
                           placeholder={toolId === 'watermark' ? 'CONFIDENTIAL' : 'Add your text'}
@@ -677,29 +677,29 @@ export function ToolWorkspace() {
                       </div>
                       <div className="grid grid-cols-2 gap-3">
                         <div className="space-y-2">
-                          <Label>Color</Label>
-                          <Input type="color" value={textColor} onChange={(event) => setTextColor(event.target.value)} className="h-10 p-1" />
+                          <Label htmlFor="textColor">Color</Label>
+                          <Input id="textColor" type="color" value={textColor} onChange={(event) => setTextColor(event.target.value)} className="h-10 p-1" />
                         </div>
                         <div className="space-y-2">
-                          <Label>Size</Label>
-                          <Input type="number" min={12} max={180} value={textSize} onChange={(event) => setTextSize(Number(event.target.value) || 48)} />
+                          <Label htmlFor="textSize">Size</Label>
+                          <Input id="textSize" type="number" min={12} max={180} value={textSize} onChange={(event) => setTextSize(Number(event.target.value) || 48)} />
                         </div>
                       </div>
                       {toolId === 'watermark' && (
                         <>
                           <div className="space-y-2">
-                            <Label>Style</Label>
-                            <div className="grid grid-cols-2 gap-2">
+                            <Label id="style">Style</Label>
+                            <div role="group" aria-labelledby="style" className="grid grid-cols-2 gap-2">
                               <Button type="button" size="sm" variant={watermarkStyle === 'single' ? 'default' : 'outline'} onClick={() => setWatermarkStyle('single')}>Single</Button>
                               <Button type="button" size="sm" variant={watermarkStyle === 'diagonal' ? 'default' : 'outline'} onClick={() => setWatermarkStyle('diagonal')}>Diagonal tile</Button>
                             </div>
                           </div>
                           <div className="space-y-3">
                             <div className="flex items-center justify-between">
-                              <Label>Opacity</Label>
+                              <Label htmlFor="watermarkOpacity">Opacity</Label>
                               <span className="text-sm font-mono text-primary">{watermarkOpacity}%</span>
                             </div>
-                            <Slider value={[watermarkOpacity]} onValueChange={([value]) => setWatermarkOpacity(value)} min={10} max={100} step={5} />
+                            <Slider id="watermarkOpacity" value={[watermarkOpacity]} onValueChange={([value]) => setWatermarkOpacity(value)} min={10} max={100} step={5} />
                           </div>
                         </>
                       )}
@@ -712,8 +712,8 @@ export function ToolWorkspace() {
                   {toolId === 'add-logo' && (
                     <div className="space-y-4 rounded-2xl border border-border/60 bg-background/75 p-4">
                       <div className="space-y-2">
-                        <Label>Logo image</Label>
-                        <Input
+                        <Label htmlFor="logo-image">Logo image</Label>
+                        <Input id="logo-image"
                           type="file"
                           accept="image/*"
                           onChange={(event) => setLogoFile(event.target.files?.[0] ?? null)}
@@ -724,17 +724,17 @@ export function ToolWorkspace() {
                       </div>
                       <div className="space-y-3">
                         <div className="flex items-center justify-between">
-                          <Label>Logo size</Label>
+                          <Label htmlFor="logoScale">Logo size</Label>
                           <span className="text-sm font-mono text-primary">{logoScale}% width</span>
                         </div>
-                        <Slider value={[logoScale]} onValueChange={([value]) => setLogoScale(value)} min={5} max={60} step={1} />
+                        <Slider id="logoScale" value={[logoScale]} onValueChange={([value]) => setLogoScale(value)} min={5} max={60} step={1} />
                       </div>
                       <div className="space-y-3">
                         <div className="flex items-center justify-between">
-                          <Label>Opacity</Label>
+                          <Label htmlFor="logoOpacity">Opacity</Label>
                           <span className="text-sm font-mono text-primary">{logoOpacity}%</span>
                         </div>
-                        <Slider value={[logoOpacity]} onValueChange={([value]) => setLogoOpacity(value)} min={10} max={100} step={5} />
+                        <Slider id="logoOpacity" value={[logoOpacity]} onValueChange={([value]) => setLogoOpacity(value)} min={10} max={100} step={5} />
                       </div>
                       <div className="grid grid-cols-2 gap-2">
                         {[
@@ -761,8 +761,8 @@ export function ToolWorkspace() {
                   {toolId === 'merge-images' && (
                     <div className="space-y-4 rounded-2xl border border-border/60 bg-background/75 p-4">
                       <div className="space-y-2">
-                        <Label>Additional images</Label>
-                        <Input type="file" accept="image/*" multiple onChange={(event) => setExtraFiles(Array.from(event.target.files ?? []))} />
+                        <Label htmlFor="additional-images">Additional images</Label>
+                        <Input id="additional-images" type="file" accept="image/*" multiple onChange={(event) => setExtraFiles(Array.from(event.target.files ?? []))} />
                         <p className="text-xs text-muted-foreground">{extraFiles.length} extra image{extraFiles.length === 1 ? '' : 's'} selected</p>
                       </div>
                       <div className="grid grid-cols-2 gap-2">
@@ -775,12 +775,12 @@ export function ToolWorkspace() {
                   {toolId === 'split-image' && (
                     <div className="grid grid-cols-2 gap-3 rounded-2xl border border-border/60 bg-background/75 p-4">
                       <div className="space-y-2">
-                        <Label>Rows</Label>
-                        <Input type="number" min={1} max={10} value={splitRows} onChange={(event) => setSplitRows(Math.max(1, Math.min(10, Number(event.target.value) || 1)))} />
+                        <Label htmlFor="splitRows">Rows</Label>
+                        <Input id="splitRows" type="number" min={1} max={10} value={splitRows} onChange={(event) => setSplitRows(Math.max(1, Math.min(10, Number(event.target.value) || 1)))} />
                       </div>
                       <div className="space-y-2">
-                        <Label>Columns</Label>
-                        <Input type="number" min={1} max={10} value={splitColumns} onChange={(event) => setSplitColumns(Math.max(1, Math.min(10, Number(event.target.value) || 1)))} />
+                        <Label htmlFor="splitColumns">Columns</Label>
+                        <Input id="splitColumns" type="number" min={1} max={10} value={splitColumns} onChange={(event) => setSplitColumns(Math.max(1, Math.min(10, Number(event.target.value) || 1)))} />
                       </div>
                     </div>
                   )}
@@ -790,13 +790,13 @@ export function ToolWorkspace() {
                     <>
                       <div className="space-y-3">
                         <div className="flex items-center justify-between">
-                          <Label className="flex items-center gap-2">
+                          <Label id="rotation" className="flex items-center gap-2">
                             <RotateCw className="w-4 h-4" />
                             Rotation
                           </Label>
                           <span className="text-sm font-mono text-primary">{rotate}°</span>
                         </div>
-                        <div className="grid grid-cols-4 gap-2">
+                        <div role="group" aria-labelledby="rotation" className="grid grid-cols-4 gap-2">
                           {[0, 90, 180, -90].map((deg) => (
                             <Button
                               key={deg}
@@ -819,8 +819,8 @@ export function ToolWorkspace() {
                       </div>
 
                       <div className="space-y-2">
-                        <Label>Flip image</Label>
-                        <div className="grid grid-cols-2 gap-2">
+                        <Label id="flip-image">Flip image</Label>
+                        <div role="group" aria-labelledby="flip-image" className="grid grid-cols-2 gap-2">
                           <Button
                             variant={flipH ? 'default' : 'outline'}
                             onClick={() => setFlipH(!flipH)}
@@ -846,8 +846,8 @@ export function ToolWorkspace() {
                 <TabsContent value="output" className="space-y-4 mt-4">
                   {/* Output Format */}
                   <div className="space-y-2">
-                    <Label>Output Format</Label>
-                    <Select value={outputFormat} onValueChange={setOutputFormat}>
+                    <Label id="outputFormat">Output Format</Label>
+                    <Select aria-labelledby="outputFormat" value={outputFormat} onValueChange={setOutputFormat}>
                       <SelectTrigger>
                         <SelectValue />
                       </SelectTrigger>
@@ -862,10 +862,10 @@ export function ToolWorkspace() {
                   {/* Quality */}
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <Label>Quality</Label>
+                      <Label htmlFor="quality">Quality</Label>
                       <span className="text-sm font-mono text-primary">{quality}%</span>
                     </div>
-                    <Slider
+                    <Slider id="quality"
                       value={[quality]}
                       onValueChange={([v]) => setQuality(v)}
                       min={10}
@@ -951,3 +951,5 @@ export function ToolWorkspace() {
     </motion.div>
   );
 }
+
+

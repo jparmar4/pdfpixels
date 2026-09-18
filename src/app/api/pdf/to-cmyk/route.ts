@@ -1,4 +1,4 @@
-import { apiError } from '@/lib/api-response';
+import { apiError, apiInternalError } from '@/lib/api-response';
 import { runGhostscriptWithFallback } from '@/lib/ghostscript';
 import { openEditablePdf, pdfBinaryResponse, sanitizeDownloadFileName } from '@/lib/pdf-api';
 import { NextRequest } from 'next/server';
@@ -70,8 +70,7 @@ export async function POST(request: NextRequest) {
       'x-color-space': 'DeviceCMYK',
     });
   } catch (error) {
-    console.error('CMYK PDF error:', error);
-    return apiError(error instanceof Error ? error.message : 'Failed to convert PDF to CMYK', 500);
+    return apiInternalError(error, 'Failed to convert PDF to CMYK', 'CMYK PDF error');
   } finally {
     if (tempInputPath && fs.existsSync(tempInputPath)) {
       try { await fs.promises.unlink(tempInputPath); } catch { /* Best-effort temporary file cleanup. */ }

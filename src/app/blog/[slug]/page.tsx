@@ -10,6 +10,7 @@ import { ReadingProgressBar } from "@/components/blog/ReadingProgressBar";
 import { ProcessContentWithToc } from "@/components/blog/ProcessContentWithToc";
 import { ShareButtons } from "@/components/blog/ShareButtons";
 import { ArticleNavigation } from "@/components/blog/ArticleNavigation";
+import { InContentAd, FooterAd } from "@/components/ads/ad-banner";
 import { ArrowLeft, Clock, Calendar, ArrowRight, User } from "lucide-react";
 
 // Generate static params
@@ -335,6 +336,11 @@ export default async function BlogPostPage({
                                 {processContent(post.content)}
                             </div>
 
+                            {/* Post-article ad (content-to-ad ratio kept high) */}
+                            <div className="my-12">
+                                <InContentAd />
+                            </div>
+
                             {/* Tags */}
                             {post.keywords && post.keywords.length > 0 && (
                                 <div className="mt-16 pt-8 border-t border-border">
@@ -483,6 +489,8 @@ export default async function BlogPostPage({
                         </div>
                     </div>
                 </section>
+
+                <FooterAd />
             </main>
 
             

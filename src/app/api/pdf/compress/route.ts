@@ -1,4 +1,4 @@
-import { loadPdfWithTimeout, readAndValidatePdfFile, rejectEncryptedPdf, validatePdfBuffer, validatePdfUpload } from '@/lib/pdf-api';
+import { loadPdfWithTimeout, readAndValidatePdfFile, rejectEncryptedPdf, sanitizeDownloadFileName, validatePdfBuffer, validatePdfUpload } from '@/lib/pdf-api';
 import { isGhostscriptMissingError, runGhostscriptWithFallback } from '@/lib/ghostscript';
 import { NextRequest } from 'next/server'
 import fs from 'fs'
@@ -122,6 +122,58 @@ function toSavedPercent(before: number, after: number) {
   return Math.max(0, Math.round((1 - after / before) * 1000) / 10)
 }
 
+// The remote compressor is a separate service, so never trust its response
+// size. Stream with a hard cap instead of buffering an unbounded body.
+const REMOTE_MAX_RESPONSE_BYTES = 50 * 1024 * 1024
+const REMOTE_MAX_TEXT_BYTES = 32 * 1024
+
+function remoteTooLargeError(): Error {
+  return new Error('Remote compressor response was too large.')
+}
+
+async function readCappedBytes(resp: Response, maxBytes: number): Promise<Buffer> {
+  const declared = Number(resp.headers.get('content-length'));
+  if (Number.isFinite(declared) && declared > maxBytes) {
+    throw remoteTooLargeError()
+  }
+  if (!resp.body) {
+    const ab = await resp.arrayBuffer()
+    if (ab.byteLength > maxBytes) throw remoteTooLargeError()
+    return Buffer.from(ab)
+  }
+  const reader = resp.body.getReader()
+  const chunks: Uint8Array[] = []
+  let total = 0
+  try {
+    for (;;) {
+      const { done, value } = await reader.read()
+      if (done) break
+      if (value && value.byteLength > 0) {
+        total += value.byteLength
+        if (total > maxBytes) {
+          await reader.cancel().catch(() => undefined)
+          throw remoteTooLargeError()
+        }
+        chunks.push(value)
+      }
+    }
+  } finally {
+    reader.releaseLock()
+  }
+  const out = new Uint8Array(total)
+  let offset = 0
+  for (const chunk of chunks) {
+    out.set(chunk, offset)
+    offset += chunk.byteLength
+  }
+  return Buffer.from(out)
+}
+
+async function readCappedText(resp: Response, maxBytes: number): Promise<string> {
+  const bytes = await readCappedBytes(resp, maxBytes)
+  return bytes.toString('utf8')
+}
+
 async function compressWithPdfLibFallback(originalBuffer: Buffer, srcDoc?: PDFDocument) {
   // pdf-lib fallback: rebuilds the PDF structure with object streams
   // This removes unused objects, deduplicates resources, and optimizes the cross-reference table
@@ -180,6 +232,8 @@ export async function POST(req: NextRequest) {
     }
     const upload = file as File
     const uploadName = upload.name || 'input.pdf'
+    const baseName = uploadName.replace(/\.pdf$/i, '') || 'document'
+    const downloadName = `${sanitizeDownloadFileName(baseName)}-compressed.pdf`
 
     const read = await readAndValidatePdfFile(upload)
     if (!read.ok) {
@@ -215,8 +269,7 @@ export async function POST(req: NextRequest) {
         clearTimeout(timeoutId);
 
         if (remoteResp.ok) {
-          const ab = await remoteResp.arrayBuffer()
-          const candidate = Buffer.from(ab)
+          const candidate = await readCappedBytes(remoteResp, REMOTE_MAX_RESPONSE_BYTES)
           const out = candidate.length < originalBuffer.length ? candidate : originalBuffer
           const magic = validatePdfBuffer(out)
           if (!magic.ok) {
@@ -228,7 +281,7 @@ export async function POST(req: NextRequest) {
             return new Response(new Uint8Array(out), {
               headers: {
                 'Content-Type': 'application/pdf',
-                'Content-Disposition': 'attachment; filename="compressed.pdf"',
+                'Content-Disposition': `attachment; filename="${downloadName}"`,
                 'x-compress-engine': 'railway-gs',
                 'x-compress-level': levelStr,
                 'x-size-before': String(originalBuffer.length),
@@ -254,16 +307,17 @@ export async function POST(req: NextRequest) {
           })
         }
 
-        // Explicit remote 422: pass through to client
+        // Explicit remote 422: pass through to client (length-capped).
         if (remoteResp.status === 422) {
-          const body = await remoteResp.text()
+          const body = await readCappedText(remoteResp, REMOTE_MAX_TEXT_BYTES)
           return new Response(body, {
             status: 422,
             headers: { 'Content-Type': 'application/json' },
           })
         }
 
-        console.error('Remote compressor failed:', remoteResp.status, await remoteResp.text())
+        const failureBody = await readCappedText(remoteResp.clone(), REMOTE_MAX_TEXT_BYTES).catch(() => '[unreadable]')
+        console.error('Remote compressor failed:', remoteResp.status, failureBody)
       } catch (remoteError) {
         clearTimeout(timeoutId);
         console.error('Remote compressor error or timeout:', remoteError);
@@ -322,7 +376,7 @@ export async function POST(req: NextRequest) {
     return new Response(new Uint8Array(finalBytes), {
       headers: {
         'Content-Type': 'application/pdf',
-        'Content-Disposition': 'attachment; filename="compressed.pdf"',
+        'Content-Disposition': `attachment; filename="${downloadName}"`,
         'x-compress-engine': engine,
         'x-compress-level': levelStr,
         'x-size-before': String(originalBuffer.length),
@@ -333,9 +387,21 @@ export async function POST(req: NextRequest) {
   } catch (err) {
     console.error(err)
     const message = err instanceof Error ? err.message : 'Compression failed'
-    const status = message.includes('timed out') ? 408 : 500
-    return new Response(JSON.stringify({ error: message }), {
-      status,
+    if (/timed out|timed-out|timeout|aborted|abort/i.test(message)) {
+      return new Response(JSON.stringify({ error: 'Compression timed out. Please try a smaller PDF.' }), {
+        status: 408,
+        headers: { 'Content-Type': 'application/json' },
+      })
+    }
+    if (/too large/i.test(message)) {
+      return new Response(JSON.stringify({ error: message }), {
+        status: 413,
+        headers: { 'Content-Type': 'application/json' },
+      })
+    }
+    // Never echo engine internals (Ghostscript stderr, temp paths) to clients.
+    return new Response(JSON.stringify({ error: 'Compression failed. Please try a smaller PDF or a different preset.' }), {
+      status: 500,
       headers: { 'Content-Type': 'application/json' },
     })
   } finally {

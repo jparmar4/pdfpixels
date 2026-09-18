@@ -153,8 +153,8 @@ export function PDFToPDFAWorkspace() {
 
               <div className="space-y-4">
                 <div className="space-y-2">
-                  <Label className="text-xs">Select PDF/A Archival Conformance Level:</Label>
-                  <Select value={conformance} onValueChange={(v: any) => setConformance(v)}>
+                  <Label id="conformance" className="text-xs">Select PDF/A Archival Conformance Level:</Label>
+                  <Select aria-labelledby="conformance" value={conformance} onValueChange={(v: any) => setConformance(v)}>
                     <SelectTrigger className="text-xs">
                       <SelectValue placeholder="Profile" />
                     </SelectTrigger>
@@ -253,3 +253,4 @@ export function PDFToPDFAWorkspace() {
     </div>
   );
 }
+

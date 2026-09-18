@@ -533,8 +533,8 @@ export function ConvertWorkspace() {
 
             <div className="space-y-6">
               <div className="space-y-2">
-                <Label>Output format</Label>
-                <Select value={outputFormat} onValueChange={(value) => setOutputFormat(value as OutputFormat)} disabled={Boolean(lockedFormat)}>
+                <Label id="outputFormat">Output format</Label>
+                <Select aria-labelledby="outputFormat" value={outputFormat} onValueChange={(value) => setOutputFormat(value as OutputFormat)} disabled={Boolean(lockedFormat)}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
@@ -557,10 +557,10 @@ export function ConvertWorkspace() {
 
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <Label>{outputFormat === 'png' ? 'Compression level' : 'Quality'}</Label>
+                  <Label htmlFor="quality">{outputFormat === 'png' ? 'Compression level' : 'Quality'}</Label>
                   <span className="text-sm font-mono text-primary">{quality}%</span>
                 </div>
-                <Slider value={[quality]} onValueChange={([value]) => setQuality(value)} min={10} max={100} step={5} />
+                <Slider id="quality" value={[quality]} onValueChange={([value]) => setQuality(value)} min={10} max={100} step={5} />
                 <div className="flex justify-between text-xs text-muted-foreground">
                   <span>Smaller file</span>
                   <span>Higher fidelity</span>
@@ -594,8 +594,8 @@ export function ConvertWorkspace() {
 
               {isPdfToImage ? (
                 <div className="space-y-2">
-                  <Label>Resolution (DPI)</Label>
-                  <div className="grid grid-cols-2 gap-2">
+                  <Label id="resolution-dpi">Resolution (DPI)</Label>
+                  <div role="group" aria-labelledby="resolution-dpi" className="grid grid-cols-2 gap-2">
                     {[
                       { v: 72, label: '72', hint: 'Fast' },
                       { v: 150, label: '150', hint: 'Balanced' },
@@ -659,3 +659,5 @@ export function ConvertWorkspace() {
     </motion.div>
   );
 }
+
+

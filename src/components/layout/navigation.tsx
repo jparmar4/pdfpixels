@@ -2,8 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
@@ -40,6 +39,7 @@ export function Navigation() {
   const [searchFocused, setSearchFocused] = useState(false);
   const megaTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const searchRef = useRef<HTMLInputElement>(null);
+  const searchDialogRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const pathname = usePathname();
   const setActiveTool = useAppStore((state) => state.setActiveTool);
@@ -48,8 +48,8 @@ export function Navigation() {
   const featuredTools = useMemo(() => allTools.filter((tool) => tool.popular).slice(0, 6), []);
   const activeCategory = toolCategories.find((category) => category.id === activeMegaCategory) ?? null;
 
-  // Breadcrumb: show on /tools/* pages
-  const isToolPage = pathname.startsWith('/tools/');
+  // Breadcrumb: show on /tools/* pages (excluding category subpaths)
+  const isToolPage = pathname.startsWith('/tools/') && !pathname.startsWith('/tools/category');
   const toolSlug = isToolPage ? pathname.replace('/tools/', '') : '';
   const toolName = activeTool?.name ?? (toolSlug ? toolSlug.split('-').map((s) => s.charAt(0).toUpperCase() + s.slice(1)).join(' ') : '');
 
@@ -93,6 +93,29 @@ export function Navigation() {
     setSearchQuery('');
     setSearchResults([]);
     setSearchFocused(false);
+  };
+
+  // Keep Tab/Shift+Tab inside the search dialog so keyboard users cannot tab
+  // out into the page behind the modal (WCAG 2.1.2 / 2.4.3).
+  const handleSearchKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key !== 'Tab') return;
+    const dialog = searchDialogRef.current;
+    if (!dialog) return;
+    const focusables = Array.from(
+      dialog.querySelectorAll<HTMLElement>(
+        'a[href], button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])',
+      ),
+    ).filter((el) => el.offsetParent !== null || el === document.activeElement);
+    if (focusables.length === 0) return;
+    const first = focusables[0];
+    const last = focusables[focusables.length - 1];
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
   };
 
   const handleSearch = (query: string) => {
@@ -312,7 +335,7 @@ export function Navigation() {
                     Home
                   </Link>
                   <ChevronRight className="h-3 w-3 text-muted-foreground/50" />
-                  <Link href="/" onClick={(e) => { e.preventDefault(); handleHomeLink(); }} className="transition-colors hover:text-foreground">
+                  <Link href="/tools" className="transition-colors hover:text-foreground">
                     Tools
                   </Link>
                   {toolName && (
@@ -328,9 +351,10 @@ export function Navigation() {
 
           <AnimatePresence>
             {activeCategory ? (
-              <motion.div
+                <motion.div
                 id={`mega-menu-${activeCategory.id}`}
-                role="menu"
+                role="group"
+                aria-label={`${activeCategory.name} tools`}
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -8 }}
@@ -463,9 +487,11 @@ export function Navigation() {
             <button type="button" className="absolute inset-0 bg-background/95" onClick={closeSearch} aria-label="Close search" />
 
             <motion.div
+              ref={searchDialogRef}
               role="dialog"
               aria-modal="true"
               aria-label="Search tools"
+              onKeyDown={handleSearchKeyDown}
               initial={{ opacity: 0, y: -18, scale: 0.985 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -10, scale: 0.985 }}

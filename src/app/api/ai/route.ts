@@ -62,6 +62,9 @@ async function toPngDataUrl(buffer: Buffer, maxEdge = MAX_OUTPUT_EDGE) {
   };
 }
 
+export const runtime = 'nodejs';
+export const maxDuration = 60;
+
 export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();

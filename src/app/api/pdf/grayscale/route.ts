@@ -1,4 +1,4 @@
-import { apiError } from '@/lib/api-response';
+import { apiError, apiInternalError } from '@/lib/api-response';
 import { runGhostscriptWithFallback } from '@/lib/ghostscript';
 import { openEditablePdf, pdfBinaryResponse, sanitizeDownloadFileName } from '@/lib/pdf-api';
 import { NextRequest } from 'next/server';
@@ -68,8 +68,7 @@ export async function POST(request: NextRequest) {
 
     return pdfBinaryResponse(processedBytes, sanitizeDownloadFileName(fileName));
   } catch (error) {
-    console.error('Grayscale PDF error:', error);
-    return apiError(error instanceof Error ? error.message : 'Failed to convert PDF to grayscale', 500);
+    return apiInternalError(error, 'Failed to convert PDF to grayscale', 'Grayscale PDF error');
   } finally {
     if (tempInputPath && fs.existsSync(tempInputPath)) {
       try { await fs.promises.unlink(tempInputPath); } catch { /* ignore cleanup errors */ }

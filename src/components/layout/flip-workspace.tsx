@@ -500,8 +500,8 @@ export function FlipWorkspace() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label>Output format</Label>
-                    <Select
+                    <Label id="output-format">Output format</Label>
+                    <Select aria-labelledby="output-format"
                       value={outputFormat}
                       onValueChange={(v) => {
                         setOutputFormat(v as OutputFormat);
@@ -522,10 +522,10 @@ export function FlipWorkspace() {
                   {outputFormat !== 'png' ? (
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
-                        <Label>Quality</Label>
+                        <Label htmlFor="quality">Quality</Label>
                         <span className="font-mono text-sm text-primary">{quality}%</span>
                       </div>
-                      <Slider
+                      <Slider id="quality"
                         value={[quality]}
                         onValueChange={([v]) => setQuality(v)}
                         min={40}
@@ -638,3 +638,4 @@ export function FlipWorkspace() {
     </motion.div>
   );
 }
+

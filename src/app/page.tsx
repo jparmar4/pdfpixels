@@ -1,36 +1,30 @@
-
-import dynamic from 'next/dynamic';
 import { HomePageSchemas } from '@/components/seo/json-ld';
 import { ToolsSection } from '@/components/home/tools-section';
 import { StatsBanner } from '@/components/home/stats-banner';
 import { AnswerEngineSection } from '@/components/home/answer-engine-section';
+// Static import: the FAQ is a server component using native <details>, so its
+// Q&A text lands in the served HTML for answer engines (AEO). Keeping it
+// dynamic would defer it past first paint and omit the text from the document.
+import { FAQSection } from '@/components/home/faq-section';
 
-// Below-fold sections load after first paint, mirroring src/app/[region]/page.tsx.
-const HowItWorks = dynamic(() => import('@/components/home/how-it-works').then(m => m.HowItWorks), {
-  loading: () => <div className="h-72 animate-pulse bg-muted/20 rounded-2xl mx-4" />,
-});
-const TestimonialsSection = dynamic(() => import('@/components/home/testimonials-section').then(m => m.TestimonialsSection), {
-  loading: () => <div className="h-96 animate-pulse bg-muted/20 rounded-2xl mx-4" />,
-});
-const FeaturesSection = dynamic(() => import('@/components/home/features-section').then(m => m.FeaturesSection), {
-  loading: () => <div className="h-80 animate-pulse bg-muted/20 rounded-2xl mx-4" />,
-});
-const GuidesSection = dynamic(() => import('@/components/home/guides-section').then(m => m.GuidesSection), {
-  loading: () => <div className="h-80 animate-pulse bg-muted/20 rounded-2xl mx-4" />,
-});
-const FAQSection = dynamic(() => import('@/components/home/faq-section').then(m => m.FAQSection), {
-  loading: () => <div className="h-64 animate-pulse bg-muted/20 rounded-2xl mx-4" />,
-});
-const CTASection = dynamic(() => import('@/components/home/cta-section').then(m => m.CTASection));
+import { HowItWorks } from '@/components/home/how-it-works';
+import { TestimonialsSection } from '@/components/home/testimonials-section';
+import { FeaturesSection } from '@/components/home/features-section';
+import { GuidesSection } from '@/components/home/guides-section';
+import { CTASection } from '@/components/home/cta-section';
 
 import { Metadata } from 'next';
 import { siteConfig, seoConfig } from '@/lib/seo-config';
+import { getGeoLanguageAlternates } from '@/lib/seo';
 
 export const metadata: Metadata = {
   title: `${siteConfig.name} - Free Online PDF & Image Tools`,
   description: seoConfig.description,
   alternates: {
     canonical: '/',
+    // Locale cluster: x-default is the global homepage, geo hubs are the
+    // locale-targeted equivalents. Required for regional ranking signals.
+    languages: getGeoLanguageAlternates(),
   },
   openGraph: {
     title: `${siteConfig.name} - Free Online PDF & Image Tools`,

@@ -390,12 +390,12 @@ export function PDFSignWorkspace() {
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <Label className="text-[11px]">Width: {sigW}px</Label>
-                      <Slider value={[sigW]} min={80} max={300} step={5} onValueChange={([v]) => setSigW(v)} />
+                      <Label htmlFor="sigW" className="text-[11px]">Width: {sigW}px</Label>
+                      <Slider id="sigW" value={[sigW]} min={80} max={300} step={5} onValueChange={([v]) => setSigW(v)} />
                     </div>
                     <div>
-                      <Label className="text-[11px]">Height: {sigH}px</Label>
-                      <Slider value={[sigH]} min={30} max={150} step={5} onValueChange={([v]) => setSigH(v)} />
+                      <Label htmlFor="sigH" className="text-[11px]">Height: {sigH}px</Label>
+                      <Slider id="sigH" value={[sigH]} min={30} max={150} step={5} onValueChange={([v]) => setSigH(v)} />
                     </div>
                   </div>
                 </div>
@@ -450,11 +450,12 @@ export function PDFSignWorkspace() {
 
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <Label className="text-xs">Ink:</Label>
+                        <Label id="penColor" className="text-xs">Ink:</Label>
                         {['#000000', '#002060', '#b91c1c'].map((color) => (
                           <button
                             key={color}
                             type="button"
+                            aria-labelledby="penColor"
                             className={`w-6 h-6 rounded-full border-2 transition-transform ${penColor === color ? 'scale-110 border-primary' : 'border-transparent'}`}
                             style={{ backgroundColor: color }}
                             onClick={() => setPenColor(color)}
@@ -462,8 +463,8 @@ export function PDFSignWorkspace() {
                         ))}
                       </div>
                       <div className="flex items-center gap-2 w-32">
-                        <Label className="text-xs">Stroke:</Label>
-                        <Slider value={[penSize]} min={1} max={6} step={1} onValueChange={([v]) => setPenSize(v)} />
+                        <Label htmlFor="penSize" className="text-xs">Stroke:</Label>
+                        <Slider id="penSize" value={[penSize]} min={1} max={6} step={1} onValueChange={([v]) => setPenSize(v)} />
                       </div>
                     </div>
                   </TabsContent>
@@ -471,8 +472,8 @@ export function PDFSignWorkspace() {
                   {/* Type Tab */}
                   <TabsContent value="type" className="space-y-4 pt-3">
                     <div className="space-y-2">
-                      <Label className="text-xs">Type your legal name or initials:</Label>
-                      <Input
+                      <Label htmlFor="type-your-legal-name-or-initials" className="text-xs">Type your legal name or initials:</Label>
+                      <Input id="type-your-legal-name-or-initials"
                         placeholder="John Doe"
                         value={typedText}
                         onChange={(e) => setTypedText(e.target.value)}
@@ -481,8 +482,8 @@ export function PDFSignWorkspace() {
                     </div>
 
                     <div className="space-y-2">
-                      <Label className="text-xs">Font Style:</Label>
-                      <div className="grid grid-cols-2 gap-2">
+                      <Label id="font-style" className="text-xs">Font Style:</Label>
+                      <div role="group" aria-labelledby="font-style" className="grid grid-cols-2 gap-2">
                         {['cursive', 'Georgia', 'serif', 'Pacifico, cursive'].map((f) => (
                           <Button
                             key={f}
@@ -519,10 +520,10 @@ export function PDFSignWorkspace() {
                 {/* Date Stamp Option */}
                 <div className="border-t pt-4 space-y-3">
                   <div className="flex items-center justify-between">
-                    <Label className="text-xs flex items-center gap-1.5 cursor-pointer">
+                    <Label htmlFor="field" className="text-xs flex items-center gap-1.5 cursor-pointer">
                       <Calendar className="w-3.5 h-3.5 text-primary" /> Include Date Stamp
                     </Label>
-                    <input
+                    <input id="field"
                       type="checkbox"
                       checked={includeDate}
                       onChange={(e) => setIncludeDate(e.target.checked)}
@@ -599,3 +600,5 @@ export function PDFSignWorkspace() {
     </div>
   );
 }
+
+

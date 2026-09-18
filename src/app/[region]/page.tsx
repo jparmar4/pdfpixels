@@ -1,32 +1,20 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
-import dynamic from 'next/dynamic';
 import { geoRegions, getRegionByCode } from '@/lib/geo-data';
 import { siteConfig } from '@/lib/seo-config';
-import { absoluteUrl, websiteId } from '@/lib/seo';
+import { absoluteUrl, websiteId, getGeoLanguageAlternates, DEFAULT_OG_IMAGE_URL } from '@/lib/seo';
 import { ToolsSection } from '@/components/home/tools-section';
 import { StatsBanner } from '@/components/home/stats-banner';
 import { AnswerEngineSection } from '@/components/home/answer-engine-section';
+// Static import: FAQ is now a server component using native <details>, so its
+// Q&A text is present in served HTML for answer engines (AEO).
+import { FAQSection } from '@/components/home/faq-section';
 
-// Dynamic imports to match the homepage performance
-const HowItWorks = dynamic(() => import('@/components/home/how-it-works').then(m => m.HowItWorks), {
-  loading: () => <div className="h-72 animate-pulse bg-muted/20 rounded-2xl mx-4" />,
-});
-
-const TestimonialsSection = dynamic(() => import('@/components/home/testimonials-section').then(m => m.TestimonialsSection), {
-  loading: () => <div className="h-96 animate-pulse bg-muted/20 rounded-2xl mx-4" />,
-});
-
-const FeaturesSection = dynamic(() => import('@/components/home/features-section').then(m => m.FeaturesSection), {
-  loading: () => <div className="h-80 animate-pulse bg-muted/20 rounded-2xl mx-4" />,
-});
-
-const FAQSection = dynamic(() => import('@/components/home/faq-section').then(m => m.FAQSection), {
-  loading: () => <div className="h-64 animate-pulse bg-muted/20 rounded-2xl mx-4" />,
-});
-
-const CTASection = dynamic(() => import('@/components/home/cta-section').then(m => m.CTASection));
+import { HowItWorks } from '@/components/home/how-it-works';
+import { TestimonialsSection } from '@/components/home/testimonials-section';
+import { FeaturesSection } from '@/components/home/features-section';
+import { CTASection } from '@/components/home/cta-section';
 
 // Restrict this dynamic route to strictly the configured geo regions.
 export const dynamicParams = false;
@@ -50,14 +38,18 @@ export async function generateMetadata({ params }: GeoPageProps): Promise<Metada
   }
 
   const url = `/${region.code}`;
-  const title = `${region.headline} | ${siteConfig.name}`;
+  // Root layout appends `| PdfPixels` via the title template.
+  const title = region.headline;
   const description = region.intro.slice(0, 160);
 
   return {
     title,
     description,
     alternates: {
-      canonical: `${siteConfig.url}/`,
+      canonical: url,
+      // Full locale cluster so each geo hub reinforces the others + the
+      // global homepage (x-default) via bidirectional hreflang.
+      languages: getGeoLanguageAlternates(),
     },
     openGraph: {
       title,
@@ -65,13 +57,29 @@ export async function generateMetadata({ params }: GeoPageProps): Promise<Metada
       url: `${siteConfig.url}${url}`,
       locale: region.locale.replace('-', '_'),
       siteName: siteConfig.name,
+      images: [
+        {
+          url: DEFAULT_OG_IMAGE_URL,
+          width: 1200,
+          height: 630,
+          alt: `${region.name} — ${region.headline}`,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: [DEFAULT_OG_IMAGE_URL],
     },
     robots: {
-      index: false,
+      index: true,
       follow: true,
       googleBot: {
-        index: false,
+        index: true,
         follow: true,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
       },
     },
   };

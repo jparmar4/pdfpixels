@@ -497,10 +497,10 @@ export function RotateWorkspace() {
                       </div>
 
                       <div className="space-y-2">
-                        <Label className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+                        <Label id="field" className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
                           Presets
                         </Label>
-                        <div className="grid grid-cols-4 gap-2">
+                        <div role="group" aria-labelledby="field" className="grid grid-cols-4 gap-2">
                           {ANGLE_PRESETS.map((deg) => {
                             const active = ((angle % 360) + 360) % 360 === deg;
                             return (
@@ -521,12 +521,12 @@ export function RotateWorkspace() {
 
                       <div className="space-y-3">
                         <div className="flex items-center justify-between">
-                          <Label>Custom angle</Label>
+                          <Label htmlFor="custom-angle">Custom angle</Label>
                           <span className="rounded-lg bg-primary/10 px-2.5 py-0.5 font-mono text-sm font-bold text-primary tabular-nums">
                             {angle}°
                           </span>
                         </div>
-                        <Slider
+                        <Slider id="custom-angle"
                           value={[angle]}
                           onValueChange={([v]) => {
                             setAngle(v);
@@ -546,10 +546,10 @@ export function RotateWorkspace() {
                   ) : null}
 
                   <div className="space-y-2">
-                    <Label className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+                    <Label id="field-2" className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
                       {isFlipTool ? 'Mirror' : 'Optional flip'}
                     </Label>
-                    <div className="grid grid-cols-2 gap-2">
+                    <div role="group" aria-labelledby="field-2" className="grid grid-cols-2 gap-2">
                       <Button
                         type="button"
                         variant={flipH ? 'default' : 'outline'}
@@ -574,10 +574,10 @@ export function RotateWorkspace() {
                   {isFlipTool ? (
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
-                        <Label>Extra rotation</Label>
+                        <Label id="extra-rotation">Extra rotation</Label>
                         <span className="font-mono text-sm font-bold text-primary tabular-nums">{angle}°</span>
                       </div>
-                      <div className="grid grid-cols-4 gap-2">
+                      <div role="group" aria-labelledby="extra-rotation" className="grid grid-cols-4 gap-2">
                         {ANGLE_PRESETS.map((deg) => (
                           <Button
                             key={deg}
@@ -595,8 +595,8 @@ export function RotateWorkspace() {
                   ) : null}
 
                   <div className="space-y-2">
-                    <Label>Corner fill</Label>
-                    <Select
+                    <Label id="corner-fill">Corner fill</Label>
+                    <Select aria-labelledby="corner-fill"
                       value={bgMode}
                       onValueChange={(v) => {
                         setBgMode(v as BgMode);
@@ -619,8 +619,8 @@ export function RotateWorkspace() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label>Output format</Label>
-                    <Select
+                    <Label id="output-format">Output format</Label>
+                    <Select aria-labelledby="output-format"
                       value={outputFormat}
                       onValueChange={(v) => {
                         setOutputFormat(v as OutputFormat);
@@ -641,10 +641,10 @@ export function RotateWorkspace() {
                   {outputFormat !== 'png' ? (
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
-                        <Label>Quality</Label>
+                        <Label htmlFor="quality">Quality</Label>
                         <span className="font-mono text-sm text-primary">{quality}%</span>
                       </div>
-                      <Slider
+                      <Slider id="quality"
                         value={[quality]}
                         onValueChange={([v]) => setQuality(v)}
                         min={40}
@@ -739,3 +739,5 @@ export function RotateWorkspace() {
     </motion.div>
   );
 }
+
+

@@ -50,8 +50,8 @@ function RotateSettings({
     return (
         <div className="space-y-5">
             <div className="space-y-2">
-                <Label>Rotation</Label>
-                <div className="grid grid-cols-2 gap-2">
+                <Label id="rotation">Rotation</Label>
+                <div role="group" aria-labelledby="rotation" className="grid grid-cols-2 gap-2">
                     {presets.map((p) => (
                         <Button
                             key={p.value}
@@ -71,7 +71,7 @@ function RotateSettings({
             </div>
 
             <div className="space-y-2">
-                <Label>Pages to rotate</Label>
+                <Label htmlFor="pages-to-rotate">Pages to rotate</Label>
                 <div className="grid grid-cols-2 gap-2">
                     <Button type="button" variant={pages === 'all' ? 'default' : 'outline'} size="sm" className="rounded-xl" onClick={() => setPages('all')}>
                         All pages
@@ -81,7 +81,7 @@ function RotateSettings({
                     </Button>
                 </div>
                 {pages !== 'all' && (
-                    <Input
+                    <Input id="pages-to-rotate"
                         value={pages}
                         onChange={e => setPages(e.target.value)}
                         placeholder="e.g. 1,2,4-6"
@@ -112,8 +112,8 @@ function WatermarkSettings({
     return (
         <div className="space-y-5">
             <div className="space-y-2">
-                <Label>Watermark text</Label>
-                <Input value={text} onChange={e => setText(e.target.value)} placeholder="e.g. CONFIDENTIAL" className="rounded-xl" />
+                <Label htmlFor="text">Watermark text</Label>
+                <Input id="text" value={text} onChange={e => setText(e.target.value)} placeholder="e.g. CONFIDENTIAL" className="rounded-xl" />
                 <div className="flex flex-wrap gap-1.5">
                     {textPresets.map((p) => (
                         <Button
@@ -132,31 +132,31 @@ function WatermarkSettings({
 
             <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                    <Label>Opacity</Label>
+                    <Label htmlFor="opacity100">Opacity</Label>
                     <span className="text-sm font-mono text-primary">{Math.round(opacity * 100)}%</span>
                 </div>
-                <Slider value={[opacity * 100]} onValueChange={([v]) => setOpacity(v / 100)} min={5} max={100} step={5} />
+                <Slider id="opacity100" value={[opacity * 100]} onValueChange={([v]) => setOpacity(v / 100)} min={5} max={100} step={5} />
             </div>
 
             <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                    <Label>Font Size</Label>
+                    <Label htmlFor="fontSize">Font Size</Label>
                     <span className="text-sm font-mono text-primary">{fontSize}pt</span>
                 </div>
-                <Slider value={[fontSize]} onValueChange={([v]) => setFontSize(v)} min={12} max={120} step={4} />
+                <Slider id="fontSize" value={[fontSize]} onValueChange={([v]) => setFontSize(v)} min={12} max={120} step={4} />
             </div>
 
             <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                    <Label>Color</Label>
+                    <Label htmlFor="color">Color</Label>
                     <div className="flex items-center gap-2">
-                        <input type="color" value={color} onChange={e => setColor(e.target.value)} aria-label="Pick a color" className="w-8 h-8 rounded cursor-pointer border border-border" />
+                        <input id="color" type="color" value={color} onChange={e => setColor(e.target.value)} aria-label="Pick a color" className="w-8 h-8 rounded cursor-pointer border border-border" />
                         <span className="text-sm font-mono text-muted-foreground">{color}</span>
                     </div>
                 </div>
                 <div className="space-y-2">
-                    <Label>Rotation</Label>
-                    <Select value={rotation.toString()} onValueChange={v => setRotation(parseInt(v))}>
+                    <Label id="toString">Rotation</Label>
+                    <Select aria-labelledby="toString" value={rotation.toString()} onValueChange={v => setRotation(parseInt(v))}>
                         <SelectTrigger><SelectValue /></SelectTrigger>
                         <SelectContent>
                             <SelectItem value="0">Horizontal</SelectItem>
@@ -169,8 +169,8 @@ function WatermarkSettings({
             </div>
 
             <div className="space-y-2">
-                <Label>Position</Label>
-                <Select value={position} onValueChange={setPosition}>
+                <Label id="position">Position</Label>
+                <Select aria-labelledby="position" value={position} onValueChange={setPosition}>
                     <SelectTrigger><SelectValue /></SelectTrigger>
                     <SelectContent>
                         <SelectItem value="center">Center (with rotation)</SelectItem>
@@ -193,12 +193,12 @@ function ProtectSettings({ password, setPassword, confirmPassword, setConfirmPas
     return (
         <div className="space-y-5">
             <div className="space-y-2">
-                <Label>Password</Label>
-                <Input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Enter password" />
+                <Label htmlFor="password">Password</Label>
+                <Input id="password" type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Enter password" />
             </div>
             <div className="space-y-2">
-                <Label>Confirm Password</Label>
-                <Input type="password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} placeholder="Confirm password" />
+                <Label htmlFor="confirmPassword">Confirm Password</Label>
+                <Input id="confirmPassword" type="password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} placeholder="Confirm password" />
                 {password && confirmPassword && password !== confirmPassword && (
                     <p className="text-xs text-red-500">Passwords do not match</p>
                 )}
@@ -216,8 +216,8 @@ function UnlockSettings({ password, setPassword }: { password: string; setPasswo
     return (
         <div className="space-y-5">
             <div className="space-y-2">
-                <Label>PDF Password</Label>
-                <Input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Enter the current PDF password" />
+                <Label htmlFor="password-2">PDF Password</Label>
+                <Input id="password-2" type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Enter the current PDF password" />
                 <p className="text-xs text-muted-foreground">
                     Enter the existing password to remove encryption and download an unlocked copy.
                 </p>
@@ -259,8 +259,8 @@ function DeletePagesSettings({ pages, setPages, totalPages, resetKey }: {
             {totalPages > 0 ? (
                 <>
                     <div className="space-y-2">
-                        <Label>Select Pages to Delete</Label>
-                        <div className="grid grid-cols-5 gap-2 max-h-48 overflow-y-auto p-1">
+                        <Label id="select-pages-to-delete">Select Pages to Delete</Label>
+                        <div role="group" aria-labelledby="select-pages-to-delete" className="grid grid-cols-5 gap-2 max-h-48 overflow-y-auto p-1">
                             {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
                                 <Button
                                     key={p}
@@ -284,8 +284,8 @@ function DeletePagesSettings({ pages, setPages, totalPages, resetKey }: {
                     </div>
 
                     <div className="space-y-2">
-                        <Label>Or enter page numbers manually</Label>
-                        <Input
+                        <Label htmlFor="or-enter-page-numbers-manually">Or enter page numbers manually</Label>
+                        <Input id="or-enter-page-numbers-manually"
                             value={pages}
                             onChange={e => setPages(e.target.value)}
                             placeholder="e.g. 1,3,5-7"
@@ -334,8 +334,8 @@ function ReorderSettings({ order, setOrder, totalPages }: {
 
     return (
         <div className="space-y-3">
-            <Label>Page Order (drag or use arrows)</Label>
-            <div className="space-y-2 max-h-64 overflow-y-auto">
+            <Label id="page-order-drag-or-use-arrows">Page Order (drag or use arrows)</Label>
+            <div role="group" aria-labelledby="page-order-drag-or-use-arrows" className="space-y-2 max-h-64 overflow-y-auto">
                 {order.map((pageNum, idx) => (
                     <div key={idx} className="flex items-center gap-2 p-2 rounded-lg border border-border bg-card">
                         <GripVertical className="w-4 h-4 text-muted-foreground flex-shrink-0" />
@@ -386,8 +386,8 @@ function PageNumberSettings({
         <div className="space-y-5">
             <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                    <Label>Position</Label>
-                    <Select value={position} onValueChange={setPosition}>
+                    <Label id="position-2">Position</Label>
+                    <Select aria-labelledby="position-2" value={position} onValueChange={setPosition}>
                         <SelectTrigger><SelectValue /></SelectTrigger>
                         <SelectContent>
                             <SelectItem value="bottom-left">Bottom Left</SelectItem>
@@ -400,8 +400,8 @@ function PageNumberSettings({
                     </Select>
                 </div>
                 <div className="space-y-2">
-                    <Label>Format</Label>
-                    <Select value={format} onValueChange={setFormat}>
+                    <Label id="format">Format</Label>
+                    <Select aria-labelledby="format" value={format} onValueChange={setFormat}>
                         <SelectTrigger><SelectValue /></SelectTrigger>
                         <SelectContent>
                             <SelectItem value="{n}">1, 2, 3...</SelectItem>
@@ -415,17 +415,17 @@ function PageNumberSettings({
             </div>
             <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                    <Label>Margin (px)</Label>
+                    <Label htmlFor="margin">Margin (px)</Label>
                     <span className="text-sm font-mono text-primary">{margin}px</span>
                 </div>
-                <Slider value={[margin]} onValueChange={([v]) => setMargin(v)} min={10} max={100} step={5} />
+                <Slider id="margin" value={[margin]} onValueChange={([v]) => setMargin(v)} min={10} max={100} step={5} />
             </div>
             <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                    <Label>Font Size</Label>
+                    <Label htmlFor="fontSize-2">Font Size</Label>
                     <span className="text-sm font-mono text-primary">{fontSize}pt</span>
                 </div>
-                <Slider value={[fontSize]} onValueChange={([v]) => setFontSize(v)} min={8} max={72} step={2} />
+                <Slider id="fontSize-2" value={[fontSize]} onValueChange={([v]) => setFontSize(v)} min={8} max={72} step={2} />
             </div>
         </div>
     );
@@ -906,5 +906,7 @@ return (
     </motion.div>
 );
 }
+
+
 
 

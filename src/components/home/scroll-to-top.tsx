@@ -87,12 +87,18 @@ export function ScrollToTop() {
     updateVisibility();
     window.addEventListener('scroll', updateVisibility, { passive: true });
     window.addEventListener('resize', updateVisibility, { passive: true });
-    // Content height can change after images/tool panels load
-    const interval = window.setInterval(updateVisibility, 800);
+    // Detect content-height changes (images/tool panels loading) without an
+    // always-running interval. A ResizeObserver on the document element fires
+    // exactly when the page grows/shrinks, replacing the previous 800ms poll.
+    let resizeObserver: ResizeObserver | null = null;
+    if (typeof ResizeObserver !== 'undefined') {
+      resizeObserver = new ResizeObserver(updateVisibility);
+      resizeObserver.observe(document.documentElement);
+    }
     return () => {
       window.removeEventListener('scroll', updateVisibility);
       window.removeEventListener('resize', updateVisibility);
-      window.clearInterval(interval);
+      resizeObserver?.disconnect();
     };
   }, [pathname, updateVisibility]);
 

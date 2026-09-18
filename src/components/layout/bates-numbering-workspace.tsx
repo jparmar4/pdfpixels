@@ -131,8 +131,8 @@ export function BatesNumberingWorkspace() {
 
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div>
-                    <Label className="text-xs font-semibold">Prefix (e.g. Case or Party)</Label>
-                    <Input
+                    <Label htmlFor="prefix-e-g-case-or-party" className="text-xs font-semibold">Prefix (e.g. Case or Party)</Label>
+                    <Input id="prefix-e-g-case-or-party"
                       value={prefix}
                       onChange={(e) => setPrefix(e.target.value)}
                       placeholder="PLAINTIFF-"
@@ -141,8 +141,8 @@ export function BatesNumberingWorkspace() {
                   </div>
 
                   <div>
-                    <Label className="text-xs font-semibold">Suffix (Optional)</Label>
-                    <Input
+                    <Label htmlFor="suffix-optional" className="text-xs font-semibold">Suffix (Optional)</Label>
+                    <Input id="suffix-optional"
                       value={suffix}
                       onChange={(e) => setSuffix(e.target.value)}
                       placeholder="-CONF"
@@ -151,8 +151,8 @@ export function BatesNumberingWorkspace() {
                   </div>
 
                   <div>
-                    <Label className="text-xs font-semibold">Starting Number</Label>
-                    <Input
+                    <Label htmlFor="starting-number" className="text-xs font-semibold">Starting Number</Label>
+                    <Input id="starting-number"
                       type="number"
                       min={1}
                       value={startNumber}
@@ -162,8 +162,8 @@ export function BatesNumberingWorkspace() {
                   </div>
 
                   <div>
-                    <Label className="text-xs font-semibold">Digit Padding (Leading Zeros)</Label>
-                    <Input
+                    <Label htmlFor="digit-padding-leading-zeros" className="text-xs font-semibold">Digit Padding (Leading Zeros)</Label>
+                    <Input id="digit-padding-leading-zeros"
                       type="number"
                       min={1}
                       max={10}
@@ -175,8 +175,8 @@ export function BatesNumberingWorkspace() {
                 </div>
 
                 <div>
-                  <Label className="text-xs font-semibold">Confidentiality Banner (Optional)</Label>
-                  <Input
+                  <Label htmlFor="confidentiality-banner-optional" className="text-xs font-semibold">Confidentiality Banner (Optional)</Label>
+                  <Input id="confidentiality-banner-optional"
                     value={banner}
                     onChange={(e) => setBanner(e.target.value)}
                     placeholder="CONFIDENTIAL - FOR COUNSEL ONLY"
@@ -189,8 +189,8 @@ export function BatesNumberingWorkspace() {
 
                 {/* Placement Preset Grid */}
                 <div>
-                  <Label className="text-xs font-semibold block mb-2">Stamp Position on Page</Label>
-                  <div className="grid grid-cols-3 gap-2">
+                  <Label id="stamp-position-on-page" className="text-xs font-semibold block mb-2">Stamp Position on Page</Label>
+                  <div role="group" aria-labelledby="stamp-position-on-page" className="grid grid-cols-3 gap-2">
                     {(['top-left', 'top-center', 'top-right', 'bottom-left', 'bottom-center', 'bottom-right'] as Position[]).map((pos) => (
                       <Button
                         key={pos}
@@ -209,10 +209,10 @@ export function BatesNumberingWorkspace() {
                 {/* Font Size Slider */}
                 <div>
                   <div className="flex justify-between items-center mb-1">
-                    <Label className="text-xs font-semibold">Font Size</Label>
+                    <Label htmlFor="font-size" className="text-xs font-semibold">Font Size</Label>
                     <span className="text-xs font-mono text-muted-foreground">{fontSize} pt</span>
                   </div>
-                  <input
+                  <input id="font-size"
                     type="range"
                     min={8}
                     max={16}
@@ -281,3 +281,5 @@ export function BatesNumberingWorkspace() {
     </div>
   );
 }
+
+

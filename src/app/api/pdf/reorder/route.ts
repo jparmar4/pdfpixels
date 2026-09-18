@@ -1,5 +1,5 @@
-import { apiError } from '@/lib/api-response';
-import { openEditablePdf, pdfBinaryResponse } from '@/lib/pdf-api';
+import { apiError, apiInternalError } from '@/lib/api-response';
+import { openEditablePdf, pdfBinaryResponse, sanitizeDownloadFileName } from '@/lib/pdf-api';
 import { NextRequest } from 'next/server';
 import { PDFDocument } from 'pdf-lib';
 
@@ -53,12 +53,13 @@ export async function POST(request: NextRequest) {
     }
 
     const savedPdfBytes = await newPdf.save();
-    return pdfBinaryResponse(savedPdfBytes, `reordered-${Date.now()}.pdf`, {
+    const baseName = file?.name ? file.name.replace(/\.pdf$/i, '') : 'document';
+    const fileName = `${baseName}-reordered.pdf`;
+    return pdfBinaryResponse(savedPdfBytes, sanitizeDownloadFileName(fileName), {
       'X-Page-Count': String(totalPages),
       'X-NewOrder': newOrder.join(','),
     });
   } catch (error) {
-    console.error('PDF reorder error:', error);
-    return apiError('Failed to reorder PDF pages', 500);
+    return apiInternalError(error, 'Failed to reorder PDF pages', 'PDF reorder error');
   }
 }

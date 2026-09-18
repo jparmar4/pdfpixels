@@ -950,10 +950,10 @@ export function EffectWorkspace() {
             <div className="space-y-5 p-5">
               {config.presets && config.presets.length > 0 ? (
                 <div className="space-y-2">
-                  <Label className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+                  <Label id="field" className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
                     Presets
                   </Label>
-                  <div className="grid grid-cols-2 gap-2">
+                  <div role="group" aria-labelledby="field" className="grid grid-cols-2 gap-2">
                     {config.presets.map((p) => (
                       <Button
                         key={p.label}
@@ -976,12 +976,12 @@ export function EffectWorkspace() {
               {config.hasIntensity ? (
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <Label>{config.label}</Label>
+                    <Label htmlFor="config-label">{config.label}</Label>
                     <span className="rounded-lg bg-primary/10 px-2.5 py-0.5 font-mono text-sm font-bold text-primary tabular-nums">
                       {intensityDisplay}
                     </span>
                   </div>
-                  <Slider
+                  <Slider id="config-label"
                     value={[intensity]}
                     onValueChange={([v]) => {
                       setIntensity(v);
@@ -997,12 +997,12 @@ export function EffectWorkspace() {
               {isGrayscale ? (
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <Label>Contrast</Label>
+                    <Label htmlFor="contrast">Contrast</Label>
                     <span className="font-mono text-sm font-bold text-primary tabular-nums">
                       {contrast > 0 ? `+${contrast}` : contrast}
                     </span>
                   </div>
-                  <Slider
+                  <Slider id="contrast"
                     value={[contrast]}
                     onValueChange={([v]) => {
                       setContrast(v);
@@ -1018,12 +1018,12 @@ export function EffectWorkspace() {
               {toolId === 'motion-blur' ? (
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <Label>Direction</Label>
+                    <Label htmlFor="angle">Direction</Label>
                     <span className="rounded-lg bg-primary/10 px-2.5 py-0.5 font-mono text-sm font-bold text-primary">
                       {angle}°
                     </span>
                   </div>
-                  <Slider value={[angle]} onValueChange={([v]) => setAngle(v)} min={0} max={360} step={15} />
+                  <Slider id="angle" value={[angle]} onValueChange={([v]) => setAngle(v)} min={0} max={360} step={15} />
                 </div>
               ) : null}
 
@@ -1083,3 +1083,5 @@ export function EffectWorkspace() {
     </motion.div>
   );
 }
+
+

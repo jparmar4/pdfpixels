@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
@@ -115,6 +115,7 @@ export function ResizeWorkspace() {
     image.src = objectUrl;
 
     return () => URL.revokeObjectURL(objectUrl);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- measure on file load or tool swap only
   }, [isDpiTool, isPassport, uploadedFile]);
 
   const handleWidthChange = useCallback((nextWidth: number) => {
@@ -351,8 +352,8 @@ export function ResizeWorkspace() {
 
               <TabsContent value="dimensions" className="mt-5 space-y-4">
                 <div className="space-y-2">
-                  <Label>Unit</Label>
-                  <Select value={unit} onValueChange={(value) => setUnit(value as typeof unit)}>
+                  <Label id="unit">Unit</Label>
+                  <Select aria-labelledby="unit" value={unit} onValueChange={(value) => setUnit(value as typeof unit)}>
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
@@ -366,8 +367,8 @@ export function ResizeWorkspace() {
 
                 {unit === 'cm' || unit === 'inch' ? (
                   <div className="space-y-2">
-                    <Label>DPI</Label>
-                    <Select value={dpi.toString()} onValueChange={(value) => setDpi(Number.parseInt(value, 10))}>
+                    <Label id="toString">DPI</Label>
+                    <Select aria-labelledby="toString" value={dpi.toString()} onValueChange={(value) => setDpi(Number.parseInt(value, 10))}>
                       <SelectTrigger>
                         <SelectValue />
                       </SelectTrigger>
@@ -384,16 +385,16 @@ export function ResizeWorkspace() {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label>Width</Label>
+                    <Label htmlFor="width">Width</Label>
                     <div className="relative">
-                      <Input type="number" value={width} onChange={(event) => handleWidthChange(Number.parseFloat(event.target.value) || 0)} className="pr-12" />
+                      <Input id="width" type="number" value={width} onChange={(event) => handleWidthChange(Number.parseFloat(event.target.value) || 0)} className="pr-12" />
                       <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">{unit}</span>
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <Label>Height</Label>
+                    <Label htmlFor="height">Height</Label>
                     <div className="relative">
-                      <Input type="number" value={height} onChange={(event) => handleHeightChange(Number.parseFloat(event.target.value) || 0)} className="pr-12" />
+                      <Input id="height" type="number" value={height} onChange={(event) => handleHeightChange(Number.parseFloat(event.target.value) || 0)} className="pr-12" />
                       <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">{unit}</span>
                     </div>
                   </div>
@@ -430,10 +431,10 @@ export function ResizeWorkspace() {
               <TabsContent value="scale" className="mt-5 space-y-4">
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <Label>Scale percentage</Label>
+                    <Label htmlFor="scalePercent">Scale percentage</Label>
                     <span className="rounded-full bg-primary/10 px-2.5 py-1 text-sm font-mono text-primary">{scalePercent}%</span>
                   </div>
-                  <Slider value={[scalePercent]} onValueChange={([value]) => handleScaleChange(value)} min={10} max={200} step={5} />
+                  <Slider id="scalePercent" value={[scalePercent]} onValueChange={([value]) => handleScaleChange(value)} min={10} max={200} step={5} />
                   <div className="flex justify-between text-xs text-muted-foreground">
                     <span>10%</span>
                     <span>Original</span>
@@ -486,3 +487,4 @@ export function ResizeWorkspace() {
     </motion.div>
   );
 }
+

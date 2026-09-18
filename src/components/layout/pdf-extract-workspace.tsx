@@ -278,8 +278,8 @@ export function PDFExtractWorkspace() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label className="text-xs">Selected Page Range:</Label>
-                  <Input
+                  <Label htmlFor="selected-page-range" className="text-xs">Selected Page Range:</Label>
+                  <Input id="selected-page-range"
                     placeholder="e.g. 1, 3-5, 8"
                     value={rangeInput}
                     onChange={(e) => handleRangeInputChange(e.target.value)}
@@ -339,3 +339,4 @@ export function PDFExtractWorkspace() {
     </div>
   );
 }
+

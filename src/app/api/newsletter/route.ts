@@ -39,7 +39,20 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    await db.subscriber.create({ data: { email: normalizedEmail } });
+    try {
+      await db.subscriber.create({ data: { email: normalizedEmail } });
+    } catch (createError) {
+      // Concurrent duplicate subscription racing the check above: Prisma
+      // raises P2002 on the unique email. Treat as already-subscribed
+      // instead of a 500 so the second request still succeeds.
+      if ((createError as { code?: string } | null)?.code === 'P2002') {
+        return NextResponse.json(
+          { success: true, message: 'You are already subscribed!' },
+          { status: 200 }
+        );
+      }
+      throw createError;
+    }
 
     const emailSent = await sendEmail({
       to: normalizedEmail,

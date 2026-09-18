@@ -6,6 +6,9 @@ const CACHE_HEADERS = {
     'Cache-Control': 'no-store, max-age=0',
 };
 
+export const runtime = 'nodejs';
+export const maxDuration = 60;
+
 export async function POST(request: NextRequest) {
     try {
         const formData = await request.formData();

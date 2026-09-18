@@ -1,5 +1,5 @@
-import { apiError } from '@/lib/api-response';
-import { openEditablePdf, parsePageSelection } from '@/lib/pdf-api';
+import { apiError, apiInternalError } from '@/lib/api-response';
+import { openEditablePdf, parsePageSelection, sanitizeDownloadFileName } from '@/lib/pdf-api';
 import { NextRequest, NextResponse } from 'next/server';
 import { PDFDocument } from 'pdf-lib';
 
@@ -98,13 +98,14 @@ export async function POST(request: NextRequest) {
     }
 
     const newPdfBytes = await newPdf.save();
-    const fileName = `extracted-pages-${Date.now()}.pdf`;
+    const baseName = file?.name ? file.name.replace(/\.pdf$/i, '') : 'document';
+    const fileName = `${baseName}-split.pdf`;
 
     return new NextResponse(Buffer.from(newPdfBytes), {
       status: 200,
       headers: {
         'Content-Type': 'application/pdf',
-        'Content-Disposition': `attachment; filename="${fileName}"`,
+        'Content-Disposition': `attachment; filename="${sanitizeDownloadFileName(fileName)}"`,
         'Cache-Control': 'no-store, max-age=0',
         'X-Mode': 'extract',
         'X-Total-Pages': String(totalPages),
@@ -112,7 +113,6 @@ export async function POST(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error('PDF split error:', error);
-    return apiError('Failed to split PDF', 500);
+    return apiInternalError(error, 'Failed to split PDF', 'PDF split error');
   }
 }

@@ -1,8 +1,9 @@
-import { apiError } from '@/lib/api-response';
+import { apiError, apiInternalError } from '@/lib/api-response';
 import {
   openEditablePdf,
   parsePageSelection,
   pdfBinaryResponse,
+  sanitizeDownloadFileName,
 } from '@/lib/pdf-api';
 import { NextRequest } from 'next/server';
 import { PDFDocument } from 'pdf-lib';
@@ -44,13 +45,14 @@ export async function POST(request: NextRequest) {
     }
 
     const savedPdfBytes = await newPdf.save();
-    return pdfBinaryResponse(savedPdfBytes, `edited-${Date.now()}.pdf`, {
+    const baseName = file?.name ? file.name.replace(/\.pdf$/i, '') : 'document';
+    const fileName = `${baseName}-deleted-pages.pdf`;
+    return pdfBinaryResponse(savedPdfBytes, sanitizeDownloadFileName(fileName), {
       'X-OriginalPageCount': String(totalPages),
       'X-DeletedPages': deleteIndices.map((i) => i + 1).join(','),
       'X-RemainingPageCount': String(keepIndices.length),
     });
   } catch (error) {
-    console.error('PDF delete pages error:', error);
-    return apiError('Failed to delete pages', 500);
+    return apiInternalError(error, 'Failed to delete pages', 'PDF delete pages error');
   }
 }

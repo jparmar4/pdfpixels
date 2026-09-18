@@ -970,8 +970,8 @@ export function CropWorkspace() {
             <div className="space-y-4 p-5">
               {cropMode === 'rect' ? (
                 <div className="space-y-2">
-                  <Label>Aspect ratio</Label>
-                  <Select
+                  <Label id="aspect-ratio">Aspect ratio</Label>
+                  <Select aria-labelledby="aspect-ratio"
                     value={aspectRatio}
                     onValueChange={(v) => {
                       setAspectRatio(v);
@@ -1002,8 +1002,8 @@ export function CropWorkspace() {
               {cropMode !== 'freehand' ? (
                 <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-1">
-                    <Label className="text-xs">X</Label>
-                    <Input
+                    <Label htmlFor="x" className="text-xs">X</Label>
+                    <Input id="x"
                       type="number"
                       value={Math.round(crop.x)}
                       onChange={(e) => setCrop((c) => ({ ...c, x: Number(e.target.value) || 0 }))}
@@ -1011,8 +1011,8 @@ export function CropWorkspace() {
                     />
                   </div>
                   <div className="space-y-1">
-                    <Label className="text-xs">Y</Label>
-                    <Input
+                    <Label htmlFor="y" className="text-xs">Y</Label>
+                    <Input id="y"
                       type="number"
                       value={Math.round(crop.y)}
                       onChange={(e) => setCrop((c) => ({ ...c, y: Number(e.target.value) || 0 }))}
@@ -1020,8 +1020,8 @@ export function CropWorkspace() {
                     />
                   </div>
                   <div className="space-y-1">
-                    <Label className="text-xs">Width</Label>
-                    <Input
+                    <Label htmlFor="width" className="text-xs">Width</Label>
+                    <Input id="width"
                       type="number"
                       value={Math.round(crop.w)}
                       onChange={(e) => {
@@ -1036,8 +1036,8 @@ export function CropWorkspace() {
                     />
                   </div>
                   <div className="space-y-1">
-                    <Label className="text-xs">Height</Label>
-                    <Input
+                    <Label htmlFor="height" className="text-xs">Height</Label>
+                    <Input id="height"
                       type="number"
                       value={Math.round(crop.h)}
                       onChange={(e) => setCrop((c) => ({ ...c, h: Math.max(MIN_CROP, Number(e.target.value) || MIN_CROP) }))}
@@ -1136,3 +1136,4 @@ export function CropWorkspace() {
     </motion.div>
   );
 }
+

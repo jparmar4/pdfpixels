@@ -3,13 +3,15 @@ import {
   pdfBinaryResponse,
   readAndValidatePdfFile,
   rejectEncryptedPdf,
+  sanitizeDownloadFileName,
   validatePdfUpload,
 } from '@/lib/pdf-api';
 
 export const maxDuration = 60;
 import { runGhostscriptWithFallback } from '@/lib/ghostscript';
+import { runQpdf } from '@/lib/qpdf';
+import { apiInternalError } from '@/lib/api-response';
 import { NextRequest, NextResponse } from 'next/server';
-import { spawn } from 'child_process';
 import fs from 'fs';
 import os from 'os';
 import path from 'path';
@@ -19,75 +21,6 @@ const CACHE_HEADERS = {
 };
 
 export const runtime = 'nodejs';
-
-function getQpdfCandidates() {
-  const configured = process.env.QPDF_PATH?.trim();
-
-  if (process.platform !== 'win32') {
-    return [configured, 'qpdf'].filter(Boolean) as string[];
-  }
-
-  return [
-    configured,
-    'C:\\Program Files\\qpdf 12.2.0\\bin\\qpdf.exe',
-    'C:\\Program Files\\qpdf 12.1.0\\bin\\qpdf.exe',
-    'C:\\Program Files\\qpdf 11.9.1\\bin\\qpdf.exe',
-    'qpdf',
-  ].filter(Boolean) as string[];
-}
-
-function runCommand(command: string, args: string[]) {
-  return new Promise<void>((resolve, reject) => {
-    const proc = spawn(command, args, { stdio: ['ignore', 'ignore', 'pipe'] });
-    let stderr = '';
-    const timeout = setTimeout(() => {
-      proc.kill('SIGKILL');
-      reject(new Error('PDF linearize operation timed out.'));
-    }, 45_000);
-
-    proc.stderr.on('data', (chunk) => {
-      if (stderr.length < 16 * 1024) {
-        stderr += chunk.toString();
-      }
-    });
-
-    proc.on('error', (error) => {
-      clearTimeout(timeout);
-      reject(error);
-    });
-
-    proc.on('close', (code) => {
-      clearTimeout(timeout);
-      if (code === 0) {
-        resolve();
-        return;
-      }
-
-      reject(new Error(stderr.trim() || `qpdf failed with exit code ${code}`));
-    });
-  });
-}
-
-async function runQpdf(args: string[]) {
-  let lastError: Error | NodeJS.ErrnoException | null = null;
-
-  for (const candidate of getQpdfCandidates()) {
-    try {
-      await runCommand(candidate, args);
-      return;
-    } catch (error) {
-      lastError = error as Error | NodeJS.ErrnoException;
-      const errno = lastError as NodeJS.ErrnoException;
-      const message = `${lastError.message || ''}`;
-      if (errno.code === 'ENOENT' || message.includes('not recognized') || message.includes('spawn')) {
-        continue;
-      }
-      throw lastError;
-    }
-  }
-
-  throw lastError ?? new Error('qpdf is not available in the current environment.');
-}
 
 function jsonError(message: string, status = 400, details?: string) {
   return NextResponse.json(
@@ -127,11 +60,14 @@ export async function POST(request: NextRequest) {
     let outputBuffer: Buffer;
 
     try {
-      await runQpdf([
-        '--linearize',
-        inputPath,
-        outputPath,
-      ]);
+      await runQpdf(
+        [
+          '--linearize',
+          inputPath,
+          outputPath,
+        ],
+        { timeoutMessage: 'PDF linearize operation timed out.' },
+      );
       outputBuffer = fs.readFileSync(outputPath);
     } catch (qpdfErr) {
       const qMsg = qpdfErr instanceof Error ? qpdfErr.message : '';
@@ -162,20 +98,22 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    return pdfBinaryResponse(outputBuffer, `fast-web-view-${Date.now()}.pdf`, {
+    const baseName = file?.name ? file.name.replace(/\.pdf$/i, '') : 'document';
+    const fileName = `${sanitizeDownloadFileName(baseName)}-linearized.pdf`;
+
+    return pdfBinaryResponse(outputBuffer, fileName, {
         'X-Page-Count': String(pageCount),
         'X-Linearize-Engine': 'qpdf',
     });
   } catch (error) {
-    console.error('PDF linearize error:', error);
-    const message = error instanceof Error ? error.message : 'Unknown error';
+    const message = error instanceof Error ? error.message : '';
 
     // Check for encrypted files failing formatting
     if (message.toLowerCase().includes('encrypted file') || message.toLowerCase().includes('password')) {
-       return jsonError('Encrypted PDFs cannot be linearized. Please unlock the PDF first.', 400, message);
+       return jsonError('Encrypted PDFs cannot be linearized. Please unlock the PDF first.', 400);
     }
 
-    return jsonError('Failed to format PDF for Fast Web View', 500, message);
+    return apiInternalError(error, 'Failed to format PDF for Fast Web View', 'PDF linearize error');
   } finally {
     try {
       if (inputPath && fs.existsSync(inputPath)) fs.unlinkSync(inputPath);

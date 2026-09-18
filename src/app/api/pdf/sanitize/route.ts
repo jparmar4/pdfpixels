@@ -1,4 +1,4 @@
-import { apiError } from '@/lib/api-response';
+import { apiError, apiInternalError } from '@/lib/api-response';
 import { openEditablePdf, pdfBinaryResponse, sanitizeDownloadFileName } from '@/lib/pdf-api';
 import { NextRequest, NextResponse } from 'next/server';
 import { PDFName, PDFDict, PDFStream, PDFRef } from 'pdf-lib';
@@ -80,7 +80,6 @@ export async function POST(request: NextRequest) {
       'x-xmp-stripped': String(hasXmp),
     });
   } catch (error) {
-    console.error('Sanitize PDF error:', error);
-    return apiError(error instanceof Error ? error.message : 'Failed to sanitize PDF', 500);
+    return apiInternalError(error, 'Failed to sanitize PDF', 'Sanitize PDF error');
   }
 }

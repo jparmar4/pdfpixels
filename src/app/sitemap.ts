@@ -4,9 +4,7 @@ import { comparisonPages } from '@/lib/comparisons';
 import { SITE_CONTENT_UPDATED, absoluteUrl } from '@/lib/seo';
 import { allTools, toolCategories } from '@/lib/tools-data';
 import { useCasePages } from '@/lib/use-cases';
-// NOTE: /{us,uk,ca,au,in} geo hubs are noindex by design, so they stay out
-// of the sitemap. The hreflang cluster in seo.ts points at them for locale
-// targeting; do not re-add them here without flipping them to index:true.
+import { geoRegions } from '@/lib/geo-data';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const evergreen = SITE_CONTENT_UPDATED;
@@ -134,8 +132,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.82,
   }));
 
+  // Locale-targeted geo hubs. Each carries a unique regional hero, local
+  // tips, and regional FAQ, and declares the full hreflang cluster.
+  const geoEntries: MetadataRoute.Sitemap = geoRegions.map((region) => ({
+    url: absoluteUrl(`/${region.code}`),
+    lastModified: evergreen,
+    changeFrequency: 'weekly' as const,
+    priority: 0.8,
+  }));
+
   return [
     ...corePages,
+    ...geoEntries,
     ...categoryEntries,
     ...toolPages,
     ...useCaseEntries,

@@ -249,10 +249,16 @@ export function CookieConsentBanner() {
 
 // Cookie settings page component for privacy policy page
 export function CookieSettingsButton() {
-  const [consent] = useState<CookieConsent | null>(() => {
-    if (typeof window === 'undefined') return null;
-    return getConsent();
-  });
+  // Server-consistent initial state (null); the real stored preference is
+  // read in useEffect so the server HTML matches the client's first paint.
+  const [consent, setConsent] = useState<CookieConsent | null>(null);
+
+  useEffect(() => {
+    // Hydration-safe: the stored preference is browser-only, so reading it
+    // after mount keeps the server HTML identical to the client's first paint.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setConsent(getConsent());
+  }, []);
 
   const handleReset = () => {
     localStorage.removeItem(cookieConfig.cookieName);
