@@ -116,8 +116,53 @@ function RelatedArticleCard({ slug, title, excerpt, date, readTime }: {
   );
 }
 
+/* ── Curated guide links per tool (editorial override for top intents) ──
+ * Keyword scoring below is a fallback. These hand-picked mappings guarantee
+ * the tool → guide triangle for high-traffic intents so crawlers and answer
+ * engines always find a complete cluster. Slugs must exist in blogPosts. */
+const curatedRelatedGuides: Record<string, string[]> = {
+  'compress-pdf': ['how-to-compress-pdf-file-size', 'reduce-pdf-size-for-email', 'compress-pdf-under-1mb'],
+  'compress-pdf-to-100kb': ['compress-pdf-under-1mb', 'compress-pdf-to-200kb-email-attachment', 'reduce-pdf-size-gmail-25mb-fix'],
+  'compress-pdf-to-200kb': ['compress-pdf-to-200kb-email-attachment', 'reduce-pdf-size-gmail-25mb-fix', 'compress-pdf-under-1mb'],
+  'compress-pdf-to-300kb': ['compress-pdf-to-200kb-email-attachment', 'how-to-compress-pdf-file-size', 'reduce-pdf-size-for-email'],
+  'compress-pdf-to-500kb': ['how-to-compress-pdf-file-size', 'reduce-pdf-size-for-email', 'how-to-send-large-pdf-files-through-email'],
+  'compress-pdf-under-1mb': ['compress-pdf-under-1mb', 'reduce-pdf-size-gmail-25mb-fix', 'how-to-send-large-pdf-files-through-email'],
+  'merge-pdf': ['merge-pdf-online-free', 'free-pdf-editor-alternative-to-adobe'],
+  'split-pdf': ['free-pdf-editor-alternative-to-adobe', 'how-to-edit-pdf-online-free-adobe-alternative'],
+  'heic-to-jpg': ['heic-to-jpg-convert-iphone-photos', 'how-to-convert-heic-to-jpg-windows'],
+  'image-to-pdf': ['convert-jpg-to-pdf-online-no-software'],
+  'pdf-to-jpg': ['convert-jpg-to-pdf-online-no-software', 'webp-vs-jpg-vs-png-which-format'],
+  'png-to-jpeg': ['png-to-jpg-converter-how-when-to-switch', 'webp-vs-jpg-vs-png-which-format'],
+  'jpeg-to-png': ['png-to-jpg-converter-how-when-to-switch', 'webp-vs-jpg-vs-png-which-format'],
+  'webp-to-jpg': ['webp-vs-jpg-vs-png-which-format'],
+  'webp-to-png': ['webp-vs-jpg-vs-png-which-format'],
+  'svg-to-png': ['svg-to-png-converter-free-guide'],
+  'passport-size-photo': ['image-dpi-for-print-vs-web-explained'],
+  'resize-image': ['image-dpi-for-print-vs-web-explained'],
+  'convert-dpi': ['image-dpi-for-print-vs-web-explained'],
+  'remove-image-background': ['ai-background-remover-free-tools-guide'],
+  'increase-image-quality': ['ai-image-enhancer-fix-blurry-photos'],
+  'protect-pdf': ['password-protect-pdf-online-free'],
+  'unlock-pdf': ['password-protect-pdf-online-free'],
+  'add-watermark-pdf': ['add-confidential-watermark-to-pdf'],
+  'add-page-numbers-to-pdf': ['add-page-numbers-to-pdf-online'],
+  'remove-image-metadata': ['remove-exif-gps-data-from-photos'],
+  'photo-metadata-viewer': ['remove-exif-gps-data-from-photos'],
+  'sign-pdf': ['free-pdf-editor-alternative-to-adobe', 'how-to-edit-pdf-online-free-adobe-alternative'],
+  'fill-pdf': ['free-pdf-editor-alternative-to-adobe', 'how-to-edit-pdf-online-free-adobe-alternative'],
+  'pdf-to-word': ['free-pdf-editor-alternative-to-adobe'],
+  'word-to-pdf': ['convert-jpg-to-pdf-online-no-software', 'free-pdf-editor-alternative-to-adobe'],
+};
+
 /* ── Find related blog posts by matching tool slug keywords to blog post keywords ── */
 function findRelatedArticles(toolSlug: string, toolName: string): typeof blogPosts {
+  const curated = curatedRelatedGuides[toolSlug];
+  if (curated?.length) {
+    const bySlug = new Map(blogPosts.map((post) => [post.slug, post]));
+    const picks = curated.map((slug) => bySlug.get(slug)).filter((post): post is (typeof blogPosts)[number] => Boolean(post));
+    if (picks.length > 0) return picks.slice(0, 3);
+  }
+
   const slugParts = toolSlug.split('-').filter(Boolean);
   const keywords = slugParts.length > 0 ? slugParts : [toolName.toLowerCase()];
 

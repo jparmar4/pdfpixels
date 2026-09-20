@@ -49,6 +49,7 @@ export function Footer() {
 
   const legalLinks = [
     { name: 'About Us', href: '/about' },
+    { name: 'Brand & Press Kit', href: '/brand' },
     { name: 'Contact Us', href: '/contact' },
     { name: 'Guides & Blog', href: '/blog' },
     { name: 'Free Pricing', href: '/pricing' },

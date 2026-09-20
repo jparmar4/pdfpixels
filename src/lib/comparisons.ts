@@ -256,4 +256,140 @@ export const comparisonPages: ComparisonPage[] = [
       },
     ],
   },
+  {
+    slug: 'pdfpixels-vs-cloudconvert-heic-to-jpg',
+    title: 'PdfPixels vs CloudConvert for HEIC to JPG',
+    description: 'Compare iPhone HEIC to JPG conversion for speed, simplicity, and no-signup workflow.',
+    primaryToolSlug: 'heic-to-jpg',
+    alternatives: ['CloudConvert'],
+    bestFor: ['Quick iPhone photo conversion', 'No-account one-off jobs', 'Windows users without codecs'],
+    overview:
+      'CloudConvert is a powerful universal file converter supporting hundreds of formats with granular conversion settings and API access. PdfPixels HEIC to JPG does one job: turn iPhone HEIC photos into widely compatible JPGs without installing codecs or learning conversion options. If you convert between dozens of exotic formats daily, a universal converter earns its place. If an iPhone photo simply will not open on Windows or upload to a form, a single-purpose converter is usually faster.',
+    whenToChooseUs: [
+      'You need one HEIC photo (or a few) as JPG right now',
+      'You do not want to compare codec, quality, and format settings first',
+      'You are on Windows without HEIC codecs installed',
+    ],
+    whenToChooseAlt: [
+      'You convert between many different formats, not just HEIC to JPG',
+      'You need API-driven or batch-automated conversion pipelines',
+      'You already use CloudConvert in an existing workflow',
+    ],
+    keyDifferences: [
+      {
+        topic: 'Scope',
+        pdfpixels: 'Single-purpose HEIC to JPG path',
+        alternative: 'Universal converter covering hundreds of formats',
+      },
+      {
+        topic: 'Decision load',
+        pdfpixels: 'Upload → download with minimal settings',
+        alternative: 'More options and presets per conversion',
+      },
+      {
+        topic: 'Best fit',
+        pdfpixels: 'Occasional iPhone photo compatibility fixes',
+        alternative: 'Power users with varied conversion needs',
+      },
+    ],
+    verdict:
+      'Pick PdfPixels when an iPhone photo needs to become a JPG with minimum fuss. Pick CloudConvert when format conversion is a recurring, varied part of your work.',
+    faqs: [
+      {
+        question: 'Will converting HEIC to JPG reduce quality?',
+        answer: 'A high-quality JPG export is visually near-identical for sharing, forms, and web use. Keep the original HEIC if you archive at maximum fidelity.',
+      },
+      {
+        question: 'Why will my HEIC photo not open on Windows?',
+        answer: 'Windows often lacks HEIC/HEIF codecs out of the box. Converting to JPG sidesteps codecs entirely.',
+      },
+    ],
+  },
+  {
+    slug: 'pdfpixels-vs-adobe-split-pdf',
+    title: 'PdfPixels vs Adobe for Split PDF',
+    description: 'Compare PDF page extraction for everyday excerpts vs professional document workflows.',
+    primaryToolSlug: 'split-pdf',
+    alternatives: ['Adobe Acrobat Online'],
+    bestFor: ['Quick page excerpts', 'No-install extraction', 'Range-based splits'],
+    overview:
+      'Adobe Acrobat defines professional PDF handling, and its online tools cover splitting alongside a deep editing suite. PdfPixels Split PDF targets the common lightweight case: pull pages 2–4 for a client, or burst a short document into single pages, without entering an Acrobat workflow or subscription decision. For redaction-grade, compliance-heavy, or accessibility-checked document surgery, Adobe remains the heavier-duty choice.',
+    whenToChooseUs: [
+      'You need a few pages out of a document right now',
+      'You want range syntax like 1-3, 5 without a learning curve',
+      'You do not need Acrobat’s wider editing suite today',
+    ],
+    whenToChooseAlt: [
+      'You already subscribe to Acrobat and work in it daily',
+      'You need certified, accessibility-tagged, or Bates-stamped output pipelines',
+    ],
+    keyDifferences: [
+      {
+        topic: 'Scope',
+        pdfpixels: 'Focused split and extract utility',
+        alternative: 'Full PDF platform with splitting as one capability',
+      },
+      {
+        topic: 'Cost posture',
+        pdfpixels: 'Free-tool oriented for common tasks',
+        alternative: 'Freemium/paid professional ecosystem',
+      },
+    ],
+    verdict:
+      'Choose PdfPixels for fast everyday excerpts. Choose Adobe when PDF splitting sits inside professional compliance or editing workflows.',
+    faqs: [
+      {
+        question: 'Can I extract non-consecutive pages?',
+        answer: 'Yes. Use range syntax such as 1-3, 5, 7-9 to pull exactly the pages you need into one file.',
+      },
+      {
+        question: 'What if my PDF is password-protected?',
+        answer: 'Unlock it first, then split. Encrypted files cannot be parsed directly by most splitters.',
+      },
+    ],
+  },
+  {
+    slug: 'pdfpixels-vs-photo-studio-passport-photo',
+    title: 'PdfPixels vs Photo Studios for Passport Photos',
+    description: 'Compare at-home passport photo sizing with studio services for ID and visa applications.',
+    primaryToolSlug: 'passport-size-photo',
+    alternatives: ['Photo studios', 'ID photo generators'],
+    bestFor: ['First-draft ID sizing at home', 'Digital upload dimensions', 'No-appointment cropping'],
+    overview:
+      'Photo studios handle lighting, background, biometrics guidance, and compliant printing in one visit. PdfPixels Passport Photo Maker solves the narrower technical job: resize a portrait you already took to common ID dimensions such as 35×45 mm or 2×2 inches at print-ready resolution. The tool matches pixel size — it does not judge lighting, expression, head height, or background compliance. Use it for a fast first draft or a digital upload; visit a studio when acceptance cannot fail, such as urgent travel documents.',
+    whenToChooseUs: [
+      'You already have a decent portrait with even lighting and a plain background',
+      'You need correct dimensions for a digital upload quickly',
+      'You want a free first draft before deciding on a studio visit',
+    ],
+    whenToChooseAlt: [
+      'Your travel date is close and rejection would be costly',
+      'You need guaranteed-compliant prints with studio verification',
+      'Your country has strict biometric photo rules you are unsure about',
+    ],
+    keyDifferences: [
+      {
+        topic: 'What you get',
+        pdfpixels: 'Correct pixel dimensions for common ID sizes',
+        alternative: 'End-to-end compliant photo service with human checks',
+      },
+      {
+        topic: 'Compliance',
+        pdfpixels: 'You verify lighting, background, and expression yourself',
+        alternative: 'Staff guide pose, background, and print specs',
+      },
+    ],
+    verdict:
+      'Use PdfPixels for fast, free ID sizing at home. Use a studio when a rejection would cost you a trip, a deadline, or a visa slot.',
+    faqs: [
+      {
+        question: 'Will an at-home passport photo be accepted?',
+        answer: 'Acceptance depends on meeting official rules for size, lighting, background, and expression — not on which tool cropped it. Always check your country’s photo guide.',
+      },
+      {
+        question: 'What size should my passport photo be?',
+        answer: 'Common presets are 35×45 mm (UK, India, Schengen) and 2×2 inches (US), usually at 300 DPI. Confirm your document’s exact requirement before submitting.',
+      },
+    ],
+  },
 ];
