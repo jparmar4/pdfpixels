@@ -154,6 +154,8 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         />
         <link rel="search" type="application/opensearchdescription+xml" title="PdfPixels" href="/opensearch.xml" />
         <link rel="alternate" type="application/rss+xml" title="PdfPixels RSS Feed" href="/feed" />
+        <link rel="alternate" type="text/plain" title="PdfPixels for LLMs" href="/llms.txt" />
+        <link rel="alternate" type="text/plain" title="PdfPixels full reference for LLMs" href="/llms-full.txt" />
       </head>
       <body className="bg-background text-foreground antialiased min-h-screen flex flex-col">
         <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-lg focus:text-sm focus:font-semibold focus:outline-none focus:ring-2 focus:ring-primary/50">

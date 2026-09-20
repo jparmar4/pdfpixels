@@ -2,6 +2,7 @@ import { HomePageSchemas } from '@/components/seo/json-ld';
 import { ToolsSection } from '@/components/home/tools-section';
 import { StatsBanner } from '@/components/home/stats-banner';
 import { AnswerEngineSection } from '@/components/home/answer-engine-section';
+import { AIContentSection } from '@/components/seo/ai-content';
 // Static import: the FAQ is a server component using native <details>, so its
 // Q&A text lands in the served HTML for answer engines (AEO). Keeping it
 // dynamic would defer it past first paint and omit the text from the document.
@@ -50,6 +51,7 @@ export default function Home() {
         <StatsBanner />
         <HowItWorks />
         <AnswerEngineSection />
+        <AIContentSection />
         <TestimonialsSection />
         <FeaturesSection />
         <GuidesSection />

@@ -1,7 +1,4 @@
-'use client';
-
 import Link from 'next/link';
-import { motion } from 'framer-motion';
 import { BadgeCheck, Globe, Shield, Sparkles, Wrench, FileType, SearchCheck } from 'lucide-react';
 import { allTools } from '@/lib/tools-data';
 import { seoConfig } from '@/lib/seo-config';
@@ -51,11 +48,13 @@ const capabilityGroups = [
   },
 ];
 
+// Server component: every fact card and capability description is present in
+// SSR HTML so search and answer engines can extract platform facts directly.
 export function AIContentSection() {
   return (
     <section className="border-t border-border/50 bg-muted/15 py-16 md:py-20" aria-labelledby="ai-discovery-heading">
       <div className="container mx-auto max-w-6xl px-4 lg:px-8">
-        <motion.div initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+        <div>
           <div className="mx-auto max-w-3xl text-center">
             <span className="inline-flex items-center gap-2 rounded-full border border-primary/15 bg-primary/8 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.2em] text-primary">
               <SearchCheck className="h-3.5 w-3.5" />
@@ -159,7 +158,7 @@ export function AIContentSection() {
               </p>
             </div>
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

@@ -1,7 +1,3 @@
-'use client';
-
-import { useEffect, useRef, useState } from 'react';
-import { motion } from 'framer-motion';
 import Link from 'next/link';
 import {
   Globe, Shield, Users, Zap, ArrowRight, Rocket, TrendingUp, Code2,
@@ -9,38 +5,8 @@ import {
 } from 'lucide-react';
 import { SitePageShell } from '@/components/layout/site-page-shell';
 import { Button } from '@/components/ui/button';
+import { AnimatedCounter } from './about-counter';
 import { allTools } from '@/lib/tools-data';
-
-/* ─── Animated Counter ────────────────────────────────────────────── */
-function AnimatedCounter({ end, suffix = '', duration = 2000 }: { end: number; suffix?: string; duration?: number }) {
-  const [count, setCount] = useState(end);
-  const ref = useRef<HTMLDivElement>(null);
-  const hasAnimated = useRef(false);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && !hasAnimated.current) {
-          hasAnimated.current = true;
-          const startTime = Date.now();
-          const animate = () => {
-            const elapsed = Date.now() - startTime;
-            const progress = Math.min(elapsed / duration, 1);
-            const eased = 1 - Math.pow(1 - progress, 3);
-            setCount(Math.floor(eased * end));
-            if (progress < 1) requestAnimationFrame(animate);
-          };
-          requestAnimationFrame(animate);
-        }
-      },
-      { threshold: 0.5 }
-    );
-    if (ref.current) observer.observe(ref.current);
-    return () => observer.disconnect();
-  }, [end, duration]);
-
-  return <div ref={ref}>{count}{suffix}</div>;
-}
 
 /* ─── Data ────────────────────────────────────────────────────────── */
 const values = [
@@ -190,13 +156,9 @@ export function AboutPageContent() {
       <section className="mt-12 relative overflow-hidden rounded-[2rem] border border-border/50">
         <div className="absolute inset-0 bg-gradient-to-r from-primary/[0.03] via-fuchsia-500/[0.02] to-cyan-500/[0.03]" />
         <div className="relative z-10 grid grid-cols-2 md:grid-cols-4 gap-5 p-6 md:p-8">
-          {statsData.map((stat, idx) => (
-            <motion.div
+          {statsData.map((stat) => (
+            <div
               key={stat.label}
-              initial={{ opacity: 0, y: 15 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: idx * 0.1 }}
               className="relative text-center p-6 rounded-2xl glass-card group hover:shadow-premium transition-all duration-300"
             >
               <div className={`absolute top-0 left-4 right-4 h-0.5 rounded-full bg-gradient-to-r ${stat.gradient} opacity-60`} />
@@ -207,20 +169,16 @@ export function AboutPageContent() {
                 {stat.display ? stat.display : <AnimatedCounter end={stat.value} suffix={stat.suffix} />}
               </div>
               <div className="text-sm text-muted-foreground font-medium">{stat.label}</div>
-            </motion.div>
+            </div>
           ))}
         </div>
       </section>
 
       {/* ── Values Grid ──────────────────────────────────────────── */}
       <section className="mt-8 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-        {values.map((value, idx) => (
-          <motion.div
+        {values.map((value) => (
+          <div
             key={value.title}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: idx * 0.08 }}
             className="section-panel rounded-[1.75rem] p-6 hover:shadow-premium transition-all duration-300"
           >
             <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
@@ -228,15 +186,12 @@ export function AboutPageContent() {
             </div>
             <h3 className="mt-5 text-xl font-bold text-foreground">{value.title}</h3>
             <p className="mt-3 text-sm leading-7 text-muted-foreground">{value.description}</p>
-          </motion.div>
+          </div>
         ))}
       </section>
 
       {/* ── Our Journey Timeline ─────────────────────────────────── */}
-      <motion.section
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
+      <section
         className="mt-12"
       >
         <div className="text-center mb-10">
@@ -255,12 +210,8 @@ export function AboutPageContent() {
             {timelineMilestones.map((milestone, idx) => {
               const isLeft = idx % 2 === 0;
               return (
-                <motion.div
+                <div
                   key={milestone.year}
-                  initial={{ opacity: 0, y: 25 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: idx * 0.12 }}
                   className="relative flex items-start gap-6 md:gap-0"
                 >
                   {/* Dot on the line */}
@@ -280,18 +231,15 @@ export function AboutPageContent() {
                       <p className="mt-2 text-sm leading-7 text-muted-foreground">{milestone.description}</p>
                     </div>
                   </div>
-                </motion.div>
+                </div>
               );
             })}
           </div>
         </div>
-      </motion.section>
+      </section>
 
       {/* ── Technology Stack ─────────────────────────────────────── */}
-      <motion.section
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
+      <section
         className="mt-12 section-panel rounded-[2rem] p-6 md:p-8 lg:p-10"
       >
         <div className="text-center mb-8">
@@ -303,13 +251,9 @@ export function AboutPageContent() {
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-          {techStack.map((tech, idx) => (
-            <motion.div
+          {techStack.map((tech) => (
+            <div
               key={tech.name}
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: idx * 0.06 }}
               className="group flex flex-col items-center gap-3 rounded-2xl border border-border/60 bg-background/75 p-4 shadow-soft hover:shadow-premium hover:border-primary/20 transition-all duration-300"
             >
               <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${tech.gradient} flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform`}>
@@ -319,10 +263,10 @@ export function AboutPageContent() {
                 <p className="font-bold text-sm text-foreground">{tech.name}</p>
                 <p className="text-xs text-muted-foreground mt-0.5">{tech.description}</p>
               </div>
-            </motion.div>
+            </div>
           ))}
         </div>
-      </motion.section>
+      </section>
 
       {/* ── Editorial Standards & Team Transparency ───────────────── */}
       <section className="mt-12 section-panel rounded-[2rem] p-6 md:p-8 lg:p-10">
@@ -409,11 +353,7 @@ export function AboutPageContent() {
       {/* ── CTA with Aurora BG ───────────────────────────────────── */}
       <section className="mt-12 aurora-bg rounded-[2rem] overflow-hidden">
         <div className="relative z-10 px-6 py-14 md:px-12 md:py-16 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-          >
+          <div>
             <h2 className="text-3xl font-extrabold text-foreground md:text-4xl lg:text-5xl">
               Ready to transform your workflow?
             </h2>
@@ -445,7 +385,7 @@ export function AboutPageContent() {
                 Instant Results
               </span>
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
     </SitePageShell>

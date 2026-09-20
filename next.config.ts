@@ -236,6 +236,11 @@ const nextConfig: NextConfig = {
             key: 'Cache-Control',
             value: 'public, s-maxage=3600, stale-while-revalidate=604800',
           },
+          // Machine discovery for answer engines: advertise llms.txt at HTTP level
+          {
+            key: 'Link',
+            value: '</llms.txt>; rel="alternate"; type="text/plain"; title="LLMs", </llms-full.txt>; rel="alternate"; type="text/plain"; title="LLMs Full"',
+          },
         ],
       },
       // Sitemap
