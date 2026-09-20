@@ -4,6 +4,7 @@ import { comparisonPages } from '@/lib/comparisons';
 import { useCasePages } from '@/lib/use-cases';
 import { getAllBlogPosts } from '@/config/blog';
 import { normalizeDisplayText } from '@/lib/display-text';
+import { limitsSummaryLines, LIMITS_LAST_REVIEWED } from '@/lib/limits';
 import { SITE_URL } from '@/lib/seo';
 
 export const runtime = 'nodejs';
@@ -68,10 +69,11 @@ export async function GET() {
   lines.push('');
   lines.push('## Limits (fair use)');
   lines.push('');
-  lines.push('- PDF uploads: 25 MB per file on most tools; merging allows up to 20 files / 100 MB total / 1000 pages.');
-  lines.push('- Image uploads: 25 MB per file, 50 megapixels max; OCR accepts up to 10 MB; AI tools up to 20 MB.');
-  lines.push('- Password-protected PDFs must be unlocked first (except the Unlock tool); protection passwords need 4+ characters.');
-  lines.push('- Per-minute fair-use rate limits apply to processing endpoints.');
+  lines.push(`_Verified against production code on ${LIMITS_LAST_REVIEWED}._`);
+  lines.push('');
+  for (const line of limitsSummaryLines()) {
+    lines.push(`- ${line}`);
+  }
   lines.push('');
   lines.push('## Machine references');
   lines.push('');

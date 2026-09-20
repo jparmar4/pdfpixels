@@ -193,7 +193,7 @@ export const toolContentMap: Record<string, ToolContent> = {
     },
 
     'increase-image-size-in-kb': {
-        about: 'Increase Image Size in KB expands an image\'s storage footprint to satisfy strict minimum upload thresholds enforced by government recruitment systems, university entrance exams, and civil service portals. Web forms frequently reject photos smaller than 20 KB or 50 KB under the assumption that smaller files lack sufficient resolution. Instead of degrading visual fidelity, this tool intelligently raises the encoded byte size through subtle JPEG quantization matrix padding and safe container metadata embedding. The underlying pixel dimensions (width and height), color gamut, and visual sharpness remain identical to your original image. Processing executes securely in your browser session without uploading sensitive identity documents to external servers, making it ideal for job applicants, visa applicants, and exam candidates.',
+        about: 'Increase Image Size in KB expands an image\'s storage footprint to satisfy strict minimum upload thresholds enforced by government recruitment systems, university entrance exams, and civil service portals. Web forms frequently reject photos smaller than 20 KB or 50 KB under the assumption that smaller files lack sufficient resolution. Instead of degrading visual fidelity, this tool intelligently raises the encoded byte size through subtle JPEG quantization matrix padding and safe container metadata embedding. The underlying pixel dimensions (width and height), color gamut, and visual sharpness remain identical to your original image. Files are processed on our servers for this request (up to 25 MB, 50 megapixels max) and temporary files are purged automatically within 60 minutes, making it suitable for job applicants, visa applicants, and exam candidates who need a compliant file fast.',
         directAnswer: 'The Increase Image Size in KB tool pads an image\'s file size up to your required threshold (such as 20 KB, 50 KB, or 100 KB) without altering pixel dimensions, visual clarity, or image resolution, ensuring rejection-free uploads to official forms.',
         steps: [
             { title: 'Upload image', description: 'Select your JPG, PNG, or WebP photo that falls below the portal threshold.' },
@@ -209,7 +209,7 @@ export const toolContentMap: Record<string, ToolContent> = {
             'Visual quality and pixel dimensions remain identical to the original',
             'Works with JPG, PNG, and WebP image formats',
             'Meets strict minimum file size criteria for government and exam portals',
-            'Browser-based processing ensures identity documents remain private',
+            'Server-side processing (up to 25 MB) with automatic file purging within 60 minutes',
         ],
         useCases: [
             'Students uploading photos to exam portals with minimum size requirements (e.g., 50 KB)',
@@ -221,7 +221,7 @@ export const toolContentMap: Record<string, ToolContent> = {
             { question: 'Why would a website require a minimum image file size?', answer: 'Many recruitment and government portals enforce a minimum file size (e.g., 50 KB to 200 KB) as an automated filter to prevent applicants from submitting tiny, pixelated thumbnail photos.' },
             { question: 'Does increasing file size alter image dimensions or sharpness?', answer: 'No. Pixel dimensions, color balance, and perceived sharpness are 100% preserved. The file size is enlarged using lossless metadata and encoding parameter adjustments.' },
             { question: 'Can I target an exact file size in KB or MB?', answer: 'Yes. Specify your exact target threshold in KB (e.g., 100 KB), and the tool recalculates file padding to closely hit or exceed your required boundary.' },
-            { question: 'Is my personal ID photo secure when using this tool?', answer: 'Yes. All file size padding operations execute entirely on client-side canvas routines in your web browser. No identity documents or personal photos are sent to our servers.' },
+            { question: 'Is my personal ID photo secure when using this tool?', answer: 'Yes. Your file is sent over encrypted HTTPS, processed on our servers for this single request, and temporary files are purged automatically within 60 minutes. Files are never used for advertising or model training.' },
         ],
         supportedFormats: 'JPG, JPEG, PNG, WebP',
         relatedTools: ['compress-image', 'resize-image', 'passport-size-photo', 'convert-dpi'],
@@ -1079,7 +1079,7 @@ export const toolContentMap: Record<string, ToolContent> = {
             'Balanced facial luminance correction softening harsh shadows under eyes and chin',
             'Subtle iris brightening and sclera clarification for engaging portrait contact',
             'Eliminates the unnatural plastic blur common in aggressive smartphone beauty filters',
-            'Privacy-focused architecture: client-side processing keeps your personal headshots safe'
+            'Privacy-aware processing: files handled ephemerally with automatic purging within 60 minutes'
         ],
         useCases: [
             'Refining executive headshots for LinkedIn profiles, corporate directories, and conference programs',
@@ -1197,7 +1197,7 @@ export const toolContentMap: Record<string, ToolContent> = {
             { question: 'How is super-resolution upscaling different from regular image resizing?', answer: 'Standard resizing stretches pixels and averages colors, causing blur. Super-resolution upscaling analyzes edge directions and tonal gradients to synthesize crisp boundaries and clean texture transitions.' },
             { question: 'What is the maximum upscale factor supported?', answer: 'The tool provides a balanced 2× linear resolution increase (doubling width and height, quadrupling total pixel count). This ensures realistic clarity without generating synthetic artifacts.' },
             { question: 'Can I upscale heavily compressed JPEG images?', answer: 'Yes. The algorithm handles standard JPEG compression noise, smoothing block boundaries while restoring clean edge lines.' },
-            { question: 'Are my private photos uploaded to external training servers?', answer: 'No. The upscaling routine processes images securely in your browser session. Your photos remain strictly on your device.' },
+            { question: 'Are my private photos uploaded to external training servers?', answer: 'No. Your photo is sent over encrypted HTTPS for this single upscaling request (up to 20 MB), processed ephemerally, and temporary files are purged automatically within 60 minutes. Photos are never retained, indexed, or used for AI training.' },
         ],
         supportedFormats: 'JPG, JPEG, PNG, WebP',
         relatedTools: ['increase-image-quality', 'convert-dpi', 'resize-image', 'compress-image'],
@@ -1587,7 +1587,7 @@ export const toolContentMap: Record<string, ToolContent> = {
         about: 'Compress PDF significantly reduces large PDF file sizes while preserving razor-sharp text legibility, vector line art, and visual balance. Modern PDF documents frequently swell to 30MB–80MB due to uncompressed smartphone camera scans, multi-layer graphic designs, and embedded TrueType font subsets. This causes frustrating bouncebacks on email gateways (like Gmail\'s 25MB attachment limit and Microsoft Outlook\'s 10MB threshold) and upload failures on government, academic, and municipal submission portals. PdfPixels utilizes an intelligent multi-stage compression engine conforming to ISO 32000-1 and ISO 32000-2 standards. It isolates individual PDF object streams: textual content and vector geometries are compressed using lossless FlateDecode (deflate algorithms) so characters never degrade, while high-resolution raster image XObjects undergo adaptive downsampling (bicubic resampling to 150 DPI for balanced viewing or 72 DPI for compact screen display) with perceptual DCT (JPEG) re-quantization. Unreferenced cross-reference (XRef) table entries, redundant embedded metadata streams, and duplicate font subroutines are systematically pruned. Whether preparing legal briefs for federal court e-filing (CM/ECF PACER), submitting USCIS immigration packets, or sharing corporate financial audits, our three compression tiers (Low, Medium, and High) ensure your document strictly complies with destination upload limits.',
         directAnswer: 'Compress PDF drastically reduces the file size of heavy PDF documents by optimizing internal image streams and stripping redundant structural metadata while preserving 100% crisp, selectable text.',
         steps: [
-            { title: 'Upload your PDF document', description: 'Select any heavy multi-page contract, scanned packet, or report up to 100MB from your computer, tablet, or phone.' },
+            { title: 'Upload your PDF document', description: 'Select any heavy multi-page contract, scanned packet, or report (up to 25 MB) from your computer, tablet, or phone.' },
             { title: 'Select compression tier', description: 'Choose Low (best image quality, subtle reduction), Medium (balanced 60–80% reduction for email), or High (maximum compression for strict portal caps).' },
             { title: 'Real-time optimization', description: 'Our ISO-compliant engine compacts image XObjects, cleans cross-reference tables, and compresses font subsets.' },
             { title: 'Download optimized PDF', description: 'Save your compressed PDF, fully verified for fast web viewing, email delivery, and portal compliance.' }
@@ -1604,7 +1604,7 @@ export const toolContentMap: Record<string, ToolContent> = {
             'Bicubic image resampling with adaptive DCT (JPEG) quantization targeting 150 DPI or 72 DPI',
             'Full compliance with ISO 32000 document standards and Federal Court CM/ECF e-filing guidelines',
             'Removes unreferenced XRef entries, duplicate embedded font glyphs, and bloated XML metadata',
-            '100% private, browser-safe processing with automatic ephemeral session cleanup and zero permanent storage'
+            'Server-side processing (up to 25 MB) with ephemeral handling and automatic file purging within 60 minutes'
         ],
         useCases: [
             'Attorneys compressing court motions and exhibit packets to satisfy Federal PACER (CM/ECF) 35MB limits',
@@ -1644,7 +1644,7 @@ export const toolContentMap: Record<string, ToolContent> = {
             'Interactive visual drag-and-drop reordering with live page count and size indicators',
             'Full support for mixed page orientations (portrait & landscape) and mixed sheet dimensions (A4, Letter, Legal)',
             'Preserves embedded font subroutines, hyperlinks, and vector line sharpness without rasterization',
-            'Zero server storage with instantaneous browser and ephemeral session processing protecting sensitive records',
+            'Server-side assembly (up to 20 files, 25 MB each, 100 MB total, 1000 pages) with ephemeral processing and automatic file purging',
             'Completely free with no software installation, no watermarks, and no mandatory registration'
         ],
         useCases: [
@@ -1669,7 +1669,7 @@ export const toolContentMap: Record<string, ToolContent> = {
         about: 'Split PDF provides surgical page extraction and document partitioning for large, multi-section PDF files. When handling corporate financial binders, legal discovery filings, university course readers, or technical equipment manuals, you frequently only need specific exhibits, single chapters, or signature pages. Rather than sharing an overwhelming 100-page document or sending confidential appendices to third parties, Split PDF lets you extract exact pages or burst entire documents into standalone single-page files. Our ISO 32000-compliant engine parses the document\'s internal `/Pages` tree, copying referenced page dictionaries and required font and image resources into a newly minted, independent PDF container. Page geometries, vector text clarity, and embedded graphic resolutions are preserved with 100% fidelity. Two flexible extraction modes are supported: Range Extraction (allowing syntax such as `1-3, 5, 8-12` to compile chosen pages into a new compact PDF) and Burst/Explode Mode (which splits every page into individual numbered files packaged into an instant ZIP archive). This workflow is also the standard first defense when preparing documents for strict portal limits: splitting out unneeded pages provides a lean baseline before final compression.',
         directAnswer: 'Split PDF lets you extract specific pages, page ranges, or explode an entire PDF into individual single-page documents. Extract pages with zero quality loss and download them instantly.',
         steps: [
-            { title: 'Upload your multi-page PDF', description: 'Select the document, report, or contract up to 100MB requiring page extraction.' },
+            { title: 'Upload your multi-page PDF', description: 'Select the document, report, or contract (up to 25 MB) requiring page extraction.' },
             { title: 'Define extraction mode', description: 'Enter specific page numbers or ranges (e.g., 1-4, 7, 10-15), or select "Extract All Pages" to burst into individual files.' },
             { title: 'Isolate page dictionaries', description: 'Our engine extracts the specified `/Page` nodes and dependencies into a brand-new PDF container.' },
             { title: 'Download extracted PDF or ZIP', description: 'Save your customized PDF document or download all burst pages in a unified ZIP archive.' }
@@ -1685,8 +1685,8 @@ export const toolContentMap: Record<string, ToolContent> = {
             'Burst/Explode mode splitting every page into an individual numbered PDF, packaged in a single ZIP download',
             'Full visual thumbnail preview enabling click-to-select page extraction across documents',
             'Maintains 100% original text sharpness, color profiles, and embedded vector graphic definitions',
-            'Fast client-side and ephemeral processing ensuring confidential legal and medical records remain private',
-            'Completely free with no file limits, no forced email signups, and no advertising watermarks'
+            'Server-side extraction (up to 25 MB per file; burst mode ZIP truncated at 20 pages, range extract up to 50 pages) with automatic file purging',
+            'Completely free with no forced email signups and no advertising watermarks'
         ],
         useCases: [
             'Attorneys isolating specific deposition exhibits or signature pages for court filing attachments',
@@ -1803,18 +1803,18 @@ export const toolContentMap: Record<string, ToolContent> = {
         directAnswer: 'Protect PDF encrypts your document with a secure password, ensuring that unauthorized users cannot open, read, or print the file without the correct credentials.',
         steps: [
             { title: 'Upload PDF', description: 'Select the sensitive PDF document you want to lock.' },
-            { title: 'Set Password', description: 'Enter and confirm a strong password that will be required to open the document.' },
+            { title: 'Set Password', description: 'Enter a password of 4–128 characters (it cannot start with a dash). Anyone opening the file will need it.' },
             { title: 'Download Secure File', description: 'Save the newly encrypted PDF, which is now safe to send over email or messaging apps.' }
         ],
         commonProblems: [
             { problem: 'I forgot the password I just set.', solution: 'Because the encryption is secure, we cannot recover forgotten passwords. Keep a backup of the original unencrypted file.' },
-            { problem: 'File won\'t encrypt.', solution: 'Ensure the PDF isn\'t already encrypted or corrupted. Try opening it in a standard viewer first.' },
+            { problem: 'File won\'t encrypt.', solution: 'Passwords need 4–128 characters and cannot start with a dash (-). Also ensure the PDF isn\'t already encrypted or corrupted — unlock it first, then protect it again.' },
             { problem: 'My recipient cannot open the protected file.', solution: 'Have them enter the password exactly as set — passwords are case-sensitive. Very old PDF reader apps may struggle with newer encryption; a current version of Adobe Reader, Preview, or any mainstream browser handles it fine.' }
         ],
-        features: ['Password-based PDF encryption', 'Creates a separate protected copy for download', 'Works for private sharing, client delivery, and access control', 'Simple password entry and confirmation flow'],
+        features: ['Password-based PDF encryption (4–128 characters, cannot start with a dash)', 'Creates a separate protected copy for download', 'Works for private sharing, client delivery, and access control', 'Simple password entry and confirmation flow'],
         useCases: ['Protecting contracts, invoices, and reports before sharing', 'Sending private PDF attachments with access control', 'Securing internal documents before upload or distribution'],
         faqs: [
-            { question: 'How does Protect PDF work?', answer: 'Upload your PDF, enter a password, and download a newly encrypted copy. Anyone opening that protected file will need the password.' },
+            { question: 'How does Protect PDF work?', answer: 'Upload your PDF (up to 25 MB), enter a password of 4–128 characters, and download a newly encrypted copy. Anyone opening that protected file will need the password.' },
             { question: 'Does Protect PDF change my original file?', answer: 'No. The original file is left unchanged. The tool creates a separate protected PDF for download.' },
             { question: 'What is the difference between password protection and a watermark?', answer: 'A password stops people from opening the file at all. A watermark (like DRAFT or CONFIDENTIAL) is visible to anyone who opens it and signals status instead of restricting access. For sensitive documents, combine both: encrypt, then watermark.' },
             { question: 'What makes a strong PDF password?', answer: 'Length beats complexity: a phrase of 12+ characters with mixed case and a number is far stronger than a short scramble like "P@ss1". Avoid anything guessable from the document itself — your name, the client\'s name, or the document title are the first things someone tries.' },
@@ -2113,7 +2113,7 @@ export const toolContentMap: Record<string, ToolContent> = {
             'Three signature modes: smooth canvas draw, typed calligraphy fonts, or image upload',
             'Interactive drag-and-drop placement with adjustable width, height, and date stamps',
             'Multi-page navigation allowing signatures to be placed on any page of the document',
-            'Private client-side processing ensuring sensitive legal contracts never leave your device'
+            'Server-side signing (up to 25 MB) with ephemeral processing and automatic file purging within 60 minutes'
         ],
         useCases: [
             'Signing residential lease agreements, rental applications, and tenant contracts',
@@ -2254,7 +2254,7 @@ export const toolContentMap: Record<string, ToolContent> = {
             'Flexible range parser supporting comma-separated lists and ranges (e.g. 1, 4-8, 12)',
             'One-click batch selection presets: Select All, Clear Selection, Odd Pages, and Even Pages',
             'Lossless page extraction preserving all vector shapes, high-resolution photos, and fonts',
-            'Fast client-side assembly with no file size caps or artificial usage restrictions'
+            'Server-side extraction (up to 25 MB per file) with automatic file purging within 60 minutes'
         ],
         useCases: [
             'Extracting specific signed contract pages and addendums for email distribution',
@@ -2359,7 +2359,7 @@ export const toolContentMap: Record<string, ToolContent> = {
             'Real-time word count and character count statistics displayed directly in the workspace',
             'One-click "Copy to Clipboard" for rapid pasting into Word, Notion, Google Docs, or AI tools',
             'Direct download of standardized UTF-8 plain text (.txt) files',
-            '100% private in-browser parsing with zero server data retention or cloud logging'
+            'Server-side text extraction (up to 25 MB, 500 pages max) with automatic file purging within 60 minutes'
         ],
         useCases: [
             'Extracting article text from academic PDF papers for citation, research, and analysis',
@@ -2747,7 +2747,7 @@ export const toolContentMap: Record<string, ToolContent> = {
             'Dedicated compression algorithm calibrated specifically to meet 100KB web portal ceilings',
             'Maintains crisp vector text and readable font glyphs even at maximum compression ratios',
             'Real-time before-and-after file size counter with exact byte reduction percentages',
-            'Instant client-side optimization with zero queue wait times and no email sign-up required',
+            'Server-side optimization (up to 25 MB) with zero queue wait times and no email sign-up required',
             '100% private and confidential document handling with automatic file deletion'
         ],
         useCases: [
@@ -2880,7 +2880,7 @@ export const toolContentMap: Record<string, ToolContent> = {
         about: 'Compress PDF Under 1MB optimizes heavy PDF files, photo catalogs, architectural drawings, and academic dissertations to under 1 megabyte. While modern PDF files often swell to 25MB–50MB due to high-resolution camera scans and uncompressed artwork, most major email providers (including Microsoft Outlook, Gmail, and Yahoo Mail) and corporate web forms impose strict limits on attachment sizes. A 1MB limit provides ample space for dozens of high-quality pages while ensuring swift delivery, fast rendering across mobile devices, and zero upload timeouts. Our smart multi-stage compression engine strips redundant embedded resources, resamples images to optimal display resolution, and rewrites internal cross-reference tables.',
         directAnswer: 'Compress PDF Under 1MB reduces heavy documents and catalogs to under 1 megabyte for frictionless email sharing and swift mobile viewing.',
         steps: [
-            { title: 'Upload large PDF document', description: 'Select any heavy PDF file up to 100MB in size.' },
+            { title: 'Upload large PDF document', description: 'Select any heavy PDF file (up to 25 MB) in size.' },
             { title: 'Run 1MB multi-stage optimization', description: 'Our engine compresses oversized images, prunes font subsets, and compacts streams.' },
             { title: 'Verify final file size', description: 'Confirm that your document is now comfortably under 1MB.' },
             { title: 'Download optimized PDF', description: 'Share freely via email, Slack, Teams, or cloud portals without size restrictions.' }
@@ -2894,7 +2894,7 @@ export const toolContentMap: Record<string, ToolContent> = {
             'Perfect for multi-page contracts, academic theses, architectural packets, and photo portfolios',
             'Ensures guaranteed compatibility with Outlook, Gmail, Apple Mail, and messaging platforms',
             'Linearizes internal PDF structure for fast web streaming and instant first-page display',
-            '100% private, browser-safe, and completely free with no usage limits'
+            'Server-side processing (up to 25 MB) with automatic file purging — completely free with no email sign-up required'
         ],
         useCases: [
             'Graduate students submitting multi-chapter master\'s theses and dissertations to university archives',
