@@ -178,7 +178,7 @@ export const useCasePages: UseCasePage[] = [
     targetToolSlug: 'heic-to-jpg',
     intent: 'convert heic to jpg online',
     overview:
-      'iPhones often save photos as HEIC to save storage. Many Windows PCs, older apps, and web forms still expect JPG. When someone says “your photo won’t open,” HEIC is a frequent cause. Converting online is the fastest fix: upload the HEIC, download a standard JPG, and share or submit it anywhere. PdfPixels HEIC to JPG is built for that one job without forcing an app install.',
+      'The rejection usually arrives as “your photo won’t open” or “unsupported format” — and the culprit is almost always HEIC, the space-saving format iPhones use by default. This guide covers the whole scenario, not just the conversion click: how to tell a file is HEIC, transfer traps (AirDrop set to “Automatic” already converts to JPG; WhatsApp and Instagram convert on send; email keeps the original HEIC), and when to convert copies instead of originals. Once you have the HEIC on your device, the fix itself takes seconds with PdfPixels HEIC to JPG — no app install, straight to a universal JPG you can submit anywhere.',
     whoItsFor: [
       'iPhone users sharing photos with Windows users',
       'People uploading iPhone photos to websites that reject HEIC',
@@ -198,6 +198,7 @@ export const useCasePages: UseCasePage[] = [
     ],
     faqs: [
       { question: 'Is quality lost converting HEIC to JPG?', answer: 'JPG is lossy, but a high-quality export is usually indistinguishable for social and form use.' },
+      { question: 'Should I use this guide or go straight to the HEIC to JPG tool?', answer: 'If your photo was already rejected somewhere, read this guide first — the transfer and format checks above fix most “won’t open” cases without converting. If you already hold the HEIC file and just need it converted, go straight to the HEIC to JPG tool.' },
     ],
   },
   {
@@ -207,11 +208,11 @@ export const useCasePages: UseCasePage[] = [
     targetToolSlug: 'png-to-jpeg',
     intent: 'png to jpg converter',
     overview:
-      'PNG is excellent for graphics with sharp edges and transparency. It is often oversized for photographs. Converting PNG photos to JPG can cut file size dramatically for email and web. Note that JPG does not support transparency — transparent areas become a solid background (usually white unless you choose otherwise). Use PNG when you need a clear logo cutout; use JPG when you need a smaller photo.',
+      'This is a decision guide, not just a converter button: PNG is the right format for sharp graphics and anything needing transparency, but it is often 3–10x oversized for photographs, screenshots, and email attachments. The expensive mistake is converting the wrong file — a logo with transparency becomes a white-boxed rectangle in JPG, while a 5MB PNG photo needlessly clogs inboxes. Rule of thumb: photo-like pixels → JPG (or WebP); flat graphics, text-heavy screenshots you will edit again, or anything needing a transparent background → stay on PNG. When the answer is JPG, PdfPixels PNG to JPEG does the conversion with adjustable quality.',
     whoItsFor: [
-      'Users emailing large PNG screenshots or photos',
-      'Developers optimizing content images',
-      'Anyone reducing storage for photo-like PNGs',
+      'Users emailing large PNG screenshots or photos that bounce on size limits',
+      'Bloggers and developers shrinking content images for faster pages',
+      'Anyone deciding between PNG transparency and JPG file size before converting',
     ],
     steps: [
       { title: 'Upload the PNG', description: 'Open PNG to JPEG on PdfPixels and add your file.' },
@@ -227,6 +228,7 @@ export const useCasePages: UseCasePage[] = [
     ],
     faqs: [
       { question: 'Should product photos be PNG or JPG?', answer: 'JPG or WebP is usually better for photos; PNG is better for UI graphics and transparent assets.' },
+      { question: 'Should I use this guide or go straight to the PNG to JPEG tool?', answer: 'Use this guide when you are unsure which format you need — the transparency trap above ruins logos. If you already know the file is a photo-like PNG and just want it smaller, go straight to the PNG to JPEG tool.' },
     ],
   },
   {
@@ -236,11 +238,11 @@ export const useCasePages: UseCasePage[] = [
     targetToolSlug: 'merge-pdf',
     intent: 'merge pdf files online free',
     overview:
-      'Merging PDFs is a daily task for invoices, applications, and report packs. Desktop software works, but an online merge is faster when you only need to combine a few files. Order matters: upload in the sequence you want, or reorder before processing. PdfPixels Merge PDF is aimed at quick, no-account combining so you can attach one file instead of many.',
+      'This guide owns the assembly job end to end: turning a messy pile — phone scans, exported invoices, certificates — into one ordered, sendable dossier. The merge click is the easy part; what actually goes wrong is order (application packets read top to bottom), mixed page sizes and rotations from scans, and a finished file that is too big to email. Practical sequence: rename files 01, 02, 03 first, merge with PdfPixels Merge PDF with no account, then compress the result if it exceeds your email or portal cap. That assembly-plus-delivery workflow is what this page covers; the tool page itself is just the merge action.',
     whoItsFor: [
-      'Freelancers combining invoices and contracts',
-      'Students assembling multi-part submissions',
-      'Office users packaging reports for email',
+      'Freelancers combining invoices, contracts, and ID proofs into one client pack',
+      'Students assembling multi-part applications (resume + certificates + transcripts)',
+      'Office users packaging reports where page order and final file size both matter',
     ],
     steps: [
       { title: 'Gather your PDFs', description: 'Make sure each file opens correctly on its own first.' },
@@ -256,6 +258,7 @@ export const useCasePages: UseCasePage[] = [
     ],
     faqs: [
       { question: 'Can I merge password-protected PDFs?', answer: 'Usually you must unlock them first. Protect the final file again after merging if needed.' },
+      { question: 'Should I use this guide or go straight to the Merge PDF tool?', answer: 'If you are assembling a packet from mixed sources and it must arrive by email or portal, follow this guide — ordering and post-merge size are where merges fail. If your files are already ordered and small, go straight to the Merge PDF tool.' },
     ],
   },
   {
@@ -293,11 +296,11 @@ export const useCasePages: UseCasePage[] = [
     targetToolSlug: 'compress-pdf',
     intent: 'compress pdf for email',
     overview:
-      'Email providers cap attachments — Gmail is commonly cited around 25MB for the whole message, and many corporate systems are stricter. Scanned PDFs balloon because each page is a high-resolution image. Compression reduces image fidelity inside the PDF while keeping text readable for most business use. If a file is still huge after compression, split it or share via a link. PdfPixels Compress PDF is tuned for this email-and-portal workflow.',
+      'This is the “attachment too large” rescue ladder, with exact numbers: Gmail caps the entire message around 25MB (aim under 20MB), Outlook.com around 20MB, and many corporate servers and portals enforce 5–10MB or even 1–5MB caps. Scanned PDFs balloon because every page is a high-resolution image. Step one is compression that keeps text readable; if the file is still over the cap, step two is splitting out only the pages the recipient needs; step three is a share link instead of an attachment. PdfPixels Compress PDF is tuned for step one of this email-and-portal workflow.',
     whoItsFor: [
-      'Anyone whose PDF bounce with “attachment too large”',
-      'HR and admissions teams receiving application packets',
-      'Users submitting PDFs to portals with 1–5MB caps',
+      'Anyone whose PDF bounced with “attachment too large” on Gmail or Outlook',
+      'HR and admissions teams receiving application packets with strict caps',
+      'Users submitting scanned PDFs to portals with 1–5MB limits',
     ],
     steps: [
       { title: 'Upload the oversized PDF', description: 'Open Compress PDF and add the file that failed to send.' },
@@ -314,6 +317,7 @@ export const useCasePages: UseCasePage[] = [
     ],
     faqs: [
       { question: 'What size should I aim for?', answer: 'Stay under your provider or portal limit with headroom (for example under 20MB for Gmail, or under 1MB when a form requires it).' },
+      { question: 'Should I use this guide or go straight to the Compress PDF tool?', answer: 'If an email bounced or a portal rejected your file, follow this guide — the cap numbers and compress-then-split ladder above save trial and error. If you already know your target size, go straight to the Compress PDF tool.' },
     ],
   },
   {
@@ -323,11 +327,11 @@ export const useCasePages: UseCasePage[] = [
     targetToolSlug: 'remove-image-background',
     intent: 'remove background from image',
     overview:
-      'Background removal used to mean careful pen-tool work in Photoshop. Modern AI removes most subjects in seconds for product shots, headshots, and social creatives. Best results come from clear contrast between subject and background. Output is typically a transparent PNG you can drop onto any new backdrop. PdfPixels Remove Background focuses on that quick path without a design-suite learning curve.',
+      'This guide covers the outcome, not just the cutout: what makes a removal succeed (sharp focus, clear subject-background contrast), what to do with the transparent PNG afterward, and where it fails (hair, fur, glass, and shadows need touch-ups). Marketplace specifics included: Amazon-style listings generally want a pure-white (RGB 255,255,255) backdrop and large images around 2000px on the long edge — so the usual pipeline is remove, composite onto white, then compress under the storefront limit. PdfPixels Remove Background handles the AI isolation step without a design-suite learning curve; the rest of this page is the before-and-after around it.',
     whoItsFor: [
-      'E-commerce sellers making clean product images',
-      'Job seekers preparing profile photos',
-      'Creators building thumbnails and stickers',
+      'E-commerce sellers making clean product images for Amazon, Shopify, or Etsy',
+      'Job seekers preparing profile photos with neutral backdrops',
+      'Creators building thumbnails, stickers, and social creatives',
     ],
     steps: [
       { title: 'Upload a clear photo', description: 'Prefer sharp focus and separation between subject and background.' },
@@ -343,6 +347,7 @@ export const useCasePages: UseCasePage[] = [
     ],
     faqs: [
       { question: 'Can I get a white background instead of transparent?', answer: 'Yes — export transparent PNG, then place it on a white canvas in any editor, or use a tool that composites a solid background.' },
+      { question: 'Should I use this guide or go straight to the Remove Background tool?', answer: 'If the cutout must meet marketplace or profile-photo requirements, read this guide — the composite-onto-white and size steps are where listings get rejected. If you just need a quick transparent PNG, go straight to the Remove Background tool.' },
     ],
   },
   {

@@ -269,7 +269,7 @@ export function AboutPageContent() {
       </section>
 
       {/* ── Editorial Standards & Team Transparency ───────────────── */}
-      <section className="mt-12 section-panel rounded-[2rem] p-6 md:p-8 lg:p-10">
+      <section id="editorial-team" className="mt-12 section-panel rounded-[2rem] p-6 md:p-8 lg:p-10 scroll-mt-24">
         <div className="text-center mb-8">
           <p className="text-xs font-bold uppercase tracking-[0.2em] text-primary mb-3">Our Standards</p>
           <h2 className="text-2xl font-bold text-foreground md:text-3xl">Editorial & Engineering Integrity</h2>

@@ -31,10 +31,10 @@ function SubHeader({ icon: Icon, iconColor = 'text-primary', children }: {
   return (
     <div className="space-y-2.5">
       <div className="h-[3px] w-12 rounded-full bg-gradient-to-r from-primary/80 to-sky-400/60" />
-      <h3 className="text-lg font-semibold flex items-center gap-2.5">
+      <h2 className="text-lg font-semibold flex items-center gap-2.5">
         <Icon className={`w-[18px] h-[18px] ${iconColor}`} />
         {children}
-      </h3>
+      </h2>
     </div>
   );
 }

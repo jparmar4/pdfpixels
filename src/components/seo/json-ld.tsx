@@ -29,8 +29,10 @@ function KnowledgeGraphSchema() {
           '@type': 'ContactPoint',
           contactType: organizationData.contactPoint.contactType,
           email: organizationData.contactPoint.email,
+          url: organizationData.contactPoint.url,
           availableLanguage: organizationData.contactPoint.availableLanguage,
         },
+        address: organizationData.address,
       },
       {
         '@type': 'WebSite',

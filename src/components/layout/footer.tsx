@@ -71,6 +71,15 @@ export function Footer() {
     href: `/${region.code}`,
   }));
 
+  // Hub-level guides strip: compare / use-cases / research hubs have no main-nav
+  // entry, so this gives crawlers (and users) a sitewide path to every cluster.
+  const guideLinks = [
+    { name: 'Compare tools', href: '/compare' },
+    { name: 'Use-case guides', href: '/use-cases' },
+    { name: 'PDF size limits research (2026)', href: '/research/pdf-size-limits-2026' },
+    { name: 'Blog & tutorials', href: '/blog' },
+  ];
+
   // NOTE: profile links (X/LinkedIn/GitHub/YouTube) were removed — those
   // handles don't exist yet and 404 links hurt trust signals. Re-add them
   // here once the real accounts are live.
@@ -291,6 +300,26 @@ export function Footer() {
             >
               <span className="mr-1 font-semibold uppercase tracking-[0.14em]">Categories</span>
               {categoryLinks.map((link, i) => (
+                <span key={link.href} className="flex items-center gap-1.5">
+                  {i > 0 && <span aria-hidden="true" className="text-border">·</span>}
+                  <Link href={link.href} className="transition-colors hover:text-primary">
+                    {link.name}
+                  </Link>
+                </span>
+              ))}
+            </nav>
+          </div>
+        </div>
+
+        {/* ── Guides index (crawlable links to hub pages with no main-nav entry) ── */}
+        <div className="border-t border-border/30">
+          <div className="container mx-auto px-4 py-4 lg:px-8">
+            <nav
+              aria-label="Guides and comparisons"
+              className="flex flex-wrap items-center justify-center gap-x-1.5 gap-y-1 text-xs text-muted-foreground"
+            >
+              <span className="mr-1 font-semibold uppercase tracking-[0.14em]">Guides</span>
+              {guideLinks.map((link, i) => (
                 <span key={link.href} className="flex items-center gap-1.5">
                   {i > 0 && <span aria-hidden="true" className="text-border">·</span>}
                   <Link href={link.href} className="transition-colors hover:text-primary">

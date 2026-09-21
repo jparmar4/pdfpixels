@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import Script from 'next/script';
 import { useCasePages } from '@/lib/use-cases';
 import { getToolBySlug } from '@/lib/tools-data';
-import { absoluteUrl, DEFAULT_OG_IMAGE_URL } from '@/lib/seo';
+import { absoluteUrl, DEFAULT_OG_IMAGE_URL, SITE_CONTENT_UPDATED } from '@/lib/seo';
 import { siteConfig } from '@/lib/seo-config';
 import { UseCaseDetailContent } from './use-case-detail-content';
 
@@ -80,6 +80,19 @@ export default async function UseCasePage({ params }: { params: Promise<{ slug: 
     headline: entry.title,
     description: entry.description,
     mainEntityOfPage: url,
+    image: {
+      '@type': 'ImageObject',
+      url: DEFAULT_OG_IMAGE_URL,
+      width: 1200,
+      height: 630,
+    },
+    datePublished: SITE_CONTENT_UPDATED.toISOString(),
+    dateModified: SITE_CONTENT_UPDATED.toISOString(),
+    author: {
+      '@type': 'Organization',
+      name: siteConfig.name,
+      url: absoluteUrl('/about'),
+    },
     about: entry.intent,
     mentions: {
       '@type': 'SoftwareApplication',

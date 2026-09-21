@@ -178,6 +178,12 @@ export const organizationData = {
     availableLanguage: ['English'],
     contactType: 'customer support',
     email: 'support@pdfpixels.com',
+    url: absoluteUrl('/contact'),
+  },
+  address: {
+    '@type': 'PostalAddress',
+    addressRegion: 'Gujarat',
+    addressCountry: 'IN',
   },
 };
 

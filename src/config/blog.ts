@@ -5431,3 +5431,39 @@ export function getAdjacentPosts(currentSlug: string): { prev: BlogPost | null; 
         next: currentIndex > 0 ? sorted[currentIndex - 1] : null,
     };
 }
+
+// Measured pixel dimensions of each cover hero (see public/images/blog).
+// Used for honest og:image width/height + Article schema. Covers narrower
+// than 1200px are weak for Google Discover large cards — those posts are
+// queued for hero upgrades (see TODO: discover hero upgrades).
+export const coverImageDimensions: Record<string, { width: number; height: number }> = {
+    '/images/blog/merge-multiple-pdfs-hero.jpg': { width: 1376, height: 768 },
+    '/images/blog/svg-to-png-converter-hero.jpg': { width: 1376, height: 768 },
+    '/images/blog/png-to-jpg-converter-hero.jpg': { width: 1376, height: 768 },
+    '/images/blog/watermark-pdf-confidential-hero.jpg': { width: 1280, height: 720 },
+    '/images/blog/webp-jpg-png-format-guide-hero.jpg': { width: 1280, height: 720 },
+    '/images/blog/convert-jpg-to-pdf-online-hero.jpg': { width: 1280, height: 720 },
+    '/images/blog/ai-image-enhancer-free-hero.jpg': { width: 1280, height: 720 },
+    '/images/blog/heic-to-jpg-iphone-photos-hero.jpg': { width: 1376, height: 768 },
+    '/images/blog/convert-heic-jpg-windows-hero.jpg': { width: 1376, height: 768 },
+    '/images/blog/compress-pdf-government-hero.png': { width: 1024, height: 1024 },
+    '/images/blog/ai-background-remover-hero.png': { width: 640, height: 640 },
+    '/images/blog/compress-pdf-file-size-hero.png': { width: 640, height: 640 },
+    '/images/blog/reduce-pdf-size-for-email-hero.png': { width: 640, height: 640 },
+    '/images/blog/compress-pdf-online-hero.png': { width: 640, height: 640 },
+    '/images/blog/free-pdf-editor-adobe-alternative-hero.png': { width: 640, height: 640 },
+    '/images/blog/compress-pdf-under-1mb-hero.jpg': { width: 1280, height: 720 },
+    '/images/blog/compress-pdf-200kb-email-hero.jpg': { width: 1280, height: 720 },
+    '/images/blog/pdf-too-large-gmail-hero.jpg': { width: 1280, height: 720 },
+    '/images/blog/send-large-pdf-email-hero.png': { width: 640, height: 640 },
+    '/images/blog/compress-scanned-pdf-quality-hero.png': { width: 640, height: 640 },
+    '/images/blog/why-is-pdf-so-large-hero.png': { width: 640, height: 640 },
+    '/images/blog/best-free-pdf-compressor-online-hero.png': { width: 1024, height: 1024 },
+    '/images/blog/merge-pdf-online-hero.png': { width: 640, height: 640 },
+    '/images/blog/how-to-edit-pdf-online-free-hero.jpg': { width: 1376, height: 768 },
+    '/images/blog/password-protect-pdf-hero.jpg': { width: 1376, height: 768 },
+};
+
+export function getCoverDimensions(coverImage: string): { width: number; height: number } {
+    return coverImageDimensions[coverImage] ?? { width: 1200, height: 630 };
+}

@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import NextImage from "next/image";
 import Link from "next/link";
 import Script from "next/script";
-import { getBlogPostBySlug, getRelatedPosts, getAllBlogPosts, getAdjacentPosts } from "@/config/blog";
+import { getBlogPostBySlug, getRelatedPosts, getAllBlogPosts, getAdjacentPosts, getCoverDimensions } from "@/config/blog";
 import { siteConfig } from "@/lib/seo-config";
 import { processContent } from "@/lib/content-processor";
 import { ReadingProgressBar } from "@/components/blog/ReadingProgressBar";
@@ -36,6 +36,7 @@ export async function generateMetadata({
     const isoModifiedDate = post.dateModified
         ? (Number.isNaN(Date.parse(post.dateModified)) ? post.dateModified : new Date(post.dateModified).toISOString())
         : isoDate;
+    const coverDims = getCoverDimensions(post.coverImage);
 
     return {
         title: post.title,
@@ -66,8 +67,8 @@ export async function generateMetadata({
             images: [
                 {
                     url: `${siteConfig.url}${post.coverImage}`,
-                    width: 1200,
-                    height: 630,
+                    width: coverDims.width,
+                    height: coverDims.height,
                     alt: post.imageAlt || post.title,
                 },
             ],
@@ -111,6 +112,7 @@ export default async function BlogPostPage({
         ? (Number.isNaN(Date.parse(post.dateModified)) ? post.dateModified : new Date(post.dateModified).toISOString())
         : isoDate;
     const postUrl = `${siteConfig.url}/blog/${slug}`;
+    const coverDims = getCoverDimensions(post.coverImage);
 
     // Article Schema
     const articleSchema = {
@@ -139,7 +141,12 @@ export default async function BlogPostPage({
         dateModified: isoModifiedDate,
         url: `${siteConfig.url}/blog/${slug}`,
         mainEntityOfPage: `${siteConfig.url}/blog/${slug}`,
-        image: post.coverImage ? `${siteConfig.url}${post.coverImage}` : undefined,
+        image: post.coverImage ? {
+            "@type": "ImageObject",
+            url: `${siteConfig.url}${post.coverImage}`,
+            width: coverDims.width,
+            height: coverDims.height,
+        } : undefined,
         keywords: post.keywords.join(", "),
         about: post.keywords.map(keyword => ({
             "@type": "Thing",
@@ -264,7 +271,9 @@ export default async function BlogPostPage({
                                             {post.author.charAt(0)}
                                         </div>
                                         <div className="text-left">
-                                            <span className="block text-foreground font-bold text-sm">{post.author}</span>
+                                            <Link href="/about#editorial-team" className="block text-foreground font-bold text-sm hover:text-primary hover:underline">
+                                                {post.author}
+                                            </Link>
                                             <span className="text-xs text-muted-foreground">{post.authorRole}</span>
                                         </div>
                                     </div>

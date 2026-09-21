@@ -10,7 +10,7 @@ import { FooterAd } from '@/components/ads/ad-banner';
 import { comparisonPages } from '@/lib/comparisons';
 import { normalizeDisplayText } from '@/lib/display-text';
 import { siteConfig } from '@/lib/seo-config';
-import { absoluteUrl, dedupeKeywords } from '@/lib/seo';
+import { absoluteUrl, dedupeKeywords, SITE_CONTENT_UPDATED } from '@/lib/seo';
 import { toolContentMap } from '@/lib/tool-content-data';
 import { allTools, getToolBySlug, type Tool } from '@/lib/tools-data';
 import { useCasePages } from '@/lib/use-cases';
@@ -207,6 +207,10 @@ function getToolJsonLd(tool: ReturnType<typeof getToolBySlug>) {
   const cleanDescription = normalizeDisplayText(tool.description);
   const url = absoluteUrl(`/tools/${tool.slug}`);
   const isAI = tool.isAI;
+  // Freshness signal for crawlers + AI answer engines (all evergreen tool
+  // pages share the last-reviewed timestamp; bump SITE_CONTENT_UPDATED when
+  // tool content actually changes).
+  const updatedIso = SITE_CONTENT_UPDATED.toISOString();
   const contentData = toolContentMap[tool.slug];
   const features = contentData?.features ?? [];
   const howToSteps = contentData?.steps?.length
@@ -278,6 +282,8 @@ function getToolJsonLd(tool: ReturnType<typeof getToolBySlug>) {
       url,
       name: cleanName,
       description: cleanDescription,
+      datePublished: updatedIso,
+      dateModified: updatedIso,
       isPartOf: {
         '@id': `${absoluteUrl('/')}/#website`,
       },
@@ -323,6 +329,8 @@ function getToolJsonLd(tool: ReturnType<typeof getToolBySlug>) {
       '@type': 'HowTo',
       name: `How to use ${cleanName}`,
       description: `Step-by-step guide for using the ${cleanName} workflow on PdfPixels.`,
+      datePublished: updatedIso,
+      dateModified: updatedIso,
       totalTime: isAI ? 'PT30S' : 'PT2M',
       step: howToSteps,
       tool: {
