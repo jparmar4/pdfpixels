@@ -117,18 +117,15 @@ export function PDFRedactWorkspace() {
     }
 
     setIsProcessing(true);
-    setProgress(15);
+    setProgress(0);
 
     try {
       const formData = new FormData();
       formData.append('file', uploadedFile);
       formData.append('redactions', JSON.stringify(redactions));
 
-      setProgress(45);
-      const res = await fetch('/api/pdf/redact', {
-        method: 'POST',
-        body: formData,
-      });
+      const { fetchWithUploadProgress } = await import('@/lib/upload-with-progress');
+      const res = await fetchWithUploadProgress('/api/pdf/redact', formData, setProgress);
 
       setProgress(90);
 

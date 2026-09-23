@@ -26,6 +26,30 @@ class IncorrectPasswordError extends Error {
 }
 
 /**
+ * qpdf / Ghostscript disagree on wording for a bad or missing unlock password.
+ * Match the real stderr variants so users get a clear 401 instead of a 500.
+ */
+function isPasswordFailure(error: unknown): boolean {
+  if (error instanceof IncorrectPasswordError) return true;
+  const message = String((error as Error | null)?.message || '').toLowerCase();
+  return (
+    message.includes('invalid password') ||
+    message.includes('incorrect password') ||
+    message.includes('password is incorrect') ||
+    message.includes('password did not work') ||
+    message.includes('wrong password') ||
+    message.includes('password required') ||
+    message.includes('password must be') ||
+    message.includes('need a password') ||
+    message.includes('requires a password') ||
+    message.includes('password for access') ||
+    message.includes('cannot decrypt') ||
+    message.includes('encrypted file') ||
+    /password.{0,20}required/.test(message)
+  );
+}
+
+/**
  * qpdf rejects an `@path` word it cannot expand (ancient builds predate
  * response-file support). Only in that case is the legacy positional form
  * retried, which briefly exposes the password in the child argv.
@@ -129,12 +153,16 @@ export async function POST(request: NextRequest) {
   let inputPath = '';
   let outputPath = '';
   let passwordPath = '';
+  let action = '';
+  let passwordTyped = false;
+  let srcPdfEncrypted = false;
 
   try {
     const formData = await request.formData();
     const file = formData.get('file') as File | null;
-    const action = (formData.get('action') as string) || 'protect';
+    action = (formData.get('action') as string) || 'protect';
     const password = (formData.get('password') as string) || '';
+    passwordTyped = password.length > 0;
 
     const validation = validatePdfUpload(file);
     if (!validation.ok) return validation.response;
@@ -166,6 +194,7 @@ export async function POST(request: NextRequest) {
 
     const srcPdf = await loadPdfWithTimeout(inputBuffer, { ignoreEncryption: true });
     const pageCount = srcPdf.getPageCount();
+    srcPdfEncrypted = srcPdf.isEncrypted;
 
     if (action === 'protect' && srcPdf.isEncrypted) {
       return apiError('This PDF is already password-protected. Unlock it first, then protect it again.', 400);
@@ -202,23 +231,23 @@ export async function POST(request: NextRequest) {
         await runQpdf(args, { timeoutMessage: 'PDF security operation timed out.' });
       } catch (qpdfError) {
         if (!isQpdfUnavailableError(qpdfError)) throw qpdfError;
-        // gs can only re-emit a decrypted copy when it can OPEN the input, which
-        // requires the password for encrypted files.
-        if (srcPdf.isEncrypted && !password) {
-          return apiError('This PDF requires a valid password before it can be unlocked.', 401, 'PASSWORD_REQUIRED');
-        }
+        // Always try Ghostscript — owner-restricted PDFs often open with an
+        // empty user password, so only the engines know when a password is missing.
         console.warn('qpdf unavailable, falling back to Ghostscript decryption');
         try {
           await runGhostscriptUnlock(inputPath, outputPath, password);
         } catch (gsError) {
-          const gsMessage = String((gsError as Error | null)?.message || '');
-          if (gsMessage.toLowerCase().includes('password')) throw new IncorrectPasswordError();
+          if (isPasswordFailure(gsError)) throw new IncorrectPasswordError();
           throw gsError;
         }
       }
     }
 
     const outputBuffer = fs.readFileSync(outputPath);
+    if (outputBuffer.length < 100) {
+      // Engines can exit 0 and write an empty stub on a bad password.
+      if (action === 'unlock') throw new IncorrectPasswordError();
+    }
     const baseName = file?.name ? file.name.replace(/\.pdf$/i, '') : (action === 'protect' ? 'protected' : 'unlocked');
     const fileName = `${sanitizeDownloadFileName(baseName)}-${action === 'protect' ? 'protected' : 'unlocked'}.pdf`;
 
@@ -235,19 +264,29 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('PDF protect/unlock error:', error);
     const message = error instanceof Error ? error.message : 'Unknown error';
+    const lower = message.toLowerCase();
 
-    if (message.toLowerCase().includes('invalid password') || (error instanceof IncorrectPasswordError)) {
-      return apiError('The provided PDF password is incorrect.', 401, 'INVALID_PASSWORD');
-    }
-
-    if (message.toLowerCase().includes('encrypted file')) {
-      return apiError('This PDF requires a valid password before it can be unlocked.', 401, 'PASSWORD_REQUIRED');
+    // Encrypted input + any password-shaped or opaque engine failure → actionable 401.
+    if (action === 'unlock' && srcPdfEncrypted) {
+      if (!passwordTyped) {
+        return apiError('This PDF requires a valid password before it can be unlocked.', 401, 'PASSWORD_REQUIRED');
+      }
+      const infraFailure =
+        lower.includes('timed out') ||
+        lower.includes('too large') ||
+        lower.includes('not available') ||
+        lower.includes('corrupt') ||
+        lower.includes('invalid pdf') ||
+        lower.includes('unsupported');
+      if (isPasswordFailure(error) || !infraFailure) {
+        return apiError('The provided PDF password is incorrect.', 401, 'INVALID_PASSWORD');
+      }
     }
 
     if (
-      message.toLowerCase().includes('qpdf is not available') ||
+      lower.includes('qpdf is not available') ||
       message.includes('No PDF security engine is available') ||
-      message.toLowerCase().includes('ghostscript is not available')
+      lower.includes('ghostscript is not available')
     ) {
       return apiError('PDF security engine is not available in the current environment.', 503, 'ENGINE_UNAVAILABLE');
     }

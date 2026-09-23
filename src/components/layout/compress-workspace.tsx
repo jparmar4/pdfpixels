@@ -74,16 +74,9 @@ export function CompressWorkspace() {
       formData.append('sizeMode', 'increase');
     }
 
-    let progressInterval: ReturnType<typeof setInterval> | undefined;
     try {
-      progressInterval = setInterval(() => {
-        setProgress((prev) => Math.min(prev + 8, 90));
-      }, 150);
-
-      const response = await fetch('/api/image/process', {
-        method: 'POST',
-        body: formData,
-      });
+      const { fetchWithUploadProgress } = await import('@/lib/upload-with-progress');
+      const response = await fetchWithUploadProgress('/api/image/process', formData, setProgress);
 
       setProgress(100);
 
@@ -126,7 +119,6 @@ export function CompressWorkspace() {
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Failed to compress image. Please try again.');
     } finally {
-      if (progressInterval) clearInterval(progressInterval);
       setIsProcessing(false);
     }
   }, [activeTool?.id, setIsProcessing, setProcessedImage, setProgress, targetSize, uploadedFile]);

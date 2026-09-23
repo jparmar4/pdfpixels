@@ -174,16 +174,9 @@ export function ImageToPDFWorkspace() {
     formData.append('fitMode', fitMode);
     formData.append('margin', margin.toString());
 
-    let progressInterval: ReturnType<typeof setInterval> | undefined;
     try {
-      progressInterval = setInterval(() => {
-        setProgress((prev) => Math.min(prev + 8, 90));
-      }, 150);
-
-      const response = await fetch('/api/pdf/from-image', {
-        method: 'POST',
-        body: formData,
-      });
+      const { fetchWithUploadProgress } = await import('@/lib/upload-with-progress');
+      const response = await fetchWithUploadProgress('/api/pdf/from-image', formData, setProgress);
 
       setProgress(100);
 
@@ -227,7 +220,6 @@ export function ImageToPDFWorkspace() {
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Failed to create PDF. Please try again.');
     } finally {
-      if (progressInterval) clearInterval(progressInterval);
       setIsProcessing(false);
     }
   }, [files, pageSize, orientation, fitMode, margin, setIsProcessing, setProgress]);

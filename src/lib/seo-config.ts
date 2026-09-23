@@ -74,6 +74,21 @@ export const seoConfig = {
 
 export const faqData = [
   {
+    question: 'What can I do on PdfPixels?',
+    answer: 'PdfPixels helps with PDF and image tasks such as compressing files, resizing photos, converting formats, merging PDFs, splitting PDFs, and removing image backgrounds.',
+    keywords: ['pdf tools', 'image tools', 'online file tools'],
+  },
+  {
+    question: 'Do I need to create an account to use PdfPixels?',
+    answer: 'No. PdfPixels is designed so users can start core PDF and image workflows without creating an account first.',
+    keywords: ['no signup', 'free pdf tools', 'no account'],
+  },
+  {
+    question: 'Does PdfPixels support mobile browsers?',
+    answer: 'Yes. The platform is designed to work across desktop and mobile browsers for common PDF and image tasks.',
+    keywords: ['mobile pdf tools', 'iphone photo editor', 'responsive'],
+  },
+  {
     question: 'What is PdfPixels?',
     answer: `PdfPixels is a free online platform for PDF and image workflows such as compression, resizing, conversion, background removal, and document editing. It currently offers ${toolCountLabel} tools without requiring account creation for core tasks.`,
     keywords: ['pdfpixels', 'pdf tools platform', 'image tools platform', 'online file tools'],

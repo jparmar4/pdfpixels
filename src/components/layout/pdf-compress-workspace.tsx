@@ -99,7 +99,7 @@ const presetMeta: Record<string, { title: string; description: string; limitText
 export function CompressPDFWorkspace({ targetPreset }: CompressPDFWorkspaceProps = {}) {
   const { activeTool, uploadedFile, isProcessing, progress, reset, setIsProcessing, setProgress } = useAppStore();
   const preset = targetPreset ? presetMeta[targetPreset] : null;
-  const targetBytes = targetPreset ? ({ '100kb': 100_000, '200kb': 200_000, '300kb': 300_000, '500kb': 500_000, '1mb': 1_000_000 }[targetPreset]) : undefined;
+  const targetBytes = targetPreset ? ({ '100kb': 100, '200kb': 200, '300kb': 300, '500kb': 500, '1mb': 1024 }[targetPreset]! * 1024) : undefined;
   const [result, setResult] = useState<CompressionResult | null>(null);
   const [statusLabel, setStatusLabel] = useState<'Idle' | 'Uploading' | 'Processing' | 'Finalizing'>('Idle');
   const [compressionLevel, setCompressionLevel] = useState<CompressionLevel>(preset ? preset.defaultLevel : 'recommended');
@@ -107,6 +107,15 @@ export function CompressPDFWorkspace({ targetPreset }: CompressPDFWorkspaceProps
   const [canForce, setCanForce] = useState(false);
   const [pdfMeta, setPdfMeta] = useState<{ pages: number } | null>(null);
   const prefersReducedMotion = useReducedMotion();
+  const originalPreviewUrl = useMemo(
+    () => (uploadedFile ? URL.createObjectURL(uploadedFile) : null),
+    [uploadedFile],
+  );
+  useEffect(() => {
+    return () => {
+      if (originalPreviewUrl) URL.revokeObjectURL(originalPreviewUrl);
+    };
+  }, [originalPreviewUrl]);
 
   const activeLevel = useMemo(
     () => compressionLevels.find((level) => level.value === compressionLevel) ?? compressionLevels[1],
@@ -136,48 +145,42 @@ export function CompressPDFWorkspace({ targetPreset }: CompressPDFWorkspaceProps
     const formData = new FormData();
     formData.append('file', uploadedFile);
     formData.append('level', compressionLevel);
-    if (force || targetBytes) formData.append('force', '1');
+    if (targetBytes) formData.append('targetKb', String(Math.max(50, Math.ceil(targetBytes / 1024))));
+    if (force) formData.append('force', '1');
 
-    let progressInterval: ReturnType<typeof setInterval> | undefined;
     try {
-      progressInterval = setInterval(() => {
-        setStatusLabel('Processing');
-        setProgress((prev) => Math.min(prev + 8, 90));
-      }, 150);
-
-      const response = await fetch('/api/pdf/compress', {
-        method: 'POST',
-        body: formData,
+      const { uploadForm } = await import('@/lib/upload-with-progress');
+      const uploaded = await uploadForm('/api/pdf/compress', formData, (percent) => {
+        setStatusLabel(percent < 70 ? 'Uploading' : 'Processing');
+        setProgress(percent);
       });
 
       setStatusLabel('Finalizing');
       setProgress(100);
 
-      if (!response.ok) {
+      const responseHeaders = uploaded.headers;
+      if (uploaded.status < 200 || uploaded.status >= 300) {
         let message = 'Processing failed';
         let forceAvailable = false;
+        const errorText = new TextDecoder().decode(uploaded.body);
         try {
-          const errorText = await response.text();
-          try {
-            const errorJson = JSON.parse(errorText);
-            message = errorJson?.error || message;
-            forceAvailable = Boolean(errorJson?.canForce);
-          } catch {
-            message = errorText || message;
-          }
+          const errorJson = JSON.parse(errorText);
+          message = errorJson?.error || message;
+          forceAvailable = Boolean(errorJson?.canForce);
         } catch {
-          // Keep default message.
+          message = errorText || message;
         }
-        setCanForce(forceAvailable || response.status === 422);
+        setCanForce(forceAvailable || uploaded.status === 422);
         throw new Error(message);
       }
 
-      const blob = await response.blob();
+      const blob = new Blob([uploaded.body], { type: 'application/pdf' });
       const pdfUrl = URL.createObjectURL(blob);
-      const originalSize = Number(response.headers.get('x-size-before') || uploadedFile.size);
-      const processedSize = Number(response.headers.get('x-size-after') || blob.size);
+      const originalSize = Number(responseHeaders.get('x-size-before') || uploadedFile.size);
+      const processedSize = Number(responseHeaders.get('x-size-after') || blob.size);
       const savedPercent = Math.max(0, Math.round((1 - processedSize / originalSize) * 1000) / 10);
-      const engine = response.headers.get('x-compress-engine') || undefined;
+      const engine = responseHeaders.get('x-compress-engine') || undefined;
+      const compressNote = responseHeaders.get('x-compress-note');
 
       setResult((previous) => {
         if (previous?.pdfUrl?.startsWith('blob:')) {
@@ -195,7 +198,10 @@ export function CompressPDFWorkspace({ targetPreset }: CompressPDFWorkspaceProps
       setErrorMessage(null);
       setCanForce(false);
 
-      if (targetBytes && processedSize > targetBytes) {
+      const goalBytes = targetBytes ? Math.ceil(targetBytes / 1024) * 1024 : 0;
+      if (engine === 'local-fallback') {
+        toast.warning(compressNote || 'Ghostscript was unavailable, so images were not recompressed.');
+      } else if (goalBytes && processedSize > goalBytes) {
         toast.warning(`Output is ${formatSize(processedSize)}, above the requested limit. Try Smallest size or split the PDF.`);
       } else if (savedPercent < 1) {
         toast.message('File returned with little size change — it may already be optimized.');
@@ -210,7 +216,6 @@ export function CompressPDFWorkspace({ targetPreset }: CompressPDFWorkspaceProps
       setErrorMessage(message);
       toast.error(message);
     } finally {
-      if (progressInterval) clearInterval(progressInterval);
       setIsProcessing(false);
       setStatusLabel('Idle');
     }
@@ -462,6 +467,21 @@ export function CompressPDFWorkspace({ targetPreset }: CompressPDFWorkspaceProps
                 </Badge>
               ) : null}
             </div>
+            {result.engine === 'local-fallback' ? (
+              <p className="text-sm text-amber-800 dark:text-amber-200">Ghostscript was unavailable, so images were not recompressed.</p>
+            ) : null}
+            {originalPreviewUrl ? (
+              <div className="grid gap-3 md:grid-cols-2">
+                <figure>
+                  <figcaption className="mb-2 text-xs font-semibold text-muted-foreground">Original</figcaption>
+                  <iframe title="Original PDF preview" src={originalPreviewUrl} className="h-72 w-full rounded-xl border border-border bg-background" />
+                </figure>
+                <figure>
+                  <figcaption className="mb-2 text-xs font-semibold text-muted-foreground">Compressed</figcaption>
+                  <iframe title="Compressed PDF preview" src={result.pdfUrl} className="h-72 w-full rounded-xl border border-border bg-background" />
+                </figure>
+              </div>
+            ) : null}
 
             {targetBytes && <p role="status" className="text-sm font-medium">{result.processedSize <= targetBytes ? 'Target size met.' : `Target size not met: output is ${formatSize(result.processedSize)}. Try Smallest size or split the PDF. A specific size cannot be guaranteed without losing content or quality.`}</p>}
             {/* Visual size comparison bar */}

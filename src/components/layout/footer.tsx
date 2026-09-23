@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useCallback } from 'react';
 import {
   Mail,
@@ -120,10 +119,7 @@ export function Footer() {
     <footer className="relative mt-auto border-t border-border/40 bg-[linear-gradient(180deg,rgba(255,255,255,0),rgba(59,130,246,0.03))]">
       {/* ── CTA Banner with Newsletter ── */}
       <div className="container mx-auto px-4 py-12 lg:px-8 lg:py-14">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+        <div
           className="relative overflow-hidden rounded-[2rem] border border-border/50 bg-card/80 p-8 shadow-premium backdrop-blur-xl md:p-10"
         >
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(59,130,246,0.1),transparent_28%),radial-gradient(circle_at_bottom_right,rgba(16,185,129,0.08),transparent_28%)] pointer-events-none" />
@@ -197,7 +193,7 @@ export function Footer() {
               </button>
             </div>
           </div>
-        </motion.div>
+        </div>
       </div>
 
       {/* ── Footer Columns ── */}
@@ -232,14 +228,12 @@ export function Footer() {
               {/* Social Links with Tooltips */}
               <div className="flex items-center gap-3">
                 {socialLinks.map((link) => (
-                  <motion.a
+                  <a
                     key={link.label}
                     href={link.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    whileHover={{ scale: 1.08, y: -2 }}
-                    whileTap={{ scale: 0.96 }}
-                    className="group relative flex h-11 w-11 items-center justify-center rounded-2xl border border-border/60 bg-card/80 text-muted-foreground transition-all duration-300 hover:border-primary/30 hover:text-primary hover:shadow-lg hover:shadow-primary/5"
+                    className="group relative flex h-11 w-11 items-center justify-center rounded-2xl border border-border/60 bg-card/80 text-muted-foreground transition-all duration-300 hover:-translate-y-0.5 hover:scale-105 hover:border-primary/30 hover:text-primary hover:shadow-lg hover:shadow-primary/5 active:scale-95"
                     aria-label={link.label}
                     title={link.tooltip}
                   >
@@ -249,7 +243,7 @@ export function Footer() {
                       {link.tooltip}
                       <span className="absolute left-1/2 top-full -translate-x-1/2 border-4 border-transparent border-t-foreground" />
                     </span>
-                  </motion.a>
+                  </a>
                 ))}
               </div>
             </div>
@@ -387,37 +381,28 @@ function CollapsibleFooterColumn({ title, links }: { title: string; links: Array
         aria-expanded={open}
       >
         <h3 className="text-xs font-bold uppercase tracking-[0.18em] text-muted-foreground">{title}</h3>
-        <motion.span
-          animate={{ rotate: open ? 180 : 0 }}
-          transition={{ duration: 0.2 }}
-          className="text-muted-foreground"
+        <h3 className="text-xs font-bold uppercase tracking-[0.18em] text-muted-foreground">{title}</h3>
+        <span
+          className={`text-muted-foreground transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
         >
           <ChevronDown className="h-4 w-4" />
-        </motion.span>
+        </span>
       </button>
-      <AnimatePresence initial={false}>
-        {open && (
-          <motion.ul
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
-            className="overflow-hidden space-y-3 pt-3"
-          >
-            {links.map((link) => (
-              <li key={`${title}-${link.href}`}>
-                <Link
-                  href={link.href}
-                  className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
-                  onClick={() => setOpen(false)}
-                >
-                  {link.name}
-                </Link>
-              </li>
-            ))}
-          </motion.ul>
-        )}
-      </AnimatePresence>
+      {open ? (
+        <ul className="space-y-3 pt-3 animate-in fade-in slide-in-from-top-1 duration-200">
+          {links.map((link) => (
+            <li key={`${title}-${link.href}`}>
+              <Link
+                href={link.href}
+                className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+                onClick={() => setOpen(false)}
+              >
+                {link.name}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      ) : null}
     </div>
   );
 }

@@ -51,18 +51,15 @@ export function SanitizePdfWorkspace() {
     let active = true;
     (async () => {
       setIsProcessing(true);
-      setProgress(25);
+      setProgress(0);
 
       try {
         const formData = new FormData();
         formData.append('file', uploadedFile);
         formData.append('action', 'inspect');
 
-        setProgress(65);
-        const res = await fetch('/api/pdf/sanitize', {
-          method: 'POST',
-          body: formData,
-        });
+        const { fetchWithUploadProgress } = await import('@/lib/upload-with-progress');
+        const res = await fetchWithUploadProgress('/api/pdf/sanitize', formData, setProgress);
 
         setProgress(90);
         if (!res.ok) throw new Error('Could not inspect document metadata');
@@ -96,7 +93,7 @@ export function SanitizePdfWorkspace() {
   const handleSanitize = async () => {
     if (!uploadedFile) return;
     setIsProcessing(true);
-    setProgress(30);
+    setProgress(0);
 
     try {
       const formData = new FormData();
@@ -104,11 +101,8 @@ export function SanitizePdfWorkspace() {
       formData.append('action', 'sanitize');
       if (flattenForms) formData.append('flatten', '1');
 
-      setProgress(70);
-      const res = await fetch('/api/pdf/sanitize', {
-        method: 'POST',
-        body: formData,
-      });
+      const { fetchWithUploadProgress } = await import('@/lib/upload-with-progress');
+      const res = await fetchWithUploadProgress('/api/pdf/sanitize', formData, setProgress);
 
       setProgress(95);
       if (!res.ok) throw new Error('Failed to sanitize PDF');

@@ -179,16 +179,9 @@ export function ResizeWorkspace() {
     // Persist print density for DPI converter and print-ready outputs
     formData.append('density', String(dpi));
 
-    let progressInterval: ReturnType<typeof setInterval> | undefined;
     try {
-      progressInterval = setInterval(() => {
-        setProgress((prev) => Math.min(prev + 8, 90));
-      }, 150);
-
-      const response = await fetch('/api/image/process', {
-        method: 'POST',
-        body: formData,
-      });
+      const { fetchWithUploadProgress } = await import('@/lib/upload-with-progress');
+      const response = await fetchWithUploadProgress('/api/image/process', formData, setProgress);
 
       setProgress(100);
 
@@ -218,7 +211,6 @@ export function ResizeWorkspace() {
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Failed to resize image. Please try again.');
     } finally {
-      if (progressInterval) clearInterval(progressInterval);
       setIsProcessing(false);
     }
   }, [dpi, pixelDimensions.height, pixelDimensions.width, setIsProcessing, setProcessedImage, setProgress, uploadedFile]);

@@ -25,6 +25,7 @@ export function ComparePdfWorkspace() {
   const [diffItems, setDiffItems] = useState<DiffItem[]>([]);
   const [stats, setStats] = useState<CompareStats | null>(null);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
+  const [progress, setProgress] = useState<number>(0);
   const [copied, setCopied] = useState<boolean>(false);
 
   const handleReset = useCallback(() => {
@@ -59,16 +60,15 @@ export function ComparePdfWorkspace() {
 
     if (isProcessing) return;
     setIsProcessing(true);
+    setProgress(0);
 
     try {
       const formData = new FormData();
       formData.append('fileA', fileA);
       formData.append('fileB', fileB);
 
-      const res = await fetch('/api/pdf/compare', {
-        method: 'POST',
-        body: formData,
-      });
+      const { fetchWithUploadProgress } = await import('@/lib/upload-with-progress');
+      const res = await fetchWithUploadProgress('/api/pdf/compare', formData, setProgress);
 
       if (!res.ok) {
         const err = await res.json().catch(() => ({ error: 'Comparison failed' }));
@@ -83,6 +83,7 @@ export function ComparePdfWorkspace() {
       toast.error(err.message || 'Comparison failed');
     } finally {
       setIsProcessing(false);
+      setProgress(0);
     }
   };
 
@@ -206,7 +207,7 @@ export function ComparePdfWorkspace() {
               className="gap-2 px-8 font-semibold shadow-sm"
             >
               <ArrowLeftRight className="w-4 h-4" />
-              {isProcessing ? 'Auditing & Comparing Text...' : 'Compare PDF Documents'}
+              {isProcessing ? `Comparing… ${Math.round(progress)}%` : 'Compare PDF Documents'}
             </Button>
           </div>
         )}

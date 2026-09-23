@@ -70,18 +70,15 @@ export function BankStatementWorkspace() {
     (async () => {
       setIsProcessing(true);
       setErrorState(null);
-      setProgress(25);
+      setProgress(0);
 
       try {
         const formData = new FormData();
         formData.append('file', uploadedFile);
         formData.append('format', 'json');
 
-        setProgress(50);
-        const res = await fetch('/api/pdf/bank-statement-to-excel', {
-          method: 'POST',
-          body: formData,
-        });
+        const { fetchWithUploadProgress } = await import('@/lib/upload-with-progress');
+        const res = await fetchWithUploadProgress('/api/pdf/bank-statement-to-excel', formData, setProgress);
 
         setProgress(85);
         const data = await res.json().catch(() => ({ error: 'Failed to read statement' }));
@@ -221,10 +218,8 @@ export function BankStatementWorkspace() {
       // Pass the reviewed/edited transactions so user changes are saved
       formData.append('transactions', JSON.stringify(transactions));
 
-      const res = await fetch('/api/pdf/bank-statement-to-excel', {
-        method: 'POST',
-        body: formData,
-      });
+      const { fetchWithUploadProgress } = await import('@/lib/upload-with-progress');
+      const res = await fetchWithUploadProgress('/api/pdf/bank-statement-to-excel', formData, setProgress);
 
       if (!res.ok) throw new Error(`Export to ${format.toUpperCase()} failed`);
 

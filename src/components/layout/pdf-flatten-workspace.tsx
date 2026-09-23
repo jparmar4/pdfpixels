@@ -77,17 +77,14 @@ export function PDFFlattenWorkspace() {
     }
 
     setIsProcessing(true);
-    setProgress(20);
+    setProgress(0);
 
     try {
       const formData = new FormData();
       formData.append('file', uploadedFile);
 
-      setProgress(60);
-      const res = await fetch('/api/pdf/flatten', {
-        method: 'POST',
-        body: formData,
-      });
+      const { fetchWithUploadProgress } = await import('@/lib/upload-with-progress');
+      const res = await fetchWithUploadProgress('/api/pdf/flatten', formData, setProgress);
 
       setProgress(90);
 

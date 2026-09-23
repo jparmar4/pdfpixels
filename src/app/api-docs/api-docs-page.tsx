@@ -15,6 +15,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { SitePageShell } from '@/components/layout/site-page-shell';
+import { platformLimits } from '@/lib/limits';
 
 export function ApiDocsPage() {
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
@@ -72,9 +73,9 @@ export function ApiDocsPage() {
       align="center"
       stats={[
         { label: 'Auth', value: 'None' },
-        { label: 'Rate limit', value: '60/min' },
-        { label: 'Image cap', value: '100 MB' },
-        { label: 'PDF cap', value: '500 MB' },
+        { label: 'Rate limit', value: `${platformLimits.rateLimits.processingPerRoutePerMinute}/min` },
+        { label: 'Image cap', value: `${platformLimits.image.maxFileMb} MB` },
+        { label: 'PDF cap', value: `${platformLimits.pdf.maxFileMb} MB` },
       ]}
       contentClassName="max-w-6xl"
     >

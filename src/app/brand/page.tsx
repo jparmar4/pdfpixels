@@ -7,7 +7,7 @@ import { allTools } from '@/lib/tools-data';
 import { platformLimits, LIMITS_LAST_REVIEWED } from '@/lib/limits';
 
 export const metadata: Metadata = {
-  title: 'Brand & Press Kit | PdfPixels',
+  title: { absolute: 'Brand & Press Kit | PdfPixels' },
   description:
     'Official PdfPixels boilerplate, platform facts, logos, and citation guidelines for press, partners, and answer engines.',
   alternates: {

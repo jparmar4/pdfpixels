@@ -230,18 +230,10 @@ export function ConvertWorkspace() {
 
     const controller = new AbortController();
     inFlightRef.current = controller;
-    let progressInterval: ReturnType<typeof setInterval> | undefined;
     try {
-      progressInterval = setInterval(() => {
-        setProgress((prev) => Math.min(prev + 10, 90));
-      }, 180);
-
       const endpoint = isPdfToImage ? '/api/pdf/to-image' : '/api/image/process';
-      const response = await fetch(endpoint, {
-        method: 'POST',
-        body: formData,
-        signal: controller.signal,
-      });
+      const { fetchWithUploadProgress } = await import('@/lib/upload-with-progress');
+      const response = await fetchWithUploadProgress(endpoint, formData, setProgress, controller.signal);
 
       setProgress(100);
 
@@ -324,7 +316,6 @@ export function ConvertWorkspace() {
       }
       toast.error(error instanceof Error ? error.message : (isPdfToImage ? 'Failed to convert PDF. Please try again.' : 'Failed to convert image. Please try again.'));
     } finally {
-      if (progressInterval) clearInterval(progressInterval);
       inFlightRef.current = null;
       setIsProcessing(false);
     }

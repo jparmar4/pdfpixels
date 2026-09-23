@@ -1,3 +1,5 @@
+import { platformLimits } from '@/lib/limits';
+
 export interface CategoryContent {
   headline: string;
   longDescription: string;
@@ -140,7 +142,7 @@ export const categoryContentData: Record<string, CategoryContent> = {
       {
         question: 'What is the maximum PDF file size supported on PdfPixels?',
         answer:
-          'PdfPixels supports PDF uploads up to 100MB for standard web processing, which accommodates over 99% of everyday business and academic documents.',
+          `Most PDF tools accept ${platformLimits.pdf.maxFileMb} MB per file. Merge allows ${platformLimits.pdf.merge.maxFiles} files, ${platformLimits.pdf.merge.maxFileMb} MB each, and ${platformLimits.pdf.merge.maxTotalMb} MB combined.`,
       },
       {
         question: 'Does merging PDFs alter the bookmarks or page numbers?',
@@ -293,7 +295,7 @@ export const categoryContentData: Record<string, CategoryContent> = {
       {
         question: 'Are there file size limits for client-side editing tools?',
         answer:
-          'Because client-side tools run directly on your hardware, they can comfortably handle high-resolution photos up to 50MB+ depending on your device’s available RAM.',
+          `Image tools accept up to ${platformLimits.image.maxFileMb} MB per file (${platformLimits.image.maxMegapixels} megapixels). Client-side editing still depends on the device's available memory.`,
       },
     ],
     proTips: [

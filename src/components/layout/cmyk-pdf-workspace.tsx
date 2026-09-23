@@ -32,17 +32,14 @@ export function CmykPdfWorkspace() {
   const handleConvertCmyk = async () => {
     if (!uploadedFile) return;
     setIsProcessing(true);
-    setProgress(25);
+    setProgress(0);
 
     try {
       const formData = new FormData();
       formData.append('file', uploadedFile);
 
-      setProgress(60);
-      const res = await fetch('/api/pdf/to-cmyk', {
-        method: 'POST',
-        body: formData,
-      });
+      const { fetchWithUploadProgress } = await import('@/lib/upload-with-progress');
+      const res = await fetchWithUploadProgress('/api/pdf/to-cmyk', formData, setProgress);
 
       setProgress(90);
       if (!res.ok) {

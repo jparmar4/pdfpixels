@@ -146,7 +146,7 @@ export function PDFFillWorkspace() {
     }
 
     setIsProcessing(true);
-    setProgress(20);
+    setProgress(0);
 
     try {
       const formData = new FormData();
@@ -158,11 +158,8 @@ export function PDFFillWorkspace() {
         formData.append('textEntries', JSON.stringify(entries));
       }
 
-      setProgress(60);
-      const res = await fetch('/api/pdf/fill', {
-        method: 'POST',
-        body: formData,
-      });
+      const { fetchWithUploadProgress } = await import('@/lib/upload-with-progress');
+      const res = await fetchWithUploadProgress('/api/pdf/fill', formData, setProgress);
 
       setProgress(90);
 

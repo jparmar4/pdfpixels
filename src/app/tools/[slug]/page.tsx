@@ -6,11 +6,12 @@ import { ArrowRight, GitCompareArrows, Layers3, LayoutTemplate, type LucideIcon 
 import { ToolContentSection } from '@/components/layout/tool-content-section';
 import { ToolPageClient } from '@/components/layout/tool-page-client';
 import { ToolSidebarAd } from '@/components/ads/tool-sidebar-ad';
-import { FooterAd } from '@/components/ads/ad-banner';
+import { FooterAd, InContentAd } from '@/components/ads/ad-banner';
 import { comparisonPages } from '@/lib/comparisons';
 import { normalizeDisplayText } from '@/lib/display-text';
 import { siteConfig } from '@/lib/seo-config';
 import { absoluteUrl, dedupeKeywords, SITE_CONTENT_UPDATED } from '@/lib/seo';
+import { toolLanguageAlternates } from '@/lib/localized-tools';
 import { toolContentMap } from '@/lib/tool-content-data';
 import { allTools, getToolBySlug, type Tool } from '@/lib/tools-data';
 import { useCasePages } from '@/lib/use-cases';
@@ -163,6 +164,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     keywords,
     alternates: {
       canonical: `/tools/${tool.slug}`,
+      ...(toolLanguageAlternates(tool.slug) ? { languages: toolLanguageAlternates(tool.slug) } : {}),
     },
     openGraph: {
       title: `${title} | ${siteConfig.name}`,
@@ -372,7 +374,7 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
 
   return (
     <>
-      <div className="min-[1400px]:pr-[332px]">
+      <div id="main-content" className={process.env.NEXT_PUBLIC_ADSENSE_SLOT_SIDEBAR ? 'min-[1400px]:pr-[332px]' : undefined}>
         {schemas?.map((schema, index) => (
           <script key={index} type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
         ))}
@@ -406,8 +408,8 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
           <ToolPageClient toolId={tool.id} toolName={cleanToolName} toolDescription={normalizeDisplayText(tool.description)} />
         </Suspense>
 
-        {/* Sticky sidebar / mobile in-content — positioned AFTER the primary tool to comply with AdSense policies */}
-        {hasRichContent && <ToolSidebarAd />}
+        <InContentAd />
+        <ToolSidebarAd />
 
         {/* Editorial content (indexable) sits before mid-page ads for better AdSense policy ratio */}
         <ToolContentSection toolSlug={tool.slug} toolName={cleanToolName} isAI={tool.isAI} processing={tool.processing} />

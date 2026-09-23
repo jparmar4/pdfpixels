@@ -4,7 +4,6 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
-import { AnimatePresence, motion } from 'framer-motion';
 import {
   ArrowRight,
   BookOpen,
@@ -183,13 +182,9 @@ export function Navigation() {
             className="ml-2 flex h-8 w-8 items-center justify-center rounded-full border border-border/50 bg-card/60 text-muted-foreground transition-all duration-200 hover:border-primary/30 hover:bg-card hover:text-foreground"
             aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
           >
-            <AnimatePresence mode="wait">
-              {isDark ? (
-                <motion.div key="sun" initial={{ rotate: -90, scale: 0 }} animate={{ rotate: 0, scale: 1 }} exit={{ rotate: 90, scale: 0 }} transition={{ duration: 0.2 }}><Sun className="h-3.5 w-3.5" /></motion.div>
-              ) : (
-                <motion.div key="moon" initial={{ rotate: 90, scale: 0 }} animate={{ rotate: 0, scale: 1 }} exit={{ rotate: -90, scale: 0 }} transition={{ duration: 0.2 }}><Moon className="h-3.5 w-3.5" /></motion.div>
-              )}
-            </AnimatePresence>
+            <span key={isDark ? 'sun' : 'moon'} className="inline-flex animate-in fade-in zoom-in-75 duration-200">
+              {isDark ? <Sun className="h-3.5 w-3.5" /> : <Moon className="h-3.5 w-3.5" />}
+            </span>
           </button>
         </div>
       </div>
@@ -247,7 +242,7 @@ export function Navigation() {
                       <ChevronRight className={`h-3 w-3 opacity-60 transition-transform duration-300 ${isActive ? 'rotate-90' : 'group-hover:translate-y-0.5 group-hover:rotate-90'}`} />
                     </button>
                     {isActive && (
-                      <motion.div layoutId="nav-pill" className="absolute inset-0 z-0 rounded-full bg-secondary shadow-sm ring-1 ring-border/20" transition={{ type: "spring", bounce: 0.15, duration: 0.5 }} />
+                      <span className="absolute inset-0 z-0 rounded-full bg-secondary shadow-sm ring-1 ring-border/20" />
                     )}
                   </div>
                 );
@@ -320,16 +315,9 @@ export function Navigation() {
 
           <div className={`mx-auto w-full transition-all duration-300 ${scrolled ? 'mt-3 max-w-[80rem] px-4 sm:px-8' : 'mt-0 px-4 sm:px-6 lg:px-8'}`}>
             {/* Breadcrumb navigation for tool pages */}
-            <AnimatePresence>
-              {isToolPage && (
-                <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: 'auto' }}
-                  exit={{ opacity: 0, height: 0 }}
-                  transition={{ duration: 0.2 }}
-                  className="overflow-hidden"
-                >
-                  <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 pb-3 pt-2 text-xs text-muted-foreground">
+            {isToolPage ? (
+              <div className="overflow-hidden animate-in fade-in slide-in-from-top-1 duration-200">
+                <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 pb-3 pt-2 text-xs text-muted-foreground">
                   <Link href="/" className="inline-flex items-center gap-1 transition-colors hover:text-foreground">
                     <Home className="h-3 w-3" />
                     Home
@@ -345,23 +333,17 @@ export function Navigation() {
                     </>
                   )}
                 </nav>
-              </motion.div>
-            )}
-          </AnimatePresence>
+              </div>
+            ) : null}
 
-          <AnimatePresence>
             {activeCategory ? (
-                <motion.div
+              <div
                 id={`mega-menu-${activeCategory.id}`}
                 role="group"
                 aria-label={`${activeCategory.name} tools`}
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.18 }}
                 onMouseEnter={() => openMega(activeCategory.id)}
                 onMouseLeave={closeMega}
-                className="hidden xl:block pb-4"
+                className="hidden xl:block pb-4 animate-in fade-in slide-in-from-top-2 duration-200"
               >
                 <div className="rounded-[1.75rem] border border-border/50 bg-card/95 p-6 shadow-premium">
                   <div className="grid gap-6 lg:grid-cols-[300px_minmax(0,1fr)]">
@@ -401,18 +383,13 @@ export function Navigation() {
                     </div>
                   </div>
                 </div>
-              </motion.div>
+              </div>
             ) : null}
-          </AnimatePresence>
 
-          <AnimatePresence>
             {mobileMenuOpen ? (
-              <motion.div
+              <div
                 id="mobile-menu"
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
-                className="overflow-hidden border-t border-border/30 lg:hidden"
+                className="overflow-hidden border-t border-border/30 lg:hidden animate-in fade-in slide-in-from-top-2 duration-200"
               >
                 <div className="space-y-5 py-4">
                   <div className="grid gap-2 sm:grid-cols-3">
@@ -469,42 +446,30 @@ export function Navigation() {
                     </div>
                   ))}
                 </div>
-              </motion.div>
+              </div>
             ) : null}
-          </AnimatePresence>
         </div>
       </div>
     </header>
 
-      <AnimatePresence>
-        {searchOpen ? (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[60] flex items-start justify-center px-4 pt-[12vh]"
-          >
-            <button type="button" className="absolute inset-0 bg-background/95" onClick={closeSearch} aria-label="Close search" />
+    {searchOpen ? (
+      <div
+        className="fixed inset-0 z-[60] flex items-start justify-center px-4 pt-[12vh] animate-in fade-in duration-200"
+      >
+        <button type="button" className="absolute inset-0 bg-background/95" onClick={closeSearch} aria-label="Close search" />
 
-            <motion.div
-              ref={searchDialogRef}
-              role="dialog"
-              aria-modal="true"
-              aria-label="Search tools"
-              onKeyDown={handleSearchKeyDown}
-              initial={{ opacity: 0, y: -18, scale: 0.985 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: -10, scale: 0.985 }}
-              transition={{ duration: 0.2 }}
-              className={`relative w-full max-w-3xl overflow-hidden rounded-[2rem] border bg-card/98 shadow-premium transition-all duration-300 ${searchFocused ? 'border-primary/40 shadow-primary/10' : 'border-border/50'}`}
-            >
-              {/* Gradient border animation when focused */}
-              {searchFocused && (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  className="pointer-events-none absolute inset-0 rounded-[2rem]"
+        <div
+          ref={searchDialogRef}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Search tools"
+          onKeyDown={handleSearchKeyDown}
+          className={`relative w-full max-w-3xl overflow-hidden rounded-[2rem] border bg-card/98 shadow-premium transition-all duration-300 animate-in fade-in zoom-in-95 slide-in-from-top-4 ${searchFocused ? 'border-primary/40 shadow-primary/10' : 'border-border/50'}`}
+        >
+          {/* Gradient border animation when focused */}
+          {searchFocused && (
+            <div
+              className="pointer-events-none absolute inset-0 rounded-[2rem]"
                   style={{
                     padding: '2px',
                     background: 'linear-gradient(135deg, rgba(99,102,241,0.4), rgba(139,92,246,0.3), rgba(217,70,239,0.2), rgba(6,182,212,0.3), rgba(99,102,241,0.4))',
@@ -627,10 +592,9 @@ export function Navigation() {
                   </div>
                 </div>
               </div>
-            </motion.div>
-          </motion.div>
+            </div>
+          </div>
         ) : null}
-      </AnimatePresence>
     </>
   );
 }

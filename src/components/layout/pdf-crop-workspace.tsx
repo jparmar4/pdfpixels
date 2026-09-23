@@ -84,7 +84,7 @@ export function PDFCropWorkspace() {
     }
 
     setIsProcessing(true);
-    setProgress(20);
+    setProgress(0);
 
     try {
       const formData = new FormData();
@@ -100,11 +100,8 @@ export function PDFCropWorkspace() {
       else if (applyScope === 'even') pagesParam = 'even';
       formData.append('pages', pagesParam);
 
-      setProgress(60);
-      const res = await fetch('/api/pdf/crop', {
-        method: 'POST',
-        body: formData,
-      });
+      const { fetchWithUploadProgress } = await import('@/lib/upload-with-progress');
+      const res = await fetchWithUploadProgress('/api/pdf/crop', formData, setProgress);
 
       setProgress(90);
 

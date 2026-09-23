@@ -19,7 +19,7 @@ import { siteConfig, seoConfig } from '@/lib/seo-config';
 import { getGeoLanguageAlternates } from '@/lib/seo';
 
 export const metadata: Metadata = {
-  title: `${siteConfig.name} - Free Online PDF & Image Tools`,
+  title: { absolute: `${siteConfig.name} - Free Online PDF & Image Tools` },
   description: seoConfig.description,
   alternates: {
     canonical: '/',

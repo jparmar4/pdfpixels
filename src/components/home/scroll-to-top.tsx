@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
-import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowDown, ArrowUp } from 'lucide-react';
 
 const SHOW_AFTER_PX = 280;
@@ -116,61 +115,40 @@ export function ScrollToTop() {
 
   const showAny = showTop || showBottom;
 
-  return (
-    <AnimatePresence>
-      {showAny ? (
-        <motion.div
-          key="scroll-jump-nav"
-          initial={{ opacity: 0, y: 12, scale: 0.95 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: 12, scale: 0.95 }}
-          transition={{ duration: 0.2 }}
-          className="fixed bottom-5 right-4 z-40 flex flex-col gap-2 sm:bottom-6 sm:right-6"
-          role="navigation"
-          aria-label="Page scroll jump controls"
-        >
-          <AnimatePresence initial={false}>
-            {showTop ? (
-              <motion.button
-                key="jump-top"
-                type="button"
-                initial={{ opacity: 0, scale: 0.85 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.85 }}
-                whileHover={{ scale: 1.06 }}
-                whileTap={{ scale: 0.94 }}
-                onClick={jumpTop}
-                className="flex h-11 w-11 items-center justify-center rounded-2xl border border-border/60 bg-card/95 text-foreground shadow-lg backdrop-blur-md transition-colors hover:border-primary/40 hover:text-primary sm:h-12 sm:w-12"
-                aria-label="Jump to top of page"
-                title="Jump to top"
-              >
-                <ArrowUp className="h-5 w-5" />
-              </motion.button>
-            ) : null}
-          </AnimatePresence>
+  if (!showAny) return null;
 
-          <AnimatePresence initial={false}>
-            {showBottom ? (
-              <motion.button
-                key="jump-bottom"
-                type="button"
-                initial={{ opacity: 0, scale: 0.85 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.85 }}
-                whileHover={{ scale: 1.06 }}
-                whileTap={{ scale: 0.94 }}
-                onClick={jumpBottom}
-                className="btn-premium flex h-11 w-11 items-center justify-center rounded-2xl shadow-lg sm:h-12 sm:w-12"
-                aria-label="Jump to bottom of page"
-                title="Jump to bottom"
-              >
-                <ArrowDown className="h-5 w-5 relative z-10" />
-              </motion.button>
-            ) : null}
-          </AnimatePresence>
-        </motion.div>
+  return (
+    <div
+      className="fixed bottom-5 right-4 z-40 flex flex-col gap-2 animate-in fade-in slide-in-from-bottom-2 duration-200 sm:bottom-6 sm:right-6"
+      role="navigation"
+      aria-label="Page scroll jump controls"
+    >
+      {showTop ? (
+        <button
+          key="jump-top"
+          type="button"
+          onClick={jumpTop}
+          className="flex h-11 w-11 items-center justify-center rounded-2xl border border-border/60 bg-card/95 text-foreground shadow-lg backdrop-blur-md transition-all hover:scale-105 hover:border-primary/40 hover:text-primary active:scale-95 sm:h-12 sm:w-12"
+          aria-label="Jump to top of page"
+          title="Jump to top"
+        >
+          <ArrowUp className="h-5 w-5" />
+        </button>
       ) : null}
-    </AnimatePresence>
+
+      {showBottom ? (
+        <button
+          key="jump-bottom"
+          type="button"
+          onClick={jumpBottom}
+          className="btn-premium flex h-11 w-11 items-center justify-center rounded-2xl shadow-lg transition-transform hover:scale-105 active:scale-95 sm:h-12 sm:w-12"
+          aria-label="Jump to bottom of page"
+          title="Jump to bottom"
+        >
+          <ArrowDown className="h-5 w-5 relative z-10" />
+        </button>
+      ) : null}
+    </div>
   );
 }
 

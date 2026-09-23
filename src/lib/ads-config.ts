@@ -4,6 +4,16 @@
 // Keep in sync with public/ads.txt (pub-XXXXXXXX)
 const DEFAULT_PUBLISHER_ID = 'ca-pub-3541576002060495';
 
+export function hasConfiguredAdSlot(): boolean {
+  return Boolean(
+    process.env.NEXT_PUBLIC_ADSENSE_SLOT_HEADER?.trim() ||
+      process.env.NEXT_PUBLIC_ADSENSE_SLOT_SIDEBAR?.trim() ||
+      process.env.NEXT_PUBLIC_ADSENSE_SLOT_IN_CONTENT?.trim() ||
+      process.env.NEXT_PUBLIC_ADSENSE_SLOT_FOOTER?.trim() ||
+      process.env.NEXT_PUBLIC_ADSENSE_SLOT_NATIVE?.trim(),
+  );
+}
+
 export const adsConfig = {
   // Your AdSense Publisher ID (starts with ca-pub-)
   // Find it in your AdSense dashboard: Account > Account information
@@ -13,7 +23,8 @@ export const adsConfig = {
   enabled:
     process.env.NODE_ENV === 'production' &&
     process.env.NEXT_PUBLIC_ADSENSE_ENABLED !== 'false' &&
-    Boolean(process.env.NEXT_PUBLIC_ADSENSE_PUBLISHER_ID || DEFAULT_PUBLISHER_ID),
+    Boolean(process.env.NEXT_PUBLIC_ADSENSE_PUBLISHER_ID || DEFAULT_PUBLISHER_ID) &&
+    hasConfiguredAdSlot(),
 
   // Ad slot IDs for different placements
   // Get these from your AdSense dashboard when you create ad units

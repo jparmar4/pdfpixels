@@ -18,6 +18,7 @@ import {
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { ToolLimitNotice } from './tool-limit-notice';
+import { platformLimits } from '@/lib/limits';
 
 const LANGUAGES = [
     { value: 'eng', label: 'English' },
@@ -187,10 +188,10 @@ export function OCRWorkspace() {
             <div className="grid lg:grid-cols-3 gap-8">
                 {/* Left Panel */}
                 <div className="lg:col-span-2 space-y-6">
-                    <FileUpload accept="image/*" maxSizeMb={15} />
+                    <FileUpload accept="image/*" maxSizeMb={platformLimits.image.ocr.maxFileMb} />
                     <ToolLimitNotice
                         limits={[
-                            'Images only · max 15 MB',
+                            `Images only · max ${platformLimits.image.ocr.maxFileMb} MB`,
                             'Runs in your browser (Tesseract.js)',
                             'High-accuracy mode preprocesses contrast',
                             'Editable text · copy or .txt download',

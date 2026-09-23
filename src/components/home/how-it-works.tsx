@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { Download, Sliders, Upload } from 'lucide-react';
+import { howToData } from '@/lib/seo-config';
 
 const steps = [
   {
@@ -68,6 +69,33 @@ export function HowItWorks() {
               <h3 className="text-lg font-bold mb-2">{step.title}</h3>
               <p className="text-sm text-muted-foreground leading-relaxed max-w-xs mx-auto">{step.description}</p>
             </motion.div>
+          ))}
+        </div>
+
+        {/* Detailed how-to steps — same content the homepage HowTo schema
+            describes, so structured data matches the rendered page. */}
+        <div className="mt-14 grid gap-6 md:grid-cols-2">
+          {howToData.map((howTo) => (
+            <div
+              key={howTo.name}
+              className="rounded-[1.75rem] border border-border/60 bg-card/70 p-6 text-left shadow-soft"
+            >
+              <h3 className="text-lg font-bold text-foreground">{howTo.name}</h3>
+              <p className="mt-1 text-sm text-muted-foreground">{howTo.description}</p>
+              <ol className="mt-4 space-y-3">
+                {howTo.steps.map((step) => (
+                  <li key={step.position} className="flex gap-3 text-sm leading-6 text-muted-foreground">
+                    <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">
+                      {step.position}
+                    </span>
+                    <span>
+                      <strong className="font-semibold text-foreground">{step.name}.</strong>{' '}
+                      {step.text}
+                    </span>
+                  </li>
+                ))}
+              </ol>
+            </div>
           ))}
         </div>
       </div>

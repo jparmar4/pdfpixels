@@ -5,7 +5,9 @@ import { NativeAd } from '@/components/ads/ad-banner';
 // present in the served HTML (AEO extraction) and works without JS.
 // The expand affordance is the browser's own, which is accessible by default.
 export function FAQSection() {
-  const visibleFaqs = faqData.slice(0, 10);
+  // Renders the full faqData list — the same source the homepage FAQPage
+  // schema is built from, so structured data always matches visible HTML.
+  const visibleFaqs = faqData;
 
   return (
     <section id="faq-section" className="py-16 md:py-20 bg-muted/20 border-t border-border/50">

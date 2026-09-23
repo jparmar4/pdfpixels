@@ -217,14 +217,24 @@ function UnlockSettings({ password, setPassword }: { password: string; setPasswo
         <div className="space-y-5">
             <div className="space-y-2">
                 <Label htmlFor="password-2">PDF Password</Label>
-                <Input id="password-2" type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Enter the current PDF password" />
+                <Input
+                    id="password-2"
+                    type="password"
+                    autoComplete="off"
+                    value={password}
+                    onChange={e => setPassword(e.target.value)}
+                    placeholder="Enter the current PDF password"
+                    onKeyDown={e => { if (e.key === 'Enter') e.preventDefault(); }}
+                />
                 <p className="text-xs text-muted-foreground">
                     Enter the existing password to remove encryption and download an unlocked copy.
+                    If the file only has permission restrictions (it opens with no password), leave this blank.
                 </p>
             </div>
             <div className="p-3 rounded-lg bg-blue-500/10 border border-blue-500/20">
                 <p className="text-xs text-blue-600 dark:text-blue-400">
                     The original PDF is not modified. A separate unlocked file is generated for download after processing.
+                    We never store your password.
                 </p>
             </div>
         </div>
@@ -498,7 +508,7 @@ export function PDFToolsWorkspace() {
                 const ab = await uploadedFile.arrayBuffer();
                 const pdf = await PDFDocument.load(new Uint8Array(ab), { ignoreEncryption: true });
                 if (cancelled) return;
-                if (pdf.isEncrypted) {
+                if (pdf.isEncrypted && activeTool?.id !== 'pdf-unlock') {
                     toast.warning('This PDF is password-protected — unlock it first for full editing.');
                 }
                 setTotalPages(pdf.getPageCount());
@@ -512,7 +522,7 @@ export function PDFToolsWorkspace() {
         return () => {
             cancelled = true;
         };
-    }, [uploadedFile]);
+    }, [uploadedFile, activeTool?.id]);
 
     const handleProcess = useCallback(async () => {
         const getEndpoint = () => {
@@ -579,21 +589,27 @@ export function PDFToolsWorkspace() {
         setProgress(0);
         setResult(null);
 
-        let progressInterval: ReturnType<typeof setInterval> | undefined;
         try {
-            progressInterval = setInterval(() => {
-                setProgress(prev => Math.min(prev + 8, 90));
-            }, 200);
-
-            const response = await fetch(getEndpoint(), { method: 'POST', body: formData });
+            const { fetchWithUploadProgress } = await import('@/lib/upload-with-progress');
+            const response = await fetchWithUploadProgress(getEndpoint(), formData, setProgress);
             setProgress(100);
 
             if (!response.ok) {
                 let message = 'Processing failed';
+                let code = '';
                 try {
                     const errText = await response.text();
-                    try { const err = JSON.parse(errText); message = err.error || message; } catch { message = errText || message; }
+                    try {
+                        const err = JSON.parse(errText);
+                        message = err.error || message;
+                        code = err.code || '';
+                    } catch { message = errText || message; }
                 } catch { /* ignore parse error */ }
+                if (code === 'PASSWORD_REQUIRED') {
+                    message = 'This PDF needs its password. Enter the current password below and try again.';
+                } else if (code === 'INVALID_PASSWORD') {
+                    message = 'That password is not correct. Check for typos, caps lock, and try again.';
+                }
                 throw new Error(message);
             }
 
@@ -628,7 +644,9 @@ export function PDFToolsWorkspace() {
                     ? 'PDF rotated successfully.'
                     : tid === 'pdf-watermark'
                         ? 'Watermark added successfully.'
-                        : 'PDF processed successfully!',
+                        : tid === 'pdf-unlock'
+                            ? 'Password removed — your PDF is unlocked.'
+                            : 'PDF processed successfully!',
             );
             requestAnimationFrame(() => {
                 document.getElementById('pdf-tools-result')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -636,7 +654,6 @@ export function PDFToolsWorkspace() {
         } catch (error) {
             toast.error(error instanceof Error ? error.message : 'Failed to process PDF');
         } finally {
-            if (progressInterval) clearInterval(progressInterval);
             setIsProcessing(false);
         }
 

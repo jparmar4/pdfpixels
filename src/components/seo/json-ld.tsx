@@ -83,33 +83,8 @@ function KnowledgeGraphSchema() {
 }
 
 function FAQSchema() {
-  const aeoQuestions = [
-    {
-      '@type': 'Question',
-      name: 'What can I do on PdfPixels?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'PdfPixels helps with PDF and image tasks such as compressing files, resizing photos, converting formats, merging PDFs, splitting PDFs, and removing image backgrounds.',
-      },
-    },
-    {
-      '@type': 'Question',
-      name: 'Do I need to create an account to use PdfPixels?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'No. PdfPixels is designed so users can start core PDF and image workflows without creating an account first.',
-      },
-    },
-    {
-      '@type': 'Question',
-      name: 'Does PdfPixels support mobile browsers?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'Yes. The platform is designed to work across desktop and mobile browsers for common PDF and image tasks.',
-      },
-    },
-  ];
-
+  // Single source of truth: faqData is also what FAQSection renders, so the
+  // schema always matches visible HTML (rich-result eligibility requirement).
   const standardQuestions = faqData.map((faq) => ({
     '@type': 'Question',
     name: faq.question,
@@ -122,10 +97,10 @@ function FAQSchema() {
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
-    mainEntity: [...aeoQuestions, ...standardQuestions],
+    mainEntity: standardQuestions,
   };
 
-  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />;
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema).replace(/</g, '\\u003c') }} />;
 }
 
 function HowToSchemas() {

@@ -70,18 +70,15 @@ export function PDFToPDFAWorkspace() {
     }
 
     setIsProcessing(true);
-    setProgress(20);
+    setProgress(0);
 
     try {
       const formData = new FormData();
       formData.append('file', uploadedFile);
       formData.append('conformance', conformance);
 
-      setProgress(60);
-      const res = await fetch('/api/pdf/to-pdfa', {
-        method: 'POST',
-        body: formData,
-      });
+      const { fetchWithUploadProgress } = await import('@/lib/upload-with-progress');
+      const res = await fetchWithUploadProgress('/api/pdf/to-pdfa', formData, setProgress);
 
       setProgress(90);
 

@@ -349,16 +349,9 @@ export function ToolWorkspace() {
     formData.append('flip', flipV.toString());
     formData.append('flop', flipH.toString());
 
-    let progressInterval: ReturnType<typeof setInterval> | undefined;
     try {
-      progressInterval = setInterval(() => {
-        setProgress((prev) => Math.min(prev + 8, 90));
-      }, 150);
-
-      const response = await fetch('/api/image/process', {
-        method: 'POST',
-        body: formData,
-      });
+      const { fetchWithUploadProgress } = await import('@/lib/upload-with-progress');
+      const response = await fetchWithUploadProgress('/api/image/process', formData, setProgress);
 
       setProgress(100);
 
@@ -379,7 +372,6 @@ export function ToolWorkspace() {
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Failed to process image. Please try again.');
     } finally {
-      if (progressInterval) clearInterval(progressInterval);
       setIsProcessing(false);
     }
   }, [handleClientCanvasProcess, uploadedFile, rotate, flipH, flipV, outputFormat, quality, setIsProcessing, setProcessedImage, setProgress, usesClientCanvas]);

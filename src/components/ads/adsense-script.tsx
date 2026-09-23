@@ -1,30 +1,28 @@
 'use client';
 
-import { hasAdvertisingConsent } from '@/lib/ads-config';
+import { adsConfig, hasAdvertisingConsent } from '@/lib/ads-config';
 import { useEffect } from 'react';
 
-// Google AdSense Script Component
-//
-// The loader script MUST render unconditionally in production: AdSense verifies
-// the code's presence when reviewing the site, and ads cannot serve without it.
-// Personalization stays consent-controlled — without advertising consent we push
-// requestNonPersonalizedAds: 1 (Google's documented fallback for consent-gated
-// traffic), and personalization resumes once consent is granted.
 export function AdSenseScript() {
   useEffect(() => {
-    const handleConsentUpdate = () => {
-      const consent = hasAdvertisingConsent();
-      if (typeof window !== 'undefined') {
-        const adsArr = ((window as unknown as { adsbygoogle: unknown[] }).adsbygoogle =
-          (window as unknown as { adsbygoogle: unknown[] }).adsbygoogle || []);
-        (adsArr as unknown as { requestNonPersonalizedAds?: number }).requestNonPersonalizedAds = consent ? 0 : 1;
-      }
+    const sync = () => {
+      if (!adsConfig.enabled || !hasAdvertisingConsent()) return;
+      const w = window as unknown as {
+        adsbygoogle?: unknown[] & { requestNonPersonalizedAds?: number };
+      };
+      w.adsbygoogle = w.adsbygoogle || [];
+      w.adsbygoogle.requestNonPersonalizedAds = 0;
+      if (document.querySelector('script[data-pdfpixels-adsense]')) return;
+      const script = document.createElement('script');
+      script.async = true;
+      script.src = adsConfig.scriptUrl;
+      script.crossOrigin = 'anonymous';
+      script.dataset.pdfpixelsAdsense = '1';
+      document.head.appendChild(script);
     };
-    handleConsentUpdate();
-    window.addEventListener('cookie-consent-updated', handleConsentUpdate);
-    return () => {
-      window.removeEventListener('cookie-consent-updated', handleConsentUpdate);
-    };
+    sync();
+    window.addEventListener('cookie-consent-updated', sync);
+    return () => window.removeEventListener('cookie-consent-updated', sync);
   }, []);
 
   return null;

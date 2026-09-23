@@ -2,10 +2,11 @@
 
 import { motion } from 'framer-motion';
 import {
-  Download, RotateCcw, FileText, Check, Sparkles, FileEdit
+  RotateCcw, FileText, Check, Sparkles, FileEdit
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAppStore } from '@/store/app-store';
+import { ToolResultBar } from './tool-result-bar';
 import { FileUpload } from './file-upload';
 import { ToolPageHeader } from './tool-page-header';
 import { ToolLimitNotice } from './tool-limit-notice';
@@ -14,7 +15,8 @@ import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
 
 export function PDFToWordWorkspace() {
-  const { uploadedFile, isProcessing, setIsProcessing, setProgress, reset } = useAppStore();
+  const { uploadedFile, isProcessing, progress, setIsProcessing, setProgress, reset } = useAppStore();
+  const [convertError, setConvertError] = useState<string | null>(null);
 
   const [totalPages, setTotalPages] = useState<number>(1);
   const [resultUrl, setResultUrl] = useState<string | null>(null);
@@ -65,17 +67,15 @@ export function PDFToWordWorkspace() {
     }
 
     setIsProcessing(true);
-    setProgress(20);
+    setConvertError(null);
+    setProgress(0);
 
     try {
       const formData = new FormData();
       formData.append('file', uploadedFile);
 
-      setProgress(60);
-      const res = await fetch('/api/pdf/to-word', {
-        method: 'POST',
-        body: formData,
-      });
+      const { fetchWithUploadProgress } = await import('@/lib/upload-with-progress');
+      const res = await fetchWithUploadProgress('/api/pdf/to-word', formData, setProgress);
 
       setProgress(90);
 
@@ -91,7 +91,9 @@ export function PDFToWordWorkspace() {
       setProgress(100);
       toast.success('PDF converted to editable Word document successfully!');
     } catch (err: any) {
-      toast.error(err.message || 'Conversion failed');
+      const message = err?.message || 'Conversion failed';
+      setConvertError(message);
+      toast.error(message);
     } finally {
       setIsProcessing(false);
     }
@@ -147,14 +149,15 @@ export function PDFToWordWorkspace() {
               <div className="space-y-3 text-xs">
                 <div className="p-4 rounded-xl bg-muted/40 border space-y-2">
                   <div className="flex items-center gap-2 font-semibold text-primary">
-                    <FileEdit className="w-4 h-4" /> 100% Editable OpenXML Document
+                    <FileEdit className="w-4 h-4" /> Editable Word document
                   </div>
                   <p className="text-muted-foreground leading-relaxed">
-                    Reconstructs PDF text streams into structured Word paragraphs and headings. Opens cleanly in Microsoft Word 2016+, Office 365, Google Docs, and LibreOffice Writer.
+                    LibreOffice keeps layout when it is installed. Otherwise the file is rebuilt from selectable text, and scans are OCR’d first. Opens in Word, Google Docs, and LibreOffice Writer.
                   </p>
                 </div>
               </div>
 
+              <ToolResultBar error={convertError} />
               <div className="pt-2 flex flex-col gap-2">
                 <Button
                   type="button"
@@ -163,7 +166,7 @@ export function PDFToWordWorkspace() {
                   className="w-full rounded-xl font-semibold gap-2"
                   onClick={handleConvert}
                 >
-                  <FileText className="w-5 h-5" /> {isProcessing ? 'Converting to Word...' : 'Convert to Word (.docx)'}
+                  <FileText className="w-5 h-5" /> {isProcessing ? `Converting… ${Math.round(progress)}%` : 'Convert to Word (.docx)'}
                 </Button>
                 <Button
                   type="button"
@@ -193,9 +196,12 @@ export function PDFToWordWorkspace() {
                       Your editable Word document (.docx) is ready to download.
                     </p>
                   </div>
-                  <Button onClick={handleDownload} className="w-full font-semibold gap-2 rounded-xl">
-                    <Download className="w-4 h-4" /> Download Word Document
-                  </Button>
+                  <ToolResultBar
+                    downloadUrl={resultUrl}
+                    downloadName={resultFileName || 'converted-document.docx'}
+                    summary="Your editable Word document (.docx) is ready."
+                    onDownload={handleDownload}
+                  />
                 </motion.div>
               ) : (
                 <div className="bg-card border rounded-2xl p-6 shadow-sm space-y-4 text-xs">

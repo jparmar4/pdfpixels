@@ -221,7 +221,14 @@ export async function POST(req: NextRequest) {
   try {
     const form = await req.formData()
     const file = form.get('file') as File | null
-    const levelStr = (form.get('level') as string) || 'recommended'
+    const targetKbRaw = Number(form.get('targetKb'))
+    const targetKb = Number.isFinite(targetKbRaw) && targetKbRaw >= 50
+      ? Math.min(10 * 1024, Math.round(targetKbRaw))
+      : 0
+    let levelStr = (form.get('level') as string) || 'recommended'
+    if (targetKb) {
+      levelStr = targetKb <= 300 ? 'extreme' : targetKb <= 1024 ? 'recommended' : 'less'
+    }
     // force=1 returns the best attempt even if savings are small (user choice)
     const force = String(form.get('force') || '') === '1' || String(form.get('force') || '') === 'true'
     const profile = getCompressionProfile(levelStr)
@@ -245,7 +252,7 @@ export async function POST(req: NextRequest) {
     if (encrypted) return encrypted
     const originalBytes = new Uint8Array(originalBuffer)
 
-    const strict = !force
+    const strict = !force && !targetKb
 
     const remoteUrl = process.env.PDF_COMPRESSOR_URL
     const remoteToken = process.env.PDF_COMPRESSOR_TOKEN
@@ -355,6 +362,23 @@ export async function POST(req: NextRequest) {
       finalBytes = originalBuffer
     }
 
+    if (
+      targetKb &&
+      engine === 'ghostscript' &&
+      levelStr !== 'extreme' &&
+      finalBytes.length > targetKb * 1024
+    ) {
+      try {
+        const tighter = await compressWithGhostscript(inputPath, outputPath, compressionProfiles.extreme)
+        if (tighter.length < finalBytes.length) {
+          finalBytes = tighter.length < originalBuffer.length ? tighter : originalBuffer
+          levelStr = 'extreme'
+        }
+      } catch (retryError) {
+        console.error('Target-size recompress failed:', retryError)
+      }
+    }
+
     const savedPercent = toSavedPercent(originalBuffer.length, finalBytes.length)
     // For local fallback, always return the file even with minimal savings
     if (strict && savedPercent < profile.minimumReduction * 100 && engine !== 'local-fallback') {
@@ -382,6 +406,12 @@ export async function POST(req: NextRequest) {
         'x-size-before': String(originalBuffer.length),
         'x-size-after': String(finalBytes.length),
         'x-saved-percent': String(savedPercent),
+        ...(engine === 'local-fallback'
+          ? { 'x-compress-note': 'Ghostscript was unavailable. Images were not recompressed, so a target size could not be met.' }
+          : {}),
+        ...(targetKb
+          ? { 'x-target-kb': String(targetKb), 'x-target-met': String(finalBytes.length <= targetKb * 1024) }
+          : {}),
       },
     })
   } catch (err) {

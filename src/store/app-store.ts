@@ -30,7 +30,7 @@ export const useAppStore = create<AppState>((set) => ({
   progress: 0,
 
   setActiveTool: (tool) => set({ activeTool: tool }),
-  setUploadedFile: (file) => set({ uploadedFile: file, processedImage: null }),
+  setUploadedFile: (file) => set({ uploadedFile: file, processedImage: null, progress: 0 }),
   setProcessedImage: (image) => set({ processedImage: image, isProcessing: false }),
   setIsProcessing: (processing) => set({ isProcessing: processing }),
   setProgress: (progress) => set((state) => ({

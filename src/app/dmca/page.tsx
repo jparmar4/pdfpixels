@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { LegalMetaRow, LegalPageLayout } from '@/components/layout/legal-page-layout';
 
 export const metadata: Metadata = {
-  title: 'DMCA Policy - PdfPixels',
+  title: 'DMCA Policy',
   description: 'DMCA Copyright Policy for PdfPixels, including reporting procedures and file-processing context.',
   alternates: {
     canonical: '/dmca',

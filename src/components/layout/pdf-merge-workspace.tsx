@@ -156,18 +156,12 @@ export function PDFMergeWorkspace() {
 
     const controller = new AbortController();
     inFlightRef.current = controller;
-    let progressInterval: ReturnType<typeof setInterval> | undefined;
     try {
-      progressInterval = setInterval(() => {
-        setStatusLabel('Processing');
-        setProgress((prev) => Math.min(prev + 8, 90));
-      }, 150);
-
-      const response = await fetch('/api/pdf/merge', {
-        method: 'POST',
-        body: formData,
-        signal: controller.signal,
-      });
+      const { fetchWithUploadProgress } = await import('@/lib/upload-with-progress');
+      const response = await fetchWithUploadProgress('/api/pdf/merge', formData, (percent) => {
+        setStatusLabel(percent < 70 ? 'Uploading' : 'Processing');
+        setProgress(percent);
+      }, controller.signal);
 
       setStatusLabel('Finalizing');
       setProgress(100);
@@ -213,13 +207,15 @@ export function PDFMergeWorkspace() {
         document.getElementById('merge-result')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       });
     } catch (error) {
-      if (error instanceof DOMException && error.name === 'AbortError') {
+      if (
+        (error instanceof DOMException && error.name === 'AbortError') ||
+        (error instanceof Error && error.message === 'Upload aborted')
+      ) {
         toast.info('Merge cancelled.');
         return;
       }
       toast.error(error instanceof Error ? error.message : 'Failed to merge PDFs. Please try again.');
     } finally {
-      if (progressInterval) clearInterval(progressInterval);
       inFlightRef.current = null;
       setIsProcessing(false);
       setStatusLabel('Idle');

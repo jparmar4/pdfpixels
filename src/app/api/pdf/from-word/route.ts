@@ -167,6 +167,19 @@ export async function POST(request: NextRequest) {
     }
 
     const buffer = Buffer.from(await file.arrayBuffer());
+    try {
+      const { convertWithLibreOffice } = await import('@/lib/libreoffice');
+      const pdfBytes = await convertWithLibreOffice(buffer, 'docx', 'pdf');
+      const convertedName = file.name.replace(/\.docx$/i, '');
+      return pdfBinaryResponse(new Uint8Array(pdfBytes), sanitizeDownloadFileName(`${convertedName}.pdf`), {
+        'x-convert-engine': 'libreoffice',
+      });
+    } catch (error) {
+      const { isLibreOfficeMissingError } = await import('@/lib/libreoffice');
+      if (!isLibreOfficeMissingError(error)) {
+        console.error('LibreOffice Word to PDF failed, using text layout:', error);
+      }
+    }
     let paragraphs: ParagraphItem[];
     try {
       paragraphs = await parseDocxContent(buffer);
@@ -255,7 +268,10 @@ export async function POST(request: NextRequest) {
     const baseName = file.name.replace(/\.docx$/i, '');
     const fileName = `${baseName}.pdf`;
 
-    return pdfBinaryResponse(outBytes, sanitizeDownloadFileName(fileName));
+    return pdfBinaryResponse(outBytes, sanitizeDownloadFileName(fileName), {
+      'x-convert-engine': 'text-layout',
+      'x-convert-note': 'LibreOffice was unavailable. Images, tables, and complex layouts were not preserved.',
+    });
   } catch (error) {
     return apiInternalError(error, 'Failed to convert Word document to PDF', 'Word to PDF error');
   }

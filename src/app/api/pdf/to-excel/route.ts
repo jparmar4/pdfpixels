@@ -152,6 +152,28 @@ export async function POST(request: NextRequest) {
     if (!opened.ok) return opened.response;
     const { buffer } = opened;
 
+    if (format !== 'csv') {
+      try {
+        const { convertWithLibreOffice } = await import('@/lib/libreoffice');
+        const xlsxBuffer = await convertWithLibreOffice(buffer, 'pdf', 'xlsx');
+        const loName = `${sanitizeDownloadFileName(file?.name ? file.name.replace(/\.pdf$/i, '') : 'financial-table')}.xlsx`;
+        return new NextResponse(new Uint8Array(xlsxBuffer), {
+          status: 200,
+          headers: {
+            'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'Content-Disposition': `attachment; filename="${loName}"`,
+            'Cache-Control': 'no-store, max-age=0',
+            'x-convert-engine': 'libreoffice',
+          },
+        });
+      } catch (error) {
+        const { isLibreOfficeMissingError } = await import('@/lib/libreoffice');
+        if (!isLibreOfficeMissingError(error)) {
+          console.error('LibreOffice PDF to Excel failed, using text extract:', error);
+        }
+      }
+    }
+
     const rawLines = await extractPdfLines(buffer);
 
     // Parse lines into table rows & columns
@@ -175,7 +197,13 @@ export async function POST(request: NextRequest) {
     }
 
     if (tableRows.length === 0) {
-      return apiError('No selectable text found. Run OCR on scanned PDFs first.', 422);
+      const { ocrPdfLines } = await import('@/lib/pdf-ocr');
+      const ocrLines = await ocrPdfLines(buffer);
+      for (const line of ocrLines) tableRows.push([line]);
+    }
+
+    if (tableRows.length === 0) {
+      return apiError('No selectable text found. OCR could not read this scan either.', 422);
     }
 
     const baseName = file?.name ? file.name.replace(/\.pdf$/i, '') : 'financial-table';

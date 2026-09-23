@@ -5,6 +5,7 @@ import { SITE_CONTENT_UPDATED, absoluteUrl } from '@/lib/seo';
 import { allTools, toolCategories } from '@/lib/tools-data';
 import { useCasePages } from '@/lib/use-cases';
 import { geoRegions } from '@/lib/geo-data';
+import { localizedSitemapEntries } from '@/lib/localized-tools';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const evergreen = SITE_CONTENT_UPDATED;
@@ -116,12 +117,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: tool.popular || tool.isAI ? 0.9 : 0.8,
   }));
 
-  const blogPages: MetadataRoute.Sitemap = blogPosts.map((post) => ({
-    url: absoluteUrl(`/blog/${post.slug}`),
-    lastModified: Number.isNaN(Date.parse(post.date)) ? evergreen : new Date(post.date),
-    changeFrequency: 'weekly' as const,
-    priority: 0.78,
-  }));
+  const compressHubSatellites = new Set([
+    'how-to-compress-pdf-file-size',
+    'best-free-pdf-compressor-online',
+  ]);
+  const blogPages: MetadataRoute.Sitemap = blogPosts
+    .filter((post) => !compressHubSatellites.has(post.slug))
+    .map((post) => ({
+      url: absoluteUrl(`/blog/${post.slug}`),
+      lastModified: Number.isNaN(Date.parse(post.date)) ? evergreen : new Date(post.date),
+      changeFrequency: 'weekly' as const,
+      priority: 0.78,
+    }));
 
   const useCaseEntries: MetadataRoute.Sitemap = useCasePages.map((useCase) => ({
     url: absoluteUrl(`/use-cases/${useCase.slug}`),
@@ -161,6 +168,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...useCaseEntries,
     ...comparisonEntries,
     ...blogPages,
+    ...localizedSitemapEntries(),
     ...legalPages,
   ];
 }

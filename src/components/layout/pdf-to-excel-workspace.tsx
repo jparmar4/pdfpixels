@@ -2,11 +2,12 @@
 
 import { motion } from 'framer-motion';
 import {
-  Download, RotateCcw, FileSpreadsheet, Check, Sparkles, Table
+  RotateCcw, FileSpreadsheet, Check, Sparkles, Table
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { useAppStore } from '@/store/app-store';
+import { ToolResultBar } from './tool-result-bar';
 import { FileUpload } from './file-upload';
 import { ToolPageHeader } from './tool-page-header';
 import { ToolLimitNotice } from './tool-limit-notice';
@@ -18,7 +19,8 @@ import {
 } from '@/components/ui/select';
 
 export function PDFToExcelWorkspace() {
-  const { uploadedFile, isProcessing, setIsProcessing, setProgress, reset } = useAppStore();
+  const { uploadedFile, isProcessing, progress, setIsProcessing, setProgress, reset } = useAppStore();
+  const [convertError, setConvertError] = useState<string | null>(null);
 
   const [totalPages, setTotalPages] = useState<number>(1);
   const [format, setFormat] = useState<'xlsx' | 'csv'>('xlsx');
@@ -70,18 +72,16 @@ export function PDFToExcelWorkspace() {
     }
 
     setIsProcessing(true);
-    setProgress(20);
+    setConvertError(null);
+    setProgress(0);
 
     try {
       const formData = new FormData();
       formData.append('file', uploadedFile);
       formData.append('format', format);
 
-      setProgress(60);
-      const res = await fetch('/api/pdf/to-excel', {
-        method: 'POST',
-        body: formData,
-      });
+      const { fetchWithUploadProgress } = await import('@/lib/upload-with-progress');
+      const res = await fetchWithUploadProgress('/api/pdf/to-excel', formData, setProgress);
 
       setProgress(90);
 
@@ -97,7 +97,9 @@ export function PDFToExcelWorkspace() {
       setProgress(100);
       toast.success(`PDF converted to ${format.toUpperCase()} spreadsheet successfully!`);
     } catch (err: any) {
-      toast.error(err.message || 'Conversion failed');
+      const message = err?.message || 'Conversion failed';
+      setConvertError(message);
+      toast.error(message);
     } finally {
       setIsProcessing(false);
     }
@@ -166,14 +168,15 @@ export function PDFToExcelWorkspace() {
 
                 <div className="p-4 rounded-xl bg-muted/40 border space-y-2 text-xs">
                   <div className="flex items-center gap-2 font-semibold text-primary">
-                    <Table className="w-4 h-4" /> Intelligent Table Detection
+                    <Table className="w-4 h-4" /> Spreadsheet export
                   </div>
                   <p className="text-muted-foreground leading-relaxed">
-                    Automatically identifies tabular column dividers, rows, numeric currencies, and headers. Outputs native Excel cells ready for formulas, VLOOKUP, and pivot tables.
+                    LibreOffice writes the workbook when it is installed. CSV and the fallback path split selectable text into cells. Scans are OCR’d when no text layer exists.
                   </p>
                 </div>
               </div>
 
+              <ToolResultBar error={convertError} />
               <div className="pt-2 flex flex-col gap-2">
                 <Button
                   type="button"
@@ -182,7 +185,7 @@ export function PDFToExcelWorkspace() {
                   className="w-full rounded-xl font-semibold gap-2"
                   onClick={handleConvert}
                 >
-                  <FileSpreadsheet className="w-5 h-5" /> {isProcessing ? 'Extracting Tables...' : `Convert to ${format.toUpperCase()}`}
+                  <FileSpreadsheet className="w-5 h-5" /> {isProcessing ? `Extracting… ${Math.round(progress)}%` : `Convert to ${format.toUpperCase()}`}
                 </Button>
                 <Button
                   type="button"
@@ -212,9 +215,13 @@ export function PDFToExcelWorkspace() {
                       Your spreadsheet is ready for analysis in Excel or Google Sheets.
                     </p>
                   </div>
-                  <Button onClick={handleDownload} className="w-full font-semibold gap-2 rounded-xl">
-                    <Download className="w-4 h-4" /> Download {format.toUpperCase()}
-                  </Button>
+                  <ToolResultBar
+                    error={convertError}
+                    downloadUrl={resultUrl}
+                    downloadName={resultFileName || `spreadsheet.${format}`}
+                    summary="Your spreadsheet is ready."
+                    onDownload={handleDownload}
+                  />
                 </motion.div>
               ) : (
                 <div className="bg-card border rounded-2xl p-6 shadow-sm space-y-4 text-xs">

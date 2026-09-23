@@ -35,8 +35,6 @@
 }
 
 :root {
-  --font-dm-sans: "DM Sans", "Segoe UI", system-ui, sans-serif;
-  --font-outfit: "Outfit", "Segoe UI", system-ui, sans-serif;
   --radius: 0.9rem;
   --background: #f7f8fc;
   --foreground: #111827;

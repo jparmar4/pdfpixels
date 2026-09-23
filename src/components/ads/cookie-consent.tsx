@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
-import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -66,18 +65,13 @@ export function CookieConsentBanner() {
   if (!isVisible) return null;
 
   return (
-    <AnimatePresence>
-      <motion.div
-        role="dialog"
-        aria-modal="false"
-        aria-label="Cookie preferences"
-        aria-live="polite"
-        initial={{ opacity: 0, y: 100 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: 100 }}
-        transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-        className="fixed bottom-0 left-0 right-0 z-50 p-4 sm:p-6"
-      >
+    <div
+      role="dialog"
+      aria-modal="false"
+      aria-label="Cookie preferences"
+      aria-live="polite"
+      className="fixed bottom-0 left-0 right-0 z-50 p-4 sm:p-6 animate-in fade-in slide-in-from-bottom-4 duration-300"
+    >
         <Card className="max-w-3xl mx-auto shadow-2xl border-border/50 bg-card/95 backdrop-blur-xl">
           <div className="p-4 sm:p-6">
             {!showSettings ? (
@@ -242,8 +236,7 @@ export function CookieConsentBanner() {
             )}
           </div>
         </Card>
-      </motion.div>
-    </AnimatePresence>
+      </div>
   );
 }
 

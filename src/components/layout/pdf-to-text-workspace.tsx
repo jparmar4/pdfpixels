@@ -32,18 +32,15 @@ export function PDFToTextWorkspace() {
     let active = true;
     (async () => {
       setIsProcessing(true);
-      setProgress(20);
+      setProgress(0);
 
       try {
         const formData = new FormData();
         formData.append('file', uploadedFile);
         formData.append('format', 'json');
 
-        setProgress(60);
-        const res = await fetch('/api/pdf/to-text', {
-          method: 'POST',
-          body: formData,
-        });
+        const { fetchWithUploadProgress } = await import('@/lib/upload-with-progress');
+        const res = await fetchWithUploadProgress('/api/pdf/to-text', formData, setProgress);
 
         setProgress(90);
 

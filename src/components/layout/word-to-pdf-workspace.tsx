@@ -2,10 +2,11 @@
 
 import { motion } from 'framer-motion';
 import {
-  Download, RotateCcw, FileText, Check, Sparkles, FileCheck
+  RotateCcw, FileText, Check, Sparkles, FileCheck, AlertTriangle
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAppStore } from '@/store/app-store';
+import { ToolResultBar } from './tool-result-bar';
 import { FileUpload } from './file-upload';
 import { ToolPageHeader } from './tool-page-header';
 import { ToolLimitNotice } from './tool-limit-notice';
@@ -14,10 +15,12 @@ import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
 
 export function WordToPDFWorkspace() {
-  const { uploadedFile, isProcessing, setIsProcessing, setProgress, reset } = useAppStore();
+  const { uploadedFile, isProcessing, progress, setIsProcessing, setProgress, reset } = useAppStore();
 
   const [resultUrl, setResultUrl] = useState<string | null>(null);
   const [resultFileName, setResultFileName] = useState<string>('');
+  const [convertError, setConvertError] = useState<string | null>(null);
+  const [engineNote, setEngineNote] = useState<string | null>(null);
 
   useEffect(() => {
     if (!uploadedFile) {
@@ -47,16 +50,17 @@ export function WordToPDFWorkspace() {
     }
 
     setIsProcessing(true);
-    setProgress(20);
+    setConvertError(null);
+    setEngineNote(null);
+    setProgress(0);
 
     try {
       const formData = new FormData();
       formData.append('file', uploadedFile);
 
-      setProgress(60);
-      const res = await fetch('/api/pdf/from-word', {
-        method: 'POST',
-        body: formData,
+      const { fetchWithUploadProgress } = await import('@/lib/upload-with-progress');
+      const res = await fetchWithUploadProgress('/api/pdf/from-word', formData, (percent) => {
+        setProgress(percent);
       });
 
       setProgress(90);
@@ -66,14 +70,26 @@ export function WordToPDFWorkspace() {
         throw new Error(err.error || 'Failed to convert Word to PDF');
       }
 
+      const convertEngine = res.headers.get('x-convert-engine');
+      const convertNote = res.headers.get('x-convert-note');
+      if (convertEngine === 'text-layout') {
+        setEngineNote(convertNote || 'LibreOffice was unavailable. Images, tables, and complex layouts were not preserved.');
+      }
+
       const blob = await res.blob();
       const url = URL.createObjectURL(blob);
       setResultUrl(url);
       setResultFileName(uploadedFile.name.replace(/\.docx$/i, '.pdf'));
       setProgress(100);
-      toast.success('Word document converted to PDF successfully!');
+      if (convertEngine === 'libreoffice') {
+        toast.success('Word document converted with full layout preservation!');
+      } else {
+        toast.success('Word document converted to PDF (text layout).');
+      }
     } catch (err: any) {
-      toast.error(err.message || 'Conversion failed');
+      const message = err.message || 'Conversion failed';
+      setConvertError(message);
+      toast.error(message);
     } finally {
       setIsProcessing(false);
     }
@@ -140,6 +156,7 @@ export function WordToPDFWorkspace() {
               </div>
 
               <div className="pt-2 flex flex-col gap-2">
+                <ToolResultBar error={convertError} />
                 <Button
                   type="button"
                   disabled={isProcessing}
@@ -147,7 +164,7 @@ export function WordToPDFWorkspace() {
                   className="w-full rounded-xl font-semibold gap-2"
                   onClick={handleConvert}
                 >
-                  <FileText className="w-5 h-5" /> {isProcessing ? 'Converting Document...' : 'Convert to PDF'}
+                  <FileText className="w-5 h-5" /> {isProcessing ? `Converting… ${Math.round(progress)}%` : 'Convert to PDF'}
                 </Button>
                 <Button
                   type="button"
@@ -177,9 +194,18 @@ export function WordToPDFWorkspace() {
                       Your Word document is now a standard PDF file.
                     </p>
                   </div>
-                  <Button onClick={handleDownload} className="w-full font-semibold gap-2 rounded-xl">
-                    <Download className="w-4 h-4" /> Download PDF Document
-                  </Button>
+                  {engineNote ? (
+                    <p className="flex items-start gap-2 rounded-xl border border-amber-500/25 bg-amber-500/10 p-3 text-left text-xs leading-5 text-amber-900 dark:text-amber-100">
+                      <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
+                      {engineNote}
+                    </p>
+                  ) : null}
+                  <ToolResultBar
+                    downloadUrl={resultUrl}
+                    downloadName={resultFileName || 'converted-document.pdf'}
+                    summary="Your PDF document is ready."
+                    onDownload={handleDownload}
+                  />
                 </motion.div>
               ) : (
                 <div className="bg-card border rounded-2xl p-6 shadow-sm space-y-4 text-xs">

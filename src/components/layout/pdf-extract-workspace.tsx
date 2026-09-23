@@ -132,7 +132,7 @@ export function PDFExtractWorkspace() {
     }
 
     setIsProcessing(true);
-    setProgress(20);
+    setProgress(0);
 
     try {
       const formData = new FormData();
@@ -140,11 +140,8 @@ export function PDFExtractWorkspace() {
       const pagesStr = Array.from(selectedPages).sort((a, b) => a - b).join(',');
       formData.append('pages', pagesStr);
 
-      setProgress(60);
-      const res = await fetch('/api/pdf/extract', {
-        method: 'POST',
-        body: formData,
-      });
+      const { fetchWithUploadProgress } = await import('@/lib/upload-with-progress');
+      const res = await fetchWithUploadProgress('/api/pdf/extract', formData, setProgress);
 
       setProgress(90);
 

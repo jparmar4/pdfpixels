@@ -21,12 +21,6 @@ import { AnimatedMeshBg } from '@/components/ui/animated-mesh-bg';
 import { HeaderAd, FooterAd } from '@/components/ads/ad-banner';
 import { CategoryGridClient } from './category-grid-client';
 import { categoryContentData } from '@/lib/category-content-data';
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@/components/ui/accordion';
 
 export function generateStaticParams() {
   return toolCategories.map((category) => ({
@@ -334,19 +328,23 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
                     <p className="text-xs text-muted-foreground">Questions about {cleanName.toLowerCase()}</p>
                   </div>
                 </div>
-                <div className="mt-6">
-                  <Accordion type="single" collapsible className="w-full">
-                    {content.faqs.map((faq, i) => (
-                      <AccordionItem key={i} value={`faq-${i}`} className="border-border/40">
-                        <AccordionTrigger className="text-left text-sm font-semibold text-foreground hover:text-primary">
-                          {faq.question}
-                        </AccordionTrigger>
-                        <AccordionContent className="text-xs leading-6 text-muted-foreground">
-                          {faq.answer}
-                        </AccordionContent>
-                      </AccordionItem>
-                    ))}
-                  </Accordion>
+                <div className="mt-6 space-y-3">
+                  {content.faqs.map((faq, i) => (
+                    <details
+                      key={i}
+                      className="group rounded-2xl border border-border/60 bg-card/60 dark:bg-card/40 overflow-hidden transition-all duration-300 open:border-primary/30 open:shadow-lg open:shadow-primary/5"
+                    >
+                      <summary className="flex w-full cursor-pointer list-none items-center justify-between gap-4 p-4 text-left text-sm font-semibold text-foreground hover:bg-primary/[0.02] transition-colors [&::-webkit-details-marker]:hidden">
+                        {faq.question}
+                        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-muted transition-all duration-300 group-open:rotate-180 group-open:bg-primary/10">
+                          <svg className="h-3.5 w-3.5 text-muted-foreground group-open:text-primary" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
+                        </span>
+                      </summary>
+                      <div className="px-4 pb-4 text-xs leading-6 text-muted-foreground">
+                        {faq.answer}
+                      </div>
+                    </details>
+                  ))}
                 </div>
               </div>
             </div>

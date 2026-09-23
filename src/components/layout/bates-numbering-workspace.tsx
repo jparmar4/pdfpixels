@@ -43,7 +43,7 @@ export function BatesNumberingWorkspace() {
     }
 
     setIsProcessing(true);
-    setProgress(20);
+    setProgress(0);
 
     try {
       const formData = new FormData();
@@ -56,11 +56,8 @@ export function BatesNumberingWorkspace() {
       formData.append('fontSize', String(fontSize));
       if (banner) formData.append('banner', banner);
 
-      setProgress(60);
-      const res = await fetch('/api/pdf/bates-numbering', {
-        method: 'POST',
-        body: formData,
-      });
+      const { fetchWithUploadProgress } = await import('@/lib/upload-with-progress');
+      const res = await fetchWithUploadProgress('/api/pdf/bates-numbering', formData, setProgress);
 
       setProgress(90);
       if (!res.ok) {

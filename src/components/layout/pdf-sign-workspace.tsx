@@ -208,7 +208,7 @@ export function PDFSignWorkspace() {
     }
 
     setIsProcessing(true);
-    setProgress(10);
+    setProgress(0);
 
     try {
       const formData = new FormData();
@@ -223,11 +223,8 @@ export function PDFSignWorkspace() {
         formData.append('dateText', `Date: ${dateText}`);
       }
 
-      setProgress(40);
-      const res = await fetch('/api/pdf/sign', {
-        method: 'POST',
-        body: formData,
-      });
+      const { fetchWithUploadProgress } = await import('@/lib/upload-with-progress');
+      const res = await fetchWithUploadProgress('/api/pdf/sign', formData, setProgress);
 
       setProgress(90);
 

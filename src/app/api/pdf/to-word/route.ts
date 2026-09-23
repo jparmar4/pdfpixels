@@ -117,9 +117,30 @@ export async function POST(request: NextRequest) {
     if (!opened.ok) return opened.response;
     const { buffer } = opened;
 
-    const lines = await extractPdfLines(buffer);
-    if (!lines.length) return apiError('No selectable text found. Run OCR on scanned PDFs first.', 422);
-    const docxBuffer = await buildDocxZip(lines);
+    let docxBuffer: Buffer | null = null;
+    let engine = 'text-extract';
+    try {
+      const { convertWithLibreOffice } = await import('@/lib/libreoffice');
+      docxBuffer = await convertWithLibreOffice(buffer, 'pdf', 'docx');
+      engine = 'libreoffice';
+    } catch (error) {
+      const { isLibreOfficeMissingError } = await import('@/lib/libreoffice');
+      if (!isLibreOfficeMissingError(error)) {
+        console.error('LibreOffice PDF to Word failed, using text extract:', error);
+      }
+    }
+
+    if (!docxBuffer) {
+      let lines = await extractPdfLines(buffer);
+      engine = 'text-extract';
+      if (!lines.length) {
+        const { ocrPdfLines } = await import('@/lib/pdf-ocr');
+        lines = await ocrPdfLines(buffer);
+        engine = 'ocr';
+      }
+      if (!lines.length) return apiError('No selectable text found. OCR could not read this scan either.', 422);
+      docxBuffer = await buildDocxZip(lines);
+    }
 
     const baseName = file?.name ? file.name.replace(/\.pdf$/i, '') : 'converted';
     const fileName = `${sanitizeDownloadFileName(baseName)}.docx`;
@@ -130,6 +151,7 @@ export async function POST(request: NextRequest) {
         'Content-Type': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
         'Content-Disposition': `attachment; filename="${fileName}"`,
         'Cache-Control': 'no-store, max-age=0',
+        'x-convert-engine': engine,
       },
     });
   } catch (error) {

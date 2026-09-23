@@ -80,7 +80,12 @@ export async function generateMetadata({
             images: [`${siteConfig.url}${post.coverImage}`],
         },
         alternates: {
-            canonical: `/blog/${slug}`,
+            canonical: [
+              'how-to-compress-pdf-file-size',
+              'best-free-pdf-compressor-online',
+            ].includes(slug)
+              ? '/blog/how-to-compress-pdf-online'
+              : `/blog/${slug}`,
         },
         other: {
             'article:author': post.author,
@@ -197,6 +202,17 @@ export default async function BlogPostPage({
         <>
             
             <ReadingProgressBar />
+            {/compress-pdf|compress-scanned|reduce-pdf-size|pdf-compressor|pdf-file-size|pdf-file-so-large/.test(slug) ? (
+              <div className="container mx-auto px-4 pt-6">
+                <p className="rounded-xl border border-border bg-card px-4 py-3 text-sm text-muted-foreground">
+                  {slug === 'how-to-compress-pdf-online' ? (
+                    <Link className="font-semibold text-primary" href="/tools/compress-pdf">Open the compress PDF tool</Link>
+                  ) : (
+                    <Link className="font-semibold text-primary" href="/blog/how-to-compress-pdf-online">Read the compress PDF hub</Link>
+                  )}
+                </p>
+              </div>
+            ) : null}
 
             {/* JSON-LD Schemas */}
             <Script

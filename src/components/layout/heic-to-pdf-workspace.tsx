@@ -12,6 +12,7 @@ export function HeicToPdfWorkspace() {
   const [orientation, setOrientation] = useState<'auto' | 'portrait' | 'landscape'>('auto');
   const [margin, setMargin] = useState<number>(20);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
+  const [progress, setProgress] = useState<number>(0);
   const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
   const [pdfFileName, setPdfFileName] = useState<string>('');
 
@@ -36,6 +37,7 @@ export function HeicToPdfWorkspace() {
     }
 
     setIsProcessing(true);
+    setProgress(0);
 
     try {
       const formData = new FormData();
@@ -45,10 +47,8 @@ export function HeicToPdfWorkspace() {
       formData.append('orientation', orientation);
       formData.append('margin', String(margin));
 
-      const res = await fetch('/api/pdf/from-heic', {
-        method: 'POST',
-        body: formData,
-      });
+      const { fetchWithUploadProgress } = await import('@/lib/upload-with-progress');
+      const res = await fetchWithUploadProgress('/api/pdf/from-heic', formData, setProgress);
 
       if (!res.ok) {
         const err = await res.json().catch(() => ({ error: 'Conversion failed' }));
@@ -65,6 +65,7 @@ export function HeicToPdfWorkspace() {
       toast.error(err.message || 'HEIC to PDF conversion failed');
     } finally {
       setIsProcessing(false);
+      setProgress(0);
     }
   };
 
@@ -194,7 +195,7 @@ export function HeicToPdfWorkspace() {
                     className="gap-2 font-semibold shadow-sm"
                   >
                     <FileImage className="w-4 h-4" />
-                    {isProcessing ? 'Converting iPhone Photos...' : `Convert ${files.length} Photo${files.length > 1 ? 's' : ''} to PDF`}
+                    {isProcessing ? `Converting… ${Math.round(progress)}%` : `Convert ${files.length} Photo${files.length > 1 ? 's' : ''} to PDF`}
                   </Button>
                 ) : (
                   <div className="flex items-center gap-3">

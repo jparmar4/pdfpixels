@@ -1,5 +1,5 @@
 [phases.setup]
-aptPkgs = ["ghostscript", "qpdf"]
+aptPkgs = ["ghostscript", "qpdf", "libreoffice-writer", "libreoffice-calc", "tesseract-ocr", "tesseract-ocr-eng", "fonts-liberation"]
 
 [phases.install]
 cmds = ["npm ci"]
