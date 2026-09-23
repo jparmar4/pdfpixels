@@ -204,7 +204,7 @@ export function CompressPDFWorkspace({ targetPreset }: CompressPDFWorkspaceProps
       } else if (goalBytes && processedSize > goalBytes) {
         toast.warning(`Output is ${formatSize(processedSize)}, above the requested limit. Try Smallest size or split the PDF.`);
       } else if (savedPercent < 1) {
-        toast.message('File returned with little size change — it may already be optimized.');
+        toast.message(compressNote || 'File returned with little size change — it may already be optimized.');
       } else {
         toast.success(`PDF compressed by ${savedPercent}% (${formatSize(originalSize)} → ${formatSize(processedSize)}).`);
       }

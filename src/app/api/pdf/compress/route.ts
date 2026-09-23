@@ -282,8 +282,6 @@ export async function POST(req: NextRequest) {
 
     const originalBytes = new Uint8Array(originalBuffer)
 
-    const strict = !force && !targetKb
-
     const remoteUrl = process.env.PDF_COMPRESSOR_URL
     const remoteToken = process.env.PDF_COMPRESSOR_TOKEN
 
@@ -316,33 +314,38 @@ export async function POST(req: NextRequest) {
           }
           const savedPercent = toSavedPercent(originalBuffer.length, out.length)
 
-          if (!strict || savedPercent >= profile.minimumReduction * 100) {
-            return new Response(new Uint8Array(out), {
-              headers: {
-                'Content-Type': 'application/pdf',
-                'Content-Disposition': `attachment; filename="${downloadName}"`,
-                'x-compress-engine': 'railway-gs',
-                'x-compress-level': levelStr,
-                'x-size-before': String(originalBuffer.length),
-                'x-size-after': String(out.length),
-                'x-saved-percent': String(savedPercent),
-              },
+          // Already-optimized PDFs: return the best remote bytes instead of a
+          // hard error. Block only when a target size was requested and missed.
+          if (targetKb && out.length > targetKb * 1024 && !force) {
+            return new Response(JSON.stringify({
+              error: `Output is ${Math.round(out.length / 1024)} KB — above the ${targetKb} KB target. Try Smallest size or force download.`,
+              before: originalBuffer.length,
+              after: out.length,
+              savedPercent,
+              engine: 'railway-gs',
+              canForce: true,
+            }), {
+              status: 422,
+              headers: { 'Content-Type': 'application/json' },
             })
           }
 
-          // Remote succeeded but savings too small — do NOT fall through to local
-          return new Response(JSON.stringify({
-            error: savedPercent > 0
-              ? `Compression only reduced this PDF by ${savedPercent}%. It is likely already optimized. Try a different preset or force download.`
-              : 'Compression did not reduce this PDF in a meaningful way. Try Smallest size, or force download the best attempt.',
-            before: originalBuffer.length,
-            after: out.length,
-            savedPercent,
-            engine: 'railway-gs',
-            canForce: true,
-          }), {
-            status: 422,
-            headers: { 'Content-Type': 'application/json' },
+          return new Response(new Uint8Array(out), {
+            headers: {
+              'Content-Type': 'application/pdf',
+              'Content-Disposition': `attachment; filename="${downloadName}"`,
+              'x-compress-engine': 'railway-gs',
+              'x-compress-level': levelStr,
+              'x-size-before': String(originalBuffer.length),
+              'x-size-after': String(out.length),
+              'x-saved-percent': String(savedPercent),
+              ...(savedPercent < 1
+                ? { 'x-compress-note': 'This PDF appears already optimized — little or no further size reduction was possible.' }
+                : {}),
+              ...(targetKb
+                ? { 'x-target-kb': String(targetKb), 'x-target-met': String(out.length <= targetKb * 1024) }
+                : {}),
+            },
           })
         }
 
@@ -398,17 +401,37 @@ export async function POST(req: NextRequest) {
       finalBytes = originalBuffer
     }
 
+    // First pass under-saved: auto-retry Extreme (110 DPI / JPEG 58) before failing.
+    // Scanned PDFs already near 150 DPI barely move under Recommended.
+    let activeLevel = levelStr
+    const minSave = profile.minimumReduction * 100
+    if (
+      engine === 'ghostscript' &&
+      activeLevel !== 'extreme' &&
+      toSavedPercent(originalBuffer.length, finalBytes.length) < minSave
+    ) {
+      try {
+        const tighter = await compressWithGhostscript(inputPath, outputPath, compressionProfiles.extreme, gsTimeoutMs)
+        if (tighter.length < finalBytes.length) {
+          finalBytes = tighter.length < originalBuffer.length ? tighter : originalBuffer
+          activeLevel = 'extreme'
+        }
+      } catch (retryError) {
+        console.error('Extreme recompress failed:', retryError)
+      }
+    }
+
     if (
       targetKb &&
       engine === 'ghostscript' &&
-      levelStr !== 'extreme' &&
+      activeLevel !== 'extreme' &&
       finalBytes.length > targetKb * 1024
     ) {
       try {
         const tighter = await compressWithGhostscript(inputPath, outputPath, compressionProfiles.extreme, gsTimeoutMs)
         if (tighter.length < finalBytes.length) {
           finalBytes = tighter.length < originalBuffer.length ? tighter : originalBuffer
-          levelStr = 'extreme'
+          activeLevel = 'extreme'
         }
       } catch (retryError) {
         console.error('Target-size recompress failed:', retryError)
@@ -416,12 +439,12 @@ export async function POST(req: NextRequest) {
     }
 
     const savedPercent = toSavedPercent(originalBuffer.length, finalBytes.length)
-    // For local fallback, always return the file even with minimal savings
-    if (strict && savedPercent < profile.minimumReduction * 100 && engine !== 'local-fallback') {
+    // Already-optimized PDF: return the best bytes we have instead of a hard
+    // error. Client shows a clear "already optimized" toast for <1% savings.
+    // Only block when the user asked for a target size and we missed it.
+    if (targetKb && finalBytes.length > targetKb * 1024 && !force) {
       return new Response(JSON.stringify({
-        error: savedPercent > 0
-          ? `Compression only reduced this PDF by ${savedPercent}%. It is likely already optimized. Try another preset or force download.`
-          : 'Unable to reduce this PDF in a meaningful way. Scanned or image-heavy PDFs compress best with Ghostscript.',
+        error: `Output is ${Math.round(finalBytes.length / 1024)} KB — above the ${targetKb} KB target. Try Smallest size or force download.`,
         before: originalBuffer.length,
         after: finalBytes.length,
         savedPercent,
@@ -438,13 +461,15 @@ export async function POST(req: NextRequest) {
         'Content-Type': 'application/pdf',
         'Content-Disposition': `attachment; filename="${downloadName}"`,
         'x-compress-engine': engine,
-        'x-compress-level': levelStr,
+        'x-compress-level': activeLevel,
         'x-size-before': String(originalBuffer.length),
         'x-size-after': String(finalBytes.length),
         'x-saved-percent': String(savedPercent),
         ...(engine === 'local-fallback'
           ? { 'x-compress-note': 'Ghostscript was unavailable. Images were not recompressed, so a target size could not be met.' }
-          : {}),
+          : savedPercent < 1
+            ? { 'x-compress-note': 'This PDF appears already optimized — little or no further size reduction was possible.' }
+            : {}),
         ...(targetKb
           ? { 'x-target-kb': String(targetKb), 'x-target-met': String(finalBytes.length <= targetKb * 1024) }
           : {}),
