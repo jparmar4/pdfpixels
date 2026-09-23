@@ -127,7 +127,7 @@ export function PDFFlattenWorkspace() {
       />
       <ToolLimitNotice
         limits={[
-          'PDF only · max 25 MB',
+          'PDF only · max 50 MB',
           'Converts all form inputs into uneditable vector paths',
           'Compliant with PACER, IRS, USCIS, and court e-filing systems',
         ]}

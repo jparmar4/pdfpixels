@@ -9,7 +9,7 @@ import crypto from 'crypto';
 const app = express();
 const upload = multer({
   storage: multer.memoryStorage(),
-  limits: { fileSize: 25 * 1024 * 1024 },
+  limits: { fileSize: 50 * 1024 * 1024 },
 });
 
 const PORT = process.env.PORT || 8080;

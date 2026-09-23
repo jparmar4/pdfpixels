@@ -750,14 +750,14 @@ return (
         <div className="grid lg:grid-cols-3 gap-8">
             {/* Left Panel */}
             <div className="lg:col-span-2 space-y-6">
-                <FileUpload accept=".pdf,application/pdf" maxSizeMb={25} />
+                <FileUpload accept=".pdf,application/pdf" />
                 <ToolLimitNotice
                     limits={
                         activeTool.id === 'pdf-rotate'
-                            ? ['PDF only · max 25 MB', 'Rotate all or selected pages', '90° / 180° / 270°']
+                            ? ['PDF only · max 50 MB', 'Rotate all or selected pages', '90° / 180° / 270°']
                             : activeTool.id === 'pdf-watermark'
-                                ? ['PDF only · max 25 MB', 'Text watermark on every page', 'Opacity, position, rotation']
-                                : ['PDF only · max 25 MB', 'Processed in a secure session']
+                                ? ['PDF only · max 50 MB', 'Text watermark on every page', 'Opacity, position, rotation']
+                                : ['PDF only · max 50 MB', 'Processed in a secure session']
                     }
                 />
 
@@ -909,7 +909,7 @@ return (
                         ) : (
                             <li className="flex items-start gap-2">
                                 <ChevronRight className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                                <span>Supports PDFs up to 25 MB.</span>
+                                <span>Supports PDFs up to 50 MB.</span>
                             </li>
                         )}
                         <li className="flex items-start gap-2">

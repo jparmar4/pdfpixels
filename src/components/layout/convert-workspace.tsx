@@ -205,8 +205,8 @@ export function ConvertWorkspace() {
       toast.error('This file is empty. Please choose a valid file.');
       return;
     }
-    if (uploadedFile.size > 25 * 1024 * 1024) {
-      toast.error('File too large. Maximum size is 25 MB.');
+    if (uploadedFile.size > (isPdfToImage ? 50 * 1024 * 1024 : 25 * 1024 * 1024)) {
+      toast.error(`File too large. Maximum size is ${isPdfToImage ? 50 : 25} MB.`);
       return;
     }
 
@@ -381,12 +381,12 @@ export function ConvertWorkspace() {
                 ? '.pdf,application/pdf'
                 : 'image/*,.heic,.heif,image/heic,image/heif'
             }
-            maxSizeMb={25}
+            maxSizeMb={isPdfToImage ? 50 : 25}
           />
           <ToolLimitNotice
             limits={
               isPdfToImage
-                ? ['PDF only · max 25 MB', 'Up to 10 pages per conversion', 'ZIP download for multi-page', 'JPG / PNG / WebP']
+                ? ['PDF only · max 50 MB', 'Up to 10 pages per conversion', 'ZIP download for multi-page', 'JPG / PNG / WebP']
                 : ['Image input only', 'Quality affects size & fidelity', 'Pick format for your use case']
             }
           />

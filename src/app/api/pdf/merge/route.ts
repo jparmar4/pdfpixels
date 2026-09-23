@@ -6,7 +6,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { PDFDocument } from 'pdf-lib';
 
 const MAX_FILES = 20;
-const MAX_FILE_SIZE = 25 * 1024 * 1024;
+const MAX_FILE_SIZE = 50 * 1024 * 1024;
 const MAX_TOTAL_SIZE = 100 * 1024 * 1024;
 const MAX_TOTAL_PAGES = 1000;
 
@@ -56,7 +56,7 @@ export async function POST(request: NextRequest) {
 
     for (const file of files) {
       if (file.size > MAX_FILE_SIZE) {
-        return apiError(`File "${file.name}" is too large (25MB max per file).`, 400);
+        return apiError(`File "${file.name}" is too large (50MB max per file).`, 400);
       }
 
       if (!isPdfFile(file)) {

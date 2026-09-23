@@ -120,7 +120,7 @@ export function PDFToWordWorkspace() {
       />
       <ToolLimitNotice
         limits={[
-          'PDF only · max 25 MB',
+          'PDF only · max 50 MB',
           'Converts PDF text streams into editable Microsoft Word (.docx) format',
           'Maintains paragraph divisions and text formatting',
         ]}

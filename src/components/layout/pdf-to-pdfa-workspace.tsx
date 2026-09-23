@@ -121,7 +121,7 @@ export function PDFToPDFAWorkspace() {
       />
       <ToolLimitNotice
         limits={[
-          'PDF only · max 25 MB',
+          'PDF only · max 50 MB',
           'Conforms to ISO 19005-1 (PDF/A-1b) and ISO 19005-2 (PDF/A-2b)',
           'Embeds all font glyphs and color ICC profiles for permanent archiving',
         ]}

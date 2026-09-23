@@ -38,7 +38,7 @@ const deTools: Record<LocalizedToolSlug, LocalizedToolCopy> = {
     howTitle: 'PDF verkleinern',
     intro: 'Der Kompressor nutzt Ghostscript und reduziert nur die Bilder im PDF. Vektortext bleibt erhalten. Sehr kleine Einsparungen werden abgelehnt, damit ein bereits optimiertes Dokument nicht als Erfolg ausgegeben wird.',
     steps: [
-      'PDF hochladen (höchstens 25 MB).',
+      'PDF hochladen (höchstens 50 MB).',
       'Stufe wählen: kleinste Datei, empfohlen oder hohe Qualität.',
       'Die kleinere PDF herunterladen und die Prozentzahl prüfen.',
     ],
@@ -50,7 +50,7 @@ const deTools: Record<LocalizedToolSlug, LocalizedToolCopy> = {
     howTitle: 'Mehrere PDFs verbinden',
     intro: 'Die Seiten werden serverseitig in der Reihenfolge zusammengefügt, die Sie festlegen. Lesezeichen der Quelldateien werden dabei nicht neu aufgebaut.',
     steps: [
-      'Bis zu 20 PDFs hinzufügen, je 25 MB, zusammen höchstens 100 MB und 1000 Seiten.',
+      'Bis zu 20 PDFs hinzufügen, je 50 MB, zusammen höchstens 100 MB und 1000 Seiten.',
       'Die Reihenfolge per Ziehen festlegen.',
       'Eine PDF herunterladen.',
     ],
@@ -62,7 +62,7 @@ const deTools: Record<LocalizedToolSlug, LocalizedToolCopy> = {
     howTitle: 'Seiten herauslösen',
     intro: 'Bereiche und einzelne Seiten werden als neue PDF gespeichert. Der Modus alle Seiten liefert ein ZIP und stoppt bei 20 Seiten.',
     steps: [
-      'PDF hochladen (höchstens 25 MB).',
+      'PDF hochladen (höchstens 50 MB).',
       'Seiten oder einen Bereich angeben. Ein Extrakt umfasst höchstens 50 Seiten.',
       'PDF oder ZIP herunterladen.',
     ],
@@ -74,7 +74,7 @@ const deTools: Record<LocalizedToolSlug, LocalizedToolCopy> = {
     howTitle: 'Seiten als Bilder speichern',
     intro: 'Jede Seite wird gerastert. Die Auflösung liegt zwischen 72 und 300 DPI, der Standard ist 150. Pro Durchlauf werden höchstens 10 Seiten ausgegeben.',
     steps: [
-      'PDF hochladen (höchstens 25 MB).',
+      'PDF hochladen (höchstens 50 MB).',
       'Format, Qualität und DPI wählen.',
       'Die Bilder herunterladen.',
     ],
@@ -113,7 +113,7 @@ const frTools: Record<LocalizedToolSlug, LocalizedToolCopy> = {
     howTitle: 'Réduire un PDF',
     intro: 'La compression Ghostscript ne rééchantillonne que les images. Le texte vectoriel reste net. Un gain trop faible est refusé pour ne pas présenter un fichier déjà optimisé comme un succès.',
     steps: [
-      'Déposez un PDF (25 Mo maximum).',
+      'Déposez un PDF (50 Mo maximum).',
       'Choisissez le plus petit fichier, le niveau recommandé ou la haute qualité.',
       'Téléchargez le PDF et vérifiez le pourcentage gagné.',
     ],
@@ -125,7 +125,7 @@ const frTools: Record<LocalizedToolSlug, LocalizedToolCopy> = {
     howTitle: 'Assembler des PDF',
     intro: 'Les pages sont copiées dans l’ordre affiché. Les signets des fichiers sources ne sont pas reconstruits.',
     steps: [
-      'Ajoutez jusqu’à 20 PDF, 25 Mo chacun, 100 Mo et 1000 pages au total.',
+      'Ajoutez jusqu’à 20 PDF, 50 Mo chacun, 100 Mo et 1000 pages au total.',
       'Réglez l’ordre.',
       'Téléchargez un seul PDF.',
     ],
@@ -137,7 +137,7 @@ const frTools: Record<LocalizedToolSlug, LocalizedToolCopy> = {
     howTitle: 'Extraire des pages',
     intro: 'Une plage devient un nouveau PDF. Le mode toutes les pages renvoie un ZIP limité à 20 pages.',
     steps: [
-      'Déposez un PDF (25 Mo maximum).',
+      'Déposez un PDF (50 Mo maximum).',
       'Indiquez les pages. Une extraction est limitée à 50 pages.',
       'Téléchargez le PDF ou le ZIP.',
     ],
@@ -149,7 +149,7 @@ const frTools: Record<LocalizedToolSlug, LocalizedToolCopy> = {
     howTitle: 'Exporter les pages en images',
     intro: 'La résolution va de 72 à 300 DPI, 150 par défaut. Dix pages maximum par traitement.',
     steps: [
-      'Déposez un PDF (25 Mo maximum).',
+      'Déposez un PDF (50 Mo maximum).',
       'Choisissez le format, la qualité et le DPI.',
       'Téléchargez les images.',
     ],
@@ -188,7 +188,7 @@ const jpTools: Record<LocalizedToolSlug, LocalizedToolCopy> = {
     howTitle: 'PDFを小さくする',
     intro: 'Ghostscriptは文書内の画像だけをdownsampleします。ベクターの文字はそのままです。ほとんど縮まないファイルは、最適化済みとして拒否します。',
     steps: [
-      'PDFをアップロード（最大25MB）。',
+      'PDFをアップロード（最大50MB）。',
       '最小、推奨、高画質のいずれかを選ぶ。',
       '小さくなったPDFと削減率を確認してダウンロード。',
     ],
@@ -200,7 +200,7 @@ const jpTools: Record<LocalizedToolSlug, LocalizedToolCopy> = {
     howTitle: '複数のPDFを1つにする',
     intro: 'ページは表示中の順序で結合されます。元のしおりは作り直しません。',
     steps: [
-      '最大20ファイル、各25MB、合計100MB、1000ページまで追加。',
+      '最大20ファイル、各50MB、合計100MB、1000ページまで追加。',
       '順序を並べ替える。',
       '1つのPDFをダウンロード。',
     ],
@@ -212,7 +212,7 @@ const jpTools: Record<LocalizedToolSlug, LocalizedToolCopy> = {
     howTitle: '必要なページだけ取り出す',
     intro: '範囲指定は新しいPDFになります。全ページモードはZIPで、20ページで打ち切ります。',
     steps: [
-      'PDFをアップロード（最大25MB）。',
+      'PDFをアップロード（最大50MB）。',
       'ページを指定。抽出は50ページまで。',
       'PDFまたはZIPをダウンロード。',
     ],
@@ -224,7 +224,7 @@ const jpTools: Record<LocalizedToolSlug, LocalizedToolCopy> = {
     howTitle: 'ページを画像にする',
     intro: '解像度は72から300DPI、初期値は150です。1回につき10ページまでです。',
     steps: [
-      'PDFをアップロード（最大25MB）。',
+      'PDFをアップロード（最大50MB）。',
       '形式、画質、DPIを選ぶ。',
       '画像をダウンロード。',
     ],

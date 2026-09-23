@@ -170,7 +170,7 @@ export function PDFRedactWorkspace() {
       />
       <ToolLimitNotice
         limits={[
-          'PDF only · max 25 MB',
+          'PDF only · max 50 MB',
           'Permanently obliterates text and underlying vector streams',
           'Compliant with FOIA, HIPAA, and GDPR data privacy standards',
         ]}

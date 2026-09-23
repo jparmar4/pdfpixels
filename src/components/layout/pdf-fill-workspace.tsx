@@ -204,7 +204,7 @@ export function PDFFillWorkspace() {
       />
       <ToolLimitNotice
         limits={[
-          'PDF only · max 25 MB',
+          'PDF only · max 50 MB',
           'Supports interactive fillable forms and flat non-interactive scans',
           'Freeform placement for custom text, checkmarks (✓), and date stamps',
         ]}

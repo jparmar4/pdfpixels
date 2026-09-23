@@ -45,8 +45,8 @@ export function ComparePdfWorkspace() {
       toast.error('One of your PDFs is empty. Please choose valid files.');
       return;
     }
-    if (fileA.size > 25 * 1024 * 1024 || fileB.size > 25 * 1024 * 1024) {
-      toast.error('Each PDF must be 25MB or smaller.');
+    if (fileA.size > 50 * 1024 * 1024 || fileB.size > 50 * 1024 * 1024) {
+      toast.error('Each PDF must be 50MB or smaller.');
       return;
     }
     if (
@@ -156,7 +156,7 @@ export function ComparePdfWorkspace() {
                   <Plus className="w-5 h-5" />
                 </div>
                 <span className="text-xs font-medium text-foreground block">Select Original Document</span>
-                <span className="text-[11px] text-muted-foreground">PDF up to 25 MB</span>
+                <span className="text-[11px] text-muted-foreground">PDF up to 50 MB</span>
               </label>
             )}
           </div>
@@ -191,7 +191,7 @@ export function ComparePdfWorkspace() {
                   <Plus className="w-5 h-5" />
                 </div>
                 <span className="text-xs font-medium text-foreground block">Select Revised Document</span>
-                <span className="text-[11px] text-muted-foreground">PDF up to 25 MB</span>
+                <span className="text-[11px] text-muted-foreground">PDF up to 50 MB</span>
               </label>
             )}
           </div>

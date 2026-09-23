@@ -156,7 +156,7 @@ export function PDFCropWorkspace() {
       />
       <ToolLimitNotice
         limits={[
-          'PDF only · max 25 MB',
+          'PDF only · max 50 MB',
           'Adjust margins in typography points (72pt = 1 inch)',
           'Choose scope: all pages, odd/even, or current page',
         ]}

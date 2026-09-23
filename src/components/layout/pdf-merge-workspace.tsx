@@ -74,11 +74,11 @@ export function PDFMergeWorkspace() {
     if (empty.length > 0) {
       toast.error(`${empty.length} empty file(s) were skipped`);
     }
-    const oversized = pdfs.filter((f) => f.size > 25 * 1024 * 1024);
+    const oversized = pdfs.filter((f) => f.size > 50 * 1024 * 1024);
     if (oversized.length > 0) {
-      toast.error(`${oversized.length} file(s) exceed 25 MB and were skipped`);
+      toast.error(`${oversized.length} file(s) exceed 50 MB and were skipped`);
     }
-    const ok = pdfs.filter((f) => f.size > 0 && f.size <= 25 * 1024 * 1024).slice(0, 20);
+    const ok = pdfs.filter((f) => f.size > 0 && f.size <= 50 * 1024 * 1024).slice(0, 20);
     if (ok.length === 0) return;
 
     const base: PDFFile[] = ok.map((f) => ({ file: f, name: f.name, size: f.size }));
@@ -314,7 +314,7 @@ export function PDFMergeWorkspace() {
             <Badge variant="secondary" className="mt-3">PDF Only</Badge>
           </motion.div>
 
-          <ToolLimitNotice limits={['PDF only', '2–20 files per merge', 'Max 25MB per file', 'Max 100MB total']} />
+          <ToolLimitNotice limits={['PDF only', '2–20 files per merge', 'Max 50MB per file', 'Max 100MB total']} />
 
           {/* File List */}
           {files.length > 0 && (

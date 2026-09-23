@@ -160,7 +160,7 @@ export async function POST(request: NextRequest) {
     }
 
     if (file.size === 0) return apiError('This Word file is empty. Please choose a valid .docx file.', 400);
-    if (file.size > 25 * 1024 * 1024) return apiError('Word files must be 25MB or smaller.', 400);
+    if (file.size > 50 * 1024 * 1024) return apiError('Word files must be 50MB or smaller.', 400);
     const name = file.name.toLowerCase();
     if (!name.endsWith('.docx')) {
       return apiError('Only .docx Word documents are supported', 400);

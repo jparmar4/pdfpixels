@@ -115,7 +115,7 @@ export function PDFGrayscaleWorkspace() {
       />
       <ToolLimitNotice
         limits={[
-          'PDF only · max 25 MB',
+          'PDF only · max 50 MB',
           'Converts all color vectors, fonts, and photos to 8-bit DeviceGray',
           'Preserves searchable text, hyperlinks, and document layout',
         ]}

@@ -184,7 +184,7 @@ export function PDFExtractWorkspace() {
       />
       <ToolLimitNotice
         limits={[
-          'PDF only · max 25 MB',
+          'PDF only · max 50 MB',
           'Click individual page thumbnails or type ranges (e.g. 1, 3-5)',
           'Extracted pages are saved losslessly into a single new PDF',
         ]}

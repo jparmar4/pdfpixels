@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 
-export const PDF_MAX_FILE_SIZE = 25 * 1024 * 1024;
+export const PDF_MAX_FILE_SIZE = 50 * 1024 * 1024;
 export const PDF_CACHE_HEADERS = {
   'Cache-Control': 'no-store, max-age=0',
 } as const;

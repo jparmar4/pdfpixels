@@ -116,7 +116,7 @@ export function WordToPDFWorkspace() {
       />
       <ToolLimitNotice
         limits={[
-          'Microsoft Word (.docx) · max 25 MB',
+          'Microsoft Word (.docx) · max 50 MB',
           'Text conversion: headings and paragraphs; images and complex layouts are not retained',
           'Instant client-safe conversion and automatic file cleanup',
         ]}
@@ -126,6 +126,7 @@ export function WordToPDFWorkspace() {
         <div className="mt-8">
           <FileUpload
             accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            maxSizeMb={50}
           />
         </div>
       ) : (

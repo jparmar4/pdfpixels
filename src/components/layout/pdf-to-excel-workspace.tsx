@@ -126,7 +126,7 @@ export function PDFToExcelWorkspace() {
       />
       <ToolLimitNotice
         limits={[
-          'PDF only · max 25 MB',
+          'PDF only · max 50 MB',
           'Extracts tables into Microsoft Excel (.xlsx) or CSV format',
           'Preserves numerical formatting, column alignments, and text values',
         ]}

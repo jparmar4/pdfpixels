@@ -113,7 +113,7 @@ export function PDFToTextWorkspace() {
       />
       <ToolLimitNotice
         limits={[
-          'PDF only · max 25 MB',
+          'PDF only · max 50 MB',
           'Extracts raw character text streams and UTF-8 glyph mappings',
           'Instant clipboard copy or plain text (.txt) download',
         ]}

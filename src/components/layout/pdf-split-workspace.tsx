@@ -66,8 +66,8 @@ export function PDFSplitWorkspace() {
       toast.error('This file is empty (0 bytes). Please choose a valid PDF.');
       return;
     }
-    if (selectedFile.size > 25 * 1024 * 1024) {
-      toast.error('File too large. Maximum size is 25 MB.');
+    if (selectedFile.size > 50 * 1024 * 1024) {
+      toast.error('File too large. Maximum size is 50 MB.');
       return;
     }
     setFile(selectedFile);
@@ -399,7 +399,7 @@ export function PDFSplitWorkspace() {
             </motion.div>
           )}
 
-          <ToolLimitNotice limits={['PDF only', 'Max file size: 25MB', 'Split output capped at 20 pages per run']} />
+          <ToolLimitNotice limits={['PDF only', 'Max file size: 50MB', 'Split output capped at 20 pages per run']} />
 
           {/* Results */}
           <AnimatePresence>

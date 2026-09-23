@@ -305,7 +305,7 @@ export function CompressPDFWorkspace({ targetPreset }: CompressPDFWorkspaceProps
         <FileUpload accept=".pdf,application/pdf" />
         <ToolLimitNotice
           limits={[
-            'PDF only · max 25 MB',
+            'PDF only · max 50 MB',
             preset ? preset.limitText : 'Image-heavy / scanned PDFs compress best',
             'Vector text stays sharp; photos are downsampled by preset',
           ]}

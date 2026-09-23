@@ -278,7 +278,7 @@ paths:
                   items:
                     type: string
                     format: binary
-                  description: PDF files to merge (max 20 files, 25MB per file, 100MB total, 1000 pages total)
+                  description: PDF files to merge (max 20 files, 50MB per file, 100MB total, 1000 pages total)
                   maxItems: 20
       responses:
         '200':
@@ -328,7 +328,7 @@ paths:
                 file:
                   type: string
                   format: binary
-                  description: PDF file to split (max 25MB). Split-all mode returns a ZIP truncated at 20 pages; range/single extract caps at 50 pages.
+                  description: PDF file to split (max 50MB). Split-all mode returns a ZIP truncated at 20 pages; range/single extract caps at 50 pages.
                 mode:
                   type: string
                   description: Split mode
@@ -401,7 +401,7 @@ paths:
                 file:
                   type: string
                   format: binary
-                  description: PDF file to compress (max 25MB)
+                  description: PDF file to compress (max 50MB)
                 quality:
                   type: string
                   description: Compression quality
@@ -446,7 +446,7 @@ paths:
                 file:
                   type: string
                   format: binary
-                  description: PDF file to convert (max 25MB; up to 10 pages converted per run)
+                  description: PDF file to convert (max 50MB; up to 10 pages converted per run)
                 format:
                   type: string
                   description: Output image format

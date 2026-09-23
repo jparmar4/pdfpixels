@@ -47,8 +47,14 @@ function getFileCategory(file: File): 'pdf' | 'image' | 'unknown' {
   return 'unknown';
 }
 
-export function FileUpload({ accept = 'image/*', maxSizeMb = 25 }: FileUploadProps) {
-  const { uploadedFile, setUploadedFile, isProcessing, progress } = useAppStore();
+export function FileUpload({ accept = 'image/*', maxSizeMb }: FileUploadProps) {
+    const { uploadedFile, setUploadedFile, isProcessing, progress } = useAppStore();
+    // PDF uploads allow 50 MB; images stay at the 25 MB platform default.
+    const acceptTokensForDefault = (accept || '').split(',').map((t) => t.trim().toLowerCase());
+    const defaultMaxMb = acceptTokensForDefault.some((t) => t.includes('pdf') || t === '.pdf')
+        ? 50
+        : 25;
+    const resolvedMaxMb = maxSizeMb ?? defaultMaxMb;
   const [dragOver, setDragOver] = useState(false);
   const [imageInfo, setImageInfo] = useState<{ width: number; height: number } | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -62,7 +68,7 @@ export function FileUpload({ accept = 'image/*', maxSizeMb = 25 }: FileUploadPro
   const isImageAccept = acceptTokens.some((token) => token.includes('image/'));
   const isPDFAccept = acceptTokens.some((token) => token.includes('pdf') || token === '.pdf');
   const isPDF = uploadedFile?.type === 'application/pdf' || uploadedFile?.name.toLowerCase().endsWith('.pdf');
-  const maxBytes = maxSizeMb * 1024 * 1024;
+  const maxBytes = resolvedMaxMb * 1024 * 1024;
 
   useEffect(() => {
     return () => {
@@ -154,7 +160,7 @@ export function FileUpload({ accept = 'image/*', maxSizeMb = 25 }: FileUploadPro
     }
 
     if (file.size > maxBytes) {
-      toast.error(`File too large. Maximum size is ${maxSizeMb} MB.`);
+      toast.error(`File too large. Maximum size is ${resolvedMaxMb} MB.`);
       return;
     }
 
@@ -173,7 +179,7 @@ export function FileUpload({ accept = 'image/*', maxSizeMb = 25 }: FileUploadPro
     }
 
     applySelectedFile(file);
-  }, [accept, acceptedLabels, applySelectedFile, isImageAccept, matchesAccept, maxBytes, maxSizeMb]);
+  }, [accept, acceptedLabels, applySelectedFile, isImageAccept, matchesAccept, maxBytes, resolvedMaxMb]);
 
   const handleDragEnter = useCallback((event: React.DragEvent) => {
     event.preventDefault();
@@ -375,7 +381,7 @@ export function FileUpload({ accept = 'image/*', maxSizeMb = 25 }: FileUploadPro
                   </Badge>
                 ))}
                 <Badge variant="secondary" className="rounded-full border border-border/60 bg-background/80 px-3 py-1 font-medium">
-                  Max {maxSizeMb} MB
+                  Max {resolvedMaxMb} MB
                 </Badge>
                 <Badge variant="secondary" className="rounded-full border border-border/60 bg-background/80 px-3 py-1 font-medium">
                   Single file
@@ -516,7 +522,7 @@ export function FileUpload({ accept = 'image/*', maxSizeMb = 25 }: FileUploadPro
                   </div>
                   <div className="flex items-center justify-between gap-3">
                     <span>Limit</span>
-                    <span className="font-semibold text-foreground">{maxSizeMb} MB</span>
+                    <span className="font-semibold text-foreground">{resolvedMaxMb} MB</span>
                   </div>
                   {imageInfo ? (
                     <>

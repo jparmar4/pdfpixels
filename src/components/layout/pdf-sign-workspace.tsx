@@ -278,7 +278,7 @@ export function PDFSignWorkspace() {
       />
       <ToolLimitNotice
         limits={[
-          'PDF only · max 25 MB',
+          'PDF only · max 50 MB',
           'Draw, type, or upload transparent e-signatures',
           'Legally compliant with US ESIGN Act and EU eIDAS regulation',
         ]}

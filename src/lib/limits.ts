@@ -12,16 +12,16 @@
  */
 
 /** Date these limits were last verified against the route code (YYYY-MM-DD). */
-export const LIMITS_LAST_REVIEWED = '2026-09-20';
+export const LIMITS_LAST_REVIEWED = '2026-09-23';
 
 export const platformLimits = {
   pdf: {
     /** src/lib/pdf-api.ts → PDF_MAX_FILE_SIZE; merge route MAX_FILE_SIZE */
-    maxFileMb: 25,
+    maxFileMb: 50,
     merge: {
       /** src/app/api/pdf/merge/route.ts */
       maxFiles: 20,
-      maxFileMb: 25,
+      maxFileMb: 50,
       maxTotalMb: 100,
       maxTotalPages: 1000,
     },
