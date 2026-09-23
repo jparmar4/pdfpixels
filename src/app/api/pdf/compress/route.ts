@@ -1,5 +1,5 @@
 import { loadPdfWithTimeout, readAndValidatePdfFile, rejectEncryptedPdf, sanitizeDownloadFileName, validatePdfBuffer, validatePdfUpload } from '@/lib/pdf-api';
-import { isGhostscriptMissingError, runGhostscriptWithFallback } from '@/lib/ghostscript';
+import { runGhostscriptWithFallback } from '@/lib/ghostscript';
 import { NextRequest } from 'next/server'
 import fs from 'fs'
 import path from 'path'
@@ -67,7 +67,7 @@ function getCompressionProfile(level: string): CompressionProfile {
   return compressionProfiles.recommended
 }
 
-async function compressWithGhostscript(inputPath: string, outputPath: string, profile: CompressionProfile) {
+async function compressWithGhostscript(inputPath: string, outputPath: string, profile: CompressionProfile, timeoutMs = 45_000) {
   const args = [
     '-sDEVICE=pdfwrite',
     '-dCompatibilityLevel=1.5',
@@ -111,10 +111,21 @@ async function compressWithGhostscript(inputPath: string, outputPath: string, pr
   ]
 
   await runGhostscriptWithFallback(args, {
-    timeoutMs: 30_000,
+    timeoutMs,
     timeoutMessage: 'Compression timed out. Please try a smaller PDF.',
   })
+  if (!fs.existsSync(outputPath)) {
+    throw new Error('Ghostscript did not produce an output file')
+  }
   return fs.readFileSync(outputPath)
+}
+
+/** Scale engine budgets with input size; 50MB scans need more headroom than 1MB text PDFs. */
+function engineTimeoutMs(byteLength: number, baseMs: number, maxMs: number) {
+  const mb = byteLength / (1024 * 1024)
+  if (mb <= 5) return baseMs
+  if (mb <= 25) return Math.min(maxMs, baseMs + 15_000)
+  return maxMs
 }
 
 function toSavedPercent(before: number, after: number) {
@@ -247,9 +258,28 @@ export async function POST(req: NextRequest) {
       return read.response
     }
     const originalBuffer = read.buffer
-    const srcPdf = await loadPdfWithTimeout(originalBuffer, { ignoreEncryption: true, updateMetadata: false })
-    const encrypted = rejectEncryptedPdf(srcPdf)
-    if (encrypted) return encrypted
+    const loadTimeoutMs = engineTimeoutMs(originalBuffer.length, 15_000, 40_000)
+    const gsTimeoutMs = engineTimeoutMs(originalBuffer.length, 30_000, 55_000)
+
+    // Encrypted check must not block compression on large scans if pdf-lib
+    // is slow/OOM — fail open here and let engines reject bad inputs.
+    let srcPdf: Awaited<ReturnType<typeof loadPdfWithTimeout>> | null = null
+    try {
+      srcPdf = await loadPdfWithTimeout(originalBuffer, { ignoreEncryption: true, updateMetadata: false }, loadTimeoutMs)
+      const encrypted = rejectEncryptedPdf(srcPdf)
+      if (encrypted) return encrypted
+    } catch (loadError) {
+      console.error('pdf-lib load during compress (continuing with engines):', loadError)
+      const msg = loadError instanceof Error ? loadError.message : ''
+      if (/password|encrypt/i.test(msg)) {
+        return new Response(JSON.stringify({ error: 'This PDF is password-protected. Unlock it first, then try again.' }), {
+          status: 400,
+          headers: { 'Content-Type': 'application/json' },
+        })
+      }
+      // Timeout/parse issues: still attempt remote + Ghostscript below.
+    }
+
     const originalBytes = new Uint8Array(originalBuffer)
 
     const strict = !force && !targetKb
@@ -263,8 +293,10 @@ export async function POST(req: NextRequest) {
       remoteForm.append('level', levelStr)
       if (force) remoteForm.append('force', '1')
 
+      // Large scanned PDFs routinely need >20s on the remote GS worker.
+      const remoteTimeoutMs = engineTimeoutMs(originalBuffer.length, 25_000, 55_000)
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 20_000);
+      const timeoutId = setTimeout(() => controller.abort(), remoteTimeoutMs);
 
       try {
         const remoteResp = await fetch(`${remoteUrl.replace(/\/$/, '')}/compress`, {
@@ -342,12 +374,16 @@ export async function POST(req: NextRequest) {
     let engine = 'ghostscript'
 
     try {
-      compressed = await compressWithGhostscript(inputPath, outputPath, profile)
+      compressed = await compressWithGhostscript(inputPath, outputPath, profile, gsTimeoutMs)
     } catch (error) {
-      if (isGhostscriptMissingError(error)) {
-        compressed = await compressWithPdfLibFallback(originalBuffer, srcPdf)
+      // Any Ghostscript failure (missing binary, bad exit, no output) falls
+      // back to pdf-lib so large/scanned PDFs still return a usable file.
+      console.error('Local Ghostscript compress failed:', error)
+      try {
+        compressed = await compressWithPdfLibFallback(originalBuffer, srcPdf ?? undefined)
         engine = 'local-fallback'
-      } else {
+      } catch (fallbackError) {
+        console.error('pdf-lib compress fallback failed:', fallbackError)
         throw error
       }
     }
@@ -369,7 +405,7 @@ export async function POST(req: NextRequest) {
       finalBytes.length > targetKb * 1024
     ) {
       try {
-        const tighter = await compressWithGhostscript(inputPath, outputPath, compressionProfiles.extreme)
+        const tighter = await compressWithGhostscript(inputPath, outputPath, compressionProfiles.extreme, gsTimeoutMs)
         if (tighter.length < finalBytes.length) {
           finalBytes = tighter.length < originalBuffer.length ? tighter : originalBuffer
           levelStr = 'extreme'
@@ -415,10 +451,10 @@ export async function POST(req: NextRequest) {
       },
     })
   } catch (err) {
-    console.error(err)
+    console.error('Compress PDF failed:', err)
     const message = err instanceof Error ? err.message : 'Compression failed'
     if (/timed out|timed-out|timeout|aborted|abort/i.test(message)) {
-      return new Response(JSON.stringify({ error: 'Compression timed out. Please try a smaller PDF.' }), {
+      return new Response(JSON.stringify({ error: 'Compression timed out. Please try a smaller PDF or Smallest size preset.' }), {
         status: 408,
         headers: { 'Content-Type': 'application/json' },
       })
@@ -429,8 +465,14 @@ export async function POST(req: NextRequest) {
         headers: { 'Content-Type': 'application/json' },
       })
     }
+    if (/encrypted|password/i.test(message)) {
+      return new Response(JSON.stringify({ error: 'This PDF is password-protected. Unlock it first, then try again.' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      })
+    }
     // Never echo engine internals (Ghostscript stderr, temp paths) to clients.
-    return new Response(JSON.stringify({ error: 'Compression failed. Please try a smaller PDF or a different preset.' }), {
+    return new Response(JSON.stringify({ error: 'Compression failed. Please try a different preset, or Smallest size for large scans.' }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' },
     })
