@@ -76,6 +76,54 @@ export default function robots(): MetadataRoute.Robots {
         allow: '/',
         disallow: ['/api/'],
       },
+      // Live-fetch agents: fetch pages on behalf of a user query. Blocking
+      // these loses citations even when the index crawler is allowed.
+      {
+        userAgent: 'Perplexity-User',
+        allow: '/',
+        disallow: ['/api/'],
+      },
+      // Additional index/training crawlers feeding AI answer engines.
+      {
+        userAgent: 'CCBot',
+        allow: '/',
+        disallow: ['/api/'],
+      },
+      {
+        userAgent: 'YouBot',
+        allow: '/',
+        disallow: ['/api/'],
+      },
+      {
+        userAgent: 'Amazonbot',
+        allow: '/',
+        disallow: ['/api/'],
+      },
+      {
+        userAgent: 'Google-CloudVertexBot',
+        allow: '/',
+        disallow: ['/api/'],
+      },
+      {
+        userAgent: 'Meta-WebIndexer',
+        allow: '/',
+        disallow: ['/api/'],
+      },
+      {
+        userAgent: 'Diffbot',
+        allow: '/',
+        disallow: ['/api/'],
+      },
+      {
+        userAgent: 'Cohere-ai',
+        allow: '/',
+        disallow: ['/api/'],
+      },
+      {
+        userAgent: 'iaskspider',
+        allow: '/',
+        disallow: ['/api/'],
+      },
     ],
     sitemap: [`${siteConfig.url}/sitemap.xml`, `${siteConfig.url}/image-sitemap.xml`],
     host,
