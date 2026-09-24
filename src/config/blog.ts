@@ -766,7 +766,7 @@ The current PdfPixels watermark tool stamps **every page** with **text**. It doe
 Order matters more than people expect:
 
 1. **Finish the content** — write, edit, reorder pages, number them if needed ([add page numbers](/blog/add-page-numbers-to-pdf-online)).
-2. **Compress** the final file if it faces an upload or email limit ([compress PDF](/blog/how-to-compress-pdf-file-size)).
+2. **Compress** the final file if it faces an upload or email limit ([compress PDF](/blog/how-to-compress-pdf-online)).
 3. **Watermark** the compressed file.
 4. **Protect with a password** last, if the file also needs a lock.
 
@@ -1885,7 +1885,7 @@ When you are trying to submit an application for an SSC, UPSC, state government,
 
 This isn't just to make your life difficult. Government recruitment portals receive hundreds of thousands, sometimes millions, of applications for a single job opening. If every applicant uploaded a 5MB scanned PDF, the servers would crash under the sheer volume of data, and the storage costs would be astronomical. By forcing you to compress your PDF, the government ensures the portal remains fast and stable for everyone.
 
-For an even deeper dive into why PDFs become so bloated in the first place, you might want to check out our comprehensive guide on [how to compress PDF file size](/blog/how-to-compress-pdf-file-size). If your portal allows a full megabyte rather than 200KB, the freer workflow in [how to compress PDF under 1MB](/blog/compress-pdf-under-1mb) is usually enough.
+For an even deeper dive into why PDFs become so bloated in the first place, you might want to check out our comprehensive guide on [how to compress PDF file size](/blog/how-to-compress-pdf-online). If your portal allows a full megabyte rather than 200KB, the freer workflow in [how to compress PDF under 1MB](/blog/compress-pdf-under-1mb) is usually enough.
 
 ## Step-by-Step: How to Reduce PDF for Government Form
 
@@ -3120,7 +3120,7 @@ This is the path that works for most people on the first try.
 
 Go to [PdfPixels Compress PDF](/tools/compress-pdf). You don't install anything. The file is processed on our servers for that request, then you download the smaller PDF.
 
-Want a broader tool comparison first? [Best free PDF compressor online](/blog/best-free-pdf-compressor-online) is our honest rundown.
+Want a broader tool comparison first? [Best free PDF compressor online](/blog/how-to-compress-pdf-online) is our honest rundown.
 
 ### Step 2 — Upload the original file
 
@@ -3202,7 +3202,7 @@ Need CV + cover letter as one PDF under 1MB?
 
 Merge-first then compress is usually worse. Small pieces in, small package out.
 
-General file-size methods (desktop options, when online isn't enough) live in [how to compress PDF file size](/blog/how-to-compress-pdf-file-size) and [how to compress PDF online](/blog/how-to-compress-pdf-online).
+General file-size methods (desktop options, when online isn't enough) live in our [how to compress PDF online guide](/blog/how-to-compress-pdf-online).
 
 ## Does compression wreck quality?
 
@@ -3385,7 +3385,7 @@ If every page is a photo, you’re in scan territory — pair this article with 
 
 Go to [PdfPixels Compress PDF](/tools/compress-pdf). It runs in the browser. For tax forms, IDs, and offer letters, that local processing matters more than marketing slogans.
 
-Curious how it stacks up? [Best free PDF compressor online](/blog/best-free-pdf-compressor-online) is the comparison write-up. Broader online how-to: [how to compress PDF online](/blog/how-to-compress-pdf-online).
+Curious how it stacks up or want the broader how-to? Our [compress PDF online hub](/blog/how-to-compress-pdf-online) covers both.
 
 ### Step 2 — Upload the cleanest original
 
@@ -3426,7 +3426,7 @@ Merge-first then crush is usually worse. Small in → small out.
 
 ### 3. Flatten with Print to PDF
 
-Chrome or Edge → open PDF → **Ctrl+P** / **Cmd+P** → **Save as PDF** → compress the new file. Strips design-layer junk that fights compressors. Full size methods also live in [how to compress PDF file size](/blog/how-to-compress-pdf-file-size).
+Chrome or Edge → open PDF → **Ctrl+P** / **Cmd+P** → **Save as PDF** → compress the new file. Strips design-layer junk that fights compressors. Full size methods also live in [how to compress PDF file size](/blog/how-to-compress-pdf-online).
 
 ### 4. Shrink source photos, then rebuild
 
@@ -3604,7 +3604,7 @@ Deep dive: [why is my PDF so large?](/blog/why-is-pdf-file-so-large-fix). Scan-s
 
 Go to [PdfPixels Compress PDF](/tools/compress-pdf). Processing stays in the browser for normal use — useful when the attachment is a contract, bank statement, or medical form.
 
-Broader tool notes: [best free PDF compressor online](/blog/best-free-pdf-compressor-online) and [how to compress PDF online](/blog/how-to-compress-pdf-online).
+Broader tool notes live in our [compress PDF online hub](/blog/how-to-compress-pdf-online).
 
 ### 2. Upload the original (not a third re-save)
 
@@ -3637,7 +3637,7 @@ Sending three docs as one? High/Medium each file first, then [Merge PDF](/tools/
 
 ### Flatten with Print to PDF
 
-Chrome → open PDF → **Ctrl+P** / **Cmd+P** → **Save as PDF** → compress that new file. Strips design-layer bloat. More methods: [how to compress PDF file size](/blog/how-to-compress-pdf-file-size) and [reduce PDF size for email](/blog/reduce-pdf-size-for-email).
+Chrome → open PDF → **Ctrl+P** / **Cmd+P** → **Save as PDF** → compress that new file. Strips design-layer bloat. More methods: [how to compress PDF file size](/blog/how-to-compress-pdf-online) and [reduce PDF size for email](/blog/reduce-pdf-size-for-email).
 
 ### Shrink photos before they enter the PDF
 
@@ -4230,7 +4230,7 @@ The solution isn't complicated. You need a compressor that understands image-bas
 
 The [PdfPixels Compress PDF tool](/tools/compress-pdf) handles this in under a minute, for free, with your documents never leaving your device. If you're hitting upload limits on government portals, job applications, or professional platforms — or just tired of scanned PDFs clogging up your email — that's the place to start.
 
-And for related PDF tasks — splitting out just the pages you need before compressing, merging several scanned files into one submission, or just learning more about [how PDF compression works in general](/blog/how-to-compress-pdf-file-size) — the tools are all there and ready.
+And for related PDF tasks — splitting out just the pages you need before compressing, merging several scanned files into one submission, or just learning more about [how PDF compression works in general](/blog/how-to-compress-pdf-online) — the tools are all there and ready.
 
 **External references:**
 - [Adobe's guide on PDF optimization](https://helpx.adobe.com/acrobat/using/optimizing-pdfs-acrobat-pro.html) — technical background on PDF optimization techniques
@@ -4628,7 +4628,7 @@ After testing every major free PDF compressor available in 2026, the ranking is 
 
 The others — Adobe Free, Sejda, and the dozen clones you will find via search — are either too limited, require too much personal information, or produce inconsistent results to be a reliable first choice.
 
-Start with [PDFPixels Compress PDF](/tools/compress-pdf) — it handles the vast majority of everyday PDF compression tasks without any friction. If you regularly deal with large PDFs and want to understand more about file size management, our [complete guide to compressing PDF file size](/blog/how-to-compress-pdf-file-size) goes deeper into the technical side, and our [guide for email attachments](/blog/reduce-pdf-size-for-email) covers the platform-specific limits you will encounter when sharing via Gmail, Outlook, and professional portals.
+Start with [PDFPixels Compress PDF](/tools/compress-pdf) — it handles the vast majority of everyday PDF compression tasks without any friction. If you regularly deal with large PDFs and want to understand more about file size management, our [complete guide to compressing PDF file size](/blog/how-to-compress-pdf-online) goes deeper into the technical side, and our [guide for email attachments](/blog/reduce-pdf-size-for-email) covers the platform-specific limits you will encounter when sharing via Gmail, Outlook, and professional portals.
 `,
         faq: [
             {
@@ -4747,7 +4747,7 @@ If security is a primary concern for your workflow, check out our guide on [how 
 
 After making structural or visual edits, scanned PDFs and multi-page documents can become unnecessarily large. Government job portals, university applications, and email gateways frequently reject attachments over 25MB or 200KB.
 
-Before downloading your edited file, run it through our free [Compress PDF](/tools/compress-pdf) tool. For a detailed breakdown of file size reduction techniques, read our complete guide on [how to compress PDF file size without losing quality](/blog/how-to-compress-pdf-file-size).
+Before downloading your edited file, run it through our free [Compress PDF](/tools/compress-pdf) tool. For a detailed breakdown of file size reduction techniques, read our complete guide on [how to compress PDF file size without losing quality](/blog/how-to-compress-pdf-online).
 
 ### Step 5: Save and Download Your Final PDF
 
@@ -4889,7 +4889,7 @@ Follow these straightforward steps to encrypt your confidential PDF document wit
 Before locking your document, spend twenty seconds preparing the file:
 - **Scrub hidden metadata:** PDFs created in Word, Google Docs, or InDesign often preserve invisible metadata—including author names, corporate file paths, and revision timestamps. Run sensitive files through our free [Sanitize PDF](/tools/sanitize-pdf) tool to strip out hidden tracking tags.
 - **Redact private credentials:** If your PDF contains sensitive bank routing numbers or Social Security digits that the recipient doesn't actually need to see, permanently obscure them first using [Redact PDF](/tools/redact-pdf). Remember: putting a black rectangle over text in a standard editor is not redaction! True redaction removes the underlying text stream permanently.
-- **Optimize file size:** Encrypted files cannot be compressed efficiently because cryptographic ciphertext lacks repetitive patterns. If your scanned document is 30MB, run it through [Compress PDF](/tools/compress-pdf) *before* locking it. For best practices on email delivery, see our walkthrough on [how to compress PDF file size](/blog/how-to-compress-pdf-file-size).
+- **Optimize file size:** Encrypted files cannot be compressed efficiently because cryptographic ciphertext lacks repetitive patterns. If your scanned document is 30MB, run it through [Compress PDF](/tools/compress-pdf) *before* locking it. For best practices on email delivery, see our walkthrough on [how to compress PDF file size](/blog/how-to-compress-pdf-online).
 
 ### Step 2: Open the Free Protect Tool
 
@@ -5392,6 +5392,15 @@ Once you separate those ideas, "set to 300 DPI" becomes a sizing problem you can
 
 // Helper functions
 
+// Posts consolidated into a hub post. They 301-redirect (next.config.ts) and
+// are excluded from every listing, feed and sitemap. Internal links must point
+// at the hub — linking here makes Google cluster the URLs against the hub and
+// choose a different canonical than the one declared in the sitemap.
+export const consolidatedBlogSlugs = new Set([
+    'how-to-compress-pdf-file-size',
+    'best-free-pdf-compressor-online',
+]);
+
 export function getBlogPostBySlug(slug: string): BlogPost | undefined {
     return blogPosts.find(post => post.slug === slug);
 }
@@ -5401,17 +5410,20 @@ export function getRelatedPosts(currentSlug: string, limit: number = 3): BlogPos
     if (!currentPost) return [];
 
     return blogPosts
+        .filter(post => !consolidatedBlogSlugs.has(post.slug))
         .filter(post => post.slug !== currentSlug)
         .filter(post => post.category === currentPost.category)
         .slice(0, limit);
 }
 
 export function getAllBlogPosts(): BlogPost[] {
-    return [...blogPosts].sort((a, b) => {
-        const dateA = new Date(a.date).getTime();
-        const dateB = new Date(b.date).getTime();
-        return dateB - dateA;
-    });
+    return blogPosts
+        .filter(post => !consolidatedBlogSlugs.has(post.slug))
+        .sort((a, b) => {
+            const dateA = new Date(a.date).getTime();
+            const dateB = new Date(b.date).getTime();
+            return dateB - dateA;
+        });
 }
 
 // Lightweight version for the blog listing page — strips content & faq to avoid

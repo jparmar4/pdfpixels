@@ -432,6 +432,11 @@ const nextConfig: NextConfig = {
       { source: '/blog/heic-to-jpg-converter-guide', destination: '/blog/heic-to-jpg-convert-iphone-photos', permanent: true },
       { source: '/blog/reduce-pdf-file-size-for-email', destination: '/blog/reduce-pdf-size-for-email', permanent: true },
       { source: '/blog/compress-pdf-to-200kb-guide', destination: '/blog/compress-pdf-to-200kb-email-attachment', permanent: true },
+      // Compress-hub satellites: were serving 200 with a cross-canonical tag,
+      // which made Google cluster them against the hub and pick a different
+      // canonical than the one declared in the sitemap. 301 settles the cluster.
+      { source: '/blog/how-to-compress-pdf-file-size', destination: '/blog/how-to-compress-pdf-online', permanent: true },
+      { source: '/blog/best-free-pdf-compressor-online', destination: '/blog/how-to-compress-pdf-online', permanent: true },
     ];
   },
 

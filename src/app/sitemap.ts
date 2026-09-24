@@ -1,5 +1,5 @@
 import { MetadataRoute } from 'next';
-import { getAllBlogPosts } from '@/config/blog';
+import { getAllBlogPosts, consolidatedBlogSlugs } from '@/config/blog';
 import { comparisonPages } from '@/lib/comparisons';
 import { SITE_CONTENT_UPDATED, absoluteUrl } from '@/lib/seo';
 import { allTools, toolCategories } from '@/lib/tools-data';
@@ -117,12 +117,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: tool.popular || tool.isAI ? 0.9 : 0.8,
   }));
 
-  const compressHubSatellites = new Set([
-    'how-to-compress-pdf-file-size',
-    'best-free-pdf-compressor-online',
-  ]);
   const blogPages: MetadataRoute.Sitemap = blogPosts
-    .filter((post) => !compressHubSatellites.has(post.slug))
+    .filter((post) => !consolidatedBlogSlugs.has(post.slug))
     .map((post) => ({
       url: absoluteUrl(`/blog/${post.slug}`),
       lastModified: Number.isNaN(Date.parse(post.date)) ? evergreen : new Date(post.date),
