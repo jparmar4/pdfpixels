@@ -19,7 +19,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Slider } from '@/components/ui/slider';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useAppStore } from '@/store/app-store';
+import { useActiveTool } from '@/hooks/use-active-tool';
 import { FileUpload } from './file-upload';
 import { ResultCard } from './result-card';
 import { ToolLimitNotice } from './tool-limit-notice';
@@ -53,7 +53,7 @@ const presetSizes = [
 ];
 
 export function ResizeWorkspace() {
-  const { activeTool, uploadedFile, processedImage, isProcessing, reset, setIsProcessing, setProcessedImage, setProgress } = useAppStore();
+  const { activeTool, uploadedFile, processedImage, isProcessing, reset, setIsProcessing, setProcessedImage, setProgress } = useActiveTool();
   const [width, setWidth] = useState(800);
   const [height, setHeight] = useState(600);
   const [maintainRatio, setMaintainRatio] = useState(true);

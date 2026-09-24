@@ -7,7 +7,7 @@ import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useAppStore } from '@/store/app-store';
+import { useActiveTool } from '@/hooks/use-active-tool';
 import { FileUpload } from './file-upload';
 import { ResultCard } from './result-card';
 import { ToolLimitNotice } from './tool-limit-notice';
@@ -36,7 +36,7 @@ function formatSize(bytes: number) {
 }
 
 export function CompressWorkspace() {
-  const { activeTool, uploadedFile, processedImage, isProcessing, reset, setIsProcessing, setProcessedImage, setProgress } = useAppStore();
+  const { activeTool, uploadedFile, processedImage, isProcessing, reset, setIsProcessing, setProcessedImage, setProgress } = useActiveTool();
   const [targetSize, setTargetSize] = useState('100');
   const [result, setResult] = useState<CompressionResult | null>(null);
 

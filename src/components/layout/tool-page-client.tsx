@@ -2,193 +2,194 @@
 
 import dynamic from 'next/dynamic';
 import { useAppStore } from '@/store/app-store';
+import { ToolContext } from '@/hooks/use-active-tool';
 import { useEffect, useLayoutEffect, useRef } from 'react';
 import { ErrorBoundary } from '@/components/ui/error-boundary';
 
 // Dynamically import workspace components
 const CompressWorkspace = dynamic(
   () => import('@/components/layout/compress-workspace').then(mod => ({ default: mod.CompressWorkspace })),
-  { loading: () => <WorkspaceLoading />, ssr: false }
+  { loading: () => <WorkspaceLoading /> }
 );
 
 const ResizeWorkspace = dynamic(
   () => import('@/components/layout/resize-workspace').then(mod => ({ default: mod.ResizeWorkspace })),
-  { loading: () => <WorkspaceLoading />, ssr: false }
+  { loading: () => <WorkspaceLoading /> }
 );
 
 const ConvertWorkspace = dynamic(
   () => import('@/components/layout/convert-workspace').then(mod => ({ default: mod.ConvertWorkspace })),
-  { loading: () => <WorkspaceLoading />, ssr: false }
+  { loading: () => <WorkspaceLoading /> }
 );
 
 const EffectWorkspace = dynamic(
   () => import('@/components/layout/effect-workspace').then(mod => ({ default: mod.EffectWorkspace })),
-  { loading: () => <WorkspaceLoading />, ssr: false }
+  { loading: () => <WorkspaceLoading /> }
 );
 
 const ToolWorkspace = dynamic(
   () => import('@/components/layout/tool-workspace').then(mod => ({ default: mod.ToolWorkspace })),
-  { loading: () => <WorkspaceLoading />, ssr: false }
+  { loading: () => <WorkspaceLoading /> }
 );
 
 const PDFMergeWorkspace = dynamic(
   () => import('@/components/layout/pdf-merge-workspace').then(mod => ({ default: mod.PDFMergeWorkspace })),
-  { loading: () => <WorkspaceLoading />, ssr: false }
+  { loading: () => <WorkspaceLoading /> }
 );
 
 const PDFSplitWorkspace = dynamic(
   () => import('@/components/layout/pdf-split-workspace').then(mod => ({ default: mod.PDFSplitWorkspace })),
-  { loading: () => <WorkspaceLoading />, ssr: false }
+  { loading: () => <WorkspaceLoading /> }
 );
 
 const ImageToPDFWorkspace = dynamic(
   () => import('@/components/layout/image-to-pdf-workspace').then(mod => ({ default: mod.ImageToPDFWorkspace })),
-  { loading: () => <WorkspaceLoading />, ssr: false }
+  { loading: () => <WorkspaceLoading /> }
 );
 
 const PDFCompressWorkspace = dynamic(
   () => import('@/components/layout/pdf-compress-workspace').then(mod => ({ default: mod.CompressPDFWorkspace })),
-  { loading: () => <WorkspaceLoading />, ssr: false }
+  { loading: () => <WorkspaceLoading /> }
 );
 
 const PDFToolsWorkspace = dynamic(
   () => import('@/components/layout/pdf-tools-workspace').then(mod => ({ default: mod.PDFToolsWorkspace })),
-  { loading: () => <WorkspaceLoading />, ssr: false }
+  { loading: () => <WorkspaceLoading /> }
 );
 
 const PDFSignWorkspace = dynamic(
   () => import('@/components/layout/pdf-sign-workspace').then(mod => ({ default: mod.PDFSignWorkspace })),
-  { loading: () => <WorkspaceLoading />, ssr: false }
+  { loading: () => <WorkspaceLoading /> }
 );
 
 const PDFRedactWorkspace = dynamic(
   () => import('@/components/layout/pdf-redact-workspace').then(mod => ({ default: mod.PDFRedactWorkspace })),
-  { loading: () => <WorkspaceLoading />, ssr: false }
+  { loading: () => <WorkspaceLoading /> }
 );
 
 const PDFFlattenWorkspace = dynamic(
   () => import('@/components/layout/pdf-flatten-workspace').then(mod => ({ default: mod.PDFFlattenWorkspace })),
-  { loading: () => <WorkspaceLoading />, ssr: false }
+  { loading: () => <WorkspaceLoading /> }
 );
 
 const PDFCropWorkspace = dynamic(
   () => import('@/components/layout/pdf-crop-workspace').then(mod => ({ default: mod.PDFCropWorkspace })),
-  { loading: () => <WorkspaceLoading />, ssr: false }
+  { loading: () => <WorkspaceLoading /> }
 );
 
 const PDFExtractWorkspace = dynamic(
   () => import('@/components/layout/pdf-extract-workspace').then(mod => ({ default: mod.PDFExtractWorkspace })),
-  { loading: () => <WorkspaceLoading />, ssr: false }
+  { loading: () => <WorkspaceLoading /> }
 );
 
 const PDFFillWorkspace = dynamic(
   () => import('@/components/layout/pdf-fill-workspace').then(mod => ({ default: mod.PDFFillWorkspace })),
-  { loading: () => <WorkspaceLoading />, ssr: false }
+  { loading: () => <WorkspaceLoading /> }
 );
 
 const PDFGrayscaleWorkspace = dynamic(
   () => import('@/components/layout/pdf-grayscale-workspace').then(mod => ({ default: mod.PDFGrayscaleWorkspace })),
-  { loading: () => <WorkspaceLoading />, ssr: false }
+  { loading: () => <WorkspaceLoading /> }
 );
 
 const PDFToTextWorkspace = dynamic(
   () => import('@/components/layout/pdf-to-text-workspace').then(mod => ({ default: mod.PDFToTextWorkspace })),
-  { loading: () => <WorkspaceLoading />, ssr: false }
+  { loading: () => <WorkspaceLoading /> }
 );
 
 const PDFToPDFAWorkspace = dynamic(
   () => import('@/components/layout/pdf-to-pdfa-workspace').then(mod => ({ default: mod.PDFToPDFAWorkspace })),
-  { loading: () => <WorkspaceLoading />, ssr: false }
+  { loading: () => <WorkspaceLoading /> }
 );
 
 const WordToPDFWorkspace = dynamic(
   () => import('@/components/layout/word-to-pdf-workspace').then(mod => ({ default: mod.WordToPDFWorkspace })),
-  { loading: () => <WorkspaceLoading />, ssr: false }
+  { loading: () => <WorkspaceLoading /> }
 );
 
 const PDFToWordWorkspace = dynamic(
   () => import('@/components/layout/pdf-to-word-workspace').then(mod => ({ default: mod.PDFToWordWorkspace })),
-  { loading: () => <WorkspaceLoading />, ssr: false }
+  { loading: () => <WorkspaceLoading /> }
 );
 
 const PDFToExcelWorkspace = dynamic(
   () => import('@/components/layout/pdf-to-excel-workspace').then(mod => ({ default: mod.PDFToExcelWorkspace })),
-  { loading: () => <WorkspaceLoading />, ssr: false }
+  { loading: () => <WorkspaceLoading /> }
 );
 
 const BankStatementWorkspace = dynamic(
   () => import('@/components/layout/bank-statement-workspace').then(mod => ({ default: mod.BankStatementWorkspace })),
-  { loading: () => <WorkspaceLoading />, ssr: false }
+  { loading: () => <WorkspaceLoading /> }
 );
 
 const BatesNumberingWorkspace = dynamic(
   () => import('@/components/layout/bates-numbering-workspace').then(mod => ({ default: mod.BatesNumberingWorkspace })),
-  { loading: () => <WorkspaceLoading />, ssr: false }
+  { loading: () => <WorkspaceLoading /> }
 );
 
 const SanitizePdfWorkspace = dynamic(
   () => import('@/components/layout/sanitize-pdf-workspace').then(mod => ({ default: mod.SanitizePdfWorkspace })),
-  { loading: () => <WorkspaceLoading />, ssr: false }
+  { loading: () => <WorkspaceLoading /> }
 );
 
 const ComparePdfWorkspace = dynamic(
   () => import('@/components/layout/compare-pdf-workspace').then(mod => ({ default: mod.ComparePdfWorkspace })),
-  { loading: () => <WorkspaceLoading />, ssr: false }
+  { loading: () => <WorkspaceLoading /> }
 );
 
 const CmykPdfWorkspace = dynamic(
   () => import('@/components/layout/cmyk-pdf-workspace').then(mod => ({ default: mod.CmykPdfWorkspace })),
-  { loading: () => <WorkspaceLoading />, ssr: false }
+  { loading: () => <WorkspaceLoading /> }
 );
 
 const HeicToPdfWorkspace = dynamic(
   () => import('@/components/layout/heic-to-pdf-workspace').then(mod => ({ default: mod.HeicToPdfWorkspace })),
-  { loading: () => <WorkspaceLoading />, ssr: false }
+  { loading: () => <WorkspaceLoading /> }
 );
 
 const OCRWorkspace = dynamic(
   () => import('@/components/layout/ocr-workspace').then(mod => ({ default: mod.OCRWorkspace })),
-  { loading: () => <WorkspaceLoading />, ssr: false }
+  { loading: () => <WorkspaceLoading /> }
 );
 
 const SignatureWorkspace = dynamic(
   () => import('@/components/layout/signature-workspace').then(mod => ({ default: mod.SignatureWorkspace })),
-  { loading: () => <WorkspaceLoading />, ssr: false }
+  { loading: () => <WorkspaceLoading /> }
 );
 
 const MetadataWorkspace = dynamic(
   () => import('@/components/layout/metadata-workspace').then(mod => ({ default: mod.MetadataWorkspace })),
-  { loading: () => <WorkspaceLoading />, ssr: false }
+  { loading: () => <WorkspaceLoading /> }
 );
 
 const CropWorkspace = dynamic(
   () => import('@/components/layout/crop-workspace').then(mod => ({ default: mod.CropWorkspace })),
-  { loading: () => <WorkspaceLoading />, ssr: false }
+  { loading: () => <WorkspaceLoading /> }
 );
 
 const RotateWorkspace = dynamic(
   () => import('@/components/layout/rotate-workspace').then(mod => ({ default: mod.RotateWorkspace })),
-  { loading: () => <WorkspaceLoading />, ssr: false }
+  { loading: () => <WorkspaceLoading /> }
 );
 
 const FlipWorkspace = dynamic(
   () => import('@/components/layout/flip-workspace').then(mod => ({ default: mod.FlipWorkspace })),
-  { loading: () => <WorkspaceLoading />, ssr: false }
+  { loading: () => <WorkspaceLoading /> }
 );
 
 const BlurBackgroundWorkspace = dynamic(
   () => import('@/components/layout/blur-background-workspace').then(mod => ({ default: mod.BlurBackgroundWorkspace })),
-  { loading: () => <WorkspaceLoading />, ssr: false }
+  { loading: () => <WorkspaceLoading /> }
 );
 
 const BlurFaceWorkspace = dynamic(
   () => import('@/components/layout/blur-face-workspace').then(mod => ({ default: mod.BlurFaceWorkspace })),
-  { loading: () => <WorkspaceLoading />, ssr: false }
+  { loading: () => <WorkspaceLoading /> }
 );
 
 const AIWorkspace = dynamic(
   () => import('@/components/layout/ai-workspace').then(mod => ({ default: mod.AIWorkspace })),
-  { loading: () => <WorkspaceLoading />, ssr: false }
+  { loading: () => <WorkspaceLoading /> }
 );
 
 function WorkspaceLoading() {
@@ -332,9 +333,16 @@ export function ToolPageClient({ toolId, toolName, toolDescription }: ToolPageCl
     };
   }, [reset]);
 
+  // Per-request initial tool: workspaces SSR their full UI from this context
+  // (prerender-safe, no global-store writes during render). The useLayoutEffect
+  // above then hydrates the global store for selector-based consumers post-mount.
+  const initialTool = { id: toolId, name: toolName, description: toolDescription };
+
   return (
     <ErrorBoundary>
-      {getWorkspaceComponent(toolId)}
+      <ToolContext.Provider value={initialTool}>
+        {getWorkspaceComponent(toolId)}
+      </ToolContext.Provider>
     </ErrorBoundary>
   );
 }

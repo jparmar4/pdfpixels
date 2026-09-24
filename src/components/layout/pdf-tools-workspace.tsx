@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Slider } from '@/components/ui/slider';
-import { useAppStore } from '@/store/app-store';
+import { useActiveTool } from '@/hooks/use-active-tool';
 import { FileUpload } from './file-upload';
 import { ToolPageHeader } from './tool-page-header';
 import { ToolLimitNotice } from './tool-limit-notice';
@@ -444,7 +444,7 @@ function PageNumberSettings({
 // ─── Main Component ────────────────────────────────────────────────────────────
 
 export function PDFToolsWorkspace() {
-    const { activeTool, uploadedFile, isProcessing, reset, setIsProcessing, setProgress } = useAppStore();
+    const { activeTool, uploadedFile, isProcessing, reset, setIsProcessing, setProgress } = useActiveTool();
 
     const [result, setResult] = useState<PDFResult | null>(null);
     const [totalPages, setTotalPages] = useState(0);

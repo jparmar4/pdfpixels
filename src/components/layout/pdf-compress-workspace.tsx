@@ -6,7 +6,7 @@ import { ArrowRight, FileText, Minimize2, RefreshCw, Zap, CheckCircle2, Info } f
 import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { useAppStore } from '@/store/app-store';
+import { useActiveTool } from '@/hooks/use-active-tool';
 import { FileUpload } from './file-upload';
 import { ResultCard } from './result-card';
 import { ToolLimitNotice } from './tool-limit-notice';
@@ -97,7 +97,7 @@ const presetMeta: Record<string, { title: string; description: string; limitText
 };
 
 export function CompressPDFWorkspace({ targetPreset }: CompressPDFWorkspaceProps = {}) {
-  const { activeTool, uploadedFile, isProcessing, progress, reset, setIsProcessing, setProgress } = useAppStore();
+  const { activeTool, uploadedFile, isProcessing, progress, reset, setIsProcessing, setProgress } = useActiveTool();
   const preset = targetPreset ? presetMeta[targetPreset] : null;
   const targetBytes = targetPreset ? ({ '100kb': 100, '200kb': 200, '300kb': 300, '500kb': 500, '1mb': 1024 }[targetPreset]! * 1024) : undefined;
   const [result, setResult] = useState<CompressionResult | null>(null);

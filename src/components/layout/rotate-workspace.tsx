@@ -24,7 +24,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { useAppStore } from '@/store/app-store';
+import { useActiveTool } from '@/hooks/use-active-tool';
 import { FileUpload } from './file-upload';
 import { ToolPageHeader } from './tool-page-header';
 import { ToolLimitNotice } from './tool-limit-notice';
@@ -144,7 +144,7 @@ export function RotateWorkspace() {
     setIsProcessing,
     setProcessedImage,
     setProgress,
-  } = useAppStore();
+  } = useActiveTool();
 
   const isFlipTool = activeTool?.id === 'flip';
   const isRotateTool = !isFlipTool;

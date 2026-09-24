@@ -3,7 +3,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { Copy, Download, FileText, RotateCcw, Sparkles, ChevronRight, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useAppStore } from '@/store/app-store';
+import { useActiveTool } from '@/hooks/use-active-tool';
 import { FileUpload } from './file-upload';
 import { ToolPageHeader } from './tool-page-header';
 import { useState, useCallback } from 'react';
@@ -36,7 +36,7 @@ const LANGUAGES = [
 ];
 
 export function OCRWorkspace() {
-    const { activeTool, uploadedFile, isProcessing, reset, setIsProcessing, setProgress } = useAppStore();
+    const { activeTool, uploadedFile, isProcessing, reset, setIsProcessing, setProgress } = useActiveTool();
 
     const [extractedText, setExtractedText] = useState('');
     const [language, setLanguage] = useState('eng');

@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { useAppStore } from '@/store/app-store';
+import { useActiveTool } from '@/hooks/use-active-tool';
 import { FileUpload } from './file-upload';
 import { ToolPageHeader } from './tool-page-header';
 import { useState, useCallback, useEffect } from 'react';
@@ -318,7 +318,7 @@ function uint8ToDataUrl(bytes: Uint8Array, mime: string): string {
 }
 
 export function MetadataWorkspace() {
-  const { activeTool, uploadedFile, reset } = useAppStore();
+  const { activeTool, uploadedFile, reset } = useActiveTool();
   const [metadata, setMetadata] = useState<MetadataEntry[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [processedImage, setProcessedImage] = useState<string | null>(null);

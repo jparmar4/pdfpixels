@@ -5,7 +5,7 @@ import { Download, RotateCcw, PenTool, Type, Trash2, ChevronRight, Sparkles, Ima
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
-import { useAppStore } from '@/store/app-store';
+import { useActiveTool } from '@/hooks/use-active-tool';
 import { FileUpload } from './file-upload';
 import { ToolPageHeader } from './tool-page-header';
 import { useState, useCallback, useRef, useEffect } from 'react';
@@ -18,7 +18,7 @@ import {
 } from '@/components/ui/select';
 
 export function SignatureWorkspace() {
-  const { activeTool, uploadedFile, reset, setProcessedImage, processedImage } = useAppStore();
+  const { activeTool, uploadedFile, reset, setProcessedImage, processedImage } = useActiveTool();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isDrawing, setIsDrawing] = useState(false);
   const [signatureData, setSignatureData] = useState<string | null>(null);

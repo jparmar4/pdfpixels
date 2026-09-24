@@ -13,7 +13,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import { useAppStore } from '@/store/app-store';
+import { useActiveTool } from '@/hooks/use-active-tool';
 import { FileUpload } from './file-upload';
 import { ToolPageHeader } from './tool-page-header';
 import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
@@ -173,7 +173,7 @@ export function EffectWorkspace() {
     setIsProcessing,
     setProcessedImage,
     setProgress,
-  } = useAppStore();
+  } = useActiveTool();
 
   const toolId = activeTool?.id || '';
   const config = EFFECT_CONFIG[toolId] || {

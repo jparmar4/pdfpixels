@@ -17,7 +17,7 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Slider } from '@/components/ui/slider';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useAppStore } from '@/store/app-store';
+import { useActiveTool } from '@/hooks/use-active-tool';
 import { FileUpload } from './file-upload';
 import { ResultCard } from './result-card';
 import { ToolLimitNotice } from './tool-limit-notice';
@@ -95,7 +95,7 @@ function ComparisonSlider({ before, after }: { before: string; after: string }) 
 }
 
 export function ConvertWorkspace() {
-  const { activeTool, uploadedFile, processedImage, isProcessing, reset, setIsProcessing, setProcessedImage, setProgress } = useAppStore();
+  const { activeTool, uploadedFile, processedImage, isProcessing, reset, setIsProcessing, setProcessedImage, setProgress } = useActiveTool();
   const lockedFormat = activeTool ? getTargetFormat(activeTool.id) : null;
   const [outputFormat, setOutputFormat] = useState<OutputFormat>(lockedFormat || 'jpg');
   const [quality, setQuality] = useState(92);

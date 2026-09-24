@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { type LucideIcon } from 'lucide-react';
 import { normalizeDisplayText } from '@/lib/display-text';
 import { getToolById } from '@/lib/tools-data';
-import { useAppStore } from '@/store/app-store';
+import { useActiveTool } from '@/hooks/use-active-tool';
 
 interface ToolPageHeaderProps {
   title: string;
@@ -28,7 +28,7 @@ export function ToolPageHeader({
   emoji,
   children,
 }: ToolPageHeaderProps) {
-  const activeToolId = useAppStore((state) => state.activeTool?.id);
+  const activeToolId = useActiveTool().activeTool?.id;
   const isIconComponentType =
     typeof icon === 'function' ||
     (typeof icon === 'object' && icon !== null && '$$typeof' in (icon as { $$typeof?: unknown }));

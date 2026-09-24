@@ -3,7 +3,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { Download, RotateCcw, Merge, FileText, Plus, ChevronDown, ChevronUp, Trash2, GripVertical, Sparkles, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useAppStore } from '@/store/app-store';
+import { useActiveTool } from '@/hooks/use-active-tool';
 import { ToolPageHeader } from './tool-page-header';
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { useReducedMotion } from 'framer-motion';
@@ -20,7 +20,7 @@ interface PDFFile {
 }
 
 export function PDFMergeWorkspace() {
-  const { activeTool, isProcessing, progress, setIsProcessing, setProgress, reset } = useAppStore();
+  const { activeTool, isProcessing, progress, setIsProcessing, setProgress, reset } = useActiveTool();
 
   const [files, setFiles] = useState<PDFFile[]>([]);
   const [result, setResult] = useState<{ pdfUrl: string; fileName: string; pageCount: number } | null>(null);

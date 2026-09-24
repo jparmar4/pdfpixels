@@ -82,10 +82,13 @@
 - [x] Tool-page skeleton now matches each workspace family's container width (max-w-4xl/5xl/6xl mapping for 24 constrained tools; full-width default otherwise) — eliminates the desktop skeleton→workspace width shift. Verified in served HTML.
 - [x] ssr:false evaluation complete (see note below). No code change: simply removing ssr:false would make served HTML EMPTIER (workspaces render null without activeTool), and render-phase store init would leak across SSR requests (module singleton). Workspaces themselves are render-safe (no module-scope or render-time browser APIs; all access is in handlers/effects).
 
-# ssr:false → SSR content: designed follow-up (not started)
-- Prerequisite: per-request Zustand store isolation (createStore + React context provider, initialized with activeTool from page props) so concurrent SSRs cannot cross-pollinate tool headers.
-- Then: pass toolId/toolName/toolDescription as workspace props for the initial gate (keep the store for post-mount interactivity), drop ssr:false, and let `next build` self-validate (any render-time browser API fails that page's prerender loudly).
-- Expected payoff: real dropzone UI in served HTML on all 83 tool pages (LCP + no-JS + AEO), at the cost of a careful 35-file migration with build-validated testing.
+# ssr:false → SSR content: DONE (2026-09-24)
+- Approach: per-request initial tool via React context (new `src/hooks/use-active-tool.ts`: `ToolContext` + `useActiveTool()` merge hook) provided by ToolPageClient from page props. Prerender reads the context value; the global Zustand singleton is never written during SSR, so concurrent SSRs cannot cross-pollinate. Store still hydrated post-mount via the existing useLayoutEffect for selector-based consumers.
+- Removed `ssr: false` from all 37 dynamic workspace imports in `tool-page-client.tsx`.
+- Swapped `useAppStore()` → `useActiveTool()` in the 19 workspaces that destructure `activeTool` (+ tool-page-header badge lookup). Other store consumers (nav/footer/tool-card/tools-client) untouched.
+- Payoff shipped: real tool header (H1), dropzone, controls, and limits now in served HTML on all 83 tool pages (in the streamed resolved boundary + inline $RC swap; skeleton only as transient fallback).
+- Verified: tsc clean, eslint 0 errors, `next build` 232/232 pages, prerender sweep (83/83 tool pages contain tool-hero-title H1 + workspace markup, 0 skeletons), live `next start` smoke on /tools/merge-pdf → 200 with dropzone + limits in served HTML.
+- Windows-only note: `next build` intermittently fails in the standalone-copy step with `EBUSY` on a freshly-written file (Defender real-time scan race; failed file differs per run). Core build output is complete; rerunning `postbuild.mjs` and/or manual copy completes `.next/standalone`. Does not affect Linux/CI builds.
 
 # Audit follow-ups — verification & remaining fixes (2026-09-16)
 - [x] JPEG EOI truncation claim VERIFIED FALSE — `result.subarray(0, Math.max(targetBytes, result.length))` always returns the full buffer (loop guarantees length ≥ target). No change; audit reasoning was backwards (Math.max, not min).

@@ -17,7 +17,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
-import { useAppStore } from '@/store/app-store';
+import { useActiveTool } from '@/hooks/use-active-tool';
 import { FileUpload } from './file-upload';
 import { ToolPageHeader } from './tool-page-header';
 import { useState, useCallback, useRef, useEffect, useMemo } from 'react';
@@ -174,7 +174,7 @@ export function CropWorkspace() {
   const {
     activeTool, uploadedFile, processedImage, isProcessing,
     reset, setIsProcessing, setProcessedImage, setProgress,
-  } = useAppStore();
+  } = useActiveTool();
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);

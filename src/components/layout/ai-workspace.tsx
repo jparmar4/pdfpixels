@@ -20,7 +20,7 @@ import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { useAppStore } from '@/store/app-store';
+import { useActiveTool } from '@/hooks/use-active-tool';
 import { FileUpload } from './file-upload';
 import { ToolPageHeader } from './tool-page-header';
 import { ResultCard } from './result-card';
@@ -117,7 +117,7 @@ export function AIWorkspace() {
     setIsProcessing,
     setProcessedImage,
     setProgress,
-  } = useAppStore();
+  } = useActiveTool();
 
   const [error, setError] = useState<string | null>(null);
   const [mode, setMode] = useState<ProcessingMode>('high');

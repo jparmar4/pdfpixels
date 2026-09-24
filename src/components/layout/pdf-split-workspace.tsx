@@ -5,7 +5,7 @@ import { Download, RotateCcw, Split, FileText, Scissors, ChevronRight, Sparkles 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useAppStore } from '@/store/app-store';
+import { useActiveTool } from '@/hooks/use-active-tool';
 import { ToolPageHeader } from './tool-page-header';
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { useReducedMotion } from 'framer-motion';
@@ -35,7 +35,7 @@ interface SplitResult {
 }
 
 export function PDFSplitWorkspace() {
-  const { activeTool, isProcessing, progress, setIsProcessing, setProgress, reset } = useAppStore();
+  const { activeTool, isProcessing, progress, setIsProcessing, setProgress, reset } = useActiveTool();
 
   const [file, setFile] = useState<File | null>(null);
   const [pdfInfo, setPdfInfo] = useState<PDFInfo | null>(null);

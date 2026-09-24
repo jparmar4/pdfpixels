@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Download, RotateCcw, FilePlus, Image as ImageIcon, FileText, Plus, X, ChevronRight, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import { useAppStore } from '@/store/app-store';
+import { useActiveTool } from '@/hooks/use-active-tool';
 import { ToolPageHeader } from './tool-page-header';
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { toast } from 'sonner';
@@ -36,7 +36,7 @@ function newImageId() {
 }
 
 export function ImageToPDFWorkspace() {
-  const { activeTool, isProcessing, setIsProcessing, setProgress, reset } = useAppStore();
+  const { activeTool, isProcessing, setIsProcessing, setProgress, reset } = useActiveTool();
 
   const inputRef = useRef<HTMLInputElement>(null);
   const [files, setFiles] = useState<ImageFile[]>([]);
