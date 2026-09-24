@@ -82,6 +82,13 @@
 - [x] Tool-page skeleton now matches each workspace family's container width (max-w-4xl/5xl/6xl mapping for 24 constrained tools; full-width default otherwise) — eliminates the desktop skeleton→workspace width shift. Verified in served HTML.
 - [x] ssr:false evaluation complete (see note below). No code change: simply removing ssr:false would make served HTML EMPTIER (workspaces render null without activeTool), and render-phase store init would leak across SSR requests (module singleton). Workspaces themselves are render-safe (no module-scope or render-time browser APIs; all access is in handlers/effects).
 
+# SEO/AEO/GEO distribution audit (2026-09-24)
+- [x] Verified already in place: IndexNow (key file + batch submitter to Bing endpoint covering Bing/Yandex/Naver/Seznam), Google/Bing/Yandex verification (meta tags via .env + files in public/), llms.txt + llms-full.txt (limits pulled from src/lib/limits.ts, reviewed 2026-09-23), .well-known/ai-plugin.json, RSS /feed with media namespace, image sitemap (blog covers + all tool OG images), BlogPosting/Breadcrumb/FAQ schemas with dateModified, max-image-preview:large, robots Host directive, hreflang clusters (geo hubs + de-DE/fr-FR/ja-JP tool packs), blog freshness (newest post Sep 20, 2026).
+- [x] robots.ts: allow 9 more AI answer-engine crawlers — Perplexity-User (live-fetch agent; blocking it loses Perplexity citations), CCBot, YouBot, Amazonbot, Google-CloudVertexBot, Meta-WebIndexer, Diffbot, Cohere-ai, iaskspider. 23 agent rules total.
+- [x] Google Discover: 11 blog hero covers upscaled from 640x640/1024x1024 to >=1280px wide (Google guidance: at least 1200px wide; small images rarely surface). coverImageDimensions synced in blog.ts. Verified og:image:width=1280 in prerendered post HTML.
+- [x] ai-plugin.json: max_pdf_size_mb 25 -> 50 (stale vs description_for_model + actual 50MB limit from e1940ca).
+- [ ] Operator actions (cannot be done from code): keep publishing fresh posts on a steady cadence (Discover is heavily freshness-driven), resubmit sitemap in GSC after deploys when many URLs change, run npm run submit-sitemap after content waves (IndexNow), and submit to Bing Webmaster Tools + Yandex Webmaster if not yet done.
+
 # ssr:false → SSR content: DONE (2026-09-24)
 - Approach: per-request initial tool via React context (new `src/hooks/use-active-tool.ts`: `ToolContext` + `useActiveTool()` merge hook) provided by ToolPageClient from page props. Prerender reads the context value; the global Zustand singleton is never written during SSR, so concurrent SSRs cannot cross-pollinate. Store still hydrated post-mount via the existing useLayoutEffect for selector-based consumers.
 - Removed `ssr: false` from all 37 dynamic workspace imports in `tool-page-client.tsx`.
