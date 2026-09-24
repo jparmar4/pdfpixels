@@ -437,6 +437,8 @@ const nextConfig: NextConfig = {
       // canonical than the one declared in the sitemap. 301 settles the cluster.
       { source: '/blog/how-to-compress-pdf-file-size', destination: '/blog/how-to-compress-pdf-online', permanent: true },
       { source: '/blog/best-free-pdf-compressor-online', destination: '/blog/how-to-compress-pdf-online', permanent: true },
+      // PDF category was split into five focused hubs; settle the old URL.
+      { source: '/tools/category/pdf-tools', destination: '/tools/category/pdf-organize', permanent: true },
     ];
   },
 

@@ -340,7 +340,7 @@ export async function POST(req: NextRequest) {
               'x-size-after': String(out.length),
               'x-saved-percent': String(savedPercent),
               ...(savedPercent < 1
-                ? { 'x-compress-note': 'This PDF appears already optimized — little or no further size reduction was possible.' }
+                ? { 'x-compress-note': 'This PDF appears already optimized - little or no further size reduction was possible.' }
                 : {}),
               ...(targetKb
                 ? { 'x-target-kb': String(targetKb), 'x-target-met': String(out.length <= targetKb * 1024) }
@@ -468,7 +468,7 @@ export async function POST(req: NextRequest) {
         ...(engine === 'local-fallback'
           ? { 'x-compress-note': 'Ghostscript was unavailable. Images were not recompressed, so a target size could not be met.' }
           : savedPercent < 1
-            ? { 'x-compress-note': 'This PDF appears already optimized — little or no further size reduction was possible.' }
+            ? { 'x-compress-note': 'This PDF appears already optimized - little or no further size reduction was possible.' }
             : {}),
         ...(targetKb
           ? { 'x-target-kb': String(targetKb), 'x-target-met': String(finalBytes.length <= targetKb * 1024) }

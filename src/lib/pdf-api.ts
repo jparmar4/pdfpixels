@@ -212,6 +212,17 @@ export async function openEditablePdf(
     const pdf = await loadPdfWithTimeout(read.buffer, { ignoreEncryption: true, updateMetadata: false });
     const encrypted = rejectEncryptedPdf(pdf);
     if (encrypted) return { ok: false, response: encrypted };
+    // pdf-lib can "load" files with garbage-after-magic without throwing,
+    // returning a document whose catalog is undefined. Probe the page tree
+    // here so damaged files surface as 400 for every edit route at once.
+    try {
+      pdf.getPageCount();
+    } catch {
+      return {
+        ok: false,
+        response: pdfJsonError('Could not read this PDF. The file may be damaged.', 400),
+      };
+    }
     return { ok: true, pdf, buffer: read.buffer };
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Could not read this PDF.';

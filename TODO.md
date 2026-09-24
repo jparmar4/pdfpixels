@@ -12,7 +12,7 @@
 - [x] (Hardening) Normalize canonical URLs (prefer absoluteUrl) across metadata + JSON-LD.
 
 ## Step 3: Strengthen AEO content blocks
-- [x] Add �direct answer + steps + common problems� sections to each tool page.
+- [x] Add direct answer + steps + common problems sections to each tool page.
 - [x] Ensure AEO blocks are server-rendered or otherwise indexable (not only client-rendered).
 
 ## Step 4: Implement real geo strategy
@@ -21,8 +21,8 @@
 - [x] Geo hubs now indexable: self-canonical, `index,follow`, full hreflang cluster on home + hubs, and included in sitemap.xml (was previously noindex + canonical-to-root, which made GEO search-invisible).
 
 ## Step 5: Improve internal linking and scalable programmatic SEO
-- [x] Ensure home ? category ? tool ? related tools is fully indexable.
-- [x] Add �Related tools / Next steps / Also try� to tool pages.
+- [x] Ensure home → category → tool → related tools is fully indexable.
+- [x] Add "Related tools / Next steps / Also try" to tool pages.
 
 ## Step 6: AdSense approval readiness
 - [x] Confirm required pages are present and indexable: Privacy, Terms, Contact, DMCA.
@@ -64,7 +64,7 @@
 # Full-codebase audit — Wave 3 (2026-09-16)
 - [x] Mobile: fixed bottom CTA bar no longer overlaps content — conditional pb-24 on compress/merge/split workspaces, applied only while the bar is visible.
 - [x] Perf: ScrollToTop no longer runs an 800ms setInterval forever; replaced with a ResizeObserver that fires only on content-height change.
-- [x] Dead code removed: 5 duplicate layout/ components (hero/trust/features/how-it-works/faq), ui/sidebar, ui/chart, ToolSchema export, apiSuccess export, MultiplexAd, ~10 unused performance.ts exports, dead CSS (.drop-zone/.testimonial-card/.avatar-ring + --sidebar-* tokens), date-fns + recharts deps.
+- [x] Dead code removed: 5 duplicate layout/ components (hero/trust/features/how-it-works/faq), ui/sidebar, ui/chart, ToolSchema export, apiSuccess export, MultiplexAd, ~10 unused performance.ts exports, drop-zone/.testimonial-card/.avatar-ring + --sidebar-* tokens), date-fns + recharts deps.
 - [ ] Deferred: real upload progress (XHR.upload.onprogress) — fetch-based uploads are scattered across 15+ workspaces with per-route response handling; convert incrementally to limit regression risk.
 
 # Full-codebase audit — Reliability wave (2026-09-16)
@@ -78,7 +78,7 @@
 - [x] Verified live against the production bundle: protect→200 (25KB encrypted PDF), unlock→200, wrong password→401 INVALID_PASSWORD, rotate→200, bad angle→400 BAD_REQUEST.
 
 # Full-codebase audit — Polish wave (2026-09-16)
-- [x] Gated 3 continuous GPU-heavy animations on ≤1024px viewports (mesh-gradient-blobs, badge-gradient, connector-flow join the existing kill-switch; gradients still render statically). Unused animation classes cost zero runtime and were left alone.
+- [x] Gated 3 continuous GPU-heavy animations on ≤1024px viewports (mesh-gradient-blobs, badge-gradient, connector-flow join the existing kill-switch; gradients still render statically). Unused cost zero and were left alone.
 - [x] Tool-page skeleton now matches each workspace family's container width (max-w-4xl/5xl/6xl mapping for 24 constrained tools; full-width default otherwise) — eliminates the desktop skeleton→workspace width shift. Verified in served HTML.
 - [x] ssr:false evaluation complete (see note below). No code change: simply removing ssr:false would make served HTML EMPTIER (workspaces render null without activeTool), and render-phase store init would leak across SSR requests (module singleton). Workspaces themselves are render-safe (no module-scope or render-time browser APIs; all access is in handlers/effects).
 
@@ -103,3 +103,27 @@
 - [x] 8 PDF tools (sign/redact/flatten/crop/extract/fill/grayscale/pdf-to-text) flipped processing:'client'→'server' — all 8 workspaces POST to server APIs, and OG images, content sections, headers, badges, and llms.txt were falsely claiming browser processing.
 - [x] Extracted shared src/lib/qpdf.ts (candidates + runner + unavailable detection); protect + linearize rewired with preserved per-route timeout messages. Verified live: linearize→200 via GS fallback.
 - [x] Verified: tsc clean, eslint 0 errors, build green (211 pages), test:tools exit 0, live smoke (protect/unlock/rotate/to-text/linearize) all 200 with valid PDFs.
+
+# Tool suite expansion to iLovePDF parity (2026-09-24)
+- [x] 7 new tools (87 -> 90 total, all working end-to-end):
+  - Excel to PDF (`excel-to-pdf`) -- LibreOffice conversion (xlsx/xls/csv), CSV-table fallback via headers when LibreOffice is missing; own workspace file.
+  - PowerPoint to PDF (`powerpoint-to-pdf`) -- LibreOffice conversion (pptx/ppt); own workspace file.
+  - PDF to PowerPoint (`pdf-to-pptx`) -- Ghostscript 150-DPI page render -> pptxgenjs slides (new server-only dep, capped at 300 pages).
+  - Repair PDF (`repair-pdf`) -- progressive pdf-lib tolerant load (standard -> lenient flags -> trimmed byte windows), honest 422 when unrecoverable.
+  - Resize PDF (`resize-pdf`) -- A4/A3/A5/Letter/Legal page boxes, auto/forced orientation.
+  - N-up PDF (`pdf-n-up`) -- 2-up / 4-up / 6-up layouts with margins and LTR order.
+  - PDF Metadata (`pdf-metadata`) -- view current Title/Author/Subject/Keywords, edit all four.
+- [x] Professional organization: single 38-tool `pdf-tools` category split into 5 focused hubs (iLovePDF-style mental model) placed right after `most-used`:
+  - `pdf-organize` (merge/split/reorder/delete-pages/extract/rotate/page-numbers/bates/crop/n-up/resize)
+  - `pdf-optimize` (compress + KB presets/linearize/grayscale/flatten/to-pdfa/sanitize/cmyk/repair)
+  - `pdf-convert` (to-image/to-word/to-excel/to-pptx/to-text/word/excel/powerpoint/image/heic conversions)
+  - `pdf-edit` (sign/redact/fill/watermark/compare/metadata)
+  - `pdf-security` (protect/unlock)
+- [x] Permanent redirect `/tools/category/pdf-tools` -> `/tools/category/pdf-organize` in `next.config.ts`; sitemap/llms.txt/llms-full.txt/AI plugin regenerate automatically from `toolCategories`.
+- [x] AEO content (`tool-content-data.ts`): direct answers/steps/common problems/FAQs for all 7 new tools (drives AEO cards + HowTo/FAQ JSON-LD).
+- [x] Bug fixes found during verification:
+  - ByteString ByteString crash: `x-compress-note` response header contained an em dash (U+2014) -- headers must be latin1-safe, so any user uploading an already-optimized PDF got a 500 instead of their PDF. Replaced with a plain hyphen (both occurrences); repo-wide scanner confirmed all headers latin1-safe.
+  - Corrupt-file 500s on PDF edit routes: pdf-lib silently "loads" garbage-after-magic files yielding an undefined catalog; hardened the shared `openEditablePdf` helper to probe page count and return 400 mapped errors -- fixes all edit routes at once.
+  - Minor: unused import in metadata route, missing NextResponse import in repair route, variable fixes in to-pptx route.
+- [x] Verification (all green): tsc clean, eslint 0 errors, `next build` green at 250 pages, all 7 prerendered tool pages contain tool-hero-title H1, all 5 category hubs prerender, old category URL 308 -> new URL, `npm run test:tools` passes, fixture smoke test (generated xlsx/pptx/csv fixtures) passed for all 7 new APIs including corrupt-input 4xx handling, prerender sweep clean.
+- [ ] Operator notes: new hub pages will need a GSC sitemap refresh on next deploy; run npm run submit-sitemap after deploying this wave.

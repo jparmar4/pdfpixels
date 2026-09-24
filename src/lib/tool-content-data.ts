@@ -2912,4 +2912,252 @@ export const toolContentMap: Record<string, ToolContent> = {
         supportedFormats: 'Input: PDF | Output: PDF (< 1MB)',
         relatedTools: ['compress-pdf-to-500kb', 'compress-pdf', 'grayscale-pdf', 'split-pdf'],
     },
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // NEW TOOLS — Resize, N-up, Repair, Excel/PPT conversion, PDF metadata
+    // ═══════════════════════════════════════════════════════════════════════
+    'resize-pdf': {
+        about: 'Resize PDF scales every page of your document to a standard paper size — A4, Letter, Legal, A3, or A5 — without distorting content. Mixed-size documents (for example a contract with letter and A4 scans) are normalized to one consistent sheet, which is exactly what printing services, university submissions, and government portals expect. Pages are scaled proportionally and centered, with automatic portrait/landscape detection or a forced orientation. Processing runs on our servers; there is no signup and no watermark.',
+        directAnswer: 'The Resize PDF tool by PdfPixels converts any PDF to a standard paper size such as A4 or Letter. Upload your file, pick the target size and orientation, and download the uniformly resized PDF for free.',
+        features: [
+            'Scale to A4, Letter, Legal, A3, or A5 sheet sizes',
+            'Automatic portrait/landscape detection per page, or force one orientation',
+            'Proportional scaling with centering — no content stretching',
+            'Normalizes mixed-size documents to a single consistent sheet',
+            'Works with PDFs up to 50 MB on the server',
+        ],
+        useCases: [
+            'Preparing mixed-size scanned documents for university or government submission',
+            'Standardizing a contract before printing at a copy shop',
+            'Converting US Letter documents to A4 for international recipients',
+            'Scaling oversized drawings down to printable A3 or A4 sheets',
+        ],
+        faqs: [
+            { question: 'Will resizing a PDF change its text quality?', answer: 'No. Vector text and images are scaled mathematically, so they stay sharp at the new page size. Only very low-resolution scans stay as soft as they were.' },
+            { question: 'Can I convert US Letter to A4?', answer: 'Yes. Pick A4 as the target size and the tool scales and centers each Letter page onto A4 with correct proportions.' },
+            { question: 'What happens to pages with different sizes in one file?', answer: 'Every page is normalized to the target sheet size, so the output PDF has one consistent page dimension throughout.' },
+            { question: 'Is Resize PDF free?', answer: 'Yes. It is free with no signup required. Fair-use rate limits apply.' },
+        ],
+        steps: [
+            { title: 'Upload your PDF', description: 'Drop the PDF you want to standardize into the workspace.' },
+            { title: 'Choose the target paper size', description: 'Select A4, Letter, Legal, A3, or A5 and portrait, landscape, or automatic orientation.' },
+            { title: 'Process and download', description: 'Run the resize and download your uniformly sized PDF.' },
+        ],
+        commonProblems: [
+            { problem: 'Margins look different after resizing', solution: 'Scaling is proportional and centered. If the original page had unusual margins, they scale with the content — crop the PDF first for tighter margins.' },
+            { problem: 'Small content after upscaling to A3', solution: 'Enlarging a small page adds space rather than inventing detail. Export the original at higher resolution if possible.' },
+        ],
+        supportedFormats: 'Input: PDF (up to 50 MB) | Output: PDF (A4/Letter/Legal/A3/A5)',
+        relatedTools: ['crop-pdf', 'pdf-n-up', 'pdf-compress', 'pdf-rotate'],
+    },
+
+    'pdf-n-up': {
+        about: 'Multiple Pages per Sheet (N-up) arranges 2, 4, or 6 PDF pages onto a single sheet in reading order — the classic handout layout for lectures, slide decks, and draft reviews. You choose the layout and sheet size; the tool scales each page proportionally, adds consistent gutters, and keeps the original page order left-to-right, top-to-bottom. A 60-slide deck becomes 10 sheets at 6-up, saving paper, ink, and shipping weight. Processing runs on our servers with no signup.',
+        directAnswer: 'The N-up tool by PdfPixels places 2, 4, or 6 PDF pages on one sheet in reading order. Upload your PDF, choose the layout, and download the compact handout PDF for free.',
+        features: [
+            '2-up, 4-up, and 6-up layouts with clean gutters',
+            'Original page order preserved left-to-right, top-to-bottom',
+            'Choose the output sheet size (A4 or Letter)',
+            'Perfect for slide handouts, draft reviews, and booklet proofs',
+            'Free, no signup, server-side processing',
+        ],
+        useCases: [
+            'Students printing lecture slides as compact handouts',
+            'Offices printing multi-page drafts as half-size review copies',
+            'Print shops proofing booklets before full production runs',
+            'Reducing paper and toner costs for large internal documents',
+        ],
+        faqs: [
+            { question: 'What does 4-up mean?', answer: '4-up places four PDF pages on one sheet in a 2×2 grid, in the original reading order. 2-up makes two landscape pages share a portrait sheet; 6-up uses a 2×3 grid.' },
+            { question: 'Will the text still be readable at 6-up?', answer: 'For full-page documents, 2-up and 4-up stay comfortably readable on A4. 6-up is best for slides or large-format pages.' },
+            { question: 'Does the page order change?', answer: 'No. Pages are placed left-to-right, top-to-bottom exactly in the original document order.' },
+            { question: 'Can I choose the sheet size?', answer: 'Yes — pick A4 or Letter for the combined sheet; pages are scaled to fit each cell.' },
+        ],
+        steps: [
+            { title: 'Upload your PDF', description: 'Select the document you want to condense.' },
+            { title: 'Pick a layout', description: 'Choose 2-up, 4-up, or 6-up and the output sheet size.' },
+            { title: 'Download the handout', description: 'Process the file and download your multi-pages-per-sheet PDF.' },
+        ],
+        commonProblems: [
+            { problem: 'Pages look too small at 6-up', solution: 'Use 4-up or 2-up for full-text documents; keep 6-up for slide decks with large type.' },
+            { problem: 'Rotated pages look sideways', solution: 'Pages keep their stored orientation. Run Rotate PDF first to fix any sideways pages, then N-up.' },
+        ],
+        supportedFormats: 'Input: PDF (up to 50 MB) | Output: PDF (A4/Letter sheets)',
+        relatedTools: ['resize-pdf', 'pdf-rotate', 'pdf-compress', 'pdf-split'],
+    },
+
+    'repair-pdf': {
+        about: 'Repair PDF recovers documents that will not open — files cut off mid-download, PDFs damaged by a crashed editor, or attachments mangled by an email gateway. The tool parses whatever structure survives, rebuilds the cross-reference table and page tree from scratch, and reconstructs a clean PDF with every readable page. When a file is too broken for the parser, engine fallbacks attempt a deeper rebuild before reporting failure honestly. Processing happens on our servers; broken files are analyzed in isolation and never shared.',
+        directAnswer: 'The Repair PDF tool by PdfPixels fixes corrupted PDF files by rebuilding their internal structure. Upload the damaged file and download a recovered copy with all readable pages restored — free, no signup.',
+        features: [
+            'Rebuilds broken cross-reference tables and page trees',
+            'Recovers all readable pages from partially damaged files',
+            'Handles downloads interrupted mid-transfer and crash-damaged documents',
+            'Multi-engine fallback for badly corrupted structures',
+            'Honest errors — if a file cannot be recovered, the tool says so',
+        ],
+        useCases: [
+            'Recovering a PDF whose download was interrupted',
+            'Fixing documents damaged by an editor or printer-driver crash',
+            'Salvaging attachments rejected by email security scanners',
+            'Opening legacy PDFs that modern readers refuse to load',
+        ],
+        faqs: [
+            { question: 'Can a corrupted PDF always be repaired?', answer: 'Not always. If the file was overwritten with unrelated data or the damage destroyed the page content itself, recovery is impossible. The tool recovers everything that is still structurally readable.' },
+            { question: 'Will repaired PDFs look exactly like the original?', answer: 'Readable pages keep their content and appearance. Some damaged metadata — bookmarks, form fields — may be dropped during reconstruction.' },
+            { question: 'Why did my repair fail with a specific error?', answer: 'The tool reports precise errors: encrypted files need Unlock PDF first, zero-byte files have nothing to recover, and truncated files beyond the last intact page cannot be rebuilt.' },
+            { question: 'Is Repair PDF free?', answer: 'Yes — free with no signup. Fair-use rate limits keep the service available.' },
+        ],
+        steps: [
+            { title: 'Upload the damaged PDF', description: 'Drop the file that will not open into the workspace.' },
+            { title: 'Run the repair', description: 'The tool rebuilds the document structure and recovers readable pages.' },
+            { title: 'Download the recovered PDF', description: 'Save the repaired file and verify the pages you need are intact.' },
+        ],
+        commonProblems: [
+            { problem: 'Repair says the file is encrypted', solution: 'Run Unlock PDF first with the password you have, then repair the output.' },
+            { problem: 'Some pages are missing after repair', solution: 'Only structurally readable pages can be recovered. Missing pages were damaged beyond the parser’s reach in the original file.' },
+        ],
+        supportedFormats: 'Input: PDF (up to 50 MB) | Output: PDF',
+        relatedTools: ['pdf-compress', 'linearize-pdf', 'sanitize-pdf', 'pdf-flatten'],
+    },
+
+    'excel-to-pdf': {
+        about: 'Excel to PDF converts spreadsheets (.xlsx, .xls, and .csv) into print-ready PDF documents with the sheet layout preserved — column widths, number formats, and print areas intact. It is the reliable way to share financial models, budget trackers, and inventory lists with people who only need to read them, and to lock a spreadsheet against accidental edits before distribution. Conversions run on our servers using a full office engine; there is no signup and files are deleted after processing.',
+        directAnswer: 'The Excel to PDF tool by PdfPixels converts .xlsx, .xls, and .csv spreadsheets into print-ready PDFs. Upload your spreadsheet and download a layout-preserved PDF for free — no signup.',
+        features: [
+            'Converts .xlsx, .xls, and .csv files',
+            'Preserves column layout, number formats, and print areas',
+            'Full conversion engine on the server — not a screenshot hack',
+            'Produces a flat, read-only PDF ideal for distribution',
+            'Free with no signup; files deleted after processing',
+        ],
+        useCases: [
+            'Sharing budget trackers and financial models as read-only PDFs',
+            'Submitting expense sheets to portals that only accept PDF',
+            'Distributing inventory or roster sheets to non-editing viewers',
+            'Archiving monthly CSV exports in a fixed, printable format',
+        ],
+        faqs: [
+            { question: 'Which spreadsheet formats are supported?', answer: 'Excel .xlsx and .xls workbooks plus comma-separated .csv files. Output is always a PDF.' },
+            { question: 'How are multiple sheets handled?', answer: 'The workbook’s printable content is converted in sheet order into one PDF. Set print areas in Excel first for precise control over what lands on each page.' },
+            { question: 'Will formulas be converted?', answer: 'Formulas are evaluated — the PDF shows the computed values exactly as Excel displays them, not the formula text.' },
+            { question: 'Is Excel to PDF free?', answer: 'Yes. The tool is free and needs no account. Fair-use rate limits apply.' },
+        ],
+        steps: [
+            { title: 'Upload your spreadsheet', description: 'Drop your .xlsx, .xls, or .csv file into the workspace.' },
+            { title: 'Convert to PDF', description: 'The server engine renders the printable sheet layout to PDF.' },
+            { title: 'Download the PDF', description: 'Save the print-ready document and share it anywhere.' },
+        ],
+        commonProblems: [
+            { problem: 'Columns spill across page breaks', solution: 'Set the print area and page scaling (fit to width) in Excel before converting — the PDF follows the workbook’s print settings.' },
+            { problem: 'Very wide sheets look tiny', solution: 'Split the data across sheets or set landscape orientation in the workbook’s page setup.' },
+        ],
+        supportedFormats: 'Input: XLSX, XLS, CSV | Output: PDF',
+        relatedTools: ['word-to-pdf', 'pdf-to-excel', 'powerpoint-to-pdf', 'bank-statement-to-excel'],
+    },
+
+    'powerpoint-to-pdf': {
+        about: 'PowerPoint to PDF converts .pptx and .ppt presentations into shareable PDF documents, one slide per page, with layout and formatting preserved. PDF exports prevent font substitution and slide shifting on other people’s machines — the deck looks identical everywhere. Conversions run on our servers with a full office engine; there is no signup, and files are deleted after processing.',
+        directAnswer: 'The PowerPoint to PDF tool by PdfPixels converts .pptx and .ppt presentations into PDF slides with formatting preserved. Upload your deck and download the PDF for free — no signup.',
+        features: [
+            'Converts .pptx and legacy .ppt files',
+            'One slide per page with layout preserved',
+            'Prevents font substitution on machines without your fonts',
+            'Server-side engine — no screenshot quality loss',
+            'Free with no signup; files deleted after processing',
+        ],
+        useCases: [
+            'Emailing decks to clients who may not have PowerPoint',
+            'Uploading lecture slides to portals that require PDF',
+            'Printing handouts with consistent slide appearance',
+            'Archiving final presentation versions in a fixed format',
+        ],
+        faqs: [
+            { question: 'Are animations included in the PDF?', answer: 'No — a PDF is a static snapshot. Each slide is exported in its final state; build-up animations appear as their completed slide.' },
+            { question: 'Can I export speaker notes?', answer: 'The current export renders slides only. Add notes content onto the slide itself if it must appear in the PDF.' },
+            { question: 'What about .ppt files from PowerPoint 2003?', answer: 'Yes — both modern .pptx and legacy .ppt formats convert.' },
+            { question: 'Is PowerPoint to PDF free?', answer: 'Yes, with no signup. Fair-use rate limits apply.' },
+        ],
+        steps: [
+            { title: 'Upload your presentation', description: 'Drop your .pptx or .ppt file into the workspace.' },
+            { title: 'Convert to PDF', description: 'The server engine renders every slide into a PDF page.' },
+            { title: 'Download the PDF', description: 'Save the deck as a PDF and share it anywhere.' },
+        ],
+        commonProblems: [
+            { problem: 'Fonts look different in the PDF', solution: 'The conversion embeds available fonts. If a font is missing on the server, a close substitute is used — embed fonts in the original file for exact fidelity.' },
+            { problem: 'Hidden slides appear in the PDF', solution: 'Delete hidden slides before converting, or save a copy with only the slides you want.' },
+        ],
+        supportedFormats: 'Input: PPTX, PPT | Output: PDF',
+        relatedTools: ['pdf-to-pptx', 'excel-to-pdf', 'word-to-pdf', 'pdf-merge'],
+    },
+
+    'pdf-to-pptx': {
+        about: 'PDF to PowerPoint converts each page of a PDF into a full-bleed, high-resolution slide in a new .pptx presentation. The result opens directly in PowerPoint, Google Slides, and Keynote, so a PDF deck, whitepaper, or report can be presented natively — with the option to add your own annotations on top of any slide. Each page is rendered at high DPI and placed edge-to-edge on a 16:9 slide.',
+        directAnswer: 'The PDF to PowerPoint tool by PdfPixels converts every PDF page into a high-resolution PowerPoint (.pptx) slide. Upload your PDF and download an editable presentation file for free.',
+        features: [
+            'One full-bleed slide per PDF page at high resolution',
+            'Output opens in PowerPoint, Google Slides, and Keynote',
+            '16:9 slide geometry suited to modern screens and projectors',
+            'Annotate or add slides on top of the imported pages',
+            'Free with no signup; server-side processing',
+        ],
+        useCases: [
+            'Presenting a PDF report or whitepaper as a slide deck',
+            'Turning a designed PDF pitch into an annotatable presentation',
+            'Importing PDF course material into Google Slides',
+            'Recovering a presentation when only the PDF export survives',
+        ],
+        faqs: [
+            { question: 'Are slides editable text or images?', answer: 'Each slide contains the rendered PDF page as a high-resolution image. You can add new text boxes and shapes on top, but the original page content itself is not re-created as editable text.' },
+            { question: 'Will the output work in Google Slides?', answer: 'Yes. Import the .pptx into Google Slides and every page appears as a slide.' },
+            { question: 'What slide size is used?', answer: 'Standard 16:9 widescreen. Portrait PDF pages are scaled to fit with margins.' },
+            { question: 'Is PDF to PowerPoint free?', answer: 'Yes — free with no signup. Fair-use rate limits apply.' },
+        ],
+        steps: [
+            { title: 'Upload your PDF', description: 'Drop the PDF you want to present.' },
+            { title: 'Convert to PPTX', description: 'Every page is rendered at high resolution onto its own slide.' },
+            { title: 'Download the presentation', description: 'Open the .pptx in PowerPoint, Google Slides, or Keynote.' },
+        ],
+        commonProblems: [
+            { problem: 'Slides contain images instead of editable text', solution: 'By design, pages are rendered as images to preserve exact appearance. Use PDF to Word for editable text extraction instead.' },
+            { problem: 'Large PDFs take a while to convert', solution: 'Rendering is high-resolution per page; big decks take proportionally longer. Keep files under the 50 MB limit for the fastest runs.' },
+        ],
+        supportedFormats: 'Input: PDF (up to 50 MB) | Output: PPTX',
+        relatedTools: ['powerpoint-to-pdf', 'pdf-to-word', 'pdf-to-image', 'pdf-to-excel'],
+    },
+
+    'pdf-metadata': {
+        about: 'PDF Metadata Editor shows the document properties embedded in your PDF — title, author, subject, and keywords — and lets you rewrite them in place. Clean metadata makes files searchable inside document systems, presents professional titles in browser tabs and email previews, and replaces leaked personal information (an author’s real name, an internal file path) before external distribution. Edits run on our servers; the visual content of the PDF is untouched.',
+        directAnswer: 'The PDF Metadata Editor by PdfPixels lets you view and change a PDF’s title, author, subject, and keywords online. Upload the file, edit the properties, and download the updated PDF for free.',
+        features: [
+            'Shows current title, author, subject, and keywords',
+            'Edits properties in place without touching page content',
+            'Replaces personal or internal metadata before sharing',
+            'Improves searchability in document management systems',
+            'Free with no signup; server-side processing',
+        ],
+        useCases: [
+            'Setting professional titles shown in browser tabs and readers',
+            'Removing an author’s real name before publishing a document',
+            'Adding consistent keywords for a document management system',
+            'Fixing “Untitled document” names in file listings',
+        ],
+        faqs: [
+            { question: 'What is PDF metadata?', answer: 'Document-level properties stored inside the file — typically title, author, subject, keywords, creation dates, and the producing application. Readers and search tools display them.' },
+            { question: 'Does editing metadata change how the PDF looks?', answer: 'No. Page content, layout, and images are untouched — only the document properties change.' },
+            { question: 'Can I clear the author field completely?', answer: 'Yes — leave the field empty to remove it. For deep privacy scrubbing of all metadata at once, use Sanitize PDF.' },
+            { question: 'Is PDF Metadata Editor free?', answer: 'Yes, free with no signup. Fair-use rate limits apply.' },
+        ],
+        steps: [
+            { title: 'Upload your PDF', description: 'The current properties are read and displayed.' },
+            { title: 'Edit the properties', description: 'Change title, author, subject, and keywords as needed.' },
+            { title: 'Download the updated PDF', description: 'Save the file with its new document properties.' },
+        ],
+        commonProblems: [
+            { problem: 'Metadata still shows old values in another reader', solution: 'Close and reopen the file — some readers cache properties. If a viewer still shows old data, it may be reading XMP metadata; use Sanitize PDF to strip it.' },
+            { problem: 'Empty fields reappear after download', solution: 'Some producers re-add defaults on save. Re-run the editor on the final file as the last step before distribution.' },
+        ],
+        supportedFormats: 'Input: PDF (up to 50 MB) | Output: PDF',
+        relatedTools: ['sanitize-pdf', 'view-metadata', 'edit-metadata', 'pdf-flatten'],
+    },
 };

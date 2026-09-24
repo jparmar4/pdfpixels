@@ -107,6 +107,16 @@ const WordToPDFWorkspace = dynamic(
   { loading: () => <WorkspaceLoading /> }
 );
 
+const ExcelToPDFWorkspace = dynamic(
+  () => import('@/components/layout/excel-to-pdf-workspace').then(mod => ({ default: mod.ExcelToPDFWorkspace })),
+  { loading: () => <WorkspaceLoading /> }
+);
+
+const PowerPointToPDFWorkspace = dynamic(
+  () => import('@/components/layout/powerpoint-to-pdf-workspace').then(mod => ({ default: mod.PowerPointToPDFWorkspace })),
+  { loading: () => <WorkspaceLoading /> }
+);
+
 const PDFToWordWorkspace = dynamic(
   () => import('@/components/layout/pdf-to-word-workspace').then(mod => ({ default: mod.PDFToWordWorkspace })),
   { loading: () => <WorkspaceLoading /> }
@@ -239,6 +249,8 @@ function getWorkspaceComponent(toolId: string) {
   if (toolId === 'pdf-to-text') return <PDFToTextWorkspace />;
   if (toolId === 'pdf-to-pdfa') return <PDFToPDFAWorkspace />;
   if (toolId === 'word-to-pdf') return <WordToPDFWorkspace />;
+  if (toolId === 'excel-to-pdf') return <ExcelToPDFWorkspace />;
+  if (toolId === 'powerpoint-to-pdf') return <PowerPointToPDFWorkspace />;
   if (toolId === 'pdf-to-word') return <PDFToWordWorkspace />;
   if (toolId === 'pdf-to-excel') return <PDFToExcelWorkspace />;
   if (toolId === 'bank-statement-to-excel') return <BankStatementWorkspace />;
@@ -252,7 +264,7 @@ function getWorkspaceComponent(toolId: string) {
   if (toolId === 'compress-pdf-to-300kb') return <PDFCompressWorkspace targetPreset="300kb" />;
   if (toolId === 'compress-pdf-to-500kb') return <PDFCompressWorkspace targetPreset="500kb" />;
   if (toolId === 'compress-pdf-under-1mb') return <PDFCompressWorkspace targetPreset="1mb" />;
-  if (['pdf-rotate', 'pdf-watermark', 'pdf-protect', 'pdf-unlock', 'pdf-delete-pages', 'pdf-reorder', 'pdf-linearize', 'pdf-add-page-numbers'].includes(toolId)) {
+  if (['pdf-rotate', 'pdf-watermark', 'pdf-protect', 'pdf-unlock', 'pdf-delete-pages', 'pdf-reorder', 'pdf-linearize', 'pdf-add-page-numbers', 'repair-pdf', 'resize-pdf', 'pdf-n-up', 'pdf-metadata'].includes(toolId)) {
     return <PDFToolsWorkspace />;
   }
 

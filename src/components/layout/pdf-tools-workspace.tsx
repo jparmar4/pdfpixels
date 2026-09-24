@@ -3,7 +3,8 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     Download, RotateCcw, RotateCw, Sparkles, ChevronRight,
-    Stamp, Shield, FileLock, Layers, Trash2, GripVertical, Check, Zap, Hash
+    Stamp, Shield, FileLock, Layers, Trash2, GripVertical, Check, Zap, Hash,
+    Wrench, Ruler, Grid3X3, Settings2
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -441,6 +442,158 @@ function PageNumberSettings({
     );
 }
 
+function RepairSettings() {
+    return (
+        <div className="space-y-3">
+            <div className="p-4 rounded-xl bg-muted/40 border space-y-1.5">
+                <p className="text-sm font-semibold">Structure rebuild</p>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                    The tool parses what survives in a damaged PDF, rebuilds the cross-reference
+                    table and page tree, and reconstructs a clean copy with every readable page.
+                    No settings needed — just upload and repair.
+                </p>
+            </div>
+            <p className="text-xs text-muted-foreground">
+                Encrypted files must be unlocked first. If repair fails, the damage likely
+                destroyed the page data itself.
+            </p>
+        </div>
+    );
+}
+
+function ResizeSettings({
+    sheet, setSheet, orientation, setOrientation
+}: {
+    sheet: string; setSheet: (v: string) => void;
+    orientation: string; setOrientation: (v: string) => void;
+}) {
+    const sheets = [
+        { value: 'a4', label: 'A4 (210×297 mm)' },
+        { value: 'letter', label: 'Letter (8.5×11 in)' },
+        { value: 'legal', label: 'Legal (8.5×14 in)' },
+        { value: 'a3', label: 'A3 (297×420 mm)' },
+        { value: 'a5', label: 'A5 (148×210 mm)' },
+    ];
+    return (
+        <div className="space-y-5">
+            <div className="space-y-2">
+                <Label>Target paper size</Label>
+                <Select value={sheet} onValueChange={setSheet}>
+                    <SelectTrigger className="rounded-xl"><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                        {sheets.map((s) => (
+                            <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
+            </div>
+            <div className="space-y-2">
+                <Label>Orientation</Label>
+                <div className="grid grid-cols-3 gap-2">
+                    {[
+                        { value: 'auto', label: 'Auto' },
+                        { value: 'portrait', label: 'Portrait' },
+                        { value: 'landscape', label: 'Landscape' },
+                    ].map((o) => (
+                        <Button
+                            key={o.value}
+                            type="button"
+                            variant={orientation === o.value ? 'default' : 'outline'}
+                            size="sm"
+                            className="rounded-xl"
+                            onClick={() => setOrientation(o.value)}
+                        >
+                            {o.label}
+                        </Button>
+                    ))}
+                </div>
+                <p className="text-xs text-muted-foreground">
+                    Auto keeps each page&apos;s current orientation; pages are scaled proportionally and centered.
+                </p>
+            </div>
+        </div>
+    );
+}
+
+function NUpSettings({
+    layout, setLayout, sheet, setSheet
+}: {
+    layout: string; setLayout: (v: string) => void;
+    sheet: string; setSheet: (v: string) => void;
+}) {
+    return (
+        <div className="space-y-5">
+            <div className="space-y-2">
+                <Label>Pages per sheet</Label>
+                <div className="grid grid-cols-3 gap-2">
+                    {[
+                        { value: '2', label: '2-up' },
+                        { value: '4', label: '4-up' },
+                        { value: '6', label: '6-up' },
+                    ].map((l) => (
+                        <Button
+                            key={l.value}
+                            type="button"
+                            variant={layout === l.value ? 'default' : 'outline'}
+                            size="sm"
+                            className="rounded-xl"
+                            onClick={() => setLayout(l.value)}
+                        >
+                            {l.label}
+                        </Button>
+                    ))}
+                </div>
+            </div>
+            <div className="space-y-2">
+                <Label>Sheet size</Label>
+                <Select value={sheet} onValueChange={setSheet}>
+                    <SelectTrigger className="rounded-xl"><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="a4">A4</SelectItem>
+                        <SelectItem value="letter">Letter</SelectItem>
+                    </SelectContent>
+                </Select>
+                <p className="text-xs text-muted-foreground">
+                    Pages keep their original order, arranged left-to-right and top-to-bottom.
+                </p>
+            </div>
+        </div>
+    );
+}
+
+function MetadataSettings({
+    title, setTitle, author, setAuthor, subject, setSubject, keywords, setKeywords
+}: {
+    title: string; setTitle: (v: string) => void;
+    author: string; setAuthor: (v: string) => void;
+    subject: string; setSubject: (v: string) => void;
+    keywords: string; setKeywords: (v: string) => void;
+}) {
+    return (
+        <div className="space-y-4">
+            <div className="space-y-2">
+                <Label htmlFor="meta-title">Title</Label>
+                <Input id="meta-title" value={title} onChange={e => setTitle(e.target.value)} placeholder="e.g. Q3 Financial Report" className="rounded-xl" />
+            </div>
+            <div className="space-y-2">
+                <Label htmlFor="meta-author">Author</Label>
+                <Input id="meta-author" value={author} onChange={e => setAuthor(e.target.value)} placeholder="e.g. Jane Smith" className="rounded-xl" />
+            </div>
+            <div className="space-y-2">
+                <Label htmlFor="meta-subject">Subject</Label>
+                <Input id="meta-subject" value={subject} onChange={e => setSubject(e.target.value)} placeholder="e.g. Annual budget summary" className="rounded-xl" />
+            </div>
+            <div className="space-y-2">
+                <Label htmlFor="meta-keywords">Keywords</Label>
+                <Input id="meta-keywords" value={keywords} onChange={e => setKeywords(e.target.value)} placeholder="comma, separated, keywords" className="rounded-xl" />
+                <p className="text-xs text-muted-foreground">
+                    Leave a field empty to remove it. Page content is never modified.
+                </p>
+            </div>
+        </div>
+    );
+}
+
 // ─── Main Component ────────────────────────────────────────────────────────────
 
 export function PDFToolsWorkspace() {
@@ -476,6 +629,20 @@ export function PDFToolsWorkspace() {
     const [pnFormat, setPnFormat] = useState('{n}');
     const [pnMargin, setPnMargin] = useState(30);
     const [pnFontSize, setPnFontSize] = useState(12);
+
+    // Resize
+    const [resizeSheet, setResizeSheet] = useState('a4');
+    const [resizeOrientation, setResizeOrientation] = useState('auto');
+
+    // N-up
+    const [nupLayout, setNupLayout] = useState('4');
+    const [nupSheet, setNupSheet] = useState('a4');
+
+    // Metadata
+    const [metaTitle, setMetaTitle] = useState('');
+    const [metaAuthor, setMetaAuthor] = useState('');
+    const [metaSubject, setMetaSubject] = useState('');
+    const [metaKeywords, setMetaKeywords] = useState('');
 
     useEffect(() => {
         return () => {
@@ -535,6 +702,10 @@ export function PDFToolsWorkspace() {
             if (tid === 'pdf-reorder') return '/api/pdf/reorder';
             if (tid === 'pdf-linearize') return '/api/pdf/linearize';
             if (tid === 'pdf-add-page-numbers') return '/api/pdf/add-page-numbers';
+            if (tid === 'repair-pdf') return '/api/pdf/repair';
+            if (tid === 'resize-pdf') return '/api/pdf/resize';
+            if (tid === 'pdf-n-up') return '/api/pdf/n-up';
+            if (tid === 'pdf-metadata') return '/api/pdf/metadata';
             return '/api/pdf/rotate';
         };
 
@@ -575,6 +746,21 @@ export function PDFToolsWorkspace() {
                 fd.append('format', pnFormat);
                 fd.append('margin', pnMargin.toString());
                 fd.append('fontSize', pnFontSize.toString());
+            } else if (tid === 'resize-pdf') {
+                fd.append('sheet', resizeSheet);
+                fd.append('orientation', resizeOrientation);
+            } else if (tid === 'pdf-n-up') {
+                fd.append('layout', nupLayout);
+                fd.append('sheet', nupSheet);
+            } else if (tid === 'pdf-metadata') {
+                if (!metaTitle.trim() && !metaAuthor.trim() && !metaSubject.trim() && !metaKeywords.trim()) {
+                    toast.error('Fill in at least one property to edit');
+                    return null;
+                }
+                fd.append('title', metaTitle);
+                fd.append('author', metaAuthor);
+                fd.append('subject', metaSubject);
+                fd.append('keywords', metaKeywords);
             }
 
             return fd;
@@ -657,7 +843,7 @@ export function PDFToolsWorkspace() {
             setIsProcessing(false);
         }
 
-    }, [uploadedFile, activeTool, angle, rotatePages, wmText, wmOpacity, wmColor, wmFontSize, wmPosition, wmRotation, password, confirmPassword, deletePages, pageOrder, pnPosition, pnFormat, pnMargin, pnFontSize, setIsProcessing, setProgress]);
+    }, [uploadedFile, activeTool, angle, rotatePages, wmText, wmOpacity, wmColor, wmFontSize, wmPosition, wmRotation, password, confirmPassword, deletePages, pageOrder, pnPosition, pnFormat, pnMargin, pnFontSize, resizeSheet, resizeOrientation, nupLayout, nupSheet, metaTitle, metaAuthor, metaSubject, metaKeywords, setIsProcessing, setProgress]);
 
     const handleDownload = useCallback(() => {
         if (!result) return;
@@ -692,6 +878,10 @@ export function PDFToolsWorkspace() {
         if (toolId === 'pdf-delete-pages') return Trash2;
         if (toolId === 'pdf-linearize') return Zap;
         if (toolId === 'pdf-add-page-numbers') return Hash;
+        if (toolId === 'repair-pdf') return Wrench;
+        if (toolId === 'resize-pdf') return Ruler;
+        if (toolId === 'pdf-n-up') return Grid3X3;
+        if (toolId === 'pdf-metadata') return Settings2;
     return Sparkles;
 };
 
@@ -705,6 +895,10 @@ const renderSettings = () => {
     if (toolId === 'pdf-reorder') return <ReorderSettings order={pageOrder} setOrder={setPageOrder} totalPages={totalPages} />;
     if (toolId === 'pdf-linearize') return <LinearizeSettings />;
     if (toolId === 'pdf-add-page-numbers') return <PageNumberSettings position={pnPosition} setPosition={setPnPosition} format={pnFormat} setFormat={setPnFormat} margin={pnMargin} setMargin={setPnMargin} fontSize={pnFontSize} setFontSize={setPnFontSize} />;
+    if (toolId === 'repair-pdf') return <RepairSettings />;
+    if (toolId === 'resize-pdf') return <ResizeSettings sheet={resizeSheet} setSheet={setResizeSheet} orientation={resizeOrientation} setOrientation={setResizeOrientation} />;
+    if (toolId === 'pdf-n-up') return <NUpSettings layout={nupLayout} setLayout={setNupLayout} sheet={nupSheet} setSheet={setNupSheet} />;
+    if (toolId === 'pdf-metadata') return <MetadataSettings title={metaTitle} setTitle={setMetaTitle} author={metaAuthor} setAuthor={setMetaAuthor} subject={metaSubject} setSubject={setMetaSubject} keywords={metaKeywords} setKeywords={setMetaKeywords} />;
     return null;
 };
 
@@ -719,6 +913,10 @@ const getProcessLabel = () => {
     if (toolId === 'pdf-reorder') return 'Save new page order';
     if (toolId === 'pdf-linearize') return 'Optimize for web (linearize)';
     if (toolId === 'pdf-add-page-numbers') return 'Add page numbers';
+    if (toolId === 'repair-pdf') return 'Repair PDF';
+    if (toolId === 'resize-pdf') return 'Resize PDF';
+    if (toolId === 'pdf-n-up') return 'Arrange pages per sheet';
+    if (toolId === 'pdf-metadata') return 'Save metadata';
     return 'Process PDF';
 };
 
@@ -757,7 +955,15 @@ return (
                             ? ['PDF only · max 50 MB', 'Rotate all or selected pages', '90° / 180° / 270°']
                             : activeTool.id === 'pdf-watermark'
                                 ? ['PDF only · max 50 MB', 'Text watermark on every page', 'Opacity, position, rotation']
-                                : ['PDF only · max 50 MB', 'Processed in a secure session']
+                                : activeTool.id === 'repair-pdf'
+                                    ? ['PDF only · max 50 MB', 'Rebuilds broken document structure', 'Recovers all readable pages']
+                                    : activeTool.id === 'resize-pdf'
+                                        ? ['PDF only · max 50 MB', 'A4 / A3 / A5 / Letter / Legal', 'Auto or forced orientation']
+                                        : activeTool.id === 'pdf-n-up'
+                                            ? ['PDF only · max 50 MB', '2-up / 4-up / 6-up layouts', 'Original page order preserved']
+                                            : activeTool.id === 'pdf-metadata'
+                                                ? ['PDF only · max 50 MB', 'Title, author, subject, keywords', 'Page content is never modified']
+                                                : ['PDF only · max 50 MB', 'Processed in a secure session']
                     }
                 />
 
