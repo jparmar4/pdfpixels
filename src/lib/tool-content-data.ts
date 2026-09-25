@@ -3480,4 +3480,109 @@ export const toolContentMap: Record<string, ToolContent> = {
         supportedFormats: 'Input: PNG, JPG, WebP, GIF, SVG, AVIF | Output: Base64 text snippets',
         relatedTools: ['png-to-jpeg', 'webp-to-png', 'svg-to-png', 'compress-image'],
     },
+
+    'avif-to-jpg': {
+        about: 'AVIF to JPG converts the modern AVIF format — now the default screenshot and download format on many newer devices and websites — into the one image format every device, browser, form, and messaging app accepts. AVIF files often fail to open in older Windows photo viewers, online portals, and email clients; converting to JPG fixes compatibility without a visible quality change. Conversion runs on our servers with a full AVIF decoder, and files are processed ephemerally.',
+        directAnswer: 'The AVIF to JPG converter by PdfPixels turns AVIF images into universally compatible JPGs in seconds. Upload your .avif file and download a JPG for free — no signup.',
+        features: [
+            'Decodes real AVIF files server-side — no browser support needed',
+            'Adjustable JPG quality with a sane default',
+            'Preview before download so you can confirm the result',
+            'Handles AVIF exports from phones, browsers, and design tools',
+            'Free with no signup; server-side processing',
+        ],
+        useCases: [
+            'Opening AVIF images on older Windows PCs and photo viewers',
+            'Uploading screenshots to portals that only accept JPG or PNG',
+            'Sending modern-format photos to apps that cannot display AVIF',
+            'Converting downloaded web images for reuse in documents',
+        ],
+        faqs: [
+            { question: 'What is an AVIF file and why can I not open it?', answer: 'AVIF is a newer image format with excellent compression, now common on newer phones and websites. Older photo viewers, portals, and office software cannot decode it — converting to JPG makes the image open anywhere.' },
+            { question: 'Will converting AVIF to JPG lose quality?', answer: 'A small amount, at the level of any JPG re-encode. At the default quality the difference is not visible; keep the original AVIF for archival if pixel-perfect fidelity matters.' },
+            { question: 'Why does my AVIF have the right extension but fail to upload?', answer: 'Many upload systems whitelist only JPG/PNG by extension or MIME type. The file is fine — the portal just does not accept the format yet. Convert it here and upload the JPG.' },
+            { question: 'Is AVIF to JPG free?', answer: 'Yes — free with no signup. Fair-use rate limits apply.' },
+        ],
+        steps: [
+            { title: 'Upload the AVIF', description: 'Drop your .avif file into the workspace.' },
+            { title: 'Convert', description: 'The server decodes AVIF and re-encodes a quality JPG.' },
+            { title: 'Download the JPG', description: 'Save a file that opens and uploads everywhere.' },
+        ],
+        commonProblems: [
+            { problem: 'The JPG came out larger than the AVIF', solution: 'Normal — AVIF compresses far more efficiently. The JPG trades size for universal compatibility.' },
+            { problem: 'The upload was rejected', solution: 'Some browsers mislabel AVIF MIME types; the tool accepts .avif by extension. Make sure the extension is intact.' },
+        ],
+        supportedFormats: 'Input: AVIF | Output: JPG',
+        relatedTools: ['avif-to-png', 'webp-to-jpg', 'heic-to-jpg', 'compress-image'],
+    },
+
+    'avif-to-png': {
+        about: 'AVIF to PNG converts AVIF images into lossless PNG — the format design tools, editors, and screenshot workflows expect. PNG keeps every pixel exactly as decoded (no second generation loss), preserves transparency where the AVIF has it, and opens in every image editor. It is the right conversion when you plan to crop, annotate, or re-edit the image rather than just view it. Conversion runs on our servers.',
+        directAnswer: 'The AVIF to PNG converter by PdfPixels turns AVIF images into lossless PNG files with transparency preserved. Upload the .avif and download a PNG for free.',
+        features: [
+            'Lossless output — no second-generation compression loss',
+            'Transparency preserved where present',
+            'Opens in every image editor and design tool',
+            'Server-side AVIF decoding — old browsers welcome',
+            'Free with no signup; server-side processing',
+        ],
+        useCases: [
+            'Editing AVIF downloads in tools without AVIF support',
+            'Preserving transparency for design and overlay work',
+            'Annotating screenshots that arrived as AVIF',
+            'Feeding images into workflows that require PNG input',
+        ],
+        faqs: [
+            { question: 'AVIF to PNG or AVIF to JPG — which should I pick?', answer: 'Pick PNG when you will edit the image, need transparency, or want zero quality loss. Pick JPG when the goal is a smaller, shareable photo file.' },
+            { question: 'Why is the PNG much larger than my AVIF?', answer: 'AVIF uses modern compression that PNG does not have. PNG trades file size for losslessness and universal editor support.' },
+            { question: 'Does transparency survive the conversion?', answer: 'Yes — alpha channels in the AVIF carry through to the PNG exactly.' },
+            { question: 'Is AVIF to PNG free?', answer: 'Yes — free with no signup. Fair-use rate limits apply.' },
+        ],
+        steps: [
+            { title: 'Upload the AVIF', description: 'Drop your .avif file into the workspace.' },
+            { title: 'Convert', description: 'The server decodes AVIF and writes a lossless PNG.' },
+            { title: 'Download the PNG', description: 'Edit, annotate, or upload it anywhere.' },
+        ],
+        commonProblems: [
+            { problem: 'The PNG has a black background where the image was transparent', solution: 'The viewer you are using may not show transparency. Open it in a browser or editor that renders alpha channels.' },
+            { problem: 'The upload was rejected', solution: 'The tool accepts .avif by extension — confirm the extension survived the download.' },
+        ],
+        supportedFormats: 'Input: AVIF | Output: PNG',
+        relatedTools: ['avif-to-jpg', 'webp-to-png', 'jpeg-to-png', 'png-to-ico'],
+    },
+
+    'jpg-to-avif': {
+        about: 'JPG to AVIF re-encodes ordinary JPG photos into AVIF, the modern format that delivers the same visual quality at a fraction of the file size — commonly 30–50% smaller. Smaller images mean faster page loads, better Core Web Vitals, cheaper data, and snappier uploads. The conversion runs server-side with a real AVIF encoder, so the output is a genuine AVIF file rather than a renamed copy.',
+        directAnswer: 'The JPG to AVIF converter by PdfPixels re-encodes JPG photos into the modern AVIF format, cutting file size 30–50% at the same visual quality. Upload a JPG and download the AVIF for free.',
+        features: [
+            'Real AVIF encoding server-side — not a renamed file',
+            'Typically 30–50% smaller than JPG at matching quality',
+            'Adjustable quality for size-versus-fidelity control',
+            'Ideal for web performance and Core Web Vitals work',
+            'Free with no signup; server-side processing',
+        ],
+        useCases: [
+            'Optimizing site images for faster load and better LCP scores',
+            'Reducing image weight for data-capped or slow connections',
+            'Preparing modern-format assets for new web projects',
+            'Shrinking large photo exports before cloud upload',
+        ],
+        faqs: [
+            { question: 'Is AVIF better than JPG?', answer: 'For file size at equal quality, yes — usually 30–50% smaller. The trade-off is compatibility: AVIF needs a modern browser or app. Use it on the web; keep JPG for older software.' },
+            { question: 'Can I convert AVIF back to JPG later?', answer: 'Yes — the AVIF to JPG tool reverses the conversion at any time. Keep your original JPG if you may need it.' },
+            { question: 'Do all browsers display AVIF?', answer: 'All current Chrome, Edge, Firefox, and Safari 16.4+ render AVIF. Very old browsers and some native apps do not.' },
+            { question: 'Is JPG to AVIF free?', answer: 'Yes — free with no signup. Fair-use rate limits apply.' },
+        ],
+        steps: [
+            { title: 'Upload the JPG', description: 'Drop the photo or image you want to optimize.' },
+            { title: 'Convert', description: 'The encoder produces an AVIF at your chosen quality.' },
+            { title: 'Download the AVIF', description: 'Use it on modern websites and enjoy the smaller file.' },
+        ],
+        commonProblems: [
+            { problem: 'My website visitors see broken images', solution: 'A very old browser without AVIF support is being served AVIF directly. Use AVIF with a JPG fallback via the <picture> element instead of swapping files wholesale.' },
+            { problem: 'The AVIF is barely smaller than the JPG', solution: 'Already well-compressed JPGs leave little room. Try a slightly lower AVIF quality, or accept that some sources compress better than others.' },
+        ],
+        supportedFormats: 'Input: JPG, JPEG | Output: AVIF',
+        relatedTools: ['webp-to-jpg', 'png-to-jpeg', 'compress-image', 'avif-to-jpg'],
+    },
 };

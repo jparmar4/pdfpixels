@@ -746,4 +746,103 @@ export const useCasePages: UseCasePage[] = [
       { question: 'What size is a US passport photo?', answer: '2×2 inches (51×51 mm) with the head measuring 1 to 1⅜ inches from chin to crown. Requirements differ by country and visa type, so confirm against the official checklist for your application.' },
     ],
   },
+  {
+    slug: 'extract-images-from-pdf',
+    title: 'Extract Images from PDF at Full Quality',
+    description: 'Pull the original embedded photos and graphics out of any PDF and download them in one ZIP — no screenshots.',
+    targetToolSlug: 'extract-pdf-images',
+    intent: 'extract images from pdf',
+    overview:
+      'A PDF is often the only surviving copy of a document — the report with the product shots, the catalog with the supplier photos, the design handoff where the original image files were never shared. Taking screenshots of pages re-captures those images at screen resolution, scaled and re-compressed. Extracting returns the actual image data embedded in the file: the same bytes the PDF displays, at the resolution the author placed. The difference is obvious on anything you plan to reuse — print, crop, or drop into a deck.',
+    whoItsFor: [
+      'Designers recovering assets from PDF handoffs',
+      'Marketers reusing charts and photos from company reports',
+      'Anyone who lost the original images but still has the PDF',
+    ],
+    steps: [
+      { title: 'Upload the PDF', description: 'Drop the file whose images you need into the extractor.' },
+      { title: 'Run the extraction', description: 'The tool walks the document and saves every embedded image.' },
+      { title: 'Download the ZIP', description: 'Unzip to get image-001.jpg, image-002.png and so on, in document order.' },
+      { title: 'Reuse freely', description: 'Crop, edit, or place the images — they are full original quality.' },
+    ],
+    tips: [
+      'Fewer images than expected usually means reuse: logos and backgrounds are stored once and shown on many pages.',
+      'If nothing extracts, the PDF is vector art or uses an exotic codec — render pages with PDF to JPG instead.',
+      'Extracted images can appear rotated if the page displays them turned; rotate the image file itself afterwards.',
+    ],
+    pitfalls: [
+      { problem: 'Images look identical on several pages', solution: 'That is one shared image, correctly extracted once — not a bug.' },
+      { problem: 'Quality is lower than expected', solution: 'The author embedded a low-resolution image. Extraction returns what is stored; no tool can invent pixels that were never there.' },
+    ],
+    faqs: [
+      { question: 'How is this different from PDF to JPG?', answer: 'PDF to JPG renders whole pages. Extracting returns the individual embedded images themselves, at their stored resolution, without page background or surrounding text.' },
+      { question: 'Are extracted images safe to reuse commercially?', answer: 'That depends on the copyright of the material, not the extraction method. Only reuse images you own or have rights to.' },
+    ],
+  },
+  {
+    slug: 'make-scanned-pdf-searchable',
+    title: 'Make a Scanned PDF Searchable with OCR',
+    description: 'Turn image-only scanned PDFs into text you can select, search, and copy — using free online OCR.',
+    targetToolSlug: 'ocr-pdf',
+    intent: 'make scanned pdf searchable',
+    overview:
+      'When you press Ctrl+F in a scanned PDF, nothing happens: the pages are photographs of paper, and there is no text underneath to search. OCR (optical character recognition) closes that gap — each page is analyzed, the shapes of letters are recognized, and the words come back as real, selectable text. It is the difference between a scan you can only squint at and a document you can quote, search, and edit. Recognition quality tracks source quality: clean 300 DPI prints of typed text recognize very well, while faxes and handwriting need proofreading.',
+    whoItsFor: [
+      'Students quoting from scanned course readings',
+      'Professionals digitizing signed contracts and letters',
+      'Archivists making old paper records findable',
+    ],
+    steps: [
+      { title: 'Upload the scanned PDF', description: 'Drop in a file whose text cannot be selected normally.' },
+      { title: 'Run recognition', description: 'Pages are rendered at high resolution and read by the OCR engine.' },
+      { title: 'Review the output', description: 'Skim for errors, especially on noisy or handwritten pages.' },
+      { title: 'Copy or download', description: 'Save the text as a .txt file or paste it where you need it.' },
+    ],
+    tips: [
+      'If the PDF already has selectable text, use PDF to Text instead — it is instant and perfectly accurate.',
+      'Re-scan at 300 DPI and straighten pages before OCR for the biggest accuracy gain.',
+      'Long documents exceed the per-run page cap; split into ranges and process each part.',
+    ],
+    pitfalls: [
+      { problem: 'Recognized text is garbled', solution: 'Low resolution or skew is the usual cause — re-scan at higher quality rather than re-running OCR on the same image.' },
+      { problem: 'Non-English characters are missing', solution: 'Recognition currently runs with English language data; other scripts will not convert reliably.' },
+    ],
+    faqs: [
+      { question: 'Does OCR change my original PDF?', answer: 'No — the tool reads the file and returns recognized text. Your original PDF stays untouched on your device.' },
+      { question: 'Can OCR read handwriting?', answer: 'Neat printing sometimes works; cursive handwriting generally does not. Expect to proofread heavily and consider manual transcription for handwriting.' },
+    ],
+  },
+  {
+    slug: 'split-pdf-by-size-for-email',
+    title: 'Split a PDF by Size So It Fits Email and Upload Limits',
+    description: 'Divide an oversized PDF into parts that each stay under Gmail, Outlook, or portal size caps — automatically.',
+    targetToolSlug: 'split-pdf-by-size',
+    intent: 'split pdf by size',
+    overview:
+      'Compression alone cannot always solve a size cap: a 60MB scan squeezed below 10MB turns to mush, and some portals cap uploads at 5MB or less no matter what the document contains. Splitting by size takes a different route — the document stays at full quality, but is divided into consecutive parts (pages 1–40, 41–78, and so on) that each fit the limit you choose. Recipients read part one, then part two; nothing is lost and nothing is degraded. It is the honest fix when quality matters more than a single attachment.',
+    whoItsFor: [
+      'Anyone stuck under Gmail’s 25MB or Outlook’s 20MB cap',
+      'Applicants whose single-file portal limits defeat compression',
+      'Teams sharing long, high-quality scans internally',
+    ],
+    steps: [
+      { title: 'Upload the large PDF', description: 'Drop in the file that is too big to send whole.' },
+      { title: 'Pick a size limit', description: 'Choose 25MB for Gmail, 20MB for Outlook, or the portal’s stated cap.' },
+      { title: 'Split', description: 'Parts are built in page order, each measured against the real saved file size.' },
+      { title: 'Send the parts in order', description: 'Download the ZIP and attach part-1, part-2, … in sequence.' },
+    ],
+    tips: [
+      'Leave headroom: email encoding inflates files by roughly a third, so pick a limit about a quarter below the stated cap.',
+      'Tell the recipient how many parts to expect so they know the set is complete.',
+      'Try compression first if the limit is generous — one file is always easier than five.',
+    ],
+    pitfalls: [
+      { problem: 'A single page exceeds the limit on its own', solution: 'A page cannot be divided; compress the document first or send that page separately through a file-sharing link.' },
+      { problem: 'Parts arrived out of order', solution: 'Filenames are part-1.pdf, part-2.pdf in page order — re-sort by name before forwarding.' },
+    ],
+    faqs: [
+      { question: 'How is splitting by size different from compressing?', answer: 'Compression shrinks the whole file, with some quality cost. Splitting keeps every page at original quality and divides the document into parts that each fit the limit.' },
+      { question: 'Will the parts still open as normal PDFs?', answer: 'Yes — every part is a complete, standalone PDF with its pages copied unchanged. Open, print, and forward them like any PDF.' },
+    ],
+  },
 ];

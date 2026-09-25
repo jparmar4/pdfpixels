@@ -143,6 +143,7 @@ export function ConvertWorkspace() {
     if (toolId.includes('jpg-to') || toolId.includes('jpeg-to')) return 'JPG';
     if (toolId.includes('webp-to')) return 'WebP';
     if (toolId.includes('heic-to')) return 'HEIC';
+    if (toolId.includes('avif-to')) return 'AVIF';
     if (toolId.includes('pdf-to')) return 'PDF';
     if (toolId.includes('svg-to')) return 'SVG';
     return 'Image';

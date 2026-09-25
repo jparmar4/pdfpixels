@@ -351,7 +351,7 @@ function getWorkspaceComponent(toolId: string) {
   if (toolId === 'resize' || toolId === 'passport-photo' || toolId === 'dpi-converter') return <ResizeWorkspace />;
 
   // ── Format conversion ──
-  if (['png-to-jpg', 'jpg-to-png', 'webp-to-jpg', 'heic-to-jpg', 'svg-to-png', 'svg-to-jpg', 'webp-to-png'].includes(toolId)) {
+  if (['png-to-jpg', 'jpg-to-png', 'webp-to-jpg', 'heic-to-jpg', 'svg-to-png', 'svg-to-jpg', 'webp-to-png', 'avif-to-jpg', 'avif-to-png', 'jpg-to-avif'].includes(toolId)) {
     return <ConvertWorkspace />;
   }
 
