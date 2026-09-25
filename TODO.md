@@ -167,3 +167,8 @@
 - [x] New tool: Photo Collage Maker (`photo-collage`, 102 -> 103 total) — the biggest remaining volume opportunity ("photo collage maker" family). Client-side canvas: 6 grid layouts (1x2..3x3), gap slider, background color or transparent (PNG), JPG/PNG export at 640px/cell, remove-to-reorder thumbnails, zero upload. React-compiler lint caught ref-during-render and an unused state var; fixed.
 - [x] ai-plugin.json synced to 103 tools.
 - [x] Verified: tsc clean, eslint clean, dispatch 103/103, build green, prerender sweep (photo-collage + localized new tools across es/pt/fr/jp/de), 7-locale hreflang on ocr-pdf, sitemap 259 URLs / 45 localized, test:tools green.
+
+# Continuation wave 2 — comparisons + supporting posts (2026-09-25, later)
+- [x] 3 new compare pages (9 -> 12): vs PDF24 for Compress PDF (German-market synergy with /de pages), vs Canva for Photo Collage (supports the new tool), vs Adobe Acrobat for Fill PDF. Fair "when to choose the alternative" tone preserved; primaryToolSlug auto-links each to its tool page's Comparison guides panel.
+- [x] 2 new blog posts (35 -> 37): sign-pdf-on-phone (global high intent, supports Sign PDF; covers drawn/typed/photographed signatures + flattening) and make-a-photo-collage (supports Photo Collage Maker; privacy angle = on-device canvas). Covers generated; coverImageDimensions synced; Further reading map extended (sign-pdf, photo-collage).
+- [x] Verified: tsc clean, eslint clean, cross-refs resolve (compare primaries + Further reading map), build green, 5/5 new pages prerendered, sitemap 264 URLs, test:tools green.

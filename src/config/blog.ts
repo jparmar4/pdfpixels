@@ -6220,6 +6220,209 @@ Nine screenshots are a mess; one file is a document. Stack or grid them into an 
             },
         ],
     },
+    {
+        slug: "sign-pdf-on-phone",
+        title: "How to Sign a PDF on Your Phone (iPhone and Android, No App Install)",
+        excerpt: "A document needs your signature, your laptop is nowhere near, and the only tool in reach is your phone. Good news: that is enough. Here is how to sign a PDF on any phone in about a minute — no app store, no subscription, no printing.",
+        date: "Sep 25, 2026",
+        dateModified: "Sep 25, 2026",
+        category: "PDF Tools",
+        author: "PdfPixels Editorial",
+        authorRole: "PdfPixels team",
+        readTime: "6 min read",
+        metaDescription: "Learn how to sign a PDF on iPhone or Android for free — draw or type a signature, place it on the signature line, and download the signed document in a minute, no app installation required.",
+        keywords: [
+            "sign pdf on phone",
+            "sign pdf on iphone",
+            "sign pdf on android",
+            "how to sign a pdf on phone",
+            "add signature to pdf mobile",
+            "sign document without app",
+            "free pdf signature online",
+            "e sign pdf on phone",
+            "sign pdf no printer",
+            "pdf signature online free"
+        ],
+        coverImage: "/images/blog/sign-pdf-on-phone-hero.jpg",
+        imageAlt: "A hand signing on a phone screen, placing a signature onto a PDF document's signature line",
+        content: `
+The request always arrives at the least convenient moment: a contract, a permission slip, an offer letter — "please sign and return." Twenty years ago that meant finding a printer, a pen, and a scanner. Five years ago it meant installing a heavyweight app that would nag you about a subscription forever. Today, the phone in your pocket completes the whole loop — sign, save, send — in about a minute, in the browser, for free.
+
+> [!TIP]
+> **Just need it signed?** Open [Sign PDF](/tools/sign-pdf) on your phone, draw your signature with your finger, place it on the line, and download.
+
+---
+
+## Quick Answer: Sign a PDF in 4 Steps (AEO / Snippet)
+
+1. **Open** [Sign PDF](/tools/sign-pdf) in any mobile browser.
+2. **Upload** the PDF you need to sign.
+3. **Create your signature** — draw it with your finger or stylus, or type it.
+4. **Place it** on the signature line, download, and send the signed file back.
+
+---
+
+## Why the Browser Beats the App Store for This
+
+Dedicated signing apps are fine, but for a once-in-a-while signature they bring overhead that solves nobody's problem: accounts, storage permissions, and upgrade prompts in between you and a squiggle on a line. A browser tool inverts that — nothing to install, nothing to register, works identically on iPhone and Android, and the signed file downloads straight to your device ready to email or upload. For a signature you use often, the browser also saves a copy of your drawn signature for reuse, so the second document takes even less time than the first.
+
+---
+
+## Drawn, Typed, or Scanned: Choosing Your Signature Style
+
+**Drawn (finger or stylus)** — the standard choice. Draw on the phone screen in one comfortable motion; the result carries your actual handwriting. Two tips make finger-drawn signatures look dramatically better: sign *larger* than the final placement (shrinking smooths the wobble), and slow down slightly on the letters that matter — a rushed loop reads as a scrawl at small sizes.
+
+**Typed** — converts your name into a clean script font. Fast and legible, right for internal documents where formality beats personal style. Many people use typed signatures for routine acknowledgments and keep a drawn signature for anything contractual.
+
+**Photographed** — sign white paper with a proper pen, photograph it, and the [signature tools](/tools/generate-signature) clean and size the image. This is the option when a wet-ink scan is explicitly requested, or when you want your real pen signature without redrawing it. The same pipeline powers the exam-form trick of [combining a photo and signature into one image](/blog/passport-photo-signature-combined).
+
+---
+
+## Placing the Signature Properly
+
+Placement is where unsigned documents look amateur. Three rules:
+
+- **Size to the line.** The signature should span the line's width loosely — roughly matching what a pen signature would occupy, not floating above it like a stamp.
+- **Baseline alignment.** The bottom of the signature should sit *on* the line, not hover. Nudge it after placing; five seconds of adjustment separates professional from pasted.
+- **Date placement.** If there's a "date" field beside the signature, place it in the same pass — don't come back for a second round.
+
+Some portals demand a *flattened* PDF — signature baked into the page with nothing editable left. If a receiving system rejects your signed file, run it through [Flatten PDF](/tools/flatten-pdf) and upload the output. That single step resolves most "signature not accepted" errors from court, government, and HR systems.
+
+---
+
+## Signing on iPhone vs Android: Any Difference?
+
+With the browser route, almost none — which is the point. Both platforms handle the upload, drawing, and download identically. Two platform quirks worth knowing: iPhones save downloads to the Files app (look there if the download seems to vanish), and some Android mail apps open PDFs in a restricted preview — tap "open in browser" rather than fighting the preview. Beyond that, the workflow is the same on both, and the same on a borrowed tablet or a school Chromebook.
+
+## Common Questions, Quick Answers
+
+- **"Is an electronic signature legal?"** For most everyday documents — agreements, HR forms, permissions — yes, in the US (ESIGN Act), the EU (eIDAS), and most jurisdictions. Real-estate closings, wills, and some government filings have special rules; check the receiving party's requirements for anything high-stakes.
+- **"Can I add text next to my signature?"** Yes — [Fill PDF](/tools/fill-pdf) places typed text anywhere on the page; many people sign and fill the date in one session.
+- **"My signature looks shaky."** Draw bigger, then place smaller. Or switch to the typed style for internal documents.
+- **"The other person needs it printed."** Then it was never an e-signature request — but you can still sign digitally and let *them* print it.
+
+## Bottom Line
+
+The printer-and-scanner era of signing is over. Open [Sign PDF](/tools/sign-pdf) on the phone already in your hand, draw once, place it well, flatten if the portal is strict — and send the signed document back before your laptop would have finished booting.
+
+        `,
+        faq: [
+            {
+                question: "How do I sign a PDF on my phone for free?",
+                answer: "Open a free browser tool like PdfPixels Sign PDF, upload the document, draw or type your signature, place it on the signature line, and download the signed PDF. No app installation or account needed."
+            },
+            {
+                question: "How do I add a signature to a PDF on iPhone?",
+                answer: "You can use the browser-based Sign PDF tool, or the built-in Markup feature in the Files and Mail apps. The browser route works identically on every device and saves a reusable signature."
+            },
+            {
+                question: "Is signing a PDF on my phone legally binding?",
+                answer: "For most everyday documents, yes — electronic signatures are recognized in the US (ESIGN Act), the EU (eIDAS), and most jurisdictions. Some transactions like wills and certain property deals have special requirements, so confirm with the receiving party for high-stakes documents."
+            },
+            {
+                question: "Why was my signed PDF rejected by an upload portal?",
+                answer: "Many government and court systems require flattened PDFs where the signature is baked into the page. Run the signed file through a free Flatten PDF tool and upload the flattened version."
+            },
+            {
+                question: "Can I use my real handwritten signature on a phone-signed PDF?",
+                answer: "Yes — either draw it with your finger, or photograph your pen-on-paper signature and place the cleaned-up image onto the line using the signature tools."
+            },
+        ],
+    },
+    {
+        slug: "make-a-photo-collage",
+        title: "How to Make a Photo Collage Without Installing Anything",
+        excerpt: "Six vacation photos, one memory, and a chat that won't accept six separate attachments. Here's how to turn any group of photos into a clean grid collage in about a minute — on a phone or computer, free, with zero uploads.",
+        date: "Sep 25, 2026",
+        dateModified: "Sep 25, 2026",
+        category: "Image Tools",
+        author: "PdfPixels Editorial",
+        authorRole: "PdfPixels team",
+        readTime: "5 min read",
+        metaDescription: "Make a photo collage online free without an app — combine up to 9 photos into grid layouts with spacing and background options, download as JPG or PNG, on phone or desktop.",
+        keywords: [
+            "make a photo collage online free",
+            "photo collage without app",
+            "combine photos into collage",
+            "photo grid maker online",
+            "free collage maker no download",
+            "how to make a collage on phone",
+            "picture collage free",
+            "photo collage maker no sign up",
+            "grid collage online",
+            "put multiple photos in one frame"
+        ],
+        coverImage: "/images/blog/make-a-photo-collage-hero.jpg",
+        imageAlt: "Six photos arranged into a clean grid collage on a screen, with layout and spacing controls beside it",
+        content: `
+A collage is the polite way to send six photos. Whether it's the trip you promised to share, the five product shots a customer asked about, or the before-and-after that needs to be seen together, one composed image respects the viewer's attention in a way a gallery dump never does. And the work takes about a minute — less time than explaining why you sent nine separate files.
+
+> [!TIP]
+> **Straight to it:** open [Photo Collage Maker](/tools/photo-collage), drop in your photos, pick a grid, download. Nothing uploads anywhere — the collage assembles on your own device.
+
+---
+
+## Quick Answer: Photos to Collage in 4 Steps (AEO / Snippet)
+
+1. **Open** [Photo Collage Maker](/tools/photo-collage) in any browser.
+2. **Add photos** — up to 9, straight from your phone gallery or desktop.
+3. **Pick a layout** (1×2 through 3×3), then tune spacing and background.
+4. **Download** the finished collage as JPG or PNG.
+
+---
+
+## Step 1: Choose the Layout That Fits the Story
+
+The layout *is* the message. Six photos in a 3×2 grid say "here's the whole trip." Two photos side by side say "before and after." One hero photo flanked by detail shots says "look at this, and here's the proof." The tool offers six grids — 1×2, 2×1, 2×2, 3×2, 2×3, and 3×3 — and photos fill them in order, left to right, top to bottom. Front-load the important one.
+
+Rule of thumb: **vertical stacks read best in chats** (phones are portrait), **grids read best on feeds and profiles**, and anything that must be *read* rather than glanced at wants fewer, larger cells.
+
+## Step 2: Spacing and Background — The Two Decisions That Matter
+
+White background with thin spacing is the classic photo-album look. Black gives photos a gallery feel and makes colors pop. Warm gray flatters skin tones. And for design use — overlaying the collage on a colored slide or post — PNG with a transparent background drops straight onto anything.
+
+Spacing works the same way: 0px fuses photos into a single mosaic (striking with similar photos, chaotic with mixed ones); 10–16px is the everyday sweet spot that keeps each photo legible while staying compact.
+
+## Step 3: Export for Where It's Going
+
+JPG is the default — small files that travel well through every chat and feed. PNG exists for two cases: transparency, and maximum fidelity for reuse. Cells export at 640 pixels each, so a 3×3 collage lands around 1,900 pixels wide — comfortably sharp for screens and social feeds. For anything destined for print, keep the layout to 2×2 or smaller so each photo carries more pixels.
+
+## Privacy: The Part Most Collage Sites Skip
+
+Here's what most free collage makers don't advertise: your photos usually upload to their servers for processing. The PdfPixels collage maker composes entirely **in your browser** using the canvas API — the photos are read locally, assembled locally, and exported locally. Nothing is transmitted, which makes it safe for the photos you wouldn't hand to a stranger: family shots, ID photos, documents. It also means the tool works with no network after the page loads.
+
+## When a Collage Isn't the Right Tool
+
+Three adjacent jobs with better fits: if the goal is one **long** image (a chat conversation, a receipt trail), a vertical [merge of full-size images](/tools/join-images-online) beats a grid, which would shrink each panel. If the destination is a **formal upload or print**, bind the photos into a [single PDF](/tools/image-to-pdf) instead — pages print at paper size and pass portals that reject images. And if the photos need **trimming first** — status bars, photobombers — a quick pass through [Crop Image](/tools/crop-image) before collaging turns a good result into a clean one.
+
+## Bottom Line
+
+Making a collage stopped being a design project years ago. Drop your photos into [Photo Collage Maker](/tools/photo-collage), pick the grid that fits the story, tune two sliders, and download — a minute of work, zero uploads, and one image instead of nine attachments.
+
+        `,
+        faq: [
+            {
+                question: "How can I make a photo collage for free without an app?",
+                answer: "Use a browser tool like PdfPixels Photo Collage Maker: add up to 9 photos, choose a grid layout, adjust spacing and background, and download the collage as JPG or PNG — no download, account, or upload required."
+            },
+            {
+                question: "How do I make a collage on my phone?",
+                answer: "Open the Photo Collage Maker in your mobile browser, select photos from your gallery, pick a layout, and download. The whole process runs on the phone with nothing installed."
+            },
+            {
+                question: "How many photos can I put in a collage?",
+                answer: "Up to 9 in a 3×3 grid. Smaller layouts like 2×2 use the first four photos in your list, so order matters — put the strongest photo first."
+            },
+            {
+                question: "Do my photos get uploaded when I make a collage?",
+                answer: "Not with the PdfPixels collage maker — it assembles the collage with your browser's canvas technology entirely on your device. Photos never leave your phone or computer."
+            },
+            {
+                question: "What size should a collage be for social media?",
+                answer: "A 2×2 or 3×2 grid exports around 1,300–1,900 pixels wide, which is ideal for Instagram, Facebook, and WhatsApp. For large prints, use a smaller layout so each photo keeps more resolution."
+            },
+        ],
+    },
 ];
 
 // Helper functions
@@ -6313,6 +6516,8 @@ export const coverImageDimensions: Record<string, { width: number; height: numbe
     '/images/blog/reduce-photo-file-size-hero.jpg': { width: 1280, height: 720 },
     '/images/blog/fix-pdf-not-opening-hero.jpg': { width: 1280, height: 720 },
     '/images/blog/combine-screenshots-into-one-hero.jpg': { width: 1280, height: 720 },
+    '/images/blog/sign-pdf-on-phone-hero.jpg': { width: 1280, height: 720 },
+    '/images/blog/make-a-photo-collage-hero.jpg': { width: 1280, height: 720 },
 };
 
 export function getCoverDimensions(coverImage: string): { width: number; height: number } {
@@ -6338,7 +6543,7 @@ const toolSlugToPostSlugs: Record<string, string[]> = {
     'join-images-online': ['combine-screenshots-into-one'],
     'heic-to-jpg': ['heic-to-jpg-convert-iphone-photos', 'how-to-convert-heic-to-jpg-windows'],
     'fill-pdf': ['fill-pdf-form-online-free', 'how-to-edit-pdf-online-free-adobe-alternative'],
-    'sign-pdf': ['how-to-edit-pdf-online-free-adobe-alternative'],
+    'sign-pdf': ['sign-pdf-on-phone', 'how-to-edit-pdf-online-free-adobe-alternative'],
     'protect-pdf': ['password-protect-pdf-online-free'],
     'repair-pdf': ['fix-pdf-not-opening'],
     'pdf-reader': ['fix-pdf-not-opening'],
@@ -6351,6 +6556,7 @@ const toolSlugToPostSlugs: Record<string, string[]> = {
     'pdf-to-word': ['how-to-edit-pdf-online-free-adobe-alternative'],
     'increase-image-quality': ['ai-image-enhancer-fix-blurry-photos'],
     'remove-image-background': ['ai-background-remover-free-tools-guide'],
+    'photo-collage': ['make-a-photo-collage', 'combine-screenshots-into-one'],
     'png-to-jpeg': ['png-to-jpg-converter-how-when-to-switch', 'webp-vs-jpg-vs-png-which-format'],
     'webp-to-jpg': ['webp-vs-jpg-vs-png-which-format'],
     'webp-to-png': ['webp-vs-jpg-vs-png-which-format'],

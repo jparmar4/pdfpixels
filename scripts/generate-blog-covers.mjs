@@ -147,6 +147,18 @@ const COVERS = [
     kicker: 'STEP-BY-STEP GUIDE',
     icon: ICONS.stack,
   },
+  {
+    file: 'sign-pdf-on-phone-hero.jpg',
+    headline: 'Sign a PDF on Your Phone in a Minute',
+    kicker: 'iPHONE · ANDROID · FREE',
+    icon: ICONS.signature,
+  },
+  {
+    file: 'make-a-photo-collage-hero.jpg',
+    headline: 'Make a Photo Collage Without an App',
+    kicker: 'GRID LAYOUT GUIDE',
+    icon: ICONS.stack,
+  },
 ];
 
 function coverSvg({ headline, kicker, icon }) {

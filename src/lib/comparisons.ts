@@ -392,4 +392,151 @@ export const comparisonPages: ComparisonPage[] = [
       },
     ],
   },
+  {
+    slug: 'pdfpixels-vs-pdf24-compress-pdf',
+    title: 'PdfPixels vs PDF24 for Compress PDF',
+    description: 'Compare PDF compression workflows, install requirements, and output quality between PDF24 and PdfPixels.',
+    primaryToolSlug: 'compress-pdf',
+    alternatives: ['PDF24'],
+    bestFor: ['No-install browser compression', 'Email and portal size targets', 'Cross-device workflows'],
+    overview:
+      'PDF24 is a longstanding free PDF toolkit from Germany, best known for its desktop application alongside an online toolbox. PdfPixels compresses entirely in the browser with quality profiles tuned for specific upload ceilings, which suits users who move between devices or cannot install software on work machines. PDF24’s desktop app is genuinely capable and works offline — the meaningful differences are install requirements, platform coverage, and how directly each tool answers a size target.',
+    whenToChooseUs: [
+      'You cannot or prefer not to install desktop software',
+      'You work across phone, tablet, and shared computers',
+      'You want presets aimed at portal limits such as 100KB or 50KB',
+    ],
+    whenToChooseAlt: [
+      'You want a full offline desktop toolkit on Windows',
+      'You already use PDF24 for other PDF tasks daily',
+      'You process large batches offline with no upload at all',
+    ],
+    keyDifferences: [
+      {
+        topic: 'Installation',
+        pdfpixels: 'Pure browser workflow on any modern device',
+        alternative: 'Desktop app (Windows) plus an online toolbox',
+      },
+      {
+        topic: 'Size-target workflow',
+        pdfpixels: 'Presets aimed at common caps (50KB–1MB) with honest results',
+        alternative: 'General compression controls via the toolbox or app',
+      },
+      {
+        topic: 'Platform coverage',
+        pdfpixels: 'Windows, macOS, Linux, Android, iOS via the browser',
+        alternative: 'Deepest on Windows through the desktop application',
+      },
+    ],
+    verdict:
+      'Choose PdfPixels for fast, install-free compression aimed at exact upload limits across all your devices. Choose PDF24 if you want an offline Windows desktop suite you control locally.',
+    faqs: [
+      {
+        question: 'Is PDF24 really free?',
+        answer: 'Yes, PDF24 is free for personal and commercial use. PdfPixels is also free for standard use — the choice is about workflow (browser vs desktop) rather than price.',
+      },
+      {
+        question: 'Which compresses better?',
+        answer: 'Both reduce PDF size substantially. Compare on your own documents: what matters is whether text stays sharp at your target size, and both tools let you verify that in the preview.',
+      },
+    ],
+  },
+  {
+    slug: 'pdfpixels-vs-canva-photo-collage',
+    title: 'PdfPixels vs Canva for Photo Collages',
+    description: 'Compare collage-making speed, privacy, and simplicity between Canva’s editor and PdfPixels.',
+    primaryToolSlug: 'photo-collage',
+    alternatives: ['Canva'],
+    bestFor: ['Fast grid collages', 'No-account workflows', 'Private, on-device editing'],
+    overview:
+      'Canva is a full design platform — templates, text, branding, stock assets — with collage-making as one of its countless capabilities. PdfPixels Photo Collage Maker does exactly one thing: compose your photos into a clean grid with spacing and background choices, instantly. If you are decorating a collage with captions and stickers, Canva is the richer canvas. If you want six photos in a tidy grid in under a minute without creating an account, a single-purpose tool is the faster route.',
+    whenToChooseUs: [
+      'You want a clean photo grid with no design work',
+      'You prefer not to create an account or learn an editor',
+      'Privacy matters — photos are composed on your device, never uploaded',
+    ],
+    whenToChooseAlt: [
+      'You need text overlays, templates, and brand kits',
+      'You already work in Canva daily for other designs',
+      'You want stock images and graphics inside the same editor',
+    ],
+    keyDifferences: [
+      {
+        topic: 'Scope',
+        pdfpixels: 'One focused job: photos in, grid collage out',
+        alternative: 'A complete design platform with collage templates',
+      },
+      {
+        topic: 'Speed',
+        pdfpixels: 'Drop photos, pick a layout, download — under a minute',
+        alternative: 'More setup time, far more creative control',
+      },
+      {
+        topic: 'Privacy',
+        pdfpixels: 'Canvas-based composition in your browser — no upload',
+        alternative: 'Designs process in Canva’s cloud',
+      },
+    ],
+    verdict:
+      'Use PdfPixels when the goal is a clean photo grid with zero friction. Use Canva when the collage is a designed piece with text, branding, and templates.',
+    faqs: [
+      {
+        question: 'Is a grid collage enough for social media?',
+        answer: 'Usually yes — clean photo grids are a standard format on Instagram and Facebook. If you want captions and stickers baked in, a design platform gives you more control.',
+      },
+      {
+        question: 'Does either tool watermark collages?',
+        answer: 'PdfPixels does not watermark. Canva’s free tier keeps some elements premium-gated rather than watermarking — check element licenses if you publish commercially.',
+      },
+    ],
+  },
+  {
+    slug: 'pdfpixels-vs-adobe-fill-pdf',
+    title: 'PdfPixels vs Adobe Acrobat for Filling PDF Forms',
+    description: 'Compare form-filling workflows, cost, and flattening support between Acrobat and PdfPixels Fill PDF.',
+    primaryToolSlug: 'fill-pdf',
+    alternatives: ['Adobe Acrobat'],
+    bestFor: ['Free form filling', 'Flat scanned forms', 'No-subscription workflows'],
+    overview:
+      'Adobe Acrobat is the reference PDF application and fills forms impeccably — if you pay the subscription or accept the free reader’s limits and prompts. PdfPixels Fill PDF covers the two everyday cases in a browser: typing into fillable fields and placing text over flat scanned forms, with no account. Acrobat is the stronger tool for complex, interactive form workflows with validation and signatures across an organization; for the recurring “fill this form and send it back” job, a focused free tool handles it without a subscription.',
+    whenToChooseUs: [
+      'You occasionally fill forms and do not want a subscription',
+      'The form is a scan with no interactive fields',
+      'You need it done once, on any device, right now',
+    ],
+    whenToChooseAlt: [
+      'Your organization runs on Acrobat workflows and signatures',
+      'You need advanced field validation and form authoring',
+      'You already pay for the Adobe ecosystem',
+    ],
+    keyDifferences: [
+      {
+        topic: 'Cost',
+        pdfpixels: 'Free form filling with no account',
+        alternative: 'Subscription for full capabilities; free reader with limits',
+      },
+      {
+        topic: 'Flat (scanned) forms',
+        pdfpixels: 'Place text directly over scanned lines',
+        alternative: 'Handled, but the full app is heavier for this one job',
+      },
+      {
+        topic: 'Enterprise form workflows',
+        pdfpixels: 'Out of scope — filling and flattening only',
+        alternative: 'Deep support for form authoring and validation',
+      },
+    ],
+    verdict:
+      'For the everyday fill-and-return task, PdfPixels does it free in a browser — including scanned forms. Stay on Acrobat when organizational form workflows and authoring justify the subscription.',
+    faqs: [
+      {
+        question: 'Can PdfPixels fill the same forms Acrobat can?',
+        answer: 'For standard fillable fields and flat forms, yes. Acrobat additionally supports advanced form authoring and enterprise signature workflows that a browser filler does not attempt.',
+      },
+      {
+        question: 'Why do some portals reject my filled form?',
+        answer: 'Many systems require flattened PDFs — answers baked in and fields removed. Run the completed file through Flatten PDF and upload again; this applies regardless of which tool filled the form.',
+      },
+    ],
+  },
 ];
