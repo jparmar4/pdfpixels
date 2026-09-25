@@ -9,17 +9,20 @@ export const runtime = 'nodejs';
 const MAX_SPLIT_PAGES = 20;
 const MAX_EXTRACT_PAGES = 50;
 const MAX_SELECTION_CHARS = 2000;
+const MAX_SIZE_PARTS = 100;
+const MAX_SIZE_MODE_PAGES = 300;
 
 export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
     const file = formData.get('file') as File | null;
-    const mode = (formData.get('mode') as string) || 'all'; // 'all', 'range', 'single'
+    const mode = (formData.get('mode') as string) || 'all'; // 'all', 'range', 'single', 'size'
     const pageRange = (formData.get('pageRange') as string) || '';
     const singlePage = (formData.get('singlePage') as string) || '';
+    const maxSizeMb = Number(formData.get('maxSizeMb')) || 0;
 
-    if (!['all', 'range', 'single'].includes(mode)) {
-      return apiError('Invalid split mode. Use all, range, or single.', 400);
+    if (!['all', 'range', 'single', 'size'].includes(mode)) {
+      return apiError('Invalid split mode. Use all, range, single, or size.', 400);
     }
     if (pageRange.length > MAX_SELECTION_CHARS || singlePage.length > 100) {
       return apiError('Page selection is too long. Keep it under 2000 characters.', 413);
@@ -31,6 +34,72 @@ export async function POST(request: NextRequest) {
     const totalPages = pdf.getPageCount();
 
     let pagesToExtract: number[] = [];
+
+    if (mode === 'size') {
+      if (!Number.isFinite(maxSizeMb) || maxSizeMb < 0.1 || maxSizeMb > 25) {
+        return apiError('Size limit must be between 0.1MB and 25MB.', 400);
+      }
+      if (totalPages > MAX_SIZE_MODE_PAGES) {
+        return apiError(
+          `Size splitting is capped at ${MAX_SIZE_MODE_PAGES} pages per run. Use range extraction first for bigger documents.`,
+          413,
+        );
+      }
+
+      const limitBytes = Math.floor(maxSizeMb * 1024 * 1024);
+      const parts: Buffer[] = [];
+      let current = await PDFDocument.create();
+      let pagesInCurrent = 0;
+      // Size measured at the last save that was within the limit. Pushed as the
+      // finished part instead of a post-removePage re-save — removing a page
+      // leaves orphaned copied objects in the pdf-lib context, which would
+      // silently inflate the part back over the limit.
+      let lastGood: Buffer = Buffer.alloc(0);
+
+      for (let i = 0; i < totalPages; i++) {
+        const [page] = await current.copyPages(pdf, [i]);
+        current.addPage(page);
+        pagesInCurrent += 1;
+
+        const bytes = Buffer.from(await current.save());
+        if (bytes.length > limitBytes && pagesInCurrent > 1) {
+          parts.push(lastGood);
+          current = await PDFDocument.create();
+          const [retried] = await current.copyPages(pdf, [i]);
+          current.addPage(retried);
+          pagesInCurrent = 1;
+          // A single page larger than the limit stays whole — it cannot be divided.
+          lastGood = Buffer.from(await current.save());
+          if (parts.length >= MAX_SIZE_PARTS) {
+            return apiError(
+              `This limit produces more than ${MAX_SIZE_PARTS} parts. Choose a larger size limit or compress the PDF first.`,
+              413,
+            );
+          }
+        } else {
+          lastGood = bytes;
+        }
+      }
+      if (pagesInCurrent > 0) parts.push(lastGood);
+
+      const AdmZip = (await import('adm-zip')).default;
+      const zip = new AdmZip();
+      parts.forEach((part, index) => zip.addFile(`part-${index + 1}.pdf`, part));
+      const zipBuffer = zip.toBuffer();
+
+      return new NextResponse(zipBuffer as unknown as BodyInit, {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/zip',
+          'Content-Disposition': `attachment; filename="split-by-size-${Date.now()}.zip"`,
+          'Cache-Control': 'no-store, max-age=0',
+          'X-Mode': 'by-size',
+          'X-Total-Pages': String(totalPages),
+          'X-Parts': String(parts.length),
+          'X-Size-Limit-Mb': String(maxSizeMb),
+        },
+      });
+    }
 
     if (mode === 'single') {
       const pageNum = parseInt(singlePage, 10);

@@ -13,6 +13,13 @@ import { toast } from 'sonner';
 import { ToolLimitNotice } from './tool-limit-notice';
 import { ResultCard } from './result-card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 interface PDFInfo {
   name: string;
@@ -40,9 +47,10 @@ export function PDFSplitWorkspace() {
   const [file, setFile] = useState<File | null>(null);
   const [pdfInfo, setPdfInfo] = useState<PDFInfo | null>(null);
   const [result, setResult] = useState<SplitResult | null>(null);
-  const [mode, setMode] = useState<'all' | 'range' | 'single'>('all');
+  const [mode, setMode] = useState<'all' | 'range' | 'single' | 'size'>(activeTool?.id === 'split-pdf-by-size' ? 'size' : 'all');
   const [pageRange, setPageRange] = useState('');
   const [singlePage, setSinglePage] = useState('1');
+  const [sizeLimitMb, setSizeLimitMb] = useState('25');
   const [statusLabel, setStatusLabel] = useState<'Idle' | 'Uploading' | 'Processing' | 'Finalizing'>('Idle');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const prefersReducedMotion = useReducedMotion();
@@ -133,6 +141,8 @@ export function PDFSplitWorkspace() {
       formData.append('pageRange', pageRange);
     } else if (mode === 'single') {
       formData.append('singlePage', singlePage);
+    } else if (mode === 'size') {
+      formData.append('maxSizeMb', sizeLimitMb);
     }
 
     try {
@@ -189,18 +199,20 @@ export function PDFSplitWorkspace() {
         
         const totalPages = Number(response.headers.get('x-total-pages') || 0);
         const truncated = response.headers.get('x-truncated') === 'true';
-        
+        const zipMode = response.headers.get('x-mode') === 'by-size' ? 'by-size' : 'split-all';
+        const parts = Number(response.headers.get('x-parts') || 0);
+
         setResult((previous) => {
           revokeResult(previous);
           return {
-            mode: 'split-all',
+            mode: zipMode,
             totalPages,
             pages,
             truncated,
           };
         });
-        
-        toast.success(`Split into ${pages.length} files!`);
+
+        toast.success(zipMode === 'by-size' ? `Split into ${parts || pages.length} parts under ${sizeLimitMb}MB!` : `Split into ${pages.length} files!`);
         if (truncated) {
           toast.info('Showing first 20 pages only for performance. Use range for larger PDFs.');
         }
@@ -237,7 +249,7 @@ export function PDFSplitWorkspace() {
       setIsProcessing(false);
       setStatusLabel('Idle');
     }
-  }, [file, mode, pageRange, singlePage, setIsProcessing, setProgress, revokeResult]);
+  }, [file, mode, pageRange, singlePage, sizeLimitMb, setIsProcessing, setProgress, revokeResult]);
 
   const handleDownload = useCallback((pdfUrl?: string, fileName?: string) => {
     const url = pdfUrl || result?.pdfUrl;
@@ -399,7 +411,13 @@ export function PDFSplitWorkspace() {
             </motion.div>
           )}
 
-          <ToolLimitNotice limits={['PDF only', 'Max file size: 50MB', 'Split output capped at 20 pages per run']} />
+          <ToolLimitNotice
+            limits={
+              activeTool?.id === 'split-pdf-by-size'
+                ? ['PDF only · max 50 MB', 'Parts sized by real saved output, not estimates', 'Up to 100 parts per run · single oversized pages stay whole']
+                : ['PDF only', 'Max file size: 50MB', 'Split output capped at 20 pages per run']
+            }
+          />
 
           {/* Results */}
           <AnimatePresence>
@@ -433,7 +451,9 @@ export function PDFSplitWorkspace() {
                 className="rounded-2xl border border-border bg-card overflow-hidden"
               >
                 <div className="p-4 border-b border-border flex flex-wrap items-center justify-between gap-2">
-                  <h3 className="font-medium">Split pages ({result.pages.length})</h3>
+                  <h3 className="font-medium">
+                    {result.mode === 'by-size' ? `Size-split parts (${result.pages.length})` : `Split pages (${result.pages.length})`}
+                  </h3>
                   <Button size="sm" className="btn-premium rounded-xl gap-1.5" onClick={handleDownloadAllPages}>
                     <Download className="w-3.5 h-3.5" />
                     Download all as ZIP
@@ -453,7 +473,7 @@ export function PDFSplitWorkspace() {
                           <FileText className="w-5 h-5 text-red-500" />
                         </div>
                         <div>
-                          <p className="text-sm font-medium">Page {page.pageNumber}</p>
+                          <p className="text-sm font-medium">{result.mode === 'by-size' ? 'Part' : 'Page'} {page.pageNumber}</p>
                           <p className="text-xs text-muted-foreground truncate max-w-[120px]">{page.fileName}</p>
                         </div>
                       </div>
@@ -485,20 +505,28 @@ export function PDFSplitWorkspace() {
 
             <div className="p-5 space-y-6">
               <Tabs value={mode} onValueChange={(v) => setMode(v as typeof mode)}>
-                <TabsList className="w-full grid grid-cols-3">
-                  <TabsTrigger value="all">All Pages</TabsTrigger>
-                  <TabsTrigger value="range">Range</TabsTrigger>
-                  <TabsTrigger value="single">Single</TabsTrigger>
+                <TabsList className={`w-full grid ${activeTool?.id === 'split-pdf-by-size' ? 'grid-cols-1' : 'grid-cols-3'}`}>
+                  {activeTool?.id === 'split-pdf-by-size' ? (
+                    <TabsTrigger value="size">By File Size</TabsTrigger>
+                  ) : (
+                    <>
+                      <TabsTrigger value="all">All Pages</TabsTrigger>
+                      <TabsTrigger value="range">Range</TabsTrigger>
+                      <TabsTrigger value="single">Single</TabsTrigger>
+                    </>
+                  )}
                 </TabsList>
 
-                <TabsContent value="all" className="mt-4">
-                  <div className="p-4 rounded-xl bg-muted/50 space-y-1">
-                    <p className="text-sm font-medium">Create one file per page</p>
-                    <p className="text-sm text-muted-foreground">
-                      Best for sharing or removing specific pages quickly.
-                    </p>
-                  </div>
-                </TabsContent>
+                {activeTool?.id !== 'split-pdf-by-size' && (
+                  <TabsContent value="all" className="mt-4">
+                    <div className="p-4 rounded-xl bg-muted/50 space-y-1">
+                      <p className="text-sm font-medium">Create one file per page</p>
+                      <p className="text-sm text-muted-foreground">
+                        Best for sharing or removing specific pages quickly.
+                      </p>
+                    </div>
+                  </TabsContent>
+                )}
 
                 <TabsContent value="range" className="space-y-4 mt-4">
                   <div className="space-y-2">
@@ -557,6 +585,31 @@ export function PDFSplitWorkspace() {
                     </p>
                   </div>
                 </TabsContent>
+
+                <TabsContent value="size" className="space-y-4 mt-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="size-limit">Keep every part under</Label>
+                    <Select value={sizeLimitMb} onValueChange={setSizeLimitMb}>
+                      <SelectTrigger id="size-limit" aria-label="Maximum size per part">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="1">1 MB</SelectItem>
+                        <SelectItem value="2">2 MB</SelectItem>
+                        <SelectItem value="5">5 MB</SelectItem>
+                        <SelectItem value="8">8 MB</SelectItem>
+                        <SelectItem value="10">10 MB</SelectItem>
+                        <SelectItem value="15">15 MB</SelectItem>
+                        <SelectItem value="20">20 MB — Outlook</SelectItem>
+                        <SelectItem value="25">25 MB — Gmail</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <p className="text-xs text-muted-foreground">
+                      Pages fill each part in order; a new part starts just before the limit is crossed.
+                      Email adds ~30% overhead — pick a limit about a quarter below the provider cap.
+                    </p>
+                  </div>
+                </TabsContent>
               </Tabs>
 
               <div className="pt-4 space-y-3">
@@ -568,6 +621,7 @@ export function PDFSplitWorkspace() {
                     || isProcessing
                     || (mode === 'range' && !pageRange.trim())
                     || (mode === 'single' && (!singlePage || Number(singlePage) < 1))
+                    || (mode === 'size' && (!sizeLimitMb || Number(sizeLimitMb) <= 0))
                   }
                   size="lg"
                 >
@@ -583,7 +637,7 @@ export function PDFSplitWorkspace() {
                   ) : (
                     <>
                       <Scissors className="w-5 h-5 mr-3" />
-                      {mode === 'all' ? 'Split all pages' : mode === 'range' ? 'Extract range' : 'Extract page'}
+                      {mode === 'all' ? 'Split all pages' : mode === 'range' ? 'Extract range' : mode === 'size' ? `Split under ${sizeLimitMb}MB` : 'Extract page'}
                     </>
                   )}
                 </Button>

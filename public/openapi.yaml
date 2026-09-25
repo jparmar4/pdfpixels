@@ -10,8 +10,11 @@ info:
     - Format conversion (JPG, PNG, WebP, AVIF, GIF, TIFF)
     - Image filters and effects
     - Rotation and flip
-    - PDF merge, split, and compression
-    - PDF to image and image to PDF conversion
+    - PDF merge, split (per page, range, or by file size), and compression
+    - PDF to image and image to PDF conversion (JPG, PNG, WebP, TIFF, HEIC)
+    - OCR for scanned PDFs
+    - PDF text extraction, embedded image extraction, and text-to-PDF
+    - Multi-size favicon (.ico) generation
     
     ## Authentication
     No authentication required. All endpoints are public.
@@ -20,7 +23,7 @@ info:
     - 20 requests per minute per processing route per IP (pdf/*, image/*, ai)
     - 100 requests per minute global for other API routes
     - Contact (3/min) and newsletter (5/min) endpoints are stricter
-    - Limits verified against production code on 2026-09-20; see https://www.pdfpixels.com/llms-full.txt
+    - Limits verified against production code on 2026-09-25; see https://www.pdfpixels.com/llms-full.txt
     
     ## Support
     Email: support@pdfpixels.com
@@ -331,8 +334,8 @@ paths:
                   description: PDF file to split (max 50MB). Split-all mode returns a ZIP truncated at 20 pages; range/single extract caps at 50 pages.
                 mode:
                   type: string
-                  description: Split mode
-                  enum: [all, range, single]
+                  description: "Split mode: 'all' returns one PDF per page (ZIP, truncated at 20 pages), 'range'/'single' extract a selection (max 50 pages), 'size' chunks the document into parts each under maxSizeMb (max 100 parts, 300 pages)."
+                  enum: [all, range, single, size]
                   default: all
                 pageRange:
                   type: string
@@ -342,6 +345,10 @@ paths:
                   type: integer
                   description: Single page number to extract
                   example: 2
+                maxSizeMb:
+                  type: number
+                  description: Size limit per part for 'size' mode (0.1-25 MB). Response is a ZIP of part-N.pdf files.
+                  example: 25
       responses:
         '200':
           description: Successfully split PDF
@@ -381,6 +388,178 @@ paths:
                     items:
                       type: integer
                     example: [1, 2, 3, 5]
+
+  /pdf/ocr:
+    post:
+      summary: OCR a scanned PDF
+      description: |
+        Recognize text in image-only (scanned) PDFs. Pages are rasterized at high
+        resolution and processed with OCR (up to 10 pages per run). PDFs that already
+        contain a real text layer are extracted directly instead (usedOcr=false).
+      operationId: ocrPdf
+      tags:
+        - PDF Processing
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - file
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: PDF file to OCR (max 50MB, first 10 pages per run).
+      responses:
+        '200':
+          description: Recognized text
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  text:
+                    type: string
+                  usedOcr:
+                    type: boolean
+                    description: False when the PDF already had a text layer and extraction was used.
+                  pagesProcessed:
+                    type: integer
+                  totalPages:
+                    type: integer
+                  truncated:
+                    type: boolean
+                  wordCount:
+                    type: integer
+                  charCount:
+                    type: integer
+        '422':
+          description: No text could be recognized
+        '503':
+          description: OCR engine temporarily unavailable
+
+  /pdf/extract-images:
+    post:
+      summary: Extract embedded images from a PDF
+      description: |
+        Pull the original embedded images out of a PDF at stored quality (JPEG streams
+        verbatim; flate bitmaps reconstructed as PNG). Returns a ZIP named image-001.jpg,
+        image-002.png, ... Up to 200 images / 80MB per run. Exotic codecs (JPEG2000,
+        CCITT, JBIG2) are skipped.
+      operationId: extractPdfImages
+      tags:
+        - PDF Processing
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - file
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: PDF file to extract images from (max 50MB).
+      responses:
+        '200':
+          description: ZIP archive of extracted images
+          content:
+            application/zip:
+              schema:
+                type: string
+                format: binary
+        '422':
+          description: No extractable images found (vector-only pages or unsupported codecs)
+
+  /pdf/from-text:
+    post:
+      summary: Convert plain text to a paginated PDF
+      description: |
+        Render plain text into a print-ready PDF with automatic word-wrap and page
+        breaks using embedded standard fonts (Times, Helvetica, Courier). Caps:
+        400,000 characters, 500 output pages.
+      operationId: textToPdf
+      tags:
+        - PDF Processing
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - text
+              properties:
+                text:
+                  type: string
+                  description: Text content to render (max 400,000 characters).
+                pageSize:
+                  type: string
+                  enum: [a4, letter, legal]
+                  default: a4
+                font:
+                  type: string
+                  enum: [times, helvetica, courier]
+                  default: times
+                fontSize:
+                  type: number
+                  description: Text size in points (8-28).
+                  default: 11
+                fileName:
+                  type: string
+                  description: Desired download filename (without .pdf).
+      responses:
+        '200':
+          description: Generated PDF
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+        '413':
+          description: Text too long or output exceeds 500 pages
+
+  /image/ico:
+    post:
+      summary: Convert an image to a multi-size .ico favicon
+      description: |
+        Convert a PNG, JPG, or WebP image into a true multi-size ICO container
+        (16/32/48/64/128/256 px, PNG-compressed entries). Non-square sources are
+        padded onto a transparent square. Images up to 25 MB / 50 megapixels.
+      operationId: imageToIco
+      tags:
+        - Image Processing
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - file
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: Image to convert (PNG, JPG, WebP; max 25MB).
+                sizes:
+                  type: string
+                  description: Comma-separated sizes to include (subset of 16,32,48,64,128,256).
+                  example: "16,32,48,64"
+      responses:
+        '200':
+          description: Multi-size ICO file
+          content:
+            image/x-icon:
+              schema:
+                type: string
+                format: binary
+        '422':
+          description: Image could not be decoded
 
   /pdf/compress:
     post:

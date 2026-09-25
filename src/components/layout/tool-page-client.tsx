@@ -172,6 +172,41 @@ const MetadataWorkspace = dynamic(
   { loading: () => <WorkspaceLoading /> }
 );
 
+const PDFOcrWorkspace = dynamic(
+  () => import('@/components/layout/pdf-ocr-workspace').then(mod => ({ default: mod.PDFOcrWorkspace })),
+  { loading: () => <WorkspaceLoading /> }
+);
+
+const PDFReaderWorkspace = dynamic(
+  () => import('@/components/layout/pdf-reader-workspace').then(mod => ({ default: mod.PDFReaderWorkspace })),
+  { loading: () => <WorkspaceLoading /> }
+);
+
+const PDFExtractImagesWorkspace = dynamic(
+  () => import('@/components/layout/pdf-extract-images-workspace').then(mod => ({ default: mod.PDFExtractImagesWorkspace })),
+  { loading: () => <WorkspaceLoading /> }
+);
+
+const TextToPDFWorkspace = dynamic(
+  () => import('@/components/layout/text-to-pdf-workspace').then(mod => ({ default: mod.TextToPDFWorkspace })),
+  { loading: () => <WorkspaceLoading /> }
+);
+
+const PNGToIcoWorkspace = dynamic(
+  () => import('@/components/layout/png-to-ico-workspace').then(mod => ({ default: mod.PNGToIcoWorkspace })),
+  { loading: () => <WorkspaceLoading /> }
+);
+
+const ImageToBase64Workspace = dynamic(
+  () => import('@/components/layout/image-to-base64-workspace').then(mod => ({ default: mod.ImageToBase64Workspace })),
+  { loading: () => <WorkspaceLoading /> }
+);
+
+const PDFToPptxWorkspace = dynamic(
+  () => import('@/components/layout/pdf-to-pptx-workspace').then(mod => ({ default: mod.PDFToPptxWorkspace })),
+  { loading: () => <WorkspaceLoading /> }
+);
+
 const CropWorkspace = dynamic(
   () => import('@/components/layout/crop-workspace').then(mod => ({ default: mod.CropWorkspace })),
   { loading: () => <WorkspaceLoading /> }
@@ -264,9 +299,21 @@ function getWorkspaceComponent(toolId: string) {
   if (toolId === 'compress-pdf-to-300kb') return <PDFCompressWorkspace targetPreset="300kb" />;
   if (toolId === 'compress-pdf-to-500kb') return <PDFCompressWorkspace targetPreset="500kb" />;
   if (toolId === 'compress-pdf-under-1mb') return <PDFCompressWorkspace targetPreset="1mb" />;
+  if (toolId === 'compress-pdf-to-50kb') return <PDFCompressWorkspace targetPreset="50kb" />;
   if (['pdf-rotate', 'pdf-watermark', 'pdf-protect', 'pdf-unlock', 'pdf-delete-pages', 'pdf-reorder', 'pdf-linearize', 'pdf-add-page-numbers', 'repair-pdf', 'resize-pdf', 'pdf-n-up', 'pdf-metadata'].includes(toolId)) {
     return <PDFToolsWorkspace />;
   }
+  if (toolId === 'split-pdf-by-size' || toolId === 'pdf-split') return <PDFSplitWorkspace />;
+  if (toolId === 'pdf-ocr') return <PDFOcrWorkspace />;
+  if (toolId === 'pdf-reader') return <PDFReaderWorkspace />;
+  if (toolId === 'extract-pdf-images') return <PDFExtractImagesWorkspace />;
+  if (toolId === 'text-to-pdf') return <TextToPDFWorkspace />;
+  if (toolId === 'tiff-to-pdf') return <ImageToPDFWorkspace />;
+  if (toolId === 'pdf-to-pptx') return <PDFToPptxWorkspace />;
+
+  // ── Dev / format utilities ──
+  if (toolId === 'png-to-ico') return <PNGToIcoWorkspace />;
+  if (toolId === 'image-to-base64') return <ImageToBase64Workspace />;
 
   // ── AI-powered tools ──
   if (toolId === 'blur-background') return <BlurBackgroundWorkspace />;

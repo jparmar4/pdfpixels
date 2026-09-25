@@ -2948,7 +2948,7 @@ export const toolContentMap: Record<string, ToolContent> = {
             { problem: 'Small content after upscaling to A3', solution: 'Enlarging a small page adds space rather than inventing detail. Export the original at higher resolution if possible.' },
         ],
         supportedFormats: 'Input: PDF (up to 50 MB) | Output: PDF (A4/Letter/Legal/A3/A5)',
-        relatedTools: ['crop-pdf', 'pdf-n-up', 'pdf-compress', 'pdf-rotate'],
+        relatedTools: ['crop-pdf', 'pdf-n-up', 'compress-pdf', 'rotate-pdf'],
     },
 
     'pdf-n-up': {
@@ -2983,7 +2983,7 @@ export const toolContentMap: Record<string, ToolContent> = {
             { problem: 'Rotated pages look sideways', solution: 'Pages keep their stored orientation. Run Rotate PDF first to fix any sideways pages, then N-up.' },
         ],
         supportedFormats: 'Input: PDF (up to 50 MB) | Output: PDF (A4/Letter sheets)',
-        relatedTools: ['resize-pdf', 'pdf-rotate', 'pdf-compress', 'pdf-split'],
+        relatedTools: ['resize-pdf', 'rotate-pdf', 'compress-pdf', 'split-pdf'],
     },
 
     'repair-pdf': {
@@ -3018,7 +3018,7 @@ export const toolContentMap: Record<string, ToolContent> = {
             { problem: 'Some pages are missing after repair', solution: 'Only structurally readable pages can be recovered. Missing pages were damaged beyond the parser’s reach in the original file.' },
         ],
         supportedFormats: 'Input: PDF (up to 50 MB) | Output: PDF',
-        relatedTools: ['pdf-compress', 'linearize-pdf', 'sanitize-pdf', 'pdf-flatten'],
+        relatedTools: ['compress-pdf', 'linearize-pdf', 'sanitize-pdf', 'flatten-pdf'],
     },
 
     'excel-to-pdf': {
@@ -3088,7 +3088,7 @@ export const toolContentMap: Record<string, ToolContent> = {
             { problem: 'Hidden slides appear in the PDF', solution: 'Delete hidden slides before converting, or save a copy with only the slides you want.' },
         ],
         supportedFormats: 'Input: PPTX, PPT | Output: PDF',
-        relatedTools: ['pdf-to-pptx', 'excel-to-pdf', 'word-to-pdf', 'pdf-merge'],
+        relatedTools: ['pdf-to-pptx', 'excel-to-pdf', 'word-to-pdf', 'merge-pdf'],
     },
 
     'pdf-to-pptx': {
@@ -3123,7 +3123,7 @@ export const toolContentMap: Record<string, ToolContent> = {
             { problem: 'Large PDFs take a while to convert', solution: 'Rendering is high-resolution per page; big decks take proportionally longer. Keep files under the 50 MB limit for the fastest runs.' },
         ],
         supportedFormats: 'Input: PDF (up to 50 MB) | Output: PPTX',
-        relatedTools: ['powerpoint-to-pdf', 'pdf-to-word', 'pdf-to-image', 'pdf-to-excel'],
+        relatedTools: ['powerpoint-to-pdf', 'pdf-to-word', 'pdf-to-jpg', 'pdf-to-excel'],
     },
 
     'pdf-metadata': {
@@ -3158,6 +3158,326 @@ export const toolContentMap: Record<string, ToolContent> = {
             { problem: 'Empty fields reappear after download', solution: 'Some producers re-add defaults on save. Re-run the editor on the final file as the last step before distribution.' },
         ],
         supportedFormats: 'Input: PDF (up to 50 MB) | Output: PDF',
-        relatedTools: ['sanitize-pdf', 'view-metadata', 'edit-metadata', 'pdf-flatten'],
+        relatedTools: ['sanitize-pdf', 'photo-metadata-viewer', 'photo-exif-editor', 'flatten-pdf'],
+    },
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // TOOL SUITE EXPANSION — Wave 3 (2026-09-25)
+    // ═══════════════════════════════════════════════════════════════════════
+
+    'pdf-reader': {
+        about: 'PDF Reader opens any PDF directly in your browser so you can read it without installing software or creating an account. Pages render locally with zoom controls and page navigation, which makes it the fast way to check a document on a borrowed computer, a school Chromebook, or a phone without a PDF app. Because rendering happens entirely in your browser, the file is never uploaded to a server — nothing leaves your device.',
+        directAnswer: 'The PDF Reader by PdfPixels opens PDF files directly in your browser with zoom and page navigation. Drop a PDF in and read it instantly — the file never leaves your device.',
+        features: [
+            'Opens PDFs in the browser — no app or plugin install',
+            'Zoom in and out, jump to any page, scroll page by page',
+            'Fully local rendering: the file is never uploaded to a server',
+            'Works on phones, tablets, Chromebooks, and locked-down work PCs',
+            'Free with no signup and no watermarks',
+        ],
+        useCases: [
+            'Checking a PDF on a borrowed or locked-down computer',
+            'Reading an assignment or manual on a phone without a PDF app',
+            'Previewing a document before printing or sharing it',
+            'Opening documents on devices with no PDF reader installed',
+        ],
+        faqs: [
+            { question: 'Is my PDF uploaded to a server when I use PDF Reader?', answer: 'No. Rendering happens entirely in your browser with JavaScript. The file stays on your device, which makes the reader safe for confidential documents.' },
+            { question: 'Can I edit a PDF with the reader?', answer: 'The reader is for viewing. To change content, use the edit tools — Sign PDF, Fill PDF, or Add Page Numbers — then download the updated file.' },
+            { question: 'Why do some pages render slowly?', answer: 'Very large or image-heavy PDFs take longer to draw. Navigate page by page; each page renders on demand so memory stays low.' },
+            { question: 'Is PDF Reader free?', answer: 'Yes — free with no signup. Because processing is local, there are no server rate limits on reading.' },
+        ],
+        steps: [
+            { title: 'Choose your PDF', description: 'Click the dropzone and pick a PDF from your device — or drag it in.' },
+            { title: 'Read and navigate', description: 'Scroll through pages, zoom to a comfortable size, and jump between pages.' },
+            { title: 'Close when done', description: 'Nothing is saved anywhere; closing the tab clears the document from memory.' },
+        ],
+        commonProblems: [
+            { problem: 'The PDF will not open', solution: 'The file may be corrupted or password-protected. Try Repair PDF for damaged files or Unlock PDF for password-protected ones, then reopen.' },
+            { problem: 'Text looks blurry when zoomed', solution: 'Some PDFs store scanned pages as low-resolution images. Zoom renders the stored pixels larger — for a sharper copy, re-scan at a higher DPI.' },
+        ],
+        supportedFormats: 'Input: PDF (read locally) | Output: on-screen viewing',
+        relatedTools: ['pdf-to-text', 'ocr-pdf', 'compress-pdf', 'merge-pdf'],
+    },
+
+    'extract-pdf-images': {
+        about: 'Extract Images from PDF pulls the original embedded pictures out of a PDF and hands them back in one ZIP archive. Unlike a screenshot or a page render, extraction returns the images at their stored resolution — the exact bytes placed inside the document — so photos and graphics come out at full quality. It is the fastest way to recover assets from a design handoff, reuse charts from a report, or rescue photos from a PDF when the originals are long gone. Processing runs on our servers; nothing is shared.',
+        directAnswer: 'The Extract Images from PDF tool by PdfPixels pulls every embedded image out of a PDF into a downloadable ZIP at original quality. Upload the PDF and download the archive for free.',
+        features: [
+            'Extracts original embedded images — not lower-quality page renders',
+            'Bundles everything into one ZIP download',
+            'Handles JPEG photos and flate-compressed bitmap images',
+            'Deduplicates images stored once but shown on many pages',
+            'Free with no signup; server-side processing',
+        ],
+        useCases: [
+            'Recovering photos from a PDF when the original files are lost',
+            'Reusing charts and logos from a company report',
+            'Collecting product photos from a supplier catalog PDF',
+            'Getting scan components out of a multi-image scanned document',
+        ],
+        faqs: [
+            { question: 'Do extracted images keep their original quality?', answer: 'Yes. The tool returns the image streams stored inside the PDF, so quality matches what the author embedded — no re-compression or resolution loss.' },
+            { question: 'Why did some PDFs return few or no images?', answer: 'Some PDFs draw content as vectors rather than embedded images, and others store pictures in codecs the extractor skips (such as JPEG2000). If nothing is extractable, use PDF to JPG to render the pages instead.' },
+            { question: 'Are the images renamed?', answer: 'Files come out as image-001.jpg, image-002.png and so on, numbered in document order, inside a single ZIP.' },
+            { question: 'Is Extract Images from PDF free?', answer: 'Yes — free with no signup. Fair-use rate limits apply.' },
+        ],
+        steps: [
+            { title: 'Upload your PDF', description: 'Drop the PDF containing the images you need.' },
+            { title: 'Extract', description: 'The tool walks the document and saves every embedded image.' },
+            { title: 'Download the ZIP', description: 'Unzip the archive to get the original-quality image files.' },
+        ],
+        commonProblems: [
+            { problem: 'The ZIP only has a few images', solution: 'PDFs often reuse one image across pages (headers, logos) — duplicates are stored once and extracted once. Different-looking pages can legitimately share the same background image.' },
+            { problem: 'Extracted images look rotated', solution: 'A page can display a stored image rotated 90°. The extractor returns the stored orientation; rotate the image afterwards if needed.' },
+        ],
+        supportedFormats: 'Input: PDF (up to 50 MB) | Output: ZIP with JPG/PNG images',
+        relatedTools: ['pdf-to-jpg', 'extract-pdf-pages', 'join-images-online', 'image-to-pdf'],
+    },
+
+    'split-pdf-by-size': {
+        about: 'Split PDF by Size divides a large PDF into several smaller PDFs that each stay under a size limit you choose — 25MB for Gmail, 20MB for Outlook, or whatever a portal demands. The tool adds pages part by part, measures the real saved file size after every page, and closes each part just before the limit is crossed, so results are accurate rather than estimated. Parts keep the original page order and are returned as a ZIP. Processing runs on our servers.',
+        directAnswer: 'The Split PDF by Size tool by PdfPixels divides a PDF into parts that each stay under your chosen size limit (for example 25MB for Gmail). Upload the PDF, pick a limit, and download a ZIP of the parts for free.',
+        features: [
+            'Choose any limit from 1MB to 25MB',
+            'Measures actual saved file size per part — not an estimate',
+            'Keeps original page order across all parts',
+            'Returns every part in one ZIP download',
+            'Free with no signup; server-side processing',
+        ],
+        useCases: [
+            'Getting under Gmail’s 25MB attachment cap without re-scanning',
+            'Meeting strict upload ceilings on job, visa, and grant portals',
+            'Sharing one long contract across several emails in order',
+            'Breaking a huge scan into chunks a slow connection can upload',
+        ],
+        faqs: [
+            { question: 'How does splitting by size work?', answer: 'The tool copies pages into a new document one at a time, saves after each page, and starts a new part when the next page would push the file past your limit. Every part is a real PDF that opens on its own.' },
+            { question: 'What if a single page is bigger than my limit?', answer: 'That page becomes its own part even though it exceeds the limit — a single page cannot be divided. Compress the PDF first if that page must come under the cap.' },
+            { question: 'Will splitting change how the document looks?', answer: 'No. Pages are copied unchanged; fonts, images, and layout stay exactly as they were. Bookmarks that span parts may be dropped.' },
+            { question: 'Is Split PDF by Size free?', answer: 'Yes — free with no signup. Fair-use rate limits apply.' },
+        ],
+        steps: [
+            { title: 'Upload the large PDF', description: 'Drop the file that is too big to send or upload.' },
+            { title: 'Pick a size limit', description: 'Choose a limit such as 25MB, 10MB, or 2MB per part.' },
+            { title: 'Download the ZIP', description: 'Parts arrive in order — part-1.pdf, part-2.pdf — inside one ZIP.' },
+        ],
+        commonProblems: [
+            { problem: 'Still too many parts for the portal', solution: 'A lower limit creates more parts. If the portal accepts ZIP files, send one ZIP instead of many PDFs.' },
+            { problem: 'Parts are under the limit but the email still fails', solution: 'Email providers add encoding overhead (roughly a third larger). Pick a limit about 25% below the provider’s stated cap.' },
+        ],
+        supportedFormats: 'Input: PDF (up to 50 MB) | Output: ZIP of PDF parts',
+        relatedTools: ['compress-pdf', 'split-pdf', 'compress-pdf-under-1mb', 'merge-pdf'],
+    },
+
+    'compress-pdf-to-50kb': {
+        about: 'Compress PDF to 50KB targets the strictest upload ceilings in circulation — recruitment boards, university admission portals, and government forms that reject anything above 50 kilobytes per file. The compressor applies maximum stream and image reduction and iterates toward the target, reporting honestly when a document cannot reach 50KB without unacceptable loss. For scanned documents, re-scanning at lower DPI and grayscale first gives the compressor clean room to work.',
+        directAnswer: 'The Compress PDF to 50KB tool by PdfPixels shrinks a PDF toward a 50KB ceiling for strict exam and government portals. Upload the PDF, let the extreme preset run, and download the smallest result for free.',
+        features: [
+            'Tuned for 50KB exam-portal and government-form ceilings',
+            'Applies maximum stream and image reduction automatically',
+            'Keeps vector text selectable and sharp',
+            'Honest results — no fake success when the target is unreachable',
+            'Free with no signup; server-side processing',
+        ],
+        useCases: [
+            'Meeting 50KB document limits on recruitment and exam portals',
+            'Attaching certificates to forms that reject larger files',
+            'Slimming one-page letters and declarations to the minimum',
+            'Fitting single-page scans into very small attachments',
+        ],
+        faqs: [
+            { question: 'Can any PDF reach 50KB?', answer: 'No. A text-only PDF usually can; a multi-page color scan usually cannot without visible quality loss. The tool compresses as far as quality allows and tells you the honest result.' },
+            { question: 'How do I make a scanned PDF hit 50KB?', answer: 'Scan at lower DPI and grayscale, or convert pages to JPG first, then rebuild with Image to PDF — starting smaller makes the 50KB target reachable.' },
+            { question: 'Does the text stay selectable?', answer: 'Yes. Compression reduces images and streams; vector text remains text and stays sharp and searchable.' },
+            { question: 'Is Compress PDF to 50KB free?', answer: 'Yes — free with no signup. Fair-use rate limits apply.' },
+        ],
+        steps: [
+            { title: 'Upload your PDF', description: 'Drop the document that must fit the 50KB limit.' },
+            { title: 'Run the extreme preset', description: 'The compressor applies maximum reduction toward 50KB.' },
+            { title: 'Check and download', description: 'Preview the result, confirm the size, and download.' },
+        ],
+        commonProblems: [
+            { problem: 'The result is still above 50KB', solution: 'Reduce the page count or re-scan in grayscale at lower DPI. Some portals simply cannot accept large scans at 50KB — check whether the limit applies per file or per page.' },
+            { problem: 'The scanned text looks fuzzy', solution: 'Extreme compression softens page images. Re-scan at 150 DPI grayscale — a cleaner source needs less aggressive compression for the same size.' },
+        ],
+        supportedFormats: 'Input: PDF (up to 50 MB) | Output: PDF',
+        relatedTools: ['compress-pdf', 'compress-pdf-to-100kb', 'compress-pdf-to-200kb', 'split-pdf-by-size'],
+    },
+
+    'ocr-pdf': {
+        about: 'OCR PDF reads text out of scanned documents — pages that are really photographs of paper with no selectable text underneath. Each page is rendered at high resolution and passed through optical character recognition, and the recognized text comes back clean enough to copy, search, or edit. It is the fix for faxes, contracts scanned as images, and printed forms where Copy-Paste does nothing. Recognition runs on our servers; documents are processed ephemerally and deleted.',
+        directAnswer: 'The OCR PDF tool by PdfPixels recognizes text in scanned, image-only PDFs using optical character recognition. Upload the scan and copy or download the recognized text for free — no signup.',
+        features: [
+            'Recognizes text on image-only scanned pages',
+            'High-resolution page rendering before recognition for accuracy',
+            'Copy to clipboard or download as a .txt file',
+            'Falls back to instant extraction when pages already have a text layer',
+            'Free with no signup; server-side processing',
+        ],
+        useCases: [
+            'Making a scanned contract searchable and quotable',
+            'Recovering text from faxes and photocopied letters',
+            'Digitizing printed forms, invoices, and receipts',
+            'Extracting quotes from academic scans for research notes',
+        ],
+        faqs: [
+            { question: 'What is OCR and when do I need it?', answer: 'Optical character recognition converts pictures of text into real text. If you cannot select or search words in a PDF, its pages are images — OCR is the fix. If text selects normally, use PDF to Text instead; it is instant and lossless.' },
+            { question: 'How accurate is the recognition?', answer: 'Clean 300-DPI scans of typed text recognize very well. Handwriting, heavy noise, low-resolution faxes, and unusual layouts reduce accuracy — proofread anything critical.' },
+            { question: 'Which languages are supported?', answer: 'Recognition currently runs with English language data. Mixed documents lose non-Latin characters; check the output for anything critical.' },
+            { question: 'Is OCR PDF free?', answer: 'Yes — free with no signup. Because recognition is compute-heavy, runs are capped at a fixed number of pages per pass; process long documents in ranges.' },
+        ],
+        steps: [
+            { title: 'Upload the scanned PDF', description: 'Drop a PDF whose text cannot be selected normally.' },
+            { title: 'Run recognition', description: 'Pages are rendered and processed by the OCR engine.' },
+            { title: 'Copy or download', description: 'Review the recognized text, then copy it or save the .txt file.' },
+        ],
+        commonProblems: [
+            { problem: 'The text came out garbled', solution: 'Low-resolution or skewed scans are the usual cause. Re-scan at 300 DPI, straighten the pages, and run OCR again.' },
+            { problem: 'Only part of a long document was processed', solution: 'Runs are page-capped to stay fast. Split the PDF into ranges with Split PDF and process each part.' },
+            { problem: 'The PDF already had selectable text', solution: 'The tool detects a real text layer and returns that instead — it is faster and perfectly accurate. Use the result directly.' },
+        ],
+        supportedFormats: 'Input: PDF, image-only or mixed (up to 50 MB) | Output: plain text (.txt / clipboard)',
+        relatedTools: ['pdf-to-text', 'pdf-to-word', 'image-to-text', 'split-pdf'],
+    },
+
+    'text-to-pdf': {
+        about: 'Text to PDF turns plain text — notes, transcripts, code, lists — into a properly paginated PDF with real margins and consistent typography. Paste or type the content, choose page size and font, and the tool wraps lines, breaks pages automatically, and returns a document that prints cleanly and opens everywhere. It is the quickest route from a .txt export or a clipboard full of text to a formal attachment. Rendering runs on our servers with standard PDF fonts.',
+        directAnswer: 'The Text to PDF tool by PdfPixels converts plain text into a paginated, print-ready PDF. Paste your text, choose the page size and font, and download the PDF for free.',
+        features: [
+            'Paste or type text — no file upload required',
+            'Automatic word-wrap and page breaks',
+            'Choose A4 or Letter, serif or monospace fonts, and text size',
+            'Consistent margins ready for printing',
+            'Free with no signup; server-side processing',
+        ],
+        useCases: [
+            'Turning a .txt export into a formal PDF attachment',
+            'Formatting meeting notes or transcripts for printing',
+            'Submitting plain-text assignments as tidy PDFs',
+            'Printing code or logs with monospace alignment intact',
+        ],
+        faqs: [
+            { question: 'Does formatting like bold or bullets survive?', answer: 'Input is treated as plain text: line breaks and spacing are preserved, but rich formatting is not applied. Markdown symbols appear as typed characters.' },
+            { question: 'Is there a length limit?', answer: 'Documents up to several hundred pages work; extremely large pastes are capped to keep processing fast. Long content paginates automatically.' },
+            { question: 'Can I use my own font?', answer: 'The tool uses embedded standard PDF fonts — a serif (Times), a sans-serif (Helvetica), and a monospace (Courier) — so the output opens identically everywhere.' },
+            { question: 'Is Text to PDF free?', answer: 'Yes — free with no signup. Fair-use rate limits apply.' },
+        ],
+        steps: [
+            { title: 'Paste your text', description: 'Type or paste the content into the editor.' },
+            { title: 'Pick page settings', description: 'Choose page size, font family, and text size.' },
+            { title: 'Generate and download', description: 'Create the PDF and save the paginated document.' },
+        ],
+        commonProblems: [
+            { problem: 'Special characters show as question marks', solution: 'The standard PDF fonts cover Latin characters. Emojis and some symbols cannot be encoded — replace them with text equivalents.' },
+            { problem: 'Line lengths look odd', solution: 'Very long words or lines without spaces can overflow the margin. Break extremely long strings (URLs, hashes) manually before generating.' },
+        ],
+        supportedFormats: 'Input: plain text (paste or .txt) | Output: PDF (A4/Letter)',
+        relatedTools: ['word-to-pdf', 'pdf-to-text', 'image-to-pdf', 'merge-pdf'],
+    },
+
+    'tiff-to-pdf': {
+        about: 'TIFF to PDF converts .tif and .tiff files — the format produced by scanners, fax machines, and archive systems — into standard PDF documents. Multi-page TIFFs become one PDF with every frame in order, and each page keeps its original dimensions so nothing is cropped or rescaled. It is the bridge between aging office hardware and any modern portal or inbox that only accepts PDF. Conversion runs on our servers.',
+        directAnswer: 'The TIFF to PDF tool by PdfPixels converts single or multi-page TIFF scans into one PDF with page order preserved. Upload the .tif file and download the PDF for free.',
+        features: [
+            'Converts both .tif and .tiff files',
+            'Multi-page TIFFs become one multi-page PDF in frame order',
+            'Original page dimensions preserved — no cropping',
+            'Handles black-and-white, grayscale, and color scans',
+            'Free with no signup; server-side processing',
+        ],
+        useCases: [
+            'Uploading scanned fax pages to portals that require PDF',
+            'Converting archive TIFFs to documents people can actually open',
+            'Bundling multi-frame records scans into one file',
+            'Sending scanner output to email recipients as PDF',
+        ],
+        faqs: [
+            { question: 'What is a TIFF file and why convert it?', answer: 'TIFF is a high-fidelity scan format used by office scanners and fax systems. Most phones, browsers, and web portals cannot open it — converting to PDF makes the scan viewable and acceptable anywhere.' },
+            { question: 'Does a multi-page TIFF become one PDF?', answer: 'Yes. Every frame in the TIFF becomes one PDF page, in the same order, inside a single document.' },
+            { question: 'Will the PDF be larger than the TIFF?', answer: 'Usually similar or smaller — page images are embedded efficiently. If the result is too big, run Compress PDF afterwards.' },
+            { question: 'Is TIFF to PDF free?', answer: 'Yes — free with no signup. Fair-use rate limits apply.' },
+        ],
+        steps: [
+            { title: 'Upload the TIFF', description: 'Drop your .tif or .tiff file into the workspace.' },
+            { title: 'Convert', description: 'Every frame is placed into a single PDF in order.' },
+            { title: 'Download the PDF', description: 'Save the converted document and share or upload it anywhere.' },
+        ],
+        commonProblems: [
+            { problem: 'The upload was rejected', solution: 'Some browsers mislabel TIFF MIME types. The tool accepts .tif/.tiff by extension — make sure the file extension is intact after exporting from the scanner.' },
+            { problem: 'The PDF is too large to upload', solution: 'Bitonal and grayscale TIFFs convert compactly; full-color scans do not. Run the result through Compress PDF to bring it under portal limits.' },
+        ],
+        supportedFormats: 'Input: TIF, TIFF (single or multi-page) | Output: PDF',
+        relatedTools: ['image-to-pdf', 'compress-pdf', 'heic-to-pdf', 'pdf-to-jpg'],
+    },
+
+    'png-to-ico': {
+        about: 'PNG to ICO converts a logo or icon into a proper .ico favicon file containing several sizes in one container — 16 through 256 pixels — so browsers, tabs, bookmarks, and operating-system shortcuts each pick the sharpest size. A single square PNG is all the input needed; the tool resizes with high-quality filtering and packs every requested size into one favicon.ico ready to drop into a site root.',
+        directAnswer: 'The PNG to ICO tool by PdfPixels converts a PNG or JPG logo into a multi-size favicon.ico. Upload a square image, pick the sizes, and download the .ico file for free.',
+        features: [
+            'Generates a true multi-size .ico container',
+            'Choose which sizes to include (16–256 px)',
+            'High-quality resampling from one source image',
+            'Accepts PNG and JPG input, square images recommended',
+            'Free with no signup; server-side processing',
+        ],
+        useCases: [
+            'Creating favicon.ico files for websites and blogs',
+            'Supplying shortcut icons for Windows applications',
+            'Generating bookmark tab icons that stay crisp at 16px',
+            'Producing consistent icons across browser and OS surfaces',
+        ],
+        faqs: [
+            { question: 'What size image should I upload?', answer: 'A square PNG of 256×256 pixels or larger gives the best results. Non-square images are resized to fit before the ICO sizes are generated.' },
+            { question: 'Why does one .ico contain multiple sizes?', answer: 'Browsers pick the size that matches each surface — 16px for tabs, 32px for taskbars, larger for shortcuts. A multi-size ICO stays sharp everywhere instead of stretching one bitmap.' },
+            { question: 'Where do I put the favicon.ico file?', answer: 'Upload it to your site root (example.com/favicon.ico) and reference it with a <link rel="icon" href="/favicon.ico"> tag. Most browsers also find it automatically at the root.' },
+            { question: 'Is PNG to ICO free?', answer: 'Yes — free with no signup. Fair-use rate limits apply.' },
+        ],
+        steps: [
+            { title: 'Upload your logo', description: 'Choose a square PNG (256px or larger recommended).' },
+            { title: 'Select ICO sizes', description: 'Keep 16/32/48/64 or add 128 and 256 for high-DPI surfaces.' },
+            { title: 'Download favicon.ico', description: 'Drop the file into your website root and link it.' },
+        ],
+        commonProblems: [
+            { problem: 'The favicon looks blurry in tabs', solution: 'Fine detail disappears at 16px. Simplify the logo for small sizes — a bold letter or symbol reads better than a detailed mark.' },
+            { problem: 'My ICO has a black background', solution: 'Transparency survives conversion for PNG inputs. JPG has no transparency — convert the source to PNG first, then generate the ICO.' },
+        ],
+        supportedFormats: 'Input: PNG, JPG, WebP (25 MB max) | Output: ICO (multi-size)',
+        relatedTools: ['png-to-jpeg', 'jpeg-to-png', 'square-image-cropper', 'resize-image'],
+    },
+
+    'image-to-base64': {
+        about: 'Image to Base64 encodes any image into a Base64 data URI and formats it as ready-to-paste HTML, CSS, and JSON. Inlining small images removes extra HTTP requests, keeps logos and icons inside a single HTML file, and sidesteps asset-pipeline issues in email templates — at the cost of roughly a third larger markup. Everything runs locally in your browser: the image is read with the FileReader API and never uploaded.',
+        directAnswer: 'The Image to Base64 tool by PdfPixels encodes an image into a Base64 data URI with HTML, CSS, and JSON snippets. Pick a file and copy the format you need — it runs entirely in your browser.',
+        features: [
+            'Data URI, HTML img, CSS url(), and JSON output formats',
+            'Shows the Base64 size overhead versus the original file',
+            'Runs 100% locally — the image never leaves your device',
+            'One-click copy for every format',
+            'Free with no signup and no upload at all',
+        ],
+        useCases: [
+            'Inlining small logos and icons directly in HTML or CSS',
+            'Embedding images in single-file HTML prototypes',
+            'Building HTML email templates that survive email clients',
+            'Passing images inside JSON payloads to APIs',
+        ],
+        faqs: [
+            { question: 'When should I Base64-embed an image?', answer: 'For small, rarely-changing assets under a few kilobytes — icons, bullets, dividers. Large images bloat the document, block incremental rendering, and cannot be cached separately.' },
+            { question: 'How much bigger is Base64 than the original file?', answer: 'About 33% larger, because every 3 bytes become 4 characters. The tool shows the exact overhead for your file.' },
+            { question: 'Is my image uploaded anywhere?', answer: 'No. Encoding uses the browser’s FileReader API on your device. The tool works even with your network disconnected after the page loads.' },
+            { question: 'Is Image to Base64 free?', answer: 'Yes — free with no signup. Because processing is local there are no server limits.' },
+        ],
+        steps: [
+            { title: 'Choose an image', description: 'Pick a PNG, JPG, WebP, GIF, or SVG from your device.' },
+            { title: 'Pick a format', description: 'Switch between Data URI, HTML, CSS, and JSON snippets.' },
+            { title: 'Copy and paste', description: 'Copy the snippet straight into your code or template.' },
+        ],
+        commonProblems: [
+            { problem: 'The page slows down after inlining a big photo', solution: 'Base64 is for small assets. For photos, host the file normally and reference it by URL instead.' },
+            { problem: 'The data URI fails inside CSS', solution: 'Make sure the snippet keeps the full prefix (data:image/png;base64,) — a missing prefix or a stray line break breaks the URI.' },
+        ],
+        supportedFormats: 'Input: PNG, JPG, WebP, GIF, SVG, AVIF | Output: Base64 text snippets',
+        relatedTools: ['png-to-jpeg', 'webp-to-png', 'svg-to-png', 'compress-image'],
     },
 };

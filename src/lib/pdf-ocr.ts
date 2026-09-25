@@ -109,3 +109,84 @@ export async function ocrPdfLines(pdf: Buffer, maxPages = 5): Promise<string[]> 
     await rm(dir, { recursive: true, force: true }).catch(() => undefined);
   }
 }
+
+export type OcrPdfPageResult = {
+  /** Text of each OCR'd page, in page order. Empty string = nothing recognized. */
+  pages: { pageNumber: number; text: string }[];
+  /** Total pages in the source PDF (may exceed pages.length when truncated). */
+  totalPages: number;
+  /** True when the run stopped before the document's last page. */
+  truncated: boolean;
+  /** True when tesseract was unavailable or every page failed. */
+  unavailable: boolean;
+};
+
+/**
+ * OCR a scanned PDF page-by-page under a wall-clock budget.
+ * Unlike ocrPdfLines (a fixed small page probe used as a fallback inside
+ * conversion routes), this keeps per-page text separate so the OCR PDF tool
+ * can paginate output, and stops cleanly when the time budget runs out
+ * instead of blowing the function deadline.
+ */
+export async function ocrPdfPages(
+  pdf: Buffer,
+  options: { maxPages?: number; budgetMs?: number } = {},
+): Promise<OcrPdfPageResult> {
+  const maxPages = Math.max(1, Math.min(options.maxPages ?? 10, 25));
+  const budgetMs = options.budgetMs ?? 40_000;
+  const startedAt = Date.now();
+
+  const dir = await mkdtemp(path.join(os.tmpdir(), 'pdfpixels-ocr-pages-'));
+  try {
+    let totalPages = maxPages;
+    try {
+      const { PDFDocument } = await import('pdf-lib');
+      totalPages = (await PDFDocument.load(pdf, { ignoreEncryption: true })).getPageCount();
+    } catch {
+      // Page count is only used for the truncation note; fall through to OCR.
+    }
+
+    const input = path.join(dir, 'input.pdf');
+    await writeFile(input, pdf);
+    try {
+      await runGhostscriptWithFallback(
+        [
+          '-dSAFER', '-dBATCH', '-dNOPAUSE', '-dQUIET', '-sDEVICE=png16m',
+          '-r200', '-dTextAlphaBits=4', '-dGraphicsAlphaBits=4', '-dUseCropBox',
+          `-dLastPage=${maxPages}`,
+          `-sOutputFile=${path.join(dir, 'page-%03d.png')}`,
+          input,
+        ],
+        { timeoutMs: 40_000, timeoutMessage: 'OCR rasterization timed out.' },
+      );
+    } catch (error) {
+      console.error('OCR rasterization failed:', error);
+      return { pages: [], totalPages, truncated: totalPages > maxPages, unavailable: true };
+    }
+
+    const files = (await readdir(dir)).filter((name) => /^page-\d+\.png$/.test(name)).sort();
+    const pages: { pageNumber: number; text: string }[] = [];
+    let unavailable = false;
+
+    for (let i = 0; i < files.length; i++) {
+      if (Date.now() - startedAt > budgetMs) break;
+      const text = await readImageText(path.join(dir, files[i]));
+      if (text === null) {
+        // Tesseract binary missing — no point trying further pages.
+        unavailable = true;
+        break;
+      }
+      pages.push({ pageNumber: i + 1, text: text.trim() });
+    }
+
+    const processed = pages.length;
+    return {
+      pages,
+      totalPages,
+      truncated: processed < Math.min(totalPages, maxPages) || (totalPages > maxPages && processed === maxPages),
+      unavailable,
+    };
+  } finally {
+    await rm(dir, { recursive: true, force: true }).catch(() => undefined);
+  }
+}

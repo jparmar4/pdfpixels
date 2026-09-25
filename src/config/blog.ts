@@ -5388,6 +5388,506 @@ Once you separate those ideas, "set to 300 DPI" becomes a sizing problem you can
             },
         ],
     },
+    {
+        slug: "resize-photo-600x600-dv-lottery-visa",
+        title: "How to Resize a Photo to 600×600 Pixels for DV Lottery and Visa Forms",
+        excerpt: "The Diversity Visa lottery, most US visa applications, and many online forms reject photos that are not exactly 600×600 pixels. Here is how to crop and resize any photo to 600×600 in under a minute — free, in your browser.",
+        date: "Sep 25, 2026",
+        dateModified: "Sep 25, 2026",
+        category: "Image Tools",
+        author: "PdfPixels Editorial",
+        authorRole: "PdfPixels team",
+        readTime: "7 min read",
+        metaDescription: "Step-by-step guide to resizing any photo to exactly 600×600 pixels for the DV Lottery, US visa applications, and other online forms — including square cropping, file size limits, and the mistakes that get photos rejected.",
+        keywords: [
+            "600x600 photo converter",
+            "dv lottery photo size",
+            "resize photo to 600x600",
+            "usa visa photo 600x600",
+            "dv lottery photo requirements",
+            "make photo 600x600 pixels online free",
+            "visa photo digital size pixels",
+            "600x600 pixel image converter",
+            "green card lottery photo tool",
+            "us visa digital photo requirements"
+        ],
+        coverImage: "/images/blog/resize-photo-600x600-dv-lottery-hero.jpg",
+        imageAlt: "Passport-style portrait cropped to a 600 by 600 pixel square for the DV Lottery and US visa digital photo upload",
+        content: `
+Every year, thousands of Diversity Visa lottery entries are disqualified before the draw even happens — and the number one reason is not eligibility. It is the photograph. The entry system wants a digital image that is **exactly 600×600 pixels**, square, taken within the last six months, and sized between roughly 60KB and 240KB. A photo that is 599 pixels wide or 601 is not "close enough". It is rejected.
+
+The same 600×600 square is the standard digital photo size for US immigrant and many nonimmigrant visa applications, and it pops up on other government and job portals around the world. The good news: you do not need Photoshop, an app, or a photo studio to hit the spec. Any portrait photo can be squared and resized to exactly 600×600 pixels in about a minute, right in your browser.
+
+> [!TIP]
+> **Short on time?** Open the free [Resize Image](/tools/resize-image) tool, upload your photo, crop to a square, and set 600×600 pixels. Then check the file size — if it must land under a cap, run it through [Compress Image](/tools/compress-image) with a KB target.
+
+---
+
+## Quick Answer: The 60-Second Workflow (AEO / Snippet)
+
+1. **Start with a compliant photo:** plain white or off-white background, neutral expression, no glasses, head centered — the pixels cannot fix a photo that breaks the content rules.
+2. **Crop to a square:** use [Resize Image](/tools/resize-image) or [Square Crop](/tools/square-image-cropper) so the head occupies the right proportion (roughly 50–69% of the frame height for the DV photo spec).
+3. **Resize to 600×600 pixels:** enter 600 for width and 600 for height with the aspect ratio locked to the square.
+4. **Check the file size:** the entry system accepts JPEGs in a band of roughly 60KB–240KB. Compress or re-export until the size lands inside it.
+5. **Upload and verify:** the official entry checker validates the image dimensions and quality before accepting your form.
+
+---
+
+## Why 600×600, Exactly?
+
+The 600×600 requirement is not arbitrary. US visa photo standards define the physical print photo as 2×2 inches. At the digital standard of **300 pixels per inch**, 2 inches is exactly 600 pixels. The upload system is checking that your photo carries enough real detail to be printed at photo-lab quality on a visa or a green card.
+
+That is also why simply renaming a 300×300 image to "photo_600x600.jpg" fails — the validator reads the actual pixel dimensions, not the file name. And stretching a small photo up to 600×600 usually fails the quality check, because interpolation invents blurry pixels the face-detail analysis can see straight through. **Start from a photo that is at least 600 pixels on its long edge** — every phone made in the last decade shoots far above that — and resize down, never up.
+
+### Where the 600×600 spec applies
+
+- **Diversity Visa (DV) lottery** entry photos — the strictest, validated live by the entry system.
+- **US immigrant visa and green card** applications (DS-260 supporting photo).
+- **Most US nonimmigrant visa** applications (DS-160 digital photo upload).
+- **Assorted portals worldwide** that copied the 2×2 inch at 300 DPI standard for their own uploads.
+
+Always confirm the current spec on the official program page before submitting — photo rules do get revised, and the instructions that ship with your application beat any blog post (including this one).
+
+---
+
+## Step by Step: Phone Photo to Perfect 600×600
+
+### Step 1 — Take (or pick) the right photo
+
+Stand the subject against a plain white or off-white wall with even light — no shadows on the face or background, no filters, no glasses, neutral expression, eyes open. Phone cameras are fine; the camera does not matter, the composition does. Leave headroom above the hair and keep the shoulders visible: the crop needs room to square off.
+
+### Step 2 — Square-crop with head in the right zone
+
+Open [Resize Image](/tools/resize-image) and load the photo. Use the crop controls to make the frame square, positioning the head so it fills about half to two-thirds of the frame height. This head-size ratio is what the DV validator actually measures — a perfectly 600×600 image with a pin-head portrait still gets rejected. If you prefer a dedicated cropper, [Square Crop](/tools/square-image-cropper) does the same job one photo at a time.
+
+### Step 3 — Resize to exactly 600×600
+
+With the square crop set, enter **600 × 600 pixels** as the output size. Because the frame is already square, the aspect ratio stays 1:1 and nothing distorts. This is the step people skip, then fail: an image that is 612×612 or 600×599 fails validation. Exact numbers.
+
+### Step 4 — Land the file size inside the accepted band
+
+The DV entry system accepts JPEGs roughly between **60KB and 240KB** (check the current instructions for your program). A 600×600 JPEG at normal quality usually lands well inside that band on its own. If yours is too big, run it through [Compress Image](/tools/compress-image) with a target of around 100KB — at 600×600 that keeps faces crisp. If it is somehow too *small* (rare, but possible after extreme compression), [Increase Image Size](/tools/increase-image-size-in-kb) pads the file without changing the pixels.
+
+### Step 5 — Verify before you submit
+
+Rename the file clearly, confirm it is a JPEG, and re-check the pixel count. The official entry validators re-measure everything, so there is no advantage to gaming the numbers — a compliant photo sails through on the first try.
+
+---
+
+## The Mistakes That Actually Get Photos Rejected
+
+After the size requirement, these are the failures that cost people their entry:
+
+- **Shadows or a patterned background.** The validator and the human reviewers both look for a plain, evenly lit background. A portrait against a curtain fails even at perfect 600×600.
+- **Head too small or too large in frame.** The head must occupy roughly 50–69% of the image height. Cropping tight to the face or leaving the subject tiny both fail.
+- **Glasses.** Current US guidance says no glasses, even everyday ones. Reflections and frames interfere with face matching.
+- **Upscaled from a tiny source.** A 200×200 WhatsApp profile photo stretched to 600×600 is blurry mush at validation — face detection fails it.
+- **Edits or filters.** Beauty filters, background replacement, and color changes read as manipulation. Natural only.
+
+If your original photo has any of these problems, retake it. Five minutes with a plain wall beats a disqualified entry.
+
+---
+
+## Different Form, Different Pixels
+
+600×600 is the US standard, but it is not the only one. Indian and Bangladeshi exam portals commonly ask for 200×230 or 300×300 pixel photos under tight KB caps; Irish and UK passport systems ask for 35×45 mm prints; Schengen visas use 35×45 mm at print quality. The workflow is always the same — square or specified crop first, exact pixels second, KB target third — only the numbers change. Whatever the numbers, [Resize Image](/tools/resize-image) and [Compress Image](/tools/compress-image) handle the resizing and the file size in the same session.
+
+## Bottom Line
+
+The 600×600 rule is just 2×2 inches at 300 DPI expressed in pixels. Crop square with the head in the right zone, resize to the exact pixel dimensions, land the JPEG between the size limits, and the validator passes on the first attempt. Do it free at [Resize Image](/tools/resize-image) — and keep the compliant copy saved, because the same file serves every future US-style form.
+        `,
+        faq: [
+            {
+                question: "How do I convert a photo to 600x600 pixels for free?",
+                answer: "Use a free browser tool like PdfPixels Resize Image: square-crop the photo with the head filling roughly 50–69% of the frame, then set the output size to exactly 600×600 pixels and download the JPEG."
+            },
+            {
+                question: "What size should a DV Lottery photo be?",
+                answer: "Exactly 600×600 pixels, square, in JPEG format, taken within the last six months, with a plain white or off-white background. The file size must fall inside the accepted band published in the current DV instructions (roughly 60KB–240KB)."
+            },
+            {
+                question: "Can I crop a photo to 600x600 on my phone?",
+                answer: "Yes. The PdfPixels tools run in any mobile browser — upload the photo, crop square, resize to 600×600, and download. No app installation is needed."
+            },
+            {
+                question: "Why was my 600x600 photo still rejected?",
+                answer: "The most common causes are content issues rather than size: shadows on the face or background, a head that fills too little or too much of the frame, glasses, filters, or a source image upscaled from below 600 pixels. The pixels must be right and the photo itself must follow the official content rules."
+            },
+            {
+                question: "Is 600x600 the same as 2x2 inches?",
+                answer: "At 300 pixels per inch, yes — 2 inches equals 600 pixels. The digital photo upload systems express the print standard in pixels, which is why they require exactly 600×600."
+            },
+        ],
+    },
+    {
+        slug: "fill-pdf-form-online-free",
+        title: "How to Fill Out a PDF Form Online for Free (No Printer, No Adobe)",
+        excerpt: "A PDF form arrives, and the familiar dance begins: print it, fill it by hand, scan it back. You can skip all three steps. Here is how to type directly into any PDF form and download the completed file — free, in your browser.",
+        date: "Sep 25, 2026",
+        dateModified: "Sep 25, 2026",
+        category: "PDF Tools",
+        author: "PdfPixels Editorial",
+        authorRole: "PdfPixels team",
+        readTime: "8 min read",
+        metaDescription: "Learn how to fill out PDF forms online for free without printing or Adobe Acrobat. Type into fillable fields, add text anywhere on flat forms, and download the completed PDF in minutes.",
+        keywords: [
+            "fill pdf form online free",
+            "fill out pdf without adobe",
+            "pdf form filler free",
+            "fill and sign pdf online",
+            "type on pdf form",
+            "fill pdf no printer",
+            "fillable pdf form online",
+            "fill out application pdf online",
+            "pdf filler free no signup",
+            "complete pdf form browser"
+        ],
+        coverImage: "/images/blog/fill-pdf-form-online-free-hero.jpg",
+        imageAlt: "A job application PDF form being filled out online in a browser, with typed text appearing in the form fields",
+        content: `
+The PDF form arrives with a familiar unspoken demand: *print me, fill me in by hand, scan me back.* For years that demand went unanswered because the tools for answering it — Adobe Acrobat above all — cost a monthly fee. So people printed forms, handwrote answers, photographed pages, and emailed blurry scan-jobs to HR departments and government offices.
+
+That dance is over. Any PDF form — a real fillable one with text boxes, or a flat scanned form with nothing but empty lines — can be completed in a browser tab for free, and the finished file can look better than a handwritten scan.
+
+> [!TIP]
+> **Have the form ready?** Open the free [Fill PDF](/tools/fill-pdf) tool, upload the form, and type directly into it. If the file is a real fillable PDF, the fields light up; if it is flat, add text on top of any line.
+
+---
+
+## Quick Answer: Fill a PDF Form in 4 Steps (AEO / Snippet)
+
+1. **Open the tool:** go to [Fill PDF](/tools/fill-pdf) in any browser — nothing to install.
+2. **Upload the form:** drag in the PDF you received by email or downloaded from a portal.
+3. **Type your answers:** click a field and type. For flat forms, place text boxes exactly where your answers belong.
+4. **Download the completed PDF:** save it and send it back — typed, legible, no printer involved.
+
+---
+
+## First, Figure Out Which Kind of Form You Have
+
+Not all PDF forms are built the same, and knowing which one you have tells you what to expect:
+
+**Fillable (interactive) forms** have real form fields built in — the author placed text boxes, checkboxes, and dropdowns inside the PDF. You can usually tell by hovering: the cursor changes to a text caret over fields, and fields may highlight blue. These are the fast case: click, type, done.
+
+**Flat forms** are visually a form but structurally a document — a scanned paper form, or a PDF exported without form fields. Nothing highlights on hover because there is nothing to find. These need text *added on top* of the image, positioned over the lines.
+
+The [Fill PDF](/tools/fill-pdf) tool handles both paths — fillable fields fill natively, and flat forms take placed text boxes — so you do not need to care which kind you have until the download.
+
+---
+
+## Filling a Fillable Form (The Fast Path)
+
+1. Upload the PDF. Fields that exist appear and are ready to receive text.
+2. Work through the form. Tab moves between fields in document order — faster than clicking each one.
+3. Checkboxes and choice fields respond to clicks like any web form.
+4. Download. Your typed values become part of the document, readable by anyone's PDF viewer.
+
+One caution with fillable forms: some official PDFs have validation quirks (a field that refuses certain characters, a date format it insists on). If a field misbehaves, complete the rest and place a text box over the stubborn field instead — the output is identical on paper.
+
+---
+
+## Filling a Flat Form (The Scan Rescue Path)
+
+Scanned application forms are the common case — a paper form photographed or scanned, distributed as a PDF image. There are no fields, so you add your own:
+
+1. Upload the form to [Fill PDF](/tools/fill-pdf).
+2. Add a text element and drag it onto the first line you need to answer. Match the font size to the form's handwriting-line height — slightly smaller always looks cleaner than overflowing.
+3. Type the answer, adjust position by dragging, and repeat down the form.
+4. For signature lines, use [Generate Signature](/tools/generate-signature) to draw or type a signature, then place it on the line.
+5. Download the completed document.
+
+The result is a PDF that looks like it was filled professionally — which matters more than it seems. Admissions offices, HR systems, and case workers read hundreds of crooked handwritten scans a week; a typed form is instantly easier to process, and easier-to-process forms get processed faster.
+
+---
+
+## When a Portal Rejects Your Completed Form
+
+Some upload systems refuse PDFs with editable fields still live — they want a flat, read-only document. If your filled form bounces:
+
+- **Flatten it.** The [Flatten PDF](/tools/flatten-pdf) tool bakes your typed answers into the page content, removes the live form fields, and produces a fixed document that any strict portal accepts.
+- **Check the size.** Scanned forms with photos can exceed tight upload caps. [Compress PDF](/tools/compress-pdf) brings it under the limit.
+- **Unlock first.** A form that opens with a password prompt needs its password removed before filling — the [Unlock PDF](/tools/unlock-pdf) tool handles that with the password you have.
+
+That flatten step is the one most guides skip, and it is the reason a form that looked perfect on your screen got bounced by a court-filing or government system: some systems genuinely require flattened output.
+
+---
+
+## What About Signing?
+
+Filling and signing usually travel together. Two paths, both free:
+
+- **Typed or drawn signatures** — [Generate Signature](/tools/generate-signature) creates a clean signature image you can place on any signature line.
+- **Signature with a photo element** — some application forms want a signature *and* a photograph side by side; [Combine Photo and Signature](/tools/merge-photo-and-signature) builds that composite image before you place it.
+
+For the common case — sign the completed form — place the signature with Fill PDF and download once. Do not print-sign-scan unless the receiving organization explicitly demands a wet-ink signature.
+
+---
+
+## Common Problems and Fixes
+
+- **"My text lands slightly above the line."** Text boxes anchor to where you drag them — nudge until the baseline sits on the form line, and keep font size consistent across the whole form.
+- **"The form has tiny print I can't align to."** Zoom the workspace view; placement precision is easier at higher zoom, and the output stays unaffected.
+- **"My answers disappeared after download."** You filled a fillable form but the viewer exported only the field values without flattening — re-download, or run Flatten PDF as the last step.
+- **"Non-Latin characters show as boxes."** Standard PDF fonts cover Latin scripts; if the form needs another script, place text via the tool's text element with a matching font, or fill, print-to-PDF from the browser preview, and verify visually.
+
+## Bottom Line
+
+Printing a form to fill it by hand is a habit from an era when form-filling cost money. It doesn't anymore. Upload to [Fill PDF](/tools/fill-pdf), type your answers — over live fields or flat lines — flatten if the portal demands it, and send back a clean, typed document in the time it used to take to find a working pen.
+        `,
+        faq: [
+            {
+                question: "How can I fill out a PDF form for free?",
+                answer: "Use a free browser tool like PdfPixels Fill PDF: upload the form, type into the live fields or place text boxes over flat lines, and download the completed PDF. No signup, no software install, no watermark."
+            },
+            {
+                question: "Can I fill out a PDF form without Adobe Acrobat?",
+                answer: "Yes. Browser-based tools like Fill PDF handle both fillable PDFs with real form fields and flat scanned forms that need text placed on top, at no cost."
+            },
+            {
+                question: "How do I fill out a PDF form that is not fillable (a scan)?",
+                answer: "Flat forms have no fields, so you add text elements positioned over the answer lines. Match the font size to the line height, type each answer, and download the finished document."
+            },
+            {
+                question: "Why was my filled PDF form rejected by an upload portal?",
+                answer: "Many government and court systems require flattened PDFs — documents with the form fields removed and the answers baked into the page. Run the completed file through Flatten PDF, then upload again."
+            },
+            {
+                question: "Is it safe to fill sensitive forms online?",
+                answer: "PdfPixels processes files ephemerally and purges server copies automatically. For maximum privacy on sensitive documents, remember that filling runs server-side — the file travels to the tool's server briefly during processing, which is standard for browser-based PDF services."
+            },
+        ],
+    },
+    {
+        slug: "scan-documents-with-phone-to-pdf",
+        title: "How to Scan Documents With Your Phone and Turn Them Into One Clean PDF",
+        excerpt: "No scanner, no problem. Your phone's camera plus three free browser tools turn any stack of paper into a single, compressed, portal-ready PDF — here's the exact workflow that produces scans people mistake for a real scanner's output.",
+        date: "Sep 25, 2026",
+        dateModified: "Sep 25, 2026",
+        category: "PDF Tools",
+        author: "PdfPixels Editorial",
+        authorRole: "PdfPixels team",
+        readTime: "7 min read",
+        metaDescription: "Turn photographed documents into a single clean PDF using your phone camera and free browser tools — lighting and framing tips, page-order fixes, compression for upload limits, and the mistakes that make phone scans look amateur.",
+        keywords: [
+            "scan document with phone",
+            "turn photos into pdf",
+            "phone scanner to pdf",
+            "photograph documents to pdf",
+            "scan without scanner",
+            "convert photos to pdf free",
+            "document scanner online free",
+            "make pdf from pictures",
+            "scan documents no scanner",
+            "phone camera pdf scan"
+        ],
+        coverImage: "/images/blog/scan-documents-phone-pdf-hero.jpg",
+        imageAlt: "A smartphone photographing a paper document on a desk, with the pages converting into a single PDF file",
+        content: `
+Somewhere in every adult's week comes the request: *send it as a PDF.* The insurance claim, the signed contract, the degree certificate for the portal that "does not accept images". If you own a scanner, it is a two-minute job. If you do not — and most people under thirty do not — the phone in your pocket is a better scanner than the office machines of a decade ago, provided you handle the capture and the cleanup correctly.
+
+This is the full workflow: shoot pages that look scanned, convert them into one ordered PDF, compress it under whatever limit the portal sets, and fix the rotation and size problems that make phone scans look amateur.
+
+> [!TIP]
+> **Already have the photos?** Jump straight to [Image to PDF](/tools/image-to-pdf) to bundle them in order, then [Compress PDF](/tools/compress-pdf) to hit the upload limit.
+
+---
+
+## Quick Answer: Photos to One PDF in 4 Steps (AEO / Snippet)
+
+1. **Photograph each page** flat, in even light, straight-on — see the capture rules below.
+2. **Convert to PDF:** upload the photos to [Image to PDF](/tools/image-to-pdf) and arrange them in page order.
+3. **Compress:** run the PDF through [Compress PDF](/tools/compress-pdf) to land under the portal's size cap.
+4. **Verify and send:** check page order and legibility, then upload or email the single file.
+
+---
+
+## Capture: Where Phone Scans Are Won or Lost
+
+The conversion tools cannot fix a bad photo. Four capture rules do ninety percent of the work:
+
+**Flat and parallel.** Lay the page on a contrasting surface and shoot straight down — not at an angle. Keystoned, tilted pages look like photos, not scans, and text along the edges blurs.
+
+**Even light, no flash.** Daylight from a window beats every room light. Avoid the flash: it blows out the paper and creates a hard shadow line at the page edge. If a shadow falls across the page from your own body, shift the setup until the light is uniform.
+
+**Fill the frame.** Get close enough that the page fills the shot — but leave a visible margin around all four edges so the page boundary is unambiguous for cropping.
+
+**Sharpness check before moving on.** Zoom into the photo and confirm the text is crisp. The most common phone-scan failure is motion blur from a rushed tap. Tap to focus, hold still, shoot.
+
+One page per photo, every page, in order. It is easier to shoot all pages correctly once than to re-shoot page four after discovering it is missing.
+
+---
+
+## Convert: Photos to One Ordered PDF
+
+Open [Image to PDF](/tools/image-to-pdf) on the phone and add every page photo. Drag them into document order — the tool supports up to 30 images per run, which covers most multi-page documents. Choose "fit to page" if you want each photo to become a standard A4/Letter page, or "fit image" to preserve the exact photo shape. Then convert and download the PDF.
+
+This step is also the answer to a surprisingly common question: portals that reject JPG uploads but accept PDF will accept a *photograph* once it is inside a PDF wrapper. The pixels are the same; the file type is what the portal checks.
+
+---
+
+## Compress: Because Phone Photos Are Huge
+
+A modern phone shoots 12–50 megapixel photos. Photographed pages converted directly produce PDFs of 8–40MB — and the portal wants anything under 2MB, or the email system caps at 25MB, or the exam form says 500KB. This is the step that makes phone scans actually usable:
+
+1. Open [Compress PDF](/tools/compress-pdf) and upload the merged file.
+2. Start with the recommended level; preview the result. Photographed text stays readable down to surprisingly small sizes because the JPEG compression is page-aware.
+3. For strict numeric caps, use the size-targeted presets — [Compress PDF to 100KB](/tools/compress-pdf-to-100kb), 200KB, 500KB — or [Split PDF by Size](/tools/split-pdf-by-size) if the document must stay intact across several attachments.
+
+A five-page document photographed with care compresses from 20MB to under 500KB while remaining perfectly legible — the difference between an upload that fails and one that clears on the first try.
+
+---
+
+## Fix-ups: The Small Repairs That Make It Look Scanned
+
+- **A page shot sideways** — [Rotate PDF](/tools/rotate-pdf) turns pages 90° or 180° without touching the rest.
+- **Extra margins and table edges** — [Crop PDF](/tools/crop-pdf) trims them uniformly across every page.
+- **Pages in the wrong order** — [Reorder PDF Pages](/tools/reorder-pdf-pages) drags them into place; no re-merging needed.
+- **One extra page to remove** — [Delete PDF Pages](/tools/delete-pdf-pages) takes it out cleanly.
+- **Text too blurry to select or search** — the pages are images, so use [OCR PDF](/tools/ocr-pdf) to recognize the text and make the document searchable.
+
+That last one matters more than it seems: a photographed contract is invisible to Ctrl+F until OCR gives it a text layer. Ten seconds of OCR turns a photo-of-paper into a document you can search, quote, and copy from.
+
+---
+
+## Phone Scan vs Real Scanner: When to Upgrade
+
+For text documents, forms, and certificates, a careful phone scan is genuinely indistinguishable from a flatbed scan once compressed — portals cannot tell, and neither can humans. Reach for a real scanner in three cases: photos that must be reproduced at very high fidelity (artwork, archival photos), documents with embossed or raised elements, and anything requiring certified scanning. Everything else — the daily paperwork of applications, claims, and HR onboarding — is phone territory.
+
+## Bottom Line
+
+The workflow is four tools, five minutes, zero cost: shoot flat and straight, bundle with [Image to PDF](/tools/image-to-pdf), compress with [Compress PDF](/tools/compress-pdf), fix pages with Rotate and Reorder as needed. Your phone was always a scanner; now the output is portal-ready too.
+        `,
+        faq: [
+            {
+                question: "How do I scan a document with my phone without an app?",
+                answer: "Photograph each page flat and straight-on in even light, upload the photos to PdfPixels Image to PDF, arrange them in page order, and download the single PDF. The whole workflow runs in the mobile browser."
+            },
+            {
+                question: "How do I make a PDF from photos for free?",
+                answer: "Use a free browser tool like Image to PDF: add up to 30 photos, order them, choose page fitting, and convert. Then compress the result with Compress PDF if an upload portal sets a size limit."
+            },
+            {
+                question: "Why is my phone-scanned PDF so large?",
+                answer: "Phone cameras shoot 12–50 megapixel photos, and each page photo becomes a large embedded image. Running the PDF through Compress PDF typically cuts the size by 90% or more while keeping text readable."
+            },
+            {
+                question: "Can I make text in a photo-scanned PDF searchable?",
+                answer: "Yes — photographed pages are images with no text layer. Run the PDF through the OCR PDF tool, which recognizes the text and returns it as selectable, searchable content."
+            },
+            {
+                question: "How do I scan a multi-page document in the right order?",
+                answer: "Photograph every page in sequence before converting, then confirm the order in Image to PDF before downloading. If the order is wrong afterward, Reorder PDF Pages fixes it without re-shooting."
+            },
+        ],
+    },
+    {
+        slug: "passport-photo-signature-combined",
+        title: "Combine Your Passport Photo and Signature Into One Image for Exam Forms",
+        excerpt: "Thousands of application forms ask for a photo and a signature uploaded as one combined image — usually 140×60 pixels, under 20KB, in JPG. Here is the exact way to build that composite correctly, without the signature floating in white space or the photo getting squashed.",
+        date: "Sep 25, 2026",
+        dateModified: "Sep 25, 2026",
+        category: "Image Tools",
+        author: "PdfPixels Editorial",
+        authorRole: "PdfPixels team",
+        readTime: "6 min read",
+        metaDescription: "Step-by-step guide to combining a passport photo and a signature into one JPG for exam and job application forms — correct dimensions, file size limits, alignment, and the rejection mistakes to avoid.",
+        keywords: [
+            "combine photo and signature",
+            "photo signature merge for form",
+            "passport size photo with signature jpg",
+            "exam form photo signature upload",
+            "photo and signature size for job form",
+            "merge photo signature online free",
+            "signature resize for online form",
+            "photo signature ek image me kaise",
+            "combined image upload exam form",
+            "signature and photo single jpeg"
+        ],
+        coverImage: "/images/blog/passport-photo-signature-combined-hero.jpg",
+        imageAlt: "A passport-style photograph and a handwritten signature merged side by side into one small JPG image for an online exam form upload",
+        content: `
+A specific and oddly universal file requirement guards the gates of the world's exam and job portals: **the combined image**. The application form does not want your photograph and your signature as two uploads — it wants one JPG, photo on the left and signature on the right (or stacked), at dimensions the form dictates — 140×60 pixels and 20KB are classic values — in JPEG format only.
+
+Candidates fail this upload constantly, not because it is hard, but because the obvious approaches all have traps: pasting into Paint exports at the wrong size, the signature arrives with a white box around it on colored forms, or the merged image lands at 500KB and the portal silently rejects it. Here is the correct workflow, end to end.
+
+> [!TIP]
+> **Fastest path:** the free [Merge Photo and Signature](/tools/merge-photo-and-signature) tool builds the composite directly — upload both images, pick the layout the form wants, set the exact dimensions, and download.
+
+---
+
+## Quick Answer: The 5-Step Workflow (AEO / Snippet)
+
+1. **Read the form's exact specs** — dimensions in pixels (e.g. 140×60), max file size in KB (e.g. 20KB), format (almost always JPG).
+2. **Prepare the photo:** crop to a passport-style portrait with [Passport Photo Maker](/tools/passport-size-photo) or [Resize Image](/tools/resize-image).
+3. **Prepare the signature:** sign white paper, photograph it, clean it up, and resize with [Resize Signature](/tools/resize-signature).
+4. **Merge side by side:** combine both with [Merge Photo and Signature](/tools/merge-photo-and-signature) at the exact pixel dimensions the form states.
+5. **Hit the KB target:** run the merged JPG through [Compress Image](/tools/compress-image) with the form's KB limit, and preview before uploading.
+
+---
+
+## Step 1: Read the Form Like a Lawyer
+
+Every portal publishes its own numbers, and they genuinely differ: one exam board wants 140×60 pixels under 20KB, another asks 200×50 under 30KB, a third wants photo and signature stacked vertically instead of side by side. The form notice is the only spec that matters. Note three things before touching any tool: **exact pixel dimensions, max KB, and layout** (photo left / signature right is the most common; some forms want the signature below the photo).
+
+---
+
+## Step 2: The Photo Component
+
+Start from a straight, well-lit portrait against a plain background. The crop matters more than the camera: use [Passport Photo Maker](/tools/passport-size-photo) to frame head and shoulders correctly, or [Resize Image](/tools/resize-image) if the form quotes unusual dimensions. Keep the face large in frame — a passport-style crop squeezed into a small composite still needs a recognizable face, and blurry photos fail verification checks at interview time.
+
+## Step 3: The Signature Component
+
+Sign white, unlined paper with a black or blue ballpoint — medium thickness, not a fountain pen's hairlines. Photograph or scan it square-on in good light. Then clean and size it with [Resize Signature](/tools/resize-signature): straighten, crop tight to the strokes, and resize toward the height the composite needs. A signature on a white background is exactly what these forms expect — do not try to make the background transparent unless the form explicitly asks for PNG.
+
+## Step 4: The Merge
+
+This is where most attempts go wrong. Hand-building the composite in an image editor usually produces a canvas at whatever random size the paste created — 893×214 pixels, say — which the portal rejects on upload. The dedicated tool keeps the math honest: [Merge Photo and Signature](/tools/merge-photo-and-signature) takes both images and outputs the composite at *your declared dimensions*, photo and signature scaled and aligned to fill it proportionally — no squashing, no floating whitespace, no wrong aspect ratio.
+
+**Alignment details that get checked:** the photo should not be stretched into a funhouse mirror (that is aspect-ratio damage), the signature should not be cropped mid-stroke, and neither element should have giant empty margins — portals with dimension checks measure the *content*, and padding eats your usable pixels.
+
+## Step 5: Land the File Size
+
+The merged composite must land under the KB cap, and a photograph carries most of the weight. Run the JPG through [Compress Image](/tools/compress-image) with the form's target — 20KB, 30KB, whatever the notice says — and *preview the result before uploading*. At composite sizes, 20KB usually preserves a recognizable face; if it does not, the fix is upstream: a sharper, better-lit original photo compresses far more gracefully than a dim one being rescued by aggressive compression.
+
+---
+
+## The Rejection Checklist
+
+If the portal bounced your upload, one of these is almost always the cause:
+
+- **Wrong dimensions** — the composite is a few pixels off (139×60, or 140×61). Re-export at the exact numbers.
+- **File too large** — the classic silent rejection. Compress to the stated KB and verify the new size in your file manager before re-uploading.
+- **Wrong format** — PNG or HEIC where JPG is demanded. Convert with [Image to JPG](/tools/png-to-jpeg) equivalents, then re-merge.
+- **Signature mid-stroke crop or too faint** — re-photograph the signature closer, with more contrast.
+- **Photo unrecognizable after compression** — restart from a better original; there is a limit to what 20KB can carry.
+
+## Bottom Line
+
+The combined photo-and-signature upload is a five-minute job when each piece is built to spec: crop the portrait, clean the signature, merge at the exact dimensions, compress to the exact KB. The [Merge Photo and Signature](/tools/merge-photo-and-signature) tool does the composite in one pass — and the result, saved, serves every future application until your signature changes.
+        `,
+        faq: [
+            {
+                question: "How do I combine a passport photo and signature into one image?",
+                answer: "Use the free PdfPixels Merge Photo and Signature tool: upload both images, choose the layout (photo left, signature right, or stacked), set the exact pixel dimensions your form requires, and download the merged JPG."
+            },
+            {
+                question: "What size should a photo and signature image be for exam forms?",
+                answer: "It varies by portal — common specs are around 140×60 pixels under 20KB in JPG, but the application notice you are filling out is the only authority. Match its exact dimensions and file-size cap."
+            },
+            {
+                question: "How do I reduce the combined image below 20KB?",
+                answer: "Run the merged JPG through Compress Image with a 20KB target and preview the result. At composite sizes this normally keeps the face recognizable; if not, start from a sharper, better-lit photo."
+            },
+            {
+                question: "Why was my photo and signature upload rejected?",
+                answer: "The most common causes are wrong pixel dimensions, file size above the cap, PNG format where JPG is required, or a signature cropped mid-stroke. Fix each by re-exporting at the exact specs, compressing, converting to JPG, and re-photographing the signature with more contrast."
+            },
+            {
+                question: "Can I make the signature background transparent?",
+                answer: "Only if the form explicitly asks for PNG with transparency — most application forms expect a plain JPG with the signature on a white background, which also compresses better."
+            },
+        ],
+    },
 ];
 
 // Helper functions
@@ -5474,6 +5974,10 @@ export const coverImageDimensions: Record<string, { width: number; height: numbe
     '/images/blog/merge-pdf-online-hero.png': { width: 1280, height: 1280 },
     '/images/blog/how-to-edit-pdf-online-free-hero.jpg': { width: 1376, height: 768 },
     '/images/blog/password-protect-pdf-hero.jpg': { width: 1376, height: 768 },
+    '/images/blog/resize-photo-600x600-dv-lottery-hero.jpg': { width: 1280, height: 720 },
+    '/images/blog/fill-pdf-form-online-free-hero.jpg': { width: 1280, height: 720 },
+    '/images/blog/scan-documents-phone-pdf-hero.jpg': { width: 1280, height: 720 },
+    '/images/blog/passport-photo-signature-combined-hero.jpg': { width: 1280, height: 720 },
 };
 
 export function getCoverDimensions(coverImage: string): { width: number; height: number } {

@@ -12,7 +12,7 @@
  */
 
 /** Date these limits were last verified against the route code (YYYY-MM-DD). */
-export const LIMITS_LAST_REVIEWED = '2026-09-23';
+export const LIMITS_LAST_REVIEWED = '2026-09-25';
 
 export const platformLimits = {
   pdf: {
@@ -30,6 +30,26 @@ export const platformLimits = {
       splitAllTruncatedAtPages: 20,
       extractMaxPages: 50,
       maxSelectionChars: 2000,
+      /** Split-by-size mode */
+      bySizeMaxMb: 25,
+      bySizeMaxParts: 100,
+      bySizeMaxPages: 300,
+    },
+    ocr: {
+      /** src/app/api/pdf/ocr/route.ts + src/lib/pdf-ocr.ts ocrPdfPages */
+      maxPagesPerRun: 10,
+      hardCapPages: 25,
+      budgetSeconds: 40,
+    },
+    extractImages: {
+      /** src/app/api/pdf/extract-images/route.ts */
+      maxImages: 200,
+      maxZipMb: 80,
+    },
+    textToPdf: {
+      /** src/app/api/pdf/from-text/route.ts */
+      maxChars: 400_000,
+      maxOutputPages: 500,
     },
     imageToPdf: {
       /** src/app/api/pdf/from-image/route.ts */
@@ -95,9 +115,10 @@ export function limitsSummaryLines(): string[] {
   const l = platformLimits;
   return [
     `PDF uploads: ${l.pdf.maxFileMb} MB per file on most tools; merging allows up to ${l.pdf.merge.maxFiles} files / ${l.pdf.merge.maxTotalMb} MB total / ${l.pdf.merge.maxTotalPages} pages.`,
-    `Split: "all pages" mode returns a ZIP truncated at ${l.pdf.split.splitAllTruncatedAtPages} pages; range/single extract caps at ${l.pdf.split.extractMaxPages} pages.`,
+    `Split: "all pages" mode returns a ZIP truncated at ${l.pdf.split.splitAllTruncatedAtPages} pages; range/single extract caps at ${l.pdf.split.extractMaxPages} pages; split-by-size takes limits up to ${l.pdf.split.bySizeMaxMb} MB, max ${l.pdf.split.bySizeMaxParts} parts / ${l.pdf.split.bySizeMaxPages} pages.`,
+    `OCR PDF: up to ${l.pdf.ocr.maxPagesPerRun} pages per run (hard cap ${l.pdf.ocr.hardCapPages}) with a ${l.pdf.ocr.budgetSeconds}-second budget; PDFs with a real text layer are extracted instead. Extract Images: up to ${l.pdf.extractImages.maxImages} images / ${l.pdf.extractImages.maxZipMb} MB ZIP. Text to PDF: ${l.pdf.textToPdf.maxChars.toLocaleString('en-US')} characters / ${l.pdf.textToPdf.maxOutputPages} pages max.`,
     `Image to PDF: up to ${l.pdf.imageToPdf.maxFiles} images, ${l.pdf.imageToPdf.maxFileMb} MB each, ${l.pdf.imageToPdf.maxTotalMb} MB combined. PDF to JPG: ${l.pdf.pdfToImage.maxPagesPerRun} pages per run. PDF to Text: ${l.pdf.pdfToText.maxPages} pages max.`,
-    `Image uploads: ${l.image.maxFileMb} MB per file, ${l.image.maxMegapixels} megapixels max, ${l.image.maxDimensionPx.toLocaleString('en-US')} px per side; OCR accepts up to ${l.image.ocr.maxFileMb} MB; AI tools up to ${l.ai.maxFileMb} MB (${l.ai.maxEdgePx.toLocaleString('en-US')} px longest edge).`,
+    `Image uploads: ${l.image.maxFileMb} MB per file, ${l.image.maxMegapixels} megapixels max, ${l.image.maxDimensionPx.toLocaleString('en-US')} px per side; OCR accepts up to ${l.image.ocr.maxFileMb} MB; AI tools up to ${l.ai.maxFileMb} MB (${l.ai.maxEdgePx.toLocaleString('en-US')} px longest edge); PNG-to-ICO accepts the image limits and packs sizes 16–256 px.`,
     `${l.pdf.encryptedNote} Protection passwords need ${l.pdf.protectPassword.minChars}+ characters (max ${l.pdf.protectPassword.maxChars}).`,
     `Rate limits: ${l.rateLimits.processingPerRoutePerMinute}/min per processing route per IP (pdf/*, image/*, ai), ${l.rateLimits.globalPerMinute}/min global; contact/newsletter are stricter.`,
     l.retention.serverTempFilesNote,

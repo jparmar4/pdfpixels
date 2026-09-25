@@ -53,7 +53,7 @@ const eslintConfig = [...nextCoreWebVitals, ...nextTypescript, {
     ".next/**",
     "out/**",
     "build/**",
-    "public/_next/**",
+    "public/**",
     "remote-server.js",
     "next-env.d.ts",
     "check.js",

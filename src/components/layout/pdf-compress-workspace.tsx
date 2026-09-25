@@ -60,10 +60,16 @@ function formatSize(bytes: number) {
 }
 
 interface CompressPDFWorkspaceProps {
-  targetPreset?: '100kb' | '200kb' | '300kb' | '500kb' | '1mb';
+  targetPreset?: '50kb' | '100kb' | '200kb' | '300kb' | '500kb' | '1mb';
 }
 
 const presetMeta: Record<string, { title: string; description: string; limitText: string; defaultLevel: CompressionLevel }> = {
+  '50kb': {
+    title: 'Compress PDF to 50KB Online',
+    description: 'Compress PDF documents to 50KB or less for the strictest exam portals and government forms with tiny upload limits.',
+    limitText: 'Tuned for 50KB exam-portal ceilings · maximum reduction, honest results',
+    defaultLevel: 'extreme',
+  },
   '100kb': {
     title: 'Compress PDF to 100KB Online',
     description: 'Reduce PDF file size to under 100KB for strict government portal uploads, job applications, and student admissions.',
@@ -99,7 +105,7 @@ const presetMeta: Record<string, { title: string; description: string; limitText
 export function CompressPDFWorkspace({ targetPreset }: CompressPDFWorkspaceProps = {}) {
   const { activeTool, uploadedFile, isProcessing, progress, reset, setIsProcessing, setProgress } = useActiveTool();
   const preset = targetPreset ? presetMeta[targetPreset] : null;
-  const targetBytes = targetPreset ? ({ '100kb': 100, '200kb': 200, '300kb': 300, '500kb': 500, '1mb': 1024 }[targetPreset]! * 1024) : undefined;
+  const targetBytes = targetPreset ? ({ '50kb': 50, '100kb': 100, '200kb': 200, '300kb': 300, '500kb': 500, '1mb': 1024 }[targetPreset]! * 1024) : undefined;
   const [result, setResult] = useState<CompressionResult | null>(null);
   const [statusLabel, setStatusLabel] = useState<'Idle' | 'Uploading' | 'Processing' | 'Finalizing'>('Idle');
   const [compressionLevel, setCompressionLevel] = useState<CompressionLevel>(preset ? preset.defaultLevel : 'recommended');

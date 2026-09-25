@@ -110,6 +110,7 @@ const WORKSPACE_CONTAINER_CLASS: Record<string, string> = {
   'pdf-crop': 'container mx-auto px-4 lg:px-8 max-w-6xl',
   'pdf-extract': 'container mx-auto px-4 lg:px-8 max-w-6xl',
   'pdf-fill': 'container mx-auto px-4 lg:px-8 max-w-6xl',
+  'pdf-reader': 'container mx-auto px-4 lg:px-8 max-w-6xl',
   // max-w-5xl workspaces
   'pdf-compress': 'container mx-auto px-4 lg:px-8 max-w-5xl',
   'compress-pdf-to-100kb': 'container mx-auto px-4 lg:px-8 max-w-5xl',
@@ -128,6 +129,12 @@ const WORKSPACE_CONTAINER_CLASS: Record<string, string> = {
   'bates-numbering-pdf': 'container mx-auto px-4 lg:px-8 max-w-5xl',
   'compare-pdf': 'container mx-auto px-4 lg:px-8 max-w-5xl',
   'compress': 'container mx-auto px-4 lg:px-8 max-w-5xl',
+  'pdf-ocr': 'container mx-auto px-4 lg:px-8 max-w-5xl',
+  'extract-pdf-images': 'container mx-auto px-4 lg:px-8 max-w-5xl',
+  'text-to-pdf': 'container mx-auto px-4 lg:px-8 max-w-5xl',
+  'png-to-ico': 'container mx-auto px-4 lg:px-8 max-w-5xl',
+  'image-to-base64': 'container mx-auto px-4 lg:px-8 max-w-5xl',
+  'compress-pdf-to-50kb': 'container mx-auto px-4 lg:px-8 max-w-5xl',
   // max-w-4xl workspaces
   'sanitize-pdf': 'container mx-auto px-4 lg:px-8 max-w-4xl',
   'cmyk-pdf-converter': 'container mx-auto px-4 lg:px-8 max-w-4xl',

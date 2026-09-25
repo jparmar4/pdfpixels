@@ -269,4 +269,93 @@ assert.equal(wordResponse.status, 200);
 assert.match((await extractPdfLines(Buffer.from(await wordResponse.arrayBuffer()))).join(' '), /Caf\u00e9 r\u00e9sum\u00e9/);
 assert.equal((await call('from-heic', null, { file: 'invalid' })).status, 400);
 
+// ─── Wave-3 tools (2026-09-25): split-by-size, from-text, ico, extract-images, ocr ───
+async function callAny(routePath, bytes, fileName, mime, fields = {}) {
+  const form = new FormData();
+  if (bytes) form.append('file', new Blob([bytes], { type: mime }), fileName);
+  for (const [key, value] of Object.entries(fields)) form.append(key, String(value));
+  const { POST } = await import(`../src/app/api/${routePath}/route.ts`);
+  return POST(new NextRequest('http://localhost/api/' + routePath, { method: 'POST', body: form }));
+}
+
+// Split by size: multi-page fixture must split into parts each under the limit.
+// Random base36 text keeps pages incompressible so 100KB parts actually overflow.
+function randomLine(length) {
+  let s = '';
+  while (s.length < length) s += Math.random().toString(36).slice(2);
+  return s.slice(0, length);
+}
+const sizeDoc = await PDFDocument.create();
+const sizeFont = await sizeDoc.embedFont(StandardFonts.Courier);
+for (let p = 0; p < 120; p++) {
+  const page = sizeDoc.addPage([612, 792]);
+  for (let l = 0; l < 8; l++) {
+    page.drawText(randomLine(200), { x: 30, y: 750 - l * 14, size: 9, font: sizeFont });
+  }
+}
+const manyPageSource = await sizeDoc.save();
+const sizeZip = await callAny('pdf/split', manyPageSource, 'sample.pdf', 'application/pdf', { mode: 'size', maxSizeMb: '0.1' });
+if (sizeZip.status !== 200) throw new Error('split size: ' + sizeZip.status + ' ' + await sizeZip.text());
+const sizeParts = await JSZip.loadAsync(await sizeZip.arrayBuffer());
+const partNames = Object.keys(sizeParts.files).filter((n) => n.endsWith('.pdf'));
+assert.ok(partNames.length >= 2, `expected >=2 parts, got ${partNames.length}`);
+for (const name of partNames) {
+  const partBytes = await sizeParts.file(name).async('uint8array');
+  assert.ok(partBytes.length <= 0.1 * 1024 * 1024, `${name} exceeds limit: ${partBytes.length}`);
+  await PDFDocument.load(partBytes);
+}
+assert.equal((await callAny('pdf/split', manyPageSource, 'sample.pdf', 'application/pdf', { mode: 'size', maxSizeMb: '99' })).status, 400);
+
+// Text to PDF: wrapped text survives round-trip extraction
+const textPdfResponse = await callAny('pdf/from-text', null, null, null, { text: 'Hello from Text to PDF.\nSecond line with a longer sentence that should wrap across the page width without overflowing the margins.', pageSize: 'a4', font: 'courier', fontSize: '12' });
+if (textPdfResponse.status !== 200) throw new Error('from-text: ' + textPdfResponse.status + ' ' + await textPdfResponse.text());
+const textPdfBytes = new Uint8Array(await textPdfResponse.arrayBuffer());
+assert.match((await extractPdfLines(Buffer.from(textPdfBytes))).join(' '), /Hello from Text to PDF/);
+assert.equal((await callAny('pdf/from-text', null, null, null, { text: '' })).status, 400);
+
+// PDF OCR: text-layer PDFs return extraction instead of OCR (fast path, no tesseract needed).
+// Fixture carries >200 chars so the route's text-layer detector engages deterministically.
+const ocrSource = await fixture([
+  'Café résumé (encoded text) — this scanned-style contract begins with a long preamble paragraph.',
+  '01/02/2026 Payment -1,234.56 9,876.54',
+  'The parties agree that this agreement is governed by the laws of the issuing jurisdiction and that any dispute',
+  'arising out of it shall be resolved by arbitration under the rules agreed in writing between both parties hereto.',
+]);
+const ocrResponse = await callAny('pdf/ocr', ocrSource, 'sample.pdf', 'application/pdf');
+if (ocrResponse.status !== 200) throw new Error('ocr: ' + ocrResponse.status + ' ' + await ocrResponse.text());
+const ocrJson = await ocrResponse.json();
+assert.equal(ocrJson.usedOcr, false);
+assert.match(ocrJson.text, /Café résumé/);
+
+// Extract images: JPEG embedded via DCTDecode must come back verbatim in a ZIP
+const jpeg1x1 = Uint8Array.from(await sharp({ create: { width: 8, height: 8, channels: 3, background: { r: 200, g: 30, b: 40 } } }).jpeg().toBuffer());
+const imgPdfDoc = await PDFDocument.create();
+const embeddedJpeg = await imgPdfDoc.embedJpg(jpeg1x1);
+const imgPage = imgPdfDoc.addPage([100, 100]);
+imgPage.drawImage(embeddedJpeg, { x: 10, y: 10, width: 80, height: 80 });
+const imgPdfBytes = await imgPdfDoc.save();
+const imagesZip = await callAny('pdf/extract-images', imgPdfBytes, 'sample.pdf', 'application/pdf');
+if (imagesZip.status !== 200) throw new Error('extract-images: ' + imagesZip.status + ' ' + await imagesZip.text());
+assert.equal(imagesZip.headers.get('x-images-extracted'), '1');
+const archive = await JSZip.loadAsync(await imagesZip.arrayBuffer());
+const entryNames = Object.keys(archive.files);
+assert.equal(entryNames.length, 1);
+assert.match(entryNames[0], /image-001\.jpg$/);
+
+// Extract images: text-only PDF reports honestly with 422
+const noImages = await callAny('pdf/extract-images', source, 'sample.pdf', 'application/pdf');
+assert.equal(noImages.status, 422);
+
+// PNG to ICO: multi-size container with a valid ICONDIR
+const pngSource = await sharp({ create: { width: 256, height: 256, channels: 4, background: { r: 20, g: 80, b: 200, alpha: 1 } } }).png().toBuffer();
+const icoResponse = await callAny('image/ico', pngSource, 'logo.png', 'image/png', { sizes: '16,32' });
+if (icoResponse.status !== 200) throw new Error('ico: ' + icoResponse.status + ' ' + await icoResponse.text());
+const icoBytes = Buffer.from(await icoResponse.arrayBuffer());
+assert.equal(icoBytes.readUInt16LE(0), 0); // reserved
+assert.equal(icoBytes.readUInt16LE(2), 1); // type icon
+assert.equal(icoBytes.readUInt16LE(4), 2); // 2 sizes
+assert.equal(icoBytes.readUInt8(6), 16); // first entry width
+assert.equal(icoBytes.readUInt8(22), 32); // second entry width
+writeFileSync(path.join(out, 'favicon.ico'), icoBytes);
+
 console.log('Recent-tool regressions passed. PDF fixtures:', out);
