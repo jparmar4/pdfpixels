@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Suspense } from 'react';
 import { notFound } from 'next/navigation';
-import { ArrowRight, GitCompareArrows, Layers3, LayoutTemplate, type LucideIcon } from 'lucide-react';
+import { ArrowRight, BookOpen, GitCompareArrows, Layers3, LayoutTemplate, type LucideIcon } from 'lucide-react';
 import { ToolContentSection } from '@/components/layout/tool-content-section';
 import { ToolPageClient } from '@/components/layout/tool-page-client';
 import { ToolSidebarAd } from '@/components/ads/tool-sidebar-ad';
@@ -13,6 +13,7 @@ import { siteConfig } from '@/lib/seo-config';
 import { absoluteUrl, dedupeKeywords, SITE_CONTENT_UPDATED } from '@/lib/seo';
 import { toolLanguageAlternates } from '@/lib/localized-tools';
 import { toolContentMap } from '@/lib/tool-content-data';
+import { getPostsForTool } from '@/config/blog';
 import { allTools, getToolBySlug, type Tool } from '@/lib/tools-data';
 import { useCasePages } from '@/lib/use-cases';
 
@@ -378,6 +379,7 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
   const relatedTools = allTools.filter((candidate) => candidate.category === tool.category && candidate.slug !== tool.slug).slice(0, 6);
   const relatedUseCases = useCasePages.filter((useCase) => useCase.targetToolSlug === tool.slug).slice(0, 4);
   const relatedComparisons = comparisonPages.filter((comparison) => comparison.primaryToolSlug === tool.slug).slice(0, 3);
+  const relatedPosts = getPostsForTool(tool.slug).slice(0, 3);
 
   return (
     <>
@@ -421,7 +423,7 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
         {/* Editorial content (indexable) sits before mid-page ads for better AdSense policy ratio */}
         <ToolContentSection toolSlug={tool.slug} toolName={cleanToolName} isAI={tool.isAI} processing={tool.processing} />
 
-        {(relatedTools.length > 0 || relatedUseCases.length > 0 || relatedComparisons.length > 0) ? (
+        {(relatedTools.length > 0 || relatedUseCases.length > 0 || relatedComparisons.length > 0 || relatedPosts.length > 0) ? (
           <section className="container mx-auto px-4 pb-12 lg:px-8">
             <div className="overflow-hidden rounded-[2rem] border border-border/50 bg-card/75 p-6 shadow-premium backdrop-blur-xl md:p-8">
               <div className="mb-8 flex flex-col gap-3 border-b border-border/40 pb-6 md:flex-row md:items-end md:justify-between">
@@ -432,7 +434,7 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
                   </h2>
                 </div>
                 <p className="max-w-xl text-sm leading-6 text-muted-foreground">
-                  Pair this tool with adjacent workflows, practical use cases, and comparison guides so users can complete a full document journey without friction.
+                  Pair this tool with adjacent workflows, practical use cases, comparison guides, and in-depth reading so users can complete a full document journey without friction.
                 </p>
               </div>
 
@@ -468,6 +470,32 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
                   }))}
                 />
               </div>
+
+              {relatedPosts.length > 0 && (
+                <div className="mt-4 rounded-[1.5rem] border border-border/50 bg-background/75 p-5">
+                  <div className="mb-4 flex items-center gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                      <BookOpen className="h-4 w-4" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-bold text-foreground">Further reading</h3>
+                      <p className="text-sm text-muted-foreground">Step-by-step guides that go deeper on this workflow.</p>
+                    </div>
+                  </div>
+                  <div className="grid gap-3 md:grid-cols-3">
+                    {relatedPosts.map((post) => (
+                      <Link
+                        key={post.slug}
+                        href={`/blog/${post.slug}`}
+                        className="group rounded-2xl border border-border/50 bg-card/75 px-4 py-3 transition-colors hover:border-primary/30 hover:bg-card"
+                      >
+                        <p className="text-sm font-semibold text-foreground group-hover:text-primary">{normalizeDisplayText(post.title)}</p>
+                        <p className="mt-1 text-xs text-muted-foreground">{normalizeDisplayText(post.category)} · {post.readTime}</p>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </section>
         ) : null}

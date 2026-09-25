@@ -154,3 +154,10 @@
 - [x] Checked blog speakable — already present (h1 + .summary selectors), no change needed.
 - [x] ai-plugin.json: 99 -> 102 tools + avif_conversion capability.
 - [x] Verified: tsc clean, eslint clean, dispatch 102/102, relatedTools + targetToolSlug cross-refs all resolve, build green, prerender sweep 3 tool pages + 3 use-case pages with content, sitemap includes all 6 new URLs, test:tools green.
+
+# Global traffic wave — es/pt localization, 3 posts, tool→blog links (2026-09-25, later)
+- [x] Non-English SEO: Spanish + Portuguese localized tool packs (6 core tools each) joining de/fr/jp. Unique native copy per locale (not machine-translated placeholders), real limits from limits.ts. LocaleCode/packs/isLocaleCode/toolLanguageAlternates extended; /es + /pt route dirs cloned from the generic de template. Tool pages now carry a 7-locale hreflang cluster (en + de-DE + fr-FR + ja-JP + es + pt + x-default); localizedSitemapEntries auto-expanded to 30 URLs. Sitemap now 243 URLs.
+- [x] 3 new global-intent blog posts (32 total): reduce-photo-file-size (broad MB→KB intent, device-specific), fix-pdf-not-opening (diagnosis table + repair/unlock flows), combine-screenshots-into-one (merge-images + image-to-pdf routes). Covers generated via scripts/generate-blog-covers.mjs (3 new icon motifs); coverImageDimensions synced.
+- [x] Internal linking: new curated toolSlugToPostSlugs map (35 tools) + getPostsForTool(); tool pages now render a "Further reading" panel with 2-3 hand-mapped posts. Blog posts consolidated into hubs are excluded. Keys verified against actual tool slugs (first draft keyed some by id — caught and fixed by cross-checking the registry).
+- [x] Verified: tsc clean, eslint clean, es/pt pages + 3 posts prerender, hreflang cluster includes es/pt on localized tools, Further reading panel renders with correct links, sitemap 243 URLs with all new entries, test:tools green.
+- [ ] If es/pt pages earn impressions, extend the packs to more slugs (ocr-pdf, split-pdf-by-size, compress-pdf-to-50kb are strong candidates for LatAm/Brazil).

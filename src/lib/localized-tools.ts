@@ -10,7 +10,7 @@ export const LOCALIZED_TOOL_SLUGS = [
 ] as const;
 
 export type LocalizedToolSlug = (typeof LOCALIZED_TOOL_SLUGS)[number];
-export type LocaleCode = 'de' | 'fr' | 'jp';
+export type LocaleCode = 'de' | 'fr' | 'jp' | 'es' | 'pt';
 
 export type LocalizedToolCopy = {
   name: string;
@@ -101,6 +101,156 @@ const deTools: Record<LocalizedToolSlug, LocalizedToolCopy> = {
       'HEIC-Datei hochladen.',
       'Die Umwandlung starten.',
       'JPG herunterladen.',
+    ],
+  },
+};
+
+const esTools: Record<LocalizedToolSlug, LocalizedToolCopy> = {
+  'compress-pdf': {
+    name: 'Comprimir PDF',
+    title: 'Comprimir PDF – gratis, sin registro',
+    description: 'Reduce el tamaño de un PDF en el navegador. Tres niveles, Ghostscript para las imágenes, el texto vectorial se conserva.',
+    howTitle: 'Reducir el tamaño de un PDF',
+    intro: 'El compresor usa Ghostscript y reduce únicamente las imágenes del PDF. El texto vectorial queda nítido. Si el ahorro es demasiado pequeño se rechaza, para no presentar como éxito un documento que ya estaba optimizado.',
+    steps: [
+      'Sube un PDF (máximo 50 MB).',
+      'Elige el archivo más pequeño, el nivel recomendado o alta calidad.',
+      'Descarga el PDF y comprueba el porcentaje ahorrado.',
+    ],
+  },
+  'merge-pdf': {
+    name: 'Unir PDF',
+    title: 'Unir PDF – gratis, sin registro',
+    description: 'Combina varios PDF en un solo archivo, en el orden que tú elijas.',
+    howTitle: 'Unir varios PDF en uno',
+    intro: 'Las páginas se copian en el servidor en el orden que establezcas. Los marcadores de los archivos de origen no se reconstruyen.',
+    steps: [
+      'Añade hasta 20 PDF, de 50 MB cada uno, 100 MB y 1000 páginas en total.',
+      'Define el orden arrastrando los archivos.',
+      'Descarga un único PDF.',
+    ],
+  },
+  'split-pdf': {
+    name: 'Dividir PDF',
+    title: 'Dividir PDF – gratis, sin registro',
+    description: 'Extrae páginas o separa un PDF en varios archivos.',
+    howTitle: 'Extraer páginas',
+    intro: 'Un rango se guarda como un PDF nuevo. El modo de todas las páginas devuelve un ZIP y se detiene en 20 páginas.',
+    steps: [
+      'Sube un PDF (máximo 50 MB).',
+      'Indica las páginas o un rango. Cada extracción admite hasta 50 páginas.',
+      'Descarga el PDF o el ZIP.',
+    ],
+  },
+  'pdf-to-jpg': {
+    name: 'PDF a JPG',
+    title: 'Convertir PDF a JPG – gratis, sin registro',
+    description: 'Convierte las páginas de un PDF a JPG, PNG o WebP con Ghostscript.',
+    howTitle: 'Guardar las páginas como imágenes',
+    intro: 'Cada página se rasteriza. La resolución va de 72 a 300 DPI, con 150 por defecto. Máximo 10 páginas por procesamiento.',
+    steps: [
+      'Sube un PDF (máximo 50 MB).',
+      'Elige formato, calidad y DPI.',
+      'Descarga las imágenes.',
+    ],
+  },
+  'image-to-pdf': {
+    name: 'JPG a PDF',
+    title: 'Convertir JPG a PDF – gratis, sin registro',
+    description: 'Reúne imágenes JPG, PNG, WebP y HEIC en un solo PDF.',
+    howTitle: 'Crear un PDF a partir de imágenes',
+    intro: 'Hasta 30 imágenes, 15 MB cada una y 120 MB en total. El tamaño de página, la orientación y los márgenes se definen antes de crear el PDF.',
+    steps: [
+      'Añade las imágenes y ordénalas.',
+      'Elige el tamaño de página y el ajuste.',
+      'Descarga el PDF.',
+    ],
+  },
+  'heic-to-jpg': {
+    name: 'HEIC a JPG',
+    title: 'Convertir HEIC a JPG – gratis, sin registro',
+    description: 'Convierte fotos HEIC del iPhone a JPG, que se abre en cualquier Windows.',
+    howTitle: 'Convertir fotos HEIC',
+    intro: 'La conversión de HEIC a JPG se realiza en el servidor. Cada archivo puede pesar como máximo 25 MB.',
+    steps: [
+      'Sube el archivo HEIC.',
+      'Inicia la conversión.',
+      'Descarga el JPG.',
+    ],
+  },
+};
+
+const ptTools: Record<LocalizedToolSlug, LocalizedToolCopy> = {
+  'compress-pdf': {
+    name: 'Comprimir PDF',
+    title: 'Comprimir PDF – grátis, sem cadastro',
+    description: 'Reduza o tamanho de um PDF no navegador. Três níveis, Ghostscript para as imagens, texto vetorial preservado.',
+    howTitle: 'Diminuir o tamanho do PDF',
+    intro: 'O compressor usa Ghostscript e reduz apenas as imagens do PDF. O texto vetorial permanece nítido. Um ganho muito pequeno é recusado, para não apresentar como sucesso um documento que já estava otimizado.',
+    steps: [
+      'Envie um PDF (máximo de 50 MB).',
+      'Escolha menor arquivo, nível recomendado ou alta qualidade.',
+      'Baixe o PDF e confira a porcentagem economizada.',
+    ],
+  },
+  'merge-pdf': {
+    name: 'Juntar PDF',
+    title: 'Juntar PDF – grátis, sem cadastro',
+    description: 'Combine vários PDFs em um único arquivo, na ordem que você escolher.',
+    howTitle: 'Unir vários PDFs em um',
+    intro: 'As páginas são copiadas no servidor na ordem definida por você. Os marcadores dos arquivos de origem não são reconstruídos.',
+    steps: [
+      'Adicione até 20 PDFs, de 50 MB cada, 100 MB e 1000 páginas no total.',
+      'Defina a ordem arrastando os arquivos.',
+      'Baixe um único PDF.',
+    ],
+  },
+  'split-pdf': {
+    name: 'Dividir PDF',
+    title: 'Dividir PDF – grátis, sem cadastro',
+    description: 'Extraia páginas ou separe um PDF em vários arquivos.',
+    howTitle: 'Extrair páginas',
+    intro: 'Um intervalo se torna um novo PDF. O modo de todas as páginas devolve um ZIP e para em 20 páginas.',
+    steps: [
+      'Envie um PDF (máximo de 50 MB).',
+      'Indique as páginas ou um intervalo. Cada extração aceita até 50 páginas.',
+      'Baixe o PDF ou o ZIP.',
+    ],
+  },
+  'pdf-to-jpg': {
+    name: 'PDF em JPG',
+    title: 'Converter PDF em JPG – grátis, sem cadastro',
+    description: 'Converta as páginas de um PDF em JPG, PNG ou WebP com o Ghostscript.',
+    howTitle: 'Salvar as páginas como imagens',
+    intro: 'Cada página é rasterizada. A resolução vai de 72 a 300 DPI, com 150 como padrão. Máximo de 10 páginas por processamento.',
+    steps: [
+      'Envie um PDF (máximo de 50 MB).',
+      'Escolha formato, qualidade e DPI.',
+      'Baixe as imagens.',
+    ],
+  },
+  'image-to-pdf': {
+    name: 'JPG em PDF',
+    title: 'Converter JPG em PDF – grátis, sem cadastro',
+    description: 'Reúna imagens JPG, PNG, WebP e HEIC em um único PDF.',
+    howTitle: 'Criar um PDF a partir de imagens',
+    intro: 'Até 30 imagens, 15 MB cada e 120 MB no total. O tamanho da página, a orientação e as margens são definidos antes de gerar o PDF.',
+    steps: [
+      'Adicione as imagens e organize a ordem.',
+      'Escolha o tamanho da página e o ajuste.',
+      'Baixe o PDF.',
+    ],
+  },
+  'heic-to-jpg': {
+    name: 'HEIC em JPG',
+    title: 'Converter HEIC em JPG – grátis, sem cadastro',
+    description: 'Converta fotos HEIC do iPhone em JPG, que abre em qualquer Windows.',
+    howTitle: 'Converter fotos HEIC',
+    intro: 'A conversão de HEIC para JPG acontece no servidor. Cada arquivo pode ter no máximo 25 MB.',
+    steps: [
+      'Envie o arquivo HEIC.',
+      'Inicie a conversão.',
+      'Baixe o JPG.',
     ],
   },
 };
@@ -280,10 +430,26 @@ const packs: Record<LocaleCode, LocalePack> = {
     englishLabel: 'English',
     tools: jpTools,
   },
+  es: {
+    htmlLang: 'es',
+    ogLocale: 'es_ES',
+    hreflang: 'es',
+    limitNote: 'Los PDF protegidos con contraseña deben desbloquearse primero. Los archivos se conservan solo durante el procesamiento y se eliminan en un plazo de 60 minutos.',
+    englishLabel: 'English',
+    tools: esTools,
+  },
+  pt: {
+    htmlLang: 'pt',
+    ogLocale: 'pt_BR',
+    hreflang: 'pt',
+    limitNote: 'PDFs protegidos por senha precisam ser desbloqueados primeiro. Os arquivos ficam retidos apenas durante o processamento e são excluídos em até 60 minutos.',
+    englishLabel: 'English',
+    tools: ptTools,
+  },
 };
 
 export function isLocaleCode(value: string): value is LocaleCode {
-  return value === 'de' || value === 'fr' || value === 'jp';
+  return value === 'de' || value === 'fr' || value === 'jp' || value === 'es' || value === 'pt';
 }
 
 export function isLocalizedToolSlug(slug: string): slug is LocalizedToolSlug {
@@ -307,6 +473,8 @@ export function toolLanguageAlternates(slug: string): Record<string, string> | u
     'de-DE': `/de/tools/${slug}`,
     'fr-FR': `/fr/tools/${slug}`,
     'ja-JP': `/jp/tools/${slug}`,
+    es: `/es/tools/${slug}`,
+    pt: `/pt/tools/${slug}`,
   };
 }
 

@@ -73,6 +73,35 @@ const ICONS = {
       <path d="M196 128 q40 22 160 10" stroke="rgba(255,255,255,0.55)" stroke-width="6" fill="none" stroke-linecap="round"/>
       <rect x="0" y="226" width="150" height="10" rx="5" fill="rgba(255,255,255,0.35)"/>
     </g>`,
+  // photo-file motif (reduce photo size)
+  photo: `
+    <g transform="translate(915,150)">
+      <rect x="0" y="0" width="230" height="180" rx="20" fill="rgba(255,255,255,0.14)" stroke="rgba(255,255,255,0.85)" stroke-width="6"/>
+      <circle cx="62" cy="52" r="20" fill="rgba(255,255,255,0.9)"/>
+      <path d="M22 160 L88 84 L130 130 L158 104 L210 160 Z" fill="rgba(255,255,255,0.9)"/>
+      <rect x="20" y="200" width="190" height="34" rx="10" fill="rgba(255,255,255,0.2)"/>
+      <path d="M36 217 h158" stroke="rgba(255,255,255,0.9)" stroke-width="8" stroke-linecap="round" stroke-dasharray="70 40"/>
+    </g>`,
+  // broken-file repair motif
+  repair: `
+    <g transform="translate(915,150)">
+      <path d="M0 30 Q0 8 22 8 H120 L180 68 V250 Q180 268 158 268 H22 Q0 268 0 250 Z" fill="rgba(255,255,255,0.14)" stroke="rgba(255,255,255,0.85)" stroke-width="6"/>
+      <path d="M120 8 L180 68 H134 Q120 68 120 54 Z" fill="rgba(255,255,255,0.4)"/>
+      <path d="M40 150 h100 M40 150 l-6 -8 M40 150 l-6 8 M140 150 l6 -8 M140 150 l6 8" stroke="rgba(255,255,255,0.9)" stroke-width="6" stroke-linecap="round"/>
+      <path d="M52 168 L128 132" stroke="#f59e0b" stroke-width="14" stroke-linecap="round"/>
+      <path d="M36 190 h108 M36 214 h74" stroke="rgba(255,255,255,0.6)" stroke-width="7" stroke-linecap="round"/>
+    </g>`,
+  // screenshot stack motif
+  stack: `
+    <g transform="translate(915,150)">
+      <rect x="36" y="26" width="196" height="140" rx="16" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.6)" stroke-width="5" transform="rotate(6 134 96)"/>
+      <rect x="18" y="14" width="196" height="140" rx="16" fill="rgba(255,255,255,0.16)" stroke="rgba(255,255,255,0.8)" stroke-width="5" transform="rotate(-3 116 84)"/>
+      <rect x="0" y="0" width="200" height="144" rx="16" fill="rgba(255,255,255,0.22)" stroke="rgba(255,255,255,0.95)" stroke-width="6"/>
+      <path d="M28 96 l34 -38 l26 26 l20 -18 l44 44" stroke="rgba(255,255,255,0.9)" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="58" cy="44" r="13" fill="rgba(255,255,255,0.9)"/>
+      <path d="M236 120 v66 q0 16 -16 16 h-120" stroke="rgba(255,255,255,0.85)" stroke-width="6" fill="none" stroke-linecap="round"/>
+      <path d="M112 190 l-14 14 l14 14" stroke="rgba(255,255,255,0.85)" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>`,
 };
 
 const COVERS = [
@@ -99,6 +128,24 @@ const COVERS = [
     headline: 'Passport Photo + Signature in One Image',
     kicker: 'EXAM FORM GUIDE',
     icon: ICONS.signature,
+  },
+  {
+    file: 'reduce-photo-file-size-hero.jpg',
+    headline: 'How to Reduce Any Photo File Size',
+    kicker: 'JPG · PNG · iPHONE · ANDROID',
+    icon: ICONS.photo,
+  },
+  {
+    file: 'fix-pdf-not-opening-hero.jpg',
+    headline: 'PDF Will Not Open? Fix It on Any Device',
+    kicker: 'TROUBLESHOOTING GUIDE',
+    icon: ICONS.repair,
+  },
+  {
+    file: 'combine-screenshots-into-one-hero.jpg',
+    headline: 'Combine Screenshots Into One Image or PDF',
+    kicker: 'STEP-BY-STEP GUIDE',
+    icon: ICONS.stack,
   },
 ];
 

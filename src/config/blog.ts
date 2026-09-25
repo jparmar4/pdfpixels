@@ -5888,6 +5888,338 @@ The combined photo-and-signature upload is a five-minute job when each piece is 
             },
         ],
     },
+    {
+        slug: "reduce-photo-file-size",
+        title: "How to Reduce Photo File Size on Any Device (JPG, PNG, iPhone, Android)",
+        excerpt: "A single phone photo weighs 2–8MB — and most forms, email systems, and websites want it under 100KB. Here is what actually makes a photo heavy, and the exact steps to shrink any image on a phone or computer without ruining it.",
+        date: "Sep 25, 2026",
+        dateModified: "Sep 25, 2026",
+        category: "Image Tools",
+        author: "PdfPixels Editorial",
+        authorRole: "PdfPixels team",
+        readTime: "8 min read",
+        metaDescription: "Learn how to reduce photo file size on iPhone, Android, and Windows — what makes photos heavy (pixels, format, metadata), how to hit exact KB targets like 50KB or 100KB, and the mistakes that wreck quality.",
+        keywords: [
+            "reduce photo file size",
+            "compress photo online free",
+            "reduce image size in kb",
+            "make photo smaller file size",
+            "how to reduce photo size mb to kb",
+            "compress jpg to 100kb",
+            "reduce photo size for email",
+            "shrink photo file size iphone",
+            "reduce image file size android",
+            "photo size kam kaise kare"
+        ],
+        coverImage: "/images/blog/reduce-photo-file-size-hero.jpg",
+        imageAlt: "A large phone photo shrinking into a small optimized file, showing the file size dropping from megabytes to kilobytes",
+        content: `
+Every phone made in the last decade produces photos between 2 and 8 megabytes. Meanwhile, the systems that want those photos — exam portals, job applications, email attachments, website uploads — typically allow somewhere between 50KB and 500KB. That gap, from megabytes to kilobytes, is the single most common image problem on the internet, and it is entirely solvable once you understand what a photo's file size is actually made of.
+
+> [!TIP]
+> **Just need it done?** Open [Compress Image](/tools/compress-image), upload the photo, type the KB target from your form, and download. Everything below explains *why* it works and what to do when quality suffers.
+
+---
+
+## Quick Answer: Reduce a Photo's File Size (AEO / Snippet)
+
+1. **Upload** the photo to [Compress Image](/tools/compress-image).
+2. **Enter a target** — for example 100KB, 50KB, or whatever your form allows.
+3. **Preview** the result to confirm faces or text are still clear.
+4. **Download** and upload to the destination that gave you the size error.
+
+---
+
+## What Actually Makes a Photo Heavy
+
+Three things set a photo's file size, in order of importance:
+
+**1. Pixel dimensions.** A 4000×3000 photo has 12 million pixels; a 800×600 photo has 480 thousand. Twenty-five times more pixels means roughly twenty-five times more data to describe. Resolution is the big lever — most photo weight is pure pixel count that no viewer will ever see at full size.
+
+**2. Compression quality.** JPG stores photos by discarding detail the eye tolerates losing. Higher quality = larger file. The trick is that quality 75 looks nearly identical to quality 95 at normal viewing sizes, while costing a third of the bytes.
+
+**3. Format.** For photographs, JPG and WebP compress far better than PNG. PNG stores every pixel losslessly — right for logos and screenshots with text, wasteful for photos. And modern formats go further: converting a JPG to [AVIF](/tools/jpg-to-avif) typically cuts another 30–50% at the same quality.
+
+There is a fourth factor — EXIF metadata (camera model, GPS coordinates, embedded thumbnails) — but it usually accounts for a few hundred kilobytes at most. The [three factors above](#what-actually-makes-a-photo-heavy) do the real work.
+
+---
+
+## The Right Order of Operations
+
+The mistake most people make is compressing a 4000-pixel photo down to 50KB and wondering why the face looks like mosaic tile. The professional order is:
+
+1. **Resize first.** Decide the largest size the destination actually needs. A profile photo displays at maybe 400 pixels; an ID photo needs 300–600 pixels on the long edge; a full-screen background needs 1920. Use [Resize Image](/tools/resize-image) to get there.
+2. **Then compress to the KB target.** With pixels already sane, the compressor works gently. A 600-pixel portrait hits 50KB with its eyes intact; a 4000-pixel portrait at 50KB does not.
+3. **Check the format.** Photos belong in JPG (or WebP/AVIF for the web). If yours is PNG or HEIC, convert first — [HEIC to JPG](/tools/heic-to-jpg) for iPhone shots, [PNG to JPG](/tools/png-to-jpeg) for screenshots-turned-photos.
+
+Reversing the order — compressing first, resizing later — re-compresses an already-damaged file and doubles the artifacts.
+
+---
+
+## Device-Specific Notes
+
+**iPhone photos (HEIC).** iPhones default to HEIC, which is compact but widely rejected by portals. Converting to JPG costs a little size; that is the price of acceptance. On the phone itself: Settings → Camera → Formats → Most Compatible makes future photos JPG outright.
+
+**Android photos (JPG, sometimes huge).** Android shoots JPG at full resolution — 3–8MB is normal. Resize to the needed display size, then compress. Screenshots on Android are PNG; convert them to JPG before compressing for much better results.
+
+**Windows and Mac.** The same web tools run in any browser with nothing to install, which sidesteps the classic problem of image editors that *can* do this being buried in menus (Paint's resizer, Preview's export quality).
+
+---
+
+## Hitting Exact Targets: 20KB, 50KB, 100KB
+
+Portals love exact numbers, so here is what each budget can carry:
+
+- **Under 20KB** — one small face photo, 200–300 pixels, plain background. Readable but soft; unavoidable physics. Common on Indian government forms.
+- **Around 50KB** — a clean 500–700 pixel portrait with good clarity. The sweet spot for most ID and application photos.
+- **Around 100KB** — 800–1200 pixels, clearly sharp. Product shots, company logo uploads, profile photos.
+- **Under 500KB** — genuinely rich images, 1500+ pixels. Email attachments and generous portals.
+
+If the target is unreachable with acceptable quality, the real fix is upstream: crop tighter to the subject, shoot against a plainer background, or scan at a lower DPI. A simpler image compresses better than a busy one at the same size — and [Compress Image](/tools/compress-image) preserves the preview so you can judge before downloading.
+
+## When the Upload Still Fails
+
+- **The portal says "20KB" but means width×height too.** Check for dimension requirements — resize, then compress.
+- **The file grew back after download.** Some apps re-compress on save; upload the file directly from the tool's download without opening and re-saving it.
+- **PNG stubbornly refuses to shrink.** Convert to JPG first — PNG photographs are the worst-case input for every compressor.
+
+## Bottom Line
+
+Photo weight is pixels first, quality second, format third — and the order of operations is resize, then compress, then check the format. Run any photo through [Compress Image](/tools/compress-image) with an exact KB target and the whole chain happens in one pass, free, on any device.
+        `,
+        faq: [
+            {
+                question: "How do I reduce a photo's file size from MB to KB?",
+                answer: "Resize the photo to the pixel dimensions the destination actually needs (usually 300–1200 pixels on the long edge), then compress to your KB target with a tool like PdfPixels Compress Image. Resizing first is what keeps the result sharp."
+            },
+            {
+                question: "How do I make a photo smaller without losing quality?",
+                answer: "You cannot remove bytes without some loss — but at sensible pixel sizes, quality-80 compression is visually identical to the original. The visible damage comes from compressing huge photos to tiny targets; resize first and the loss becomes invisible."
+            },
+            {
+                question: "How do I reduce photo size on iPhone?",
+                answer: "Either set the camera to shoot JPG (Settings → Camera → Formats → Most Compatible) or convert existing HEIC photos with HEIC to JPG, then compress to your target size in the browser."
+            },
+            {
+                question: "Why is my PNG photo so large?",
+                answer: "PNG stores every pixel losslessly, which is ideal for screenshots and logos but wasteful for photographs. Convert the photo to JPG and the file typically shrinks 5–10 times at the same pixel size."
+            },
+            {
+                question: "What is the normal size of a phone photo?",
+                answer: "Modern phones shoot 2–8MB JPG or HEIC images at 12–50 megapixels. Most destinations need a fraction of that resolution, which is why resize-then-compress works so well."
+            },
+        ],
+    },
+    {
+        slug: "fix-pdf-not-opening",
+        title: "PDF Won't Open? 7 Fixes for a Damaged or Blocked PDF on Any Device",
+        excerpt: "The file is right there, but every app refuses to open it — or it opens as a blank page. From interrupted downloads to password locks to browser glitches, here is what actually breaks PDFs and the fix for each cause.",
+        date: "Sep 25, 2026",
+        dateModified: "Sep 25, 2026",
+        category: "PDF Tools",
+        author: "PdfPixels Editorial",
+        authorRole: "PdfPixels team",
+        readTime: "7 min read",
+        metaDescription: "PDF file won't open or shows blank pages? Diagnose the real cause — corrupted download, password protection, browser cache, file association — and fix each one with free online tools on any device.",
+        keywords: [
+            "pdf won't open",
+            "pdf file not opening",
+            "repair pdf file online free",
+            "pdf not opening on iphone",
+            "pdf not opening in chrome",
+            "corrupted pdf file repair",
+            "pdf file won t open on android",
+            "adobe reader could not open pdf",
+            "pdf opens blank pages",
+            "fix damaged pdf"
+        ],
+        coverImage: "/images/blog/fix-pdf-not-opening-hero.jpg",
+        imageAlt: "A damaged PDF document being repaired, with a torn file icon and a repair bandage across the page",
+        content: `
+Few file errors trigger the specific dread of a PDF that will not open. It is *right there* — correct name, plausible size — and every app you throw at it refuses, or worse, opens a silent wall of blank pages. Before reinstalling anything, know this: PDFs fail to open for a handful of well-understood reasons, and each has a fix that takes minutes.
+
+> [!TIP]
+> **Short on time?** Skip to the diagnosis table below. If the cause is corruption, the free [Repair PDF](/tools/repair-pdf) tool rebuilds the file's structure and recovers every readable page in about thirty seconds.
+
+---
+
+## Quick Diagnosis: Why Won't the PDF Open? (AEO / Snippet)
+
+| Symptom | Likely cause | Fastest fix |
+|---|---|---|
+| "Format error" or "not a valid PDF" | Corrupted or incomplete download | [Repair PDF](/tools/repair-pdf), then re-download |
+| Opens but shows blank pages | Damaged internal structure or a viewer glitch | Repair, or open in a different reader first |
+| Asks for a password | Encryption | [Unlock PDF](/tools/unlock-pdf) with the password |
+| "Access denied" on a work computer | Security policy blocking the source | Download properly; check with IT |
+| Only fails in the browser | Cache or extension conflict | Open in a desktop reader; clear cache |
+| Zero bytes or absurdly small file | The download never finished | Re-download; Repair cannot fix an empty file |
+
+---
+
+## Fix 1: Rule Out the Viewer Before Blaming the File
+
+Half of "broken PDF" reports are reader problems. The same file that fails in one app opens fine in another. Before anything else, try the file in a different reader — Chrome and Edge both open PDFs natively, which makes them a fast second opinion on any device. If a different reader opens it fine, the problem was the app: update it, clear its cache, or reinstall.
+
+On phones, this matters even more: some mail apps offer a crippled built-in preview that chokes on large or unusual PDFs. Open the file through the browser tool instead of the preview.
+
+## Fix 2: Re-Download — The Most Common Cure
+
+Downloads that get interrupted mid-transfer produce truncated files: the beginning is valid PDF data, the end is missing. Viewers read the file's cross-reference table at the *end* of the document, fail to find it, and report a format error. If the PDF came from email or a website and shows this behavior, download it again — fully, on a stable connection — before assuming the source file is bad. Telltale sign: a "size on disk" of 0KB or suspiciously round and small compared to what the sender described.
+
+## Fix 3: Repair the Structure
+
+If re-downloading is impossible (the sender no longer has it, the site is gone) or does not help, the file's internal structure needs rebuilding. [Repair PDF](/tools/repair-pdf) parses whatever survives, reconstructs the cross-reference table and page tree from scratch, and returns a clean copy containing every readable page. It handles the classics: crash-interrupted saves, mangled email attachments, files cut off mid-transfer. It also fails honestly — a file overwritten with unrelated data genuinely cannot be recovered, and the tool will say so rather than hand you a fake success.
+
+## Fix 4: The Password Question
+
+Encrypted PDFs confuse even people who *know* the password: some viewers prompt for it, others open a blank document or silently refuse. If you have the password, [Unlock PDF](/tools/unlock-pdf) removes the encryption entirely and returns a normal file you can open, print, and share freely — the right move when you need to forward the document to people who also need it working. If you do not have the password, no legitimate tool will open it; that lock is the whole point of encryption.
+
+## Fix 5: When It Opens but Prints Blank or Wrong
+
+A PDF that renders on screen but prints empty usually means one of: the printer driver rasterized it incorrectly, the PDF uses a color space the driver mishandles, or the file's fonts failed to map. Two quick tests isolate it — print from a *different* application, and if the problem follows the file rather than the app, run it through [Grayscale PDF](/tools/grayscale-pdf) or re-save it via [Linearize PDF](/tools/linearize-pdf), which rewrites the internal streams into a fresh, conventional structure printers handle well.
+
+## Fix 6: Browser-Specific Failures
+
+Chrome and Firefox render PDFs with their own engines, and both accumulate cache damage over months. If a PDF only fails *in the browser* — while the downloaded copy opens fine — clear the browser cache or try a private window. Browser-built-in viewers also skip some advanced features (forms, certain encryptions); the desktop reader is the more capable venue for stubborn files.
+
+## Fix 7: Check What the File Actually Is
+
+Files arrive mislabeled more often than you would think — a file with the .pdf extension that is really a DOCX, or an image renamed in panic. Try opening it with the extension changed to match its true type, or right-click → properties to see the real format. And if the "PDF" is actually a scan photo someone renamed, convert it properly with [Image to PDF](/tools/image-to-pdf) — a renamed image is not a PDF, and no viewer will pretend otherwise.
+
+## When to Stop
+
+Repair tools recover what is structurally readable. If a PDF was overwritten with other data, stored on a failing disk, or encrypted with a lost password, the content is genuinely gone — no tool can reconstruct what no longer exists. The honest checklist: try another reader, re-download, repair, unlock, and if all four fail, request the original from its source. Ten minutes, no installs, no paid software.
+
+        `,
+        faq: [
+            {
+                question: "Why is my PDF file not opening?",
+                answer: "The most common causes are an interrupted download (truncated file), reader problems rather than file problems, password encryption, or a mislabeled file. Try a different reader first, re-download, then repair the structure with a free tool like Repair PDF."
+            },
+            {
+                question: "How do I fix a corrupted PDF file for free?",
+                answer: "Upload it to a free repair tool like PdfPixels Repair PDF. It rebuilds the cross-reference table and page tree and returns every readable page. Files that were overwritten with unrelated data cannot be recovered."
+            },
+            {
+                question: "Why does my PDF open but show blank pages?",
+                answer: "Blank pages usually mean damaged internal streams or a viewer rendering glitch. Open the file in a different reader to isolate the cause; if the blanks follow the file, repair it to rewrite the streams cleanly."
+            },
+            {
+                question: "How do I open a password-protected PDF?",
+                answer: "Enter the password when prompted, or remove the encryption entirely with Unlock PDF so the file opens normally everywhere — provided you have the password. Without it, legitimate tools will not bypass the encryption."
+            },
+            {
+                question: "Why does a PDF open in Chrome but not Adobe (or vice versa)?",
+                answer: "Different PDF engines have different strengths and bugs. Chrome's built-in viewer is more forgiving of structural damage; desktop readers handle advanced features better. If one fails, try the other, then repair the file so both work."
+            },
+        ],
+    },
+    {
+        slug: "combine-screenshots-into-one",
+        title: "How to Combine Screenshots Into One Image or One PDF",
+        excerpt: "A chat conversation, a proof of payment, a thread of evidence — screenshots multiply fast, and the recipient wants one file. Here is how to stack or grid them into a single image, or bind them into one clean PDF, in any browser.",
+        date: "Sep 25, 2026",
+        dateModified: "Sep 25, 2026",
+        category: "Image Tools",
+        author: "PdfPixels Editorial",
+        authorRole: "PdfPixels team",
+        readTime: "6 min read",
+        metaDescription: "Combine multiple screenshots into one long image or a single PDF — vertical stacks, side-by-side grids, or multi-page PDFs, free in any browser on phone or desktop.",
+        keywords: [
+            "combine screenshots into one image",
+            "merge screenshots online",
+            "stitch screenshots together",
+            "combine screenshots into one pdf",
+            "join multiple screenshots vertically",
+            "screenshot stitcher online free",
+            "merge images phone",
+            "combine photos into one file",
+            "multiple screenshots one file",
+            "stack screenshots app"
+        ],
+        coverImage: "/images/blog/combine-screenshots-into-one-hero.jpg",
+        imageAlt: "Several phone screenshots merging into one long stacked image file",
+        content: `
+Screenshots are how phones capture everything from bank transfers to chat arguments to booking confirmations — and they multiply. What the recipient actually wants is *one file*: the whole conversation, the whole proof, the whole process, in a single attachment that opens in the right order. Sending nine separate screenshot files gets you nine chances for one to be missed.
+
+There are two destinations, and picking the right one first saves redoing the work:
+
+- **One image** — for chats, social posts, and anywhere a picture is expected. Screenshots stack vertically (the natural reading order) or sit side by side.
+- **One PDF** — for portals, email formalities, and anywhere "document" is the operative word. Every screenshot becomes a page, in order, printable.
+
+> [!TIP]
+> **Fastest paths:** [Merge Images](/tools/join-images-online) stacks or grids screenshots into one image; [Image to PDF](/tools/image-to-pdf) binds them into one document. Both are free and run in the browser — including on the phone where the screenshots live.
+
+---
+
+## Quick Answer: Screenshots to One File (AEO / Snippet)
+
+1. **Choose the output:** image for sharing, PDF for documents and portals.
+2. **Upload the screenshots in order** to [Merge Images](/tools/join-images-online) (one image) or [Image to PDF](/tools/image-to-pdf) (one PDF).
+3. **Pick the layout:** vertical stack, horizontal row, or a grid.
+4. **Download** the single combined file.
+
+---
+
+## First: Get the Screenshots in Order
+
+Combining amplifies ordering mistakes — a chat conversation pasted bottom-to-top reads backwards forever. On both iPhone and Android, the share sheet and gallery let you select multiple screenshots at once, but selection order is not always display order. Arrange them deliberately in the tool's drag-and-drop list before combining; it takes ten seconds and saves the embarrassment of evidence presented out of sequence.
+
+## Combining Into One Image
+
+[Merge Images](/tools/join-images-online) gives you three layouts:
+
+- **Vertical stack** — screenshots joined top to bottom into one long image. This is the default for conversations and threads; it reads like the original screen. Different widths get aligned consistently.
+- **Horizontal row** — screenshots side by side. Right for before/after comparisons and multi-panel proofs where the sequence is wide, not deep.
+- **Grid** — rows and columns. Right when you have many similar screenshots (product listings, message snippets) and want a compact overview rather than a scroll.
+
+One nuance worth knowing: phone screenshots are tall and narrow, so horizontal rows of many screenshots become tiny and unreadable fast. If the combined image is meant to be *read*, stack vertically. If it is meant to be *glanced at*, grid.
+
+## Combining Into One PDF
+
+For anything document-shaped — receipts, forms, confirmations — [Image to PDF](/tools/image-to-pdf) turns each screenshot into a page of one PDF, in your chosen order, with sensible page fitting. Two reasons this beats the image route for formal purposes: PDFs print predictably at paper size, and portals that reject image uploads happily accept PDF.
+
+If the screenshots are photographs of paper rather than screen captures, the same tool completes the scan-to-PDF workflow described in [our phone-scanning guide](/blog/scan-documents-with-phone-to-pdf).
+
+## The Trimming Step Nobody Mentions
+
+Raw screenshots carry baggage: the status bar, the browser chrome, the keyboard, everything below the relevant content. Combined into a stack, that baggage repeats on every panel and the composite becomes mostly margins. Trim each screenshot to the relevant region first — [Crop Image](/tools/crop-image) handles it one at a time in the same browser session — and the combined result goes from obviously-handmade to genuinely clean. Sixty seconds of cropping is the difference between "screenshots taped together" and a document.
+
+## Common Failures and Fixes
+
+- **The combined image is huge and blurry when shared.** Messaging apps re-compress aggressively; long stacks suffer most. For sharing through a chat, consider the PDF route — it arrives lossless.
+- **Sizes don't line up.** Screenshots from different phones mix widths. The merge tool aligns them; if one screenshot is wildly different, crop it to match first.
+- **The PDF pages have awkward white bands.** Choose "fit image" rather than "fill page" in Image to PDF so each page hugs the screenshot's shape.
+- **Order came out wrong.** Re-order in the tool and re-combine — the originals are untouched.
+
+## Bottom Line
+
+Nine screenshots are a mess; one file is a document. Stack or grid them into an image with [Merge Images](/tools/join-images-online) for sharing, bind them into a PDF with [Image to PDF](/tools/image-to-pdf) for anything formal — order them deliberately, trim the chrome, and send one file instead of nine.
+
+        `,
+        faq: [
+            {
+                question: "How do I combine multiple screenshots into one image?",
+                answer: "Upload the screenshots to a free tool like PdfPixels Merge Images, arrange them in order, choose a vertical stack, horizontal row, or grid layout, and download the single combined image."
+            },
+            {
+                question: "How do I combine screenshots into one PDF?",
+                answer: "Use Image to PDF: add the screenshots in order and convert. Each screenshot becomes one page of a single PDF, which prints predictably and passes portals that reject image files."
+            },
+            {
+                question: "How do I combine screenshots on my phone without an app?",
+                answer: "Both Merge Images and Image to PDF run in the mobile browser. Select the screenshots from your gallery in the tool, order them, and download — no app installation needed."
+            },
+            {
+                question: "How do I stitch long screenshots of a chat conversation?",
+                answer: "Stack them vertically in Merge Images so the conversation reads top to bottom. Trim the status bars and keyboards from each screenshot with Crop Image first so the stack is not mostly repeated margins."
+            },
+            {
+                question: "Is it better to combine screenshots into an image or a PDF?",
+                answer: "An image for chats and social sharing where a picture is expected; a PDF for anything formal — documents print at paper size, arrive lossless through messaging apps, and pass upload portals that reject images."
+            },
+        ],
+    },
 ];
 
 // Helper functions
@@ -5978,8 +6310,60 @@ export const coverImageDimensions: Record<string, { width: number; height: numbe
     '/images/blog/fill-pdf-form-online-free-hero.jpg': { width: 1280, height: 720 },
     '/images/blog/scan-documents-phone-pdf-hero.jpg': { width: 1280, height: 720 },
     '/images/blog/passport-photo-signature-combined-hero.jpg': { width: 1280, height: 720 },
+    '/images/blog/reduce-photo-file-size-hero.jpg': { width: 1280, height: 720 },
+    '/images/blog/fix-pdf-not-opening-hero.jpg': { width: 1280, height: 720 },
+    '/images/blog/combine-screenshots-into-one-hero.jpg': { width: 1280, height: 720 },
 };
 
 export function getCoverDimensions(coverImage: string): { width: number; height: number } {
     return coverImageDimensions[coverImage] ?? { width: 1200, height: 630 };
+}
+
+// Curated tool → post mappings for the "Further reading" panel on tool pages.
+// Hand-mapped (not keyword-matched) so every link is genuinely useful; posts
+// consolidated into hubs must never appear here (see consolidatedBlogSlugs).
+const toolSlugToPostSlugs: Record<string, string[]> = {
+    'compress-pdf': ['how-to-compress-pdf-online', 'reduce-pdf-size-for-email', 'why-is-pdf-file-so-large-fix'],
+    'compress-pdf-to-50kb': ['compress-pdf-for-government-job-form-upload', 'compress-pdf-to-200kb-email-attachment'],
+    'compress-pdf-to-100kb': ['compress-pdf-for-government-job-form-upload', 'compress-pdf-to-200kb-email-attachment'],
+    'compress-pdf-to-200kb': ['compress-pdf-to-200kb-email-attachment', 'compress-pdf-under-1mb'],
+    'compress-pdf-to-300kb': ['compress-pdf-to-200kb-email-attachment'],
+    'compress-pdf-to-500kb': ['compress-pdf-to-200kb-email-attachment', 'how-to-send-large-pdf-files-through-email'],
+    'compress-pdf-under-1mb': ['compress-pdf-under-1mb', 'reduce-pdf-size-for-email'],
+    'compress-image': ['reduce-photo-file-size'],
+    'merge-pdf': ['merge-pdf-online-free'],
+    'split-pdf': ['how-to-send-large-pdf-files-through-email'],
+    'split-pdf-by-size': ['how-to-send-large-pdf-files-through-email', 'reduce-pdf-size-for-email'],
+    'image-to-pdf': ['convert-jpg-to-pdf-online-no-software', 'scan-documents-with-phone-to-pdf', 'combine-screenshots-into-one'],
+    'join-images-online': ['combine-screenshots-into-one'],
+    'heic-to-jpg': ['heic-to-jpg-convert-iphone-photos', 'how-to-convert-heic-to-jpg-windows'],
+    'fill-pdf': ['fill-pdf-form-online-free', 'how-to-edit-pdf-online-free-adobe-alternative'],
+    'sign-pdf': ['how-to-edit-pdf-online-free-adobe-alternative'],
+    'protect-pdf': ['password-protect-pdf-online-free'],
+    'repair-pdf': ['fix-pdf-not-opening'],
+    'pdf-reader': ['fix-pdf-not-opening'],
+    'linearize-pdf': ['fix-pdf-not-opening'],
+    'resize-image': ['resize-photo-600x600-dv-lottery-visa'],
+    'passport-size-photo': ['resize-photo-600x600-dv-lottery-visa'],
+    'merge-photo-and-signature': ['passport-photo-signature-combined'],
+    'add-watermark-pdf': ['add-confidential-watermark-to-pdf'],
+    'add-page-numbers-to-pdf': ['add-page-numbers-to-pdf-online'],
+    'pdf-to-word': ['how-to-edit-pdf-online-free-adobe-alternative'],
+    'increase-image-quality': ['ai-image-enhancer-fix-blurry-photos'],
+    'remove-image-background': ['ai-background-remover-free-tools-guide'],
+    'png-to-jpeg': ['png-to-jpg-converter-how-when-to-switch', 'webp-vs-jpg-vs-png-which-format'],
+    'webp-to-jpg': ['webp-vs-jpg-vs-png-which-format'],
+    'webp-to-png': ['webp-vs-jpg-vs-png-which-format'],
+    'svg-to-png': ['svg-to-png-converter-free-guide'],
+    'photo-metadata-viewer': ['remove-exif-gps-data-from-photos'],
+    'remove-image-metadata': ['remove-exif-gps-data-from-photos'],
+};
+
+export function getPostsForTool(toolSlug: string): BlogPost[] {
+    const slugs = toolSlugToPostSlugs[toolSlug];
+    if (!slugs) return [];
+    return slugs
+        .map((postSlug) => blogPosts.find((post) => post.slug === postSlug))
+        .filter((post): post is BlogPost =>
+            Boolean(post) && !consolidatedBlogSlugs.has(post!.slug));
 }
