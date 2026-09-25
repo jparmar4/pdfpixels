@@ -207,6 +207,11 @@ const PDFToPptxWorkspace = dynamic(
   { loading: () => <WorkspaceLoading /> }
 );
 
+const PhotoCollageWorkspace = dynamic(
+  () => import('@/components/layout/photo-collage-workspace').then(mod => ({ default: mod.PhotoCollageWorkspace })),
+  { loading: () => <WorkspaceLoading /> }
+);
+
 const CropWorkspace = dynamic(
   () => import('@/components/layout/crop-workspace').then(mod => ({ default: mod.CropWorkspace })),
   { loading: () => <WorkspaceLoading /> }
@@ -314,6 +319,9 @@ function getWorkspaceComponent(toolId: string) {
   // ── Dev / format utilities ──
   if (toolId === 'png-to-ico') return <PNGToIcoWorkspace />;
   if (toolId === 'image-to-base64') return <ImageToBase64Workspace />;
+
+  // ── Collage ──
+  if (toolId === 'photo-collage') return <PhotoCollageWorkspace />;
 
   // ── AI-powered tools ──
   if (toolId === 'blur-background') return <BlurBackgroundWorkspace />;

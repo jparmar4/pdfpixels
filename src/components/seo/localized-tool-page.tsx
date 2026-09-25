@@ -7,6 +7,7 @@ import {
   getLocalePack,
   getLocalizedTool,
   LOCALIZED_TOOL_SLUGS,
+  LOCALIZED_LOCALES,
   toolLanguageAlternates,
   type LocaleCode,
 } from '@/lib/localized-tools';
@@ -64,7 +65,7 @@ export function LocalizedToolPage({ locale, slug }: { locale: LocaleCode; slug: 
           <Link className="font-semibold text-primary" href={`/tools/${slug}`}>
             {pack.englishLabel}
           </Link>
-          {(['de', 'fr', 'jp'] as const)
+          {LOCALIZED_LOCALES
             .filter((item) => item !== locale)
             .map((item) => (
               <Link key={item} className="font-semibold text-primary" href={`/${item}/tools/${slug}`}>

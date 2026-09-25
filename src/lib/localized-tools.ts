@@ -7,10 +7,15 @@ export const LOCALIZED_TOOL_SLUGS = [
   'pdf-to-jpg',
   'image-to-pdf',
   'heic-to-jpg',
+  'ocr-pdf',
+  'split-pdf-by-size',
+  'compress-pdf-to-50kb',
 ] as const;
 
 export type LocalizedToolSlug = (typeof LOCALIZED_TOOL_SLUGS)[number];
 export type LocaleCode = 'de' | 'fr' | 'jp' | 'es' | 'pt';
+
+export const LOCALIZED_LOCALES: LocaleCode[] = ['de', 'fr', 'jp', 'es', 'pt'];
 
 export type LocalizedToolCopy = {
   name: string;
@@ -103,6 +108,42 @@ const deTools: Record<LocalizedToolSlug, LocalizedToolCopy> = {
       'JPG herunterladen.',
     ],
   },
+  'ocr-pdf': {
+    name: 'PDF-OCR (Texterkennung)',
+    title: 'PDF-OCR – Text aus Scans erkennen, kostenlos',
+    description: 'Text aus gescannten PDFs per Texterkennung auslesen und als durchsuchbaren Text speichern.',
+    howTitle: 'Text aus Scans erkennen',
+    intro: 'Jede Seite wird hochauflösend gerastert und per OCR ausgewertet. Enthält das PDF bereits echten Text, wird dieser direkt extrahiert. Pro Durchlauf werden höchstens 10 Seiten erkannt.',
+    steps: [
+      'Gescanntes PDF hochladen (höchstens 50 MB).',
+      'Die Texterkennung starten.',
+      'Text kopieren oder als TXT herunterladen.',
+    ],
+  },
+  'split-pdf-by-size': {
+    name: 'PDF nach Größe teilen',
+    title: 'PDF nach Dateigröße teilen – kostenlos, ohne Anmeldung',
+    description: 'Ein großes PDF in Teile unter einem frei wählbaren Größenlimit aufteilen – ideal für E-Mail-Anhänge.',
+    howTitle: 'In Teile unter dem Größenlimit aufteilen',
+    intro: 'Seiten werden der Reihe nach in ein Teildokument kopiert und die tatsächliche Dateigröße gemessen. Kurz vor dem Limit beginnt ein neuer Teil. Es entstehen höchstens 100 Teile mit je 300 Seiten.',
+    steps: [
+      'PDF hochladen (höchstens 50 MB).',
+      'Limit wählen, z. B. 25 MB für Gmail.',
+      'ZIP mit den Teilen herunterladen.',
+    ],
+  },
+  'compress-pdf-to-50kb': {
+    name: 'PDF auf 50 KB komprimieren',
+    title: 'PDF auf 50 KB komprimieren – kostenlos, ohne Anmeldung',
+    description: 'PDFs für strenge Portal-Limits auf 50 KB verkleinern, mit ehrlichem Ergebnis.',
+    howTitle: 'Auf 50 KB verkleinern',
+    intro: 'Das Extrem-Profil reduziert Bilder und Streams so weit wie möglich auf das 50-KB-Ziel. Vektortext bleibt scharf. Erreicht die Datei das Ziel nicht, sagt das Tool das ehrlich.',
+    steps: [
+      'PDF hochladen (höchstens 50 MB).',
+      'Das extreme Profil auf 50 KB anwenden.',
+      'Ergebnis prüfen und herunterladen.',
+    ],
+  },
 };
 
 const esTools: Record<LocalizedToolSlug, LocalizedToolCopy> = {
@@ -176,6 +217,42 @@ const esTools: Record<LocalizedToolSlug, LocalizedToolCopy> = {
       'Sube el archivo HEIC.',
       'Inicia la conversión.',
       'Descarga el JPG.',
+    ],
+  },
+  'ocr-pdf': {
+    name: 'OCR PDF',
+    title: 'OCR PDF – gratis, sin registro',
+    description: 'Reconoce el texto de PDFs escaneados mediante OCR y recíbelo como texto seleccionable.',
+    howTitle: 'Reconocer texto de páginas escaneadas',
+    intro: 'Cada página se rasteriza en alta resolución y se procesa con OCR. Si el PDF ya contiene una capa de texto real, se extrae directamente. Máximo 10 páginas por procesamiento.',
+    steps: [
+      'Sube un PDF escaneado (máximo 50 MB).',
+      'Inicia el reconocimiento.',
+      'Copia el texto o descárgalo en TXT.',
+    ],
+  },
+  'split-pdf-by-size': {
+    name: 'Dividir PDF por tamaño',
+    title: 'Dividir PDF por tamaño – gratis, sin registro',
+    description: 'Divide un PDF grande en partes bajo un límite que elijas, pensado para los límites de los adjuntos de correo.',
+    howTitle: 'Dividir bajo el límite de tamaño',
+    intro: 'Las páginas se copian una a una y se mide el tamaño real del archivo tras cada una. Una nueva parte comienza justo antes de superar el límite. Máximo 100 partes de 300 páginas.',
+    steps: [
+      'Sube un PDF (máximo 50 MB).',
+      'Elige un límite, por ejemplo 25 MB para Gmail.',
+      'Descarga el ZIP con las partes.',
+    ],
+  },
+  'compress-pdf-to-50kb': {
+    name: 'Comprimir PDF a 50KB',
+    title: 'Comprimir PDF a 50KB – gratis, sin registro',
+    description: 'Reduce PDFs a 50KB para portales con límites estrictos, con resultados honestos.',
+    howTitle: 'Reducir a 50KB',
+    intro: 'El perfil extremo reduce imágenes y flujos al máximo hacia el objetivo de 50KB. El texto vectorial queda nítido. Si el objetivo no se alcanza, la herramienta lo indica con claridad.',
+    steps: [
+      'Sube un PDF (máximo 50 MB).',
+      'Aplica el perfil extremo hacia 50KB.',
+      'Revisa el resultado y descárgalo.',
     ],
   },
 };
@@ -253,6 +330,42 @@ const ptTools: Record<LocalizedToolSlug, LocalizedToolCopy> = {
       'Baixe o JPG.',
     ],
   },
+  'ocr-pdf': {
+    name: 'OCR de PDF',
+    title: 'OCR de PDF – grátis, sem cadastro',
+    description: 'Reconheça o texto de PDFs escaneados com OCR e receba-o como texto selecionável.',
+    howTitle: 'Reconhecer texto de páginas escaneadas',
+    intro: 'Cada página é renderizada em alta resolução e processada com OCR. Se o PDF já contiver uma camada de texto real, ela é extraída diretamente. Máximo de 10 páginas por processamento.',
+    steps: [
+      'Envie um PDF escaneado (máximo de 50 MB).',
+      'Inicie o reconhecimento.',
+      'Copie o texto ou baixe em TXT.',
+    ],
+  },
+  'split-pdf-by-size': {
+    name: 'Dividir PDF por tamanho',
+    title: 'Dividir PDF por tamanho – grátis, sem cadastro',
+    description: 'Divida um PDF grande em partes dentro de um limite que você escolher — ideal para anexos de e-mail.',
+    howTitle: 'Dividir pelo limite de tamanho',
+    intro: 'As páginas são copiadas uma a uma e o tamanho real do arquivo é medido após cada uma. Uma nova parte começa logo antes de estourar o limite. Máximo de 100 partes de 300 páginas.',
+    steps: [
+      'Envie um PDF (máximo de 50 MB).',
+      'Escolha um limite, por exemplo 25 MB para o Gmail.',
+      'Baixe o ZIP com as partes.',
+    ],
+  },
+  'compress-pdf-to-50kb': {
+    name: 'Comprimir PDF para 50KB',
+    title: 'Comprimir PDF para 50KB – grátis, sem cadastro',
+    description: 'Reduza PDFs para 50KB em portais com limites rigorosos, com resultado honesto.',
+    howTitle: 'Reduzir para 50KB',
+    intro: 'O perfil extremo reduz imagens e fluxos ao máximo rumo à meta de 50KB. O texto vetorial permanece nítido. Se a meta for inalcançável, a ferramenta avisa com clareza.',
+    steps: [
+      'Envie um PDF (máximo de 50 MB).',
+      'Aplique o perfil extremo para 50KB.',
+      'Confira o resultado e baixe.',
+    ],
+  },
 };
 
 const frTools: Record<LocalizedToolSlug, LocalizedToolCopy> = {
@@ -319,13 +432,49 @@ const frTools: Record<LocalizedToolSlug, LocalizedToolCopy> = {
   'heic-to-jpg': {
     name: 'HEIC en JPG',
     title: 'Convertir HEIC en JPG – gratuit, sans inscription',
-    description: 'Transformer une photo iPhone HEIC en JPG ouvrable sous Windows.',
-    howTitle: 'Convertir une photo HEIC',
+    description: 'Convertir les photos HEIC de l’iPhone en JPG, lisible sous Windows.',
+    howTitle: 'Convertir les photos HEIC',
     intro: 'La conversion HEIC vers JPG se fait sur le serveur. Chaque fichier est limité à 25 Mo.',
     steps: [
-      'Déposez le fichier HEIC.',
+      'Déposez un fichier HEIC.',
       'Lancez la conversion.',
       'Téléchargez le JPG.',
+    ],
+  },
+  'ocr-pdf': {
+    name: 'OCR PDF',
+    title: 'OCR PDF – reconnaître le texte des scans, gratuitement',
+    description: 'Extraire le texte des PDF scannés grâce à la reconnaissance optique de caractères.',
+    howTitle: 'Reconnaître le texte des pages scannées',
+    intro: 'Chaque page est rasterisée en haute résolution puis analysée par OCR. Si le PDF contient déjà une couche de texte réelle, elle est extraite directement. Maximum 10 pages par traitement.',
+    steps: [
+      'Déposez un PDF scanné (50 Mo maximum).',
+      'Lancez la reconnaissance.',
+      'Copiez le texte ou téléchargez-le en TXT.',
+    ],
+  },
+  'split-pdf-by-size': {
+    name: 'Diviser un PDF par taille',
+    title: 'Diviser un PDF par taille – gratuit, sans inscription',
+    description: 'Découper un PDF volumineux en parties sous une limite choisie, pour les envois par e-mail.',
+    howTitle: 'Découper sous la limite de taille',
+    intro: 'Les pages sont copiées une à une et la taille réelle du fichier est mesurée après chaque page. Une nouvelle partie commence juste avant le dépassement. Maximum 100 parties de 300 pages.',
+    steps: [
+      'Déposez un PDF (50 Mo maximum).',
+      'Choisissez une limite, par exemple 25 Mo pour Gmail.',
+      'Téléchargez le ZIP des parties.',
+    ],
+  },
+  'compress-pdf-to-50kb': {
+    name: 'Compresser un PDF à 50 Ko',
+    title: 'Compresser un PDF à 50 Ko – gratuit, sans inscription',
+    description: 'Réduire un PDF sous 50 Ko pour les portails les plus stricts, avec un résultat honnête.',
+    howTitle: 'Réduire à 50 Ko',
+    intro: 'Le profil extrême réduit au maximum images et flux vers l’objectif de 50 Ko. Le texte vectoriel reste net. Si la cible est inatteignable, l’outil le dit franchement.',
+    steps: [
+      'Déposez un PDF (50 Mo maximum).',
+      'Appliquez le profil extrême vers 50 Ko.',
+      'Vérifiez le résultat puis téléchargez.',
     ],
   },
 };
@@ -401,6 +550,42 @@ const jpTools: Record<LocalizedToolSlug, LocalizedToolCopy> = {
       'HEICをアップロード。',
       '変換を開始。',
       'JPGをダウンロード。',
+    ],
+  },
+  'ocr-pdf': {
+    name: 'PDFをOCR',
+    title: 'PDFをOCR – 無料、登録不要',
+    description: 'スキャンしたPDFからOCRで文字を認識し、検索・コピーできるテキストにします。',
+    howTitle: 'スキャンページの文字を認識',
+    intro: '各ページを高解像度でレンダリングし、OCRで認識します。すでにテキスト層があるPDFはそのまま抽出します。1回につき10ページまでです。',
+    steps: [
+      'スキャンしたPDFをアップロード（最大50MB）。',
+      '認識を開始する。',
+      'テキストをコピー、またはTXTでダウンロード。',
+    ],
+  },
+  'split-pdf-by-size': {
+    name: 'サイズでPDFを分割',
+    title: 'サイズでPDFを分割 – 無料、登録不要',
+    description: '大きなPDFを指定サイズ以下のパートに分割します。メール添付の容量制限対策に。',
+    howTitle: 'サイズ制限ごとに分割',
+    intro: 'ページを順にコピーし、保存後の実際のサイズを測定します。制限を超える直前で新しいパートに切り替えます。パートは最大100、各300ページまでです。',
+    steps: [
+      'PDFをアップロード（最大50MB）。',
+      '制限サイズを選ぶ（Gmailは25MBなど）。',
+      'パート入りのZIPをダウンロード。',
+    ],
+  },
+  'compress-pdf-to-50kb': {
+    name: 'PDFを50KBに圧縮',
+    title: 'PDFを50KBに圧縮 – 無料、登録不要',
+    description: '厳しいサイズ制限向けにPDFを50KBまで圧縮します。結果は正直に表示します。',
+    howTitle: '50KBまで圧縮',
+    intro: '最強プリセットが画像とストリームを50KB目標まで最大限に削減します。ベクトルテキストは鮮明なまま。目標に届かない場合は、その旨をはっきり伝えます。',
+    steps: [
+      'PDFをアップロード（最大50MB）。',
+      '50KB向けの最強プリセットを実行。',
+      '結果を確認してダウンロード。',
     ],
   },
 };

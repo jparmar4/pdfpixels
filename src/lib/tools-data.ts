@@ -57,6 +57,7 @@ import {
   ScanText,
   Images,
   Code2,
+  LayoutGrid,
 } from 'lucide-react';
 
 export type Tool = {
@@ -894,6 +895,18 @@ export const toolCategories: ToolCategory[] = [
         icon: Merge,
         category: 'basic-editing',
         keywords: ['join images', 'merge images', 'combine images', 'collage maker', 'stitch images', 'join images online'],
+        processing: 'client',
+      },
+      {
+        id: 'photo-collage',
+        slug: 'photo-collage',
+        name: 'Photo Collage Maker',
+        description: 'Combine multiple photos into one collage with grid layouts, spacing, and background you control. Runs entirely in your browser.',
+        icon: LayoutGrid,
+        category: 'basic-editing',
+        keywords: ['photo collage', 'photo collage maker', 'collage maker online free', 'combine photos into collage', 'photo grid maker', 'picture collage', 'make a collage online'],
+        popular: true,
+        badge: 'New',
         processing: 'client',
       },
       {

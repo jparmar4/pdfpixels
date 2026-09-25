@@ -3551,6 +3551,41 @@ export const toolContentMap: Record<string, ToolContent> = {
         relatedTools: ['avif-to-jpg', 'webp-to-png', 'jpeg-to-png', 'png-to-ico'],
     },
 
+    'photo-collage': {
+        about: 'Photo Collage Maker combines multiple photos into one composed image — a grid of your choosing with adjustable spacing and background, exported as a single JPG or PNG. Unlike a folder of loose pictures, a collage tells the whole story in one glance: the trip, the before-and-after, the full product lineup. Everything renders locally in your browser with the canvas API, so the photos are never uploaded anywhere, and each cell exports at 640 pixels for a sharp result at typical share sizes.',
+        directAnswer: 'The Photo Collage Maker by PdfPixels combines up to 9 photos into one grid collage with your choice of layout, spacing, and background. Add photos, pick a layout, and download the finished image — free, no signup.',
+        features: [
+            'Six grid layouts from 1×2 up to 3×3',
+            'Adjustable spacing and background color (or transparency)',
+            'JPG and PNG export at 640px per cell',
+            'Photos fill in order — remove and re-add to rearrange',
+            'Runs 100% in your browser; photos never leave your device',
+        ],
+        useCases: [
+            'Turning a trip’s photos into one shareable vacation collage',
+            'Building before/after and product-lineup comparisons',
+            'Composing photo grids for social posts and profiles',
+            'Sending one image instead of nine separate attachments',
+        ],
+        faqs: [
+            { question: 'How do I make a photo collage online for free?', answer: 'Add your photos to PdfPixels Photo Collage Maker, choose a grid layout, adjust spacing and background, and download the finished image. It is free, needs no account, and runs in your browser.' },
+            { question: 'How many photos can a collage hold?', answer: 'Up to 9, matching the 3×3 layout. Smaller layouts such as 2×2 use the first photos in the list.' },
+            { question: 'How do I change the order of photos in the collage?', answer: 'Photos fill the grid left to right, top to bottom, in the order shown in the thumbnail strip. Remove a photo and re-add it in the right position to rearrange.' },
+            { question: 'Are my photos uploaded to a server?', answer: 'No. Collages are composed with the browser’s canvas API on your device — nothing is uploaded, and the tool works offline once the page has loaded.' },
+        ],
+        steps: [
+            { title: 'Add your photos', description: 'Drag or pick up to 9 images from your device.' },
+            { title: 'Choose the layout', description: 'Pick a grid, then tune spacing and background color.' },
+            { title: 'Download the collage', description: 'Export as JPG or PNG with one click.' },
+        ],
+        commonProblems: [
+            { problem: 'A photo is cropped oddly in its cell', solution: 'Cells are square and photos are center-cropped to fill them. Pre-crop the source to a square with Square Crop for full control over what stays visible.' },
+            { problem: 'The downloaded collage looks soft when zoomed', solution: 'Each cell exports at 640 pixels — designed for screens and social. For large prints, keep the layout to 2×2 or fewer cells per side.' },
+        ],
+        supportedFormats: 'Input: JPG, PNG, WebP (up to 9 images) | Output: JPG or PNG',
+        relatedTools: ['join-images-online', 'image-to-pdf', 'square-image-cropper', 'resize-image'],
+    },
+
     'jpg-to-avif': {
         about: 'JPG to AVIF re-encodes ordinary JPG photos into AVIF, the modern format that delivers the same visual quality at a fraction of the file size — commonly 30–50% smaller. Smaller images mean faster page loads, better Core Web Vitals, cheaper data, and snappier uploads. The conversion runs server-side with a real AVIF encoder, so the output is a genuine AVIF file rather than a renamed copy.',
         directAnswer: 'The JPG to AVIF converter by PdfPixels re-encodes JPG photos into the modern AVIF format, cutting file size 30–50% at the same visual quality. Upload a JPG and download the AVIF for free.',
