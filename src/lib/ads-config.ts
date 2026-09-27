@@ -23,8 +23,7 @@ export const adsConfig = {
   enabled:
     process.env.NODE_ENV === 'production' &&
     process.env.NEXT_PUBLIC_ADSENSE_ENABLED !== 'false' &&
-    Boolean(process.env.NEXT_PUBLIC_ADSENSE_PUBLISHER_ID || DEFAULT_PUBLISHER_ID) &&
-    hasConfiguredAdSlot(),
+    Boolean(process.env.NEXT_PUBLIC_ADSENSE_PUBLISHER_ID || DEFAULT_PUBLISHER_ID),
 
   // Ad slot IDs for different placements
   // Get these from your AdSense dashboard when you create ad units

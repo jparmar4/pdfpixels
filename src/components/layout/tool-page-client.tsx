@@ -212,6 +212,11 @@ const PhotoCollageWorkspace = dynamic(
   { loading: () => <WorkspaceLoading /> }
 );
 
+const PDFWordCounterWorkspace = dynamic(
+  () => import('@/components/layout/pdf-word-counter-workspace').then(mod => ({ default: mod.PDFWordCounterWorkspace })),
+  { loading: () => <WorkspaceLoading /> }
+);
+
 const CropWorkspace = dynamic(
   () => import('@/components/layout/crop-workspace').then(mod => ({ default: mod.CropWorkspace })),
   { loading: () => <WorkspaceLoading /> }
@@ -292,7 +297,9 @@ function getWorkspaceComponent(toolId: string) {
   if (toolId === 'excel-to-pdf') return <ExcelToPDFWorkspace />;
   if (toolId === 'powerpoint-to-pdf') return <PowerPointToPDFWorkspace />;
   if (toolId === 'pdf-to-word') return <PDFToWordWorkspace />;
-  if (toolId === 'pdf-to-excel') return <PDFToExcelWorkspace />;
+  if (toolId === 'pdf-to-excel') return <PDFToExcelWorkspace initialFormat="xlsx" />;
+  if (toolId === 'pdf-to-csv') return <PDFToExcelWorkspace initialFormat="csv" />;
+  if (toolId === 'pdf-word-counter') return <PDFWordCounterWorkspace />;
   if (toolId === 'bank-statement-to-excel') return <BankStatementWorkspace />;
   if (toolId === 'bates-numbering-pdf') return <BatesNumberingWorkspace />;
   if (toolId === 'sanitize-pdf') return <SanitizePdfWorkspace />;

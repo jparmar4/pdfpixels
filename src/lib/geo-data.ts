@@ -646,6 +646,216 @@ export const geoRegions: GeoRegion[] = [
       },
     ],
   },
+  {
+    code: 'de',
+    name: 'Germany',
+    adjective: 'German',
+    locale: 'de-DE',
+    localCopy: 'in Deutschland bewährt',
+    headline: 'Kostenlose PDF- & Bild-Tools für deutsche Bewerbungen, Behörden und Alltag',
+    intro:
+      'In Deutschland fordern Arbeitgeber und Portale oft eine einzige PDF für alle Bewerbungsunterlagen, Scans unter 5 MB für behördliche Uploads (Finanzamt, BAföG, Universitäten) und das Umwandeln von iPhone-HEIC-Fotos für Windows-Büros. PdfPixels bietet kostenlose, datenschutzkonforme Browser-Tools für diese Aufgaben — ohne Software-Installation und ohne Registrierungszwang.',
+    commonTasks: [
+      {
+        title: 'Bewerbungsunterlagen zusammenführen',
+        detail: 'Lebenslauf, Zeugnisse und Anschreiben in eine geordnete PDF verbinden.',
+        href: '/de/tools/merge-pdf',
+      },
+      {
+        title: 'PDF verkleinern für Portale',
+        detail: 'Scans auf unter 2 MB oder 5 MB für Upload-Formulare komprimieren.',
+        href: '/de/tools/compress-pdf',
+      },
+      {
+        title: 'Texterkennung (OCR) für Scans',
+        detail: 'Gescannten Text aus Dokumenten durchsuchbar und kopierbar machen.',
+        href: '/de/tools/ocr-pdf',
+      },
+    ],
+    localNotes: [
+      'Deutsche Behörden und Firmen verlangen meist eine einzige PDF mit logischer Seitenreihenfolge.',
+      'DSGVO-konforme Verarbeitung: Browser-native Tools verarbeiten Daten direkt auf Ihrem Gerät; serverseitige Dateien werden nach 60 Minuten gelöscht.',
+      'Smartphone-Fotos im HEIC-Format vor dem Versand in kompatibles JPG umwandeln.',
+    ],
+    faqs: [
+      {
+        question: 'Sind die PdfPixels-Tools in Deutschland kostenlos?',
+        answer: 'Ja. Alle Standard-PDF- und Bild-Werkzeuge können ohne Kosten und ohne Registrierung genutzt werden.',
+      },
+      {
+        question: 'Werden Dokumente datenschutzkonform nach DSGVO verarbeitet?',
+        answer: 'Ja. Werkzeuge laufen entweder direkt in Ihrem Browser oder verarbeiten Dateien flüchtig mit automatischer Löschung binnen 60 Minuten.',
+      },
+    ],
+  },
+  {
+    code: 'fr',
+    name: 'France',
+    adjective: 'French',
+    locale: 'fr-FR',
+    localCopy: 'adopté en France',
+    headline: 'Outils PDF et image gratuits pour démarches administratives, CV et envois par email',
+    intro:
+      'En France, les usagers font face à des limites strictes de poids de fichier pour les démarches en ligne (Parcoursup, CAF, impôts, titres de séjour, candidatures). Les photos iPhone en HEIC bloquent souvent les ordinateurs de bureau. PdfPixels permet de fusionner vos justificatifs, compresser des scans volumineux et convertir des formats directement dans le navigateur, gratuitement et sans inscription.',
+    commonTasks: [
+      {
+        title: 'Fusionner vos pièces justificatives',
+        detail: 'Combiner CV, lettre de motivation et diplômes en un seul PDF ordonné.',
+        href: '/fr/tools/merge-pdf',
+      },
+      {
+        title: 'Compresser un PDF pour les téléservices',
+        detail: 'Réduire le poids de vos scans pour respecter les plafonds de 2 Mo ou 5 Mo.',
+        href: '/fr/tools/compress-pdf',
+      },
+      {
+        title: 'Convertir photos HEIC en JPG',
+        detail: 'Rendre vos photos d’iPhone lisibles sur tous les systèmes Windows et portails.',
+        href: '/fr/tools/heic-to-jpg',
+      },
+    ],
+    localNotes: [
+      'Les téléservices publics français exigent souvent des fichiers de moins de 2 Mo ou 5 Mo par document.',
+      'Conformité RGPD : traitement local dans le navigateur ou suppression automatique sous 60 minutes sur serveur.',
+      'Convertissez les photos de documents en PDF propre pour faciliter la lecture par les instructeurs.',
+    ],
+    faqs: [
+      {
+        question: 'Les outils PdfPixels sont-ils gratuits en France ?',
+        answer: 'Oui. L’ensemble des fonctionnalités courantes est accessible gratuitement, sans création de compte.',
+      },
+      {
+        question: 'Comment réunir plusieurs documents en un seul PDF ?',
+        answer: 'Utilisez l’outil Fusionner PDF, déposez vos fichiers, ajustez leur ordre puis téléchargez le fichier combiné.',
+      },
+    ],
+  },
+  {
+    code: 'jp',
+    name: 'Japan',
+    adjective: 'Japanese',
+    locale: 'ja-JP',
+    localCopy: '日本国内で安心・無料',
+    headline: '就活・確定申告・ビジネス文書のための無料PDF＆画像変換ツール',
+    intro:
+      '日本のユーザーに向けて、履歴書や職務経歴書のPDF結合、確定申告（e-Tax）やマイナポータル用の容量圧縮、iPhoneの写真（HEIC）をWindowsで開けるJPGへ変換するなど、日本の実務に即したブラウザ完結ツールを提供しています。面倒な会員登録やインストールは不要です。',
+    commonTasks: [
+      {
+        title: '応募書類のPDFを1つに結合',
+        detail: '履歴書、職務経歴書、ポートフォリオを指定の順序で単一PDFにまとめます。',
+        href: '/jp/tools/merge-pdf',
+      },
+      {
+        title: 'PDFの容量をメール・申請用に圧縮',
+        detail: 'スキャンした書類のファイルサイズを品質を保ったまま軽量化します。',
+        href: '/jp/tools/compress-pdf',
+      },
+      {
+        title: 'スキャンPDFの文字をOCR認識',
+        detail: '紙のスキャンデータから文字を抽出してテキスト化・検索可能にします。',
+        href: '/jp/tools/ocr-pdf',
+      },
+    ],
+    localNotes: [
+      '就職活動や公的申請では、複数書類を1つのPDFにまとめる指定が一般的です。',
+      'プライバシー保護：ブラウザ内処理と60分以内のサーバー自動消去で安全に処理されます。',
+      'iPhoneで撮影したHEIC形式の書類は、事前にJPGやPDFへ変換しておくと互換性が高まります。',
+    ],
+    faqs: [
+      {
+        question: '日本国内から無料で利用できますか？',
+        answer: 'はい。会員登録やクレジットカード登録なしで、すべての主要ツールを無料で使用できます。',
+      },
+      {
+        question: 'アップロードしたファイルは安全ですか？',
+        answer: 'ブラウザ内処理ツールはサーバーへ送信されません。サーバー処理を伴うツールも60分以内に完全消去されます。',
+      },
+    ],
+  },
+  {
+    code: 'es',
+    name: 'Spain',
+    adjective: 'Spanish',
+    locale: 'es-ES',
+    localCopy: 'de confianza en España y Latinoamérica',
+    headline: 'Herramientas PDF e imagen gratis para trámites oficiales, oposiciones y empleo',
+    intro:
+      'En España y países hispanohablantes, las sedes electrónicas (Seguridad Social, SEPE, Agencia Tributaria, extranjería u oposiciones) exigen PDFs comprimidos a menos de 2 MB o 5 MB y fotos en formatos estándar. PdfPixels permite unir expedientes, reducir el peso de documentos y transformar fotos de iPhone al instante sin coste ni registro.',
+    commonTasks: [
+      {
+        title: 'Unir expedientes en un solo PDF',
+        detail: 'Juntar solicitudes, DNI y certificados en un único archivo ordenado.',
+        href: '/es/tools/merge-pdf',
+      },
+      {
+        title: 'Comprimir PDF para sedes electrónicas',
+        detail: 'Bajar de 2 MB o 5 MB manteniendo el texto legible para evitar rechazos.',
+        href: '/es/tools/compress-pdf',
+      },
+      {
+        title: 'Extraer texto de PDFs escaneados con OCR',
+        detail: 'Reconocer texto en imágenes y documentos escaneados fácilmente.',
+        href: '/es/tools/ocr-pdf',
+      },
+    ],
+    localNotes: [
+      'Las sedes electrónicas rechazan frecuentemente archivos que superan los límites de tamaño permitidos.',
+      'Privacidad y RGPD: procesado en el navegador o borrado automático seguro del servidor en menos de 60 minutos.',
+      'Para trámites con firmas digitales, une los documentos antes de estampar los certificados.',
+    ],
+    faqs: [
+      {
+        question: '¿Es PdfPixels gratuito en España y Latinoamérica?',
+        answer: 'Sí. Todas las herramientas centrales son gratuitas y no requieren registro de cuenta.',
+      },
+      {
+        question: '¿Cómo reduzco el tamaño de mi PDF para subirlo a la sede electrónica?',
+        answer: 'Entra en Comprimir PDF, sube tu archivo, selecciona el nivel de compresión deseado y descarga el PDF optimizado.',
+      },
+    ],
+  },
+  {
+    code: 'pt',
+    name: 'Brazil',
+    adjective: 'Brazilian',
+    locale: 'pt-BR',
+    localCopy: 'utilizado no Brasil e Portugal',
+    headline: 'Ferramentas gratuitas de PDF e imagem para concursos, vestibulares e trabalho',
+    intro:
+      'Usuários no Brasil e em países lusófonos enfrentam exigências constantes de anexos leves para inscrições em concursos públicos, ENEM, SISU, tribunais eletrônicos (PJe) e sistemas governamentais (Gov.br). O PdfPixels reúne ferramentas práticas para juntar documentos, reduzir o tamanho de arquivos e converter fotos direto no navegador sem taxas e sem cadastro.',
+    commonTasks: [
+      {
+        title: 'Juntar documentos em um único PDF',
+        detail: 'Combinar RG, comprovante de residência e certidões no arquivo final.',
+        href: '/pt/tools/merge-pdf',
+      },
+      {
+        title: 'Comprimir PDF para portais e processos',
+        detail: 'Reduzir megabytes para atender limites do PJe, Gov.br e concursos.',
+        href: '/pt/tools/compress-pdf',
+      },
+      {
+        title: 'Converter fotos do celular (HEIC) para JPG',
+        detail: 'Abrir e enviar fotos do iPhone em qualquer computador Windows com facilidade.',
+        href: '/pt/tools/heic-to-jpg',
+      },
+    ],
+    localNotes: [
+      'Portais públicos e tribunais frequentemente bloqueiam anexos acima de 2MB ou 5MB.',
+      'Proteção e privacidade: arquivos processados localmente ou excluídos em até 60 minutos dos servidores temporários.',
+      'Fotografou documentos com o celular? Converta para PDF e junte em ordem antes de protocolar.',
+    ],
+    faqs: [
+      {
+        question: 'O PdfPixels é gratuito para usar no Brasil?',
+        answer: 'Sim. Os recursos principais de PDF e imagem funcionam gratuitamente direto no navegador sem necessidade de criar conta.',
+      },
+      {
+        question: 'Como juntar vários comprovantes em um só arquivo PDF?',
+        answer: 'Acesse Juntar PDF, adicione as páginas desejadas, ordene conforme a exigência do edital e baixe o documento unificado.',
+      },
+    ],
+  },
 ];
 
 export function getRegionByCode(code: string): GeoRegion | undefined {

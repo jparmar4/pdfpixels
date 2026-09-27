@@ -3620,4 +3620,74 @@ export const toolContentMap: Record<string, ToolContent> = {
         supportedFormats: 'Input: JPG, JPEG | Output: AVIF',
         relatedTools: ['webp-to-jpg', 'png-to-jpeg', 'compress-image', 'avif-to-jpg'],
     },
+
+    'pdf-to-csv': {
+        about: 'PDF to CSV extracts tables, spreadsheets, invoices, receipts, and structured rows from PDF documents into standard Comma-Separated Values (CSV). While PDFs freeze documents for visual printing, they trap valuable data inside rigid layout trees. This tool reconstructs columns, numbers, and headers, outputting standard RFC 4180 CSV files ready for Microsoft Excel, Google Sheets, SQL databases, Python pandas, and ERP systems. Operates privately with automatic server cleanup within 60 minutes.',
+        directAnswer: 'The free PDF to CSV converter by PdfPixels extracts tables and structured rows from any PDF document into clean, standard CSV format. Upload your PDF and download the CSV spreadsheet instantly with zero signup.',
+        features: [
+            'Converts multi-page tables, ledgers, and financial reports into clean CSV',
+            'Standard RFC 4180 quotation handling for commas, quotes, and newlines',
+            'Works seamlessly with Google Sheets, Excel, Python (pandas), and SQL databases',
+            'Automated OCR fallback for scanned tabular documents',
+            'Free with no watermark and automatic 60-minute file purge',
+        ],
+        useCases: [
+            'Accountants extracting bank transactions and tax ledgers into accounting software',
+            'Data scientists and analysts importing PDF research data into pandas DataFrames',
+            'Business managers exporting PDF invoices into CRM and ERP databases',
+            'Students converting academic and statistical PDF tables for data analysis',
+        ],
+        faqs: [
+            { question: 'How do I convert a PDF table to CSV?', answer: 'Upload your PDF document to the PDF to CSV tool, click convert, and download the resulting .csv file. You can open it in Excel, Google Sheets, or import it into any database.' },
+            { question: 'Will the CSV preserve columns and headers?', answer: 'Yes. The extraction algorithm groups aligned text blocks into rows and columns, preserving table layout structure.' },
+            { question: 'Can I convert scanned PDFs to CSV?', answer: 'Yes. If your PDF consists of scanned pages or photos of tables, our integrated OCR engine reads the visual text and extracts the rows into CSV.' },
+            { question: 'Is PDF to CSV free to use?', answer: 'Yes, 100% free with no account creation or subscription required.' },
+        ],
+        steps: [
+            { title: 'Upload your PDF', description: 'Drag and drop your PDF containing tables or tabular data into the workspace.' },
+            { title: 'Extract to CSV', description: 'Our engine identifies columns, cells, and rows automatically.' },
+            { title: 'Download your CSV', description: 'Save the .csv file and open it in Excel, Google Sheets, or your database.' },
+        ],
+        commonProblems: [
+            { problem: 'Table columns merged into a single cell', solution: 'If column spacing in the source PDF is narrow, columns might group together. Try exporting to Excel first or verifying that the PDF has clear column gutters.' },
+            { problem: 'Scanned document returns empty CSV', solution: 'Ensure the scanned document is clear and upright so the optical character recognition (OCR) engine can recognize the numbers.' },
+        ],
+        supportedFormats: 'Input: PDF | Output: CSV (.csv)',
+        relatedTools: ['pdf-to-excel', 'bank-statement-to-excel', 'pdf-to-text', 'excel-to-pdf'],
+    },
+
+    'pdf-word-counter': {
+        about: 'PDF Word Counter provides instant, accurate word count, character count, page count, and reading time estimation for any PDF document. Unlike text editors like Microsoft Word or Google Docs, PDF readers typically lack a native word counter, leaving students, researchers, translators, and legal professionals guessing document lengths. PDFPixels parses selectable text streams directly in your browser with zero latency and 100% client-side privacy. View detailed metrics and copy or export the extracted text with one click.',
+        directAnswer: 'The free PDF Word Counter by PdfPixels instantly counts the words, characters, pages, and estimated reading time of any PDF document. Upload your PDF for an immediate, private word count breakdown.',
+        features: [
+            'Instant word, character (with and without spaces), and page count',
+            'Estimated reading time and speaking time calculations',
+            'Words-per-page density calculation and paragraph breakdown',
+            'One-click copy and text file (.txt) export of all extracted content',
+            '100% private in-browser analysis — your document is never transmitted or stored',
+        ],
+        useCases: [
+            'Students checking word limits for college essays, dissertations, and assignments',
+            'Translators and copywriters quoting per-word pricing on PDF briefs and manuscripts',
+            'Authors and speakers estimating speech and lecture delivery times from slides and notes',
+            'Lawyers and paralegals verifying brief page and word limits for court submissions',
+        ],
+        faqs: [
+            { question: 'How do you check the word count of a PDF?', answer: 'Upload your PDF to the PdfPixels PDF Word Counter. The tool instantly parses the text layer and displays the total word count, character count, page count, and estimated reading time.' },
+            { question: 'Can I count words in a scanned PDF?', answer: 'If your PDF is an image-only scan without an embedded text layer, run it through our OCR PDF tool first to create selectable text, then count words.' },
+            { question: 'How is reading time calculated?', answer: 'Reading time is calculated based on the standard average adult reading speed of 225 words per minute. Speaking time is calculated at 130 words per minute.' },
+            { question: 'Is my document private when counting words?', answer: 'Yes. The PDF Word Counter operates entirely within your browser environment. Your confidential documents are never uploaded to any remote server.' },
+        ],
+        steps: [
+            { title: 'Upload your PDF', description: 'Drag and drop your PDF document into the tool workspace.' },
+            { title: 'Instant analysis', description: 'The tool extracts the text layer and calculates words, characters, and reading time.' },
+            { title: 'View and export', description: 'Review your metrics dashboard, copy the text to your clipboard, or download as a .txt file.' },
+        ],
+        commonProblems: [
+            { problem: 'Word count shows 0 or very few words', solution: 'The PDF is likely a scanned photocopy or flattened image without selectable text. Use the OCR PDF tool to extract the text layer first.' },
+            { problem: 'Word count differs slightly from Microsoft Word', solution: 'Different word processors handle hyphenated words, numbers, and bullet points slightly differently. PdfPixels uses standard whitespace tokenization.' },
+        ],
+        supportedFormats: 'Input: PDF | Output: On-screen analytics, TXT (.txt)',
+        relatedTools: ['pdf-to-text', 'ocr-pdf', 'pdf-reader', 'pdf-to-word'],
+    },
 };

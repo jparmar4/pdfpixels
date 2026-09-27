@@ -18,12 +18,12 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue
 } from '@/components/ui/select';
 
-export function PDFToExcelWorkspace() {
+export function PDFToExcelWorkspace({ initialFormat = 'xlsx' }: { initialFormat?: 'xlsx' | 'csv' } = {}) {
   const { uploadedFile, isProcessing, progress, setIsProcessing, setProgress, reset } = useAppStore();
   const [convertError, setConvertError] = useState<string | null>(null);
 
   const [totalPages, setTotalPages] = useState<number>(1);
-  const [format, setFormat] = useState<'xlsx' | 'csv'>('xlsx');
+  const [format, setFormat] = useState<'xlsx' | 'csv'>(initialFormat);
   const [resultUrl, setResultUrl] = useState<string | null>(null);
   const [resultFileName, setResultFileName] = useState<string>('');
 

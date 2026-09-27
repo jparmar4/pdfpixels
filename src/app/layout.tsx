@@ -140,6 +140,11 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
         <link rel="dns-prefetch" href="https://www.google-analytics.com" />
         <meta name="google-adsense-account" content="ca-pub-3541576002060495" />
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3541576002060495"
+          crossOrigin="anonymous"
+        />
         <link rel="search" type="application/opensearchdescription+xml" title="PdfPixels" href="/opensearch.xml" />
         <link rel="alternate" type="application/rss+xml" title="PdfPixels RSS Feed" href="/feed" />
         <link rel="alternate" type="text/plain" title="PdfPixels for LLMs" href="/llms.txt" />

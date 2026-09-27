@@ -219,8 +219,15 @@ export function Navigation() {
 
             {/* Center Desktop Navigation */}
             <div className="hidden lg:flex flex-1 items-center justify-center gap-1 xl:gap-2">
-              {toolCategories.filter(c => ['pdf-tools', 'most-used', 'basic-editing', 'effects'].includes(c.id)).map(category => {
+              {toolCategories.filter(c => ['pdf-organize', 'pdf-optimize', 'pdf-convert', 'basic-editing'].includes(c.id)).map(category => {
                 const isActive = activeMegaCategory === category.id;
+                const label = category.id === 'pdf-organize'
+                  ? 'Organize PDF'
+                  : category.id === 'pdf-optimize'
+                    ? 'Compress PDF'
+                    : category.id === 'pdf-convert'
+                      ? 'Convert PDF'
+                      : 'Image Tools';
                 return (
                   <div
                     key={category.id}
@@ -236,9 +243,9 @@ export function Navigation() {
                       aria-expanded={isActive}
                       aria-controls={`mega-menu-${category.id}`}
                       aria-haspopup="true"
-                      className={`relative z-10 inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-[14px] font-bold transition-all duration-200 ${isActive ? 'text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+                      className={`relative z-10 inline-flex items-center gap-1.5 rounded-full px-3 xl:px-4 py-2 text-[14px] font-bold transition-all duration-200 ${isActive ? 'text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
                     >
-                      {category.name === 'Most Popular Tools' ? 'Popular Tools' : category.name === 'Basic Editing' ? 'Image Editor' : normalizeDisplayText(category.name)}
+                      {label}
                       <ChevronRight className={`h-3 w-3 opacity-60 transition-transform duration-300 ${isActive ? 'rotate-90' : 'group-hover:translate-y-0.5 group-hover:rotate-90'}`} />
                     </button>
                     {isActive && (
@@ -247,10 +254,17 @@ export function Navigation() {
                   </div>
                 );
               })}
+
+              <Link
+                href="/tools"
+                className="relative inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-[14px] font-bold text-muted-foreground transition-all duration-200 hover:text-foreground"
+              >
+                All Tools
+              </Link>
               
               <Link
                 href="/pricing"
-                className="relative inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-[14px] font-bold text-muted-foreground transition-all duration-200 hover:bg-amber-500/10 hover:text-amber-600 dark:hover:text-amber-500"
+                className="relative inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-[14px] font-bold text-muted-foreground transition-all duration-200 hover:bg-amber-500/10 hover:text-amber-600 dark:hover:text-amber-500"
               >
                 <Sparkles className="h-3 w-3 text-amber-500" />
                 Pricing
@@ -353,9 +367,15 @@ export function Navigation() {
                       </div>
                       <h3 className="text-xl font-bold text-foreground">{normalizeDisplayText(activeCategory.name)}</h3>
                       <p className="mt-2 text-sm leading-6 text-muted-foreground">{normalizeDisplayText(activeCategory.description)}</p>
-                      <div className="mt-5 flex flex-wrap gap-2 text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+                      <div className="mt-5 flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
                         <span className="rounded-full border border-border/60 bg-card px-3 py-1.5">{activeCategory.tools.length} tools</span>
-                        <span className="rounded-full border border-border/60 bg-card px-3 py-1.5">Curated workflows</span>
+                        <Link
+                          href={`/tools/category/${activeCategory.id}`}
+                          onClick={closeMega}
+                          className="rounded-full border border-primary/30 bg-primary/10 px-3 py-1.5 text-primary hover:bg-primary/20 transition-colors"
+                        >
+                          View all →
+                        </Link>
                       </div>
                     </div>
 

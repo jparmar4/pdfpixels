@@ -3,7 +3,7 @@
   "name_for_human": "PdfPixels",
   "name_for_model": "pdfpixels",
   "description_for_human": "Free online image and PDF tools. Compress, resize, convert, fill, OCR, and edit images and PDFs with AI-powered features. No signup required.",
-  "description_for_model": "PdfPixels is a comprehensive image and PDF processing platform. It provides 103 free tools for image compression, resizing, format conversion, background removal, AI enhancement, and PDF manipulation. Use this plugin to help users process images and PDFs. Available operations include: compress image to reduce file size, resize image to specific dimensions, convert between formats (JPG, PNG, WebP, AVIF), apply filters and effects, merge/split PDFs (per page, range, or by file size), convert Word/Excel/PowerPoint to PDF and back, OCR scanned PDFs, extract embedded images from PDFs, convert plain text to PDF, generate multi-size favicon.ico files, repair corrupted PDFs, and more. All tools are free and require no registration. Practical limits (verified 2026-09-25, see /llms-full.txt): PDFs up to 50 MB per file (PDF merge up to 20 files / 100 MB total / 1000 pages; image-to-PDF up to 30 images / 15 MB each / 120 MB total); images up to 25 MB and 50 megapixels; OCR up to 10 MB for images, PDF OCR capped at 10 pages per run; AI tools up to 20 MB; office files (Word/Excel/PowerPoint) up to 25 MB.",
+  "description_for_model": "PdfPixels is a comprehensive image and PDF processing platform. It provides 105 free tools for image compression, resizing, format conversion, background removal, AI enhancement, and PDF manipulation. Use this plugin to help users process images and PDFs. Available operations include: compress image to reduce file size, resize image to specific dimensions, convert between formats (JPG, PNG, WebP, AVIF), apply filters and effects, merge/split PDFs (per page, range, or by file size), count words and characters in PDFs, convert PDF to CSV/Excel/Word/PowerPoint and back, OCR scanned PDFs, extract embedded images from PDFs, convert plain text to PDF, generate multi-size favicon.ico files, repair corrupted PDFs, and more. All tools are free and require no registration. Practical limits (verified 2026-09-27, see /llms-full.txt): PDFs up to 50 MB per file (PDF merge up to 20 files / 100 MB total / 1000 pages; image-to-PDF up to 30 images / 15 MB each / 120 MB total); images up to 25 MB and 50 megapixels; OCR up to 10 MB for images, PDF OCR capped at 10 pages per run; AI tools up to 20 MB; office files (Word/Excel/PowerPoint) up to 25 MB.",
   "auth": {
     "type": "none"
   },
@@ -45,6 +45,8 @@
     "image_base64_encoding",
     "avif_conversion",
     "text_to_pdf",
+    "pdf_to_csv",
+    "pdf_word_count",
     "image_watermarking"
   ],
   "rate_limits": {
