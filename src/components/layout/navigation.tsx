@@ -2,14 +2,13 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
 import {
   ArrowRight,
   BookOpen,
   ChevronRight,
   FileText,
-  Home,
   Menu,
   Moon,
   Search,
@@ -49,17 +48,11 @@ export function Navigation() {
   const searchRef = useRef<HTMLInputElement>(null);
   const searchDialogRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
-  const pathname = usePathname();
   const setActiveTool = useAppStore((state) => state.setActiveTool);
-  const activeTool = useAppStore((state) => state.activeTool);
 
   const featuredTools = useMemo(() => allTools.filter((tool) => tool.popular).slice(0, 6), []);
   const activeCategory = toolCategories.find((category) => category.id === activeMegaCategory) ?? null;
 
-  // Breadcrumb: show on /tools/* pages (excluding category subpaths)
-  const isToolPage = pathname.startsWith('/tools/') && !pathname.startsWith('/tools/category');
-  const toolSlug = isToolPage ? pathname.replace('/tools/', '') : '';
-  const toolName = activeTool?.name ?? (toolSlug ? toolSlug.split('-').map((s) => s.charAt(0).toUpperCase() + s.slice(1)).join(' ') : '');
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 10);
@@ -273,7 +266,7 @@ export function Navigation() {
                   onClick={dismissMega}
                   aria-haspopup="true"
                   aria-expanded={activeMegaCategory === 'pdf-tools'}
-                  className={`relative z-10 inline-flex items-center gap-1.5 rounded-full px-3 xl:px-4 py-2 text-[14px] font-bold transition-all duration-200 ${
+                  className={`relative z-10 inline-flex items-center gap-1.5 rounded-full px-3 xl:px-4 py-2 text-sm font-medium transition-all duration-200 ${
                     activeMegaCategory === 'pdf-tools' ? 'text-primary' : 'text-foreground hover:text-primary'
                   }`}
                 >
@@ -314,7 +307,7 @@ export function Navigation() {
                       onClick={dismissMega}
                       aria-haspopup="true"
                       aria-expanded={isActive}
-                      className={`relative z-10 inline-flex items-center gap-1.5 rounded-full px-3 xl:px-4 py-2 text-[14px] font-bold transition-all duration-200 ${isActive ? 'text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+                      className={`relative z-10 inline-flex items-center gap-1.5 rounded-full px-3 xl:px-4 py-2 text-sm font-medium transition-all duration-200 ${isActive ? 'text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
                     >
                       {label}
                       <ChevronRight className={`h-3 w-3 opacity-60 transition-transform duration-300 ${isActive ? 'rotate-90' : 'group-hover:translate-y-0.5 group-hover:rotate-90'}`} />
@@ -328,14 +321,14 @@ export function Navigation() {
 
               <Link
                 href="/tools"
-                className="relative inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-[14px] font-bold text-muted-foreground transition-all duration-200 hover:text-foreground"
+                className="relative inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-sm font-medium text-muted-foreground transition-all duration-200 hover:text-foreground"
               >
                 All Tools
               </Link>
               
               <Link
                 href="/pricing"
-                className="relative inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-[14px] font-bold text-muted-foreground transition-all duration-200 hover:bg-amber-500/10 hover:text-amber-600 dark:hover:text-amber-500"
+                className="relative inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-sm font-medium text-muted-foreground transition-all duration-200 hover:bg-amber-500/10 hover:text-amber-600 dark:hover:text-amber-500"
               >
                 <Sparkles className="h-3 w-3 text-amber-500" />
                 Pricing
@@ -344,7 +337,7 @@ export function Navigation() {
 
             {/* Right Actions */}
             <div className="flex flex-shrink-0 items-center gap-2 xl:gap-3">
-              <Link href="/blog" className="hidden xl:inline-flex text-[14px] font-bold text-muted-foreground hover:text-foreground transition-colors px-3 py-2">
+              <Link href="/blog" className="hidden xl:inline-flex text-sm font-medium text-muted-foreground hover:text-foreground transition-colors px-3 py-2">
                 Blog
               </Link>
 
@@ -399,27 +392,8 @@ export function Navigation() {
           </div>
 
           <div className={`mx-auto w-full transition-all duration-300 ${scrolled ? 'mt-3 max-w-[80rem] px-4 sm:px-8' : 'mt-0 px-4 sm:px-6 lg:px-8'}`}>
-            {/* Breadcrumb navigation for tool pages */}
-            {isToolPage ? (
-              <div className="overflow-hidden animate-in fade-in slide-in-from-top-1 duration-200">
-                <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 pb-3 pt-2 text-xs text-muted-foreground">
-                  <Link href="/" className="inline-flex items-center gap-1 transition-colors hover:text-foreground">
-                    <Home className="h-3 w-3" />
-                    Home
-                  </Link>
-                  <ChevronRight className="h-3 w-3 text-muted-foreground/50" />
-                  <Link href="/tools" className="transition-colors hover:text-foreground">
-                    Tools
-                  </Link>
-                  {toolName && (
-                    <>
-                      <ChevronRight className="h-3 w-3 text-muted-foreground/50" />
-                      <span className="font-medium text-foreground">{normalizeDisplayText(toolName)}</span>
-                    </>
-                  )}
-                </nav>
-              </div>
-            ) : null}
+            {/* Tool pages render their breadcrumb server-side (see app/tools/[slug]/page.tsx)
+                so it is present in the HTML without JS and mirrors the JSON-LD. */}
 
             {activeMegaCategory === 'pdf-tools' ? (
               <div

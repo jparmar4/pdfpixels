@@ -119,13 +119,13 @@ export function Footer() {
   }, [email]);
 
   return (
-    <footer className="relative mt-auto border-t border-border/40 bg-[linear-gradient(180deg,rgba(255,255,255,0),rgba(59,130,246,0.03))]">
+    <footer className="relative mt-auto border-t border-border/40 bg-[linear-gradient(180deg,rgba(255,255,255,0),rgba(79,70,229,0.02))]">
       {/* ── CTA Banner with Newsletter ── */}
       <div className="container mx-auto px-4 py-12 lg:px-8 lg:py-14">
         <div
           className="relative overflow-hidden rounded-[2rem] border border-border/50 bg-card/80 p-8 shadow-premium backdrop-blur-xl md:p-10"
         >
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(59,130,246,0.1),transparent_28%),radial-gradient(circle_at_bottom_right,rgba(16,185,129,0.08),transparent_28%)] pointer-events-none" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(79,70,229,0.06),transparent_28%),radial-gradient(circle_at_bottom_right,rgba(109,40,217,0.04),transparent_28%)] pointer-events-none" />
           <div className="relative z-10 flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
             <div className="max-w-2xl space-y-4">
               <p className="inline-flex items-center gap-2 rounded-full border border-primary/15 bg-primary/8 px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] text-primary">
@@ -206,7 +206,7 @@ export function Footer() {
             {/* Brand Column */}
             <div className="space-y-6">
               <Link href="/" className="flex items-center gap-3" onClick={() => setActiveTool(null)}>
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-sky-500 text-white shadow-lg shadow-primary/20">
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-violet-600 text-white shadow-lg shadow-primary/20">
                   <ImageIcon className="h-5 w-5" />
                 </div>
                 <div>

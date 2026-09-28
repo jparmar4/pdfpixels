@@ -7,15 +7,15 @@ import { AnimatedCounter } from './animated-counter';
 
 export function StatsBanner() {
   const stats = [
-    { value: allTools.length, suffix: '+', label: 'Free Tools', icon: Wrench, gradient: 'from-indigo-500 to-violet-500' },
-    { value: 8, suffix: '+', label: 'File Formats', icon: Files, gradient: 'from-fuchsia-500 to-pink-500' },
-    { value: 0, suffix: '', label: 'Account required', display: 'None', icon: Server, gradient: 'from-emerald-500 to-teal-500' },
-    { value: 0, suffix: '', label: 'Cost', display: 'Free', icon: DollarSign, gradient: 'from-cyan-500 to-blue-500' },
+    { value: allTools.length, suffix: '+', label: 'Free Tools', icon: Wrench, gradient: 'from-indigo-600 to-violet-600' },
+    { value: 8, suffix: '+', label: 'File Formats', icon: Files, gradient: 'from-violet-600 to-purple-600' },
+    { value: 0, suffix: '', label: 'Account required', display: 'None', icon: Server, gradient: 'from-emerald-600 to-teal-600' },
+    { value: 0, suffix: '', label: 'Cost', display: 'Free', icon: DollarSign, gradient: 'from-sky-600 to-blue-600' },
   ];
 
   return (
     <section className="py-16 relative overflow-hidden border-y border-border/50">
-      <div className="absolute inset-0 bg-gradient-to-r from-primary/[0.03] via-fuchsia-500/[0.02] to-cyan-500/[0.03]" />
+      <div className="absolute inset-0 bg-gradient-to-r from-primary/[0.04] to-transparent" />
       <div className="container mx-auto px-4 lg:px-8 relative z-10">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-5 max-w-4xl mx-auto">
           {stats.map((stat, idx) => (

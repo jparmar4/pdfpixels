@@ -9,19 +9,19 @@ const steps = [
     icon: Upload,
     title: 'Upload Your File',
     description: 'Drag & drop or browse. Supports JPG, PNG, WebP, HEIC, PDF and more.',
-    color: 'from-blue-500 to-cyan-500',
+    color: 'from-indigo-600 to-blue-600',
   },
   {
     icon: Sliders,
     title: 'Adjust Settings',
     description: 'Configure quality, dimensions, format, or effects to match your needs.',
-    color: 'from-violet-500 to-fuchsia-500',
+    color: 'from-violet-600 to-purple-600',
   },
   {
     icon: Download,
     title: 'Download Result',
     description: 'Click process and download instantly. Most results in under 5 seconds.',
-    color: 'from-emerald-500 to-teal-600',
+    color: 'from-emerald-600 to-teal-600',
   },
 ];
 

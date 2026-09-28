@@ -43,7 +43,7 @@ export function LocalizedToolPage({ locale, slug }: { locale: LocaleCode; slug: 
   const siblings = LOCALIZED_TOOL_SLUGS.filter((item) => item !== slug);
 
   return (
-    <main id="main-content" className={locale === 'jp' ? "[font-family:var(--font-dm-sans),'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,sans-serif]" : undefined}>
+    <main id="main-content" className={locale === 'jp' ? "[font-family:var(--font-inter),'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,sans-serif]" : undefined}>
       <SetHtmlLang lang={pack.htmlLang} />
       <ToolPageClient toolId={tool.id} toolName={copy.name} toolDescription={copy.description} />
       <section className="container mx-auto max-w-3xl px-4 py-10">

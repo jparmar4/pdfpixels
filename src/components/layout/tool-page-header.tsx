@@ -1,8 +1,7 @@
 'use client';
 
 import React from 'react';
-import Link from 'next/link';
-import { ArrowLeft, Download, MonitorSmartphone, Server, ShieldCheck, Sparkles, Wand2, Zap } from 'lucide-react';
+import { Download, MonitorSmartphone, Server, ShieldCheck, Sparkles, Wand2, Zap } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { type LucideIcon } from 'lucide-react';
 import { normalizeDisplayText } from '@/lib/display-text';
@@ -23,7 +22,6 @@ export function ToolPageHeader({
   title,
   description,
   icon,
-  onReset,
   isAI = false,
   emoji,
   children,
@@ -74,27 +72,10 @@ export function ToolPageHeader({
 
       <div className="relative z-10 flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
         <div className="space-y-5">
-          <div className="flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-            <Link
-              href="/"
-              onClick={onReset}
-              className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-background/75 px-3 py-1.5 transition-colors hover:border-primary/30 hover:text-foreground"
-            >
-              <ArrowLeft className="h-3.5 w-3.5" />
-              Back to tools
-            </Link>
-            <span className="hidden h-1 w-1 rounded-full bg-border md:block" />
-            <span className="hidden md:block">Workspace</span>
-            {tool?.badge ? (
-              <>
-                <span className="hidden h-1 w-1 rounded-full bg-border md:block" />
-                <span className="hidden md:block">{tool.badge}</span>
-              </>
-            ) : null}
-          </div>
+          {/* Breadcrumb lives server-side on the page (app/tools/[slug]/page.tsx). */}
 
           <div className="flex items-start gap-4">
-            <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-[1.35rem] border border-primary/20 bg-gradient-to-br from-primary to-sky-500 shadow-lg shadow-primary/20">
+            <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-[1.35rem] border border-primary/20 bg-gradient-to-br from-primary to-violet-600 shadow-lg shadow-primary/20">
               {emoji ? (
                 <span className="text-2xl">{emoji}</span>
               ) : React.isValidElement(icon) ? (
@@ -113,8 +94,13 @@ export function ToolPageHeader({
                   {safeTitle}
                 </h1>
                 {isAI ? (
-                  <Badge className="rounded-full border-0 bg-gradient-to-r from-violet-500 to-sky-500 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em] text-white">
+                  <Badge className="rounded-full border border-violet-500/20 bg-violet-500/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-violet-600 dark:text-violet-300">
                     AI powered
+                  </Badge>
+                ) : null}
+                {tool?.badge ? (
+                  <Badge className="rounded-full border border-amber-500/20 bg-amber-500/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-amber-700 dark:text-amber-300">
+                    {tool.badge}
                   </Badge>
                 ) : null}
               </div>
@@ -123,7 +109,7 @@ export function ToolPageHeader({
                 {safeDescription}
               </p>
 
-              <div className="flex flex-wrap gap-2.5 text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+              <div className="flex flex-wrap gap-2.5 text-xs font-medium text-muted-foreground">
                 <span className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-background/75 px-3 py-1.5">
                   <Zap className="h-3.5 w-3.5 text-sky-500" />
                   Fast workflow

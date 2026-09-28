@@ -12,12 +12,12 @@ import {
   Layers,
   FileText,
   Zap,
+  ChevronRight,
 } from 'lucide-react';
 import { toolCategories } from '@/lib/tools-data';
 import { normalizeDisplayText } from '@/lib/display-text';
 import { absoluteUrl, DEFAULT_OG_IMAGE_URL } from '@/lib/seo';
 import { siteConfig } from '@/lib/seo-config';
-import { AnimatedMeshBg } from '@/components/ui/animated-mesh-bg';
 import { HeaderAd, FooterAd } from '@/components/ads/ad-banner';
 import { CategoryGridClient } from './category-grid-client';
 import { categoryContentData } from '@/lib/category-content-data';
@@ -91,6 +91,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
   const aiCount = category.tools.filter((tool) => tool.isAI).length;
   const clientCount = category.tools.filter((tool) => tool.processing === 'client').length;
   const url = absoluteUrl(`/tools/category/${category.id}`);
+  const otherCategories = toolCategories.filter((c) => c.id !== category.id && c.id !== 'most-used');
 
   const jsonLd = [
     {
@@ -116,6 +117,29 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
           name: normalizeDisplayText(tool.name),
         })),
       },
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        {
+          '@type': 'ListItem',
+          position: 1,
+          name: 'Home',
+          item: absoluteUrl('/'),
+        },
+        {
+          '@type': 'ListItem',
+          position: 2,
+          name: 'All Tools',
+          item: absoluteUrl('/tools'),
+        },
+        {
+          '@type': 'ListItem',
+          position: 3,
+          name: cleanName,
+        },
+      ],
     },
     ...(content?.faqs?.length
       ? [
@@ -143,49 +167,50 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
       />
       <div className="premium-page-bg min-h-screen bg-background pb-16">
         {/* Hero Section */}
-        <section className="relative overflow-hidden border-b border-border/40 bg-card/40">
-          <AnimatedMeshBg />
-          <div className="absolute inset-0 dot-pattern opacity-30" />
+        <section className="relative overflow-hidden border-b border-border/60 bg-gradient-to-b from-accent/60 to-background">
+          <div className="absolute inset-0 hero-grid opacity-70" aria-hidden="true" />
 
-          <div className="container relative z-10 mx-auto px-4 py-16 text-center lg:px-8 md:py-20">
-            <Link
-              href="/tools"
-              className="mb-8 inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              Back to all tools
-            </Link>
+          <div className="container relative z-10 mx-auto px-4 py-12 text-center lg:px-8 md:py-16">
+            <nav aria-label="Breadcrumb" className="mb-8 flex items-center justify-center gap-1.5 text-[13px] text-muted-foreground">
+              <Link href="/" className="transition-colors hover:text-foreground">Home</Link>
+              <ChevronRight className="h-3.5 w-3.5 opacity-50" />
+              <Link href="/tools" className="transition-colors hover:text-foreground">All tools</Link>
+              <ChevronRight className="h-3.5 w-3.5 opacity-50" />
+              <span className="font-medium text-foreground" aria-current="page">{cleanName}</span>
+            </nav>
 
-            <div className="mb-6 flex justify-center">
-              <div className="relative flex h-20 w-20 items-center justify-center">
-                <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-primary/20 to-sky-500/15 blur-lg opacity-70" />
-                <div className="relative flex h-20 w-20 items-center justify-center rounded-3xl border border-primary/20 bg-gradient-to-br from-primary/10 to-sky-500/10 shadow-inner">
-                  <CategoryIcon className="h-10 w-10 text-primary drop-shadow-sm" />
+            <div className="mb-5 flex justify-center">
+              <div className="relative flex h-16 w-16 items-center justify-center">
+                <div className="absolute inset-0 rounded-2xl bg-primary/15 blur-lg opacity-60" aria-hidden="true" />
+                <div className="relative flex h-16 w-16 items-center justify-center rounded-2xl border border-primary/15 bg-card shadow-soft">
+                  <CategoryIcon className="h-8 w-8 text-primary" />
                 </div>
               </div>
             </div>
 
-            <h1 className="mb-4 text-4xl font-extrabold tracking-tight md:text-5xl">
+            <h1 className="mb-3 text-3xl font-bold tracking-tight md:text-5xl">
               {cleanName}
             </h1>
 
-            <p className="mx-auto mb-8 max-w-2xl text-lg text-muted-foreground">
+            <p className="mx-auto mb-7 max-w-2xl text-base text-muted-foreground md:text-lg">
               {normalizeDisplayText(category.description)}
             </p>
 
-            <div className="flex flex-wrap justify-center gap-3 text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-              <span className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-background/80 px-4 py-2 backdrop-blur-sm">
-                <ShieldCheck className="h-4 w-4 text-emerald-500" />
-                {clientCount > 0 ? `${clientCount} browser-native` : 'Secure processing'}
-              </span>
-              <span className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-background/80 px-4 py-2 backdrop-blur-sm">
-                <Sparkles className="h-4 w-4 text-violet-500" />
-                {aiCount > 0 ? `${aiCount} AI-enhanced` : 'High quality'}
-              </span>
-              <span className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-background/80 px-4 py-2 backdrop-blur-sm">
+            <div className="flex flex-wrap justify-center gap-2.5 text-[13px] font-medium text-muted-foreground">
+              <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-1.5 shadow-soft">
                 <Zap className="h-4 w-4 text-amber-500" />
-                {category.tools.length} Tools Available
+                {category.tools.length} free tools
               </span>
+              <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-1.5 shadow-soft">
+                <ShieldCheck className="h-4 w-4 text-emerald-500" />
+                {clientCount > 0 ? `${clientCount} run in your browser` : 'Secure processing'}
+              </span>
+              {aiCount > 0 && (
+                <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-1.5 shadow-soft">
+                  <Sparkles className="h-4 w-4 text-violet-500" />
+                  {aiCount} AI-enhanced
+                </span>
+              )}
             </div>
           </div>
         </section>
@@ -196,15 +221,19 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
 
         {/* Tools Grid */}
         <section className="container mx-auto px-4 py-8 lg:px-8">
-          <div className="mb-8 flex items-center justify-between">
+          <div className="mb-7 flex items-end justify-between gap-4">
             <div>
-              <h2 className="text-2xl font-bold tracking-tight text-foreground md:text-3xl">
-                Browse {cleanName}
+              <h2 className="text-xl font-semibold tracking-tight text-foreground md:text-2xl">
+                All {cleanName.toLowerCase()} tools
               </h2>
               <p className="mt-1 text-sm text-muted-foreground">
-                Select any tool below to launch an instant, free workspace.
+                Select any tool below to open a free workspace — no signup needed.
               </p>
             </div>
+            <Link href="/tools" className="hidden shrink-0 items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-primary sm:inline-flex">
+              <ArrowLeft className="h-4 w-4" />
+              All tool categories
+            </Link>
           </div>
           <CategoryGridClient categorySlug={category.id} />
         </section>
@@ -212,17 +241,17 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
         {/* Rich Editorial & Guides Section */}
         {content && (
           <section className="container mx-auto px-4 py-12 lg:px-8">
-            <div className="space-y-12">
+            <div className="space-y-10">
               {/* Category Overview */}
-              <div className="rounded-[2rem] border border-border/50 bg-card/75 p-6 shadow-premium backdrop-blur-xl md:p-10">
-                <span className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3.5 py-1.5 text-xs font-bold uppercase tracking-[0.16em] text-primary">
+              <div className="rounded-3xl border border-border bg-card p-6 shadow-soft md:p-10">
+                <span className="inline-flex items-center gap-2 rounded-full bg-primary/8 px-3.5 py-1.5 text-xs font-semibold text-primary">
                   <FileText className="h-3.5 w-3.5" />
-                  Category Overview
+                  Guide
                 </span>
-                <h2 className="mt-4 text-2xl font-extrabold tracking-tight text-foreground md:text-3xl">
+                <h2 className="mt-4 text-2xl font-semibold tracking-tight text-foreground md:text-3xl">
                   {content.headline}
                 </h2>
-                <p className="mt-4 text-base leading-8 text-muted-foreground md:text-lg">
+                <p className="mt-4 text-base leading-8 text-muted-foreground">
                   {content.longDescription}
                 </p>
 
@@ -231,13 +260,13 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
                   {content.benefits.map((benefit) => (
                     <div
                       key={benefit.title}
-                      className="rounded-2xl border border-border/50 bg-background/60 p-5 shadow-soft"
+                      className="rounded-2xl border border-border bg-background p-5"
                     >
-                      <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                      <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/8 text-primary">
                         <CheckCircle2 className="h-4 w-4" />
                       </div>
-                      <h3 className="mt-3 text-base font-bold text-foreground">{benefit.title}</h3>
-                      <p className="mt-1.5 text-xs leading-5 text-muted-foreground">
+                      <h3 className="mt-3 text-[15px] font-semibold text-foreground">{benefit.title}</h3>
+                      <p className="mt-1.5 text-[13px] leading-5 text-muted-foreground">
                         {benefit.description}
                       </p>
                     </div>
@@ -246,17 +275,17 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
               </div>
 
               {/* Technical Architecture & Specs */}
-              <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr]">
-                <div className="rounded-[2rem] border border-border/50 bg-card/75 p-6 shadow-premium backdrop-blur-xl md:p-8">
+              <div className="grid gap-6 lg:grid-cols-2">
+                <div className="rounded-3xl border border-border bg-card p-6 shadow-soft md:p-8">
                   <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-violet-500/10 text-violet-500">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-violet-500/10 text-violet-500">
                       <Cpu className="h-5 w-5" />
                     </div>
                     <div>
-                      <h3 className="text-xl font-bold text-foreground">
+                      <h3 className="text-lg font-semibold text-foreground">
                         {content.technicalGuide.title}
                       </h3>
-                      <p className="text-xs text-muted-foreground">Technical Specifications</p>
+                      <p className="text-xs text-muted-foreground">Technical specifications</p>
                     </div>
                   </div>
                   <p className="mt-4 text-sm leading-7 text-muted-foreground">
@@ -264,8 +293,8 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
                   </p>
                   <ul className="mt-5 space-y-3">
                     {content.technicalGuide.points.map((pt, i) => (
-                      <li key={i} className="flex items-start gap-2.5 text-xs leading-6 text-muted-foreground">
-                        <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
+                      <li key={i} className="flex items-start gap-2.5 text-[13px] leading-6 text-muted-foreground">
+                        <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
                         <span>{pt}</span>
                       </li>
                     ))}
@@ -273,21 +302,21 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
                 </div>
 
                 {/* Common Use Cases */}
-                <div className="rounded-[2rem] border border-border/50 bg-card/75 p-6 shadow-premium backdrop-blur-xl md:p-8">
+                <div className="rounded-3xl border border-border bg-card p-6 shadow-soft md:p-8">
                   <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-emerald-500/10 text-emerald-500">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-500">
                       <Layers className="h-5 w-5" />
                     </div>
                     <div>
-                      <h3 className="text-xl font-bold text-foreground">Popular Real-World Scenarios</h3>
-                      <p className="text-xs text-muted-foreground">Practical Use Cases</p>
+                      <h3 className="text-lg font-semibold text-foreground">Real-world scenarios</h3>
+                      <p className="text-xs text-muted-foreground">How people use these tools</p>
                     </div>
                   </div>
-                  <div className="mt-5 space-y-4">
+                  <div className="mt-5 space-y-3.5">
                     {content.useCases.map((uc) => (
-                      <div key={uc.title} className="rounded-xl border border-border/40 bg-background/50 p-4">
-                        <h4 className="text-sm font-bold text-foreground">{uc.title}</h4>
-                        <p className="mt-1 text-xs leading-5 text-muted-foreground">{uc.description}</p>
+                      <div key={uc.title} className="rounded-xl border border-border bg-background p-4">
+                        <h4 className="text-sm font-semibold text-foreground">{uc.title}</h4>
+                        <p className="mt-1 text-[13px] leading-5 text-muted-foreground">{uc.description}</p>
                       </div>
                     ))}
                   </div>
@@ -295,13 +324,13 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
               </div>
 
               {/* Pro Tips Banner */}
-              <div className="rounded-[2rem] border border-amber-500/20 bg-gradient-to-br from-amber-500/5 via-card/80 to-primary/5 p-6 md:p-8">
+              <div className="rounded-3xl border border-amber-500/20 bg-gradient-to-br from-amber-500/[0.04] via-card to-card p-6 md:p-8">
                 <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-amber-500/15 text-amber-600 dark:text-amber-400">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-500/12 text-amber-600 dark:text-amber-400">
                     <Lightbulb className="h-5 w-5" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-bold text-foreground">Pro Tips & Best Practices</h3>
+                    <h3 className="text-lg font-semibold text-foreground">Pro tips &amp; best practices</h3>
                     <p className="text-xs text-muted-foreground">Get optimal results every time</p>
                   </div>
                 </div>
@@ -309,22 +338,22 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
                   {content.proTips.map((tip, idx) => (
                     <div
                       key={idx}
-                      className="rounded-xl border border-border/50 bg-background/70 p-4 text-xs leading-6 text-muted-foreground"
+                      className="rounded-xl border border-border bg-background p-4 text-[13px] leading-6 text-muted-foreground"
                     >
-                      <strong className="text-foreground">Tip #{idx + 1}:</strong> {tip}
+                      <strong className="font-semibold text-foreground">Tip #{idx + 1}:</strong> {tip}
                     </div>
                   ))}
                 </div>
               </div>
 
               {/* Category FAQs */}
-              <div className="rounded-[2rem] border border-border/50 bg-card/75 p-6 shadow-premium backdrop-blur-xl md:p-8">
+              <div className="rounded-3xl border border-border bg-card p-6 shadow-soft md:p-8">
                 <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/8 text-primary">
                     <HelpCircle className="h-5 w-5" />
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold text-foreground">Frequently Asked Questions</h3>
+                    <h3 className="text-lg font-semibold text-foreground">Frequently asked questions</h3>
                     <p className="text-xs text-muted-foreground">Questions about {cleanName.toLowerCase()}</p>
                   </div>
                 </div>
@@ -332,15 +361,15 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
                   {content.faqs.map((faq, i) => (
                     <details
                       key={i}
-                      className="group rounded-2xl border border-border/60 bg-card/60 dark:bg-card/40 overflow-hidden transition-all duration-300 open:border-primary/30 open:shadow-lg open:shadow-primary/5"
+                      className="group rounded-2xl border border-border bg-background overflow-hidden transition-all duration-300 open:border-primary/30"
                     >
-                      <summary className="flex w-full cursor-pointer list-none items-center justify-between gap-4 p-4 text-left text-sm font-semibold text-foreground hover:bg-primary/[0.02] transition-colors [&::-webkit-details-marker]:hidden">
+                      <summary className="flex w-full cursor-pointer list-none items-center justify-between gap-4 p-4 text-left text-sm font-medium text-foreground hover:bg-muted/60 transition-colors [&::-webkit-details-marker]:hidden">
                         {faq.question}
                         <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-muted transition-all duration-300 group-open:rotate-180 group-open:bg-primary/10">
                           <svg className="h-3.5 w-3.5 text-muted-foreground group-open:text-primary" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
                         </span>
                       </summary>
-                      <div className="px-4 pb-4 text-xs leading-6 text-muted-foreground">
+                      <div className="px-4 pb-4 text-[13px] leading-6 text-muted-foreground">
                         {faq.answer}
                       </div>
                     </details>
@@ -350,6 +379,36 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
             </div>
           </section>
         )}
+
+        {/* Explore other categories — internal linking */}
+        <section className="container mx-auto px-4 py-8 lg:px-8" aria-labelledby="other-categories-heading">
+          <h2 id="other-categories-heading" className="text-lg font-semibold tracking-tight text-foreground">
+            Explore other tool categories
+          </h2>
+          <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {otherCategories.map((cat) => {
+              const Icon = cat.icon;
+              return (
+                <Link
+                  key={cat.id}
+                  href={`/tools/category/${cat.id}`}
+                  className="group flex items-center gap-3.5 rounded-2xl border border-border bg-card p-4 shadow-soft transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-elevated"
+                >
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-muted text-muted-foreground transition-colors group-hover:bg-primary/10 group-hover:text-primary">
+                    <Icon className="h-5 w-5" />
+                  </span>
+                  <span className="min-w-0">
+                    <span className="block truncate text-sm font-semibold text-foreground transition-colors group-hover:text-primary">
+                      {normalizeDisplayText(cat.name)}
+                    </span>
+                    <span className="block text-xs text-muted-foreground">{cat.tools.length} tools</span>
+                  </span>
+                  <ChevronRight className="ml-auto h-4 w-4 shrink-0 text-muted-foreground/50 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:text-primary" />
+                </Link>
+              );
+            })}
+          </div>
+        </section>
 
         <div className="container mx-auto px-4 py-6 lg:px-8">
           <FooterAd />

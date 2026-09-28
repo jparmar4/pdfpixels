@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Suspense } from 'react';
 import { notFound } from 'next/navigation';
-import { ArrowRight, BookOpen, GitCompareArrows, Layers3, LayoutTemplate, type LucideIcon } from 'lucide-react';
+import { ArrowRight, BookOpen, ChevronRight, GitCompareArrows, Layers3, LayoutTemplate, type LucideIcon } from 'lucide-react';
 import { ToolContentSection } from '@/components/layout/tool-content-section';
 import { ToolPageClient } from '@/components/layout/tool-page-client';
 import { ToolSidebarAd } from '@/components/ads/tool-sidebar-ad';
@@ -400,15 +400,15 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
         ))}
 
         {/* Server-rendered breadcrumb. Mirrors the BreadcrumbList JSON-LD. */}
-        <nav aria-label="Breadcrumb" className="container mx-auto px-4 pt-8 lg:px-8">
-          <ol className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+        <nav aria-label="Breadcrumb" className="container mx-auto px-4 pt-6 lg:px-8">
+          <ol className="flex flex-wrap items-center gap-1.5 text-[13px] text-muted-foreground">
             <li>
               <Link href="/" className="transition-colors hover:text-foreground">
                 Home
               </Link>
             </li>
-            <li aria-hidden="true" className="text-border">
-              /
+            <li aria-hidden="true">
+              <ChevronRight className="h-3.5 w-3.5 opacity-50" />
             </li>
             <li>
               <Link href="/tools" className="transition-colors hover:text-foreground">
@@ -420,8 +420,8 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
               if (!category) return null;
               return (
                 <>
-                  <li aria-hidden="true" className="text-border">
-                    /
+                  <li aria-hidden="true">
+                    <ChevronRight className="h-3.5 w-3.5 opacity-50" />
                   </li>
                   <li>
                     <Link href={`/tools/category/${category.id}`} className="transition-colors hover:text-foreground">
@@ -431,11 +431,11 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
                 </>
               );
             })()}
-            <li aria-hidden="true" className="text-border">
-              /
+            <li aria-hidden="true">
+              <ChevronRight className="h-3.5 w-3.5 opacity-50" />
             </li>
             <li>
-              <span className="text-xs font-bold uppercase tracking-[0.16em] text-foreground">{cleanToolName}</span>
+              <span className="font-medium text-foreground" aria-current="page">{cleanToolName}</span>
             </li>
           </ol>
         </nav>

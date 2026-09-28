@@ -15,7 +15,7 @@ const workflows = [
     href: '/tools/compress-pdf',
     cta: 'Compress PDF',
     icon: FileText,
-    color: 'from-violet-500 to-purple-600',
+    color: 'from-indigo-600 to-violet-600',
   },
   {
     title: 'Form & portal photos',
@@ -24,7 +24,7 @@ const workflows = [
     href: '/tools/compress-image',
     cta: 'Compress Image',
     icon: ImageIcon,
-    color: 'from-cyan-500 to-blue-600',
+    color: 'from-sky-600 to-blue-600',
   },
   {
     title: 'iPhone HEIC compatibility',
@@ -51,7 +51,7 @@ const workflows = [
     href: '/tools/merge-pdf',
     cta: 'Merge PDF',
     icon: FileText,
-    color: 'from-fuchsia-500 to-pink-600',
+    color: 'from-violet-600 to-purple-600',
   },
   {
     title: 'Privacy-minded processing',

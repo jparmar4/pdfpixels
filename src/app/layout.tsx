@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next';
-import { DM_Sans, Outfit } from 'next/font/google';
+import { Inter, Sora } from 'next/font/google';
 import './globals.css';
 import { Toaster as SonnerToaster } from '@/components/ui/sonner';
 import { ThemeProvider } from 'next-themes';
@@ -13,15 +13,15 @@ import { Navigation } from '@/components/layout/navigation';
 import { Footer } from '@/components/layout/footer';
 import { ScrollToTop } from '@/components/home/scroll-to-top';
 
-const fontDmSans = DM_Sans({
+const fontInter = Inter({
   subsets: ['latin'],
-  variable: '--font-dm-sans',
+  variable: '--font-inter',
   display: 'swap',
 });
 
-const fontOutfit = Outfit({
+const fontSora = Sora({
   subsets: ['latin'],
-  variable: '--font-outfit',
+  variable: '--font-sora',
   display: 'swap',
 });
 
@@ -135,7 +135,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" suppressHydrationWarning className={`scroll-smooth ${fontDmSans.variable} ${fontOutfit.variable}`}>
+    <html lang="en" suppressHydrationWarning className={`scroll-smooth ${fontInter.variable} ${fontSora.variable}`}>
       <head>
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
         <link rel="dns-prefetch" href="https://www.google-analytics.com" />
