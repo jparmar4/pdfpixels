@@ -324,7 +324,6 @@ function fileChip(x, y, label, size, ext, accent) {
 /** Realistic browser window with the conversion flow inside. */
 function browserWindow(scale = 1) {
   const w = 980, h = 560;
-  const s = (v) => v * scale;
   return `
   <g transform="scale(${scale})">
     <rect x="0" y="0" width="${w}" height="${h}" rx="18" fill="#ffffff" stroke="#cbd5e1" filter="url(#ds18_14)"/>

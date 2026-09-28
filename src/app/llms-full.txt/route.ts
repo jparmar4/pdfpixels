@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { allTools, toolCategories } from '@/lib/tools-data';
+import { allTools, allPdfTools, pdfToolGroups, toolCategories } from '@/lib/tools-data';
 import { comparisonPages } from '@/lib/comparisons';
 import { useCasePages } from '@/lib/use-cases';
 import { getAllBlogPosts } from '@/config/blog';
@@ -27,10 +27,31 @@ export async function GET() {
   lines.push('## Overview');
   lines.push('');
   lines.push(`- Website: ${SITE_URL}`);
-  lines.push(`- Tools: ${allTools.length} free workflows across ${toolCategories.length} categories`);
+  lines.push(`- Total tools: ${allTools.length} free workflows (${allPdfTools.length} PDF tools, ${allTools.length - allPdfTools.length} Image tools) across ${toolCategories.length} categories`);
+  lines.push(`- PDF Super Suite Hub: ${SITE_URL}/pdf-tools`);
   lines.push('- Access: core workflows require no signup; browser and server processing per tool page');
   lines.push('- Primary jobs: compress PDF for email, merge/split documents, convert formats, resize/crop images, remove background, enhance quality, prepare passport photos, handle HEIC, OCR');
-  lines.push('- Surfaces: tool pages, blog guides, comparisons, use-cases, API docs');
+  lines.push('- Surfaces: tool pages, blog guides, comparisons, use-cases, API docs, regional geo hubs');
+  lines.push('');
+
+  lines.push('## PDF Tools Super Suite (/pdf-tools)');
+  lines.push('');
+  lines.push(`Url: ${SITE_URL}/pdf-tools`);
+  lines.push(`Description: Complete suite of ${allPdfTools.length} online PDF tools. Categorized into 6 core document workflows with instant search and client-side privacy.`);
+  lines.push('');
+  for (const group of pdfToolGroups) {
+    lines.push(`### ${group.name} (${group.tools.length} tools)`);
+    for (const tool of group.tools) {
+      lines.push(`- ${clean(tool.name)}: ${SITE_URL}/tools/${tool.slug} — ${clean(tool.description)}`);
+    }
+    lines.push('');
+  }
+  lines.push('### Regional Portal Compliance Guarantees');
+  lines.push('- IRS & State Tax Submissions (US): Under 10 MB per attachment, flattened and PDF/A compatible');
+  lines.push('- USCIS Immigration & Visa Filings (US): Under 6 MB per document, OCR searchable');
+  lines.push('- HMRC & UK Gov Portals (UK): Strict 5 MB / 10 MB ceilings, password protection removal');
+  lines.push('- CRA My Account Filings (Canada): Strict 4 MB per document, linear fast web view');
+  lines.push('- ATO & Home Affairs (Australia): 10 MB document thresholds, searchable text layer');
   lines.push('');
 
   lines.push('## All tools by category');

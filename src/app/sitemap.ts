@@ -28,6 +28,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.95,
     },
     {
+      url: absoluteUrl('/pdf-tools'),
+      lastModified: evergreen,
+      changeFrequency: 'daily',
+      priority: 0.95,
+    },
+    {
       url: absoluteUrl('/about'),
       lastModified: evergreen,
       changeFrequency: 'monthly',

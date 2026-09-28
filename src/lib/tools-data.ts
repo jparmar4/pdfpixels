@@ -1385,6 +1385,22 @@ export const popularTools = allTools.filter(tool => tool.popular);
 
 export const aiTools = allTools.filter(tool => tool.isAI);
 
+export const allPdfTools: Tool[] = allTools.filter(
+  t => t.category.startsWith('pdf') || t.id === 'image-to-pdf'
+);
+
+export const allImageTools: Tool[] = allTools.filter(
+  t => !t.category.startsWith('pdf') && t.id !== 'image-to-pdf'
+);
+
+export interface PdfToolGroup {
+  id: string;
+  name: string;
+  shortName: string;
+  description: string;
+  tools: Tool[];
+}
+
 export const getToolBySlug = (slug: string): Tool | undefined => {
   return allTools.find(tool => tool.slug === slug);
 };
@@ -1392,6 +1408,73 @@ export const getToolBySlug = (slug: string): Tool | undefined => {
 export const getToolById = (id: string): Tool | undefined => {
   return allTools.find(tool => tool.id === id);
 };
+
+export const getToolsByCategory = (categoryId: string): Tool[] => {
+  const category = toolCategories.find(cat => cat.id === categoryId);
+  return category?.tools ?? [];
+};
+
+export const pdfToolGroups: PdfToolGroup[] = [
+  {
+    id: 'organize',
+    name: 'Organize PDF',
+    shortName: 'Organize',
+    description: 'Merge, split, reorder, rotate, crop, and arrange pages',
+    tools: getToolsByCategory('pdf-organize'),
+  },
+  {
+    id: 'compress-optimize',
+    name: 'Compress & Optimize',
+    shortName: 'Compress',
+    description: 'Reduce file size, linearize for fast web view, grayscale, flatten, and PDF/A',
+    tools: getToolsByCategory('pdf-optimize'),
+  },
+  {
+    id: 'convert-to-pdf',
+    name: 'Convert to PDF',
+    shortName: 'To PDF',
+    description: 'Turn Word, Excel, PowerPoint, Text, TIFF, HEIC, and images into PDF',
+    tools: [
+      getToolBySlug('word-to-pdf'),
+      getToolBySlug('excel-to-pdf'),
+      getToolBySlug('powerpoint-to-pdf'),
+      getToolBySlug('image-to-pdf'),
+      getToolBySlug('text-to-pdf'),
+      getToolBySlug('tiff-to-pdf'),
+      getToolBySlug('heic-to-pdf'),
+    ].filter((t): t is Tool => Boolean(t)),
+  },
+  {
+    id: 'convert-from-pdf',
+    name: 'Convert from PDF',
+    shortName: 'From PDF',
+    description: 'Convert PDF to Word, Excel, PowerPoint, JPG, CSV, Text, and searchable OCR',
+    tools: [
+      getToolBySlug('pdf-to-word'),
+      getToolBySlug('pdf-to-excel'),
+      getToolBySlug('pdf-to-pptx'),
+      getToolBySlug('pdf-to-jpg'),
+      getToolBySlug('pdf-to-csv'),
+      getToolBySlug('pdf-to-text'),
+      getToolBySlug('ocr-pdf'),
+      getToolBySlug('bank-statement-to-excel'),
+    ].filter((t): t is Tool => Boolean(t)),
+  },
+  {
+    id: 'edit-sign',
+    name: 'Edit & Sign PDF',
+    shortName: 'Edit & Sign',
+    description: 'Sign documents, fill forms, add watermarks, redact text, and compare files',
+    tools: getToolsByCategory('pdf-edit'),
+  },
+  {
+    id: 'security',
+    name: 'PDF Security',
+    shortName: 'Security',
+    description: 'Password protect sensitive files or unlock secured documents',
+    tools: getToolsByCategory('pdf-security'),
+  },
+];
 
 export const searchTools = (query: string): Tool[] => {
   const lowerQuery = query.toLowerCase().trim();
@@ -1404,7 +1487,14 @@ export const searchTools = (query: string): Tool[] => {
   );
 };
 
-export const getToolsByCategory = (categoryId: string): Tool[] => {
-  const category = toolCategories.find(cat => cat.id === categoryId);
-  return category?.tools ?? [];
+export const searchPdfTools = (query: string): Tool[] => {
+  const lowerQuery = query.toLowerCase().trim();
+  if (!lowerQuery) return allPdfTools;
+
+  return allPdfTools.filter(tool =>
+    tool.name.toLowerCase().includes(lowerQuery) ||
+    tool.description.toLowerCase().includes(lowerQuery) ||
+    tool.keywords.some(kw => kw.includes(lowerQuery))
+  );
 };
+

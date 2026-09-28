@@ -43,14 +43,8 @@ export function LocalizedToolPage({ locale, slug }: { locale: LocaleCode; slug: 
   const siblings = LOCALIZED_TOOL_SLUGS.filter((item) => item !== slug);
 
   return (
-    <main id="main-content" className={locale === 'jp' ? "[font-family:'Noto Sans JP',var(--font-dm-sans),sans-serif]" : undefined}>
+    <main id="main-content" className={locale === 'jp' ? "[font-family:var(--font-dm-sans),'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,sans-serif]" : undefined}>
       <SetHtmlLang lang={pack.htmlLang} />
-      {locale === 'jp' ? (
-        <link
-          rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap"
-        />
-      ) : null}
       <ToolPageClient toolId={tool.id} toolName={copy.name} toolDescription={copy.description} />
       <section className="container mx-auto max-w-3xl px-4 py-10">
         <h2 className="text-2xl font-bold text-foreground">{copy.howTitle}</h2>

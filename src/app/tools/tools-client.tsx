@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   ArrowRight,
   Cpu,
+  FileText,
   LayoutGrid,
   Search,
   ShieldCheck,
@@ -15,12 +16,13 @@ import {
   Layers,
   Wrench,
 } from 'lucide-react';
-import { toolCategories, allTools, aiTools, searchTools } from '@/lib/tools-data';
+import { toolCategories, allTools, aiTools, searchTools, allPdfTools, allImageTools } from '@/lib/tools-data';
 import { useAppStore } from '@/store/app-store';
 import { normalizeDisplayText } from '@/lib/display-text';
 import { AnimatedMeshBg } from '@/components/ui/animated-mesh-bg';
 
 function getIconColorClass(toolId: string): string {
+
   const id = toolId.toLowerCase();
   if (
     id.includes('pdf-merge') ||
@@ -99,12 +101,24 @@ function getProcessingMeta(tool: (typeof allTools)[0]) {
  * with a null fallback so useSearchParams never suspends the page prerender —
  * the hero H1 and all tool cards must be present in served HTML.
  */
-function InitialQuerySync({ onQuery }: { onQuery: (q: string) => void }) {
+function InitialQuerySync({
+  onQuery,
+  onCategory,
+}: {
+  onQuery: (q: string) => void;
+  onCategory: (c: string) => void;
+}) {
   const searchParams = useSearchParams();
-  const q = searchParams.get('q') || '';
+  const q = searchParams.get('q') || searchParams.get('search') || '';
+  const cat = searchParams.get('category') || searchParams.get('tab') || '';
   useEffect(() => {
     if (q) onQuery(q);
-  }, [q, onQuery]);
+    if (cat) {
+      if (cat === 'pdf' || cat === 'pdf-tools') onCategory('pdf-tools');
+      else if (cat === 'image' || cat === 'image-tools') onCategory('image-tools');
+      else onCategory(cat);
+    }
+  }, [q, cat, onQuery, onCategory]);
   return null;
 }
 
@@ -120,6 +134,10 @@ export function ToolsClient() {
       tools = searchTools(searchQuery);
     } else if (activeCategory === 'all') {
       tools = allTools;
+    } else if (activeCategory === 'pdf-tools' || activeCategory === 'pdf') {
+      tools = allPdfTools;
+    } else if (activeCategory === 'image-tools' || activeCategory === 'image') {
+      tools = allImageTools;
     } else {
       tools = allTools.filter((t) => t.category === activeCategory);
     }
@@ -140,7 +158,7 @@ export function ToolsClient() {
   return (
     <>
       <Suspense fallback={null}>
-        <InitialQuerySync onQuery={setSearchQuery} />
+        <InitialQuerySync onQuery={setSearchQuery} onCategory={setActiveCategory} />
       </Suspense>
       {/* ─── Hero Section ─── */}
       <section className="relative overflow-hidden">
@@ -251,7 +269,29 @@ export function ToolsClient() {
               }`}
             >
               <LayoutGrid className="h-3.5 w-3.5" />
-              All Tools
+              All Tools ({allTools.length})
+            </button>
+            <button
+              onClick={() => setActiveCategory('pdf-tools')}
+              className={`flex shrink-0 items-center gap-2 rounded-full px-5 py-2.5 text-xs font-bold uppercase tracking-[0.14em] transition-all duration-200 ${
+                activeCategory === 'pdf-tools'
+                  ? 'btn-premium text-white shadow-primary'
+                  : 'border border-border/60 bg-card/80 text-muted-foreground hover:border-primary/30 hover:text-foreground'
+              }`}
+            >
+              <FileText className="h-3.5 w-3.5" />
+              PDF Tools ({allPdfTools.length})
+            </button>
+            <button
+              onClick={() => setActiveCategory('image-tools')}
+              className={`flex shrink-0 items-center gap-2 rounded-full px-5 py-2.5 text-xs font-bold uppercase tracking-[0.14em] transition-all duration-200 ${
+                activeCategory === 'image-tools'
+                  ? 'btn-premium text-white shadow-primary'
+                  : 'border border-border/60 bg-card/80 text-muted-foreground hover:border-primary/30 hover:text-foreground'
+              }`}
+            >
+              <Sparkles className="h-3.5 w-3.5" />
+              Image Tools ({allImageTools.length})
             </button>
             {toolCategories.map((cat) => (
               <button
@@ -268,6 +308,19 @@ export function ToolsClient() {
               </button>
             ))}
           </div>
+          {activeCategory === 'pdf-tools' && (
+            <div className="mt-4 flex items-center justify-between rounded-2xl border border-primary/20 bg-primary/5 p-4 text-xs">
+              <span className="font-semibold text-foreground">
+                Looking for the dedicated PDF Suite? Browse our full workspace with portal upload checklists & tools.
+              </span>
+              <Link
+                href="/pdf-tools"
+                className="inline-flex items-center gap-1 rounded-full bg-primary px-3 py-1.5 font-bold text-white shadow-sm hover:opacity-95"
+              >
+                Open /pdf-tools →
+              </Link>
+            </div>
+          )}
         </motion.div>
       </section>
 

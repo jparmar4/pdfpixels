@@ -26,13 +26,16 @@ export function Footer() {
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
 
-  const toolLinks = toolLinkIds
-    .map((id) => allTools.find((tool) => tool.id === id))
-    .filter((t): t is NonNullable<typeof t> => t != null)
-    .map((tool) => ({
-      name: tool.name,
-      href: `/tools/${tool.slug}`,
-    }));
+  const toolLinks = [
+    { name: 'All PDF Tools (52)', href: '/pdf-tools' },
+    ...toolLinkIds
+      .map((id) => allTools.find((tool) => tool.id === id))
+      .filter((t): t is NonNullable<typeof t> => t != null)
+      .map((tool) => ({
+        name: tool.name,
+        href: `/tools/${tool.slug}`,
+      })),
+  ];
 
   // Build dynamic category columns from toolCategories (first 6 tools each)
   const categoryColumns = toolCategories
@@ -180,8 +183,8 @@ export function Footer() {
             </div>
 
             <div className="flex flex-col gap-3 sm:flex-row">
-              <Link href="/tools/compress-pdf" className="btn-premium inline-flex h-12 items-center justify-center gap-2 rounded-2xl px-6 text-sm font-semibold">
-                Launch PDF workflow
+              <Link href="/pdf-tools" className="btn-premium inline-flex h-12 items-center justify-center gap-2 rounded-2xl px-6 text-sm font-semibold">
+                Explore 52 PDF Tools
                 <ArrowRight className="h-4 w-4" />
               </Link>
               <button

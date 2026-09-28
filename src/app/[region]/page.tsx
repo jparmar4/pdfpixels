@@ -181,6 +181,32 @@ export default async function GeoHubPage({ params }: GeoPageProps) {
               ))}
             </div>
 
+            {/* Direct PDF Tools Suite Gateway */}
+            <div className="mt-6 rounded-2xl border border-primary/20 bg-gradient-to-r from-primary/10 via-primary/5 to-card/60 p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-5 shadow-soft">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <span className="inline-flex items-center justify-center rounded-lg bg-primary px-2.5 py-1 text-xs font-bold text-primary-foreground">
+                    PDF Suite
+                  </span>
+                  <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                    All-in-One Hub
+                  </span>
+                </div>
+                <h3 className="text-lg font-bold text-foreground">
+                  Need all 52 PDF Tools in {region.name}?
+                </h3>
+                <p className="text-sm text-muted-foreground max-w-2xl">
+                  Instantly access our full PDF workstation: merge, compress, split, convert to/from Office, sign documents, and OCR with client-side privacy protection.
+                </p>
+              </div>
+              <Link
+                href="/pdf-tools"
+                className="inline-flex items-center justify-center whitespace-nowrap rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground shadow-sm hover:bg-primary/90 transition-colors"
+              >
+                Explore All 52 PDF Tools →
+              </Link>
+            </div>
+
             <nav aria-label="Other regional hubs" className="mt-8 flex flex-wrap gap-2">
               {geoRegions
                 .filter((item) => item.code !== region.code)
