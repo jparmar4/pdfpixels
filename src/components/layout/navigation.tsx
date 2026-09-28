@@ -143,19 +143,18 @@ export function Navigation() {
     megaTimeout.current = setTimeout(() => setActiveMegaCategory(null), 140);
   };
 
-  const handleHomeLink = (categoryId?: string) => {
+  const dismissMega = () => {
+    if (megaTimeout.current) clearTimeout(megaTimeout.current);
+    setActiveMegaCategory(null);
+  };
+
+  const handleHomeLink = () => {
     if (window.location.pathname !== '/') {
-      router.push(categoryId ? `/#${categoryId}` : '/');
+      router.push('/');
       return;
     }
 
-    if (!categoryId) {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      return;
-    }
-
-    const element = document.getElementById(categoryId);
-    element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
@@ -237,17 +236,16 @@ export function Navigation() {
                     onFocus={() => openMega(category.id)}
                     onBlur={closeMega}
                   >
-                    <button
-                      type="button"
-                      onClick={() => handleHomeLink(category.id)}
-                      aria-expanded={isActive}
-                      aria-controls={`mega-menu-${category.id}`}
+                    <Link
+                      href={`/tools/category/${category.id}`}
+                      onClick={dismissMega}
                       aria-haspopup="true"
+                      aria-expanded={isActive}
                       className={`relative z-10 inline-flex items-center gap-1.5 rounded-full px-3 xl:px-4 py-2 text-[14px] font-bold transition-all duration-200 ${isActive ? 'text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
                     >
                       {label}
                       <ChevronRight className={`h-3 w-3 opacity-60 transition-transform duration-300 ${isActive ? 'rotate-90' : 'group-hover:translate-y-0.5 group-hover:rotate-90'}`} />
-                    </button>
+                    </Link>
                     {isActive && (
                       <span className="absolute inset-0 z-0 rounded-full bg-secondary shadow-sm ring-1 ring-border/20" />
                     )}
@@ -357,10 +355,10 @@ export function Navigation() {
                 aria-label={`${activeCategory.name} tools`}
                 onMouseEnter={() => openMega(activeCategory.id)}
                 onMouseLeave={closeMega}
-                className="hidden xl:block pb-4 animate-in fade-in slide-in-from-top-2 duration-200"
+                className="hidden lg:block pb-4 animate-in fade-in slide-in-from-top-2 duration-200"
               >
                 <div className="rounded-[1.75rem] border border-border/50 bg-card/95 p-6 shadow-premium">
-                  <div className="grid gap-6 lg:grid-cols-[300px_minmax(0,1fr)]">
+                  <div className="grid gap-6 lg:grid-cols-[280px_minmax(0,1fr)]">
                     <div className="rounded-[1.5rem] border border-border/50 bg-background/75 p-5">
                       <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-primary/15 to-sky-500/10 text-primary">
                         <activeCategory.icon className="h-5 w-5" />
@@ -371,7 +369,7 @@ export function Navigation() {
                         <span className="rounded-full border border-border/60 bg-card px-3 py-1.5">{activeCategory.tools.length} tools</span>
                         <Link
                           href={`/tools/category/${activeCategory.id}`}
-                          onClick={closeMega}
+                          onClick={dismissMega}
                           className="rounded-full border border-primary/30 bg-primary/10 px-3 py-1.5 text-primary hover:bg-primary/20 transition-colors"
                         >
                           View all →
@@ -379,24 +377,25 @@ export function Navigation() {
                       </div>
                     </div>
 
-                    <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-                      {activeCategory.tools.slice(0, 6).map((tool) => {
+                    {/* Full category listing — every tool in the category stays visible here */}
+                    <div className="grid gap-2.5 sm:grid-cols-2 xl:grid-cols-3 lg:max-h-[58vh] lg:overflow-y-auto lg:pr-1">
+                      {activeCategory.tools.map((tool) => {
                         const Icon = tool.icon;
                         return (
                           <button
                             key={tool.id}
                             type="button"
                             onClick={() => handleToolSelect(tool)}
-                            className="group rounded-[1.35rem] border border-border/50 bg-background/75 p-4 text-left transition-all duration-200 hover:border-primary/30 hover:bg-background hover:shadow-soft"
+                            className="group rounded-[1.35rem] border border-border/50 bg-background/75 p-3.5 text-left transition-all duration-200 hover:border-primary/30 hover:bg-background hover:shadow-soft"
                           >
-                            <div className="mb-3 flex items-start justify-between gap-3">
-                              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                            <div className="mb-2 flex items-start justify-between gap-3">
+                              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
                                 <Icon className="h-4 w-4" />
                               </div>
                               {tool.badge ? <span className="rounded-full border border-border/60 px-2 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-muted-foreground">{tool.badge}</span> : null}
                             </div>
                             <p className="text-sm font-semibold text-foreground group-hover:text-primary">{normalizeDisplayText(tool.name)}</p>
-                            <p className="mt-1 line-clamp-2 text-sm leading-5 text-muted-foreground">{normalizeDisplayText(tool.description)}</p>
+                            <p className="mt-1 line-clamp-1 text-sm leading-5 text-muted-foreground">{normalizeDisplayText(tool.description)}</p>
                           </button>
                         );
                       })}
@@ -416,8 +415,10 @@ export function Navigation() {
                     <Button asChild className="btn-premium h-11 rounded-2xl">
                       <Link href="/tools/compress-pdf" onClick={() => setMobileMenuOpen(false)}>Open PDF tools</Link>
                     </Button>
-                    <Button variant="outline" className="h-11 rounded-2xl" onClick={() => handleHomeLink()}>
-                      Browse all categories
+                    <Button asChild variant="outline" className="h-11 rounded-2xl">
+                      <Link href="/tools" onClick={() => setMobileMenuOpen(false)}>
+                        Browse all categories
+                      </Link>
                     </Button>
                     <Button asChild variant="outline" className="h-11 rounded-2xl">
                       <Link href="/blog" onClick={() => setMobileMenuOpen(false)}>
@@ -434,19 +435,16 @@ export function Navigation() {
                           <p className="text-sm font-bold text-foreground">{normalizeDisplayText(category.name)}</p>
                           <p className="text-xs text-muted-foreground">{category.tools.length} tools</p>
                         </div>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setMobileMenuOpen(false);
-                            handleHomeLink(category.id);
-                          }}
+                        <Link
+                          href={`/tools/category/${category.id}`}
+                          onClick={() => setMobileMenuOpen(false)}
                           className="text-xs font-semibold uppercase tracking-[0.16em] text-primary"
                         >
-                          View
-                        </button>
+                          View all
+                        </Link>
                       </div>
                       <div className="grid gap-2 sm:grid-cols-2">
-                        {category.tools.slice(0, 4).map((tool) => (
+                        {category.tools.map((tool) => (
                           <button
                             key={tool.id}
                             type="button"

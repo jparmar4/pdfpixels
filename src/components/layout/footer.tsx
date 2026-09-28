@@ -199,7 +199,7 @@ export function Footer() {
       {/* ── Footer Columns ── */}
       <div className="border-t border-border/30 bg-muted/15">
         <div className="container mx-auto px-4 py-14 lg:px-8">
-          <div className="grid gap-10 lg:grid-cols-[minmax(0,1.45fr)_repeat(5,minmax(0,1fr))]">
+          <div className="grid gap-10 lg:grid-cols-[minmax(0,1.3fr)_repeat(6,minmax(0,1fr))]">
             {/* Brand Column */}
             <div className="space-y-6">
               <Link href="/" className="flex items-center gap-3" onClick={() => setActiveTool(null)}>
@@ -380,7 +380,6 @@ function CollapsibleFooterColumn({ title, links }: { title: string; links: Array
         className="flex w-full items-center justify-between py-1"
         aria-expanded={open}
       >
-        <h3 className="text-xs font-bold uppercase tracking-[0.18em] text-muted-foreground">{title}</h3>
         <h3 className="text-xs font-bold uppercase tracking-[0.18em] text-muted-foreground">{title}</h3>
         <span
           className={`text-muted-foreground transition-transform duration-200 ${open ? 'rotate-180' : ''}`}

@@ -139,12 +139,10 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <head>
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
         <link rel="dns-prefetch" href="https://www.google-analytics.com" />
+        {/* AdSense account verification. The adsbygoogle.js loader itself is
+            injected by <AdSenseScript /> below, only after advertising consent,
+            so the consent system in cookie-consent.tsx is never bypassed. */}
         <meta name="google-adsense-account" content="ca-pub-3541576002060495" />
-        <script
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3541576002060495"
-          crossOrigin="anonymous"
-        />
         <link rel="search" type="application/opensearchdescription+xml" title="PdfPixels" href="/opensearch.xml" />
         <link rel="alternate" type="application/rss+xml" title="PdfPixels RSS Feed" href="/feed" />
         <link rel="alternate" type="text/plain" title="PdfPixels for LLMs" href="/llms.txt" />

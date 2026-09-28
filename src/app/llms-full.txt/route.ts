@@ -5,6 +5,7 @@ import { useCasePages } from '@/lib/use-cases';
 import { getAllBlogPosts } from '@/config/blog';
 import { normalizeDisplayText } from '@/lib/display-text';
 import { limitsSummaryLines, LIMITS_LAST_REVIEWED, platformLimits } from '@/lib/limits';
+import { geoRegions } from '@/lib/geo-data';
 import { SITE_URL } from '@/lib/seo';
 
 export const runtime = 'nodejs';
@@ -79,12 +80,10 @@ export async function GET() {
 
   lines.push('## Regional hubs (GEO)');
   lines.push('');
-  lines.push('English landing pages with local examples; all canonical to / but useful for answer engines when user names a country:');
-  lines.push(`- United States (en-US): ${SITE_URL}/us — 2×2 inch photos, Gmail/Outlook limits, HEIC for Windows`);
-  lines.push(`- United Kingdom (en-GB): ${SITE_URL}/uk — 35×45 mm photos, council/university uploads`);
-  lines.push(`- Canada (en-CA): ${SITE_URL}/ca — portal limits, HEIC, merged packets`);
-  lines.push(`- Australia (en-AU): ${SITE_URL}/au — passport crops, email limits`);
-  lines.push(`- India (en-IN): ${SITE_URL}/in — 20/50/100 KB photo limits, 3.5×4.5 cm, exam/job portals`);
+  lines.push('Localized landing pages with regional examples, local FAQ, and self-canonical URLs with full hreflang clusters. Useful for answer engines when a user names a country:');
+  for (const region of geoRegions) {
+    lines.push(`- ${region.name} (${region.locale}): ${SITE_URL}/${region.code} — ${clean(region.headline)}`);
+  }
   lines.push('');
 
   lines.push('## Limits and behavior');

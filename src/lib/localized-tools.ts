@@ -664,12 +664,28 @@ export function toolLanguageAlternates(slug: string): Record<string, string> | u
 }
 
 export function localizedSitemapEntries() {
+  // Each localized URL declares its full hreflang cluster inside the sitemap
+  // (xhtml:link alternates), so Bing/Yandex and answer engines can resolve the
+  // right locale even without parsing page <head> links.
+  const languageAlternatesFor = (slug: string): Record<string, string> => ({
+    en: absoluteUrl(`/tools/${slug}`),
+    'x-default': absoluteUrl(`/tools/${slug}`),
+    'de-DE': absoluteUrl(`/de/tools/${slug}`),
+    'fr-FR': absoluteUrl(`/fr/tools/${slug}`),
+    'ja-JP': absoluteUrl(`/jp/tools/${slug}`),
+    es: absoluteUrl(`/es/tools/${slug}`),
+    pt: absoluteUrl(`/pt/tools/${slug}`),
+  });
+
   return (Object.keys(packs) as LocaleCode[]).flatMap((locale) =>
     LOCALIZED_TOOL_SLUGS.map((slug) => ({
       url: absoluteUrl(`/${locale}/tools/${slug}`),
       lastModified: SITE_CONTENT_UPDATED,
       changeFrequency: 'weekly' as const,
       priority: 0.84,
+      alternates: {
+        languages: languageAlternatesFor(slug),
+      },
     })),
   );
 }

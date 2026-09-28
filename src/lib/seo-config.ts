@@ -54,8 +54,8 @@ export const seoConfig = {
     'convert image to pdf free online',
     'split pdf pages online free',
   ],
-  targetLanguages: ['en'],
-  targetCountries: ['US', 'GB', 'CA', 'AU', 'IN'],
+  targetLanguages: ['en', 'de', 'fr', 'es', 'pt', 'ja'],
+  targetCountries: ['US', 'GB', 'CA', 'AU', 'IN', 'PH', 'NG', 'PK', 'BD', 'KE', 'AE', 'ZA', 'SG', 'IE', 'NZ', 'DE', 'FR', 'JP', 'ES', 'BR', 'PT'],
   brandColor: '#4f46e5',
   credentials: {
     tools: toolCountLabel,

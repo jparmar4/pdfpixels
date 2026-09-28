@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server';
 import { getAllBlogPosts } from '@/config/blog';
+import { SITE_URL } from '@/lib/seo';
 
 export async function GET() {
-  const baseUrl = 'https://www.pdfpixels.com';
+  const baseUrl = SITE_URL;
   const currentDate = new Date().toUTCString();
   const blogPosts = getAllBlogPosts();
 

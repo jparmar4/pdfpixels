@@ -1,16 +1,6 @@
 import { SetHtmlLang } from '@/components/seo/set-html-lang';
 import { JpShell } from './jp-shell';
-
-const htmlLang: Record<string, string> = {
-  us: 'en-US',
-  uk: 'en-GB',
-  ca: 'en-CA',
-  au: 'en-AU',
-  in: 'en-IN',
-  de: 'de',
-  fr: 'fr',
-  jp: 'ja',
-};
+import { getRegionByCode } from '@/lib/geo-data';
 
 export default async function RegionLayout({
   children,
@@ -20,9 +10,12 @@ export default async function RegionLayout({
   params: Promise<{ region: string }>;
 }) {
   const { region } = await params;
+  // The region's own locale (en-US, de-DE, es-ES, pt-BR, ja-JP, …) is the
+  // single source of truth so localized hubs never declare lang="en".
+  const htmlLang = getRegionByCode(region)?.locale ?? 'en';
   const body = (
     <>
-      <SetHtmlLang lang={htmlLang[region] ?? 'en'} />
+      <SetHtmlLang lang={htmlLang} />
       {children}
     </>
   );

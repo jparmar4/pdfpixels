@@ -35,9 +35,9 @@ export async function GET() {
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
 ${allImages.map((img) => `  <url>
-    <loc>${img.pageUrl}</loc>
+    <loc>${escapeXml(img.pageUrl)}</loc>
     <image:image>
-      <image:loc>${img.imageUrl}</image:loc>
+      <image:loc>${escapeXml(img.imageUrl)}</image:loc>
       <image:caption>${escapeXml(img.caption)}</image:caption>
       <image:title>${escapeXml(img.title)}</image:title>
     </image:image>

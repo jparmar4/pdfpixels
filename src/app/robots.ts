@@ -12,8 +12,11 @@ export default function robots(): MetadataRoute.Robots {
       },
       {
         userAgent: '*',
-        allow: '/',
-        disallow: ['/api/', '/_next/', '/_static/'],
+        // /_next/static/ (JS/CSS bundles) and /_next/image/ (optimized images)
+        // must stay fetchable — blocking them breaks Googlebot rendering, and
+        // rendering failures surface as indexing problems in Search Console.
+        allow: ['/', '/_next/static/', '/_next/image/'],
+        disallow: ['/api/', '/_next/data/', '/_static/'],
       },
       // Answer-engine / training crawlers: all public pages, not only llms.txt
       {

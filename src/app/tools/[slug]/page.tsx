@@ -14,7 +14,7 @@ import { absoluteUrl, dedupeKeywords, SITE_CONTENT_UPDATED } from '@/lib/seo';
 import { toolLanguageAlternates } from '@/lib/localized-tools';
 import { toolContentMap } from '@/lib/tool-content-data';
 import { getPostsForTool } from '@/config/blog';
-import { allTools, getToolBySlug, type Tool } from '@/lib/tools-data';
+import { allTools, getToolBySlug, toolCategories, type Tool } from '@/lib/tools-data';
 import { useCasePages } from '@/lib/use-cases';
 
 function WorkspaceLoading({ tool, containerClass = 'container mx-auto px-4 lg:px-8' }: { tool: Tool; containerClass?: string }) {
@@ -362,7 +362,15 @@ function getToolJsonLd(tool: ReturnType<typeof getToolBySlug>) {
       itemListElement: [
         { '@type': 'ListItem', position: 1, name: 'Home', item: absoluteUrl('/') },
         { '@type': 'ListItem', position: 2, name: 'Tools', item: absoluteUrl('/tools') },
-        { '@type': 'ListItem', position: 3, name: cleanName, item: url },
+        // Category level strengthens the tool → category internal-link graph
+        // that crawlers use for discovery of /tools/category/* hubs.
+        ...(() => {
+          const category = toolCategories.find((c) => c.id === tool.category);
+          return category
+            ? [{ '@type': 'ListItem', position: 3, name: normalizeDisplayText(category.name), item: absoluteUrl(`/tools/category/${category.id}`) }]
+            : [];
+        })(),
+        { '@type': 'ListItem', position: 4, name: cleanName, item: url },
       ],
     },
   ];
@@ -407,6 +415,22 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
                 Tools
               </Link>
             </li>
+            {(() => {
+              const category = toolCategories.find((c) => c.id === tool.category);
+              if (!category) return null;
+              return (
+                <>
+                  <li aria-hidden="true" className="text-border">
+                    /
+                  </li>
+                  <li>
+                    <Link href={`/tools/category/${category.id}`} className="transition-colors hover:text-foreground">
+                      {normalizeDisplayText(category.name)}
+                    </Link>
+                  </li>
+                </>
+              );
+            })()}
             <li aria-hidden="true" className="text-border">
               /
             </li>
