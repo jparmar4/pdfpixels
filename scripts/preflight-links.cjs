@@ -37,6 +37,8 @@ const dynamicRoutes = [
   /^\/tools\/[^/]+\/opengraph-image$/,
   /^\/blog\/[^/]+\/opengraph-image$/,
   /^\/opengraph-image/,
+  /^\/llms\.txt$/,
+  /^\/llms-full\.txt$/,
 ];
 
 function existsInternal(href) {

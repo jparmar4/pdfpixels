@@ -231,10 +231,11 @@ export function processContent(content: string): React.ReactNode[] {
                 }
             }
 
-            // Inline code: `...` — if it's a URL, make it a clickable link
+            // Inline code: `...` — if it's an explicit URL or recognized site path, make it a clickable link
             if (part.startsWith('`') && part.endsWith('`') && part.length > 2) {
                 const inner = part.slice(1, -1).trim();
-                if (/^https?:\/\//i.test(inner) || inner.startsWith('/')) {
+                const isKnownRoutePrefix = /^\/(tools|blog|use-cases|pdf-tools|compare|pricing|about|contact)(\/|$)/.test(inner);
+                if (/^https?:\/\//i.test(inner) || isKnownRoutePrefix) {
                     nodes.push(renderHref(inner, inner, key));
                     return;
                 }

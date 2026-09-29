@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { CheckCircle2, Users, Sparkles, Shield, FileType, ArrowRight, BookOpen, Clock, AlertTriangle } from 'lucide-react';
 import { toolContentMap } from '@/lib/tool-content-data';
 import { getToolBySlug, type Tool } from '@/lib/tools-data';
-import { blogPosts } from '@/config/blog';
+import { blogPosts, consolidatedBlogSlugs } from '@/config/blog';
 import { FAQAccordion } from '@/components/layout/faq-accordion';
 import { InContentAd } from '@/components/ads/ad-banner';
 
@@ -156,9 +156,11 @@ const curatedRelatedGuides: Record<string, string[]> = {
 
 /* ── Find related blog posts by matching tool slug keywords to blog post keywords ── */
 function findRelatedArticles(toolSlug: string, toolName: string): typeof blogPosts {
+  const activePosts = blogPosts.filter((post) => !consolidatedBlogSlugs.has(post.slug));
+
   const curated = curatedRelatedGuides[toolSlug];
   if (curated?.length) {
-    const bySlug = new Map(blogPosts.map((post) => [post.slug, post]));
+    const bySlug = new Map(activePosts.map((post) => [post.slug, post]));
     const picks = curated.map((slug) => bySlug.get(slug)).filter((post): post is (typeof blogPosts)[number] => Boolean(post));
     if (picks.length > 0) return picks.slice(0, 3);
   }
@@ -166,7 +168,7 @@ function findRelatedArticles(toolSlug: string, toolName: string): typeof blogPos
   const slugParts = toolSlug.split('-').filter(Boolean);
   const keywords = slugParts.length > 0 ? slugParts : [toolName.toLowerCase()];
 
-  const scored = blogPosts
+  const scored = activePosts
     .map((post) => {
       let score = 0;
       const postKeywordsLower = post.keywords.map((k) => k.toLowerCase());
