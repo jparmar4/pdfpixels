@@ -16,10 +16,14 @@ export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
     const file = formData.get('file') as File | null;
-    const mode = (formData.get('mode') as string) || 'all'; // 'all', 'range', 'single', 'size'
-    const pageRange = (formData.get('pageRange') as string) || '';
-    const singlePage = (formData.get('singlePage') as string) || '';
+    let mode = (formData.get('mode') as string) || 'all'; // 'all', 'range', 'single', 'size'
+    const pageRange = (formData.get('pageRange') as string) || (formData.get('pages') as string) || '';
+    const singlePage = (formData.get('singlePage') as string) || (formData.get('page') as string) || '';
     const maxSizeMb = Number(formData.get('maxSizeMb')) || 0;
+
+    if (mode === 'extract') {
+      mode = singlePage ? 'single' : (pageRange ? 'range' : 'all');
+    }
 
     if (!['all', 'range', 'single', 'size'].includes(mode)) {
       return apiError('Invalid split mode. Use all, range, single, or size.', 400);

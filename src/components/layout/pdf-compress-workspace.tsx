@@ -34,21 +34,21 @@ const compressionLevels: Array<{
     value: 'less',
     title: 'High quality',
     description: 'Best for contracts, portfolios, and print-adjacent sharing.',
-    qualityHint: '~88% JPEG Â· 220 DPI color',
+    qualityHint: '~88% JPEG · 220 DPI color',
     dpiHint: 'Minimal quality loss',
   },
   {
     value: 'recommended',
     title: 'Recommended',
     description: 'Balanced reduction for email, forms, and everyday uploads.',
-    qualityHint: '~76% JPEG Â· 150 DPI color',
+    qualityHint: '~76% JPEG · 150 DPI color',
     dpiHint: 'Best all-rounder',
   },
   {
     value: 'extreme',
     title: 'Smallest size',
-    description: 'Maximum reduction for strict upload limits (e.g. 200 KBâ€“1 MB).',
-    qualityHint: '~58% JPEG Â· 110 DPI color',
+    description: 'Maximum reduction for strict upload limits (e.g. 200 KB–1 MB).',
+    qualityHint: '~58% JPEG · 110 DPI color',
     dpiHint: 'Text stays sharp; photos softer',
   },
 ];
@@ -67,13 +67,13 @@ const presetMeta: Record<string, { title: string; description: string; limitText
   '50kb': {
     title: 'Compress PDF to 50KB Online',
     description: 'Compress PDF documents to 50KB or less for the strictest exam portals and government forms with tiny upload limits.',
-    limitText: 'Tuned for 50KB exam-portal ceilings Â· maximum reduction, honest results',
+    limitText: 'Tuned for 50KB exam-portal ceilings · maximum reduction, honest results',
     defaultLevel: 'extreme',
   },
   '100kb': {
     title: 'Compress PDF to 100KB Online',
     description: 'Reduce PDF file size to under 100KB for strict government portal uploads, job applications, and student admissions.',
-    limitText: 'Tuned for 100KB portal ceilings Â· applies maximum stream and image reduction',
+    limitText: 'Tuned for 100KB portal ceilings · applies maximum stream and image reduction',
     defaultLevel: 'extreme',
   },
   '200kb': {
@@ -210,9 +210,9 @@ export function CompressPDFWorkspace({ targetPreset }: CompressPDFWorkspaceProps
       } else if (goalBytes && processedSize > goalBytes) {
         toast.warning(`Output is ${formatSize(processedSize)}, above the requested limit. Try Smallest size or split the PDF.`);
       } else if (savedPercent < 1) {
-        toast.message(compressNote || 'File returned with little size change â€” it may already be optimized.');
+        toast.message(compressNote || 'File returned with little size change — it may already be optimized.');
       } else {
-        toast.success(`PDF compressed by ${savedPercent}% (${formatSize(originalSize)} â†’ ${formatSize(processedSize)}).`);
+        toast.success(`PDF compressed by ${savedPercent}% (${formatSize(originalSize)} → ${formatSize(processedSize)}).`);
       }
       requestAnimationFrame(() => {
         document.getElementById('compress-result')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -277,12 +277,12 @@ export function CompressPDFWorkspace({ targetPreset }: CompressPDFWorkspaceProps
         const pdf = await PDFDocument.load(bytes, { ignoreEncryption: true });
         if (cancelled) return;
         if (pdf.isEncrypted) {
-          toast.warning('This PDF is password-protected â€” unlock it before compressing.');
+          toast.warning('This PDF is password-protected — unlock it before compressing.');
         }
         setPdfMeta({ pages: pdf.getPageCount() });
       } catch {
         if (!cancelled) {
-          toast.warning('Could not preview this PDF â€” it may be corrupt.');
+          toast.warning('Could not preview this PDF — it may be corrupt.');
           setPdfMeta(null);
         }
       }
@@ -311,7 +311,7 @@ export function CompressPDFWorkspace({ targetPreset }: CompressPDFWorkspaceProps
         <FileUpload accept=".pdf,application/pdf" />
         <ToolLimitNotice
           limits={[
-            'PDF only Â· max 50 MB',
+            'PDF only · max 50 MB',
             preset ? preset.limitText : 'Image-heavy / scanned PDFs compress best',
             'Vector text stays sharp; photos are downsampled by preset',
           ]}
@@ -327,7 +327,7 @@ export function CompressPDFWorkspace({ targetPreset }: CompressPDFWorkspaceProps
                 <p className="text-sm font-semibold truncate">{uploadedFile.name}</p>
                 <p className="text-xs text-muted-foreground">
                   {formatSize(uploadedFile.size)}
-                  {pdfMeta?.pages ? ` Â· ${pdfMeta.pages} page${pdfMeta.pages === 1 ? '' : 's'}` : ''}
+                  {pdfMeta?.pages ? ` · ${pdfMeta.pages} page${pdfMeta.pages === 1 ? '' : 's'}` : ''}
                 </p>
               </div>
             </div>
@@ -374,7 +374,7 @@ export function CompressPDFWorkspace({ targetPreset }: CompressPDFWorkspaceProps
                 <Info className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
                 <p>
                   <span className="font-semibold text-foreground">{activeLevel.dpiHint}.</span>{' '}
-                  Already-optimized PDFs may only shrink a little â€” try another preset or force-download the best attempt.
+                  Already-optimized PDFs may only shrink a little — try another preset or force-download the best attempt.
                 </p>
               </div>
             </div>
@@ -397,7 +397,7 @@ export function CompressPDFWorkspace({ targetPreset }: CompressPDFWorkspaceProps
                       transition={prefersReducedMotion ? undefined : { duration: 1, repeat: Infinity, ease: 'linear' }}
                       className="mr-2 h-4 w-4 rounded-full border-2 border-primary-foreground/30 border-t-primary-foreground"
                     />
-                    {statusLabel} Â· {Math.round(progress)}%
+                    {statusLabel} · {Math.round(progress)}%
                   </>
                 ) : (
                   <>
@@ -509,7 +509,7 @@ export function CompressPDFWorkspace({ targetPreset }: CompressPDFWorkspaceProps
               description="Your PDF is ready for faster sharing, uploads, and document workflows."
               onDownload={handleDownload}
               downloadLabel="Download compressed PDF"
-              primaryMeta={`${uploadedFile.name} Â· ${compressionLevels.find((level) => level.value === result.level)?.title} Â· ${formatSize(result.originalSize)} â†’ ${formatSize(result.processedSize)}`}
+              primaryMeta={`${uploadedFile.name} · ${compressionLevels.find((level) => level.value === result.level)?.title} · ${formatSize(result.originalSize)} → ${formatSize(result.processedSize)}`}
               nextActions={[
                 { label: 'Merge PDF', href: '/tools/merge-pdf' },
                 { label: 'Split PDF', href: '/tools/split-pdf' },
@@ -526,7 +526,7 @@ export function CompressPDFWorkspace({ targetPreset }: CompressPDFWorkspaceProps
       {uploadedFile && !result ? (
         <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/95 p-3 backdrop-blur md:hidden">
           <Button className="btn-premium h-11 w-full" onClick={handleProcess} disabled={isProcessing}>
-            {isProcessing ? `${statusLabel} Â· ${Math.round(progress)}%` : `Compress PDF (${activeLevel.title})`}
+            {isProcessing ? `${statusLabel} · ${Math.round(progress)}%` : `Compress PDF (${activeLevel.title})`}
           </Button>
         </div>
       ) : null}

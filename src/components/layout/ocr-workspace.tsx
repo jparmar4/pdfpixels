@@ -130,7 +130,7 @@ export function OCRWorkspace() {
             toast.success('Text copied to clipboard!');
             setTimeout(() => setCopied(false), 2000);
         } catch {
-            toast.error('Could not copy â€” select the text and copy manually');
+            toast.error('Could not copy — select the text and copy manually');
         }
     }, [extractedText]);
 
@@ -191,10 +191,10 @@ export function OCRWorkspace() {
                     <FileUpload accept="image/*" maxSizeMb={platformLimits.image.ocr.maxFileMb} />
                     <ToolLimitNotice
                         limits={[
-                            `Images only Â· max ${platformLimits.image.ocr.maxFileMb} MB`,
+                            `Images only · max ${platformLimits.image.ocr.maxFileMb} MB`,
                             'Runs in your browser (Tesseract.js)',
                             'High-accuracy mode preprocesses contrast',
-                            'Editable text Â· copy or .txt download',
+                            'Editable text · copy or .txt download',
                         ]}
                     />
 

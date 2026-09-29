@@ -49,6 +49,13 @@ export function PDFCropWorkspace() {
         const { PDFDocument } = await import('pdf-lib');
         const buffer = await uploadedFile.arrayBuffer();
         const pdf = await PDFDocument.load(buffer, { ignoreEncryption: true });
+        if (pdf.isEncrypted) {
+          if (active) {
+            setTotalPages(1);
+            toast.warning('This PDF is password-protected — please unlock it before cropping.');
+          }
+          return;
+        }
         const pages = pdf.getPages();
         if (active) {
           setTotalPages(pages.length);

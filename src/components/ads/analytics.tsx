@@ -34,14 +34,14 @@ function aiSourceFromReferrer(referrer: string): string | null {
 function AIReferralTracker() {
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    if (sessionStorage.getItem('pp-ai-ref-tracked')) return;
-    const source = aiSourceFromReferrer(document.referrer);
-    if (!source) return;
-    sessionStorage.setItem('pp-ai-ref-tracked', '1');
     try {
+      if (sessionStorage.getItem('pp-ai-ref-tracked')) return;
+      const source = aiSourceFromReferrer(document.referrer);
+      if (!source) return;
+      sessionStorage.setItem('pp-ai-ref-tracked', '1');
       sendGAEvent('event', 'ai_referral', { ai_source: source });
     } catch {
-      // Analytics blocked — ignore.
+      // Storage restricted or analytics blocked — ignore safely.
     }
   }, []);
 

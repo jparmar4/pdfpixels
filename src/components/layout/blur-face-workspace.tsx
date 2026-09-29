@@ -220,7 +220,7 @@ export function BlurFaceWorkspace() {
           <FileUpload accept="image/*" maxSizeMb={20} />
           <ToolLimitNotice
             limits={[
-              'Images only Â· max 20 MB',
+              'Images only · max 20 MB',
               'Auto face detection',
               'Blur or pixelate faces',
               'PNG export',
@@ -236,7 +236,7 @@ export function BlurFaceWorkspace() {
               <div className="flex min-h-[240px] items-center justify-center bg-muted/25 p-4">
                 <img
                   src={sourcePreview}
-                  alt="Original upload preview â€” faces not yet blurred"
+                  alt="Original upload preview — faces not yet blurred"
                   loading="lazy"
                   decoding="async"
                   className="max-h-[420px] max-w-full rounded-xl object-contain"
@@ -254,7 +254,7 @@ export function BlurFaceWorkspace() {
               <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-violet-500/15 text-violet-600">
                 <ScanFace className="h-6 w-6 animate-pulse" />
               </div>
-              <h3 className="mb-1 text-center text-lg font-bold">Detecting & blurring facesâ€¦</h3>
+              <h3 className="mb-1 text-center text-lg font-bold">Detecting & blurring faces…</h3>
               <p className="mb-4 text-center text-sm text-muted-foreground">
                 Privacy pipeline is running on the server.
               </p>
@@ -336,7 +336,7 @@ export function BlurFaceWorkspace() {
                 description="Detected faces were covered with your selected privacy style."
                 onDownload={handleDownload}
                 downloadLabel="Download PNG"
-                primaryMeta={`${faceStyle === 'pixelate' ? 'Pixelate' : 'Blur'} Â· strength ${blurStrength}%${faceCount != null ? ` Â· ${faceCount} face(s)` : ''}`}
+                primaryMeta={`${faceStyle === 'pixelate' ? 'Pixelate' : 'Blur'} · strength ${blurStrength}%${faceCount != null ? ` · ${faceCount} face(s)` : ''}`}
                 nextActions={[
                   { label: 'Pixelate image', href: '/tools/pixelate-image' },
                   { label: 'Censor area', href: '/tools/censor-photo' },
@@ -511,7 +511,7 @@ export function BlurFaceWorkspace() {
                       transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
                       className="mr-3 h-5 w-5 rounded-full border-2 border-white/30 border-t-white"
                     />
-                    Processingâ€¦
+                    Processing…
                   </>
                 ) : (
                   <>

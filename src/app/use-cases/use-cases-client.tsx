@@ -104,7 +104,7 @@ function HeroSection({ search, setSearch }: { search: string; setSearch: (val: s
           </motion.div>
 
           <p className="mt-4 text-xs text-muted-foreground">
-            {useCasePages.length} step-by-step guides Â· Tool-first approach
+            {useCasePages.length} step-by-step guides · Tool-first approach
           </p>
         </motion.div>
       </div>

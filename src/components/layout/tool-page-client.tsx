@@ -3,7 +3,7 @@
 import dynamic from 'next/dynamic';
 import { useAppStore } from '@/store/app-store';
 import { ToolContext } from '@/hooks/use-active-tool';
-import { useEffect, useLayoutEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { ErrorBoundary } from '@/components/ui/error-boundary';
 
 // Dynamically import workspace components
@@ -388,8 +388,8 @@ export function ToolPageClient({ toolId, toolName, toolDescription }: ToolPageCl
   const reset = useAppStore((state) => state.reset);
   const prevToolId = useRef<string | null>(null);
 
-  // useLayoutEffect so activeTool is set before paint — workspaces return null without it
-  useLayoutEffect(() => {
+  // Hydrate global Zustand store safely after mount (workspaces SSR from ToolContext)
+  useEffect(() => {
     if (prevToolId.current !== toolId) {
       reset();
     }

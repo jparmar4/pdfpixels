@@ -7,7 +7,7 @@ export const runtime = 'nodejs';
 
 const MAX_OCR_PAGES = 10;
 const OCR_BUDGET_MS = 40_000;
-const TEXT_LAYER_MIN_CHARS = 200;
+const TEXT_LAYER_MIN_CHARS = 10;
 
 export async function POST(request: NextRequest) {
   try {
@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
     } catch {
       // Extraction errors (corrupt structures, timeouts) just fall through to OCR.
     }
-    if (existingText.length >= TEXT_LAYER_MIN_CHARS) {
+    if (existingText.trim().length >= TEXT_LAYER_MIN_CHARS) {
       return Response.json({
         text: existingText,
         usedOcr: false,
@@ -44,6 +44,17 @@ export async function POST(request: NextRequest) {
     const result = await ocrPdfPages(read.buffer, { maxPages: MAX_OCR_PAGES, budgetMs: OCR_BUDGET_MS });
 
     if (result.unavailable || result.pages.length === 0) {
+      if (existingText.trim().length > 0) {
+        return Response.json({
+          text: existingText,
+          usedOcr: false,
+          pagesProcessed: 0,
+          totalPages: 0,
+          truncated: false,
+          charCount: existingText.length,
+          wordCount: existingText.split(/\s+/).filter(Boolean).length,
+        });
+      }
       if (result.unavailable) {
         return pdfJsonError('OCR is temporarily unavailable on this server. Please try again later.', 503);
       }

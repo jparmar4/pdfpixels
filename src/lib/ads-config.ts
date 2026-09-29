@@ -103,7 +103,11 @@ export function saveConsent(consent: Omit<CookieConsent, 'timestamp'>): void {
     timestamp: Date.now(),
   };
 
-  localStorage.setItem(cookieConfig.cookieName, JSON.stringify(fullConsent));
+  try {
+    localStorage.setItem(cookieConfig.cookieName, JSON.stringify(fullConsent));
+  } catch {
+    // Storage restricted — cookie fallback below will still preserve preference
+  }
 
   // Also set a lightweight cookie so server components can optionally read preference later.
   // Encodes the actual choice (1 = granted advertising/analytics, 0 = rejected)

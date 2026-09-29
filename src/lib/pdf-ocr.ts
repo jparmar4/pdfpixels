@@ -62,6 +62,18 @@ async function readImageText(imagePath: string): Promise<string | null> {
       return '';
     }
   }
+
+  // Fall back to pure JS/WASM tesseract.js if native binary is unavailable
+  try {
+    const { createWorker } = await import('tesseract.js');
+    const worker = await createWorker('eng');
+    const ret = await worker.recognize(imagePath);
+    await worker.terminate();
+    return ret?.data?.text ?? '';
+  } catch (error) {
+    console.error('Tesseract.js fallback failed:', error);
+  }
+
   return sawBinary ? '' : null;
 }
 

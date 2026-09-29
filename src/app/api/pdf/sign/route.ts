@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
     const file = formData.get('file') as File | null;
-    const signatureImage = formData.get('signatureImage') as string | File | null;
+    const signatureImage = (formData.get('signatureImage') || formData.get('signature')) as string | File | null;
     const signaturesJson = formData.get('signatures') as string | null;
 
     const opened = await openEditablePdf(file);

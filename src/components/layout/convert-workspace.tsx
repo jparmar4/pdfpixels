@@ -387,7 +387,7 @@ export function ConvertWorkspace() {
           <ToolLimitNotice
             limits={
               isPdfToImage
-                ? ['PDF only Â· max 50 MB', 'Up to 10 pages per conversion', 'ZIP download for multi-page', 'JPG / PNG / WebP']
+                ? ['PDF only · max 50 MB', 'Up to 10 pages per conversion', 'ZIP download for multi-page', 'JPG / PNG / WebP']
                 : ['Image input only', 'Quality affects size & fidelity', 'Pick format for your use case']
             }
           />
@@ -399,7 +399,7 @@ export function ConvertWorkspace() {
                   <span className="font-medium truncate max-w-[60%]">{uploadedFile.name}</span>
                   <span className="text-muted-foreground text-xs">
                     {formatBytes(uploadedFile.size)}
-                    {pdfPageCount > 0 ? ` Â· ${pdfPageCount} page${pdfPageCount === 1 ? '' : 's'}` : ''}
+                    {pdfPageCount > 0 ? ` · ${pdfPageCount} page${pdfPageCount === 1 ? '' : 's'}` : ''}
                   </span>
                 </div>
               ) : null}
@@ -491,7 +491,7 @@ export function ConvertWorkspace() {
                 }
                 primaryMeta={
                   isPdfToImage
-                    ? `${convertedPageCount || pdfPageCount || 'â€”'} page(s) Â· ${dpi} DPI Â· ${formatInfo[outputFormat].name}`
+                    ? `${convertedPageCount || pdfPageCount || '—'} page(s) · ${dpi} DPI · ${formatInfo[outputFormat].name}`
                     : processingStats
                       ? `${formatBytes(processingStats.originalSize)} to ${formatBytes(processingStats.processedSize)}`
                       : formatInfo[outputFormat].name
@@ -620,7 +620,7 @@ export function ConvertWorkspace() {
                 {isProcessing ? (
                   <>
                     <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: 'linear' }} className="mr-2 h-4 w-4 rounded-full border-2 border-primary-foreground/30 border-t-primary-foreground" />
-                    {isPdfToImage ? 'Converting PDFâ€¦' : 'Convertingâ€¦'}
+                    {isPdfToImage ? 'Converting PDF…' : 'Converting…'}
                   </>
                 ) : (
                   <>

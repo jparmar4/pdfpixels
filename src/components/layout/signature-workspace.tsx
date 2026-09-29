@@ -119,7 +119,7 @@ export function SignatureWorkspace() {
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText(typedText, canvas.width / 2, canvas.height / 2);
-    toast.success('Typed signature rendered â€” click Save.');
+    toast.success('Typed signature rendered — click Save.');
   };
 
   const saveSignature = () => {
@@ -184,7 +184,7 @@ export function SignatureWorkspace() {
         const data = out.toDataURL('image/png');
         setSignatureData(data);
         setProcessedImage(data);
-        toast.success(`Signature resized to ${targetW}Ã—${targetH}px`);
+        toast.success(`Signature resized to ${targetW}×${targetH}px`);
         return;
       }
 
@@ -197,7 +197,7 @@ export function SignatureWorkspace() {
       const data = out.toDataURL('image/png');
       setSignatureData(data);
       setProcessedImage(data);
-      toast.success(`Signature resized to ${targetW}Ã—${targetH}px`);
+      toast.success(`Signature resized to ${targetW}×${targetH}px`);
     } catch (e) {
       toast.error(e instanceof Error ? e.message : 'Resize failed');
     }
@@ -354,7 +354,7 @@ export function SignatureWorkspace() {
             <div className="overflow-hidden rounded-2xl border border-border/40 bg-card/60 shadow-lg">
               <div className="border-b border-border/40 p-4">
                 <h3 className="font-semibold">Signature layer</h3>
-                <p className="text-xs text-muted-foreground">Draw below, then Save â€” or upload a transparent signature PNG as the main file after drawing on Generate tool.</p>
+                <p className="text-xs text-muted-foreground">Draw below, then Save — or upload a transparent signature PNG as the main file after drawing on Generate tool.</p>
               </div>
               <div className="bg-white p-3 dark:bg-zinc-100">
                 <canvas
@@ -439,7 +439,7 @@ export function SignatureWorkspace() {
                 <TabsContent value="type" className="space-y-4 p-5">
                   <div className="space-y-2">
                     <Label htmlFor="typedText">Your name</Label>
-                    <Input id="typedText" value={typedText} onChange={(e) => setTypedText(e.target.value)} placeholder="Type your nameâ€¦" />
+                    <Input id="typedText" value={typedText} onChange={(e) => setTypedText(e.target.value)} placeholder="Type your name…" />
                   </div>
                   <div className="space-y-2">
                     <Label id="selectedFont">Font style</Label>
@@ -481,9 +481,9 @@ export function SignatureWorkspace() {
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="6x2cm">6 Ã— 2 cm at 300 DPI</SelectItem>
-                        <SelectItem value="3x1cm">3 Ã— 1 cm at 300 DPI</SelectItem>
-                        <SelectItem value="600x200">600 Ã— 200 px</SelectItem>
+                        <SelectItem value="6x2cm">6 × 2 cm at 300 DPI</SelectItem>
+                        <SelectItem value="3x1cm">3 × 1 cm at 300 DPI</SelectItem>
+                        <SelectItem value="600x200">600 × 200 px</SelectItem>
                         <SelectItem value="scale">Custom scale %</SelectItem>
                       </SelectContent>
                     </Select>
@@ -583,7 +583,7 @@ export function SignatureWorkspace() {
               ) : isResize ? (
                 <>
                   <li className="flex gap-2"><ChevronRight className="mt-0.5 h-4 w-4 shrink-0 text-primary" />Upload a signature image</li>
-                  <li className="flex gap-2"><ChevronRight className="mt-0.5 h-4 w-4 shrink-0 text-primary" />Pick a print size (6Ã—2 cm) or custom scale</li>
+                  <li className="flex gap-2"><ChevronRight className="mt-0.5 h-4 w-4 shrink-0 text-primary" />Pick a print size (6×2 cm) or custom scale</li>
                   <li className="flex gap-2"><ChevronRight className="mt-0.5 h-4 w-4 shrink-0 text-primary" />Download resized PNG</li>
                 </>
               ) : (

@@ -104,7 +104,7 @@ export function UseCaseDetailContent({
         </section>
 
         <div className="container mx-auto max-w-5xl px-4 py-8 lg:px-8">
-          {/* Unique overview â€” primary quality signal */}
+          {/* Unique overview — primary quality signal */}
           <section className="section-panel rounded-[2rem] p-6 md:p-8">
             <h2 className="text-2xl font-bold text-foreground">Why this workflow matters</h2>
             <p className="mt-4 text-sm leading-7 text-muted-foreground md:text-base">{entry.overview}</p>

@@ -67,3 +67,4 @@ server.log
 /check.js
 /compress-headers.txt
 /remote-server.js
+*.traineddata

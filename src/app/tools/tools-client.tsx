@@ -99,7 +99,7 @@ function getProcessingMeta(tool: (typeof allTools)[0]) {
 
 /**
  * Applies a ?q= deep link after hydration. Kept in its own Suspense subtree
- * with a null fallback so useSearchParams never suspends the page prerender â€”
+ * with a null fallback so useSearchParams never suspends the page prerender —
  * the hero H1 and all tool cards must be present in served HTML.
  */
 function InitialQuerySync({
@@ -184,7 +184,7 @@ export function ToolsClient() {
           </h1>
           <p className="mx-auto mt-6 max-w-xl text-lg leading-8 text-muted-foreground">
             Browse our complete collection of image and PDF tools.
-            From basic edits to AI-powered enhancements â€” all in one place.
+            From basic edits to AI-powered enhancements — all in one place.
           </p>
 
           {/* Search Bar */}
@@ -318,7 +318,7 @@ export function ToolsClient() {
                 href="/pdf-tools"
                 className="inline-flex items-center gap-1 rounded-full bg-primary px-3 py-1.5 font-bold text-white shadow-sm hover:opacity-95"
               >
-                Open /pdf-tools â†’
+                Open /pdf-tools →
               </Link>
             </div>
           )}

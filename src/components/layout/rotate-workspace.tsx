@@ -95,7 +95,7 @@ function renderRotatedImage(
   const ctx = canvas.getContext('2d');
   if (!ctx) throw new Error('Canvas is not available in this browser');
 
-  // High quality resampling for non-90Â° angles
+  // High quality resampling for non-90° angles
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = 'high';
 
@@ -123,7 +123,7 @@ function renderRotatedImage(
 function canvasToDataUrl(canvas: HTMLCanvasElement, format: OutputFormat, quality: number): string {
   const mime =
     format === 'png' ? 'image/png' : format === 'webp' ? 'image/webp' : 'image/jpeg';
-  // PNG ignores quality; jpeg/webp use 0â€“1
+  // PNG ignores quality; jpeg/webp use 0–1
   if (format === 'png') return canvas.toDataURL(mime);
   return canvas.toDataURL(mime, Math.max(0.1, Math.min(1, quality / 100)));
 }
@@ -401,8 +401,8 @@ export function RotateWorkspace() {
         <FileUpload accept="image/*" />
         <ToolLimitNotice
           limits={[
-            'Images only Â· browser-side processing',
-            isRotateTool ? 'Any angle from -180Â° to 180Â°' : 'Horizontal & vertical mirror',
+            'Images only · browser-side processing',
+            isRotateTool ? 'Any angle from -180° to 180°' : 'Horizontal & vertical mirror',
             'PNG keeps transparent corners for free angles',
           ]}
         />
@@ -422,7 +422,7 @@ export function RotateWorkspace() {
                   {angle !== 0 ? (
                     <Badge variant="secondary" className="gap-1 tabular-nums">
                       <RotateCw className="h-3 w-3" />
-                      {angle}Â°
+                      {angle}°
                     </Badge>
                   ) : null}
                   {flipH ? (
@@ -439,7 +439,7 @@ export function RotateWorkspace() {
                   ) : null}
                   {outputDims.w > 0 ? (
                     <Badge variant="outline" className="tabular-nums">
-                      {outputDims.w} Ã— {outputDims.h}
+                      {outputDims.w} × {outputDims.h}
                     </Badge>
                   ) : null}
                 </div>
@@ -453,10 +453,10 @@ export function RotateWorkspace() {
               </div>
               {dims.w > 0 ? (
                 <p className="border-t border-border/40 px-4 py-2.5 text-xs text-muted-foreground">
-                  Original {dims.w} Ã— {dims.h}
-                  {uploadedFile.size ? ` Â· ${formatBytes(uploadedFile.size)}` : ''}
+                  Original {dims.w} × {dims.h}
+                  {uploadedFile.size ? ` · ${formatBytes(uploadedFile.size)}` : ''}
                   {outputDims.w > 0 && (outputDims.w !== dims.w || outputDims.h !== dims.h)
-                    ? ` â†’ output ${outputDims.w} Ã— ${outputDims.h}`
+                    ? ` → output ${outputDims.w} × ${outputDims.h}`
                     : ''}
                 </p>
               ) : null}
@@ -483,7 +483,7 @@ export function RotateWorkspace() {
                           onClick={() => rotateBy(-90)}
                         >
                           <Undo2 className="h-4 w-4" />
-                          Left 90Â°
+                          Left 90°
                         </Button>
                         <Button
                           type="button"
@@ -492,7 +492,7 @@ export function RotateWorkspace() {
                           onClick={() => rotateBy(90)}
                         >
                           <RotateCw className="h-4 w-4" />
-                          Right 90Â°
+                          Right 90°
                         </Button>
                       </div>
 
@@ -512,7 +512,7 @@ export function RotateWorkspace() {
                                 className="rounded-xl tabular-nums"
                                 onClick={() => setAnglePreset(deg)}
                               >
-                                {deg}Â°
+                                {deg}°
                               </Button>
                             );
                           })}
@@ -523,7 +523,7 @@ export function RotateWorkspace() {
                         <div className="flex items-center justify-between">
                           <Label htmlFor="custom-angle">Custom angle</Label>
                           <span className="rounded-lg bg-primary/10 px-2.5 py-0.5 font-mono text-sm font-bold text-primary tabular-nums">
-                            {angle}Â°
+                            {angle}°
                           </span>
                         </div>
                         <Slider id="custom-angle"
@@ -537,9 +537,9 @@ export function RotateWorkspace() {
                           step={1}
                         />
                         <div className="flex justify-between text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
-                          <span>-180Â°</span>
-                          <span>0Â°</span>
-                          <span>180Â°</span>
+                          <span>-180°</span>
+                          <span>0°</span>
+                          <span>180°</span>
                         </div>
                       </div>
                     </>
@@ -575,7 +575,7 @@ export function RotateWorkspace() {
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
                         <Label id="extra-rotation">Extra rotation</Label>
-                        <span className="font-mono text-sm font-bold text-primary tabular-nums">{angle}Â°</span>
+                        <span className="font-mono text-sm font-bold text-primary tabular-nums">{angle}°</span>
                       </div>
                       <div role="group" aria-labelledby="extra-rotation" className="grid grid-cols-4 gap-2">
                         {ANGLE_PRESETS.map((deg) => (
@@ -587,7 +587,7 @@ export function RotateWorkspace() {
                             className="rounded-xl"
                             onClick={() => setAnglePreset(deg)}
                           >
-                            {deg}Â°
+                            {deg}°
                           </Button>
                         ))}
                       </div>
@@ -672,7 +672,7 @@ export function RotateWorkspace() {
                     size="lg"
                   >
                     {isProcessing ? (
-                      'Processingâ€¦'
+                      'Processing…'
                     ) : (
                       <>
                         <Sparkles className="mr-2 h-4 w-4" />
@@ -691,10 +691,10 @@ export function RotateWorkspace() {
               <div className="rounded-2xl border border-border/40 bg-gradient-to-br from-primary/5 to-transparent p-4 text-sm text-muted-foreground">
                 <p className="font-semibold text-foreground">Tips</p>
                 <ul className="mt-2 list-disc space-y-1 pl-4">
-                  <li>Use Left/Right 90Â° for phone photos and scans.</li>
+                  <li>Use Left/Right 90° for phone photos and scans.</li>
                   <li>Custom angles expand the canvas to fit the whole image.</li>
                   <li>Pick transparent corners + PNG for clean free rotation.</li>
-                  <li>All processing stays in your browser â€” files are not uploaded.</li>
+                  <li>All processing stays in your browser — files are not uploaded.</li>
                 </ul>
               </div>
             </div>
@@ -712,10 +712,10 @@ export function RotateWorkspace() {
               <div>
                 <h3 className="font-semibold">Result ready</h3>
                 <p className="text-xs text-muted-foreground">
-                  {outputDims.w} Ã— {outputDims.h}
-                  {angle !== 0 ? ` Â· ${angle}Â°` : ''}
-                  {flipH ? ' Â· flip H' : ''}
-                  {flipV ? ' Â· flip V' : ''}
+                  {outputDims.w} × {outputDims.h}
+                  {angle !== 0 ? ` · ${angle}°` : ''}
+                  {flipH ? ' · flip H' : ''}
+                  {flipV ? ' · flip V' : ''}
                 </p>
               </div>
               <div className="flex flex-wrap gap-2">

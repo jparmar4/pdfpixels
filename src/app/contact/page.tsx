@@ -82,7 +82,7 @@ export default function ContactPage() {
     {
       icon: Clock,
       title: 'Response Time & Hours',
-      description: 'Monday â€“ Friday, 9:00 AM â€“ 6:00 PM IST (Emergency 24/7)',
+      description: 'Monday – Friday, 9:00 AM – 6:00 PM IST (Emergency 24/7)',
       value: 'Guaranteed 24h SLA',
       href: 'mailto:support@pdfpixels.com',
       gradient: 'from-emerald-500 to-teal-600',
@@ -111,7 +111,7 @@ export default function ContactPage() {
     {
       question: 'Is there a premium plan available?',
       answer:
-        'Core tools are free and do not require an account. Each page shows its own file-size and rate limits. There is no paid checkout today â€” see the pricing page for the current story.',
+        'Core tools are free and do not require an account. Each page shows its own file-size and rate limits. There is no paid checkout today — see the pricing page for the current story.',
     },
     {
       question: 'How do I report a bug or broken tool?',
@@ -120,7 +120,7 @@ export default function ContactPage() {
     },
   ];
 
-  // NOTE: social profile links removed â€” those handles don't exist yet.
+  // NOTE: social profile links removed — those handles don't exist yet.
   // Re-add them here once the real accounts are live.
   const socialLinks = [
     { icon: Mail, href: 'mailto:support@pdfpixels.com', label: 'Email' },
@@ -153,7 +153,7 @@ export default function ContactPage() {
               </h1>
               <p className="mx-auto mt-6 max-w-xl text-lg leading-8 text-muted-foreground">
                 Our team is friendly, responsive, and always happy to help.
-                Whether you have a question, feedback, or a partnership idea â€” we are here.
+                Whether you have a question, feedback, or a partnership idea — we are here.
               </p>
 
               <div className="mt-8 flex flex-wrap justify-center gap-3">

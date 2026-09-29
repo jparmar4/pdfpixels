@@ -21,7 +21,17 @@ type FontKey = 'helvetica' | 'times' | 'courier';
 export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
-    const textRaw = formData.get('text');
+    let textRaw = formData.get('text');
+    if (!textRaw || (typeof textRaw === 'string' && !textRaw.trim())) {
+      const file = formData.get('file') as File | null;
+      if (file && typeof file.text === 'function') {
+        try {
+          textRaw = await file.text();
+        } catch {
+          // ignore read failure
+        }
+      }
+    }
     const pageSize = String(formData.get('pageSize') || 'a4').toLowerCase();
     const fontKey = (String(formData.get('font') || 'times').toLowerCase() as FontKey);
     const fontSize = Math.min(28, Math.max(8, Number(formData.get('fontSize')) || 11));

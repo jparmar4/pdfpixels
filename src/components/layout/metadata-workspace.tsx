@@ -442,11 +442,11 @@ export function MetadataWorkspace() {
       const refreshed: MetadataEntry[] = [
         { key: 'File Name', value: outputName, category: 'File' },
         { key: 'Output Format', value: mime, category: 'File' },
-        { key: 'Title', value: fields.title || 'â€”', category: 'Edited' },
-        { key: 'Author', value: fields.author || 'â€”', category: 'Edited' },
-        { key: 'Copyright', value: fields.copyright || 'â€”', category: 'Edited' },
-        { key: 'Description', value: fields.description || 'â€”', category: 'Edited' },
-        { key: 'Software', value: fields.software || 'â€”', category: 'Edited' },
+        { key: 'Title', value: fields.title || '—', category: 'Edited' },
+        { key: 'Author', value: fields.author || '—', category: 'Edited' },
+        { key: 'Copyright', value: fields.copyright || '—', category: 'Edited' },
+        { key: 'Description', value: fields.description || '—', category: 'Edited' },
+        { key: 'Software', value: fields.software || '—', category: 'Edited' },
       ];
       setMetadata(refreshed);
       toast.success('Metadata saved into a new image file.');
@@ -484,7 +484,7 @@ export function MetadataWorkspace() {
 
   if (!activeTool) return null;
 
-  const toolIcon = isRemove ? 'ðŸ—‘ï¸' : isEdit ? 'âœï¸' : 'ðŸ”';
+  const toolIcon = isRemove ? '🗑️ï¸' : isEdit ? '✓ï¸' : '🔍';
   const categories = [...new Set(metadata.map((m) => m.category))];
 
   return (

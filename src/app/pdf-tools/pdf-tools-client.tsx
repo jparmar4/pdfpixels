@@ -135,7 +135,7 @@ export function PdfToolsClient() {
           >
             <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.2em] text-primary shadow-sm">
               <Sparkles className="h-3.5 w-3.5" />
-              All {allPdfTools.length} Free Online PDF Tools â€¢ Zero Signup
+              All {allPdfTools.length} Free Online PDF Tools • Zero Signup
             </div>
 
             <h1 className="text-balance text-4xl font-extrabold tracking-tight text-foreground md:text-5xl lg:text-6xl leading-[1.08]">
@@ -493,7 +493,7 @@ export function PdfToolsClient() {
                   <td className="py-3 pr-4 font-semibold text-foreground">Annual Cost</td>
                   <td className="py-3 px-4 font-bold text-emerald-600 dark:text-emerald-400">Free ($0)</td>
                   <td className="py-3 px-4 text-muted-foreground">$239.88 / year</td>
-                  <td className="py-3 pl-4 text-muted-foreground">$72 â€“ $120 / year</td>
+                  <td className="py-3 pl-4 text-muted-foreground">$72 – $120 / year</td>
                 </tr>
                 <tr>
                   <td className="py-3 pr-4 font-semibold text-foreground">Account / Registration</td>
@@ -590,7 +590,7 @@ export function PdfToolsClient() {
             <summary className="flex cursor-pointer items-center justify-between font-bold text-foreground">
               Are these PDF tools really 100% free with no hidden charges?
               <span className="ml-4 shrink-0 rounded-full border border-border/60 p-1 text-muted-foreground transition-transform duration-200 group-open:rotate-180">
-                â†“
+                ↓
               </span>
             </summary>
             <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
@@ -602,7 +602,7 @@ export function PdfToolsClient() {
             <summary className="flex cursor-pointer items-center justify-between font-bold text-foreground">
               Is it safe to upload confidential business, tax, or legal documents?
               <span className="ml-4 shrink-0 rounded-full border border-border/60 p-1 text-muted-foreground transition-transform duration-200 group-open:rotate-180">
-                â†“
+                ↓
               </span>
             </summary>
             <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
@@ -614,7 +614,7 @@ export function PdfToolsClient() {
             <summary className="flex cursor-pointer items-center justify-between font-bold text-foreground">
               Can I compress a PDF to a specific size like 100KB or 200KB?
               <span className="ml-4 shrink-0 rounded-full border border-border/60 p-1 text-muted-foreground transition-transform duration-200 group-open:rotate-180">
-                â†“
+                ↓
               </span>
             </summary>
             <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
@@ -626,7 +626,7 @@ export function PdfToolsClient() {
             <summary className="flex cursor-pointer items-center justify-between font-bold text-foreground">
               Does PdfPixels work on iPhone, Android, and iPad?
               <span className="ml-4 shrink-0 rounded-full border border-border/60 p-1 text-muted-foreground transition-transform duration-200 group-open:rotate-180">
-                â†“
+                ↓
               </span>
             </summary>
             <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
@@ -638,7 +638,7 @@ export function PdfToolsClient() {
             <summary className="flex cursor-pointer items-center justify-between font-bold text-foreground">
               What is Fast Web View (Linearization) and why does it matter?
               <span className="ml-4 shrink-0 rounded-full border border-border/60 p-1 text-muted-foreground transition-transform duration-200 group-open:rotate-180">
-                â†“
+                ↓
               </span>
             </summary>
             <p className="mt-3 text-sm leading-relaxed text-muted-foreground">

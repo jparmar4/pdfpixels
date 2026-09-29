@@ -3,6 +3,7 @@
 import { Inter } from 'next/font/google';
 import { Button } from '@/components/ui/button';
 import { RefreshCcw } from 'lucide-react';
+import Link from 'next/link';
 import '@/app/globals.css';
 
 const inter = Inter({
@@ -36,8 +37,8 @@ export default function GlobalError({
               <RefreshCcw className="h-4 w-4" />
               Try again
             </Button>
-            <Button variant="outline" onClick={() => window.location.href = '/'}>
-              Go Home
+            <Button asChild variant="outline">
+              <Link href="/">Go Home</Link>
             </Button>
           </div>
           {process.env.NODE_ENV === 'development' && (

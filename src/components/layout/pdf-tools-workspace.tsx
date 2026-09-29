@@ -43,10 +43,10 @@ function RotateSettings({
     totalPages: number;
 }) {
     const presets: Array<{ value: number; label: string; hint: string }> = [
-        { value: 90, label: '90Â°', hint: 'Right' },
-        { value: 180, label: '180Â°', hint: 'Upside down' },
-        { value: 270, label: '270Â°', hint: 'Left' },
-        { value: -90, label: 'âˆ’90Â°', hint: 'Left alt' },
+        { value: 90, label: '90°', hint: 'Right' },
+        { value: 180, label: '180°', hint: 'Upside down' },
+        { value: 270, label: '270°', hint: 'Left' },
+        { value: -90, label: '−90°', hint: 'Left alt' },
     ];
     return (
         <div className="space-y-5">
@@ -161,9 +161,9 @@ function WatermarkSettings({
                         <SelectTrigger><SelectValue /></SelectTrigger>
                         <SelectContent>
                             <SelectItem value="0">Horizontal</SelectItem>
-                            <SelectItem value="45">45Â° Diagonal</SelectItem>
+                            <SelectItem value="45">45° Diagonal</SelectItem>
                             <SelectItem value="90">Vertical</SelectItem>
-                            <SelectItem value="-45">-45Â° Diagonal</SelectItem>
+                            <SelectItem value="-45">-45° Diagonal</SelectItem>
                         </SelectContent>
                     </Select>
                 </div>
@@ -319,7 +319,7 @@ function ReorderSettings({ order, setOrder, totalPages }: {
         const inRange = order.length === totalPages && order.every((value) => value >= 1 && value <= totalPages);
         const isPermutation = inRange && new Set(order).size === totalPages;
         if (order.length === 0 || !isPermutation) {
-            // Empty (fresh file, see parent reset) or stale/out-of-range â†’ re-init.
+            // Empty (fresh file, see parent reset) or stale/out-of-range → re-init.
             // A valid user reordering is a permutation, so it is preserved.
             setOrder(expected);
         }
@@ -450,7 +450,7 @@ function RepairSettings() {
                 <p className="text-xs text-muted-foreground leading-relaxed">
                     The tool parses what survives in a damaged PDF, rebuilds the cross-reference
                     table and page tree, and reconstructs a clean copy with every readable page.
-                    No settings needed â€” just upload and repair.
+                    No settings needed — just upload and repair.
                 </p>
             </div>
             <p className="text-xs text-muted-foreground">
@@ -468,11 +468,11 @@ function ResizeSettings({
     orientation: string; setOrientation: (v: string) => void;
 }) {
     const sheets = [
-        { value: 'a4', label: 'A4 (210Ã—297 mm)' },
-        { value: 'letter', label: 'Letter (8.5Ã—11 in)' },
-        { value: 'legal', label: 'Legal (8.5Ã—14 in)' },
-        { value: 'a3', label: 'A3 (297Ã—420 mm)' },
-        { value: 'a5', label: 'A5 (148Ã—210 mm)' },
+        { value: 'a4', label: 'A4 (210×297 mm)' },
+        { value: 'letter', label: 'Letter (8.5×11 in)' },
+        { value: 'legal', label: 'Legal (8.5×14 in)' },
+        { value: 'a3', label: 'A3 (297×420 mm)' },
+        { value: 'a5', label: 'A5 (148×210 mm)' },
     ];
     return (
         <div className="space-y-5">
@@ -654,7 +654,7 @@ export function PDFToolsWorkspace() {
 
     // Get page count from uploaded PDF
     useEffect(() => {
-        // Fresh file â†’ clear per-file selections so a prior file of the same
+        // Fresh file → clear per-file selections so a prior file of the same
         // page count can't leak its reorder/delete state into the new file.
         setPageOrder([]);
         setDeletePages('');
@@ -676,12 +676,12 @@ export function PDFToolsWorkspace() {
                 const pdf = await PDFDocument.load(new Uint8Array(ab), { ignoreEncryption: true });
                 if (cancelled) return;
                 if (pdf.isEncrypted && activeTool?.id !== 'pdf-unlock') {
-                    toast.warning('This PDF is password-protected â€” unlock it first for full editing.');
+                    toast.warning('This PDF is password-protected — unlock it first for full editing.');
                 }
                 setTotalPages(pdf.getPageCount());
             } catch {
                 if (!cancelled) {
-                    toast.warning('Could not preview this PDF â€” it may be corrupt. Processing may still fail.');
+                    toast.warning('Could not preview this PDF — it may be corrupt. Processing may still fail.');
                     setTotalPages(0);
                 }
             }
@@ -831,7 +831,7 @@ export function PDFToolsWorkspace() {
                     : tid === 'pdf-watermark'
                         ? 'Watermark added successfully.'
                         : tid === 'pdf-unlock'
-                            ? 'Password removed â€” your PDF is unlocked.'
+                            ? 'Password removed — your PDF is unlocked.'
                             : 'PDF processed successfully!',
             );
             requestAnimationFrame(() => {
@@ -952,18 +952,18 @@ return (
                 <ToolLimitNotice
                     limits={
                         activeTool.id === 'pdf-rotate'
-                            ? ['PDF only Â· max 50 MB', 'Rotate all or selected pages', '90Â° / 180Â° / 270Â°']
+                            ? ['PDF only · max 50 MB', 'Rotate all or selected pages', '90° / 180° / 270°']
                             : activeTool.id === 'pdf-watermark'
-                                ? ['PDF only Â· max 50 MB', 'Text watermark on every page', 'Opacity, position, rotation']
+                                ? ['PDF only · max 50 MB', 'Text watermark on every page', 'Opacity, position, rotation']
                                 : activeTool.id === 'repair-pdf'
-                                    ? ['PDF only Â· max 50 MB', 'Rebuilds broken document structure', 'Recovers all readable pages']
+                                    ? ['PDF only · max 50 MB', 'Rebuilds broken document structure', 'Recovers all readable pages']
                                     : activeTool.id === 'resize-pdf'
-                                        ? ['PDF only Â· max 50 MB', 'A4 / A3 / A5 / Letter / Legal', 'Auto or forced orientation']
+                                        ? ['PDF only · max 50 MB', 'A4 / A3 / A5 / Letter / Legal', 'Auto or forced orientation']
                                         : activeTool.id === 'pdf-n-up'
-                                            ? ['PDF only Â· max 50 MB', '2-up / 4-up / 6-up layouts', 'Original page order preserved']
+                                            ? ['PDF only · max 50 MB', '2-up / 4-up / 6-up layouts', 'Original page order preserved']
                                             : activeTool.id === 'pdf-metadata'
-                                                ? ['PDF only Â· max 50 MB', 'Title, author, subject, keywords', 'Page content is never modified']
-                                                : ['PDF only Â· max 50 MB', 'Processed in a secure session']
+                                                ? ['PDF only · max 50 MB', 'Title, author, subject, keywords', 'Page content is never modified']
+                                                : ['PDF only · max 50 MB', 'Processed in a secure session']
                     }
                 />
 
@@ -980,8 +980,8 @@ return (
                         <div className="min-w-0 flex-1">
                             <p className="text-sm font-medium truncate">{uploadedFile.name}</p>
                             <p className="text-sm text-muted-foreground">
-                                {totalPages > 0 ? `${totalPages} page${totalPages !== 1 ? 's' : ''}` : 'Reading PDFâ€¦'}
-                                {' Â· '}
+                                {totalPages > 0 ? `${totalPages} page${totalPages !== 1 ? 's' : ''}` : 'Reading PDF…'}
+                                {' · '}
                                 {(uploadedFile.size / (1024 * 1024)).toFixed(2)} MB
                             </p>
                         </div>
@@ -1026,7 +1026,7 @@ return (
                                                             : 'Processing complete'}
                                     </h3>
                                     <p className="text-sm text-muted-foreground">
-                                        {result.pageCount ? `${result.pageCount} page${result.pageCount !== 1 ? 's' : ''} Â· ` : ''}
+                                        {result.pageCount ? `${result.pageCount} page${result.pageCount !== 1 ? 's' : ''} · ` : ''}
                                         {result.fileName}
                                     </p>
                                 </div>
@@ -1094,7 +1094,7 @@ return (
                             <>
                                 <li className="flex items-start gap-2">
                                     <ChevronRight className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                                    <span>Use 90Â° to fix sideways phone scans; 180Â° for upside-down pages.</span>
+                                    <span>Use 90° to fix sideways phone scans; 180° for upside-down pages.</span>
                                 </li>
                                 <li className="flex items-start gap-2">
                                     <ChevronRight className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
@@ -1120,7 +1120,7 @@ return (
                         )}
                         <li className="flex items-start gap-2">
                             <ChevronRight className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                            <span>Your original file is not overwritten â€” download a new copy.</span>
+                            <span>Your original file is not overwritten — download a new copy.</span>
                         </li>
                     </ul>
                 </div>

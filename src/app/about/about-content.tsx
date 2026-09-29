@@ -105,7 +105,7 @@ export function AboutPageContent() {
               PdfPixels exists because everyday file jobs are still harder than they should be: a PDF that will not fit in email, a photo rejected for being 12KB over a portal limit, an iPhone HEIC that will not open on Windows, or a passport crop that needs exact dimensions.
             </p>
             <p>
-              We build free browser tools for those moments â€” compress, merge, convert, resize, and clean up files â€” with clear steps, practical guides, and no account wall for core workflows. The product should feel reliable and calm, not like a cluttered tool farm.
+              We build free browser tools for those moments — compress, merge, convert, resize, and clean up files — with clear steps, practical guides, and no account wall for core workflows. The product should feel reliable and calm, not like a cluttered tool farm.
             </p>
             <p>
               Alongside the tools, we publish long-form how-to articles (PDF size limits, HEIC conversion, form photo sizes, and more) so people can learn the â€œwhyâ€ as well as click a button. That combination of working utilities and real educational content is the foundation of the site.
@@ -133,7 +133,7 @@ export function AboutPageContent() {
               Honest pages: we describe what each tool actually does, including file limits.
             </div>
             <div className="legal-callout">
-              Guides written around real upload errors â€” Gmail size caps, HEIC on Windows, form KB limits.
+              Guides written around real upload errors — Gmail size caps, HEIC on Windows, form KB limits.
             </div>
           </div>
         </div>
@@ -321,7 +321,7 @@ export function AboutPageContent() {
             </div>
             <div>
               <p><strong className="text-foreground">Inquiries & Support:</strong> 24-48 hour response SLA</p>
-              <p><strong className="text-foreground">Operating Hours:</strong> Monday â€“ Friday, 9:00 AM â€“ 6:00 PM IST (Automated tools 24/7)</p>
+              <p><strong className="text-foreground">Operating Hours:</strong> Monday – Friday, 9:00 AM – 6:00 PM IST (Automated tools 24/7)</p>
               <p><strong className="text-foreground">Official Channels:</strong> Web contact form, GitHub, and Twitter / X</p>
             </div>
           </div>
@@ -358,7 +358,7 @@ export function AboutPageContent() {
               Ready to transform your workflow?
             </h2>
             <p className="mt-4 text-muted-foreground max-w-xl mx-auto text-base md:text-lg leading-relaxed">
-              Open a tool, upload a file, and download the result â€” no account required for core workflows.
+              Open a tool, upload a file, and download the result — no account required for core workflows.
             </p>
             <div className="mt-8 flex flex-wrap gap-3 justify-center">
               <Button asChild size="lg" className="btn-premium rounded-2xl px-8 py-6 text-base">

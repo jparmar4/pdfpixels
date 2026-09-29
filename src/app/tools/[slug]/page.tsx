@@ -7,6 +7,7 @@ import { ToolContentSection } from '@/components/layout/tool-content-section';
 import { ToolPageClient } from '@/components/layout/tool-page-client';
 import { ToolSidebarAd } from '@/components/ads/tool-sidebar-ad';
 import { FooterAd, InContentAd } from '@/components/ads/ad-banner';
+import { ErrorBoundary } from '@/components/ui/error-boundary';
 import { comparisonPages } from '@/lib/comparisons';
 import { normalizeDisplayText } from '@/lib/display-text';
 import { siteConfig } from '@/lib/seo-config';
@@ -51,9 +52,9 @@ function WorkspaceLoading({ tool, containerClass = 'container mx-auto px-4 lg:px
 
               <div className="space-y-3">
                 <div className="flex flex-wrap items-center gap-2.5">
-                  <h1 className="tool-hero-title text-3xl font-bold tracking-tight text-foreground md:text-4xl">
+                  <p className="tool-hero-title text-3xl font-bold tracking-tight text-foreground md:text-4xl">
                     {cleanName}
-                  </h1>
+                  </p>
                   {tool.isAI && (
                     <span className="rounded-full border-0 bg-gradient-to-r from-violet-500 to-sky-500 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em] text-white">
                       AI powered
@@ -100,9 +101,9 @@ export function generateStaticParams() {
 }
 
 // Matches the loading skeleton's width to the real workspace container so the
-// skeletonâ†’workspace swap doesn't shift layout on desktop (CLS). Keep in sync
-// with the root `container â€¦` class of each workspace component and the
-// toolâ†’workspace dispatch in `components/layout/tool-page-client.tsx`.
+// skeleton→workspace swap doesn't shift layout on desktop (CLS). Keep in sync
+// with the root `container …` class of each workspace component and the
+// tool→workspace dispatch in `components/layout/tool-page-client.tsx`.
 // Tools not listed here use full-width workspaces (the skeleton default).
 const WORKSPACE_CONTAINER_CLASS: Record<string, string> = {
   // max-w-6xl workspaces
@@ -362,7 +363,7 @@ function getToolJsonLd(tool: ReturnType<typeof getToolBySlug>) {
       itemListElement: [
         { '@type': 'ListItem', position: 1, name: 'Home', item: absoluteUrl('/') },
         { '@type': 'ListItem', position: 2, name: 'Tools', item: absoluteUrl('/tools') },
-        // Category level strengthens the tool â†’ category internal-link graph
+        // Category level strengthens the tool → category internal-link graph
         // that crawlers use for discovery of /tools/category/* hubs.
         ...(() => {
           const category = toolCategories.find((c) => c.id === tool.category);
@@ -440,9 +441,11 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
           </ol>
         </nav>
 
-        <Suspense fallback={<WorkspaceLoading tool={tool} containerClass={WORKSPACE_CONTAINER_CLASS[tool.id]} />}>
-          <ToolPageClient toolId={tool.id} toolName={cleanToolName} toolDescription={normalizeDisplayText(tool.description)} />
-        </Suspense>
+        <ErrorBoundary>
+          <Suspense fallback={<WorkspaceLoading tool={tool} containerClass={WORKSPACE_CONTAINER_CLASS[tool.id]} />}>
+            <ToolPageClient toolId={tool.id} toolName={cleanToolName} toolDescription={normalizeDisplayText(tool.description)} />
+          </Suspense>
+        </ErrorBoundary>
 
         <InContentAd />
         <ToolSidebarAd />
@@ -517,7 +520,7 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
                         className="group rounded-2xl border border-border/50 bg-card/75 px-4 py-3 transition-colors hover:border-primary/30 hover:bg-card"
                       >
                         <p className="text-sm font-semibold text-foreground group-hover:text-primary">{normalizeDisplayText(post.title)}</p>
-                        <p className="mt-1 text-xs text-muted-foreground">{normalizeDisplayText(post.category)} Â· {post.readTime}</p>
+                        <p className="mt-1 text-xs text-muted-foreground">{normalizeDisplayText(post.category)} · {post.readTime}</p>
                       </Link>
                     ))}
                   </div>
@@ -527,7 +530,7 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
           </section>
         ) : null}
 
-        {/* Single footer unit after full content â€” only shown when editorial content is sufficient */}
+        {/* Single footer unit after full content — only shown when editorial content is sufficient */}
         {hasRichContent && <FooterAd />}
       </div>
     </>

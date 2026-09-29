@@ -103,7 +103,7 @@ export function PNGToIcoWorkspace() {
       />
       <ToolLimitNotice
         limits={[
-          'PNG, JPG, or WebP Â· max 25 MB',
+          'PNG, JPG, or WebP · max 25 MB',
           'One multi-size .ico with the sizes you pick',
           'Square images give the cleanest icons',
         ]}
@@ -205,7 +205,7 @@ export function PNGToIcoWorkspace() {
                     }}
                   />
                   <Label htmlFor={`ico-size-${size}`} className="text-sm cursor-pointer">
-                    {size} Ã— {size} px{size === 16 ? ' â€” browser tabs' : size === 32 ? ' â€” taskbars' : size === 256 ? ' â€” large shortcuts' : ''}
+                    {size} × {size} px{size === 16 ? ' — browser tabs' : size === 32 ? ' — taskbars' : size === 256 ? ' — large shortcuts' : ''}
                   </Label>
                 </div>
               ))}
@@ -216,7 +216,7 @@ export function PNGToIcoWorkspace() {
                 disabled={!file || isProcessing}
                 size="lg"
               >
-                {isProcessing ? 'Convertingâ€¦' : 'Create favicon.ico'}
+                {isProcessing ? 'Converting…' : 'Create favicon.ico'}
               </Button>
               <Button variant="outline" className="w-full gap-2 rounded-xl" onClick={handleReset}>
                 <RotateCcw className="w-4 h-4" /> Start Over

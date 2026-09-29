@@ -666,7 +666,7 @@ export function CropWorkspace() {
       freehandLiveRef.current = [];
       setFreehandPath([]);
       if (path.length > 1) {
-        toast.error('Shape too small â€” draw a larger freehand path around the area to keep.');
+        toast.error('Shape too small — draw a larger freehand path around the area to keep.');
       }
       return;
     }
@@ -697,7 +697,7 @@ export function CropWorkspace() {
     dragRef.current = null;
   }, [finishFreehandStroke]);
 
-  // Do NOT end drag on pointer leave â€” pointer capture keeps drawing outside the canvas
+  // Do NOT end drag on pointer leave — pointer capture keeps drawing outside the canvas
   const onPointerLeave = useCallback(() => {
     if (dragRef.current?.mode === 'freehand') return;
     if (!dragRef.current) setCursor('crosshair');
@@ -1057,11 +1057,11 @@ export function CropWorkspace() {
                       <span className="text-muted-foreground">Status</span>
                       <span className={freehandValid ? 'font-semibold text-emerald-600 dark:text-emerald-400' : 'text-muted-foreground'}>
                         {isDrawingFreehand
-                          ? 'Drawingâ€¦'
+                          ? 'Drawing…'
                           : freehandValid
                             ? 'Shape ready'
                             : freehandPath.length
-                              ? 'Too small â€” redraw'
+                              ? 'Too small — redraw'
                               : 'No shape yet'}
                       </span>
                     </div>
@@ -1096,7 +1096,7 @@ export function CropWorkspace() {
                   disabled={!canCrop}
                   size="lg"
                 >
-                  {isProcessing ? 'Croppingâ€¦' : cropMode === 'freehand' ? 'Crop freehand shape' : 'Crop image'}
+                  {isProcessing ? 'Cropping…' : cropMode === 'freehand' ? 'Crop freehand shape' : 'Crop image'}
                 </Button>
                 <Button
                   variant="outline"

@@ -53,7 +53,7 @@ export function TextToPDFWorkspace() {
       });
       setResultName('text.pdf');
       setProgress(100);
-      toast.success('PDF created â€” download it below');
+      toast.success('PDF created — download it below');
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'PDF generation failed');
     } finally {
@@ -92,7 +92,7 @@ export function TextToPDFWorkspace() {
       />
       <ToolLimitNotice
         limits={[
-          'Paste up to 400K characters Â· output up to 500 pages',
+          'Paste up to 400K characters · output up to 500 pages',
           'Standard PDF fonts: Times (serif), Helvetica, Courier (monospace)',
           'Line breaks and spacing are preserved; rich formatting is not',
         ]}
@@ -105,12 +105,12 @@ export function TextToPDFWorkspace() {
               value={text}
               onChange={(e) => setText(e.target.value)}
               rows={18}
-              placeholder="Type or paste your text here â€” notes, transcripts, lists, codeâ€¦"
+              placeholder="Type or paste your text here — notes, transcripts, lists, code…"
               aria-label="Text to convert to PDF"
               className="w-full bg-transparent font-mono text-sm leading-relaxed outline-none resize-y p-5 text-foreground/90"
             />
             <div className="px-5 py-2.5 border-t border-border flex items-center justify-between text-xs text-muted-foreground">
-              <span>{charCount.toLocaleString('en-US')} characters Â· ~{Math.max(1, Math.ceil(charCount / 3000)) || 0} page(s)</span>
+              <span>{charCount.toLocaleString('en-US')} characters · ~{Math.max(1, Math.ceil(charCount / 3000)) || 0} page(s)</span>
               {text && (
                 <button
                   type="button"
@@ -191,7 +191,7 @@ export function TextToPDFWorkspace() {
                 disabled={isProcessing || !text.trim()}
                 size="lg"
               >
-                {isProcessing ? 'Generatingâ€¦' : 'Create PDF'}
+                {isProcessing ? 'Generating…' : 'Create PDF'}
               </Button>
               <Button variant="outline" className="w-full gap-2 rounded-xl" onClick={handleReset}>
                 <RotateCcw className="w-4 h-4" /> Start Over

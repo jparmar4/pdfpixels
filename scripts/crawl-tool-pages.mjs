@@ -21,7 +21,8 @@ function record(path, problems) {
 
 console.log('Fetching sitemap...');
 const sitemap = await (await fetch(BASE + '/sitemap.xml')).text();
-const toolPaths = [...sitemap.matchAll(/<loc>(https?:\/\/[^<]*?(\/tools\/[a-z0-9-]+))<\/loc>/g)].map((m) => m[2]);
+const allLocs = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => new URL(m[1]).pathname);
+const toolPaths = [...new Set(allLocs.filter((p) => /^\/tools\/[a-z0-9-]+$/.test(p)))];
 console.log(`Found ${toolPaths.length} tool URLs in sitemap.`);
 
 for (const path of toolPaths) {
@@ -38,7 +39,7 @@ for (const path of toolPaths) {
   record(path, problems);
 }
 
-const corePages = ['/', '/tools', '/blog', '/compare', '/use-cases', '/pricing', '/api-docs', '/contact', '/about', '/privacy', '/terms', '/tools/category/pdf-tools', '/sitemap.xml', '/robots.txt', '/feed'];
+const corePages = ['/', '/tools', '/pdf-tools', '/blog', '/compare', '/use-cases', '/pricing', '/api-docs', '/contact', '/about', '/privacy', '/terms', '/tools/category/pdf-organize', '/sitemap.xml', '/robots.txt', '/feed'];
 for (const path of corePages) {
   const { status, text } = await get(path);
   const problems = [];

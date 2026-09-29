@@ -211,7 +211,7 @@ export function FileUpload({ accept = 'image/*', maxSizeMb }: FileUploadProps) {
     setDragOver(false);
     const dropped = event.dataTransfer.files;
     if (dropped && dropped.length > 1) {
-      toast.info('Only the first file was added â€” this tool processes one file at a time.');
+      toast.info('Only the first file was added — this tool processes one file at a time.');
     }
     void handleSelectedFile(dropped?.[0] ?? null);
   }, [handleSelectedFile]);
@@ -406,7 +406,7 @@ export function FileUpload({ accept = 'image/*', maxSizeMb }: FileUploadProps) {
                 </span>
               </div>
 
-              {/* Prominent upload button â€” presentational only. The dropzone
+              {/* Prominent upload button — presentational only. The dropzone
                   itself is the keyboard-focusable control (role="button"), so
                   this nested button stays out of the tab order and ARIA tree
                   to avoid a dead control and a nested-interactive violation. */}
@@ -428,7 +428,7 @@ export function FileUpload({ accept = 'image/*', maxSizeMb }: FileUploadProps) {
                   : 'Supports JPG, PNG, WebP, HEIC, AVIF and more'}
               </p>
               {isNormalizing ? (
-                <p className="mt-2 text-xs font-medium text-primary">Converting HEIC photoâ€¦</p>
+                <p className="mt-2 text-xs font-medium text-primary">Converting HEIC photo…</p>
               ) : null}
             </div>
           </motion.div>
@@ -461,7 +461,7 @@ export function FileUpload({ accept = 'image/*', maxSizeMb }: FileUploadProps) {
                 ) : previewUrl && !previewFailed ? (
                   <img
                     src={previewUrl}
-                    alt={uploadedFile ? `Original upload preview â€” ${uploadedFile.name}` : 'Original upload preview'}
+                    alt={uploadedFile ? `Original upload preview — ${uploadedFile.name}` : 'Original upload preview'}
                     decoding="async"
                     className="max-h-[360px] max-w-full rounded-2xl object-contain shadow-sm"
                     onError={() => setPreviewFailed(true)}

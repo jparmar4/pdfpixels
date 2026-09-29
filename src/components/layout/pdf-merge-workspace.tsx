@@ -47,7 +47,7 @@ export function PDFMergeWorkspace() {
             const bytes = await item.file.arrayBuffer();
             const pdf = await PDFDocument.load(bytes, { ignoreEncryption: true });
             if (pdf.isEncrypted) {
-              toast.warning(`"${item.name}" is password-protected â€” unlock it before merging.`);
+              toast.warning(`"${item.name}" is password-protected — unlock it before merging.`);
               return item;
             }
             return { ...item, pageCount: pdf.getPageCount() };
@@ -89,7 +89,7 @@ export function PDFMergeWorkspace() {
       dropped = prev.length + enriched.length - next.length;
       const totalSize = next.reduce((sum, f) => sum + f.size, 0);
       if (totalSize > 100 * 1024 * 1024) {
-        toast.error('Total size exceeds 100 MB â€” remove some files before merging.');
+        toast.error('Total size exceeds 100 MB — remove some files before merging.');
       }
       return next;
     });
@@ -100,7 +100,7 @@ export function PDFMergeWorkspace() {
     const pages = enriched.reduce((sum, f) => sum + (f.pageCount || 0), 0);
     toast.success(
       pages > 0
-        ? `Added ${enriched.length} PDF(s) Â· ${pages} page${pages === 1 ? '' : 's'}`
+        ? `Added ${enriched.length} PDF(s) · ${pages} page${pages === 1 ? '' : 's'}`
         : `Added ${enriched.length} PDF file(s)`,
     );
   }, [enrichPdfMeta]);
@@ -175,10 +175,10 @@ export function PDFMergeWorkspace() {
             const names = err.skipped
               .slice(0, 3)
               .map((s: { name?: string; reason?: string }) =>
-                s?.name ? `${s.name}${s.reason ? ` â€” ${s.reason}` : ''}` : s?.reason || 'unknown',
+                s?.name ? `${s.name}${s.reason ? ` — ${s.reason}` : ''}` : s?.reason || 'unknown',
               )
               .join('; ');
-            message = `${message}${names ? ` (${names}${err.skipped.length > 3 ? 'â€¦' : ''})` : ''}`;
+            message = `${message}${names ? ` (${names}${err.skipped.length > 3 ? '…' : ''})` : ''}`;
           }
         } catch { /* ignore parse error */ }
         throw new Error(message);
@@ -314,7 +314,7 @@ export function PDFMergeWorkspace() {
             <Badge variant="secondary" className="mt-3">PDF Only</Badge>
           </motion.div>
 
-          <ToolLimitNotice limits={['PDF only', '2â€“20 files per merge', 'Max 50MB per file', 'Max 100MB total']} />
+          <ToolLimitNotice limits={['PDF only', '2–20 files per merge', 'Max 50MB per file', 'Max 100MB total']} />
 
           {/* File List */}
           {files.length > 0 && (
@@ -351,7 +351,7 @@ export function PDFMergeWorkspace() {
                       <p className="text-sm font-medium truncate">{file.name}</p>
                       <p className="text-xs text-muted-foreground">
                         {formatSize(file.size)}
-                        {file.pageCount ? ` Â· ${file.pageCount} page${file.pageCount === 1 ? '' : 's'}` : ''}
+                        {file.pageCount ? ` · ${file.pageCount} page${file.pageCount === 1 ? '' : 's'}` : ''}
                       </p>
                     </div>
 
@@ -405,7 +405,7 @@ export function PDFMergeWorkspace() {
                 <ResultCard
                   title="PDF merged successfully"
                   description="Your files have been combined in the selected order."
-                  primaryMeta={`${result.pageCount || 'Multiple'} page${result.pageCount === 1 ? '' : 's'} Â· ${result.fileName}`}
+                  primaryMeta={`${result.pageCount || 'Multiple'} page${result.pageCount === 1 ? '' : 's'} · ${result.fileName}`}
                   onDownload={handleDownload}
                   downloadLabel="Download merged PDF"
                   nextActions={[
@@ -437,7 +437,7 @@ export function PDFMergeWorkspace() {
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-medium">Total pages</span>
                   <span className="text-sm font-semibold text-foreground">
-                    {files.reduce((acc, f) => acc + (f.pageCount || 0), 0) || 'â€”'}
+                    {files.reduce((acc, f) => acc + (f.pageCount || 0), 0) || '—'}
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
@@ -477,7 +477,7 @@ export function PDFMergeWorkspace() {
                   )}
                 </Button>
                 {isProcessing && (
-                  <p className="text-xs text-muted-foreground" role="status" aria-live="polite">{statusLabel} â€¢ {Math.round(progress)}%</p>
+                  <p className="text-xs text-muted-foreground" role="status" aria-live="polite">{statusLabel} • {Math.round(progress)}%</p>
                 )}
 
                 <Button
@@ -526,7 +526,7 @@ export function PDFMergeWorkspace() {
             onClick={handleProcess}
             disabled={isProcessing}
           >
-            {isProcessing ? `${statusLabel} â€¢ ${Math.round(progress)}%` : `Merge ${files.length} PDFs`}
+            {isProcessing ? `${statusLabel} • ${Math.round(progress)}%` : `Merge ${files.length} PDFs`}
           </Button>
         </div>
       )}

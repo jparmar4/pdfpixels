@@ -388,7 +388,7 @@ export function ImageToPDFWorkspace() {
                     <div className="p-2">
                       <p className="text-xs truncate">{file.name}</p>
                       <p className="text-xs text-muted-foreground">
-                        {file.dimensions && `${file.dimensions.width}Ã—${file.dimensions.height}`}
+                        {file.dimensions && `${file.dimensions.width}×${file.dimensions.height}`}
                       </p>
                     </div>
                   </motion.div>
@@ -416,7 +416,7 @@ export function ImageToPDFWorkspace() {
                       PDF created successfully
                     </h3>
                     <p className="text-sm text-muted-foreground">
-                      {result.pageCount} page{result.pageCount === 1 ? '' : 's'} Â· {result.fileName}
+                      {result.pageCount} page{result.pageCount === 1 ? '' : 's'} · {result.fileName}
                     </p>
                   </div>
                 </div>
@@ -448,11 +448,11 @@ export function ImageToPDFWorkspace() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="a4">A4 (210 Ã— 297 mm)</SelectItem>
-                    <SelectItem value="letter">Letter (8.5 Ã— 11 in)</SelectItem>
-                    <SelectItem value="legal">Legal (8.5 Ã— 14 in)</SelectItem>
-                    <SelectItem value="a3">A3 (297 Ã— 420 mm)</SelectItem>
-                    <SelectItem value="a5">A5 (148 Ã— 210 mm)</SelectItem>
+                    <SelectItem value="a4">A4 (210 × 297 mm)</SelectItem>
+                    <SelectItem value="letter">Letter (8.5 × 11 in)</SelectItem>
+                    <SelectItem value="legal">Legal (8.5 × 14 in)</SelectItem>
+                    <SelectItem value="a3">A3 (297 × 420 mm)</SelectItem>
+                    <SelectItem value="a5">A5 (148 × 210 mm)</SelectItem>
                     <SelectItem value="fit">Fit to Image</SelectItem>
                   </SelectContent>
                 </Select>
