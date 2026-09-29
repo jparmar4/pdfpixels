@@ -9,6 +9,7 @@
     "dev": "next dev",
     "postinstall": "node scripts/prisma-generate.mjs",
     "build": "node scripts/prisma-generate.mjs && next build && node postbuild.mjs",
+    "build:webpack": "node scripts/prisma-generate.mjs && next build --webpack && node postbuild.mjs",
     "db:generate": "node scripts/prisma-generate.mjs",
     "ensure-static": "node scripts/ensure-standalone-static.mjs",
     "start": "node scripts/ensure-standalone-static.mjs && node .next/standalone/server.js",

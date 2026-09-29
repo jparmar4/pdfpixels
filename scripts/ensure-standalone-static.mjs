@@ -38,9 +38,18 @@ function copyDir(src, dest) {
 
 function countCss(dir) {
   if (!exists(dir)) return 0;
-  const chunks = path.join(dir, 'chunks');
-  if (!exists(chunks)) return 0;
-  return fs.readdirSync(chunks).filter((f) => f.endsWith('.css')).length;
+  // Recursive so both bundler layouts count: Turbopack emits static/chunks/*.css,
+  // webpack emits static/css/*.css (used by `next build --webpack` fallback).
+  let count = 0;
+  const walk = (d) => {
+    for (const entry of fs.readdirSync(d, { withFileTypes: true })) {
+      const p = path.join(d, entry.name);
+      if (entry.isDirectory()) walk(p);
+      else if (entry.name.endsWith('.css')) count++;
+    }
+  };
+  walk(dir);
+  return count;
 }
 
 function totalBytes(dir) {
