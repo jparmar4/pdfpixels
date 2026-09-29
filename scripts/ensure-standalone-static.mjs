@@ -39,7 +39,7 @@ function copyDir(src, dest) {
 function countCss(dir) {
   if (!exists(dir)) return 0;
   // Recursive so both bundler layouts count: Turbopack emits static/chunks/*.css,
-  // webpack emits static/css/*.css (used by `next build --webpack` fallback).
+  // webpack emits static/css/*.css (the default `next build --webpack` path).
   let count = 0;
   const walk = (d) => {
     for (const entry of fs.readdirSync(d, { withFileTypes: true })) {

@@ -1,5 +1,5 @@
 import path from 'node:path';
-import { createRequire } from 'node:module';
+import fs from 'node:fs';
 
 /** Upper bound on a single pdfjs parse. Pathological inputs can stall
  *  parsing indefinitely; without this the request hangs until the platform
@@ -289,11 +289,26 @@ async function ensurePdfJsCanvasGlobals(): Promise<void> {
   return canvasGlobalsTask;
 }
 
+/** Locate the pdfjs-dist package root for standard_fonts/cmaps. Resolved on
+ *  the filesystem rather than via createRequire().resolve: webpack statically
+ *  rewrites module.createRequire and it comes back undefined at runtime in
+ *  the server bundle. Both the repo root (deploy start cwd) and a copied
+ *  standalone directory contain node_modules/pdfjs-dist. */
+function resolvePdfJsDistRoot(): string {
+  const candidates = [
+    path.join(process.cwd(), 'node_modules', 'pdfjs-dist'),
+    path.join(process.cwd(), '.next', 'standalone', 'node_modules', 'pdfjs-dist'),
+  ];
+  for (const candidate of candidates) {
+    if (fs.existsSync(path.join(candidate, 'package.json'))) return candidate;
+  }
+  return candidates[0];
+}
+
 async function openPdfJsDocument(buffer: Buffer): Promise<PdfJsTask> {
   await ensurePdfJsCanvasGlobals();
   const { getDocument } = await import('pdfjs-dist/legacy/build/pdf.mjs');
-  const require = createRequire(path.join(process.cwd(), 'package.json'));
-  const root = path.dirname(require.resolve('pdfjs-dist/package.json'));
+  const root = resolvePdfJsDistRoot();
   const task = getDocument({
     data: new Uint8Array(buffer),
     isEvalSupported: false,
