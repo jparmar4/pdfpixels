@@ -69,10 +69,10 @@ export function CategoryGridClient({ categorySlug }: { categorySlug: string }) {
               type="button"
               onClick={() => setSort(mode)}
               aria-pressed={sort === mode}
-              className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors ${
+              className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition-all duration-200 ${
                 sort === mode
-                  ? 'bg-primary/10 text-primary'
-                  : 'text-muted-foreground hover:text-foreground'
+                  ? 'bg-primary text-white shadow-[0_6px_16px_-8px_rgba(79,70,229,0.7)]'
+                  : 'text-muted-foreground hover:text-foreground hover:bg-muted'
               }`}
             >
               {mode === 'recommended' ? 'Recommended' : 'A–Z'}

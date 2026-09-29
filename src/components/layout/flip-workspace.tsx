@@ -43,7 +43,7 @@ const FLIP_MODES: Array<{
   {
     id: 'horizontal',
     title: 'Horizontal',
-    description: 'Mirror left ↔ right (like looking in a mirror)',
+    description: 'Mirror left â†” right (like looking in a mirror)',
     flipH: true,
     flipV: false,
     icon: FlipHorizontal,
@@ -51,7 +51,7 @@ const FLIP_MODES: Array<{
   {
     id: 'vertical',
     title: 'Vertical',
-    description: 'Flip upside down (top ↔ bottom)',
+    description: 'Flip upside down (top â†” bottom)',
     flipH: false,
     flipV: true,
     icon: FlipVertical,
@@ -59,7 +59,7 @@ const FLIP_MODES: Array<{
   {
     id: 'both',
     title: 'Both axes',
-    description: 'Horizontal + vertical (same as 180° rotate)',
+    description: 'Horizontal + vertical (same as 180Â° rotate)',
     flipH: true,
     flipV: true,
     icon: FlipHorizontal,
@@ -82,7 +82,7 @@ function loadImage(file: File): Promise<HTMLImageElement> {
   });
 }
 
-/** Pixel-perfect flip (no resampling needed — dimensions stay the same). */
+/** Pixel-perfect flip (no resampling needed â€” dimensions stay the same). */
 function renderFlippedImage(
   source: HTMLImageElement,
   flipH: boolean,
@@ -295,7 +295,7 @@ export function FlipWorkspace() {
     toast.success('Download started');
   }, [mode, outputFormat, processedImage, uploadedFile]);
 
-  /** Apply and download in one step — common for flip tools */
+  /** Apply and download in one step â€” common for flip tools */
   const handleApplyAndDownload = useCallback(async () => {
     if (!uploadedFile) {
       toast.error('Please upload an image first');
@@ -378,21 +378,21 @@ export function FlipWorkspace() {
         <FileUpload accept="image/*" />
         <ToolLimitNotice
           limits={[
-            'Images only · browser-side processing',
+            'Images only Â· browser-side processing',
             'Mirror horizontally, vertically, or both',
-            'Full resolution · no quality loss on PNG',
+            'Full resolution Â· no quality loss on PNG',
           ]}
         />
 
         {uploadedFile && sourceUrl ? (
           <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_340px]">
             {/* Before / after preview */}
-            <div className="overflow-hidden rounded-[1.75rem] border border-border/60 bg-card/75 shadow-premium backdrop-blur-xl">
+            <div className="overflow-hidden rounded-[1.75rem] border border-border/60 bg-card/75 shadow-premium backdrop-blur-sm">
               <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border/40 bg-gradient-to-r from-primary/5 to-transparent p-4">
                 <div>
                   <h3 className="font-semibold">Before & after</h3>
                   <p className="text-xs text-muted-foreground">
-                    Live preview — {activeMode.title.toLowerCase()} mirror
+                    Live preview â€” {activeMode.title.toLowerCase()} mirror
                   </p>
                 </div>
                 <div className="flex flex-wrap gap-2">
@@ -406,7 +406,7 @@ export function FlipWorkspace() {
                   </Badge>
                   {dims.w > 0 ? (
                     <Badge variant="outline" className="tabular-nums">
-                      {dims.w} × {dims.h}
+                      {dims.w} Ã— {dims.h}
                     </Badge>
                   ) : null}
                 </div>
@@ -441,16 +441,16 @@ export function FlipWorkspace() {
 
               {dims.w > 0 ? (
                 <p className="border-t border-border/40 px-4 py-2.5 text-xs text-muted-foreground">
-                  {dims.w} × {dims.h}
-                  {uploadedFile.size ? ` · ${formatBytes(uploadedFile.size)}` : ''}
-                  {' · '}dimensions stay the same after flip
+                  {dims.w} Ã— {dims.h}
+                  {uploadedFile.size ? ` Â· ${formatBytes(uploadedFile.size)}` : ''}
+                  {' Â· '}dimensions stay the same after flip
                 </p>
               ) : null}
             </div>
 
             {/* Controls */}
             <div className="space-y-4">
-              <div className="overflow-hidden rounded-[1.75rem] border border-border/60 bg-card/75 shadow-premium backdrop-blur-xl">
+              <div className="overflow-hidden rounded-[1.75rem] border border-border/60 bg-card/75 shadow-premium backdrop-blur-sm">
                 <div className="border-b border-border/40 bg-gradient-to-r from-primary/10 to-transparent p-5">
                   <h3 className="flex items-center gap-2 font-bold">
                     <Settings className="h-4 w-4 text-primary" />
@@ -543,7 +543,7 @@ export function FlipWorkspace() {
                       size="lg"
                     >
                       {isProcessing ? (
-                        'Processing…'
+                        'Processingâ€¦'
                       ) : (
                         <>
                           <Download className="mr-2 h-4 w-4" />
@@ -583,7 +583,7 @@ export function FlipWorkspace() {
                     </Link>
                     .
                   </li>
-                  <li>Everything runs in your browser — files stay private.</li>
+                  <li>Everything runs in your browser â€” files stay private.</li>
                 </ul>
               </div>
             </div>
@@ -602,7 +602,7 @@ export function FlipWorkspace() {
                 <h3 className="font-semibold">Flipped result</h3>
                 <p className="text-xs text-muted-foreground">
                   {activeMode.title}
-                  {dims.w > 0 ? ` · ${dims.w} × ${dims.h}` : ''}
+                  {dims.w > 0 ? ` Â· ${dims.w} Ã— ${dims.h}` : ''}
                 </p>
               </div>
               <div className="flex flex-wrap items-center gap-2">

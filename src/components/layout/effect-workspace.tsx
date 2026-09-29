@@ -35,7 +35,7 @@ type EffectMeta = {
 
 const EFFECT_CONFIG: Record<string, EffectMeta> = {
   'blur-image': {
-    emoji: '🌫️',
+    emoji: 'ðŸŒ«ï¸',
     hasIntensity: true,
     label: 'Blur intensity',
     applyLabel: 'Apply blur',
@@ -48,14 +48,14 @@ const EFFECT_CONFIG: Record<string, EffectMeta> = {
     ],
   },
   pixelate: {
-    emoji: '🔲',
+    emoji: 'ðŸ”²',
     hasIntensity: true,
     label: 'Pixel block size',
     applyLabel: 'Apply pixelate',
     defaultIntensity: 45,
     intensityUnit: 'px',
     tips: [
-      'Larger blocks hide more detail — good for privacy mosaics.',
+      'Larger blocks hide more detail â€” good for privacy mosaics.',
       'Live preview updates as you drag the slider.',
     ],
     presets: [
@@ -66,7 +66,7 @@ const EFFECT_CONFIG: Record<string, EffectMeta> = {
     ],
   },
   grayscale: {
-    emoji: '🖤',
+    emoji: 'ðŸ–¤',
     hasIntensity: true,
     label: 'Desaturation',
     applyLabel: 'Convert to grayscale',
@@ -81,7 +81,7 @@ const EFFECT_CONFIG: Record<string, EffectMeta> = {
     ],
   },
   'black-white': {
-    emoji: '⬛',
+    emoji: 'â¬›',
     hasIntensity: true,
     label: 'Contrast',
     applyLabel: 'Convert to B&W',
@@ -89,7 +89,7 @@ const EFFECT_CONFIG: Record<string, EffectMeta> = {
     tips: [
       'Smooth B&W keeps mid-tones so text and details stay readable.',
       'Raise contrast for punchier photos; use Document for scans with text.',
-      'Poster mode (95%+) is a hard black/white cut — only for stamp-style looks.',
+      'Poster mode (95%+) is a hard black/white cut â€” only for stamp-style looks.',
     ],
     presets: [
       { label: 'Soft', value: 30 },
@@ -99,12 +99,12 @@ const EFFECT_CONFIG: Record<string, EffectMeta> = {
     ],
   },
   sepia: {
-    emoji: '🟤',
+    emoji: 'ðŸŸ¤',
     hasIntensity: true,
     label: 'Sepia strength',
     applyLabel: 'Apply sepia',
     defaultIntensity: 70,
-    tips: ['Warm vintage tone — raise strength for a stronger look.'],
+    tips: ['Warm vintage tone â€” raise strength for a stronger look.'],
     presets: [
       { label: 'Subtle', value: 35 },
       { label: 'Classic', value: 70 },
@@ -112,7 +112,7 @@ const EFFECT_CONFIG: Record<string, EffectMeta> = {
     ],
   },
   invert: {
-    emoji: '🔄',
+    emoji: 'ðŸ”„',
     hasIntensity: false,
     label: '',
     applyLabel: 'Invert colors',
@@ -120,7 +120,7 @@ const EFFECT_CONFIG: Record<string, EffectMeta> = {
     tips: ['Creates a negative-style color invert.'],
   },
   'motion-blur': {
-    emoji: '💨',
+    emoji: 'ðŸ’¨',
     hasIntensity: true,
     label: 'Motion amount',
     applyLabel: 'Apply motion blur',
@@ -133,7 +133,7 @@ const EFFECT_CONFIG: Record<string, EffectMeta> = {
     ],
   },
   'censor-photo': {
-    emoji: '🚫',
+    emoji: 'ðŸš«',
     hasIntensity: true,
     label: 'Censor strength',
     applyLabel: 'Apply censor',
@@ -141,7 +141,7 @@ const EFFECT_CONFIG: Record<string, EffectMeta> = {
     tips: ['Drag on the image to select the area to hide.'],
   },
   'pixel-art': {
-    emoji: '🎮',
+    emoji: 'ðŸŽ®',
     hasIntensity: true,
     label: 'Pixel block size',
     applyLabel: 'Apply pixel art',
@@ -159,7 +159,7 @@ type Region = { x: number; y: number; w: number; h: number };
 
 function pixelSizeFromIntensity(intensity: number, toolId: string) {
   if (toolId === 'pixel-art') return Math.max(2, Math.floor(2 + (intensity / 100) * 28));
-  // pixelate: ~3–40px blocks
+  // pixelate: ~3â€“40px blocks
   return Math.max(2, Math.floor(3 + (intensity / 100) * 37));
 }
 
@@ -177,12 +177,12 @@ export function EffectWorkspace() {
 
   const toolId = activeTool?.id || '';
   const config = EFFECT_CONFIG[toolId] || {
-    emoji: '✨',
+    emoji: 'âœ¨',
     hasIntensity: true,
     label: 'Intensity',
     applyLabel: 'Apply effect',
     defaultIntensity: 50,
-    tips: ['Effects run in your browser — files stay private.'],
+    tips: ['Effects run in your browser â€” files stay private.'],
   };
 
   const [intensity, setIntensity] = useState(config.defaultIntensity);
@@ -269,7 +269,7 @@ export function EffectWorkspace() {
         const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
         const d = imageData.data;
         const amount = Math.max(0, Math.min(1, int / 100));
-        // contrast: -40..60 → multiplier around 0.6..1.6
+        // contrast: -40..60 â†’ multiplier around 0.6..1.6
         const c = 1 + con / 100;
         for (let i = 0; i < d.length; i += 4) {
           const gray = d[i] * 0.299 + d[i + 1] * 0.587 + d[i + 2] * 0.114;
@@ -289,7 +289,7 @@ export function EffectWorkspace() {
          * 1) Rec.601 luminance (true perceived brightness of colored pixels)
          * 2) Auto-levels stretch so ink separates from tinted backgrounds
          * 3) S-curve + contrast slider for punch without destroying detail
-         * 4) Poster preset (intensity ≥ 92) only then eases toward hard cut
+         * 4) Poster preset (intensity â‰¥ 92) only then eases toward hard cut
          */
         const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
         const d = imageData.data;
@@ -324,7 +324,7 @@ export function EffectWorkspace() {
         }
         const range = Math.max(24, pHigh - pLow);
 
-        // Contrast: Soft 30→~1.05, Balanced 55→~1.3, Document 72→~1.45
+        // Contrast: Soft 30â†’~1.05, Balanced 55â†’~1.3, Document 72â†’~1.45
         const contrastAmt = 0.9 + (Math.min(88, Math.max(1, int)) / 100) * 0.95;
         const posterT = int >= 92 ? Math.min(1, (int - 92) / 8) : 0;
 
@@ -349,7 +349,7 @@ export function EffectWorkspace() {
           g = Math.max(0, Math.min(255, g));
 
           if (posterT > 0) {
-            // Soft sigmoid → hard poster only for Poster preset
+            // Soft sigmoid â†’ hard poster only for Poster preset
             const mid = 120;
             const softness = Math.max(3, 26 * (1 - posterT));
             const sigmoid = 1 / (1 + Math.exp(-(g - mid) / softness));
@@ -783,12 +783,12 @@ export function EffectWorkspace() {
 
   const limits =
     isPixelate
-      ? ['Browser-side · private', 'Adjustable mosaic block size', 'PNG export']
+      ? ['Browser-side Â· private', 'Adjustable mosaic block size', 'PNG export']
       : isGrayscale
-        ? ['Browser-side · private', 'Partial or full desaturation', 'Optional contrast']
+        ? ['Browser-side Â· private', 'Partial or full desaturation', 'Optional contrast']
         : isBW
-          ? ['Browser-side · private', 'Threshold black & white', 'PNG export']
-          : ['Browser-side · private', 'PNG export'];
+          ? ['Browser-side Â· private', 'Threshold black & white', 'PNG export']
+          : ['Browser-side Â· private', 'PNG export'];
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="container mx-auto px-4 py-8 lg:px-8">
@@ -833,7 +833,7 @@ export function EffectWorkspace() {
                   onPointerUp={onOverlayPointerUp}
                   onPointerCancel={onOverlayPointerUp}
                 >
-                  <img src={previewUrl} alt="Original upload preview — drag to select censor area" className="max-h-[520px] max-w-full select-none rounded-lg" draggable={false} />
+                  <img src={previewUrl} alt="Original upload preview â€” drag to select censor area" className="max-h-[520px] max-w-full select-none rounded-lg" draggable={false} />
                   {regionStyle ? (
                     <div
                       className="pointer-events-none absolute border-2 border-dashed border-red-500 bg-red-500/20"
@@ -860,7 +860,7 @@ export function EffectWorkspace() {
                   ) : null}
                   {isBW ? (
                     <Badge variant="secondary" className="tabular-nums">
-                      {intensity >= 92 ? 'Poster' : intensity >= 68 ? 'Document' : 'Smooth'} · {intensity}%
+                      {intensity >= 92 ? 'Poster' : intensity >= 68 ? 'Document' : 'Smooth'} Â· {intensity}%
                     </Badge>
                   ) : null}
                   {isGrayscale ? (
@@ -940,7 +940,7 @@ export function EffectWorkspace() {
         </div>
 
         <div className="space-y-6">
-          <div className="overflow-hidden rounded-2xl border border-border/40 bg-card/60 shadow-premium backdrop-blur-xl">
+          <div className="overflow-hidden rounded-2xl border border-border/40 bg-card/60 shadow-premium backdrop-blur-md">
             <div className="border-b border-border/40 bg-gradient-to-r from-primary/10 to-transparent p-5">
               <h3 className="flex items-center gap-2.5 font-bold">
                 <Settings className="h-4 w-4 text-primary" />
@@ -1020,7 +1020,7 @@ export function EffectWorkspace() {
                   <div className="flex items-center justify-between">
                     <Label htmlFor="angle">Direction</Label>
                     <span className="rounded-lg bg-primary/10 px-2.5 py-0.5 font-mono text-sm font-bold text-primary">
-                      {angle}°
+                      {angle}Â°
                     </span>
                   </div>
                   <Slider id="angle" value={[angle]} onValueChange={([v]) => setAngle(v)} min={0} max={360} step={15} />
@@ -1035,7 +1035,7 @@ export function EffectWorkspace() {
                   size="lg"
                 >
                   {isProcessing ? (
-                    'Processing…'
+                    'Processingâ€¦'
                   ) : (
                     <>
                       <Sparkles className="mr-3 h-5 w-5" />
@@ -1074,7 +1074,7 @@ export function EffectWorkspace() {
               ))}
               <li className="flex items-start gap-2">
                 <ChevronRight className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-                Effects run in your browser — files stay private.
+                Effects run in your browser â€” files stay private.
               </li>
             </ul>
           </div>

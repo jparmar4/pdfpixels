@@ -20,6 +20,7 @@ import { toolCategories, allTools, aiTools, searchTools, allPdfTools, allImageTo
 import { useAppStore } from '@/store/app-store';
 import { normalizeDisplayText } from '@/lib/display-text';
 import { AnimatedMeshBg } from '@/components/ui/animated-mesh-bg';
+import { TiltCard } from '@/components/ui/tilt-card';
 
 function getIconColorClass(toolId: string): string {
 
@@ -98,7 +99,7 @@ function getProcessingMeta(tool: (typeof allTools)[0]) {
 
 /**
  * Applies a ?q= deep link after hydration. Kept in its own Suspense subtree
- * with a null fallback so useSearchParams never suspends the page prerender —
+ * with a null fallback so useSearchParams never suspends the page prerender â€”
  * the hero H1 and all tool cards must be present in served HTML.
  */
 function InitialQuerySync({
@@ -160,7 +161,7 @@ export function ToolsClient() {
       <Suspense fallback={null}>
         <InitialQuerySync onQuery={setSearchQuery} onCategory={setActiveCategory} />
       </Suspense>
-      {/* ─── Hero Section ─── */}
+      {/* â”€â”€â”€ Hero Section â”€â”€â”€ */}
       <section className="relative overflow-hidden">
         <AnimatedMeshBg />
         <div className="hero-grid absolute inset-0 opacity-60" />
@@ -183,7 +184,7 @@ export function ToolsClient() {
           </h1>
           <p className="mx-auto mt-6 max-w-xl text-lg leading-8 text-muted-foreground">
             Browse our complete collection of image and PDF tools.
-            From basic edits to AI-powered enhancements — all in one place.
+            From basic edits to AI-powered enhancements â€” all in one place.
           </p>
 
           {/* Search Bar */}
@@ -196,7 +197,7 @@ export function ToolsClient() {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search tools... (compress, crop, PDF, AI...)"
                 aria-label="Search tools"
-                className="h-14 w-full rounded-2xl border border-border/60 bg-card/80 pl-12 pr-12 text-sm backdrop-blur-xl transition-all duration-200 placeholder:text-muted-foreground/60 focus-visible:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20"
+                className="h-14 w-full rounded-2xl border border-border/60 bg-card/80 pl-12 pr-12 text-sm backdrop-blur-sm transition-all duration-200 placeholder:text-muted-foreground/60 focus-visible:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20"
               />
               {searchQuery && (
                 <button
@@ -317,7 +318,7 @@ export function ToolsClient() {
                 href="/pdf-tools"
                 className="inline-flex items-center gap-1 rounded-full bg-primary px-3 py-1.5 font-bold text-white shadow-sm hover:opacity-95"
               >
-                Open /pdf-tools →
+                Open /pdf-tools â†’
               </Link>
             </div>
           )}
@@ -413,11 +414,12 @@ function ToolListingCard({
       whileHover={{ y: -4 }}
       className="h-full"
     >
-      <Link
-        href={`/tools/${tool.slug}`}
-        onClick={onCardClick}
-        className="group rainbow-border relative flex h-full flex-col rounded-[1.75rem] border border-border/50 bg-card/80 p-5 backdrop-blur-xl card-shine transition-all duration-300 hover:shadow-premium"
-      >
+      <TiltCard wrapperClassName="h-full" max={5}>
+        <Link
+          href={`/tools/${tool.slug}`}
+          onClick={onCardClick}
+          className="group rainbow-border relative flex h-full flex-col rounded-[1.75rem] border border-border/50 bg-card p-5 card-shine transition-all duration-300 hover:shadow-premium"
+        >
         <div className="flex items-start justify-between gap-3">
           <div
             className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl ${iconColorClass} bg-secondary/80 shadow-sm glow-ring transition-all duration-300 group-hover:scale-105`}
@@ -457,6 +459,7 @@ function ToolListingCard({
           </div>
         </div>
       </Link>
+      </TiltCard>
     </motion.div>
   );
 }

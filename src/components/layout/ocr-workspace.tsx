@@ -130,7 +130,7 @@ export function OCRWorkspace() {
             toast.success('Text copied to clipboard!');
             setTimeout(() => setCopied(false), 2000);
         } catch {
-            toast.error('Could not copy — select the text and copy manually');
+            toast.error('Could not copy â€” select the text and copy manually');
         }
     }, [extractedText]);
 
@@ -191,10 +191,10 @@ export function OCRWorkspace() {
                     <FileUpload accept="image/*" maxSizeMb={platformLimits.image.ocr.maxFileMb} />
                     <ToolLimitNotice
                         limits={[
-                            `Images only · max ${platformLimits.image.ocr.maxFileMb} MB`,
+                            `Images only Â· max ${platformLimits.image.ocr.maxFileMb} MB`,
                             'Runs in your browser (Tesseract.js)',
                             'High-accuracy mode preprocesses contrast',
-                            'Editable text · copy or .txt download',
+                            'Editable text Â· copy or .txt download',
                         ]}
                     />
 
@@ -245,7 +245,7 @@ export function OCRWorkspace() {
 
                 {/* Right Panel */}
                 <div className="space-y-6">
-                    <div className="rounded-2xl border border-border/40 bg-card/60 backdrop-blur-xl overflow-hidden shadow-premium">
+                    <div className="rounded-2xl border border-border/40 bg-card/60 backdrop-blur-md overflow-hidden shadow-premium">
                         <div className="p-5 border-b border-border/40 bg-gradient-to-r from-primary/10 to-transparent">
                             <h3 className="font-bold flex items-center gap-2.5 tracking-tight text-foreground">
                                 <Sparkles className="w-4 h-4 text-primary" />

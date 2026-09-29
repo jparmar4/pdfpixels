@@ -19,6 +19,9 @@ export function TypingText() {
   const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
+    // Reduced motion: freeze on the first word instead of animating text.
+    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return;
+
     const currentWord = words[currentIndex];
     let timeout: NodeJS.Timeout;
 
@@ -45,7 +48,7 @@ export function TypingText() {
   return (
     <span className="gradient-text inline-block min-w-[200px] md:min-w-[320px] text-left">
       {displayText || '\u00A0'}
-      <span className="inline-block w-[3px] h-[0.85em] bg-primary ml-0.5 align-middle animate-pulse" />
+      <span className="inline-block w-[3px] h-[0.85em] bg-primary ml-0.5 align-middle animate-pulse motion-reduce:hidden" />
     </span>
   );
 }

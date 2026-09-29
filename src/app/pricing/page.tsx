@@ -8,12 +8,12 @@ import { allTools } from '@/lib/tools-data';
 
 export const metadata: Metadata = {
   // Root layout appends `| PdfPixels` via the title template.
-  title: 'Pricing — Free Online PDF & Image Tools',
+  title: 'Pricing â€” Free Online PDF & Image Tools',
   description:
     'PdfPixels tools are free for everyday PDF and image tasks. No paid Pro tier required for core compress, convert, merge, and resize workflows.',
   alternates: { canonical: '/pricing' },
   openGraph: {
-    title: `Pricing — Free Online PDF & Image Tools | ${siteConfig.name}`,
+    title: `Pricing â€” Free Online PDF & Image Tools | ${siteConfig.name}`,
     description:
       'PdfPixels tools are free for everyday PDF and image tasks. No paid Pro tier required.',
     url: '/pricing',
@@ -22,13 +22,13 @@ export const metadata: Metadata = {
         url: DEFAULT_OG_IMAGE_URL,
         width: 1200,
         height: 630,
-        alt: 'PdfPixels pricing — free tools',
+        alt: 'PdfPixels pricing â€” free tools',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: `Pricing — Free Online PDF & Image Tools | ${siteConfig.name}`,
+    title: `Pricing â€” Free Online PDF & Image Tools | ${siteConfig.name}`,
     description:
       'PdfPixels tools are free for everyday PDF and image tasks.',
     images: [DEFAULT_OG_IMAGE_URL],
@@ -62,17 +62,17 @@ export default function PricingPage() {
             Free tools for real file jobs
           </h1>
           <p className="text-lg font-medium leading-relaxed text-muted-foreground">
-            PdfPixels is free for everyday personal and work use. There is no paid “Pro” checkout on this site
-            today — open a tool, process your file, download the result.
+            PdfPixels is free for everyday personal and work use. There is no paid â€œProâ€ checkout on this site
+            today â€” open a tool, process your file, download the result.
           </p>
         </div>
 
         <div className="mx-auto max-w-xl">
-          <div className="rounded-[2rem] border border-border/60 bg-card/70 p-8 shadow-soft backdrop-blur-xl lg:p-10">
+          <div className="rounded-[2rem] border border-border/60 bg-card/70 p-8 shadow-soft backdrop-blur-sm lg:p-10">
             <div className="mb-6">
               <h2 className="mb-2 text-2xl font-bold tracking-tight text-foreground">Free forever</h2>
               <p className="text-sm text-muted-foreground">
-                Built for students, freelancers, and anyone who needs a clean browser utility — not a trial wall.
+                Built for students, freelancers, and anyone who needs a clean browser utility â€” not a trial wall.
               </p>
             </div>
             <div className="mb-8 flex items-baseline gap-1">
@@ -103,7 +103,7 @@ export default function PricingPage() {
           <p className="text-sm leading-7 text-muted-foreground">
             Some tools process in your browser; others use servers with fair-use rate limits to keep the service
             stable. If we ever introduce optional paid features (for example higher server limits or API access for
-            businesses), they will be labeled clearly — free tools will stay free for normal use. Questions?{' '}
+            businesses), they will be labeled clearly â€” free tools will stay free for normal use. Questions?{' '}
             <Link href="/contact" className="font-semibold text-primary hover:underline">
               Contact us
             </Link>

@@ -46,14 +46,14 @@ export function GuidesSection() {
           {posts.map((post) => (
             <article
               key={post.slug}
-              className="flex h-full flex-col rounded-2xl border border-border/60 bg-card/80 p-5 shadow-soft transition-all hover:border-primary/25 hover:shadow-premium"
+              className="group card-shine flex h-full flex-col rounded-2xl border border-border/60 bg-card/80 p-5 shadow-soft transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-premium"
             >
               <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                 <BookOpen className="h-3.5 w-3.5 text-primary" />
                 {post.category}
               </div>
               <h3 className="mt-3 text-base font-bold leading-6 text-foreground">
-                <Link href={`/blog/${post.slug}`} className="hover:text-primary">
+                <Link href={`/blog/${post.slug}`} className="transition-colors hover:text-primary">
                   {post.title}
                 </Link>
               </h3>
@@ -67,9 +67,10 @@ export function GuidesSection() {
                 </span>
                 <Link
                   href={`/blog/${post.slug}`}
-                  className="font-semibold text-primary hover:underline underline-offset-4"
+                  className="inline-flex items-center gap-1 font-semibold text-primary hover:underline underline-offset-4"
                 >
                   Read guide
+                  <ArrowRight className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-1" />
                 </Link>
               </div>
             </article>

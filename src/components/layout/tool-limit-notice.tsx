@@ -1,4 +1,4 @@
-﻿import { Info, ShieldCheck } from 'lucide-react';
+import { Info, ShieldCheck } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 
 interface ToolLimitNoticeProps {
@@ -10,7 +10,7 @@ export function ToolLimitNotice({ title = 'Tool limits', limits }: ToolLimitNoti
   if (limits.length === 0) return null;
 
   return (
-    <div className="overflow-hidden rounded-[1.5rem] border border-border/60 bg-card/70 shadow-soft backdrop-blur-xl">
+    <div className="overflow-hidden rounded-[1.5rem] border border-border/60 bg-card/70 shadow-soft backdrop-blur-sm">
       <div className="flex items-center justify-between gap-3 border-b border-border/40 bg-background/70 px-4 py-3">
         <div className="flex items-center gap-2.5">
           <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary">

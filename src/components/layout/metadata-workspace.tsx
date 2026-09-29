@@ -442,11 +442,11 @@ export function MetadataWorkspace() {
       const refreshed: MetadataEntry[] = [
         { key: 'File Name', value: outputName, category: 'File' },
         { key: 'Output Format', value: mime, category: 'File' },
-        { key: 'Title', value: fields.title || '—', category: 'Edited' },
-        { key: 'Author', value: fields.author || '—', category: 'Edited' },
-        { key: 'Copyright', value: fields.copyright || '—', category: 'Edited' },
-        { key: 'Description', value: fields.description || '—', category: 'Edited' },
-        { key: 'Software', value: fields.software || '—', category: 'Edited' },
+        { key: 'Title', value: fields.title || 'â€”', category: 'Edited' },
+        { key: 'Author', value: fields.author || 'â€”', category: 'Edited' },
+        { key: 'Copyright', value: fields.copyright || 'â€”', category: 'Edited' },
+        { key: 'Description', value: fields.description || 'â€”', category: 'Edited' },
+        { key: 'Software', value: fields.software || 'â€”', category: 'Edited' },
       ];
       setMetadata(refreshed);
       toast.success('Metadata saved into a new image file.');
@@ -484,7 +484,7 @@ export function MetadataWorkspace() {
 
   if (!activeTool) return null;
 
-  const toolIcon = isRemove ? '🗑️' : isEdit ? '✏️' : '🔍';
+  const toolIcon = isRemove ? 'ðŸ—‘ï¸' : isEdit ? 'âœï¸' : 'ðŸ”';
   const categories = [...new Set(metadata.map((m) => m.category))];
 
   return (
@@ -542,7 +542,7 @@ export function MetadataWorkspace() {
                     id="meta-copyright"
                     value={fields.copyright}
                     onChange={(e) => setFields((f) => ({ ...f, copyright: e.target.value }))}
-                    placeholder="© 2026 Your Name"
+                    placeholder="Â© 2026 Your Name"
                   />
                 </div>
                 <div className="space-y-2">
@@ -614,7 +614,7 @@ export function MetadataWorkspace() {
         </div>
 
         <div className="space-y-6">
-          <div className="rounded-2xl border border-border/40 bg-card/60 backdrop-blur-xl overflow-hidden shadow-premium">
+          <div className="rounded-2xl border border-border/40 bg-card/60 backdrop-blur-md overflow-hidden shadow-premium">
             <div className="p-5 border-b border-border/40 bg-gradient-to-r from-primary/10 to-transparent">
               <h3 className="font-bold flex items-center gap-2.5 tracking-tight text-foreground">
                 <Sparkles className="w-4 h-4 text-primary" />

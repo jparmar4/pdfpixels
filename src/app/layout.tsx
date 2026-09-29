@@ -12,6 +12,7 @@ import { Analytics } from '@/components/ads/analytics';
 import { Navigation } from '@/components/layout/navigation';
 import { Footer } from '@/components/layout/footer';
 import { ScrollToTop } from '@/components/home/scroll-to-top';
+import { ClickRipple } from '@/components/ui/click-ripple';
 
 const fontInter = Inter({
   subsets: ['latin'],
@@ -161,7 +162,10 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <Footer />
           {/* Global: scroll-to-top on route change + jump top/bottom controls */}
           <ScrollToTop />
-          <SonnerToaster richColors closeButton position="top-center" />
+          {/* Global: click bloom on buttons, links and tool cards */}
+          <ClickRipple />
+          {/* Top-center toasts sit below the floating nav pill (offset.top) */}
+          <SonnerToaster richColors closeButton position="top-center" offset={{ top: 84, bottom: 24 }} />
           <AdSenseScript />
           <Analytics />
           <CookieConsentBanner />

@@ -93,10 +93,10 @@ const AI_TOOLS: Record<
   upscale: {
     icon: <ZoomIn className="w-7 h-7 text-white" />,
     label: 'AI Upscale',
-    action: 'Upscale 2×',
-    prompt: 'Enlarge about 2× while preserving detail.',
+    action: 'Upscale 2Ã—',
+    prompt: 'Enlarge about 2Ã— while preserving detail.',
     tips: [
-      'Output can be large — compress after if needed.',
+      'Output can be large â€” compress after if needed.',
       'Works best on non-tiny source images.',
     ],
     nextActions: [
@@ -240,7 +240,7 @@ export function AIWorkspace() {
           <FileUpload accept="image/*" maxSizeMb={20} />
           <ToolLimitNotice
             limits={[
-              'Images only · max 20 MB',
+              'Images only Â· max 20 MB',
               'Server-side AI pipeline',
               'PNG export',
               isRemoveBg ? 'Transparent background result' : 'Best on clear, well-lit subjects',
@@ -268,7 +268,7 @@ export function AIWorkspace() {
               <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-violet-500/15 text-violet-600">
                 <Sparkles className="h-6 w-6 animate-pulse" />
               </div>
-              <h3 className="mb-1 text-center text-lg font-bold">Running {toolConfig.label}…</h3>
+              <h3 className="mb-1 text-center text-lg font-bold">Running {toolConfig.label}â€¦</h3>
               <p className="mb-4 text-center text-sm text-muted-foreground">Processing on the server and preparing a PNG result.</p>
               <Progress value={progress} className="mx-auto h-2 max-w-md" />
               <p className="mt-2 text-center text-xs font-medium tabular-nums text-muted-foreground">{Math.round(progress)}%</p>
@@ -336,7 +336,7 @@ export function AIWorkspace() {
         </div>
 
         <div className="space-y-6">
-          <div className="overflow-hidden rounded-[1.75rem] border border-border/40 bg-card/60 shadow-premium backdrop-blur-xl">
+          <div className="overflow-hidden rounded-[1.75rem] border border-border/40 bg-card/60 shadow-premium backdrop-blur-md">
             <div className="border-b border-border/40 bg-gradient-to-r from-violet-500/10 to-transparent p-5">
               <h3 className="flex items-center gap-2.5 font-bold tracking-tight">
                 <Sparkles className="h-4 w-4 text-violet-500" />
@@ -401,7 +401,7 @@ export function AIWorkspace() {
                       transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
                       className="mr-3 h-5 w-5 rounded-full border-2 border-white/30 border-t-white"
                     />
-                    Processing…
+                    Processingâ€¦
                   </>
                 ) : (
                   <>

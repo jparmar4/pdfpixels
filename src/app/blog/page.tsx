@@ -148,7 +148,7 @@ export default function BlogPage() {
                             </div>
 
                             <Link href={`/blog/${featuredPost.slug}`} className="block group">
-                                <SpotlightCard spotlightColor="rgba(99, 102, 241, 0.15)" className="p-2 sm:p-2 border border-border/60 bg-card/60 backdrop-blur-xl hover:border-primary/30 transition-all duration-300">
+                                <SpotlightCard spotlightColor="rgba(99, 102, 241, 0.15)" className="p-2 sm:p-2 border border-border/60 bg-card/60 backdrop-blur-md hover:border-primary/30 transition-all duration-300">
                                     <div className="grid lg:grid-cols-2 gap-0 lg:gap-8 items-center rounded-3xl overflow-hidden">
 
                                         {/* Cover Image Wrapper */}
@@ -266,7 +266,7 @@ export default function BlogPage() {
                                                         <CalendarDays className="w-3.5 h-3.5" />
                                                         {post.date}
                                                     </span>
-                                                    <span className="text-muted-foreground/40">•</span>
+                                                    <span className="text-muted-foreground/40">â€¢</span>
                                                     <span className="flex items-center gap-1.5">
                                                         <Clock className="w-3.5 h-3.5" />
                                                         {post.readTime}

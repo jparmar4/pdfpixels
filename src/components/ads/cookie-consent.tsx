@@ -72,7 +72,7 @@ export function CookieConsentBanner() {
       aria-live="polite"
       className="fixed bottom-0 left-0 right-0 z-50 p-4 sm:p-6 animate-in fade-in slide-in-from-bottom-4 duration-300"
     >
-        <Card className="max-w-3xl mx-auto shadow-2xl border-border/50 bg-card/95 backdrop-blur-xl">
+        <Card className="max-w-3xl mx-auto rounded-[1.5rem] border-border/50 bg-card/95 shadow-premium backdrop-blur-sm">
           <div className="p-4 sm:p-6">
             {!showSettings ? (
               <div className="flex flex-col gap-4">
@@ -90,7 +90,7 @@ export function CookieConsentBanner() {
                   </div>
                   <button
                     onClick={handleRejectAll}
-                    className="text-muted-foreground hover:text-foreground transition-colors"
+                    className="rounded-full p-1.5 text-muted-foreground transition-all hover:scale-110 hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
                     aria-label="Reject all and close"
                   >
                     <X className="w-5 h-5" />
@@ -153,7 +153,7 @@ export function CookieConsentBanner() {
                   </div>
                   <button
                     onClick={() => setShowSettings(false)}
-                    className="text-muted-foreground hover:text-foreground transition-colors"
+                    className="rounded-full p-1.5 text-muted-foreground transition-all hover:scale-110 hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
                     aria-label="Back"
                   >
                     <X className="w-5 h-5" />

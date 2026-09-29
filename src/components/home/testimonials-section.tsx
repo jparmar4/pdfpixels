@@ -94,16 +94,16 @@ export function TestimonialsSection() {
             return (
               <article
                 key={item.title}
-                className="flex h-full flex-col rounded-2xl border border-border/60 bg-card/80 p-5 shadow-soft transition-all hover:border-primary/25 hover:shadow-premium"
+                className="group card-shine flex h-full flex-col rounded-2xl border border-border/60 bg-card/80 p-5 shadow-soft transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-premium"
               >
                 <div className="flex items-start gap-3">
                   <div
-                    className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${item.color} text-white shadow-sm`}
+                    className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${item.color} text-white shadow-sm transition-all duration-300 group-hover:-rotate-3 group-hover:scale-110`}
                   >
                     <Icon className="h-5 w-5" />
                   </div>
                   <div>
-                    <h3 className="text-base font-bold text-foreground">{item.title}</h3>
+                    <h3 className="text-base font-bold text-foreground transition-colors group-hover:text-primary">{item.title}</h3>
                     <p className="mt-0.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                       {item.audience}
                     </p>
@@ -115,7 +115,7 @@ export function TestimonialsSection() {
                   className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline underline-offset-4"
                 >
                   {item.cta}
-                  <ArrowRight className="h-4 w-4" />
+                  <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
                 </Link>
               </article>
             );

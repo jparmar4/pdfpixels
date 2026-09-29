@@ -104,7 +104,7 @@ export function UseCaseDetailContent({
         </section>
 
         <div className="container mx-auto max-w-5xl px-4 py-8 lg:px-8">
-          {/* Unique overview — primary quality signal */}
+          {/* Unique overview â€” primary quality signal */}
           <section className="section-panel rounded-[2rem] p-6 md:p-8">
             <h2 className="text-2xl font-bold text-foreground">Why this workflow matters</h2>
             <p className="mt-4 text-sm leading-7 text-muted-foreground md:text-base">{entry.overview}</p>
@@ -275,7 +275,7 @@ export function UseCaseDetailContent({
                   asChild
                   variant="outline"
                   size="lg"
-                  className="rounded-2xl border-white/20 bg-background/40 px-7 py-6 text-base backdrop-blur-xl"
+                  className="rounded-2xl border-white/20 bg-background/40 px-7 py-6 text-base backdrop-blur-md"
                 >
                   <Link href="/blog">Read guides</Link>
                 </Button>

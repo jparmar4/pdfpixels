@@ -29,7 +29,7 @@ function WorkspaceLoading({ tool, containerClass = 'container mx-auto px-4 lg:px
 
   return (
     <div className={`${containerClass} py-8`}>
-      <div className="relative mb-8 overflow-hidden rounded-[2rem] border border-border/50 bg-card/75 p-5 shadow-premium backdrop-blur-xl md:p-7">
+      <div className="relative mb-8 overflow-hidden rounded-[2rem] border border-border/50 bg-card/75 p-5 shadow-premium backdrop-blur-sm md:p-7">
         <div className="relative z-10 flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
           <div className="space-y-5">
             <div className="flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
@@ -100,9 +100,9 @@ export function generateStaticParams() {
 }
 
 // Matches the loading skeleton's width to the real workspace container so the
-// skeleton→workspace swap doesn't shift layout on desktop (CLS). Keep in sync
-// with the root `container …` class of each workspace component and the
-// tool→workspace dispatch in `components/layout/tool-page-client.tsx`.
+// skeletonâ†’workspace swap doesn't shift layout on desktop (CLS). Keep in sync
+// with the root `container â€¦` class of each workspace component and the
+// toolâ†’workspace dispatch in `components/layout/tool-page-client.tsx`.
 // Tools not listed here use full-width workspaces (the skeleton default).
 const WORKSPACE_CONTAINER_CLASS: Record<string, string> = {
   // max-w-6xl workspaces
@@ -362,7 +362,7 @@ function getToolJsonLd(tool: ReturnType<typeof getToolBySlug>) {
       itemListElement: [
         { '@type': 'ListItem', position: 1, name: 'Home', item: absoluteUrl('/') },
         { '@type': 'ListItem', position: 2, name: 'Tools', item: absoluteUrl('/tools') },
-        // Category level strengthens the tool → category internal-link graph
+        // Category level strengthens the tool â†’ category internal-link graph
         // that crawlers use for discovery of /tools/category/* hubs.
         ...(() => {
           const category = toolCategories.find((c) => c.id === tool.category);
@@ -452,7 +452,7 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
 
         {(relatedTools.length > 0 || relatedUseCases.length > 0 || relatedComparisons.length > 0 || relatedPosts.length > 0) ? (
           <section className="container mx-auto px-4 pb-12 lg:px-8">
-            <div className="overflow-hidden rounded-[2rem] border border-border/50 bg-card/75 p-6 shadow-premium backdrop-blur-xl md:p-8">
+            <div className="overflow-hidden rounded-[2rem] border border-border/50 bg-card/75 p-6 shadow-premium backdrop-blur-sm md:p-8">
               <div className="mb-8 flex flex-col gap-3 border-b border-border/40 pb-6 md:flex-row md:items-end md:justify-between">
                 <div>
                   <p className="text-xs font-bold uppercase tracking-[0.18em] text-primary">Keep the workflow moving</p>
@@ -517,7 +517,7 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
                         className="group rounded-2xl border border-border/50 bg-card/75 px-4 py-3 transition-colors hover:border-primary/30 hover:bg-card"
                       >
                         <p className="text-sm font-semibold text-foreground group-hover:text-primary">{normalizeDisplayText(post.title)}</p>
-                        <p className="mt-1 text-xs text-muted-foreground">{normalizeDisplayText(post.category)} · {post.readTime}</p>
+                        <p className="mt-1 text-xs text-muted-foreground">{normalizeDisplayText(post.category)} Â· {post.readTime}</p>
                       </Link>
                     ))}
                   </div>
@@ -527,7 +527,7 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
           </section>
         ) : null}
 
-        {/* Single footer unit after full content — only shown when editorial content is sufficient */}
+        {/* Single footer unit after full content â€” only shown when editorial content is sufficient */}
         {hasRichContent && <FooterAd />}
       </div>
     </>

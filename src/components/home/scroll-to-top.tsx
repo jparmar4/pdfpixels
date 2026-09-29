@@ -128,7 +128,7 @@ export function ScrollToTop() {
           key="jump-top"
           type="button"
           onClick={jumpTop}
-          className="flex h-11 w-11 items-center justify-center rounded-2xl border border-border/60 bg-card/95 text-foreground shadow-lg backdrop-blur-md transition-all hover:scale-105 hover:border-primary/40 hover:text-primary active:scale-95 sm:h-12 sm:w-12"
+          className="icon-btn-premium flex h-11 w-11 items-center justify-center rounded-2xl border border-border/60 bg-card/95 text-foreground shadow-lg backdrop-blur-md transition-all hover:border-primary/40 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 active:scale-95 sm:h-12 sm:w-12"
           aria-label="Jump to top of page"
           title="Jump to top"
         >
@@ -141,7 +141,7 @@ export function ScrollToTop() {
           key="jump-bottom"
           type="button"
           onClick={jumpBottom}
-          className="btn-premium flex h-11 w-11 items-center justify-center rounded-2xl shadow-lg transition-transform hover:scale-105 active:scale-95 sm:h-12 sm:w-12"
+          className="btn-premium flex h-11 w-11 items-center justify-center rounded-2xl shadow-lg transition-transform focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-95 sm:h-12 sm:w-12"
           aria-label="Jump to bottom of page"
           title="Jump to bottom"
         >

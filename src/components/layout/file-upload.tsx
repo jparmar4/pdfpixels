@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import {
   CheckCircle2,
   FileImage,
@@ -211,7 +211,7 @@ export function FileUpload({ accept = 'image/*', maxSizeMb }: FileUploadProps) {
     setDragOver(false);
     const dropped = event.dataTransfer.files;
     if (dropped && dropped.length > 1) {
-      toast.info('Only the first file was added — this tool processes one file at a time.');
+      toast.info('Only the first file was added â€” this tool processes one file at a time.');
     }
     void handleSelectedFile(dropped?.[0] ?? null);
   }, [handleSelectedFile]);
@@ -267,6 +267,7 @@ export function FileUpload({ accept = 'image/*', maxSizeMb }: FileUploadProps) {
   })();
 
   const busy = isProcessing || isNormalizing;
+  const reduceMotion = useReducedMotion();
 
   return (
     <div className="space-y-4">
@@ -304,7 +305,7 @@ export function FileUpload({ accept = 'image/*', maxSizeMb }: FileUploadProps) {
             className={`relative cursor-pointer overflow-hidden rounded-[2rem] border-2 transition-all duration-300 ${
               dragOver
                 ? 'border-primary bg-primary/6 shadow-[0_18px_60px_-30px_rgba(59,130,246,0.45)]'
-                : 'border-border/60 bg-card/65 shadow-premium backdrop-blur-xl hover:border-primary/35 hover:bg-card/80'
+                : 'border-border/60 bg-card/65 shadow-premium backdrop-blur-sm hover:border-primary/35 hover:bg-card/80'
             }`}
             style={
               dragOver
@@ -330,10 +331,7 @@ export function FileUpload({ accept = 'image/*', maxSizeMb }: FileUploadProps) {
                     stroke="currentColor"
                     strokeWidth="2"
                     strokeDasharray="8 6"
-                    className="text-border/40"
-                    style={{
-                      animation: 'dashFlow 2s linear infinite',
-                    }}
+                    className="text-border/40 animate-dash"
                   />
                 </svg>
               </div>
@@ -346,14 +344,18 @@ export function FileUpload({ accept = 'image/*', maxSizeMb }: FileUploadProps) {
               {/* Animated icon area */}
               <motion.div
                 animate={
-                  dragOver
-                    ? { y: -6, scale: [1, 1.12, 1] }
-                    : { y: [0, -4, 0], scale: 1 }
+                  reduceMotion
+                    ? { y: 0, scale: 1 }
+                    : dragOver
+                      ? { y: -6, scale: [1, 1.12, 1] }
+                      : { y: [0, -4, 0], scale: 1 }
                 }
                 transition={
-                  dragOver
-                    ? { type: 'spring', stiffness: 260, damping: 18, repeat: Infinity, repeatType: 'reverse' }
-                    : { type: 'spring', stiffness: 260, damping: 18, repeat: Infinity, repeatType: 'reverse', duration: 3 }
+                  reduceMotion
+                    ? { duration: 0 }
+                    : dragOver
+                      ? { type: 'spring', stiffness: 260, damping: 18, repeat: Infinity, repeatType: 'reverse' }
+                      : { type: 'spring', stiffness: 260, damping: 18, repeat: Infinity, repeatType: 'reverse', duration: 3 }
                 }
                 className={`mb-6 flex h-24 w-24 items-center justify-center rounded-[1.75rem] border shadow-lg transition-colors duration-300 ${
                   dragOver
@@ -404,7 +406,7 @@ export function FileUpload({ accept = 'image/*', maxSizeMb }: FileUploadProps) {
                 </span>
               </div>
 
-              {/* Prominent upload button — presentational only. The dropzone
+              {/* Prominent upload button â€” presentational only. The dropzone
                   itself is the keyboard-focusable control (role="button"), so
                   this nested button stays out of the tab order and ARIA tree
                   to avoid a dead control and a nested-interactive violation. */}
@@ -426,7 +428,7 @@ export function FileUpload({ accept = 'image/*', maxSizeMb }: FileUploadProps) {
                   : 'Supports JPG, PNG, WebP, HEIC, AVIF and more'}
               </p>
               {isNormalizing ? (
-                <p className="mt-2 text-xs font-medium text-primary">Converting HEIC photo…</p>
+                <p className="mt-2 text-xs font-medium text-primary">Converting HEIC photoâ€¦</p>
               ) : null}
             </div>
           </motion.div>
@@ -436,7 +438,7 @@ export function FileUpload({ accept = 'image/*', maxSizeMb }: FileUploadProps) {
             initial={{ opacity: 0, scale: 0.985 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.985 }}
-            className="relative overflow-hidden rounded-[2rem] border border-border/60 bg-card/75 p-4 shadow-premium backdrop-blur-xl md:p-5"
+            className="relative overflow-hidden rounded-[2rem] border border-border/60 bg-card/75 p-4 shadow-premium backdrop-blur-sm md:p-5"
           >
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(14,76,181,0.08),transparent_28%),radial-gradient(circle_at_bottom_right,rgba(14,165,170,0.08),transparent_28%),radial-gradient(circle_at_top_right,rgba(184,134,39,0.06),transparent_24%)] pointer-events-none" />
             <div className="relative z-10 grid gap-4 lg:grid-cols-[minmax(0,1fr)_280px]">
@@ -459,7 +461,7 @@ export function FileUpload({ accept = 'image/*', maxSizeMb }: FileUploadProps) {
                 ) : previewUrl && !previewFailed ? (
                   <img
                     src={previewUrl}
-                    alt={uploadedFile ? `Original upload preview — ${uploadedFile.name}` : 'Original upload preview'}
+                    alt={uploadedFile ? `Original upload preview â€” ${uploadedFile.name}` : 'Original upload preview'}
                     decoding="async"
                     className="max-h-[360px] max-w-full rounded-2xl object-contain shadow-sm"
                     onError={() => setPreviewFailed(true)}

@@ -26,9 +26,9 @@ export function FAQSection() {
           {visibleFaqs.map((faq, idx) => (
             <details
               key={idx}
-              className="group rounded-2xl border bg-card/60 dark:bg-card/40 backdrop-blur-sm overflow-hidden transition-all duration-300 border-border/60 hover:border-primary/15 open:border-primary/30 open:shadow-lg open:shadow-primary/5"
+              className="group rounded-2xl border bg-card/60 dark:bg-card/40 backdrop-blur-sm overflow-hidden transition-all duration-300 border-border/60 hover:-translate-y-0.5 hover:border-primary/25 hover:shadow-premium open:-translate-y-0 open:border-primary/30 open:shadow-premium"
             >
-              <summary className="w-full flex items-center justify-between p-5 text-left hover:bg-primary/[0.02] transition-colors cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+              <summary className="w-full flex items-center justify-between p-5 text-left hover:bg-primary/[0.03] transition-colors cursor-pointer list-none rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-inset [&::-webkit-details-marker]:hidden">
                 <span className="font-semibold text-sm pr-4">{faq.question}</span>
                 <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 transition-all duration-300 bg-muted group-open:bg-primary/10 group-open:rotate-180">
                   <svg

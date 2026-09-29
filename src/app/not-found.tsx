@@ -24,7 +24,7 @@ export default function NotFound() {
       <div className="w-20 h-20 rounded-3xl bg-primary/10 flex items-center justify-center mb-8">
         <FileQuestion className="w-10 h-10 text-primary" />
       </div>
-      <h1 className="text-6xl font-extrabold text-foreground mb-3">404</h1>
+      <h1 className="gradient-text text-6xl font-extrabold mb-3">404</h1>
       <h2 className="text-2xl font-bold text-foreground mb-2">Page not found</h2>
       <p className="text-muted-foreground max-w-md mb-8">
         The page you are looking for does not exist or has been moved.
@@ -51,7 +51,7 @@ export default function NotFound() {
             <Link
               key={item.href}
               href={item.href}
-              className="rounded-2xl border border-border/60 bg-card/70 px-4 py-3 text-sm font-semibold transition-colors hover:border-primary/40 hover:text-primary"
+              className="rounded-2xl border border-border/60 bg-card/70 px-4 py-3 text-sm font-semibold transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:text-primary hover:shadow-premium active:translate-y-0"
             >
               <span className="inline-flex items-center gap-2">
                 <Icon className="h-4 w-4" />

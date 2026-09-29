@@ -65,8 +65,8 @@ export function ToolPageHeader({
   const ProcessingIcon = processingMeta.icon;
 
   return (
-    <div className="relative mb-8 overflow-hidden rounded-[2rem] border border-border/50 bg-card/75 p-5 shadow-premium backdrop-blur-xl md:p-7">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(14,76,181,0.1),transparent_30%),radial-gradient(circle_at_bottom_right,rgba(14,165,170,0.1),transparent_28%),radial-gradient(circle_at_top_right,rgba(184,134,39,0.08),transparent_26%)] pointer-events-none" />
+    <div className="relative mb-8 overflow-hidden rounded-[2rem] border border-border/50 bg-card/85 p-5 shadow-premium backdrop-blur-sm md:p-7">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(79,70,229,0.12),transparent_30%),radial-gradient(circle_at_bottom_right,rgba(124,58,237,0.1),transparent_28%),radial-gradient(circle_at_top_right,rgba(59,130,246,0.08),transparent_26%)] pointer-events-none" />
       <div className="absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-primary/35 to-transparent" />
       <div className="pointer-events-none absolute -right-16 top-10 h-36 w-36 rounded-full bg-primary/10 blur-3xl" />
 
@@ -75,7 +75,7 @@ export function ToolPageHeader({
           {/* Breadcrumb lives server-side on the page (app/tools/[slug]/page.tsx). */}
 
           <div className="flex items-start gap-4">
-            <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-[1.35rem] border border-primary/20 bg-gradient-to-br from-primary to-violet-600 shadow-lg shadow-primary/20">
+            <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-[1.35rem] border border-primary/20 bg-gradient-to-br from-primary to-violet-600 shadow-lg shadow-primary/30 transition-transform duration-300 hover:scale-105 hover:-rotate-2">
               {emoji ? (
                 <span className="text-2xl">{emoji}</span>
               ) : React.isValidElement(icon) ? (

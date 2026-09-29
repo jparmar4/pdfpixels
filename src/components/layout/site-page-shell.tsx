@@ -84,9 +84,9 @@ export function SitePageShell({
       <main id="main-content" className="flex-1">
         <section className="relative overflow-hidden border-b border-border/40">
           <div className="hero-grid absolute inset-0 opacity-60" />
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(14,76,181,0.18),transparent_28%),radial-gradient(circle_at_top_right,rgba(14,165,170,0.14),transparent_26%),radial-gradient(circle_at_bottom,rgba(184,134,39,0.12),transparent_32%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(79,70,229,0.16),transparent_28%),radial-gradient(circle_at_top_right,rgba(124,58,237,0.12),transparent_26%),radial-gradient(circle_at_bottom,rgba(59,130,246,0.08),transparent_32%)]" />
           <div className="pointer-events-none absolute left-[-8rem] top-12 h-64 w-64 rounded-full bg-primary/10 blur-3xl" />
-          <div className="pointer-events-none absolute bottom-[-8rem] right-[-6rem] h-72 w-72 rounded-full bg-emerald-400/10 blur-3xl" />
+          <div className="pointer-events-none absolute bottom-[-8rem] right-[-6rem] h-72 w-72 rounded-full bg-violet-400/10 blur-3xl" />
 
           <div className="container mx-auto px-4 py-20 lg:px-8 md:py-24">
             <div className={cn('mx-auto max-w-5xl', centered && 'text-center')}>
@@ -108,7 +108,7 @@ export function SitePageShell({
                 {trustPoints.map((point) => (
                   <div
                     key={point.label}
-                    className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-background/80 px-4 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground shadow-soft backdrop-blur-xl"
+                    className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-background/80 px-4 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground shadow-soft backdrop-blur-sm"
                   >
                     <point.icon className="h-3.5 w-3.5 text-primary" />
                     {point.label}
@@ -139,7 +139,7 @@ export function SitePageShell({
                 <div className={cn('mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-4', centered && 'mx-auto max-w-4xl')}>
                   {stats.map((stat) => (
                     <div key={stat.label} className="section-panel rounded-[1.5rem] p-4">
-                      <div className="mb-3 h-1 w-16 rounded-full bg-[linear-gradient(90deg,rgba(14,76,181,0.9),rgba(14,165,170,0.7),rgba(184,134,39,0.5))]" />
+                      <div className="mb-3 h-1 w-16 rounded-full bg-[linear-gradient(90deg,rgba(79,70,229,0.9),rgba(124,58,237,0.7),rgba(59,130,246,0.6))]" />
                       <p className="text-2xl font-extrabold tracking-tight text-foreground">{stat.value}</p>
                       <p className="mt-1 text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">{stat.label}</p>
                     </div>
@@ -151,7 +151,7 @@ export function SitePageShell({
         </section>
 
         <div className="container mx-auto px-4 py-6 lg:px-8">
-          <div className="flex flex-wrap items-center gap-3 rounded-[1.5rem] border border-border/50 bg-card/75 px-4 py-3 text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground shadow-soft backdrop-blur-xl">
+          <div className="flex flex-wrap items-center gap-3 rounded-[1.5rem] border border-border/50 bg-card/75 px-4 py-3 text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground shadow-soft backdrop-blur-sm">
             <span className="inline-flex items-center gap-2">
               <Sparkles className="h-3.5 w-3.5 text-primary" />
               Premium page system

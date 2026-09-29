@@ -263,7 +263,7 @@ export function ResizeWorkspace() {
 
           {originalDimensions.width > 0 ? (
             <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} className="grid gap-4 md:grid-cols-2">
-              <div className="rounded-[1.5rem] border border-border/60 bg-card/75 p-5 shadow-soft backdrop-blur-xl">
+              <div className="rounded-[1.5rem] border border-border/60 bg-card/75 p-5 shadow-soft backdrop-blur-sm">
                 <div className="mb-2 flex items-center gap-3">
                   <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-muted text-muted-foreground">
                     <Ruler className="h-4 w-4" />
@@ -296,7 +296,7 @@ export function ResizeWorkspace() {
 
           {result && processedImage ? (
             <motion.div id="resize-result" initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
-              <div className="overflow-hidden rounded-[1.75rem] border border-border/60 bg-card/75 shadow-premium backdrop-blur-xl">
+              <div className="overflow-hidden rounded-[1.75rem] border border-border/60 bg-card/75 shadow-premium backdrop-blur-sm">
                 <div className="flex items-center justify-between gap-3 border-b border-border/40 bg-background/75 px-5 py-4">
                   <h3 className="font-semibold text-foreground">Resized preview</h3>
                   <Badge className="bg-emerald-500/10 text-emerald-700 hover:bg-emerald-500/15 dark:text-emerald-300">
@@ -324,7 +324,7 @@ export function ResizeWorkspace() {
         </div>
 
         <div className="space-y-6">
-          <div className="rounded-[1.75rem] border border-border/60 bg-card/75 p-5 shadow-premium backdrop-blur-xl">
+          <div className="rounded-[1.75rem] border border-border/60 bg-card/75 p-5 shadow-premium backdrop-blur-sm">
             <div className="mb-5 flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary/10 text-primary">
                 <Settings2 className="h-4 w-4" />
@@ -466,7 +466,7 @@ export function ResizeWorkspace() {
             </div>
           </div>
 
-          <div className="rounded-[1.75rem] border border-border/60 bg-card/75 p-5 shadow-soft backdrop-blur-xl">
+          <div className="rounded-[1.75rem] border border-border/60 bg-card/75 p-5 shadow-soft backdrop-blur-sm">
             <h4 className="font-bold text-foreground">Resize tips</h4>
             <ul className="mt-3 space-y-2 text-sm leading-6 text-muted-foreground">
               <li className="flex items-start gap-2"><ChevronRight className="mt-1 h-4 w-4 shrink-0 text-primary" />Use pixels for digital delivery and app uploads.</li>

@@ -213,7 +213,7 @@ export function Navigation() {
           <button
             type="button"
             onClick={toggleDarkMode}
-            className="ml-2 flex h-8 w-8 items-center justify-center rounded-full border border-border/50 bg-card/60 text-muted-foreground transition-all duration-200 hover:border-primary/30 hover:bg-card hover:text-foreground"
+            className="icon-btn-premium ml-2 flex h-8 w-8 items-center justify-center rounded-full border border-border/50 bg-card/60 text-muted-foreground hover:border-primary/30 hover:bg-card hover:text-foreground"
             aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
           >
             <span key={isDark ? 'sun' : 'moon'} className="inline-flex animate-in fade-in zoom-in-75 duration-200">
@@ -225,7 +225,7 @@ export function Navigation() {
 
       <header className={`sticky top-0 z-50 w-full pointer-events-none transition-all duration-500 ${scrolled ? 'pt-3 lg:pt-5' : 'pt-0'}`}>
         <div className={`mx-auto w-full transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] pointer-events-auto ${scrolled ? 'px-3 sm:px-6 lg:px-8 max-w-[85rem]' : 'px-0 max-w-full'}`}>
-          <div className={`mx-auto flex w-full items-center justify-between gap-4 transition-all duration-500 ease-out ${scrolled ? 'rounded-[2.5rem] border border-border/40 bg-card/65 backdrop-blur-2xl shadow-[0_8px_30px_rgb(0,0,0,0.06)] dark:shadow-[0_8px_30px_rgb(255,255,255,0.02)] px-3 py-2 sm:px-5 lg:w-[98%]' : 'border-b border-border/20 bg-background/60 backdrop-blur-md px-4 py-3 sm:px-6 lg:px-8'}`}>
+          <div className={`mx-auto flex w-full items-center justify-between gap-4 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] pointer-events-auto ${scrolled ? 'rounded-[2.5rem] border border-border/40 bg-card/75 backdrop-blur-md shadow-[0_8px_30px_rgb(0,0,0,0.06)] dark:shadow-[0_8px_30px_rgb(255,255,255,0.02)] px-3 py-2 sm:px-5 lg:w-[98%]' : 'border-b border-border/20 bg-background/70 backdrop-blur-sm px-4 py-3 sm:px-6 lg:px-8'}`}>
             <Link
               href="/"
               className="group flex flex-shrink-0 items-center gap-3"
@@ -272,7 +272,7 @@ export function Navigation() {
                 >
                   <FileText className="h-4 w-4 text-primary" />
                   PDF Tools
-                  <span className="rounded-full bg-primary/10 px-1.5 py-0.2 text-[10px] font-black text-primary">52</span>
+                  <span className="rounded-full bg-primary/10 px-1.5 py-0.2 text-[10px] font-black text-primary">{allPdfTools.length}</span>
                   <ChevronRight
                     className={`h-3 w-3 opacity-60 transition-transform duration-300 ${
                       activeMegaCategory === 'pdf-tools' ? 'rotate-90' : 'group-hover:translate-y-0.5 group-hover:rotate-90'
@@ -404,7 +404,7 @@ export function Navigation() {
                 onMouseLeave={closeMega}
                 className="hidden lg:block pb-4 animate-in fade-in slide-in-from-top-2 duration-200"
               >
-                <div className="rounded-[1.75rem] border border-border/50 bg-card/95 p-6 shadow-premium backdrop-blur-2xl">
+                <div className="rounded-[1.75rem] border border-border/50 bg-card/95 p-6 shadow-premium">
                   <div className="grid gap-6 lg:grid-cols-[250px_minmax(0,1fr)]">
                     <div className="flex flex-col justify-between rounded-[1.5rem] border border-border/50 bg-background/80 p-5">
                       <div>
@@ -413,10 +413,10 @@ export function Navigation() {
                         </div>
                         <h3 className="text-lg font-extrabold text-foreground">PDF Super Suite</h3>
                         <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
-                          All 52 free PDF tools: compress, merge, convert to Word & Excel, sign, fill forms, and protect files.
+                          All {allPdfTools.length} free PDF tools: compress, merge, convert to Word &amp; Excel, sign, fill forms, and protect files.
                         </p>
                         <div className="mt-4 flex flex-wrap gap-1.5 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-                          <span className="rounded-full border border-border/60 bg-card px-2 py-0.5 text-primary">52 Tools</span>
+                          <span className="rounded-full border border-border/60 bg-card px-2 py-0.5 text-primary">{allPdfTools.length} Tools</span>
                           <span className="rounded-full border border-border/60 bg-card px-2 py-0.5 text-emerald-600 dark:text-emerald-400">100% Free</span>
                           <span className="rounded-full border border-border/60 bg-card px-2 py-0.5 text-sky-600 dark:text-sky-400">No Signup</span>
                         </div>
@@ -427,7 +427,7 @@ export function Navigation() {
                           onClick={dismissMega}
                           className="flex w-full items-center justify-center gap-1.5 rounded-xl bg-primary py-2.5 text-xs font-bold text-white shadow-sm hover:opacity-95 transition-all hover:scale-[1.02]"
                         >
-                          View All 52 PDF Tools
+                          View All {allPdfTools.length} PDF Tools
                           <ArrowRight className="h-3.5 w-3.5" />
                         </Link>
                       </div>
@@ -536,7 +536,7 @@ export function Navigation() {
                     <Button asChild className="btn-premium h-11 rounded-2xl shadow-primary/20">
                       <Link href="/pdf-tools" onClick={() => setMobileMenuOpen(false)}>
                         <FileText className="mr-2 h-4 w-4" />
-                        All PDF Tools (52)
+                        All PDF Tools ({allPdfTools.length})
                       </Link>
                     </Button>
                     <Button asChild variant="outline" className="h-11 rounded-2xl">
@@ -560,14 +560,14 @@ export function Navigation() {
                           <FileText className="h-4 w-4 text-primary" />
                           PDF Super Suite
                         </p>
-                        <p className="text-xs text-muted-foreground">52 free tools · Compress, merge, convert, sign & protect</p>
+                        <p className="text-xs text-muted-foreground">{allPdfTools.length} free tools · Compress, merge, convert, sign &amp; protect</p>
                       </div>
                       <Link
                         href="/pdf-tools"
                         onClick={() => setMobileMenuOpen(false)}
                         className="rounded-full bg-primary px-3 py-1 text-[11px] font-bold text-white shadow-xs"
                       >
-                        View All 52 →
+                        View All {allPdfTools.length} →
                       </Link>
                     </div>
                     <div className="grid grid-cols-2 gap-2">

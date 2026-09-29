@@ -494,7 +494,7 @@ export function ToolWorkspace() {
                 <p className="text-xs text-muted-foreground">
                   {isColorPicker
                     ? 'HEX is copied automatically. Then click Apply for a color board export.'
-                    : `Marker at ${placeX}% × ${placeY}% — then click Apply Changes.`}
+                    : `Marker at ${placeX}% Ã— ${placeY}% â€” then click Apply Changes.`}
                 </p>
               </div>
               <div className="flex justify-center bg-muted/30 p-3">
@@ -532,7 +532,7 @@ export function ToolWorkspace() {
                 <div>
                   <p className="text-sm font-medium">Original Size</p>
                   <p className="text-sm text-muted-foreground">
-                    {originalDimensions.width} × {originalDimensions.height} px
+                    {originalDimensions.width} Ã— {originalDimensions.height} px
                   </p>
                 </div>
               </div>
@@ -542,7 +542,7 @@ export function ToolWorkspace() {
                   {rotate !== 0 && (
                     <Badge variant="secondary" className="gap-1">
                       <RotateCw className="w-3 h-3" />
-                      {rotate}°
+                      {rotate}Â°
                     </Badge>
                   )}
                   {flipH && (
@@ -641,7 +641,7 @@ export function ToolWorkspace() {
 
         {/* Right Panel - Settings */}
         <div className="space-y-6">
-          <SpotlightCard className="h-full rounded-2xl border border-border/40 bg-card/60 backdrop-blur-xl overflow-hidden shadow-2xl">
+          <SpotlightCard className="h-full rounded-2xl border border-border/40 bg-card/60 backdrop-blur-md overflow-hidden shadow-2xl">
             <div className="p-5 border-b border-border/40 bg-gradient-to-r from-primary/10 to-transparent">
               <h3 className="font-bold flex items-center gap-2.5 tracking-tight text-foreground">
                 <Settings className="w-4 h-4 text-primary" />
@@ -696,7 +696,7 @@ export function ToolWorkspace() {
                         </>
                       )}
                       {watermarkStyle === 'single' || toolId === 'add-text' ? (
-                        <p className="text-xs text-muted-foreground">Click the preview image to place text (X {placeX}% · Y {placeY}%).</p>
+                        <p className="text-xs text-muted-foreground">Click the preview image to place text (X {placeX}% Â· Y {placeY}%).</p>
                       ) : null}
                     </div>
                   )}
@@ -777,7 +777,7 @@ export function ToolWorkspace() {
                     </div>
                   )}
 
-                  {/* Rotation / Flip — only for those tools (keeps other tools focused) */}
+                  {/* Rotation / Flip â€” only for those tools (keeps other tools focused) */}
                   {showRotateFlip ? (
                     <>
                       <div className="space-y-3">
@@ -786,7 +786,7 @@ export function ToolWorkspace() {
                             <RotateCw className="w-4 h-4" />
                             Rotation
                           </Label>
-                          <span className="text-sm font-mono text-primary">{rotate}°</span>
+                          <span className="text-sm font-mono text-primary">{rotate}Â°</span>
                         </div>
                         <div role="group" aria-labelledby="rotation" className="grid grid-cols-4 gap-2">
                           {[0, 90, 180, -90].map((deg) => (
@@ -797,7 +797,7 @@ export function ToolWorkspace() {
                               variant={rotate === deg ? 'default' : 'outline'}
                               onClick={() => setRotate(deg)}
                             >
-                              {deg === -90 ? '-90°' : `${deg}°`}
+                              {deg === -90 ? '-90Â°' : `${deg}Â°`}
                             </Button>
                           ))}
                         </div>

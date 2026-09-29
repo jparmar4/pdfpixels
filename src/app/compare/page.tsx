@@ -84,7 +84,7 @@ export default function CompareIndexPage() {
                                 { icon: Shield, label: 'Practical' },
                                 { icon: Clock, label: 'Up to date' },
                             ].map(({ icon: Icon, label }) => (
-                                <div key={label} className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-background/80 px-4 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground shadow-soft backdrop-blur-xl">
+                                <div key={label} className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-background/80 px-4 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground shadow-soft backdrop-blur-sm">
                                     <Icon className="w-3.5 h-3.5 text-primary" />
                                     {label}
                                 </div>

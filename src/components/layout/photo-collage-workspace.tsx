@@ -21,12 +21,12 @@ const MAX_IMAGES = 9;
 const CELL = 640; // px per grid cell in the exported canvas
 
 const LAYOUTS = [
-  { value: '1x2', rows: 1, cols: 2, label: '1 × 2' },
-  { value: '2x1', rows: 2, cols: 1, label: '2 × 1' },
-  { value: '2x2', rows: 2, cols: 2, label: '2 × 2' },
-  { value: '3x2', rows: 3, cols: 2, label: '3 × 2' },
-  { value: '2x3', rows: 2, cols: 3, label: '2 × 3' },
-  { value: '3x3', rows: 3, cols: 3, label: '3 × 3' },
+  { value: '1x2', rows: 1, cols: 2, label: '1 Ã— 2' },
+  { value: '2x1', rows: 2, cols: 1, label: '2 Ã— 1' },
+  { value: '2x2', rows: 2, cols: 2, label: '2 Ã— 2' },
+  { value: '3x2', rows: 3, cols: 2, label: '3 Ã— 2' },
+  { value: '2x3', rows: 2, cols: 3, label: '2 Ã— 3' },
+  { value: '3x3', rows: 3, cols: 3, label: '3 Ã— 3' },
 ] as const;
 
 type Loaded = { id: string; url: string; img: HTMLImageElement };
@@ -70,7 +70,7 @@ export function PhotoCollageWorkspace() {
       toast.error(`Collages hold up to ${MAX_IMAGES} photos`);
       return;
     }
-    if (incoming.length > room) toast.info(`Added the first ${room} — collages hold up to ${MAX_IMAGES} photos`);
+    if (incoming.length > room) toast.info(`Added the first ${room} â€” collages hold up to ${MAX_IMAGES} photos`);
     const accepted = incoming.slice(0, room);
     const loaded: Loaded[] = [];
     for (const file of accepted) {
@@ -172,8 +172,8 @@ export function PhotoCollageWorkspace() {
       />
       <ToolLimitNotice
         limits={[
-          'Runs 100% in your browser — photos never leave your device',
-          'Up to 9 photos · JPG, PNG, WebP input',
+          'Runs 100% in your browser â€” photos never leave your device',
+          'Up to 9 photos Â· JPG, PNG, WebP input',
           'Each cell exports at 640px for a sharp result',
         ]}
       />
@@ -219,7 +219,7 @@ export function PhotoCollageWorkspace() {
                 <Upload className="w-10 h-10 text-primary" />
               </div>
               <p className="text-lg font-semibold">Add your photos</p>
-              <p className="text-sm text-muted-foreground mt-1">Drag, drop, or click — up to 9 photos, nothing is uploaded</p>
+              <p className="text-sm text-muted-foreground mt-1">Drag, drop, or click â€” up to 9 photos, nothing is uploaded</p>
             </div>
           ) : (
             <>
@@ -279,13 +279,13 @@ export function PhotoCollageWorkspace() {
         </div>
 
         <div className="space-y-6">
-          <div className="rounded-2xl border border-border/40 bg-card/60 backdrop-blur-xl overflow-hidden shadow-premium">
+          <div className="rounded-2xl border border-border/40 bg-card/60 backdrop-blur-md overflow-hidden shadow-premium">
             <div className="p-5 border-b border-border/40 bg-gradient-to-r from-primary/10 to-transparent">
               <h3 className="font-bold tracking-tight text-foreground">Collage settings</h3>
             </div>
             <div className="p-5 space-y-5">
               <div className="space-y-2">
-                <Label>Layout (rows × columns)</Label>
+                <Label>Layout (rows Ã— columns)</Label>
                 <div className="grid grid-cols-3 gap-2" role="group" aria-label="Collage layout">
                   {LAYOUTS.map((option) => (
                     <Button
@@ -301,7 +301,7 @@ export function PhotoCollageWorkspace() {
                   ))}
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  {current.rows * current.cols} cells · photos fill left to right, top to bottom
+                  {current.rows * current.cols} cells Â· photos fill left to right, top to bottom
                 </p>
               </div>
 
@@ -347,8 +347,8 @@ export function PhotoCollageWorkspace() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="jpeg">JPG — smaller file</SelectItem>
-                    <SelectItem value="png">PNG — transparency support</SelectItem>
+                    <SelectItem value="jpeg">JPG â€” smaller file</SelectItem>
+                    <SelectItem value="png">PNG â€” transparency support</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -370,7 +370,7 @@ export function PhotoCollageWorkspace() {
 
           <div className="rounded-2xl border border-border/40 bg-gradient-to-br from-primary/5 to-transparent p-5 space-y-2 text-sm text-muted-foreground">
             <p className="font-semibold text-foreground">Tips</p>
-            <p>Photos fill the grid in the order shown — remove and re-add to reorder.</p>
+            <p>Photos fill the grid in the order shown â€” remove and re-add to reorder.</p>
             <p>For chat sharing, JPG keeps files small. PNG is better for transparent or archival use.</p>
           </div>
         </div>

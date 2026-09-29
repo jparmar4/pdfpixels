@@ -60,11 +60,11 @@ export function AnswerEngineSection() {
           {answerCards.map((card) => (
             <article
               key={card.question}
-              className="flex h-full flex-col rounded-2xl border border-border/60 bg-card/75 p-5 shadow-soft"
+              className="group card-shine flex h-full flex-col rounded-2xl border border-border/60 bg-card/75 p-5 shadow-soft transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-premium"
               itemScope
               itemType="https://schema.org/Question"
             >
-              <h3 className="text-base font-bold leading-6 text-foreground" itemProp="name">
+              <h3 className="text-base font-bold leading-6 text-foreground transition-colors group-hover:text-primary" itemProp="name">
                 {card.question}
               </h3>
               <div itemScope itemProp="acceptedAnswer" itemType="https://schema.org/Answer" className="mt-3 flex-1">
@@ -77,7 +77,7 @@ export function AnswerEngineSection() {
                 className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline underline-offset-4"
               >
                 {card.cta}
-                <ArrowRight className="h-4 w-4" />
+                <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
               </Link>
             </article>
           ))}

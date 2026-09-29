@@ -69,7 +69,7 @@ export function ResultCard({
                 <Link
                   key={action.href}
                   href={action.href}
-                  className="inline-flex min-h-12 flex-1 items-center justify-center gap-2 rounded-2xl border border-border/60 bg-background/80 px-4 text-sm font-semibold text-foreground transition-colors hover:border-primary/40 hover:text-primary"
+                  className="inline-flex min-h-12 flex-1 items-center justify-center gap-2 rounded-2xl border border-border/60 bg-background/80 px-4 text-sm font-semibold text-foreground transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:text-primary hover:shadow-premium active:translate-y-0"
                 >
                   {normalizeDisplayText(action.label)}
                   <ArrowRight className="h-4 w-4" />

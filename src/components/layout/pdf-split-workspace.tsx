@@ -90,7 +90,7 @@ export function PDFSplitWorkspace() {
       const bytes = await selectedFile.arrayBuffer();
       const pdf = await PDFDocument.load(bytes, { ignoreEncryption: true });
       if (pdf.isEncrypted) {
-        toast.warning('This PDF is password-protected — unlock it before splitting.');
+        toast.warning('This PDF is password-protected â€” unlock it before splitting.');
       }
       const pageCount = pdf.getPageCount();
       setPdfInfo({
@@ -98,9 +98,9 @@ export function PDFSplitWorkspace() {
         size: selectedFile.size,
         pageCount,
       });
-      toast.success(`PDF added · ${pageCount} page${pageCount === 1 ? '' : 's'}`);
+      toast.success(`PDF added Â· ${pageCount} page${pageCount === 1 ? '' : 's'}`);
     } catch {
-      toast.warning('Could not preview this PDF — it may be corrupt. Splitting may fail.');
+      toast.warning('Could not preview this PDF â€” it may be corrupt. Splitting may fail.');
     }
   }, []);
 
@@ -286,7 +286,7 @@ export function PDFSplitWorkspace() {
       URL.revokeObjectURL(url);
       toast.success(`Downloaded ${result.pages.length} pages as ZIP`);
     } catch {
-      toast.error('Could not build ZIP — download pages individually');
+      toast.error('Could not build ZIP â€” download pages individually');
     }
   }, [result]);
 
@@ -386,11 +386,11 @@ export function PDFSplitWorkspace() {
                   <h3 className="font-semibold">{pdfInfo?.name}</h3>
                   <div className="flex items-center gap-3 text-sm text-muted-foreground mt-1">
                     <span>PDF</span>
-                    <span>•</span>
+                    <span>â€¢</span>
                     <span>{formatSize(pdfInfo?.size || 0)}</span>
                     {(pdfInfo?.pageCount || result?.totalPages) ? (
                       <>
-                        <span>•</span>
+                        <span>â€¢</span>
                         <span>{pdfInfo?.pageCount || result?.totalPages} pages</span>
                       </>
                     ) : null}
@@ -414,7 +414,7 @@ export function PDFSplitWorkspace() {
           <ToolLimitNotice
             limits={
               activeTool?.id === 'split-pdf-by-size'
-                ? ['PDF only · max 50 MB', 'Parts sized by real saved output, not estimates', 'Up to 100 parts per run · single oversized pages stay whole']
+                ? ['PDF only Â· max 50 MB', 'Parts sized by real saved output, not estimates', 'Up to 100 parts per run Â· single oversized pages stay whole']
                 : ['PDF only', 'Max file size: 50MB', 'Split output capped at 20 pages per run']
             }
           />
@@ -495,7 +495,7 @@ export function PDFSplitWorkspace() {
 
         {/* Right Panel - Settings */}
         <div className="space-y-6">
-          <div className="rounded-2xl border border-border/40 bg-card/60 backdrop-blur-xl overflow-hidden shadow-premium">
+          <div className="rounded-2xl border border-border/40 bg-card/60 backdrop-blur-md overflow-hidden shadow-premium">
             <div className="p-5 border-b border-border/40 bg-gradient-to-r from-primary/10 to-transparent">
               <h3 className="font-bold flex items-center gap-2.5 tracking-tight text-foreground">
                 <Sparkles className="w-4 h-4 text-primary" />
@@ -581,7 +581,7 @@ export function PDFSplitWorkspace() {
                     />
                     <p className="text-xs text-muted-foreground">
                       Extract one page
-                      {pdfInfo?.pageCount ? ` (1–${pdfInfo.pageCount})` : ''}
+                      {pdfInfo?.pageCount ? ` (1â€“${pdfInfo.pageCount})` : ''}
                     </p>
                   </div>
                 </TabsContent>
@@ -600,13 +600,13 @@ export function PDFSplitWorkspace() {
                         <SelectItem value="8">8 MB</SelectItem>
                         <SelectItem value="10">10 MB</SelectItem>
                         <SelectItem value="15">15 MB</SelectItem>
-                        <SelectItem value="20">20 MB — Outlook</SelectItem>
-                        <SelectItem value="25">25 MB — Gmail</SelectItem>
+                        <SelectItem value="20">20 MB â€” Outlook</SelectItem>
+                        <SelectItem value="25">25 MB â€” Gmail</SelectItem>
                       </SelectContent>
                     </Select>
                     <p className="text-xs text-muted-foreground">
                       Pages fill each part in order; a new part starts just before the limit is crossed.
-                      Email adds ~30% overhead — pick a limit about a quarter below the provider cap.
+                      Email adds ~30% overhead â€” pick a limit about a quarter below the provider cap.
                     </p>
                   </div>
                 </TabsContent>
@@ -642,7 +642,7 @@ export function PDFSplitWorkspace() {
                   )}
                 </Button>
                 {isProcessing && (
-                  <p className="text-xs text-muted-foreground" role="status" aria-live="polite">{statusLabel} • {Math.round(progress)}%</p>
+                  <p className="text-xs text-muted-foreground" role="status" aria-live="polite">{statusLabel} â€¢ {Math.round(progress)}%</p>
                 )}
 
                 <Button
@@ -687,7 +687,7 @@ export function PDFSplitWorkspace() {
             onClick={handleProcess}
             disabled={isProcessing || (mode === 'range' && !pageRange)}
           >
-            {isProcessing ? `${statusLabel} • ${Math.round(progress)}%` : 'Split PDF'}
+            {isProcessing ? `${statusLabel} â€¢ ${Math.round(progress)}%` : 'Split PDF'}
           </Button>
         </div>
       )}

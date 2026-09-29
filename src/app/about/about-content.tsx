@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { AnimatedCounter } from './about-counter';
 import { allTools } from '@/lib/tools-data';
 
-/* ─── Data ────────────────────────────────────────────────────────── */
+/* â”€â”€â”€ Data â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 const values = [
   {
     icon: Zap,
@@ -75,7 +75,7 @@ const techStack = [
   { name: 'AI Powered', description: 'Neural Networks', gradient: 'from-fuchsia-500 to-pink-600' },
 ];
 
-/* ─── Page Component ──────────────────────────────────────────────── */
+/* â”€â”€â”€ Page Component â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 export function AboutPageContent() {
   return (
     <SitePageShell
@@ -96,7 +96,7 @@ export function AboutPageContent() {
       ]}
       contentClassName="max-w-6xl"
     >
-      {/* ── Why the product exists ───────────────────────────────── */}
+      {/* â”€â”€ Why the product exists â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <section className="grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
         <div className="section-panel rounded-[2rem] p-6 md:p-8">
           <h2 className="text-2xl font-bold text-foreground md:text-3xl">Why the product exists</h2>
@@ -105,10 +105,10 @@ export function AboutPageContent() {
               PdfPixels exists because everyday file jobs are still harder than they should be: a PDF that will not fit in email, a photo rejected for being 12KB over a portal limit, an iPhone HEIC that will not open on Windows, or a passport crop that needs exact dimensions.
             </p>
             <p>
-              We build free browser tools for those moments — compress, merge, convert, resize, and clean up files — with clear steps, practical guides, and no account wall for core workflows. The product should feel reliable and calm, not like a cluttered tool farm.
+              We build free browser tools for those moments â€” compress, merge, convert, resize, and clean up files â€” with clear steps, practical guides, and no account wall for core workflows. The product should feel reliable and calm, not like a cluttered tool farm.
             </p>
             <p>
-              Alongside the tools, we publish long-form how-to articles (PDF size limits, HEIC conversion, form photo sizes, and more) so people can learn the “why” as well as click a button. That combination of working utilities and real educational content is the foundation of the site.
+              Alongside the tools, we publish long-form how-to articles (PDF size limits, HEIC conversion, form photo sizes, and more) so people can learn the â€œwhyâ€ as well as click a button. That combination of working utilities and real educational content is the foundation of the site.
             </p>
             <p>
               If something breaks, a limit is unclear, or a tool should work differently, use the{' '}
@@ -133,7 +133,7 @@ export function AboutPageContent() {
               Honest pages: we describe what each tool actually does, including file limits.
             </div>
             <div className="legal-callout">
-              Guides written around real upload errors — Gmail size caps, HEIC on Windows, form KB limits.
+              Guides written around real upload errors â€” Gmail size caps, HEIC on Windows, form KB limits.
             </div>
           </div>
         </div>
@@ -152,7 +152,7 @@ export function AboutPageContent() {
         </div>
       </section>
 
-      {/* ── Animated Stats Section ───────────────────────────────── */}
+      {/* â”€â”€ Animated Stats Section â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <section className="mt-12 relative overflow-hidden rounded-[2rem] border border-border/50">
         <div className="absolute inset-0 bg-gradient-to-r from-primary/[0.03] via-fuchsia-500/[0.02] to-cyan-500/[0.03]" />
         <div className="relative z-10 grid grid-cols-2 md:grid-cols-4 gap-5 p-6 md:p-8">
@@ -174,7 +174,7 @@ export function AboutPageContent() {
         </div>
       </section>
 
-      {/* ── Values Grid ──────────────────────────────────────────── */}
+      {/* â”€â”€ Values Grid â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <section className="mt-8 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
         {values.map((value) => (
           <div
@@ -190,7 +190,7 @@ export function AboutPageContent() {
         ))}
       </section>
 
-      {/* ── Our Journey Timeline ─────────────────────────────────── */}
+      {/* â”€â”€ Our Journey Timeline â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <section
         className="mt-12"
       >
@@ -238,7 +238,7 @@ export function AboutPageContent() {
         </div>
       </section>
 
-      {/* ── Technology Stack ─────────────────────────────────────── */}
+      {/* â”€â”€ Technology Stack â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <section
         className="mt-12 section-panel rounded-[2rem] p-6 md:p-8 lg:p-10"
       >
@@ -268,7 +268,7 @@ export function AboutPageContent() {
         </div>
       </section>
 
-      {/* ── Editorial Standards & Team Transparency ───────────────── */}
+      {/* â”€â”€ Editorial Standards & Team Transparency â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <section id="editorial-team" className="mt-12 section-panel rounded-[2rem] p-6 md:p-8 lg:p-10 scroll-mt-24">
         <div className="text-center mb-8">
           <p className="text-xs font-bold uppercase tracking-[0.2em] text-primary mb-3">Our Standards</p>
@@ -321,14 +321,14 @@ export function AboutPageContent() {
             </div>
             <div>
               <p><strong className="text-foreground">Inquiries & Support:</strong> 24-48 hour response SLA</p>
-              <p><strong className="text-foreground">Operating Hours:</strong> Monday – Friday, 9:00 AM – 6:00 PM IST (Automated tools 24/7)</p>
+              <p><strong className="text-foreground">Operating Hours:</strong> Monday â€“ Friday, 9:00 AM â€“ 6:00 PM IST (Automated tools 24/7)</p>
               <p><strong className="text-foreground">Official Channels:</strong> Web contact form, GitHub, and Twitter / X</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ── Platform Direction ───────────────────────────────────── */}
+      {/* â”€â”€ Platform Direction â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <section className="mt-8 section-panel rounded-[2rem] p-6 md:p-8 lg:p-10">
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div>
@@ -350,7 +350,7 @@ export function AboutPageContent() {
         </div>
       </section>
 
-      {/* ── CTA with Aurora BG ───────────────────────────────────── */}
+      {/* â”€â”€ CTA with Aurora BG â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <section className="mt-12 aurora-bg rounded-[2rem] overflow-hidden">
         <div className="relative z-10 px-6 py-14 md:px-12 md:py-16 text-center">
           <div>
@@ -358,7 +358,7 @@ export function AboutPageContent() {
               Ready to transform your workflow?
             </h2>
             <p className="mt-4 text-muted-foreground max-w-xl mx-auto text-base md:text-lg leading-relaxed">
-              Open a tool, upload a file, and download the result — no account required for core workflows.
+              Open a tool, upload a file, and download the result â€” no account required for core workflows.
             </p>
             <div className="mt-8 flex flex-wrap gap-3 justify-center">
               <Button asChild size="lg" className="btn-premium rounded-2xl px-8 py-6 text-base">
@@ -367,7 +367,7 @@ export function AboutPageContent() {
                   <ArrowRight className="w-4 h-4" />
                 </Link>
               </Button>
-              <Button asChild variant="outline" size="lg" className="rounded-2xl px-8 py-6 text-base border-white/20 bg-background/40 backdrop-blur-xl">
+              <Button asChild variant="outline" size="lg" className="rounded-2xl px-8 py-6 text-base border-white/20 bg-background/40 backdrop-blur-md">
                 <Link href="/contact">Get In Touch</Link>
               </Button>
             </div>

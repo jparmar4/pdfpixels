@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useCallback, useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -164,7 +164,7 @@ export function CompressWorkspace() {
 
         {uploadedFile && !result ? (
           <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
-            <div className="rounded-[1.75rem] border border-border/60 bg-card/75 p-6 shadow-premium backdrop-blur-xl">
+            <div className="rounded-[1.75rem] border border-border/60 bg-card/75 p-6 shadow-premium backdrop-blur-sm">
               <div className="mb-5 flex items-start gap-3">
                 <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
                   <Sparkles className="h-5 w-5" />
@@ -214,7 +214,7 @@ export function CompressWorkspace() {
               </div>
             </div>
 
-            <div className="rounded-[1.75rem] border border-border/60 bg-card/75 p-6 shadow-premium backdrop-blur-xl">
+            <div className="rounded-[1.75rem] border border-border/60 bg-card/75 p-6 shadow-premium backdrop-blur-sm">
               <p className="text-xs font-bold uppercase tracking-[0.18em] text-primary">
                 {isIncrease ? 'Increase summary' : 'Compression summary'}
               </p>

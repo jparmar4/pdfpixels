@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { cn } from '@/lib/utils';
-import { adsConfig, hasAdvertisingConsent } from '@/lib/ads-config';
+import { adsConfig, getConsent } from '@/lib/ads-config';
 
 interface AdBannerProps {
   slot: string;
@@ -65,28 +65,33 @@ export function AdBanner({
   // effects. Reading document.cookie / IntersectionObserver during render
   // made the server HTML differ from the client's first paint for consented
   // visitors (hydration mismatch), so this is deferred to useEffect.
-  const [hasConsent, setHasConsent] = useState(false);
+  //
+  // 'unknown'  = no stored choice yet → reserve the slot so accepting later
+  //              never causes a layout shift (CLS protection).
+  // 'granted'  = show the ad inside the already-reserved slot (no shift).
+  // 'denied'   = render nothing; the reserved slot collapses instead of
+  //              leaving a permanent blank gap for decliners.
+  const [consentState, setConsentState] = useState<'unknown' | 'granted' | 'denied'>('unknown');
   const [inView, setInView] = useState(false);
 
   useEffect(() => {
     // Hydration-safe: read browser-only state after mount so the server HTML
     // matches the client's first render (see the comment on useState above).
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setHasConsent(hasAdvertisingConsent());
-
-    const handleConsentUpdate = () => {
-      setHasConsent(hasAdvertisingConsent());
+    const syncConsent = () => {
+      const record = getConsent();
+      setConsentState(record ? (record.advertising ? 'granted' : 'denied') : 'unknown');
     };
+    syncConsent();
 
-    window.addEventListener('cookie-consent-updated', handleConsentUpdate);
+    window.addEventListener('cookie-consent-updated', syncConsent);
     return () => {
-      window.removeEventListener('cookie-consent-updated', handleConsentUpdate);
+      window.removeEventListener('cookie-consent-updated', syncConsent);
     };
   }, []);
 
   // Lazy-init: only push ads when near viewport (better CWV + fill rate).
-  // Re-runs when consent flips so the observer can attach once the container
-  // actually renders (it stays null while consent is false).
+  // The reserved slot exists from the server render (state 'unknown'), so the
+  // container is available immediately on mount.
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
@@ -110,10 +115,10 @@ export function AdBanner({
 
     observer.observe(el);
     return () => observer.disconnect();
-  }, [hasConsent]);
+  }, []);
 
   useEffect(() => {
-    if (!adsConfig.enabled || !hasConsent || !slot || !inView || isLoaded.current) return;
+    if (!adsConfig.enabled || consentState !== 'granted' || !slot || !inView || isLoaded.current) return;
 
     // Defer push to next frame so layout is stable
     const id = requestAnimationFrame(() => {
@@ -128,7 +133,7 @@ export function AdBanner({
       }
     });
     return () => cancelAnimationFrame(id);
-  }, [hasConsent, slot, inView]);
+  }, [consentState, slot, inView]);
 
   // Development placeholder — fixed height avoids CLS
   if (adsConfig.testMode || !adsConfig.enabled) {
@@ -144,9 +149,22 @@ export function AdBanner({
     );
   }
 
-  // No consent / missing slot: no empty chrome in production
-  if (!hasConsent || !slot) {
-    return null;
+  // Missing slot: no chrome at all.
+  if (!slot) return null;
+
+  // Advertising declined: render nothing so the reserved slot collapses
+  // instead of leaving a permanent blank gap for decliners.
+  if (consentState === 'denied') return null;
+
+  // Consent unknown (server HTML + first client render, or banner unanswered):
+  // reserve the slot so a later "Accept" never causes a layout shift.
+  if (consentState !== 'granted') {
+    return (
+      <div ref={containerRef} className={cn('w-full', className)} style={{ minHeight }}>
+        {labeled ? <AdLabel /> : null}
+        <ReservedSpace minHeight={minHeight} style={style} />
+      </div>
+    );
   }
 
   return (

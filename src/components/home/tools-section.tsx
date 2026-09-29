@@ -1,12 +1,11 @@
 'use client';
 
 import { useDeferredValue, useState, useMemo, Suspense } from 'react';
-import { motion } from 'framer-motion';
 import { ArrowRight, ArrowUpRight, Clock, Files, Minimize2, Search, ShieldCheck, Sparkles, Star, Wrench, X, Zap } from 'lucide-react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { CategorySection } from '@/components/layout/category-section';
-import { allTools, toolCategories, ToolCategory } from '@/lib/tools-data';
+import { allTools, allPdfTools, allImageTools, toolCategories, ToolCategory } from '@/lib/tools-data';
 import { HeaderAd } from '@/components/ads/ad-banner';
 import { TypingText } from './typing-text';
 import { GeoRegion } from '@/lib/geo-data';
@@ -48,33 +47,33 @@ function ToolsHeader({
   return (
     <section className="relative overflow-hidden border-b border-border/60 bg-gradient-to-b from-accent/60 via-background to-background">
       <div className="absolute inset-0 hero-grid" aria-hidden="true" />
+      <div className="absolute inset-0 hero-spot" aria-hidden="true" />
+      <div className="pointer-events-none absolute top-16 left-[8%] hidden h-2 w-2 rounded-full bg-primary/40 animate-float lg:block" aria-hidden="true" />
+      <div className="pointer-events-none absolute top-32 right-[12%] hidden h-1.5 w-1.5 rounded-full bg-violet-400/50 animate-float float-badge-2 lg:block" aria-hidden="true" />
+      <div className="pointer-events-none absolute bottom-24 left-[18%] hidden h-1.5 w-1.5 rounded-full bg-sky-400/50 animate-float float-badge-3 lg:block" aria-hidden="true" />
 
       <div className="relative z-10 container mx-auto px-4 lg:px-8 py-14 md:py-20 text-center">
         <div className="max-w-3xl mx-auto">
-          <motion.div
-            initial={{ y: 12 }}
-            animate={{ y: 0 }}
-            transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
-          >
+          <div className="hero-rise">
             {region ? (
               <>
                 <h2 id="home-hero-title" className="text-4xl md:text-5xl font-bold tracking-tight mb-3 leading-[1.08]">
                   Tools people in <span className="gradient-text">{region.name}</span> use most
                 </h2>
-                <p className="text-base md:text-lg mb-8 max-w-2xl mx-auto leading-relaxed text-muted-foreground">
+                <p id="home-hero-summary" className="text-base md:text-lg mb-8 max-w-2xl mx-auto leading-relaxed text-muted-foreground">
                   Compress, convert, and edit files in seconds. Fast, free, and {region.localCopy}.
                 </p>
               </>
             ) : (
               <>
-                <p className="mb-5 inline-flex items-center gap-2 rounded-full border border-primary/15 bg-card px-4 py-1.5 text-xs font-semibold tracking-wide text-muted-foreground shadow-soft">
-                  <Sparkles className="h-3.5 w-3.5 text-primary" />
+                <p className="mb-5 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-card/80 px-4 py-1.5 text-xs font-semibold tracking-wide text-muted-foreground shadow-soft backdrop-blur-sm">
+                  <Sparkles className="h-3.5 w-3.5 text-primary animate-sparkle" />
                   The complete PDF &amp; image toolkit — free forever
                 </p>
                 <h1 id="home-hero-title" className="text-balance text-4xl md:text-5xl lg:text-[3.4rem] font-bold tracking-tight mb-3 leading-[1.06]">
                   PDF &amp; image tools that <span className="gradient-text whitespace-nowrap">just work</span>
                 </h1>
-                <p className="text-base md:text-lg mb-5 max-w-2xl mx-auto leading-relaxed text-muted-foreground">
+                <p id="home-hero-summary" className="text-base md:text-lg mb-5 max-w-2xl mx-auto leading-relaxed text-muted-foreground">
                   Compress, convert, edit, and sign files in seconds — right in your browser.
                 </p>
                 <p className="text-base md:text-lg mb-8 font-medium text-foreground">
@@ -82,13 +81,11 @@ function ToolsHeader({
                 </p>
               </>
             )}
-          </motion.div>
+          </div>
 
-          <motion.div
-            initial={{ y: 16 }}
-            animate={{ y: 0 }}
-            transition={{ duration: 0.55, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
-            className="relative max-w-2xl mx-auto group z-20"
+          <div
+            className="hero-rise relative max-w-2xl mx-auto group z-20"
+            style={{ animationDelay: '0.08s' }}
           >
             <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
               <Search className="h-5 w-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
@@ -97,9 +94,9 @@ function ToolsHeader({
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search 105+ tools — try “compress pdf”"
+              placeholder={`Search ${allTools.length}+ tools — try “compress pdf”`}
               aria-label="Search tools"
-              className="block w-full pl-14 pr-12 py-4 border border-border rounded-2xl leading-5 bg-card shadow-premium placeholder:text-muted-foreground/70 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary/40 transition-all text-base font-medium"
+              className="block w-full pl-14 pr-12 py-4 border border-border rounded-2xl leading-5 bg-card shadow-premium placeholder:text-muted-foreground/70 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary/40 transition-all duration-300 text-base font-medium hover:shadow-lift-md hover:border-primary/25"
             />
             {search && (
               <button
@@ -110,13 +107,9 @@ function ToolsHeader({
                 <X className="h-5 w-5" />
               </button>
             )}
-          </motion.div>
+          </div>
 
-          <motion.div
-            initial={{ y: 10 }}
-            animate={{ y: 0 }}
-            transition={{ duration: 0.5, delay: 0.16 }}
-          >
+          <div className="hero-rise" style={{ animationDelay: '0.16s' }}>
             <div className="mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-[13px]">
               <span className="font-medium text-muted-foreground">Popular:</span>
               {quickLinks.map((item) => (
@@ -141,7 +134,7 @@ function ToolsHeader({
               <button
                 type="button"
                 onClick={() => handleTabClick('image')}
-                className="inline-flex items-center gap-2 rounded-xl border border-border bg-card px-6 py-3 text-sm font-semibold text-foreground shadow-soft transition-colors hover:border-primary/40 hover:text-primary"
+                className="icon-btn-premium inline-flex items-center gap-2 rounded-xl border border-border bg-card px-6 py-3 text-sm font-semibold text-foreground shadow-soft hover:border-primary/40 hover:text-primary"
               >
                 Image tools
                 <ArrowUpRight className="h-4 w-4" />
@@ -156,7 +149,7 @@ function ToolsHeader({
                 </span>
               ))}
             </div>
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>
@@ -177,7 +170,7 @@ function PopularToolsMiniGrid() {
         <Link
           key={item.href}
           href={item.href}
-          className="group flex items-start gap-3.5 rounded-2xl border border-border bg-card p-4 shadow-soft transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-elevated"
+          className="group card-shine relative flex items-start gap-3.5 rounded-2xl border border-border bg-card p-4 shadow-soft transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-lift-md"
         >
           <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${item.chip} transition-transform duration-300 group-hover:scale-105`}>
             <item.icon className="h-5 w-5" />
@@ -283,8 +276,8 @@ function ToolsSectionInner({
 
   const tabs: Array<{ id: 'all' | 'pdf' | 'image' | 'popular' | 'ai'; label: string; icon?: typeof Star }> = [
     { id: 'all', label: `All tools (${allTools.length})` },
-    { id: 'pdf', label: `PDF tools (52)` },
-    { id: 'image', label: `Image tools (53)` },
+    { id: 'pdf', label: `PDF tools (${allPdfTools.length})` },
+    { id: 'image', label: `Image tools (${allImageTools.length})` },
     { id: 'popular', label: 'Popular', icon: Star },
     { id: 'ai', label: 'AI tools', icon: Sparkles },
   ];
@@ -386,7 +379,7 @@ function ToolsSectionInner({
                 Reset all filters
               </button>
               <Link href="/pdf-tools" className="rounded-lg border border-border px-3.5 py-2 text-sm font-medium hover:border-primary/40 hover:text-primary transition-colors">
-                All 52 PDF tools
+                All {allPdfTools.length} PDF tools
               </Link>
             </div>
           </div>

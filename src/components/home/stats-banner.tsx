@@ -25,10 +25,10 @@ export function StatsBanner() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: idx * 0.1 }}
-              className="relative text-center p-6 rounded-2xl glass-card group hover:shadow-premium transition-all duration-300"
+              className="relative text-center p-6 rounded-2xl glass-card group card-shine hover:-translate-y-1 hover:shadow-premium transition-all duration-300"
             >
               <div className={`absolute top-0 left-4 right-4 h-0.5 rounded-full bg-gradient-to-r ${stat.gradient} opacity-60`} />
-              <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${stat.gradient} flex items-center justify-center mx-auto mb-3 shadow-sm group-hover:scale-110 transition-transform`}>
+              <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${stat.gradient} flex items-center justify-center mx-auto mb-3 shadow-sm transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-3`}>
                 <stat.icon className="w-5 h-5 text-white" />
               </div>
               <div className="text-3xl md:text-4xl font-extrabold text-foreground mb-1">

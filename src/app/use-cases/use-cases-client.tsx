@@ -91,7 +91,7 @@ function HeroSection({ search, setSearch }: { search: string; setSearch: (val: s
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search use cases: compress to 20kb, passport photo..."
               aria-label="Search use cases"
-              className="block w-full pl-14 pr-12 py-5 border border-white/20 rounded-2xl leading-5 bg-background/85 backdrop-blur-2xl shadow-[0_16px_45px_-22px_rgba(99,102,241,.45)] placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 transition-all text-base font-medium"
+              className="block w-full pl-14 pr-12 py-5 border border-white/20 rounded-2xl leading-5 bg-background/85 backdrop-blur-sm shadow-[0_16px_45px_-22px_rgba(99,102,241,.45)] placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 transition-all text-base font-medium"
             />
             {search && (
               <button
@@ -104,7 +104,7 @@ function HeroSection({ search, setSearch }: { search: string; setSearch: (val: s
           </motion.div>
 
           <p className="mt-4 text-xs text-muted-foreground">
-            {useCasePages.length} step-by-step guides · Tool-first approach
+            {useCasePages.length} step-by-step guides Â· Tool-first approach
           </p>
         </motion.div>
       </div>

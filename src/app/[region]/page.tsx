@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import { geoRegions, getRegionByCode } from '@/lib/geo-data';
+import { allPdfTools } from '@/lib/tools-data';
 import { siteConfig } from '@/lib/seo-config';
 import { absoluteUrl, websiteId, getGeoLanguageAlternates, DEFAULT_OG_IMAGE_URL } from '@/lib/seo';
 import { ToolsSection } from '@/components/home/tools-section';
@@ -193,7 +194,7 @@ export default async function GeoHubPage({ params }: GeoPageProps) {
                   </span>
                 </div>
                 <h3 className="text-lg font-bold text-foreground">
-                  Need all 52 PDF Tools in {region.name}?
+                  Need all {allPdfTools.length} PDF Tools in {region.name}?
                 </h3>
                 <p className="text-sm text-muted-foreground max-w-2xl">
                   Instantly access our full PDF workstation: merge, compress, split, convert to/from Office, sign documents, and OCR with client-side privacy protection.
@@ -203,7 +204,7 @@ export default async function GeoHubPage({ params }: GeoPageProps) {
                 href="/pdf-tools"
                 className="inline-flex items-center justify-center whitespace-nowrap rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground shadow-sm hover:bg-primary/90 transition-colors"
               >
-                Explore All 52 PDF Tools →
+                Explore All {allPdfTools.length} PDF Tools →
               </Link>
             </div>
 

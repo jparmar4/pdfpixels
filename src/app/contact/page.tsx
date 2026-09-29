@@ -82,7 +82,7 @@ export default function ContactPage() {
     {
       icon: Clock,
       title: 'Response Time & Hours',
-      description: 'Monday – Friday, 9:00 AM – 6:00 PM IST (Emergency 24/7)',
+      description: 'Monday â€“ Friday, 9:00 AM â€“ 6:00 PM IST (Emergency 24/7)',
       value: 'Guaranteed 24h SLA',
       href: 'mailto:support@pdfpixels.com',
       gradient: 'from-emerald-500 to-teal-600',
@@ -111,7 +111,7 @@ export default function ContactPage() {
     {
       question: 'Is there a premium plan available?',
       answer:
-        'Core tools are free and do not require an account. Each page shows its own file-size and rate limits. There is no paid checkout today — see the pricing page for the current story.',
+        'Core tools are free and do not require an account. Each page shows its own file-size and rate limits. There is no paid checkout today â€” see the pricing page for the current story.',
     },
     {
       question: 'How do I report a bug or broken tool?',
@@ -120,7 +120,7 @@ export default function ContactPage() {
     },
   ];
 
-  // NOTE: social profile links removed — those handles don't exist yet.
+  // NOTE: social profile links removed â€” those handles don't exist yet.
   // Re-add them here once the real accounts are live.
   const socialLinks = [
     { icon: Mail, href: 'mailto:support@pdfpixels.com', label: 'Email' },
@@ -131,7 +131,7 @@ export default function ContactPage() {
       
 
       <main id="main-content" className="flex-1">
-        {/* ─── Hero Section ─── */}
+        {/* â”€â”€â”€ Hero Section â”€â”€â”€ */}
         <section className="relative overflow-hidden">
           <AnimatedMeshBg />
           <div className="hero-grid absolute inset-0 opacity-60" />
@@ -153,14 +153,14 @@ export default function ContactPage() {
               </h1>
               <p className="mx-auto mt-6 max-w-xl text-lg leading-8 text-muted-foreground">
                 Our team is friendly, responsive, and always happy to help.
-                Whether you have a question, feedback, or a partnership idea — we are here.
+                Whether you have a question, feedback, or a partnership idea â€” we are here.
               </p>
 
               <div className="mt-8 flex flex-wrap justify-center gap-3">
                 {['Fast response', 'Friendly team', 'Real humans'].map((point) => (
                   <span
                     key={point}
-                    className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-background/80 px-4 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground shadow-soft backdrop-blur-xl"
+                    className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-background/80 px-4 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground shadow-soft backdrop-blur-sm"
                   >
                     <Sparkles className="h-3.5 w-3.5 text-primary" />
                     {point}
@@ -174,7 +174,7 @@ export default function ContactPage() {
           <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-background to-transparent" />
         </section>
 
-        {/* ─── Contact Method Cards ─── */}
+        {/* â”€â”€â”€ Contact Method Cards â”€â”€â”€ */}
         <section className="container mx-auto px-4 pb-12 lg:px-8">
           <div className="mx-auto grid max-w-5xl gap-4 sm:grid-cols-3">
             {contactMethods.map((method, index) => (
@@ -203,7 +203,7 @@ export default function ContactPage() {
           </div>
         </section>
 
-        {/* ─── Contact Form ─── */}
+        {/* â”€â”€â”€ Contact Form â”€â”€â”€ */}
         <section className="container mx-auto px-4 pb-16 lg:px-8">
           <div className="mx-auto max-w-3xl">
             <motion.div
@@ -368,7 +368,7 @@ export default function ContactPage() {
           </div>
         </section>
 
-        {/* ─── FAQ Teaser ─── */}
+        {/* â”€â”€â”€ FAQ Teaser â”€â”€â”€ */}
         <section className="container mx-auto px-4 pb-16 lg:px-8">
           <div className="mx-auto max-w-3xl">
             <motion.div
@@ -414,7 +414,7 @@ export default function ContactPage() {
           </div>
         </section>
 
-        {/* ─── Social Links ─── */}
+        {/* â”€â”€â”€ Social Links â”€â”€â”€ */}
         <section className="container mx-auto px-4 pb-16 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}

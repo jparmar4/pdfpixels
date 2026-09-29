@@ -109,8 +109,8 @@ export function FeaturesSection() {
 
               <div className="mt-8 grid gap-4 md:grid-cols-3">
                 {trustBullets.map((bullet) => (
-                  <div key={bullet.title} className="rounded-2xl border border-border bg-background p-4">
-                    <div className={`mb-3.5 flex h-10 w-10 items-center justify-center rounded-xl ${bullet.bg}`}>
+                  <div key={bullet.title} className="group rounded-2xl border border-border bg-background p-4 transition-all duration-300 hover:-translate-y-1 hover:border-primary/25 hover:shadow-lift-sm">
+                    <div className={`mb-3.5 flex h-10 w-10 items-center justify-center rounded-xl ${bullet.bg} transition-transform duration-300 group-hover:scale-105`}>
                       <bullet.icon className={`h-5 w-5 ${bullet.tone}`} />
                     </div>
                     <h4 className="text-[15px] font-semibold text-foreground">{bullet.title}</h4>
@@ -129,11 +129,11 @@ export function FeaturesSection() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: '-80px' }}
                 transition={{ duration: 0.45, delay: idx * 0.06 }}
-                className="group relative overflow-hidden rounded-3xl border border-border bg-card p-5 shadow-soft"
+                className="group card-shine relative overflow-hidden rounded-3xl border border-border bg-card p-5 shadow-soft transition-all duration-300 hover:-translate-y-1 hover:border-primary/25 hover:shadow-elevated"
               >
                 <div className="relative z-10 flex h-full flex-col">
                   <div className="flex items-start justify-between gap-3">
-                    <div className={`flex h-11 w-11 items-center justify-center rounded-xl ${card.bg} ${card.tone}`}>
+                    <div className={`flex h-11 w-11 items-center justify-center rounded-xl transition-all duration-300 group-hover:-rotate-3 group-hover:scale-110 ${card.bg} ${card.tone}`}>
                       <card.icon className="h-5 w-5" />
                     </div>
                   </div>

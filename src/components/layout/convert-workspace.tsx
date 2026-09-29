@@ -387,19 +387,19 @@ export function ConvertWorkspace() {
           <ToolLimitNotice
             limits={
               isPdfToImage
-                ? ['PDF only · max 50 MB', 'Up to 10 pages per conversion', 'ZIP download for multi-page', 'JPG / PNG / WebP']
+                ? ['PDF only Â· max 50 MB', 'Up to 10 pages per conversion', 'ZIP download for multi-page', 'JPG / PNG / WebP']
                 : ['Image input only', 'Quality affects size & fidelity', 'Pick format for your use case']
             }
           />
 
           {uploadedFile ? (
-            <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} className="rounded-[1.75rem] border border-border/60 bg-card/75 p-6 shadow-premium backdrop-blur-xl">
+            <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} className="rounded-[1.75rem] border border-border/60 bg-card/75 p-6 shadow-premium backdrop-blur-sm">
               {isPdfToImage ? (
                 <div className="mb-4 flex flex-wrap items-center justify-between gap-2 rounded-xl border border-border/50 bg-background/70 px-3 py-2.5 text-sm">
                   <span className="font-medium truncate max-w-[60%]">{uploadedFile.name}</span>
                   <span className="text-muted-foreground text-xs">
                     {formatBytes(uploadedFile.size)}
-                    {pdfPageCount > 0 ? ` · ${pdfPageCount} page${pdfPageCount === 1 ? '' : 's'}` : ''}
+                    {pdfPageCount > 0 ? ` Â· ${pdfPageCount} page${pdfPageCount === 1 ? '' : 's'}` : ''}
                   </span>
                 </div>
               ) : null}
@@ -433,7 +433,7 @@ export function ConvertWorkspace() {
               animate={{ opacity: 1, scale: 1 }}
               className="space-y-4"
             >
-              <div className="overflow-hidden rounded-[1.75rem] border border-border/60 bg-card/75 shadow-premium backdrop-blur-xl">
+              <div className="overflow-hidden rounded-[1.75rem] border border-border/60 bg-card/75 shadow-premium backdrop-blur-sm">
                 <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border/40 bg-background/75 px-5 py-4">
                   <div className="flex items-center gap-2">
                     <ImageIcon className="h-4 w-4 text-primary" />
@@ -464,7 +464,8 @@ export function ConvertWorkspace() {
                   {viewMode === 'compare' && objectUrl && !isPdfToImage ? (
                     <ComparisonSlider before={objectUrl} after={processedImage} />
                   ) : (
-                    <div className="flex aspect-video items-center justify-center rounded-[1.35rem] bg-muted/25">                      <img src={processedImage} alt="Converted result preview" loading="lazy" decoding="async" className="max-h-full max-w-full object-contain" />
+                    <div className="flex aspect-video items-center justify-center rounded-[1.35rem] bg-muted/25">
+                      <img src={processedImage} alt="Converted result preview" loading="lazy" decoding="async" className="max-h-full max-w-full object-contain" />
                     </div>
                   )}
                 </div>
@@ -490,7 +491,7 @@ export function ConvertWorkspace() {
                 }
                 primaryMeta={
                   isPdfToImage
-                    ? `${convertedPageCount || pdfPageCount || '—'} page(s) · ${dpi} DPI · ${formatInfo[outputFormat].name}`
+                    ? `${convertedPageCount || pdfPageCount || 'â€”'} page(s) Â· ${dpi} DPI Â· ${formatInfo[outputFormat].name}`
                     : processingStats
                       ? `${formatBytes(processingStats.originalSize)} to ${formatBytes(processingStats.processedSize)}`
                       : formatInfo[outputFormat].name
@@ -512,7 +513,7 @@ export function ConvertWorkspace() {
         </div>
 
         <div className="space-y-6">
-          <div className="rounded-[1.75rem] border border-border/60 bg-card/75 p-5 shadow-premium backdrop-blur-xl">
+          <div className="rounded-[1.75rem] border border-border/60 bg-card/75 p-5 shadow-premium backdrop-blur-sm">
             <div className="mb-5 flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary/10 text-primary">
                 <Settings2 className="h-4 w-4" />
@@ -619,7 +620,7 @@ export function ConvertWorkspace() {
                 {isProcessing ? (
                   <>
                     <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: 'linear' }} className="mr-2 h-4 w-4 rounded-full border-2 border-primary-foreground/30 border-t-primary-foreground" />
-                    {isPdfToImage ? 'Converting PDF…' : 'Converting…'}
+                    {isPdfToImage ? 'Converting PDFâ€¦' : 'Convertingâ€¦'}
                   </>
                 ) : (
                   <>
@@ -638,7 +639,7 @@ export function ConvertWorkspace() {
             </div>
           </div>
 
-          <div className="rounded-[1.75rem] border border-border/60 bg-card/75 p-5 shadow-soft backdrop-blur-xl">
+          <div className="rounded-[1.75rem] border border-border/60 bg-card/75 p-5 shadow-soft backdrop-blur-sm">
             <h4 className="font-bold text-foreground">Format guide</h4>
             <ul className="mt-3 space-y-2 text-sm leading-6 text-muted-foreground">
               <li><strong>JPG:</strong> photos, websites, and compatibility-first output.</li>

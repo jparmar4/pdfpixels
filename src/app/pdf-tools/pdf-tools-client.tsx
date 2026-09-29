@@ -135,7 +135,7 @@ export function PdfToolsClient() {
           >
             <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.2em] text-primary shadow-sm">
               <Sparkles className="h-3.5 w-3.5" />
-              All 52 Free Online PDF Tools • Zero Signup
+              All {allPdfTools.length} Free Online PDF Tools â€¢ Zero Signup
             </div>
 
             <h1 className="text-balance text-4xl font-extrabold tracking-tight text-foreground md:text-5xl lg:text-6xl leading-[1.08]">
@@ -157,9 +157,9 @@ export function PdfToolsClient() {
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search 52 PDF tools (e.g. compress, merge, word, excel, sign, protect)..."
+                  placeholder={`Search ${allPdfTools.length} PDF tools (e.g. compress, merge, word, excel, sign, protect)...`}
                   aria-label="Search all PDF tools"
-                  className="block w-full rounded-2xl border border-border/70 bg-card/85 py-4 pl-14 pr-12 text-base font-medium shadow-[0_12px_40px_-20px_rgba(99,102,241,0.35)] backdrop-blur-xl transition-all placeholder:text-muted-foreground/60 focus:border-primary/50 focus:outline-none focus:ring-2 focus:ring-primary/20"
+                  className="block w-full rounded-2xl border border-border/70 bg-card/85 py-4 pl-14 pr-12 text-base font-medium shadow-[0_12px_40px_-20px_rgba(99,102,241,0.35)] backdrop-blur-sm transition-all placeholder:text-muted-foreground/60 focus:border-primary/50 focus:outline-none focus:ring-2 focus:ring-primary/20"
                 />
                 {searchQuery && (
                   <button
@@ -192,7 +192,7 @@ export function PdfToolsClient() {
       </section>
 
       {/* Category Filter Tabs */}
-      <section className="sticky top-16 z-30 border-b border-border/40 bg-background/90 backdrop-blur-xl py-3.5 shadow-sm">
+      <section className="sticky top-16 z-30 border-b border-border/40 bg-background/90 backdrop-blur-sm py-3.5 shadow-sm">
         <div className="container mx-auto px-4 lg:px-8">
           <div className="scroll-carousel flex items-center gap-2 overflow-x-auto pb-1 pt-0.5 no-scrollbar">
             <button
@@ -281,7 +281,7 @@ export function PdfToolsClient() {
                         description: normalizeDisplayText(tool.description),
                       })
                     }
-                    className="group relative flex flex-col justify-between rounded-2xl border border-border/60 bg-gradient-to-b from-card/90 to-card/50 p-5 shadow-soft backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:shadow-premium"
+                    className="group relative flex flex-col justify-between rounded-2xl border border-border/60 bg-gradient-to-b from-card/90 to-card/50 p-5 shadow-soft backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:shadow-premium"
                   >
                     <div>
                       <div className="mb-4 flex items-start justify-between gap-3">
@@ -351,7 +351,7 @@ export function PdfToolsClient() {
                 }}
                 className="btn-premium mt-5 rounded-xl px-5 py-2.5 text-xs font-bold text-white shadow-sm"
               >
-                Show All 52 PDF Tools
+                Show All {allPdfTools.length} PDF Tools
               </button>
             </div>
           )}
@@ -493,7 +493,7 @@ export function PdfToolsClient() {
                   <td className="py-3 pr-4 font-semibold text-foreground">Annual Cost</td>
                   <td className="py-3 px-4 font-bold text-emerald-600 dark:text-emerald-400">Free ($0)</td>
                   <td className="py-3 px-4 text-muted-foreground">$239.88 / year</td>
-                  <td className="py-3 pl-4 text-muted-foreground">$72 – $120 / year</td>
+                  <td className="py-3 pl-4 text-muted-foreground">$72 â€“ $120 / year</td>
                 </tr>
                 <tr>
                   <td className="py-3 pr-4 font-semibold text-foreground">Account / Registration</td>
@@ -590,7 +590,7 @@ export function PdfToolsClient() {
             <summary className="flex cursor-pointer items-center justify-between font-bold text-foreground">
               Are these PDF tools really 100% free with no hidden charges?
               <span className="ml-4 shrink-0 rounded-full border border-border/60 p-1 text-muted-foreground transition-transform duration-200 group-open:rotate-180">
-                ↓
+                â†“
               </span>
             </summary>
             <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
@@ -602,7 +602,7 @@ export function PdfToolsClient() {
             <summary className="flex cursor-pointer items-center justify-between font-bold text-foreground">
               Is it safe to upload confidential business, tax, or legal documents?
               <span className="ml-4 shrink-0 rounded-full border border-border/60 p-1 text-muted-foreground transition-transform duration-200 group-open:rotate-180">
-                ↓
+                â†“
               </span>
             </summary>
             <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
@@ -614,7 +614,7 @@ export function PdfToolsClient() {
             <summary className="flex cursor-pointer items-center justify-between font-bold text-foreground">
               Can I compress a PDF to a specific size like 100KB or 200KB?
               <span className="ml-4 shrink-0 rounded-full border border-border/60 p-1 text-muted-foreground transition-transform duration-200 group-open:rotate-180">
-                ↓
+                â†“
               </span>
             </summary>
             <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
@@ -626,7 +626,7 @@ export function PdfToolsClient() {
             <summary className="flex cursor-pointer items-center justify-between font-bold text-foreground">
               Does PdfPixels work on iPhone, Android, and iPad?
               <span className="ml-4 shrink-0 rounded-full border border-border/60 p-1 text-muted-foreground transition-transform duration-200 group-open:rotate-180">
-                ↓
+                â†“
               </span>
             </summary>
             <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
@@ -638,7 +638,7 @@ export function PdfToolsClient() {
             <summary className="flex cursor-pointer items-center justify-between font-bold text-foreground">
               What is Fast Web View (Linearization) and why does it matter?
               <span className="ml-4 shrink-0 rounded-full border border-border/60 p-1 text-muted-foreground transition-transform duration-200 group-open:rotate-180">
-                ↓
+                â†“
               </span>
             </summary>
             <p className="mt-3 text-sm leading-relaxed text-muted-foreground">

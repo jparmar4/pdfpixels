@@ -169,6 +169,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
         {/* Hero Section */}
         <section className="relative overflow-hidden border-b border-border/60 bg-gradient-to-b from-accent/60 to-background">
           <div className="absolute inset-0 hero-grid opacity-70" aria-hidden="true" />
+          <div className="absolute inset-0 hero-spot" aria-hidden="true" />
 
           <div className="container relative z-10 mx-auto px-4 py-12 text-center lg:px-8 md:py-16">
             <nav aria-label="Breadcrumb" className="mb-8 flex items-center justify-center gap-1.5 text-[13px] text-muted-foreground">

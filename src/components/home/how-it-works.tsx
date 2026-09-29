@@ -60,13 +60,13 @@ export function HowItWorks() {
               transition={{ delay: idx * 0.15 }}
               className="relative text-center group"
             >
-              <div className={`relative w-24 h-24 rounded-3xl bg-gradient-to-br ${step.color} flex items-center justify-center mx-auto mb-6 shadow-lg group-hover:scale-105 transition-all duration-300`}>
+              <div className={`relative w-24 h-24 rounded-3xl bg-gradient-to-br ${step.color} flex items-center justify-center mx-auto mb-6 shadow-lg group-hover:scale-110 group-hover:-rotate-3 group-hover:shadow-[0_18px_38px_-14px_rgba(79,70,229,0.55)] transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]`}>
                 <step.icon className="w-9 h-9 text-white" />
-                <div className="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-background border-2 border-border flex items-center justify-center text-xs font-extrabold gradient-text shadow-sm">
+                <div className="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-background border-2 border-border flex items-center justify-center text-xs font-extrabold gradient-text shadow-sm transition-transform duration-300 group-hover:scale-110">
                   {idx + 1}
                 </div>
               </div>
-              <h3 className="text-lg font-bold mb-2">{step.title}</h3>
+              <h3 className="text-lg font-bold mb-2 transition-colors duration-200 group-hover:text-primary">{step.title}</h3>
               <p className="text-sm text-muted-foreground leading-relaxed max-w-xs mx-auto">{step.description}</p>
             </motion.div>
           ))}
@@ -78,7 +78,7 @@ export function HowItWorks() {
           {howToData.map((howTo) => (
             <div
               key={howTo.name}
-              className="rounded-[1.75rem] border border-border/60 bg-card/70 p-6 text-left shadow-soft"
+              className="group card-shine rounded-[1.75rem] border border-border/60 bg-card/70 p-6 text-left shadow-soft transition-all duration-300 hover:-translate-y-1 hover:border-primary/25 hover:shadow-elevated"
             >
               <h3 className="text-lg font-bold text-foreground">{howTo.name}</h3>
               <p className="mt-1 text-sm text-muted-foreground">{howTo.description}</p>

@@ -9,6 +9,9 @@ export function AnimatedCounter({ end, suffix = '', duration = 2000 }: { end: nu
   const hasAnimated = useRef(false);
 
   useEffect(() => {
+    // Reduced motion: keep the final value, skip the count-up loop.
+    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return;
+
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting && !hasAnimated.current) {

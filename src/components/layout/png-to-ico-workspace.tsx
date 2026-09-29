@@ -103,7 +103,7 @@ export function PNGToIcoWorkspace() {
       />
       <ToolLimitNotice
         limits={[
-          'PNG, JPG, or WebP · max 25 MB',
+          'PNG, JPG, or WebP Â· max 25 MB',
           'One multi-size .ico with the sizes you pick',
           'Square images give the cleanest icons',
         ]}
@@ -185,7 +185,7 @@ export function PNGToIcoWorkspace() {
         </div>
 
         <div className="space-y-6">
-          <div className="rounded-2xl border border-border/40 bg-card/60 backdrop-blur-xl overflow-hidden shadow-premium">
+          <div className="rounded-2xl border border-border/40 bg-card/60 backdrop-blur-md overflow-hidden shadow-premium">
             <div className="p-5 border-b border-border/40 bg-gradient-to-r from-primary/10 to-transparent">
               <h3 className="font-bold tracking-tight text-foreground">Sizes to include</h3>
               <p className="text-sm text-muted-foreground mt-1">Browsers pick the sharpest size per surface.</p>
@@ -205,7 +205,7 @@ export function PNGToIcoWorkspace() {
                     }}
                   />
                   <Label htmlFor={`ico-size-${size}`} className="text-sm cursor-pointer">
-                    {size} × {size} px{size === 16 ? ' — browser tabs' : size === 32 ? ' — taskbars' : size === 256 ? ' — large shortcuts' : ''}
+                    {size} Ã— {size} px{size === 16 ? ' â€” browser tabs' : size === 32 ? ' â€” taskbars' : size === 256 ? ' â€” large shortcuts' : ''}
                   </Label>
                 </div>
               ))}
@@ -216,7 +216,7 @@ export function PNGToIcoWorkspace() {
                 disabled={!file || isProcessing}
                 size="lg"
               >
-                {isProcessing ? 'Converting…' : 'Create favicon.ico'}
+                {isProcessing ? 'Convertingâ€¦' : 'Create favicon.ico'}
               </Button>
               <Button variant="outline" className="w-full gap-2 rounded-xl" onClick={handleReset}>
                 <RotateCcw className="w-4 h-4" /> Start Over

@@ -127,7 +127,7 @@ export function BlurBackgroundWorkspace() {
       setEngineLabel(typeof data.engine === 'string' ? data.engine : null);
       setProgress(100);
       setShowCompare(true);
-      toast.success('Background blurred — subject kept sharp.');
+      toast.success('Background blurred â€” subject kept sharp.');
       requestAnimationFrame(() => {
         document.getElementById('blur-bg-result')?.scrollIntoView({
           behavior: 'smooth',
@@ -189,7 +189,7 @@ export function BlurBackgroundWorkspace() {
           <FileUpload accept="image/*" maxSizeMb={20} />
           <ToolLimitNotice
             limits={[
-              'Images only · max 20 MB',
+              'Images only Â· max 20 MB',
               'Keeps the main subject sharp',
               'Best with a clear person/object vs background',
               'PNG export',
@@ -206,7 +206,7 @@ export function BlurBackgroundWorkspace() {
               <div className="flex min-h-[240px] items-center justify-center bg-muted/25 p-4">
                 <img
                   src={sourcePreview}
-                  alt="Original upload preview — background not yet blurred"
+                  alt="Original upload preview â€” background not yet blurred"
                   loading="lazy"
                   decoding="async"
                   className="max-h-[420px] max-w-full rounded-xl object-contain"
@@ -224,7 +224,7 @@ export function BlurBackgroundWorkspace() {
               <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-violet-500/15 text-violet-600">
                 <Focus className="h-6 w-6 animate-pulse" />
               </div>
-              <h3 className="mb-1 text-center text-lg font-bold">Blurring background…</h3>
+              <h3 className="mb-1 text-center text-lg font-bold">Blurring backgroundâ€¦</h3>
               <p className="mb-4 text-center text-sm text-muted-foreground">
                 Detecting the subject, then applying depth-of-field blur.
               </p>
@@ -311,7 +311,7 @@ export function BlurBackgroundWorkspace() {
                 description="Subject stays sharp while the background is soft-focused for a portrait-style look."
                 onDownload={handleDownload}
                 downloadLabel="Download PNG"
-                primaryMeta={`Blur strength ${blurStrength}%${activePreset ? ` · ${activePreset.label}` : ''}`}
+                primaryMeta={`Blur strength ${blurStrength}%${activePreset ? ` Â· ${activePreset.label}` : ''}`}
                 nextActions={[
                   { label: 'Remove background', href: '/tools/remove-image-background' },
                   { label: 'Compress image', href: '/tools/compress-image' },
@@ -334,7 +334,7 @@ export function BlurBackgroundWorkspace() {
 
         {/* Controls */}
         <div className="space-y-6">
-          <div className="overflow-hidden rounded-[1.75rem] border border-border/40 bg-card/60 shadow-premium backdrop-blur-xl">
+          <div className="overflow-hidden rounded-[1.75rem] border border-border/40 bg-card/60 shadow-premium backdrop-blur-md">
             <div className="border-b border-border/40 bg-gradient-to-r from-violet-500/10 to-transparent p-5">
               <h3 className="flex items-center gap-2.5 font-bold tracking-tight">
                 <Settings className="h-4 w-4 text-violet-500" />
@@ -344,7 +344,7 @@ export function BlurBackgroundWorkspace() {
             <div className="space-y-5 p-5">
               <div className="rounded-xl border border-violet-200/50 bg-gradient-to-br from-violet-50 to-sky-50 p-3 dark:border-violet-800/30 dark:from-violet-950/30 dark:to-sky-950/20">
                 <p className="text-xs leading-5 text-muted-foreground">
-                  Detects the main subject and softens everything behind it — like a camera
+                  Detects the main subject and softens everything behind it â€” like a camera
                   aperture effect for portraits and product shots.
                 </p>
               </div>
@@ -432,7 +432,7 @@ export function BlurBackgroundWorkspace() {
                       transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
                       className="mr-3 h-5 w-5 rounded-full border-2 border-white/30 border-t-white"
                     />
-                    Blurring…
+                    Blurringâ€¦
                   </>
                 ) : (
                   <>

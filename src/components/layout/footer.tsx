@@ -14,7 +14,7 @@ import {
   Send,
   ArrowUp,
 } from 'lucide-react';
-import { allTools, toolCategories } from '@/lib/tools-data';
+import { allTools, allPdfTools, toolCategories } from '@/lib/tools-data';
 import { geoRegions } from '@/lib/geo-data';
 import { useAppStore } from '@/store/app-store';
 
@@ -27,7 +27,7 @@ export function Footer() {
   const [subscribed, setSubscribed] = useState(false);
 
   const toolLinks = [
-    { name: 'All PDF Tools (52)', href: '/pdf-tools' },
+    { name: `All PDF Tools (${allPdfTools.length})`, href: '/pdf-tools' },
     ...toolLinkIds
       .map((id) => allTools.find((tool) => tool.id === id))
       .filter((t): t is NonNullable<typeof t> => t != null)
@@ -123,7 +123,7 @@ export function Footer() {
       {/* ── CTA Banner with Newsletter ── */}
       <div className="container mx-auto px-4 py-12 lg:px-8 lg:py-14">
         <div
-          className="relative overflow-hidden rounded-[2rem] border border-border/50 bg-card/80 p-8 shadow-premium backdrop-blur-xl md:p-10"
+          className="relative overflow-hidden rounded-[2rem] border border-border/50 bg-card p-8 shadow-premium md:p-10"
         >
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(79,70,229,0.06),transparent_28%),radial-gradient(circle_at_bottom_right,rgba(109,40,217,0.04),transparent_28%)] pointer-events-none" />
           <div className="relative z-10 flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
@@ -184,13 +184,13 @@ export function Footer() {
 
             <div className="flex flex-col gap-3 sm:flex-row">
               <Link href="/pdf-tools" className="btn-premium inline-flex h-12 items-center justify-center gap-2 rounded-2xl px-6 text-sm font-semibold">
-                Explore 52 PDF Tools
+                Explore {allPdfTools.length} PDF Tools
                 <ArrowRight className="h-4 w-4" />
               </Link>
               <button
                 type="button"
                 onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                className="inline-flex h-12 items-center justify-center gap-2 rounded-2xl border border-border/60 bg-background/80 px-6 text-sm font-semibold text-foreground transition-colors hover:border-primary/30 hover:text-primary"
+                className="icon-btn-premium inline-flex h-12 items-center justify-center gap-2 rounded-2xl border border-border/60 bg-background/80 px-6 text-sm font-semibold text-foreground hover:border-primary/30 hover:text-primary"
               >
                 Explore homepage
               </button>

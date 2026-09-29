@@ -290,7 +290,7 @@ export function CropWorkspace() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-    // ── Freehand mode: never fall through to rect/circle UI ──
+    // â”€â”€ Freehand mode: never fall through to rect/circle UI â”€â”€
     if (cropMode === 'freehand') {
       const path = freehandPath;
       const hasShape = path.length > 1;
@@ -666,7 +666,7 @@ export function CropWorkspace() {
       freehandLiveRef.current = [];
       setFreehandPath([]);
       if (path.length > 1) {
-        toast.error('Shape too small — draw a larger freehand path around the area to keep.');
+        toast.error('Shape too small â€” draw a larger freehand path around the area to keep.');
       }
       return;
     }
@@ -697,7 +697,7 @@ export function CropWorkspace() {
     dragRef.current = null;
   }, [finishFreehandStroke]);
 
-  // Do NOT end drag on pointer leave — pointer capture keeps drawing outside the canvas
+  // Do NOT end drag on pointer leave â€” pointer capture keeps drawing outside the canvas
   const onPointerLeave = useCallback(() => {
     if (dragRef.current?.mode === 'freehand') return;
     if (!dragRef.current) setCursor('crosshair');
@@ -960,7 +960,7 @@ export function CropWorkspace() {
         </div>
 
         <div className="space-y-6">
-          <div className="overflow-hidden rounded-2xl border border-border/40 bg-card/60 shadow-premium backdrop-blur-xl">
+          <div className="overflow-hidden rounded-2xl border border-border/40 bg-card/60 shadow-premium backdrop-blur-md">
             <div className="border-b border-border/40 bg-gradient-to-r from-primary/10 to-transparent p-5">
               <h3 className="flex items-center gap-2.5 font-bold tracking-tight">
                 <Settings className="h-4 w-4 text-primary" />
@@ -1057,11 +1057,11 @@ export function CropWorkspace() {
                       <span className="text-muted-foreground">Status</span>
                       <span className={freehandValid ? 'font-semibold text-emerald-600 dark:text-emerald-400' : 'text-muted-foreground'}>
                         {isDrawingFreehand
-                          ? 'Drawing…'
+                          ? 'Drawingâ€¦'
                           : freehandValid
                             ? 'Shape ready'
                             : freehandPath.length
-                              ? 'Too small — redraw'
+                              ? 'Too small â€” redraw'
                               : 'No shape yet'}
                       </span>
                     </div>
@@ -1096,7 +1096,7 @@ export function CropWorkspace() {
                   disabled={!canCrop}
                   size="lg"
                 >
-                  {isProcessing ? 'Cropping…' : cropMode === 'freehand' ? 'Crop freehand shape' : 'Crop image'}
+                  {isProcessing ? 'Croppingâ€¦' : cropMode === 'freehand' ? 'Crop freehand shape' : 'Crop image'}
                 </Button>
                 <Button
                   variant="outline"
