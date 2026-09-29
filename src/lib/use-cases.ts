@@ -845,4 +845,137 @@ export const useCasePages: UseCasePage[] = [
       { question: 'Will the parts still open as normal PDFs?', answer: 'Yes — every part is a complete, standalone PDF with its pages copied unchanged. Open, print, and forward them like any PDF.' },
     ],
   },
+  {
+    slug: 'sign-pdf-free-without-login',
+    title: 'Sign PDF Online Free Without Sign-Up or Account',
+    description: 'Add legal electronic signatures, draw or type signatures, and sign PDF contracts online without creating an account.',
+    targetToolSlug: 'sign-pdf',
+    intent: 'sign pdf without login',
+    overview:
+      'Most electronic signature platforms lure users with a free trial, then block document downloads until you register with an email, verify credentials, and enter a paid subscription tier. PdfPixels Sign PDF runs directly in your web browser: draw your signature with a finger, mouse, or stylus, type formatted calligraphy, or upload an existing signature image. Place dates, checkboxes, and text blocks anywhere on your agreement, then download the executed PDF instantly with zero registration barriers.',
+    whoItsFor: [
+      'Freelancers executing client contracts and service agreements',
+      'Tenants and landlords signing residential leases and addendums',
+      'Anyone needing to sign and return a PDF document on mobile without creating an account',
+    ],
+    steps: [
+      { title: 'Upload your document', description: 'Drop your contract, agreement, or lease into the browser window.' },
+      { title: 'Create your signature', description: 'Draw on touchscreen or trackpad, type your name, or upload a photo of your signature.' },
+      { title: 'Position on page', description: 'Drag the signature to the sign-line, resize as needed, and add date or initials.' },
+      { title: 'Download signed PDF', description: 'Export the completed, signed document immediately with zero signup walls.' },
+    ],
+    tips: [
+      'On smartphones, rotate your device to landscape for a wider, smoother signature drawing canvas.',
+      'Save your signature locally in your browser so you can sign recurring invoices and agreements with one click.',
+      'Add the date stamp alongside your signature to ensure complete commercial agreement validity.',
+    ],
+    pitfalls: [
+      { problem: 'Signature looks shaky on desktop mouse', solution: 'Switch to the "Type" tab to generate a clean, professional calligraphy signature from your keyboard.' },
+      { problem: 'Recipient claims the signature is not editable', solution: 'Signatures are intentionally baked into the PDF object stream for legal tamper resistance; this is the expected behavior.' },
+    ],
+    faqs: [
+      { question: 'Is it completely free to sign and download?', answer: 'Yes. There are no download limits, no watermark overlays, and no credit card or account requirements.' },
+      { question: 'Does PdfPixels retain a copy of my signed contract?', answer: 'No. The signature is placed and rendered entirely within your local browser session using client-side canvas technology. Your private documents are never retained on our servers.' },
+    ],
+  },
+  {
+    slug: 'protect-pdf-with-password-free',
+    title: 'Password Protect PDF Online Free (AES-256 Encryption)',
+    description: 'Encrypt PDF files with AES-256 passwords to prevent unauthorized viewing, printing, or copying without installing software.',
+    targetToolSlug: 'protect-pdf',
+    intent: 'password protect pdf free',
+    overview:
+      'Sending unencrypted tax forms, medical records, or corporate payroll spreadsheets across email exposes sensitive personal data to interception. PdfPixels Protect PDF encrypts your PDF with bank-grade 128-bit or 256-bit AES encryption. Once encrypted, the document cannot be opened, viewed, or printed in Adobe Acrobat, Apple Preview, Google Chrome, or mobile readers without entering the exact secret password you established.',
+    whoItsFor: [
+      'Accountants and taxpayers securing W-2, 1099, and corporate tax returns',
+      'HR managers emailing confidential payroll, salary, and employment contracts',
+      'Lawyers and clients exchanging protected litigation filings and privileged correspondence',
+    ],
+    steps: [
+      { title: 'Select the confidential PDF', description: 'Upload the document you want to secure with a password.' },
+      { title: 'Set your secret password', description: 'Choose a strong alphanumeric passphrase with symbols and numbers.' },
+      { title: 'Encrypt', description: 'Our engine applies standard ISO-compliant AES encryption to all streams and text.' },
+      { title: 'Download & distribute', description: 'Share the locked PDF and deliver the password via a separate, secure channel.' },
+    ],
+    tips: [
+      'Never send the document password in the same email as the encrypted attachment; text it or use a separate chat channel.',
+      'Use at least 12 characters combining uppercase, lowercase, numbers, and symbols for robust brute-force protection.',
+      'Keep an unencrypted master copy archived in a secure local vault in case the password is ever forgotten.',
+    ],
+    pitfalls: [
+      { problem: 'Password was forgotten', solution: 'Because AES encryption mathematically scrambles the file, forgotten passwords cannot be recovered. Always retain a secure backup.' },
+      { problem: 'Recipient cannot open on mobile', solution: 'Ensure they are using a standard PDF reader (Adobe Reader, Apple Books, Google Drive) that supports standard PDF encryption.' },
+    ],
+    faqs: [
+      { question: 'Can an encrypted PDF be opened in standard viewers like Adobe Reader?', answer: 'Yes. The file conforms to standard ISO 32000 encryption. All major PDF readers will automatically display a password challenge dialog upon opening.' },
+      { question: 'Is the encryption bank-grade?', answer: 'Yes. The tool implements AES encryption, the worldwide standard used by financial institutions, governments, and enterprise security frameworks.' },
+    ],
+  },
+  {
+    slug: 'convert-scanned-pdf-to-word',
+    title: 'Convert Scanned PDF to Editable Word Free',
+    description: 'Extract text and layout from scanned paper PDFs into editable Microsoft Word (.docx) documents online for free.',
+    targetToolSlug: 'pdf-to-word',
+    intent: 'convert scanned pdf to word',
+    overview:
+      'Paper agreements, printed book pages, and legacy office memos scanned into PDFs are essentially flat picture files — you cannot highlight, copy, or edit any of the text. PdfPixels PDF to Word combines high-fidelity optical character recognition (OCR) and document flow parsing to reconstruct paragraphs, tables, and bulleted lists into a fully editable Microsoft Word (.docx) document, saving hours of manual re-typing.',
+    whoItsFor: [
+      'Attorneys editing historical court documents and scanned discovery materials',
+      'Students and researchers transcribing physical book excerpts and paper journals',
+      'Office administrators updating legacy contracts whose original Word source files were lost',
+    ],
+    steps: [
+      { title: 'Upload scanned PDF', description: 'Drop in your scanned contract, paper printout, or image-heavy document.' },
+      { title: 'OCR extraction', description: 'Our engine scans every page, recognizing letter glyphs and reconstructing paragraph lines.' },
+      { title: 'Rebuild document structure', description: 'Text, tables, and spacing are compiled into an OpenXML (.docx) container.' },
+      { title: 'Download & edit', description: 'Open the converted file in Microsoft Word, Google Docs, or LibreOffice and edit freely.' },
+    ],
+    tips: [
+      'Ensure scanned pages are right-side up before converting for maximum OCR recognition accuracy.',
+      'Scans at 300 DPI yield significantly cleaner text and table extraction than 72 DPI phone snapshots.',
+      'Review specialized terminology, acronyms, and proper nouns in the converted Word document.',
+    ],
+    pitfalls: [
+      { problem: 'Some characters were misrecognized', solution: 'Very low resolution scans or handwritten cursive can cause recognition errors; re-scan at 300 DPI with high contrast.' },
+      { problem: 'Tables appear as plain text lines', solution: 'Clear horizontal and vertical divider lines on the original scan help the engine distinguish table grids from standard paragraphs.' },
+    ],
+    faqs: [
+      { question: 'Can I edit the converted file in Google Docs?', answer: 'Yes. The output is a standard Microsoft Word (.docx) file that opens with 100% compatibility in Google Docs, Word Online, and desktop Office suites.' },
+      { question: 'Is there a limit on how many scanned pages I can convert?', answer: 'PdfPixels allows multi-page documents up to 50MB, providing ample headroom for long contracts, dissertations, and reports.' },
+    ],
+  },
+  {
+    slug: 'convert-bank-statement-pdf-to-excel',
+    title: 'Convert Bank Statement PDF to Excel / CSV Free',
+    description: 'Automatically parse multi-page bank statement tables into organized Excel (.xlsx) and CSV spreadsheets for easy accounting.',
+    targetToolSlug: 'bank-statement-to-excel',
+    intent: 'convert bank statement to excel',
+    overview:
+      'Accountants, bookkeepers, and tax filers waste countless hours manually copying transaction lines from monthly bank statement PDFs into Excel spreadsheets. PdfPixels Bank Statement to Excel automatically scans PDF transaction tables, isolates date, description, withdrawal, deposit, and balance columns, and outputs clean, calculation-ready Excel (.xlsx) and CSV spreadsheets ready for QuickBooks, Xero, or custom financial models.',
+    whoItsFor: [
+      'Small business owners preparing quarterly bookkeeping and annual tax records',
+      'CPAs and accounting teams reconciling multi-month bank and credit card statement packets',
+      'Loan and mortgage applicants submitting financial summaries to underwriting portals',
+    ],
+    steps: [
+      { title: 'Upload bank statement PDF', description: 'Drop in your official checking, savings, or credit card statement PDF.' },
+      { title: 'Parse transaction tables', description: 'Our financial table parser detects column boundaries, currency numbers, and transaction dates.' },
+      { title: 'Review parsed data', description: 'Verify row counts, column alignments, and numeric transaction amounts.' },
+      { title: 'Download Excel or CSV', description: 'Save as an .xlsx workbook or CSV file ready to import directly into your accounting software.' },
+    ],
+    tips: [
+      'Upload the original electronic PDF downloaded from your online banking portal whenever possible for 100% table accuracy.',
+      'Check date format settings (MM/DD/YYYY vs DD/MM/YYYY) to match your local accounting software conventions.',
+      'Use the CSV export mode if you are directly importing transactions into QuickBooks, Xero, or Wave.',
+    ],
+    pitfalls: [
+      { problem: 'Multi-line merchant descriptions split across rows', solution: 'The parser merges wrapped memo lines into a single transaction row; verify complex merchant descriptions before finalizing journal entries.' },
+      { problem: 'Scanned paper statement table alignment is skewed', solution: 'Ensure scanned statements are straight and clear; electronic digital PDFs provide superior column extraction.' },
+    ],
+    faqs: [
+      { question: 'Are my financial transactions kept private and secure?', answer: 'Yes. PdfPixels processes statements under strict ephemeral memory pipelines; temporary files are deleted immediately, and your financial data is never logged, sold, or trained upon.' },
+      { question: 'Does it support credit card statements as well as checking accounts?', answer: 'Yes. The parser recognizes common statement layouts across major banks (Chase, Bank of America, Wells Fargo, Citi, Capital One, Barclays, HSBC, etc.).' },
+    ],
+  },
 ];
+

@@ -539,4 +539,250 @@ export const comparisonPages: ComparisonPage[] = [
       },
     ],
   },
+  {
+    slug: 'pdfpixels-vs-ilovepdf-compress-pdf',
+    title: 'PdfPixels vs iLovePDF for PDF Compression',
+    description: 'Compare compression efficiency, privacy policies, daily task quotas, and exact target size controls between PdfPixels and iLovePDF.',
+    primaryToolSlug: 'compress-pdf',
+    alternatives: ['iLovePDF'],
+    bestFor: ['Exact KB target compression', 'Unlimited daily files', 'No registration requirements'],
+    overview:
+      'iLovePDF offers broad brand recognition with three preset compression levels (Extreme, Recommended, Low), but free users face strict daily file quotas, queue delays, and file size ceilings. PdfPixels Compress PDF provides unlimited free compression with both preset quality modes and exact target file size controls (such as 100KB, 200KB, or 500KB targets for state licensing, college admissions, and email attachments) without mandatory account creation or daily task paywalls.',
+    whenToChooseUs: [
+      'You need to hit an exact target file size (e.g. under 200KB or 500KB) for a specific upload portal',
+      'You compress multiple documents in a day and want zero daily task caps or paywall interruptions',
+      'You prefer an immediate browser-driven workflow without creating a user account',
+    ],
+    whenToChooseAlt: [
+      'You already maintain an active iLovePDF Premium corporate subscription',
+      'You require iLovePDF desktop offline software suite integration',
+      'Your organization has mandated iLovePDF as its sole document vendor',
+    ],
+    keyDifferences: [
+      {
+        topic: 'Target file size control',
+        pdfpixels: 'Direct target KB mode (enter 100, 200, 500 KB) plus standard percentage presets',
+        alternative: 'Three fixed presets (Extreme, Recommended, Less) with no custom KB target',
+      },
+      {
+        topic: 'Daily usage caps',
+        pdfpixels: '100% free with unlimited tasks and zero countdown timers',
+        alternative: 'Free tier limits task frequency and pushes premium subscriptions',
+      },
+      {
+        topic: 'Registration',
+        pdfpixels: 'Zero registration — upload, compress, and download instantly',
+        alternative: 'Frequent prompts to register and upgrade for faster processing',
+      },
+    ],
+    verdict:
+      'Choose PdfPixels Compress PDF for unmetered compressions and exact KB target controls tailored for email and government form requirements. Choose iLovePDF if you already subscribe to their desktop software.',
+    faqs: [
+      {
+        question: 'Does PdfPixels Compress PDF add any watermarks?',
+        answer: 'No. Neither tool adds watermarks to compressed PDFs on their standard compression tools. PdfPixels delivers pristine, unwatermarked documents 100% free.',
+      },
+      {
+        question: 'Can I hit exact portal limits like 200KB on both tools?',
+        answer: 'PdfPixels features dedicated target size algorithms allowing you to enter 200KB directly. iLovePDF only provides rough presets (Extreme, Recommended, Low), often requiring multiple trial-and-error attempts.',
+      },
+    ],
+  },
+  {
+    slug: 'pdfpixels-vs-adobe-sign-pdf',
+    title: 'PdfPixels vs Adobe Acrobat for Signing PDFs',
+    description: 'Compare electronic signatures, drawing tools, saved signatures, and account requirements between PdfPixels and Adobe Acrobat Online.',
+    primaryToolSlug: 'sign-pdf',
+    alternatives: ['Adobe Acrobat'],
+    bestFor: ['Free client-side signing', 'Zero login requirements', 'Quick contract completion on mobile'],
+    overview:
+      'Adobe Acrobat Online is a heavyweight industry standard, but free users are abruptly blocked by an Adobe ID sign-in modal after filling a document, and free e-signature requests are strictly limited before requiring a recurring paid subscription. PdfPixels Sign PDF lets you draw, type, or upload your signature, stamp dates and checkmarks, and download the finished signed document immediately in your browser — completely free, on any device, with no account creation required.',
+    whenToChooseUs: [
+      'You need to sign a contract, lease, or waiver quickly without signing up for an Adobe account',
+      'You want a lightweight, mobile-friendly signing canvas with smooth finger or stylus input',
+      'You are signing documents privately without uploading your personal signature to a corporate cloud',
+    ],
+    whenToChooseAlt: [
+      'You need formal cryptographic digital certificates (Acrobat Sign PKI / Qualified Electronic Signatures)',
+      'You are collecting signatures sequentially from multiple external parties via automated email routing',
+      'Your enterprise already licenses Adobe Creative Cloud or Acrobat Pro enterprise-wide',
+    ],
+    keyDifferences: [
+      {
+        topic: 'Sign-in barrier',
+        pdfpixels: 'Zero login — open the page, place signature, download signed PDF',
+        alternative: 'Requires creating or logging into an Adobe account to download',
+      },
+      {
+        topic: 'Subscription cost',
+        pdfpixels: 'Completely free for unlimited self-signing and document execution',
+        alternative: 'Charges monthly subscription fees after limited free trials',
+      },
+      {
+        topic: 'Device compatibility',
+        pdfpixels: 'Lightweight HTML5 touch canvas optimized for smartphones, tablets, and desktops',
+        alternative: 'Complex interface with heavier browser memory footprint',
+      },
+    ],
+    verdict:
+      'Choose PdfPixels Sign PDF when you need to sign a document yourself quickly and download it with zero barriers. Choose Adobe Acrobat when your legal department requires formal multi-party audit trails and cryptographic digital signatures.',
+    faqs: [
+      {
+        question: 'Are electronic signatures created on PdfPixels legally binding?',
+        answer: 'Yes. Under the US ESIGN Act, UETA, and EU eIDAS regulations, standard electronic signatures (drawn, typed, or uploaded) are legally binding for the vast majority of commercial contracts, leases, and agreements.',
+      },
+      {
+        question: 'Is my signature stored on your server?',
+        answer: 'No. PdfPixels executes document signing directly in your browser using local canvas and WebAssembly technologies. Your signature and document are never retained on our servers.',
+      },
+    ],
+  },
+  {
+    slug: 'pdfpixels-vs-smallpdf-merge-pdf',
+    title: 'PdfPixels vs Smallpdf for Merging PDFs',
+    description: 'Compare multi-file merging speed, drag-and-drop page sequencing, daily task quotas, and pricing between PdfPixels and Smallpdf.',
+    primaryToolSlug: 'merge-pdf',
+    alternatives: ['Smallpdf'],
+    bestFor: ['Unlimited multi-document merging', 'Batch legal binders', 'Zero paywalls'],
+    overview:
+      'Smallpdf is one of the earliest web PDF mergers, but its free tier is heavily restricted: non-paying users are limited to just two tasks every 24 hours before encountering a hard paywall screen. PdfPixels Merge PDF delivers a clean, modern drag-and-drop assembly workspace that lets you combine unlimited PDF files, reorganize mixed page orientations, and export combined documents instantaneously without artificial daily limits or subscription nag-screens.',
+    whenToChooseUs: [
+      'You need to combine more than two files a day without hitting a 24-hour lock-out paywall',
+      'You want quick thumbnail reordering and duplicate removal on desktop or phone',
+      'You value clean, uninterrupted workflows for school submissions, tax packets, or business proposals',
+    ],
+    whenToChooseAlt: [
+      'Your company already has an active Smallpdf Team or Pro license',
+      'You use Smallpdf G Suite or Chrome extensions heavily across your browser',
+      'You need Smallpdf cloud storage integration with Google Drive and Dropbox accounts',
+    ],
+    keyDifferences: [
+      {
+        topic: 'Daily task limitations',
+        pdfpixels: 'Unlimited free merges with zero daily counters or timed paywalls',
+        alternative: 'Strict 2 tasks per day cap for free users before locking the interface',
+      },
+      {
+        topic: 'File sequencing',
+        pdfpixels: 'Smooth visual drag-and-drop cards with page count previews and remove buttons',
+        alternative: 'Multi-document reordering with promotional banners encouraging Pro upgrades',
+      },
+      {
+        topic: 'Speed & latency',
+        pdfpixels: 'Streamlined binary assembly avoiding heavy third-party tracker overhead',
+        alternative: 'Heavier client application with upsell modals and subscription prompts',
+      },
+    ],
+    verdict:
+      'PdfPixels Merge PDF is the superior choice for everyday users, freelancers, and students who need unrestricted document merging without artificial daily limits. Smallpdf suits enterprise teams already committed to their paid suite.',
+    faqs: [
+      {
+        question: 'Can I combine PDFs with different page sizes on PdfPixels?',
+        answer: 'Yes. PdfPixels preserves original page dimensions and orientations (e.g. mixing Letter portrait and A4 landscape sheets) without distortion or unwanted scaling.',
+      },
+      {
+        question: 'Will merging reduce the quality of embedded photos or text?',
+        answer: 'No. PdfPixels combines PDF object trees directly without rasterizing pages or re-compressing images, ensuring 100% preservation of original vector typography and sharp images.',
+      },
+    ],
+  },
+  {
+    slug: 'pdfpixels-vs-ilovepdf-pdf-to-word',
+    title: 'PdfPixels vs iLovePDF for PDF to Word Conversion',
+    description: 'Compare layout preservation, typography retention, OCR accuracy, and free tier restrictions between PdfPixels and iLovePDF.',
+    primaryToolSlug: 'pdf-to-word',
+    alternatives: ['iLovePDF'],
+    bestFor: ['Clean layout preservation', 'Editable DOCX export', 'Zero subscription gates'],
+    overview:
+      'Converting PDFs to Microsoft Word DOCX is crucial when you need to edit an existing agreement, resume, or report. iLovePDF offers a solid converter but gates its high-accuracy OCR engine behind an expensive Premium subscription, leaving free users with fragmented layouts or uneditable image-based documents. PdfPixels PDF to Word converts document streams into cleanly formatted, editable DOCX files with native table structures, bullet lists, and font styling without paywalls.',
+    whenToChooseUs: [
+      'You want an editable Word document that maintains clean margins, headers, and paragraphs',
+      'You need to convert scanned documents or digital reports without buying a subscription',
+      'You want instant DOCX downloads compatible with Microsoft Word, LibreOffice, and Google Docs',
+    ],
+    whenToChooseAlt: [
+      'You have an enterprise iLovePDF API key powering programmatic conversions',
+      'You require specific historical typography replacement dictionaries configured in iLovePDF',
+      'Your workflow requires converting batches of hundreds of documents simultaneously via cloud drive triggers',
+    ],
+    keyDifferences: [
+      {
+        topic: 'Editable DOCX output',
+        pdfpixels: 'Clean paragraph flow, editable text, and formatted table cells',
+        alternative: 'Standard conversion on free tier; advanced OCR locked behind paid subscription',
+      },
+      {
+        topic: 'Document privacy',
+        pdfpixels: 'Immediate temporary file deletion and strict isolation',
+        alternative: 'Stored on cloud servers with scheduled batch purging',
+      },
+      {
+        topic: 'Word processing compatibility',
+        pdfpixels: '100% compliant OpenXML (.docx) opening natively in Word, Docs, and Pages',
+        alternative: 'Standard DOCX output with occasional formatting shifts on complex layouts',
+      },
+    ],
+    verdict:
+      'PdfPixels PDF to Word delivers clean, editable DOCX documents without holding essential text extraction features behind a subscription paywall. iLovePDF is suitable for enterprise users with existing bulk API pipelines.',
+    faqs: [
+      {
+        question: 'Can I edit the output file in Google Docs and Microsoft Word?',
+        answer: 'Yes. The output is a standard Microsoft Office OpenXML (.docx) file that opens seamlessly in Microsoft Word, Google Docs, LibreOffice Writer, and Apple Pages.',
+      },
+      {
+        question: 'Does the conversion work for scanned documents?',
+        answer: 'Yes. PdfPixels extracts embedded text and layout structures, allowing you to edit text, update tables, and adjust formatting immediately.',
+      },
+    ],
+  },
+  {
+    slug: 'pdfpixels-vs-adobe-protect-pdf',
+    title: 'PdfPixels vs Adobe Acrobat for PDF Password Protection',
+    description: 'Compare AES-256 PDF encryption, document security standards, and accountless browser protection between PdfPixels and Adobe Acrobat.',
+    primaryToolSlug: 'protect-pdf',
+    alternatives: ['Adobe Acrobat'],
+    bestFor: ['AES-256 encryption', 'Zero-knowledge privacy', 'Instant protection without login'],
+    overview:
+      'Securing sensitive tax filings, bank records, and legal agreements with a password is an essential privacy safeguard. Adobe Acrobat Online requires users to create an Adobe ID, log in, and upload their sensitive unencrypted document to Adobe cloud storage before applying protection. PdfPixels Protect PDF enables bank-grade 128-bit and 256-bit AES password encryption directly with zero account creation, ensuring confidential documents remain private.',
+    whenToChooseUs: [
+      'You want to lock a confidential PDF with a password without uploading it to an Adobe cloud account',
+      'You need robust AES-256 encryption compatible with Adobe Acrobat, Apple Preview, and mobile PDF readers',
+      'You are protecting financial statements, medical records, or legal evidence on the go',
+    ],
+    whenToChooseAlt: [
+      'You need Adobe Experience Manager (AEM) enterprise Rights Management and DRM revocations',
+      'You are managing enterprise-wide PKI certificate access policies across an organization',
+      'Your compliance policy mandates that documents only pass through Adobe-certified enterprise servers',
+    ],
+    keyDifferences: [
+      {
+        topic: 'Account requirement',
+        pdfpixels: 'Zero login — protect your document in 3 clicks with no registration',
+        alternative: 'Requires signing into an Adobe account before downloading the protected file',
+      },
+      {
+        topic: 'Encryption strength',
+        pdfpixels: 'Industry-standard AES encryption opening in all standard compliant PDF viewers',
+        alternative: 'Standard Acrobat encryption with enterprise DRM options on paid plans',
+      },
+      {
+        topic: 'Document isolation',
+        pdfpixels: 'Strict temporary file lifecycle with immediate deletion upon download',
+        alternative: 'Synced into user Document Cloud storage account unless manually deleted',
+      },
+    ],
+    verdict:
+      'PdfPixels Protect PDF provides the fastest, most private way to password-protect documents without creating accounts or syncing files to third-party clouds. Choose Adobe Acrobat if your organization relies on enterprise DRM and certificate-based policy revocation.',
+    faqs: [
+      {
+        question: 'Can a password-protected PDF be opened in Adobe Reader and Apple Preview?',
+        answer: 'Yes. PdfPixels implements standard ISO 32000 encryption specifications. Any standard PDF viewer on Windows, Mac, iOS, or Android will prompt for the password before opening.',
+      },
+      {
+        question: 'What happens if I forget the password I set?',
+        answer: 'Because AES encryption mathematically scrambles the document contents using your password as the cipher key, forgotten passwords cannot be recovered. Always store a backup of your password in a secure password manager.',
+      },
+    ],
+  },
 ];
+
