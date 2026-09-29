@@ -8,6 +8,7 @@ import {
   FileText,
   ShieldCheck,
   Sparkles,
+  TriangleAlert,
   Upload,
   X,
   Image as ImageIcon,
@@ -60,6 +61,7 @@ export function FileUpload({ accept = 'image/*', maxSizeMb }: FileUploadProps) {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [previewFailed, setPreviewFailed] = useState(false);
   const [isNormalizing, setIsNormalizing] = useState(false);
+  const [validationNotice, setValidationNotice] = useState<{ tone: 'warning' | 'error'; message: string } | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const previewUrlRef = useRef<string | null>(null);
   const dragCounter = useRef(0);
@@ -150,19 +152,30 @@ export function FileUpload({ accept = 'image/*', maxSizeMb }: FileUploadProps) {
     if (!file) return;
 
     if (!matchesAccept(file)) {
-      toast.error(`Unsupported file type. Accepted: ${acceptedLabels.join(', ') || accept}.`);
+      setValidationNotice({
+        tone: 'error',
+        message: `Unsupported file type. This tool accepts ${acceptedLabels.join(', ') || accept} — pick a matching file and try again.`,
+      });
       return;
     }
 
     if (file.size === 0) {
-      toast.error('This file is empty (0 bytes). Please choose a valid file.');
+      setValidationNotice({
+        tone: 'warning',
+        message: 'This file is empty (0 bytes). Please choose a valid file with content.',
+      });
       return;
     }
 
     if (file.size > maxBytes) {
-      toast.error(`File too large. Maximum size is ${resolvedMaxMb} MB.`);
+      setValidationNotice({
+        tone: 'warning',
+        message: `“${file.name}” is ${formatFileSize(file.size)} — over this tool's ${resolvedMaxMb} MB limit. Compress or split it first, then re-upload.`,
+      });
       return;
     }
+
+    setValidationNotice(null);
 
     if (isImageAccept && isHeicUpload(file)) {
       setIsNormalizing(true);
@@ -230,6 +243,7 @@ export function FileUpload({ accept = 'image/*', maxSizeMb }: FileUploadProps) {
     setPreviewUrl(null);
     setUploadedFile(null);
     setImageInfo(null);
+    setValidationNotice(null);
     if (inputRef.current) {
       inputRef.current.value = '';
     }
@@ -261,8 +275,8 @@ export function FileUpload({ accept = 'image/*', maxSizeMb }: FileUploadProps) {
   const uploadedFileIconBg = (() => {
     if (!uploadedFile) return '';
     const cat = getFileCategory(uploadedFile);
-    if (cat === 'pdf') return 'bg-red-500/10 text-red-500';
-    if (cat === 'image') return 'bg-sky-500/10 text-sky-500';
+    if (cat === 'pdf') return 'bg-destructive/10 text-destructive';
+    if (cat === 'image') return 'bg-info/10 text-info';
     return 'bg-primary/10 text-primary';
   })();
 
@@ -293,6 +307,9 @@ export function FileUpload({ accept = 'image/*', maxSizeMb }: FileUploadProps) {
             aria-label={uploadHeading}
             onClick={() => !isNormalizing && inputRef.current?.click()}
             onKeyDown={(event) => {
+              // Let interactive children (e.g. the notice dismiss button)
+              // handle their own keys instead of hijacking them.
+              if ((event.target as HTMLElement | null)?.closest?.('button')) return;
               if (event.key === 'Enter' || event.key === ' ') {
                 event.preventDefault();
                 if (!isNormalizing) inputRef.current?.click();
@@ -382,7 +399,7 @@ export function FileUpload({ accept = 'image/*', maxSizeMb }: FileUploadProps) {
                     {label}
                   </Badge>
                 ))}
-                <Badge variant="secondary" className="rounded-full border border-border/60 bg-background/80 px-3 py-1 font-medium">
+                <Badge variant="secondary" className="rounded-full border border-border/60 bg-background/80 px-3 py-1 font-medium tabular-nums">
                   Max {resolvedMaxMb} MB
                 </Badge>
                 <Badge variant="secondary" className="rounded-full border border-border/60 bg-background/80 px-3 py-1 font-medium">
@@ -393,7 +410,7 @@ export function FileUpload({ accept = 'image/*', maxSizeMb }: FileUploadProps) {
               {/* Trust indicators */}
               <div className="mt-6 grid gap-3 text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground sm:grid-cols-3">
                 <span className="inline-flex items-center justify-center gap-2 rounded-full border border-border/60 bg-background/75 px-3 py-1.5">
-                  <ShieldCheck className="h-3.5 w-3.5 text-emerald-500" />
+                  <ShieldCheck className="h-3.5 w-3.5 text-success" />
                   HTTPS upload / local canvas
                 </span>
                 <span className="inline-flex items-center justify-center gap-2 rounded-full border border-border/60 bg-background/75 px-3 py-1.5">
@@ -401,7 +418,7 @@ export function FileUpload({ accept = 'image/*', maxSizeMb }: FileUploadProps) {
                   No signup required
                 </span>
                 <span className="inline-flex items-center justify-center gap-2 rounded-full border border-border/60 bg-background/75 px-3 py-1.5">
-                  <CheckCircle2 className="h-3.5 w-3.5 text-sky-500" />
+                  <CheckCircle2 className="h-3.5 w-3.5 text-info" />
                   Preview before export
                 </span>
               </div>
@@ -421,6 +438,49 @@ export function FileUpload({ accept = 'image/*', maxSizeMb }: FileUploadProps) {
                 {uploadLabel}
               </Button>
 
+              {/* Inline validation notice — persistent (unlike a toast) so users
+                  can read the limit and act on it. Tone follows the semantic
+                  warning/error tokens. */}
+              <AnimatePresence>
+                {validationNotice ? (
+                  <motion.div
+                    key="validation-notice"
+                    initial={{ opacity: 0, y: -4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -4 }}
+                    role="alert"
+                    className={
+                      validationNotice.tone === 'error'
+                        ? 'mt-4 flex w-full max-w-2xl items-start gap-2.5 rounded-2xl border border-destructive/25 bg-destructive/[0.06] p-3.5 text-left'
+                        : 'mt-4 flex w-full max-w-2xl items-start gap-2.5 rounded-2xl border border-warning/25 bg-warning/[0.07] p-3.5 text-left'
+                    }
+                  >
+                    <TriangleAlert
+                      className={`mt-0.5 h-4 w-4 shrink-0 ${validationNotice.tone === 'error' ? 'text-destructive' : 'text-warning'}`}
+                    />
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-semibold text-foreground">
+                        {validationNotice.tone === 'error' ? 'File type not supported' : 'File too large'}
+                      </p>
+                      <p className="mt-0.5 text-xs leading-5 text-muted-foreground">{validationNotice.message}</p>
+                    </div>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      aria-label="Dismiss notice"
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        setValidationNotice(null);
+                      }}
+                      className="h-7 w-7 shrink-0 rounded-lg text-muted-foreground hover:text-foreground"
+                    >
+                      <X className="h-3.5 w-3.5" />
+                    </Button>
+                  </motion.div>
+                ) : null}
+              </AnimatePresence>
+
               {/* "Recently used" / file type support hint */}
               <p className="mt-4 text-xs text-muted-foreground/70">
                 {isPDFAccept && !isImageAccept
@@ -435,11 +495,18 @@ export function FileUpload({ accept = 'image/*', maxSizeMb }: FileUploadProps) {
         ) : (
           <motion.div
             key="preview"
-            initial={{ opacity: 0, scale: 0.985 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.985 }}
+            initial={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.985 }}
+            animate={reduceMotion ? { opacity: 1 } : { opacity: 1, scale: 1 }}
+            exit={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.985 }}
+            aria-busy={busy}
             className="relative overflow-hidden rounded-[2rem] border border-border/60 bg-card/75 p-4 shadow-premium backdrop-blur-sm md:p-5"
           >
+            {/* Screen-reader status: announces the selected file and busy state */}
+            <p aria-live="polite" className="sr-only">
+              {uploadedFile
+                ? `Selected ${uploadedFile.name}, ${formatFileSize(uploadedFile.size)}.${busy ? ' Processing.' : ' Ready for processing.'}`
+                : 'No file selected.'}
+            </p>
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(14,76,181,0.08),transparent_28%),radial-gradient(circle_at_bottom_right,rgba(14,165,170,0.08),transparent_28%),radial-gradient(circle_at_top_right,rgba(184,134,39,0.06),transparent_24%)] pointer-events-none" />
             <div className="relative z-10 grid gap-4 lg:grid-cols-[minmax(0,1fr)_280px]">
               <div className="relative flex min-h-[280px] items-center justify-center overflow-hidden rounded-[1.5rem] border border-border/50 bg-background/70 px-4 py-6">
@@ -449,7 +516,7 @@ export function FileUpload({ accept = 'image/*', maxSizeMb }: FileUploadProps) {
                       initial={{ scale: 0.8, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
                       transition={{ type: 'spring', stiffness: 200, damping: 15 }}
-                      className="flex h-20 w-20 items-center justify-center rounded-[1.4rem] bg-red-500/10 text-red-500"
+                      className="flex h-20 w-20 items-center justify-center rounded-[1.4rem] bg-destructive/10 text-destructive"
                     >
                       <FileText className="h-10 w-10" />
                     </motion.div>
@@ -520,29 +587,29 @@ export function FileUpload({ accept = 'image/*', maxSizeMb }: FileUploadProps) {
                 <div className="grid gap-3 rounded-2xl border border-border/50 bg-card/75 p-3 text-sm text-muted-foreground">
                   <div className="flex items-center justify-between gap-3">
                     <span>Size</span>
-                    <span className="font-semibold text-foreground">{formatFileSize(uploadedFile.size)}</span>
+                    <span className="font-mono font-semibold tabular-nums text-foreground">{formatFileSize(uploadedFile.size)}</span>
                   </div>
                   <div className="flex items-center justify-between gap-3">
                     <span>Limit</span>
-                    <span className="font-semibold text-foreground">{resolvedMaxMb} MB</span>
+                    <span className="font-mono font-semibold tabular-nums text-foreground">{resolvedMaxMb} MB</span>
                   </div>
                   {imageInfo ? (
                     <>
                       <div className="flex items-center justify-between gap-3">
                         <span>Width</span>
-                        <span className="font-semibold text-foreground">{imageInfo.width}px</span>
+                        <span className="font-mono font-semibold tabular-nums text-foreground">{imageInfo.width}px</span>
                       </div>
                       <div className="flex items-center justify-between gap-3">
                         <span>Height</span>
-                        <span className="font-semibold text-foreground">{imageInfo.height}px</span>
+                        <span className="font-mono font-semibold tabular-nums text-foreground">{imageInfo.height}px</span>
                       </div>
                     </>
                   ) : null}
                 </div>
 
-                <div className="space-y-2 rounded-2xl border border-emerald-500/15 bg-emerald-500/5 p-3">
+                <div className="space-y-2 rounded-2xl border border-success/15 bg-success/[0.06] p-3">
                   <div className="flex items-center gap-2 text-sm font-semibold text-foreground">
-                    <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+                    <CheckCircle2 className="h-4 w-4 text-success" />
                     Ready for processing
                   </div>
                   <p className="text-xs leading-5 text-muted-foreground">

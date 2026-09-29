@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next';
-import { Inter, Sora } from 'next/font/google';
+import { Inter, Sora, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
 import { Toaster as SonnerToaster } from '@/components/ui/sonner';
 import { ThemeProvider } from 'next-themes';
@@ -13,6 +13,7 @@ import { Navigation } from '@/components/layout/navigation';
 import { Footer } from '@/components/layout/footer';
 import { ScrollToTop } from '@/components/home/scroll-to-top';
 import { ClickRipple } from '@/components/ui/click-ripple';
+import { ChunkReloadHandler } from '@/components/layout/chunk-reload-handler';
 
 const fontInter = Inter({
   subsets: ['latin'],
@@ -23,6 +24,14 @@ const fontInter = Inter({
 const fontSora = Sora({
   subsets: ['latin'],
   variable: '--font-sora',
+  display: 'swap',
+});
+
+// Monospace for numeric readouts across tools (file sizes, KB targets,
+// compression ratios, dimensions). Tabular figures keep stats aligned.
+const fontMono = JetBrains_Mono({
+  subsets: ['latin'],
+  variable: '--font-jetbrains-mono',
   display: 'swap',
 });
 
@@ -136,7 +145,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" suppressHydrationWarning className={`scroll-smooth ${fontInter.variable} ${fontSora.variable}`}>
+    <html lang="en" suppressHydrationWarning className={`scroll-smooth ${fontInter.variable} ${fontSora.variable} ${fontMono.variable}`}>
       <head>
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
         <link rel="dns-prefetch" href="https://www.google-analytics.com" />
@@ -154,6 +163,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           Skip to main content
         </a>
         <JsonLdSchemas />
+        <ChunkReloadHandler />
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
           <Navigation />
           <div className="flex-1 flex flex-col">

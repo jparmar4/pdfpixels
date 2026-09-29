@@ -28,17 +28,35 @@ export function ApiDocsPage() {
 
   const endpoints = [
     { method: 'POST', path: '/api/image/process', description: 'Process images with compression, resizing, conversion, and effects', category: 'Image' },
-    { method: 'POST', path: '/api/pdf/merge', description: 'Merge multiple PDF files into one', category: 'PDF' },
-    { method: 'POST', path: '/api/pdf/split', description: 'Split PDF into individual pages or extract specific pages', category: 'PDF' },
-    { method: 'POST', path: '/api/pdf/compress', description: 'Compress PDF to reduce file size', category: 'PDF' },
+    { method: 'POST', path: '/api/image/heic', description: 'Convert an iPhone HEIC photo to JPEG (binary download)', category: 'Image' },
+    { method: 'POST', path: '/api/image/ocr', description: 'Prepare an image for client-side OCR (JSON payload)', category: 'Image' },
+    { method: 'POST', path: '/api/image/ico', description: 'Convert an image to a multi-size .ico favicon', category: 'Image' },
+    { method: 'POST', path: '/api/ai', description: 'AI-enhance images, blur backgrounds and faces (JSON payload)', category: 'Image' },
+    { method: 'POST', path: '/api/pdf/merge', description: 'Merge multiple PDF files into one (binary download)', category: 'PDF' },
+    { method: 'POST', path: '/api/pdf/split', description: 'Split PDF by range or into parts under a size limit (PDF or ZIP download)', category: 'PDF' },
+    { method: 'POST', path: '/api/pdf/compress', description: 'Compress PDF with level or exact KB target (binary download)', category: 'PDF' },
     { method: 'POST', path: '/api/pdf/to-image', description: 'Convert PDF pages to images', category: 'PDF' },
-    { method: 'POST', path: '/api/pdf/from-image', description: 'Create PDF from images', category: 'PDF' },
+    { method: 'POST', path: '/api/pdf/from-image', description: 'Create PDF from images (binary download)', category: 'PDF' },
+    { method: 'POST', path: '/api/pdf/to-word', description: 'Convert PDF to editable Word .docx (binary download)', category: 'PDF' },
+    { method: 'POST', path: '/api/pdf/to-excel', description: 'Extract PDF tables to .xlsx or .csv', category: 'PDF' },
+    { method: 'POST', path: '/api/pdf/to-text', description: 'Extract selectable text from a PDF (JSON or plain text)', category: 'PDF' },
+    { method: 'POST', path: '/api/pdf/to-pptx', description: 'Convert PDF pages to PowerPoint slides (binary download)', category: 'PDF' },
+    { method: 'POST', path: '/api/pdf/from-word', description: 'Convert Word documents to PDF (binary download)', category: 'PDF' },
+    { method: 'POST', path: '/api/pdf/from-excel', description: 'Convert spreadsheets to PDF (binary download)', category: 'PDF' },
+    { method: 'POST', path: '/api/pdf/from-powerpoint', description: 'Convert presentations to PDF (binary download)', category: 'PDF' },
+    { method: 'POST', path: '/api/pdf/from-heic', description: 'Convert iPhone HEIC photos to PDF (binary download)', category: 'PDF' },
+    { method: 'POST', path: '/api/pdf/from-text', description: 'Render plain text into a paginated PDF (binary download)', category: 'PDF' },
+    { method: 'POST', path: '/api/pdf/bank-statement-to-excel', description: 'Convert bank statements to Excel/CSV with transaction parsing', category: 'PDF' },
+    { method: 'POST', path: '/api/pdf/ocr', description: 'Recognize text in scanned PDFs (JSON result)', category: 'PDF' },
+    { method: 'POST', path: '/api/pdf/extract-images', description: 'Pull embedded images out of a PDF (ZIP download)', category: 'PDF' },
+    { method: 'POST', path: '/api/pdf/to-pdfa', description: 'Convert PDF to archival PDF/A (binary download)', category: 'PDF' },
+    { method: 'POST', path: '/api/pdf/to-cmyk', description: 'Convert an RGB PDF to CMYK for print (binary download)', category: 'PDF' },
   ];
 
   const codeExamples = {
     compress: `// Compress an image\nconst formData = new FormData();\nformData.append('image', imageFile);\nformData.append('quality', '85');\nformData.append('format', 'webp');\n\nconst response = await fetch('https://www.pdfpixels.com/api/image/process', {\n  method: 'POST',\n  body: formData\n});\n\nconst result = await response.json();\nconsole.log(result.imageUrl);`,
     resize: `// Resize an image\nconst formData = new FormData();\nformData.append('image', imageFile);\nformData.append('width', '800');\nformData.append('height', '600');\n\nconst response = await fetch('https://www.pdfpixels.com/api/image/process', {\n  method: 'POST',\n  body: formData\n});\n\nconst result = await response.json();\nconsole.log(result.originalDimensions);`,
-    pdfMerge: `// Merge PDFs\nconst formData = new FormData();\nformData.append('files', pdfFile1);\nformData.append('files', pdfFile2);\n\nconst response = await fetch('https://www.pdfpixels.com/api/pdf/merge', {\n  method: 'POST',\n  body: formData\n});\n\nconst result = await response.json();\nconsole.log(result.pdfUrl);`,
+    pdfMerge: `// Merge PDFs (binary download)\nconst formData = new FormData();\nformData.append('files', pdfFile1);\nformData.append('files', pdfFile2);\n\nconst response = await fetch('https://www.pdfpixels.com/api/pdf/merge', {\n  method: 'POST',\n  body: formData\n});\n\nconst blob = await response.blob();\nconsole.log('pages:', response.headers.get('X-Page-Count'), 'bytes:', blob.size);`,
   };
 
   const parameters = [

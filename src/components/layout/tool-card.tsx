@@ -65,14 +65,14 @@ function getProcessingMeta(tool: Tool) {
     return {
       label: 'Runs in your browser',
       icon: ShieldCheck,
-      className: 'text-emerald-500',
+      className: 'text-success',
     };
   }
 
   return {
     label: 'Server optimized',
     icon: Cpu,
-    className: 'text-sky-500',
+    className: 'text-info',
   };
 }
 

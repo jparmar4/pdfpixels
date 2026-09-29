@@ -219,7 +219,7 @@ export function ToolContentSection({ toolSlug, toolName, isAI, processing }: {
           {/* Related articles even in fallback */}
           {relatedArticles.length > 0 && (
             <div className="mt-10">
-              <SubHeader icon={BookOpen} iconColor="text-sky-500">
+<SubHeader icon={BookOpen} iconColor="text-info">
                 Related Articles
               </SubHeader>
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 mt-4">
@@ -266,13 +266,13 @@ export function ToolContentSection({ toolSlug, toolName, isAI, processing }: {
 
         {/* Key Features */}
         <div>
-          <SubHeader icon={CheckCircle2} iconColor="text-emerald-500">
+          <SubHeader icon={CheckCircle2} iconColor="text-success">
             Key Features
           </SubHeader>
           <ul className="grid sm:grid-cols-2 gap-3 mt-4">
             {content.features.map((feature, i) => (
               <li key={i} className="flex items-start gap-2.5 text-sm text-muted-foreground">
-                <CheckCircle2 className="h-4 w-4 shrink-0 mt-0.5 text-emerald-500" />
+                <CheckCircle2 className="h-4 w-4 shrink-0 mt-0.5 text-success" />
                 <span>{feature}</span>
               </li>
             ))}
@@ -281,7 +281,7 @@ export function ToolContentSection({ toolSlug, toolName, isAI, processing }: {
 
         {/* Use Cases */}
         <div>
-          <SubHeader icon={Users} iconColor="text-sky-500">
+          <SubHeader icon={Users} iconColor="text-info">
             Who Uses This Tool?
           </SubHeader>
           <ul className="space-y-2.5 mt-4">
@@ -402,7 +402,7 @@ export function ToolContentSection({ toolSlug, toolName, isAI, processing }: {
         {/* Related Articles */}
         {relatedArticles.length > 0 && (
           <div>
-            <SubHeader icon={BookOpen} iconColor="text-sky-500">
+            <SubHeader icon={BookOpen} iconColor="text-info">
               Related Articles
             </SubHeader>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 mt-4">

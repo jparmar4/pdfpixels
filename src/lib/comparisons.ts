@@ -784,5 +784,299 @@ export const comparisonPages: ComparisonPage[] = [
       },
     ],
   },
+  {
+    slug: 'pdfpixels-vs-smallpdf-pdf-to-word',
+    title: 'PdfPixels vs Smallpdf for PDF to Word Conversion',
+    description: 'Compare editable DOCX quality, table handling, daily free-task limits, and signup friction between PdfPixels and Smallpdf.',
+    primaryToolSlug: 'pdf-to-word',
+    alternatives: ['Smallpdf'],
+    bestFor: ['Unlimited quick conversions', 'Editable tables and lists', 'No-login document jobs'],
+    overview:
+      'Smallpdf is one of the best-known PDF-to-Word converters, but its free tier famously allows only a couple of tasks per day before locking the interface behind a paywall. PdfPixels PDF to Word targets the same conversion — text, tables, and formatting carried into an editable .docx — without daily counters or account gates, which matters when you are converting a resume, a contract redline, or a batch of school documents in one sitting.',
+    whenToChooseUs: [
+      'You need to convert several PDFs to Word in one session without hitting a daily task cap',
+      'You want tables and bullet lists to arrive editable, not as pasted images',
+      'You prefer converting without creating yet another SaaS account',
+    ],
+    whenToChooseAlt: [
+      'You already pay for Smallpdf Pro and convert inside its ecosystem daily',
+      'Your team shares Smallpdf Workspaces and needs shared conversion history',
+      'You need Smallpdf desktop or mobile apps for offline conversion queues',
+    ],
+    keyDifferences: [
+      {
+        topic: 'Free-task limits',
+        pdfpixels: 'Convert everyday documents without daily task counters blocking the next file',
+        alternative: 'Free users are limited to a small number of tasks per day before upgrade prompts',
+      },
+      {
+        topic: 'Editable output',
+        pdfpixels: 'Paragraphs, tables, and lists arrive as native Word structures you can keep editing',
+        alternative: 'Solid DOCX output; complex tables sometimes need manual cleanup on the free tier',
+      },
+      {
+        topic: 'Account friction',
+        pdfpixels: 'No signup for core conversion; upload, convert, download',
+        alternative: 'Increasingly account- and paywall-oriented around the free allowance',
+      },
+    ],
+    verdict:
+      'Pick PdfPixels PDF to Word when you want to convert now — especially more than one file — without daily caps or signup detours. Stay with Smallpdf if you already pay for Pro and live inside its apps.',
+    faqs: [
+      {
+        question: 'Will my tables stay editable after conversion?',
+        answer: 'PdfPixels carries table rows and cells into native Word tables so you can keep editing them. Always skim the result — heavily designed layouts may need minor touch-ups in any converter.',
+      },
+      {
+        question: 'Can I convert multiple PDFs to Word back to back?',
+        answer: 'Yes. There is no daily task counter stopping your second or third conversion on PdfPixels.',
+      },
+    ],
+  },
+  {
+    slug: 'pdfpixels-vs-ilovepdf-image-to-pdf',
+    title: 'PdfPixels vs iLovePDF for JPG to PDF Conversion',
+    description: 'Compare photo-to-PDF assembly, page sizing, multi-image handling, and free limits between PdfPixels and iLovePDF.',
+    primaryToolSlug: 'image-to-pdf',
+    alternatives: ['iLovePDF'],
+    bestFor: ['Multi-photo PDF assembly', 'Page size and margin control', 'Phone-scan paperwork'],
+    overview:
+      'Turning JPG photos into a single PDF is everyday paperwork: expense receipts, phone-scanned forms, homework photos, and ID documents. iLovePDF offers a capable JPG-to-PDF tool inside its large suite. PdfPixels Image to PDF focuses on the same assembly job — up to 30 images with page size, orientation, and margin control — in a shorter path that also sits next to HEIC conversion and compression for the inevitable oversized scan.',
+    whenToChooseUs: [
+      'You are combining phone photos into one PDF for an application or expense report',
+      'You want page size, orientation, and margin choices before the PDF is built',
+      'You also need HEIC-to-JPG or compression in the same session',
+    ],
+    whenToChooseAlt: [
+      'Your office standardized every PDF job on iLovePDF',
+      'You need iLovePDF-specific batch or cloud-drive integrations',
+      'You convert inside an existing iLovePDF Premium workflow',
+    ],
+    keyDifferences: [
+      {
+        topic: 'Assembly path',
+        pdfpixels: 'Add up to 30 images, order them, set page size and margins, download one PDF',
+        alternative: 'Comparable assembly inside a much larger multi-tool product surface',
+      },
+      {
+        topic: 'Adjacent jobs',
+        pdfpixels: 'HEIC conversion, compression, and resizing live on the same site for scan cleanup',
+        alternative: 'Deep PDF suite; image prep tools are thinner',
+      },
+      {
+        topic: 'Best fit',
+        pdfpixels: 'Phone-scan paperwork and mixed image/PDF days',
+        alternative: 'Users embedded in the iLovePDF ecosystem',
+      },
+    ],
+    verdict:
+      'Pick PdfPixels Image to PDF for fast photo-to-PDF assembly with page controls and nearby scan-cleanup tools. Stick with iLovePDF if your whole document pipeline already runs there.',
+    faqs: [
+      {
+        question: 'How many photos can I combine into one PDF?',
+        answer: 'PdfPixels accepts up to 30 images per PDF (15 MB each, 120 MB total) — enough for most application packets and receipt bundles.',
+      },
+      {
+        question: 'Can I control the page size of the resulting PDF?',
+        answer: 'Yes. Choose the page size, orientation, fit, and margins before building, so the PDF matches print or portal expectations.',
+      },
+    ],
+  },
+  {
+    slug: 'pdfpixels-vs-adobe-ocr-pdf',
+    title: 'PdfPixels vs Adobe Acrobat for OCR (Scanned PDFs)',
+    description: 'Compare scanned-PDF text recognition, selectable-text output, free limits, and signup friction between PdfPixels and Adobe Acrobat.',
+    primaryToolSlug: 'ocr-pdf',
+    alternatives: ['Adobe Acrobat'],
+    bestFor: ['Searchable scan text', 'No-subscription OCR', 'Quick 10-page jobs'],
+    overview:
+      'Adobe Acrobat sets the bar for OCR quality, but its best recognition sits inside a paid subscription that casual users open twice a year. PdfPixels OCR PDF covers the common case — a scanned form, an old report, a phone-captured document — by detecting existing text layers instantly and rasterizing plus recognizing the rest, up to 10 pages per run, with no account and no install.',
+    whenToChooseUs: [
+      'You need selectable, copyable text from a short scanned document right now',
+      'You convert scans occasionally and a yearly subscription makes no sense',
+      'Your PDF already has a partial text layer and you want it extracted instantly',
+    ],
+    whenToChooseAlt: [
+      'You OCR hundred-page archives weekly and need batch queues with custom dictionaries',
+      'Your compliance workflow mandates Adobe-certified searchable-PDF output profiles',
+      'You already pay for Acrobat Pro and process inside its desktop pipeline',
+    ],
+    keyDifferences: [
+      {
+        topic: 'Fast path',
+        pdfpixels: 'PDFs with a real text layer (200+ characters) return extracted text instantly, no rasterizing',
+        alternative: 'Full OCR pipeline runs regardless, tuned for maximum fidelity on long documents',
+      },
+      {
+        topic: 'Access model',
+        pdfpixels: 'Free browser OCR up to 10 pages per run, no signup',
+        alternative: 'Best OCR reserved for subscribers; trial and web flows push toward paid plans',
+      },
+      {
+        topic: 'Best fit',
+        pdfpixels: 'Everyday scans: forms, receipts, school papers, short reports',
+        alternative: 'High-volume archival digitization with enterprise tooling',
+      },
+    ],
+    verdict:
+      'Pick PdfPixels OCR PDF for fast, free text recognition on everyday scans. Choose Adobe Acrobat when OCR is a daily production workload with batch and compliance requirements.',
+    faqs: [
+      {
+        question: 'Will OCR make my scanned PDF searchable?',
+        answer: 'Yes. Recognized text is returned as selectable, copyable text you can search and paste — the core outcome both tools deliver for short documents.',
+      },
+      {
+        question: 'What if my PDF already contains text?',
+        answer: 'PdfPixels detects that first and extracts it directly in seconds instead of re-rendering every page, which is both faster and perfectly accurate.',
+      },
+    ],
+  },
+  {
+    slug: 'pdfpixels-vs-smallpdf-unlock-pdf',
+    title: 'PdfPixels vs Smallpdf for Unlocking PDFs',
+    description: 'Compare password-removal workflow, encryption handling, free limits, and privacy between PdfPixels and Smallpdf.',
+    primaryToolSlug: 'unlock-pdf',
+    alternatives: ['Smallpdf'],
+    bestFor: ['Known-password removal', 'No-login unlocks', 'Private handling'],
+    overview:
+      'A password you set yourself becomes a problem the moment you need to compress, merge, or OCR the file — every downstream tool needs an unlocked PDF first. Smallpdf offers a popular unlock flow wrapped in its freemium task limits and account nudges. PdfPixels Unlock PDF removes a known password in the browser-to-server round trip with no daily counters, so the unlocked file is ready for whatever job comes next.',
+    whenToChooseUs: [
+      'You know the password and need the file unlocked for a follow-up job like compression or merging',
+      'You want the unlock done without daily task caps or signup detours',
+      'You prefer ephemeral processing with automatic file deletion',
+    ],
+    whenToChooseAlt: [
+      'You already pay for Smallpdf Pro and unlock inside its app suite',
+      'Your team routes every PDF job through one vendor for audit simplicity',
+      'You need Smallpdf-specific batch or cloud integrations around the unlock',
+    ],
+    keyDifferences: [
+      {
+        topic: 'Task limits',
+        pdfpixels: 'Unlock known-password PDFs without daily free-task counters',
+        alternative: 'Unlocks consume the limited free daily task allowance',
+      },
+      {
+        topic: 'Follow-up workflow',
+        pdfpixels: 'Unlocked file feeds directly into compress, merge, OCR, and conversion on the same site',
+        alternative: 'Strong PDF suite, but each extra job spends more of the free allowance',
+      },
+      {
+        topic: 'Privacy posture',
+        pdfpixels: 'Temporary processing storage with automatic deletion, no account trail',
+        alternative: 'Account-linked processing inside the Smallpdf cloud',
+      },
+    ],
+    verdict:
+      'Pick PdfPixels Unlock PDF when you know the password and want the file freed quickly and privately for the real job ahead. Stay with Smallpdf if you already pay for Pro and centralize there.',
+    faqs: [
+      {
+        question: 'Do I need to know the current PDF password?',
+        answer: 'Yes. Unlock removes protection from files whose password you know — it cannot crack forgotten passwords, and neither can any legitimate online tool.',
+      },
+      {
+        question: 'What can I do after unlocking?',
+        answer: 'Everything downstream requires it: compress the file, merge it, run OCR, or convert it to Word or Excel.',
+      },
+    ],
+  },
+  {
+    slug: 'pdfpixels-vs-ilovepdf-rotate-pdf',
+    title: 'PdfPixels vs iLovePDF for Rotating PDF Pages',
+    description: 'Compare page-rotation control, selective vs all-pages handling, and free limits between PdfPixels and iLovePDF.',
+    primaryToolSlug: 'rotate-pdf',
+    alternatives: ['iLovePDF'],
+    bestFor: ['Sideways-scan fixes', 'Selective page rotation', 'No-login quick jobs'],
+    overview:
+      'Sideways scans are the classic PDF annoyance: a phone photo taken in portrait, a scanner that guessed wrong, a mixed-orientation merge. iLovePDF handles rotation inside its broad suite. PdfPixels Rotate PDF keeps the job tight — rotate all pages or select specific ones by 90, 180, or 270 degrees — with the surrounding fix-up tools (compress, split, OCR) one click away for whatever the sideways scan needs next.',
+    whenToChooseUs: [
+      'Only some pages are sideways and you want to rotate a selection, not the whole file',
+      'The rotation is one step in a longer fix: rotate, then compress or OCR the scan',
+      'You want the job done without accounts or daily task counters',
+    ],
+    whenToChooseAlt: [
+      'Your office runs every PDF job through iLovePDF already',
+      'You need iLovePDF-specific batch or cloud-drive integrations',
+      'You rotate inside an existing iLovePDF Premium workflow',
+    ],
+    keyDifferences: [
+      {
+        topic: 'Page selection',
+        pdfpixels: 'Rotate all pages or target specific pages and ranges',
+        alternative: 'Comparable rotation inside a larger multi-step product flow',
+      },
+      {
+        topic: 'Follow-up jobs',
+        pdfpixels: 'Sideways scans usually need compression or OCR next — both on the same site',
+        alternative: 'Deep PDF suite; scan-cleanup image tools are thinner',
+      },
+      {
+        topic: 'Access model',
+        pdfpixels: 'Free rotation without signup or daily caps',
+        alternative: 'Free tier wrapped in account nudges and usage allowances',
+      },
+    ],
+    verdict:
+      'Pick PdfPixels Rotate PDF for fast orientation fixes, especially partial-page jobs feeding into compression or OCR. Stick with iLovePDF if your pipeline already lives there.',
+    faqs: [
+      {
+        question: 'Can I rotate only some pages of a PDF?',
+        answer: 'Yes. Target specific pages or ranges instead of the whole document — the most common real-world need, since usually only the scanned pages are sideways.',
+      },
+      {
+        question: 'Does rotating reduce PDF quality?',
+        answer: 'No. Rotation changes page orientation metadata and layout, not image encoding — photos and text keep their original quality.',
+      },
+    ],
+  },
+  {
+    slug: 'pdfpixels-vs-adobe-redact-pdf',
+    title: 'PdfPixels vs Adobe Acrobat for PDF Redaction',
+    description: 'Compare true redaction vs cover-ups, SSN and sensitive-data handling, and cost between PdfPixels and Adobe Acrobat.',
+    primaryToolSlug: 'redact-pdf',
+    alternatives: ['Adobe Acrobat'],
+    bestFor: ['SSN and PII blackouts', 'Court-ready redaction', 'No-subscription privacy jobs'],
+    overview:
+      'Redaction done wrong is worse than no redaction: drawing black rectangles over text in a PDF editor leaves the words sitting underneath, copyable by anyone who selects them. Real redaction burns the content out of the file. Adobe Acrobat Pro does this properly — behind a subscription most people open twice a year. PdfPixels Redact PDF applies true content-removing blackouts for SSNs, financial details, and confidential clauses without the subscription.',
+    whenToChooseUs: [
+      'You need to black out SSNs, account numbers, or names before sharing a document',
+      'You want true content removal, not decorative black rectangles over live text',
+      'Redaction is an occasional job that cannot justify a yearly subscription',
+    ],
+    whenToChooseAlt: [
+      'Your legal team requires Adobe-certified redaction audit trails for court filings',
+      'You redact hundred-page discovery bundles with pattern-search automation daily',
+      'Your firm standardized on Acrobat Pro with IT-managed redaction profiles',
+    ],
+    keyDifferences: [
+      {
+        topic: 'Redaction integrity',
+        pdfpixels: 'Sensitive content is permanently removed from the document, not covered up',
+        alternative: 'Proper redaction engine plus enterprise audit and exemption-code workflows',
+      },
+      {
+        topic: 'Access model',
+        pdfpixels: 'Free occasional redaction without signup or subscription',
+        alternative: 'True redaction lives in paid Acrobat Pro, not the free Reader',
+      },
+      {
+        topic: 'Best fit',
+        pdfpixels: 'Everyday privacy blackouts before sharing, filing, or publishing',
+        alternative: 'Litigation-scale redaction with compliance documentation',
+      },
+    ],
+    verdict:
+      'Pick PdfPixels Redact PDF for honest, permanent blackouts on everyday sensitive documents. Choose Adobe Acrobat when redaction volume or court-audit requirements demand the enterprise toolchain.',
+    faqs: [
+      {
+        question: 'Is drawing black boxes over text real redaction?',
+        answer: 'No. Covered-up text remains in the file and can be copied out. True redaction removes the content stream itself — which is what PdfPixels applies.',
+      },
+      {
+        question: 'Should I flatten the PDF after redacting?',
+        answer: 'For maximum compatibility with picky court and government portals, flattening afterward locks every layer down. Do redaction first, then flatten as the final step.',
+      },
+    ],
+  },
 ];
 

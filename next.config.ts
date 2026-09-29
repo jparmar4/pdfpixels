@@ -119,6 +119,21 @@ const nextConfig: NextConfig = {
           // X-Powered-By is already disabled via poweredByHeader: false
         ],
       },
+      // Next.js hashed build assets — immutable forever. This is the critical
+      // rule that keeps `/_next/static/chunks/...` cacheable across deploys
+      // while HTML shells revalidate quickly (see the HTML rule below). A
+      // stale HTML shell referencing a pruned chunk is the #1 cause of
+      // "Loading chunk N failed" taking down all /tools/[slug] pages at once,
+      // so these must never be served stale or 404 due to a catch-all rule.
+      {
+        source: '/_next/static/:path*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
       // Static images - long cache
       {
         source: '/:all*(svg|jpg|jpeg|png|gif|ico|webp|avif)',
@@ -129,7 +144,7 @@ const nextConfig: NextConfig = {
           },
         ],
       },
-      // JS and CSS - long cache
+      // JS and CSS - long cache (fallback for non-_next hashed assets)
       {
         source: '/:all*(js|css)',
         headers: [

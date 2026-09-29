@@ -198,11 +198,11 @@ export function Navigation() {
         <div className="container mx-auto flex min-h-10 items-center justify-between gap-4 px-4 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground lg:px-8">
           <div className="hidden items-center gap-3 md:flex">
             <span className="inline-flex items-center gap-2">
-              <ShieldCheck className="h-3.5 w-3.5 text-emerald-500" />
+              <ShieldCheck className="h-3.5 w-3.5 text-success" />
               Private workflows
             </span>
             <span className="inline-flex items-center gap-2">
-              <Zap className="h-3.5 w-3.5 text-sky-500" />
+              <Zap className="h-3.5 w-3.5 text-info" />
               Built for speed
             </span>
           </div>
@@ -417,8 +417,8 @@ export function Navigation() {
                         </p>
                         <div className="mt-4 flex flex-wrap gap-1.5 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
                           <span className="rounded-full border border-border/60 bg-card px-2 py-0.5 text-primary">{allPdfTools.length} Tools</span>
-                          <span className="rounded-full border border-border/60 bg-card px-2 py-0.5 text-emerald-600 dark:text-emerald-400">100% Free</span>
-                          <span className="rounded-full border border-border/60 bg-card px-2 py-0.5 text-sky-600 dark:text-sky-400">No Signup</span>
+                          <span className="rounded-full border border-border/60 bg-card px-2 py-0.5 text-success">100% Free</span>
+                          <span className="rounded-full border border-border/60 bg-card px-2 py-0.5 text-info">No Signup</span>
                         </div>
                       </div>
                       <div className="mt-5 border-t border-border/40 pt-4">

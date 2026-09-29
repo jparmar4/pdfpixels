@@ -21,7 +21,7 @@ export function ToolLimitNotice({ title = 'Tool limits', limits }: ToolLimitNoti
             <p className="text-xs text-muted-foreground">Keep the workflow predictable across devices.</p>
           </div>
         </div>
-        <div className="hidden items-center gap-2 rounded-full border border-emerald-500/15 bg-emerald-500/5 px-3 py-1 text-xs font-semibold text-emerald-700 dark:text-emerald-300 sm:inline-flex">
+        <div className="hidden items-center gap-2 rounded-full border border-success/15 bg-success/[0.06] px-3 py-1 text-xs font-semibold text-success sm:inline-flex">
           <ShieldCheck className="h-3.5 w-3.5" />
           Stable output
         </div>

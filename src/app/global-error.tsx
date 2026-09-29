@@ -19,6 +19,11 @@ export default function GlobalError({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  const isChunk =
+    typeof error?.message === 'string' &&
+    (/Loading chunk/i.test(error.message) ||
+      /ChunkLoadError/i.test(error.message) ||
+      /dynamically imported module/i.test(error.message));
   return (
     <html lang="en" className={`${inter.variable} font-sans`}>
       <body>
@@ -27,13 +32,21 @@ export default function GlobalError({
             <div className="text-3xl font-bold text-destructive">!</div>
           </div>
           <h1 className="mb-4 text-3xl font-extrabold tracking-tight md:text-4xl">
-            Critical System Error
+            {isChunk ? 'A fresh update just shipped' : 'Critical System Error'}
           </h1>
           <p className="mb-8 max-w-[500px] text-muted-foreground">
-            A critical error occurred. Please try refreshing the page. If the problem persists, please contact support.
+            {isChunk
+              ? 'Your browser loaded an older version of this page. Reload to get the latest version.'
+              : 'A critical error occurred. Please try refreshing the page. If the problem persists, please contact support.'}
           </p>
           <div className="flex gap-4">
-            <Button onClick={() => reset()} className="gap-2">
+            <Button
+              onClick={() => {
+                if (isChunk) window.location.reload();
+                else reset();
+              }}
+              className="gap-2"
+            >
               <RefreshCcw className="h-4 w-4" />
               Try again
             </Button>

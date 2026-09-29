@@ -255,10 +255,10 @@ export function CompressWorkspace() {
           {result && processedImage && uploadedFile ? (
             <motion.div id="image-compress-result" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -16 }} className="space-y-4 pt-2">
               <div className="flex flex-wrap items-center gap-3">
-                <Badge className="rounded-full border border-emerald-500/20 bg-emerald-500/10 px-4 py-2 text-sm font-bold text-emerald-700 hover:bg-emerald-500/15 dark:text-emerald-300">
+                <Badge className="rounded-full border border-success/20 bg-success/10 px-4 py-2 font-mono text-sm font-bold tabular-nums text-success hover:bg-success/15">
                   {isIncrease ? `Increased ${result.savedPercent}%` : `Saved ${result.savedPercent}%`}
                 </Badge>
-                <Badge variant="secondary" className="rounded-full px-4 py-2 text-sm font-semibold">
+                <Badge variant="secondary" className="rounded-full px-4 py-2 font-mono text-sm font-semibold tabular-nums">
                   {formatSize(result.originalSize)}
                   <ArrowRight className="mx-2 inline h-3.5 w-3.5" />
                   {formatSize(result.processedSize)}

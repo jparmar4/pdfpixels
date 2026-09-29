@@ -30,12 +30,12 @@ export async function GET() {
   lines.push('## PDF Tools Super Suite');
   lines.push('');
   lines.push(`- Complete PDF Suite (${allPdfTools.length} tools): ${SITE_URL}/pdf-tools — Full browser-based and server PDF suite with zero registration.`);
-  lines.push('- Organize: Merge PDF, Split PDF, Rotate PDF, Delete Pages, Extract Pages, Reorder Pages, Number Pages, Duplicate Pages, Add Blank Page, Crop PDF');
-  lines.push('- Compress & Optimize: Compress PDF (Extreme/Recommended/Low/Target KB), Grayscale PDF, Flatten PDF, Web Linearize, Repair PDF');
-  lines.push('- Convert to PDF: Word to PDF, Excel to PDF, PPT to PDF, JPG to PDF, PNG to PDF, Text to PDF, HTML to PDF, EPUB to PDF, Markdown to PDF, WebP to PDF, SVG to PDF');
-  lines.push('- Convert from PDF: PDF to Word, PDF to Excel, PDF to PPT, PDF to JPG, PDF to PNG, PDF to Text, PDF to HTML, PDF to EPUB, PDF to CSV');
-  lines.push('- Edit & Sign: Edit PDF, Sign PDF (Electronic Signature), Fill PDF Form, Watermark PDF, Add Page Numbers, Header/Footer, Draw on PDF, Whiteout PDF, Compare PDF');
-  lines.push('- Security & Privacy: Protect PDF (AES-256 password encrypt), Unlock PDF, Redact PDF (Permanent Blackout), Sanitize PDF (Metadata Strip), Remove Permissions');
+  lines.push('- Organize: Merge PDF, Split PDF (range or by file size), Rotate PDF, Delete Pages, Extract Pages, Reorder Pages, Crop PDF, Resize to paper sizes, N-up layouts, Page Numbers, Bates Numbering, PDF Reader, Word Counter, Extract Images');
+  lines.push('- Compress & Optimize: Compress PDF (Extreme/Recommended/Low plus 50KB-1MB targets), Fast Web View (Linearize), Repair PDF, Grayscale PDF, Flatten PDF, PDF/A archival, Sanitize (metadata strip), CMYK print conversion');
+  lines.push('- Convert to PDF: Word to PDF, Excel to PDF, PowerPoint to PDF, Text to PDF, TIFF to PDF, HEIC to PDF, Images to PDF');
+  lines.push('- Convert from PDF: PDF to Word, PDF to Excel, PDF to CSV, PDF to PowerPoint, PDF to JPG, PDF to Text, OCR scanned PDFs, Bank Statement to Excel');
+  lines.push('- Edit & Sign: Sign PDF (draw, type, or upload signature), Fill PDF Forms, PDF Metadata Editor, Watermark PDF, Redact PDF (permanent blackout), Compare PDFs');
+  lines.push('- Security & Privacy: Protect PDF (password encrypt), Unlock PDF');
   lines.push('');
   lines.push('## Popular tools');
   lines.push('');

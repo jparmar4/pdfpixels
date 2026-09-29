@@ -1,7 +1,7 @@
 'use client';
 
 import { useDeferredValue, useState, useMemo, Suspense } from 'react';
-import { ArrowRight, ArrowUpRight, Clock, Files, Minimize2, Search, ShieldCheck, Sparkles, Star, Wrench, X, Zap } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, Clock, FileImage, Files, Minimize2, Search, ShieldCheck, Sparkles, Star, Wrench, X, Zap } from 'lucide-react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { CategorySection } from '@/components/layout/category-section';
@@ -71,7 +71,7 @@ function ToolsHeader({
                   The complete PDF &amp; image toolkit — free forever
                 </p>
                 <h1 id="home-hero-title" className="text-balance text-4xl md:text-5xl lg:text-[3.4rem] font-bold tracking-tight mb-3 leading-[1.06]">
-                  PDF &amp; image tools that <span className="gradient-text whitespace-nowrap">just work</span>
+                  Free online PDF &amp; image tools that <span className="gradient-text whitespace-nowrap">just work</span>
                 </h1>
                 <p id="home-hero-summary" className="text-base md:text-lg mb-5 max-w-2xl mx-auto leading-relaxed text-muted-foreground">
                   Compress, convert, edit, and sign files in seconds — right in your browser.
@@ -91,11 +91,14 @@ function ToolsHeader({
               <Search className="h-5 w-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
             </div>
             <input
-              type="text"
+              type="search"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder={`Search ${allTools.length}+ tools — try “compress pdf”`}
               aria-label="Search tools"
+              aria-controls="tools-directory"
+              autoComplete="off"
+              spellCheck={false}
               className="block w-full pl-14 pr-12 py-4 border border-border rounded-2xl leading-5 bg-card shadow-premium placeholder:text-muted-foreground/70 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary/40 transition-all duration-300 text-base font-medium hover:shadow-lift-md hover:border-primary/25"
             />
             {search && (
@@ -160,7 +163,7 @@ function PopularToolsMiniGrid() {
   const items = [
     { title: 'Compress PDF', href: '/tools/compress-pdf', desc: 'Reduce file size fast', icon: Minimize2, chip: 'icon-violet' },
     { title: 'Merge PDF', href: '/tools/merge-pdf', desc: 'Combine multiple PDFs', icon: Files, chip: 'icon-blue' },
-    { title: 'Linearize PDF', href: '/tools/linearize-pdf', desc: 'Fast web view optimization', icon: Zap, chip: 'icon-cyan', badge: 'New' },
+    { title: 'Compress Image', href: '/tools/compress-image', desc: 'Shrink JPG, PNG & WebP', icon: FileImage, chip: 'icon-emerald' },
     { title: 'Remove BG', href: '/tools/remove-image-background', desc: 'AI background removal', icon: Sparkles, chip: 'icon-violet', badge: 'AI' },
   ];
 
@@ -347,7 +350,7 @@ function ToolsSectionInner({
 
       <div className="container mx-auto px-4 lg:px-8 py-8 space-y-6">
         {search && (
-          <p className="text-sm font-medium text-muted-foreground">
+          <p role="status" className="text-sm font-medium tabular-nums text-muted-foreground">
             {filteredCategories.reduce((acc, c) => acc + c.tools.length, 0)} tools match &quot;{search}&quot;
           </p>
         )}

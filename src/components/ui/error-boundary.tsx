@@ -29,6 +29,12 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 
   private handleReset = () => {
+    const message = this.state.error?.message ?? '';
+    if (/Loading chunk|ChunkLoadError|dynamically imported module/i.test(message)) {
+      // Re-rendering would re-request the same missing hashed chunk.
+      window.location.reload();
+      return;
+    }
     this.setState({ hasError: false, error: undefined });
   };
 

@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import Link from 'next/link';
 import { AlertCircle, RefreshCcw, Home } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { hardReloadOnceForChunk, isChunkLoadError } from '@/lib/chunk-recovery';
 
 export default function PdfToolsError({
   error,
@@ -14,6 +15,7 @@ export default function PdfToolsError({
 }) {
   useEffect(() => {
     console.error('PDF Tools page error:', error);
+    if (isChunkLoadError(error)) hardReloadOnceForChunk();
   }, [error]);
 
   return (
@@ -29,7 +31,14 @@ export default function PdfToolsError({
           </p>
         </div>
         <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
-          <Button onClick={reset} variant="default" className="gap-2 rounded-xl">
+          <Button
+            onClick={() => {
+              if (isChunkLoadError(error)) window.location.reload();
+              else reset();
+            }}
+            variant="default"
+            className="gap-2 rounded-xl"
+          >
             <RefreshCcw className="w-4 h-4" />
             Reload suite
           </Button>

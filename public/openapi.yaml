@@ -23,7 +23,7 @@ info:
     - 20 requests per minute per processing route per IP (pdf/*, image/*, ai)
     - 100 requests per minute global for other API routes
     - Contact (3/min) and newsletter (5/min) endpoints are stricter
-    - Limits verified against production code on 2026-09-25; see https://www.pdfpixels.com/llms-full.txt
+    - Limits verified against production code on 2026-09-29; see https://www.pdfpixels.com/llms-full.txt
     
     ## Support
     Email: support@pdfpixels.com
@@ -285,26 +285,12 @@ paths:
                   maxItems: 20
       responses:
         '200':
-          description: Successfully merged PDFs
+          description: Merged PDF file (binary download; page count in X-Page-Count header)
           content:
-            application/json:
+            application/pdf:
               schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  pdfUrl:
-                    type: string
-                    format: uri
-                    description: Base64 data URL of merged PDF
-                  pageCount:
-                    type: integer
-                    description: Total pages in merged PDF
-                    example: 15
-                  fileName:
-                    type: string
-                    example: merged-1234567890.pdf
+                type: string
+                format: binary
         '400':
           description: Bad request - missing or invalid files
           content:
@@ -351,43 +337,22 @@ paths:
                   example: 25
       responses:
         '200':
-          description: Successfully split PDF
+          description: Split result as a binary download ('range'/'single' return one PDF; 'all'/'size' return a ZIP of part PDFs)
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+            application/zip:
+              schema:
+                type: string
+                format: binary
+        '400':
+          description: Bad request - invalid pages or mode
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  mode:
-                    type: string
-                    example: split-all
-                  totalPages:
-                    type: integer
-                    example: 10
-                  pages:
-                    type: array
-                    description: Array of split pages (for 'all' mode)
-                    items:
-                      type: object
-                      properties:
-                        pageNumber:
-                          type: integer
-                        pdfUrl:
-                          type: string
-                          format: uri
-                        fileName:
-                          type: string
-                  pdfUrl:
-                    type: string
-                    format: uri
-                    description: Extracted PDF URL (for 'range' or 'single' mode)
-                  extractedPages:
-                    type: array
-                    items:
-                      type: integer
-                    example: [1, 2, 3, 5]
+                $ref: '#/components/schemas/Error'
 
   /pdf/ocr:
     post:
@@ -564,7 +529,14 @@ paths:
   /pdf/compress:
     post:
       summary: Compress PDF
-      description: Reduce PDF file size while maintaining quality
+      description: |
+        Reduce PDF file size with Ghostscript (images re-encoded, vector text kept
+        sharp). Levels: less (high quality), recommended, extreme (smallest).
+        Optional targetKb aims at an exact ceiling (e.g. 200 for portal limits);
+        pass force=1 to download the best attempt even above target. Success is a
+        binary PDF download; before/after sizes arrive in X-Size-Before,
+        X-Size-After, and X-Saved-Percent headers. Already-optimized PDFs return
+        the original bytes instead of an error.
       operationId: compressPdf
       tags:
         - PDF Processing
@@ -581,30 +553,30 @@ paths:
                   type: string
                   format: binary
                   description: PDF file to compress (max 50MB)
-                quality:
+                level:
                   type: string
-                  description: Compression quality
-                  enum: [low, medium, high]
-                  default: medium
+                  description: Compression profile
+                  enum: [less, recommended, extreme]
+                  default: recommended
+                targetKb:
+                  type: integer
+                  description: Exact size target in KB (50-10240). Picks the profile automatically.
+                  example: 200
+                force:
+                  type: string
+                  description: Set to 1 to download the best attempt even when the target is missed
+                  enum: ['0', '1']
+                  default: '0'
       responses:
         '200':
-          description: Successfully compressed PDF
+          description: Compressed PDF file (binary download)
           content:
-            application/json:
+            application/pdf:
               schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                  pdfUrl:
-                    type: string
-                    format: uri
-                  originalSize:
-                    type: integer
-                  compressedSize:
-                    type: integer
-                  savedPercent:
-                    type: integer
+                type: string
+                format: binary
+        '422':
+          description: Output missed the requested targetKb (body includes before/after sizes and canForce flag)
 
   /pdf/to-image:
     post:
@@ -695,7 +667,471 @@ paths:
                   default: a4
       responses:
         '200':
-          description: Successfully created PDF from images
+          description: Created PDF file (binary download; up to 30 images per PDF)
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+        '400':
+          description: Bad request - missing or invalid images
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /pdf/to-word:
+    post:
+      summary: Convert PDF to editable Word (.docx)
+      description: |
+        Convert a PDF into an editable Microsoft Word document with structured
+        paragraphs and preserved tables/lists. Text-based PDFs convert cleanly;
+        scanned PDFs without a text layer should go through /pdf/ocr first.
+        Max 50MB per file.
+      operationId: pdfToWord
+      tags:
+        - PDF Processing
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - file
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: PDF file to convert (max 50MB)
+      responses:
+        '200':
+          description: Editable Word document (binary .docx download)
+          content:
+            application/vnd.openxmlformats-officedocument.wordprocessingml.document:
+              schema:
+                type: string
+                format: binary
+
+  /pdf/to-excel:
+    post:
+      summary: Extract PDF tables to Excel or CSV
+      description: |
+        Extract tables, rows, and financial data from invoices and statements
+        into .xlsx (default) or .csv. For bank/credit-card statements with
+        statement-aware parsing, prefer /pdf/bank-statement-to-excel.
+        Max 50MB per file.
+      operationId: pdfToExcel
+      tags:
+        - PDF Processing
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - file
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: PDF file to convert (max 50MB)
+                format:
+                  type: string
+                  enum: [xlsx, csv]
+                  default: xlsx
+      responses:
+        '200':
+          description: Spreadsheet file (binary .xlsx download, or CSV text when format=csv)
+          content:
+            application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
+              schema:
+                type: string
+                format: binary
+            text/csv:
+              schema:
+                type: string
+
+  /pdf/to-text:
+    post:
+      summary: Extract selectable text from a PDF
+      description: |
+        Extract clean text from a PDF. Returns JSON with text plus page/word
+        counts by default, or plain text when format=txt. Max 50MB per file.
+      operationId: pdfToText
+      tags:
+        - PDF Processing
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - file
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: PDF file to extract text from (max 50MB)
+                format:
+                  type: string
+                  enum: [json, txt]
+                  default: json
+      responses:
+        '200':
+          description: Extracted text (JSON object or plain text)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  text:
+                    type: string
+                  pages:
+                    type: integer
+                  wordCount:
+                    type: integer
+            text/plain:
+              schema:
+                type: string
+
+  /pdf/to-pptx:
+    post:
+      summary: Convert PDF pages to PowerPoint slides
+      description: |
+        Convert PDF pages into an editable .pptx deck with one high-resolution
+        slide image per page. Capped at 300 pages. Max 50MB per file.
+      operationId: pdfToPptx
+      tags:
+        - PDF Processing
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - file
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: PDF file to convert (max 50MB, up to 300 pages)
+      responses:
+        '200':
+          description: PowerPoint deck (binary .pptx download)
+          content:
+            application/vnd.openxmlformats-officedocument.presentationml.presentation:
+              schema:
+                type: string
+                format: binary
+
+  /pdf/from-word:
+    post:
+      summary: Convert Word (.docx) to PDF
+      description: |
+        Convert a Microsoft Word document into a print-ready PDF with formatting
+        preserved (LibreOffice engine). Office files up to 25MB.
+      operationId: wordToPdf
+      tags:
+        - PDF Processing
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - file
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: Word document (.docx, .doc; max 25MB)
+      responses:
+        '200':
+          description: Generated PDF (binary download)
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+
+  /pdf/from-excel:
+    post:
+      summary: Convert Excel spreadsheets to PDF
+      description: |
+        Convert .xlsx/.xls/.csv spreadsheets into a print-ready PDF with table
+        layout preserved. Office files up to 25MB.
+      operationId: excelToPdf
+      tags:
+        - PDF Processing
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - file
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: Spreadsheet file (.xlsx, .xls, .csv; max 25MB)
+      responses:
+        '200':
+          description: Generated PDF (binary download)
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+
+  /pdf/from-powerpoint:
+    post:
+      summary: Convert PowerPoint slides to PDF
+      description: |
+        Convert a .pptx/.ppt presentation into a shareable PDF with slide
+        layout preserved. Office files up to 25MB.
+      operationId: powerpointToPdf
+      tags:
+        - PDF Processing
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - file
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: Presentation file (.pptx, .ppt; max 25MB)
+      responses:
+        '200':
+          description: Generated PDF (binary download)
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+
+  /pdf/from-heic:
+    post:
+      summary: Convert iPhone HEIC photos to PDF
+      description: |
+        Build a PDF from Apple HEIC/HEIF photos with page orientation and
+        margin control. Max 50MB per request.
+      operationId: heicToPdf
+      tags:
+        - PDF Processing
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - file
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: HEIC/HEIF photo(s) to convert
+                orientation:
+                  type: string
+                  enum: [auto, portrait, landscape]
+                  default: auto
+                margin:
+                  type: number
+                  description: Page margin in points
+                  default: 20
+      responses:
+        '200':
+          description: Generated PDF (binary download)
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+
+  /pdf/bank-statement-to-excel:
+    post:
+      summary: Convert bank statements to Excel/CSV
+      description: |
+        Statement-aware extraction of transactions from bank and credit-card
+        statement PDFs into .xlsx (default) or .csv for accounting and
+        reconciliation. An optional transactions JSON array overrides
+        auto-detection. Max 50MB per file.
+      operationId: bankStatementToExcel
+      tags:
+        - PDF Processing
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - file
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: Bank statement PDF (max 50MB)
+                format:
+                  type: string
+                  enum: [xlsx, csv]
+                  default: xlsx
+                transactions:
+                  type: string
+                  description: Optional JSON array of transaction rows overriding auto-detection
+      responses:
+        '200':
+          description: Spreadsheet file (binary .xlsx download, or CSV text when format=csv)
+          content:
+            application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
+              schema:
+                type: string
+                format: binary
+            text/csv:
+              schema:
+                type: string
+
+  /pdf/to-pdfa:
+    post:
+      summary: Convert PDF to archival PDF/A
+      description: |
+        Convert a standard PDF into ISO-compliant PDF/A for long-term archiving
+        and compliance. Conformance 1b or 2b (default). Max 50MB per file.
+      operationId: pdfToPdfa
+      tags:
+        - PDF Processing
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - file
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: PDF file to convert (max 50MB)
+                conformance:
+                  type: string
+                  enum: ['1b', '2b']
+                  default: 2b
+      responses:
+        '200':
+          description: PDF/A file (binary download)
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+
+  /pdf/to-cmyk:
+    post:
+      summary: Convert an RGB PDF to CMYK for print
+      description: |
+        Convert an RGB PDF into true CMYK color space for professional offset
+        printing and prepress compliance. Max 50MB per file.
+      operationId: pdfToCmyk
+      tags:
+        - PDF Processing
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - file
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: RGB PDF file to convert (max 50MB)
+      responses:
+        '200':
+          description: CMYK PDF file (binary download)
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+
+  /image/heic:
+    post:
+      summary: Convert a HEIC photo to JPEG
+      description: |
+        Decode an iPhone HEIC/HEIF photo and return a JPEG image (binary).
+        Rejects non-HEIC uploads with 400. Max 25MB per file.
+      operationId: heicToJpeg
+      tags:
+        - Image Processing
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - file
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: HEIC/HEIF photo (max 25MB)
+      responses:
+        '200':
+          description: Converted JPEG image (binary)
+          content:
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
+
+  /image/ocr:
+    post:
+      summary: Prepare an image for client-side OCR
+      description: |
+        Accepts an image (HEIC auto-decoded, 10MB max) plus an OCR language
+        code (default eng) and returns a JSON payload with a data-URL image
+        for client-side Tesseract.js recognition. The text recognition itself
+        runs in the browser.
+      operationId: imageOcrPrep
+      tags:
+        - Image Processing
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - image
+              properties:
+                image:
+                  type: string
+                  format: binary
+                  description: Image to recognize text in (max 10MB; HEIC accepted)
+                language:
+                  type: string
+                  description: Tesseract language code (e.g. eng, spa, fra, deu, hin)
+                  default: eng
+                  example: eng
+      responses:
+        '200':
+          description: OCR preparation payload
           content:
             application/json:
               schema:
@@ -703,10 +1139,81 @@ paths:
                 properties:
                   success:
                     type: boolean
-                  pdfUrl:
+                  imageUrl:
                     type: string
-                    format: uri
-                  pageCount:
+                    description: Data-URL image for client-side Tesseract.js
+                  language:
+                    type: string
+                  processingMode:
+                    type: string
+                    example: client
+
+  /ai:
+    post:
+      summary: AI-enhance an image or blur faces/backgrounds
+      description: |
+        Server AI pipeline for photo enhancement, background blur, and face
+        blur. Modes: balanced (default), high, privacy-max. blur-face additionally
+        accepts expectedFaces (mismatch reported as faceCountMismatch) and
+        faceStyle (blur or pixelate). Images up to 20MB. Returns JSON with a
+        base64 data-URL result.
+      operationId: aiEnhanceImage
+      tags:
+        - Image Processing
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - image
+              properties:
+                image:
+                  type: string
+                  format: binary
+                  description: Image to process (max 20MB; JPG or PNG recommended)
+                tool:
+                  type: string
+                  description: AI job to run
+                  default: enhance-image
+                  example: enhance-image
+                mode:
+                  type: string
+                  enum: [balanced, high, privacy-max]
+                  default: balanced
+                blurStrength:
+                  type: integer
+                  description: Blur intensity for background/face jobs
+                faceStyle:
+                  type: string
+                  enum: [blur, pixelate]
+                  default: blur
+                expectedFaces:
+                  type: integer
+                  description: Expected face count for blur-face verification
+      responses:
+        '200':
+          description: Enhancement result payload
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  imageUrl:
+                    type: string
+                    description: Base64 data URL of the processed image
+                  tool:
+                    type: string
+                  engine:
+                    type: string
+                  mode:
+                    type: string
+                  outputBytes:
+                    type: integer
+                  faceCount:
                     type: integer
 
 components:

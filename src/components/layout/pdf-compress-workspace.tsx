@@ -320,12 +320,12 @@ export function CompressPDFWorkspace({ targetPreset }: CompressPDFWorkspaceProps
         {uploadedFile ? (
           <div className="rounded-2xl border border-border/60 bg-card/70 px-4 py-3 flex flex-wrap items-center justify-between gap-2">
             <div className="flex items-center gap-3 min-w-0">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-red-500/10 text-red-500">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-destructive/10 text-destructive">
                 <FileText className="h-5 w-5" />
               </div>
               <div className="min-w-0">
                 <p className="text-sm font-semibold truncate">{uploadedFile.name}</p>
-                <p className="text-xs text-muted-foreground">
+                <p className="font-mono text-xs tabular-nums text-muted-foreground">
                   {formatSize(uploadedFile.size)}
                   {pdfMeta?.pages ? ` · ${pdfMeta.pages} page${pdfMeta.pages === 1 ? '' : 's'}` : ''}
                 </p>
@@ -339,7 +339,7 @@ export function CompressPDFWorkspace({ targetPreset }: CompressPDFWorkspaceProps
           <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
             <div className="rounded-[1.75rem] border border-border/60 bg-card/75 p-6 shadow-premium backdrop-blur-sm">
               <div className="mb-5 flex items-start gap-3">
-                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-red-500/10 text-red-500">
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-destructive/10 text-destructive">
                   <FileText className="h-5 w-5" />
                 </div>
                 <div>
@@ -458,11 +458,11 @@ export function CompressPDFWorkspace({ targetPreset }: CompressPDFWorkspaceProps
         {result && uploadedFile ? (
           <div id="compress-result" className="space-y-4 pt-2">
             <div className="flex flex-wrap items-center gap-3">
-              <Badge className="rounded-full border border-emerald-500/20 bg-emerald-500/10 px-4 py-2 text-sm font-bold text-emerald-700 hover:bg-emerald-500/15 dark:text-emerald-300">
+              <Badge className="rounded-full border border-success/20 bg-success/10 px-4 py-2 font-mono text-sm font-bold tabular-nums text-success hover:bg-success/15">
                 <CheckCircle2 className="mr-1.5 inline h-3.5 w-3.5" />
                 Saved {result.savedPercent}%
               </Badge>
-              <Badge variant="secondary" className="rounded-full px-4 py-2 text-sm font-semibold">
+              <Badge variant="secondary" className="rounded-full px-4 py-2 font-mono text-sm font-semibold tabular-nums">
                 {formatSize(result.originalSize)}
                 <ArrowRight className="mx-2 inline h-3.5 w-3.5" />
                 {formatSize(result.processedSize)}

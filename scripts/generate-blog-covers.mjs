@@ -217,6 +217,12 @@ const COVERS = [
     kicker: 'PIXELS & PRINT GUIDE',
     icon: ICONS.dpi,
   },
+  {
+    file: 'pdf-to-word-converter-hero.jpg',
+    headline: 'Convert PDF to Editable Word in Seconds',
+    kicker: 'DOCX GUIDE · FREE',
+    icon: ICONS.form,
+  },
 ];
 
 function coverSvg({ headline, kicker, icon }) {

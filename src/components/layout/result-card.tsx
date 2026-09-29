@@ -26,13 +26,13 @@ export function ResultCard({
   nextActions = [],
 }: ResultCardProps) {
   return (
-    <div className="relative overflow-hidden rounded-[1.75rem] border border-emerald-500/25 bg-[linear-gradient(180deg,rgba(16,185,129,0.08),rgba(255,255,255,0.82))] p-6 shadow-premium dark:bg-[linear-gradient(180deg,rgba(16,185,129,0.14),rgba(17,24,39,0.82))]">
-      <div className="absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-emerald-500/50 to-transparent" />
+    <div className="relative overflow-hidden rounded-[1.75rem] border border-success/25 bg-success/[0.06] p-6 shadow-premium dark:bg-success/[0.12]">
+      <div className="absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-success/50 to-transparent" />
 
       <div className="relative z-10 space-y-5">
         <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
           <div className="flex items-start gap-3.5">
-            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-emerald-500/15 text-emerald-600 shadow-sm dark:text-emerald-300">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-success/15 text-success shadow-sm">
               <CheckCircle2 className="h-5 w-5" />
             </div>
             <div className="space-y-1.5">
@@ -42,17 +42,17 @@ export function ResultCard({
               <p className="text-sm leading-6 text-muted-foreground">
                 {normalizeDisplayText(description)}
               </p>
-              {primaryMeta ? <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">{normalizeDisplayText(primaryMeta)}</p> : null}
+              {primaryMeta ? <p className="text-xs font-medium uppercase tabular-nums tracking-[0.14em] text-muted-foreground">{normalizeDisplayText(primaryMeta)}</p> : null}
             </div>
           </div>
 
           <div className="flex flex-wrap gap-2 text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-            <span className="inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-background/80 px-3 py-1.5">
-              <Sparkles className="h-3.5 w-3.5 text-emerald-500" />
+            <span className="inline-flex items-center gap-2 rounded-full border border-success/20 bg-background/80 px-3 py-1.5">
+              <Sparkles className="h-3.5 w-3.5 text-success" />
               Ready to download
             </span>
             <span className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-background/80 px-3 py-1.5">
-              <ShieldCheck className="h-3.5 w-3.5 text-sky-500" />
+              <ShieldCheck className="h-3.5 w-3.5 text-info" />
               Securely processed
             </span>
           </div>

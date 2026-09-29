@@ -36,10 +36,10 @@ export function ToolPageHeader({
   const tool = activeToolId ? getToolById(activeToolId) : undefined;
   const lowerText = `${tool?.id || ''} ${safeTitle} ${safeDescription}`.toLowerCase();
   const processingMeta = tool?.processing === 'client'
-    ? { label: 'Browser-native', icon: MonitorSmartphone, tone: 'text-emerald-600 dark:text-emerald-300' }
+    ? { label: 'Browser-native', icon: MonitorSmartphone, tone: 'text-success' }
     : tool?.processing === 'ai' || isAI
       ? { label: 'AI-enhanced', icon: Wand2, tone: 'text-violet-600 dark:text-violet-300' }
-      : { label: 'Server-optimized', icon: Server, tone: 'text-sky-600 dark:text-sky-300' };
+      : { label: 'Server-optimized', icon: Server, tone: 'text-info' };
   const workflowMeta = [
     {
       label: 'Input',
@@ -111,11 +111,11 @@ export function ToolPageHeader({
 
               <div className="flex flex-wrap gap-2.5 text-xs font-medium text-muted-foreground">
                 <span className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-background/75 px-3 py-1.5">
-                  <Zap className="h-3.5 w-3.5 text-sky-500" />
+                  <Zap className="h-3.5 w-3.5 text-info" />
                   Fast workflow
                 </span>
                 <span className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-background/75 px-3 py-1.5">
-                  <ShieldCheck className="h-3.5 w-3.5 text-emerald-500" />
+                  <ShieldCheck className="h-3.5 w-3.5 text-success" />
                   Private processing
                 </span>
                 <span className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-background/75 px-3 py-1.5">
@@ -141,7 +141,7 @@ export function ToolPageHeader({
           <div className="mt-3 space-y-3 text-sm text-muted-foreground">
             <div className="flex items-center justify-between gap-3 rounded-2xl border border-border/50 bg-card/70 px-3 py-2">
               <span>1. Upload your file</span>
-              <ShieldCheck className="h-4 w-4 text-emerald-500" />
+              <ShieldCheck className="h-4 w-4 text-success" />
             </div>
             <div className="flex items-center justify-between gap-3 rounded-2xl border border-border/50 bg-card/70 px-3 py-2">
               <span>2. Tune output settings</span>
@@ -149,7 +149,7 @@ export function ToolPageHeader({
             </div>
             <div className="flex items-center justify-between gap-3 rounded-2xl border border-border/50 bg-card/70 px-3 py-2">
               <span>3. Download polished result</span>
-              <Download className="h-4 w-4 text-sky-500" />
+              <Download className="h-4 w-4 text-info" />
             </div>
           </div>
 

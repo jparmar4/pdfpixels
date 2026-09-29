@@ -167,15 +167,15 @@ function ProcessingLabel({ processing }: { processing: string }) {
   if (processing === 'client') {
     return (
       <span className="inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
-        <ShieldCheck className="h-3.5 w-3.5 text-emerald-500" />
+        <ShieldCheck className="h-3.5 w-3.5 text-success" />
         Runs in your browser
       </span>
     );
   }
   return (
     <span className="inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
-      <Cpu className="h-3.5 w-3.5 text-sky-500" />
-      Server optimized
+        <Cpu className="h-3.5 w-3.5 text-info" />
+        Server optimized
     </span>
   );
 }

@@ -12,7 +12,7 @@
  */
 
 /** Date these limits were last verified against the route code (YYYY-MM-DD). */
-export const LIMITS_LAST_REVIEWED = '2026-09-25';
+export const LIMITS_LAST_REVIEWED = '2026-09-29';
 
 export const platformLimits = {
   pdf: {
