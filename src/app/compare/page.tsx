@@ -35,7 +35,7 @@ export const metadata: Metadata = {
         images: [DEFAULT_OG_IMAGE_URL],
     },
     robots: {
-        index: true,
+        index: false,
         follow: true,
     },
 };

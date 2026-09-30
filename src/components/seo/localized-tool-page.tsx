@@ -32,6 +32,14 @@ export function localizedMetadata(locale: LocaleCode, slug: string): Metadata {
       locale: pack.ogLocale,
       type: 'website',
     },
+    robots: {
+      index: false,
+      follow: true,
+      googleBot: {
+        index: false,
+        follow: true,
+      },
+    },
   };
 }
 

@@ -398,11 +398,11 @@ export default async function BlogPostPage({
                                         </span>
                                     </div>
                                     <p className="text-xs leading-5 text-muted-foreground">
-                                        Published by the PdfPixels technical writing and engineering team. All guides and technical tutorials undergo rigorous testing across Windows, macOS, iOS, and Android environments to guarantee accuracy and workflow reliability.
+                                        Yuvi Parmar is the founder and lead systems architect of PdfPixels. Specializing in high-performance browser computing, WebAssembly document tooling, and media compression pipelines, all guides and technical tutorials undergo rigorous empirical testing across Windows, macOS, iOS, and Android to ensure absolute workflow accuracy.
                                     </p>
                                     <div className="mt-3 flex items-center gap-4 text-xs font-semibold text-primary">
-                                        <Link href="/about" className="hover:underline">
-                                            About PdfPixels Team →
+                                        <Link href="/about#founder" className="hover:underline">
+                                            Meet the Author & Founder →
                                         </Link>
                                         <Link href="/contact" className="hover:underline text-muted-foreground">
                                             Suggest a Correction

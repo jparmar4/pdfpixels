@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { AnimatedCounter } from './about-counter';
 import { allTools } from '@/lib/tools-data';
 
-/* â”€â”€â”€ Data â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ─── Data ────────────────────────────────────────────────────────── */
 const values = [
   {
     icon: Zap,
@@ -75,7 +75,7 @@ const techStack = [
   { name: 'AI Powered', description: 'Neural Networks', gradient: 'from-fuchsia-500 to-pink-600' },
 ];
 
-/* â”€â”€â”€ Page Component â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ─── Page Component ────────────────────────────────────────────────── */
 export function AboutPageContent() {
   return (
     <SitePageShell
@@ -96,7 +96,7 @@ export function AboutPageContent() {
       ]}
       contentClassName="max-w-6xl"
     >
-      {/* â”€â”€ Why the product exists â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* ─── Why the product exists ────────────────────────────────────────── */}
       <section className="grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
         <div className="section-panel rounded-[2rem] p-6 md:p-8">
           <h2 className="text-2xl font-bold text-foreground md:text-3xl">Why the product exists</h2>
@@ -108,7 +108,7 @@ export function AboutPageContent() {
               We build free browser tools for those moments — compress, merge, convert, resize, and clean up files — with clear steps, practical guides, and no account wall for core workflows. The product should feel reliable and calm, not like a cluttered tool farm.
             </p>
             <p>
-              Alongside the tools, we publish long-form how-to articles (PDF size limits, HEIC conversion, form photo sizes, and more) so people can learn the â€œwhyâ€ as well as click a button. That combination of working utilities and real educational content is the foundation of the site.
+              Alongside the tools, we publish long-form how-to articles (PDF size limits, HEIC conversion, form photo sizes, and more) so people can learn the &quot;why&quot; as well as click a button. That combination of working utilities and real educational content is the foundation of the site.
             </p>
             <p>
               If something breaks, a limit is unclear, or a tool should work differently, use the{' '}
@@ -152,7 +152,7 @@ export function AboutPageContent() {
         </div>
       </section>
 
-      {/* â”€â”€ Animated Stats Section â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* ─── Animated Stats Section ───────────────────────────────────── */}
       <section className="mt-12 relative overflow-hidden rounded-[2rem] border border-border/50">
         <div className="absolute inset-0 bg-gradient-to-r from-primary/[0.03] via-fuchsia-500/[0.02] to-cyan-500/[0.03]" />
         <div className="relative z-10 grid grid-cols-2 md:grid-cols-4 gap-5 p-6 md:p-8">
@@ -174,7 +174,7 @@ export function AboutPageContent() {
         </div>
       </section>
 
-      {/* â”€â”€ Values Grid â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* ─── Values Grid ───────────────────────────────────────────────── */}
       <section className="mt-8 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
         {values.map((value) => (
           <div
@@ -190,7 +190,7 @@ export function AboutPageContent() {
         ))}
       </section>
 
-      {/* â”€â”€ Our Journey Timeline â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* ─── Our Journey Timeline ──────────────────────────────────────── */}
       <section
         className="mt-12"
       >
@@ -238,7 +238,7 @@ export function AboutPageContent() {
         </div>
       </section>
 
-      {/* â”€â”€ Technology Stack â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* ─── Technology Stack ────────────────────────────────────────── */}
       <section
         className="mt-12 section-panel rounded-[2rem] p-6 md:p-8 lg:p-10"
       >
@@ -268,13 +268,55 @@ export function AboutPageContent() {
         </div>
       </section>
 
-      {/* â”€â”€ Editorial Standards & Team Transparency â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
-      <section id="editorial-team" className="mt-12 section-panel rounded-[2rem] p-6 md:p-8 lg:p-10 scroll-mt-24">
+      {/* ─── Leadership & Founder Transparency ────────────────────── */}
+      <section id="founder" className="mt-12 section-panel rounded-[2rem] p-6 md:p-8 lg:p-10 scroll-mt-24">
+        <div className="text-center mb-8">
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-primary mb-3">Leadership & Vision</p>
+          <h2 className="text-2xl font-bold text-foreground md:text-3xl">Architected for Speed & Reliability</h2>
+          <p className="mt-3 text-sm text-muted-foreground max-w-xl mx-auto">
+            PdfPixels is independently designed, engineered, and maintained by experienced software engineers dedicated to high-performance web tooling.
+          </p>
+        </div>
+
+        <div className="grid gap-6 md:grid-cols-[1fr_1.8fr] items-center rounded-2xl border border-border/50 bg-background/80 p-6 md:p-8 shadow-soft">
+          <div className="flex flex-col items-center text-center border-b border-border/40 pb-6 md:border-b-0 md:border-r md:pr-8 md:pb-0">
+            <div className="w-24 h-24 rounded-3xl bg-gradient-to-br from-primary via-violet-600 to-sky-500 flex items-center justify-center text-white text-3xl font-black shadow-lg shadow-primary/25 mb-4 ring-4 ring-primary/10">
+              YP
+            </div>
+            <h3 className="text-xl font-bold text-foreground">Yuvi Parmar</h3>
+            <p className="text-xs font-semibold uppercase tracking-wider text-primary mt-1">Founder & Lead Systems Architect</p>
+            <p className="text-xs text-muted-foreground mt-2">Gujarat, India</p>
+            <div className="mt-4 flex items-center gap-3">
+              <a
+                href="mailto:support@pdfpixels.com"
+                className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary hover:underline"
+              >
+                support@pdfpixels.com
+              </a>
+            </div>
+          </div>
+          <div className="space-y-4 text-sm leading-relaxed text-muted-foreground">
+            <p>
+              <strong className="text-foreground">About the Founder:</strong> Yuvi Parmar founded PdfPixels to address the growing frustration with ad-cluttered, paywalled document utilities. With a background in full-stack architecture, WebAssembly compilation, and distributed cloud computing, he designs each tool for instant responsiveness and absolute document fidelity.
+            </p>
+            <p>
+              Under his direction, PdfPixels follows a strict privacy-first charter: browser-native tools execute entirely client-side using JavaScript/WebAssembly, while server-side pipelines process files in memory with automatic ephemeral purging within 60 minutes. No user document is ever indexed, stored, or analyzed for advertising.
+            </p>
+            <p>
+              Have feedback, a feature request, or an issue with an edge-case PDF? Reach out directly via our{' '}
+              <Link href="/contact" className="font-semibold text-primary hover:underline">contact desk</Link>.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* ─── Editorial Standards & Engineering Integrity ─────────────── */}
+      <section id="editorial-team" className="mt-8 section-panel rounded-[2rem] p-6 md:p-8 lg:p-10 scroll-mt-24">
         <div className="text-center mb-8">
           <p className="text-xs font-bold uppercase tracking-[0.2em] text-primary mb-3">Our Standards</p>
           <h2 className="text-2xl font-bold text-foreground md:text-3xl">Editorial & Engineering Integrity</h2>
           <p className="mt-3 text-sm text-muted-foreground max-w-xl mx-auto">
-            PdfPixels is engineered and maintained by a dedicated team of full-stack software engineers, graphic specialists, and digital publishing professionals.
+            PdfPixels tools and guides are continuously benchmarked against rigorous real-world document specifications.
           </p>
         </div>
 
@@ -315,7 +357,7 @@ export function AboutPageContent() {
           <div className="mt-3 grid gap-3 text-sm text-muted-foreground sm:grid-cols-2">
             <div>
               <p><strong className="text-foreground">Platform:</strong> PdfPixels (pdfpixels.com)</p>
-              <p><strong className="text-foreground">Publisher:</strong> PdfPixels Team</p>
+              <p><strong className="text-foreground">Publisher & Operator:</strong> Yuvi Parmar / PdfPixels Team</p>
               <p><strong className="text-foreground">Headquarters / Operations:</strong> Gujarat, India (Serving users globally)</p>
               <p><strong className="text-foreground">Official Support:</strong> <a href="mailto:support@pdfpixels.com" className="text-primary hover:underline">support@pdfpixels.com</a></p>
             </div>
@@ -328,7 +370,7 @@ export function AboutPageContent() {
         </div>
       </section>
 
-      {/* â”€â”€ Platform Direction â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* ─── Platform Direction ──────────────────────────────────────── */}
       <section className="mt-8 section-panel rounded-[2rem] p-6 md:p-8 lg:p-10">
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div>
@@ -350,7 +392,7 @@ export function AboutPageContent() {
         </div>
       </section>
 
-      {/* â”€â”€ CTA with Aurora BG â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* ─── CTA with Aurora BG ──────────────────────────────────────── */}
       <section className="mt-12 aurora-bg rounded-[2rem] overflow-hidden">
         <div className="relative z-10 px-6 py-14 md:px-12 md:py-16 text-center">
           <div>

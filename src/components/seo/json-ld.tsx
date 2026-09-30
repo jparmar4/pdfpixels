@@ -32,6 +32,7 @@ function KnowledgeGraphSchema() {
           url: organizationData.contactPoint.url,
           availableLanguage: organizationData.contactPoint.availableLanguage,
         },
+        founder: organizationData.founder,
         address: organizationData.address,
       },
       {

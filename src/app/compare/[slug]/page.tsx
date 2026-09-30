@@ -46,13 +46,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       images: [DEFAULT_OG_IMAGE_URL],
     },
     robots: {
-      index: true,
+      index: false,
       follow: true,
       googleBot: {
-        index: true,
+        index: false,
         follow: true,
-        'max-image-preview': 'large',
-        'max-snippet': -1,
       },
     },
   };

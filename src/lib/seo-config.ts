@@ -195,6 +195,12 @@ export const organizationData = {
     email: 'support@pdfpixels.com',
     url: absoluteUrl('/contact'),
   },
+  founder: {
+    '@type': 'Person',
+    name: 'Yuvi Parmar',
+    jobTitle: 'Founder & Lead Systems Architect',
+    url: absoluteUrl('/about#founder'),
+  },
   address: {
     '@type': 'PostalAddress',
     addressRegion: 'Gujarat',

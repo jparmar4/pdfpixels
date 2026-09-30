@@ -1,24 +1,18 @@
 'use client';
 
-import { adsConfig, hasAdvertisingConsent } from '@/lib/ads-config';
+import { hasAdvertisingConsent } from '@/lib/ads-config';
 import { useEffect } from 'react';
 
 export function AdSenseScript() {
   useEffect(() => {
     const sync = () => {
-      if (!adsConfig.enabled || !hasAdvertisingConsent()) return;
       const w = window as unknown as {
         adsbygoogle?: unknown[] & { requestNonPersonalizedAds?: number };
       };
       w.adsbygoogle = w.adsbygoogle || [];
-      w.adsbygoogle.requestNonPersonalizedAds = 0;
-      if (document.querySelector('script[data-pdfpixels-adsense]')) return;
-      const script = document.createElement('script');
-      script.async = true;
-      script.src = adsConfig.scriptUrl;
-      script.crossOrigin = 'anonymous';
-      script.dataset.pdfpixelsAdsense = '1';
-      document.head.appendChild(script);
+      // If user has not consented to personalized ads, enforce non-personalized ads (NPA = 1).
+      // When consented, allow personalized ads (NPA = 0).
+      w.adsbygoogle.requestNonPersonalizedAds = hasAdvertisingConsent() ? 0 : 1;
     };
     sync();
     window.addEventListener('cookie-consent-updated', sync);

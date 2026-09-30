@@ -74,13 +74,11 @@ export async function generateMetadata({ params }: GeoPageProps): Promise<Metada
       images: [DEFAULT_OG_IMAGE_URL],
     },
     robots: {
-      index: true,
+      index: false,
       follow: true,
       googleBot: {
-        index: true,
+        index: false,
         follow: true,
-        'max-image-preview': 'large',
-        'max-snippet': -1,
       },
     },
   };

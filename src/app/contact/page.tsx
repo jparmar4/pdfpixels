@@ -131,7 +131,7 @@ export default function ContactPage() {
       
 
       <main id="main-content" className="flex-1">
-        {/* â”€â”€â”€ Hero Section â”€â”€â”€ */}
+        {/* ─── Hero Section ─── */}
         <section className="relative overflow-hidden">
           <AnimatedMeshBg />
           <div className="hero-grid absolute inset-0 opacity-60" />
@@ -174,7 +174,7 @@ export default function ContactPage() {
           <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-background to-transparent" />
         </section>
 
-        {/* â”€â”€â”€ Contact Method Cards â”€â”€â”€ */}
+        {/* ─── Contact Method Cards ─── */}
         <section className="container mx-auto px-4 pb-12 lg:px-8">
           <div className="mx-auto grid max-w-5xl gap-4 sm:grid-cols-3">
             {contactMethods.map((method, index) => (
@@ -203,7 +203,7 @@ export default function ContactPage() {
           </div>
         </section>
 
-        {/* â”€â”€â”€ Contact Form â”€â”€â”€ */}
+        {/* ─── Contact Form ─── */}
         <section className="container mx-auto px-4 pb-16 lg:px-8">
           <div className="mx-auto max-w-3xl">
             <motion.div
@@ -368,7 +368,7 @@ export default function ContactPage() {
           </div>
         </section>
 
-        {/* â”€â”€â”€ FAQ Teaser â”€â”€â”€ */}
+        {/* ─── FAQ Teaser ─── */}
         <section className="container mx-auto px-4 pb-16 lg:px-8">
           <div className="mx-auto max-w-3xl">
             <motion.div
@@ -414,7 +414,7 @@ export default function ContactPage() {
           </div>
         </section>
 
-        {/* â”€â”€â”€ Social Links â”€â”€â”€ */}
+        {/* ─── Social Links ─── */}
         <section className="container mx-auto px-4 pb-16 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
