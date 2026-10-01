@@ -12,6 +12,7 @@ import {
   type LocaleCode,
 } from '@/lib/localized-tools';
 import { getToolBySlug } from '@/lib/tools-data';
+import { ADSENSE_REVIEW_MODE } from '@/lib/seo';
 
 export function localizedMetadata(locale: LocaleCode, slug: string): Metadata {
   const copy = getLocalizedTool(locale, slug);
@@ -33,10 +34,11 @@ export function localizedMetadata(locale: LocaleCode, slug: string): Metadata {
       type: 'website',
     },
     robots: {
-      index: false,
+      // AdSense-review freeze — see ADSENSE_REVIEW_MODE in src/lib/seo.ts.
+      index: !ADSENSE_REVIEW_MODE,
       follow: true,
       googleBot: {
-        index: false,
+        index: !ADSENSE_REVIEW_MODE,
         follow: true,
       },
     },
@@ -51,7 +53,14 @@ export function LocalizedToolPage({ locale, slug }: { locale: LocaleCode; slug: 
   const siblings = LOCALIZED_TOOL_SLUGS.filter((item) => item !== slug);
 
   return (
-    <main id="main-content" className={locale === 'jp' ? "[font-family:var(--font-inter),'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,sans-serif]" : undefined}>
+    // The lang attribute is SSR'd so non-JS crawlers (LLM scrapers, social
+    // parsers) still read the correct content language; <html lang> itself is
+    // patched by SetHtmlLang below.
+    <main
+      id="main-content"
+      lang={pack.htmlLang}
+      className={locale === 'jp' ? "[font-family:var(--font-inter),'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,sans-serif]" : undefined}
+    >
       <SetHtmlLang lang={pack.htmlLang} />
       <ToolPageClient toolId={tool.id} toolName={copy.name} toolDescription={copy.description} />
       <section className="container mx-auto max-w-3xl px-4 py-10">

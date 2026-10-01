@@ -4,7 +4,7 @@ import { Metadata } from 'next';
 import { geoRegions, getRegionByCode } from '@/lib/geo-data';
 import { allPdfTools } from '@/lib/tools-data';
 import { siteConfig } from '@/lib/seo-config';
-import { absoluteUrl, websiteId, getGeoLanguageAlternates, DEFAULT_OG_IMAGE_URL } from '@/lib/seo';
+import { absoluteUrl, websiteId, getGeoLanguageAlternates, DEFAULT_OG_IMAGE_URL, ADSENSE_REVIEW_MODE } from '@/lib/seo';
 import { ToolsSection } from '@/components/home/tools-section';
 import { StatsBanner } from '@/components/home/stats-banner';
 import { AnswerEngineSection } from '@/components/home/answer-engine-section';
@@ -74,10 +74,11 @@ export async function generateMetadata({ params }: GeoPageProps): Promise<Metada
       images: [DEFAULT_OG_IMAGE_URL],
     },
     robots: {
-      index: false,
+      // AdSense-review freeze — see ADSENSE_REVIEW_MODE in src/lib/seo.ts.
+      index: !ADSENSE_REVIEW_MODE,
       follow: true,
       googleBot: {
-        index: false,
+        index: !ADSENSE_REVIEW_MODE,
         follow: true,
       },
     },

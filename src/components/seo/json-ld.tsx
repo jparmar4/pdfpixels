@@ -1,4 +1,5 @@
-import { faqData, organizationData, webAppData, howToData } from '@/lib/seo-config';
+import { faqData, organizationData, webAppData, howToData, seoConfig } from '@/lib/seo-config';
+import { toolCategories } from '@/lib/tools-data';
 import { absoluteUrl, DEFAULT_OG_IMAGE_URL, getHomepageFeaturedTools, getSiteSearchUrlTemplate, organizationId, websiteId, SITE_CONTENT_UPDATED } from '@/lib/seo';
 
 const featuredTools = getHomepageFeaturedTools();
@@ -34,6 +35,27 @@ function KnowledgeGraphSchema() {
         },
         founder: organizationData.founder,
         address: organizationData.address,
+        slogan: seoConfig.tagline,
+        // Topical authority signal for answer engines deciding whether
+        // PdfPixels is a citable source on a PDF/image topic.
+        knowsAbout: [
+          'PDF compression',
+          'PDF merging',
+          'PDF splitting',
+          'PDF page extraction',
+          'PDF to Word conversion',
+          'PDF to Excel conversion',
+          'PDF to JPG conversion',
+          'OCR text recognition',
+          'image compression',
+          'image resizing',
+          'background removal',
+          'HEIC to JPG conversion',
+          'passport photo preparation',
+          'PDF signing',
+          'PDF password protection',
+          'file format conversion',
+        ],
       },
       {
         '@type': 'WebSite',
@@ -180,6 +202,8 @@ function SpeakableSchema() {
 }
 
 function ServiceSchema() {
+  // Full offer catalog generated from the tool registry so the homepage
+  // entity graph stays in sync with every tool (previously hardcoded to 5).
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'Service',
@@ -191,53 +215,20 @@ function ServiceSchema() {
     hasOfferCatalog: {
       '@type': 'OfferCatalog',
       name: 'PdfPixels tools',
-      itemListElement: [
-        {
+      itemListElement: toolCategories.map((category) => ({
+        '@type': 'OfferCatalog',
+        name: category.name,
+        url: absoluteUrl(`/tools/category/${category.id}`),
+        itemListElement: category.tools.map((tool) => ({
           '@type': 'Offer',
           itemOffered: {
             '@type': 'Service',
-            name: 'Compress Image',
-            description: 'Reduce image file size for uploads, email, and web performance.',
-            url: absoluteUrl('/tools/compress-image'),
+            name: tool.name,
+            description: tool.description,
+            url: absoluteUrl(`/tools/${tool.slug}`),
           },
-        },
-        {
-          '@type': 'Offer',
-          itemOffered: {
-            '@type': 'Service',
-            name: 'Merge PDF',
-            description: 'Combine multiple PDF files into one document online.',
-            url: absoluteUrl('/tools/merge-pdf'),
-          },
-        },
-        {
-          '@type': 'Offer',
-          itemOffered: {
-            '@type': 'Service',
-            name: 'Split PDF',
-            description: 'Extract selected pages or split a PDF into separate files.',
-            url: absoluteUrl('/tools/split-pdf'),
-          },
-        },
-        {
-          '@type': 'Offer',
-          itemOffered: {
-            '@type': 'Service',
-            name: 'Remove Background',
-            description: 'Use AI to remove image backgrounds and export transparent PNG files.',
-            url: absoluteUrl('/tools/remove-image-background'),
-          },
-        },
-        {
-          '@type': 'Offer',
-          itemOffered: {
-            '@type': 'Service',
-            name: 'HEIC to JPG',
-            description: 'Convert iPhone HEIC photos to JPG online.',
-            url: absoluteUrl('/tools/heic-to-jpg'),
-          },
-        },
-      ],
+        })),
+      })),
     },
   };
 

@@ -5,7 +5,9 @@ import { useCasePages } from '@/lib/use-cases';
 import { getAllBlogPosts } from '@/config/blog';
 import { normalizeDisplayText } from '@/lib/display-text';
 import { limitsSummaryLines, LIMITS_LAST_REVIEWED } from '@/lib/limits';
-import { SITE_URL } from '@/lib/seo';
+import { geoRegions } from '@/lib/geo-data';
+import { getLocalizedTool, LOCALIZED_LOCALES, LOCALIZED_TOOL_SLUGS } from '@/lib/localized-tools';
+import { ADSENSE_REVIEW_MODE, SITE_CONTENT_UPDATED, SITE_URL } from '@/lib/seo';
 
 export const runtime = 'nodejs';
 
@@ -22,6 +24,7 @@ export async function GET() {
   lines.push('# PdfPixels');
   lines.push('');
   lines.push('> Free online PDF and image tools: compress, merge, split, convert, resize, edit, and AI-enhance. No signup required for core workflows.');
+  lines.push(`> Last updated: ${SITE_CONTENT_UPDATED.toISOString().slice(0, 10)}`);
   lines.push('');
   lines.push('## About');
   lines.push('');
@@ -58,12 +61,14 @@ export async function GET() {
     }
     lines.push('');
   }
-  lines.push('## Comparisons');
-  lines.push('');
-  for (const page of comparisonPages) {
-    lines.push(`- ${clean(page.title)}: ${SITE_URL}/compare/${page.slug} — ${clean(page.description)}`);
+  if (!ADSENSE_REVIEW_MODE) {
+    lines.push('## Comparisons');
+    lines.push('');
+    for (const page of comparisonPages) {
+      lines.push(`- ${clean(page.title)}: ${SITE_URL}/compare/${page.slug} — ${clean(page.description)}`);
+    }
+    lines.push('');
   }
-  lines.push('');
   lines.push('## Use cases');
   lines.push('');
   for (const page of useCasePages.slice(0, 30)) {
@@ -85,9 +90,33 @@ export async function GET() {
     lines.push(`- ${line}`);
   }
   lines.push('');
+  if (!ADSENSE_REVIEW_MODE) {
+    lines.push('## Regional hubs');
+    lines.push('');
+    for (const region of geoRegions) {
+      lines.push(`- ${region.name}: ${SITE_URL}/${region.code} — ${clean(region.headline)}`);
+    }
+    lines.push('');
+    lines.push('## Localized tool pages (de / fr / es / jp / pt)');
+    lines.push('');
+    lines.push('Fully translated tool pages; the English tool page is the canonical x-default for each:');
+    lines.push('');
+    for (const locale of LOCALIZED_LOCALES) {
+      for (const slug of LOCALIZED_TOOL_SLUGS) {
+        const copy = getLocalizedTool(locale, slug);
+        if (copy) {
+          lines.push(`- ${clean(copy.name)} (${locale}): ${SITE_URL}/${locale}/tools/${slug}`);
+        }
+      }
+    }
+    lines.push('');
+  }
   lines.push('## Machine references');
   lines.push('');
+  lines.push(`- Home: ${SITE_URL} — Tools index: ${SITE_URL}/tools`);
   lines.push(`- PDF Suite hub: ${SITE_URL}/pdf-tools`);
+  lines.push(`- Per-page Markdown (preferred over HTML scraping): append /markdown to any tool or guide URL, e.g. ${SITE_URL}/tools/compress-pdf/markdown`);
+  lines.push(`- Evergreen lastmod shared by sitemap entries: ${SITE_CONTENT_UPDATED.toISOString().slice(0, 10)}`);
   lines.push(`- Full reference: ${SITE_URL}/llms-full.txt`);
   lines.push(`- Sitemaps: ${SITE_URL}/sitemap.xml , ${SITE_URL}/image-sitemap.xml`);
   lines.push(`- RSS: ${SITE_URL}/feed`);

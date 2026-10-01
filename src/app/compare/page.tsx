@@ -5,7 +5,7 @@ import { comparisonPages } from '@/lib/comparisons';
 import { CompareClient } from './CompareClient';
 import Script from 'next/script';
 import { collectionItemListJsonLd } from '@/app/jsonld-helpers';
-import { SITE_URL, absoluteUrl, DEFAULT_OG_IMAGE_URL } from '@/lib/seo';
+import { ADSENSE_REVIEW_MODE, SITE_URL, absoluteUrl, DEFAULT_OG_IMAGE_URL } from '@/lib/seo';
 import { siteConfig } from '@/lib/seo-config';
 
 export const metadata: Metadata = {
@@ -35,7 +35,8 @@ export const metadata: Metadata = {
         images: [DEFAULT_OG_IMAGE_URL],
     },
     robots: {
-        index: false,
+        // AdSense-review freeze — see ADSENSE_REVIEW_MODE in src/lib/seo.ts.
+        index: !ADSENSE_REVIEW_MODE,
         follow: true,
     },
 };

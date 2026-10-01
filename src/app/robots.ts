@@ -127,6 +127,101 @@ export default function robots(): MetadataRoute.Robots {
         allow: '/',
         disallow: ['/api/'],
       },
+      // 2026 additions: search-grounding crawlers (Copilot grounds on Bing's
+      // index, Siri/Apple Intelligence on Applebot, Huawei Petal on PetalBot),
+      // remaining live-fetch agents, and dataset crawlers used by model
+      // providers. The `*` rule already admits these — explicit entries
+      // document intent and survive future default changes.
+      {
+        userAgent: 'Bingbot',
+        allow: '/',
+        disallow: ['/api/'],
+      },
+      {
+        userAgent: 'YandexBot',
+        allow: '/',
+        disallow: ['/api/'],
+      },
+      {
+        userAgent: 'Applebot',
+        allow: '/',
+        disallow: ['/api/'],
+      },
+      {
+        userAgent: 'Claude-SearchBot',
+        allow: '/',
+        disallow: ['/api/'],
+      },
+      {
+        userAgent: 'Claude-User',
+        allow: '/',
+        disallow: ['/api/'],
+      },
+      {
+        userAgent: 'GoogleOther',
+        allow: '/',
+        disallow: ['/api/'],
+      },
+      {
+        userAgent: 'Meta-ExternalFetcher',
+        allow: '/',
+        disallow: ['/api/'],
+      },
+      {
+        userAgent: 'MistralAI-Training',
+        allow: '/',
+        disallow: ['/api/'],
+      },
+      {
+        userAgent: 'PanguBot',
+        allow: '/',
+        disallow: ['/api/'],
+      },
+      {
+        userAgent: 'PetalBot',
+        allow: '/',
+        disallow: ['/api/'],
+      },
+      {
+        userAgent: 'Omgilibot',
+        allow: '/',
+        disallow: ['/api/'],
+      },
+      {
+        userAgent: 'Omgili',
+        allow: '/',
+        disallow: ['/api/'],
+      },
+      {
+        userAgent: 'Imagesift',
+        allow: '/',
+        disallow: ['/api/'],
+      },
+      {
+        userAgent: 'Timpibot',
+        allow: '/',
+        disallow: ['/api/'],
+      },
+      {
+        userAgent: 'VelenPublicWebCrawler',
+        allow: '/',
+        disallow: ['/api/'],
+      },
+      {
+        userAgent: 'Cotoyogi',
+        allow: '/',
+        disallow: ['/api/'],
+      },
+      {
+        userAgent: 'AI2Bot',
+        allow: '/',
+        disallow: ['/api/'],
+      },
+      {
+        userAgent: 'AI2Bot-Dolma',
+        allow: '/',
+        disallow: ['/api/'],
+      },
     ],
     sitemap: [`${siteConfig.url}/sitemap.xml`, `${siteConfig.url}/image-sitemap.xml`],
     host,

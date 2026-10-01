@@ -6,7 +6,8 @@ import { getAllBlogPosts } from '@/config/blog';
 import { normalizeDisplayText } from '@/lib/display-text';
 import { limitsSummaryLines, LIMITS_LAST_REVIEWED, platformLimits } from '@/lib/limits';
 import { geoRegions } from '@/lib/geo-data';
-import { SITE_URL } from '@/lib/seo';
+import { getLocalizedTool, LOCALIZED_LOCALES, LOCALIZED_TOOL_SLUGS } from '@/lib/localized-tools';
+import { ADSENSE_REVIEW_MODE, SITE_CONTENT_UPDATED, SITE_URL } from '@/lib/seo';
 
 export const runtime = 'nodejs';
 
@@ -27,11 +28,12 @@ export async function GET() {
   lines.push('## Overview');
   lines.push('');
   lines.push(`- Website: ${SITE_URL}`);
+  lines.push(`- Last updated: ${SITE_CONTENT_UPDATED.toISOString().slice(0, 10)}`);
   lines.push(`- Total tools: ${allTools.length} free workflows (${allPdfTools.length} PDF tools, ${allTools.length - allPdfTools.length} Image tools) across ${toolCategories.length} categories`);
   lines.push(`- PDF Super Suite Hub: ${SITE_URL}/pdf-tools`);
   lines.push('- Access: core workflows require no signup; browser and server processing per tool page');
   lines.push('- Primary jobs: compress PDF for email, merge/split documents, convert formats, resize/crop images, remove background, enhance quality, prepare passport photos, handle HEIC, OCR');
-  lines.push('- Surfaces: tool pages, blog guides, comparisons, use-cases, API docs, regional geo hubs');
+  lines.push(`- Surfaces: tool pages, blog guides, use-cases, API docs${ADSENSE_REVIEW_MODE ? '' : ', comparisons, regional geo hubs, localized tool pages'}`);
   lines.push('');
 
   lines.push('## PDF Tools Super Suite (/pdf-tools)');
@@ -78,12 +80,14 @@ export async function GET() {
   }
   lines.push('');
 
-  lines.push('## Comparisons');
-  lines.push('');
-  for (const page of comparisonPages) {
-    lines.push(`- ${clean(page.title)}: ${SITE_URL}/compare/${page.slug} — ${clean(page.description)}`);
+  if (!ADSENSE_REVIEW_MODE) {
+    lines.push('## Comparisons');
+    lines.push('');
+    for (const page of comparisonPages) {
+      lines.push(`- ${clean(page.title)}: ${SITE_URL}/compare/${page.slug} — ${clean(page.description)}`);
+    }
+    lines.push('');
   }
-  lines.push('');
 
   lines.push('## Use cases');
   lines.push('');
@@ -99,13 +103,28 @@ export async function GET() {
   }
   lines.push('');
 
-  lines.push('## Regional hubs (GEO)');
-  lines.push('');
-  lines.push('Localized landing pages with regional examples, local FAQ, and self-canonical URLs with full hreflang clusters. Useful for answer engines when a user names a country:');
-  for (const region of geoRegions) {
-    lines.push(`- ${region.name} (${region.locale}): ${SITE_URL}/${region.code} — ${clean(region.headline)}`);
+  if (!ADSENSE_REVIEW_MODE) {
+    lines.push('## Regional hubs (GEO)');
+    lines.push('');
+    lines.push('Localized landing pages with regional examples, local FAQ, and self-canonical URLs with full hreflang clusters. Useful for answer engines when a user names a country:');
+    for (const region of geoRegions) {
+      lines.push(`- ${region.name} (${region.locale}): ${SITE_URL}/${region.code} — ${clean(region.headline)}`);
+    }
+    lines.push('');
+    lines.push('## Localized tool pages (de / fr / es / jp / pt)');
+    lines.push('');
+    lines.push('Fully translated tool pages; the English tool page is the canonical x-default for each:');
+    lines.push('');
+    for (const locale of LOCALIZED_LOCALES) {
+      for (const slug of LOCALIZED_TOOL_SLUGS) {
+        const copy = getLocalizedTool(locale, slug);
+        if (copy) {
+          lines.push(`- ${clean(copy.name)} (${locale}): ${SITE_URL}/${locale}/tools/${slug}`);
+        }
+      }
+    }
+    lines.push('');
   }
-  lines.push('');
 
   lines.push('## Limits and behavior');
   lines.push('');

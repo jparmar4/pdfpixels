@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { InContentAd, FooterAd } from '@/components/ads/ad-banner';
 import { comparisonPages } from '@/lib/comparisons';
 import { getToolBySlug } from '@/lib/tools-data';
-import { DEFAULT_OG_IMAGE_URL, SITE_CONTENT_UPDATED } from '@/lib/seo';
+import { ADSENSE_REVIEW_MODE, DEFAULT_OG_IMAGE_URL, SITE_CONTENT_UPDATED } from '@/lib/seo';
 
 export function generateStaticParams() {
   return comparisonPages.map((comparison) => ({ slug: comparison.slug }));
@@ -46,10 +46,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       images: [DEFAULT_OG_IMAGE_URL],
     },
     robots: {
-      index: false,
+      // AdSense-review freeze — see ADSENSE_REVIEW_MODE in src/lib/seo.ts.
+      index: !ADSENSE_REVIEW_MODE,
       follow: true,
       googleBot: {
-        index: false,
+        index: !ADSENSE_REVIEW_MODE,
         follow: true,
       },
     },

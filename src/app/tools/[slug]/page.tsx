@@ -177,6 +177,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     alternates: {
       canonical: `/tools/${tool.slug}`,
       ...(toolLanguageAlternates(tool.slug) ? { languages: toolLanguageAlternates(tool.slug) } : {}),
+      // Advertise the LLM-friendly Markdown twin of this page (answer engines
+      // prefer structured text over rendered HTML).
+      types: { 'text/markdown': `/tools/${tool.slug}/markdown` },
     },
     openGraph: {
       title: `${title} | ${siteConfig.name}`,

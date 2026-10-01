@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next';
 import { getAllBlogPosts, consolidatedBlogSlugs } from '@/config/blog';
 import { comparisonPages } from '@/lib/comparisons';
-import { SITE_CONTENT_UPDATED, absoluteUrl } from '@/lib/seo';
+import { ADSENSE_REVIEW_MODE, SITE_CONTENT_UPDATED, absoluteUrl } from '@/lib/seo';
 import { allTools, toolCategories } from '@/lib/tools-data';
 import { useCasePages } from '@/lib/use-cases';
 import { geoRegions } from '@/lib/geo-data';
@@ -162,9 +162,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.8,
   }));
 
-  // Doorway geo hubs, comparison pages, and localized packs are noindexed
-  // and temporarily excluded from the sitemap during AdSense review to ensure
-  // Google's review crawlers evaluate only primary, high-density pages.
+  // AdSense-review freeze: while ADSENSE_REVIEW_MODE is true, geo hubs,
+  // comparison pages, and localized packs stay noindexed and out of the
+  // sitemap so Google's review crawlers evaluate only primary, high-density
+  // pages. Flipping the flag restores all three groups (with full hreflang
+  // alternates on the localized entries) without further edits.
   return [
     ...corePages,
     ...categoryEntries,
@@ -172,5 +174,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...useCaseEntries,
     ...blogPages,
     ...legalPages,
+    ...(ADSENSE_REVIEW_MODE
+      ? []
+      : [...comparisonEntries, ...geoEntries, ...localizedSitemapEntries()]),
   ];
 }
