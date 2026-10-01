@@ -1,4 +1,4 @@
-import { absoluteUrl, SITE_CONTENT_UPDATED } from '@/lib/seo';
+import { absoluteUrl, SITE_CONTENT_UPDATED, ADSENSE_REVIEW_MODE } from '@/lib/seo';
 
 export const LOCALIZED_TOOL_SLUGS = [
   'compress-pdf',
@@ -1143,7 +1143,7 @@ const packs: Record<LocaleCode, LocalePack> = {
   de: {
     htmlLang: 'de',
     ogLocale: 'de_DE',
-    hreflang: 'de-DE',
+    hreflang: 'de',
     limitNote: 'Passwortgeschützte PDFs müssen zuerst entsperrt werden. Die Dateien werden nur zur Verarbeitung gehalten und innerhalb von 60 Minuten gelöscht.',
     englishLabel: 'English',
     tools: deTools,
@@ -1151,7 +1151,7 @@ const packs: Record<LocaleCode, LocalePack> = {
   fr: {
     htmlLang: 'fr',
     ogLocale: 'fr_FR',
-    hreflang: 'fr-FR',
+    hreflang: 'fr',
     limitNote: 'Un PDF protégé par mot de passe doit d’abord être déverrouillé. Les fichiers ne sont gardés que le temps du traitement et sont effacés dans les 60 minutes.',
     englishLabel: 'English',
     tools: frTools,
@@ -1159,7 +1159,7 @@ const packs: Record<LocaleCode, LocalePack> = {
   jp: {
     htmlLang: 'ja',
     ogLocale: 'ja_JP',
-    hreflang: 'ja-JP',
+    hreflang: 'ja',
     limitNote: 'パスワード付きPDFは、先にロック解除が必要です。ファイルは処理中だけ保持し、60分以内に削除します。',
     englishLabel: 'English',
     tools: jpTools,
@@ -1200,41 +1200,36 @@ export function getLocalizedTool(locale: LocaleCode, slug: string): LocalizedToo
 }
 
 export function toolLanguageAlternates(slug: string): Record<string, string> | undefined {
-  if (!isLocalizedToolSlug(slug)) return undefined;
+  if (ADSENSE_REVIEW_MODE || !isLocalizedToolSlug(slug)) return undefined;
   return {
     en: `/tools/${slug}`,
     'x-default': `/tools/${slug}`,
-    'de-DE': `/de/tools/${slug}`,
-    'fr-FR': `/fr/tools/${slug}`,
-    'ja-JP': `/jp/tools/${slug}`,
-    es: `/es/tools/${slug}`,
-    pt: `/pt/tools/${slug}`,
+    ...Object.fromEntries(LOCALIZED_LOCALES.map((locale) => [
+      packs[locale].hreflang, `/${locale}/tools/${slug}`,
+    ])),
   };
 }
 
+export function toolSitemapAlternates(slug: string) {
+  const languages = toolLanguageAlternates(slug);
+  if (!languages) return undefined;
+  return { languages: Object.fromEntries(
+    Object.entries(languages).map(([language, path]) => [language, absoluteUrl(path)]),
+  ) };
+}
+
 export function localizedSitemapEntries() {
+  if (ADSENSE_REVIEW_MODE) return [];
   // Each localized URL declares its full hreflang cluster inside the sitemap
   // (xhtml:link alternates), so Bing/Yandex and answer engines can resolve the
   // right locale even without parsing page <head> links.
-  const languageAlternatesFor = (slug: string): Record<string, string> => ({
-    en: absoluteUrl(`/tools/${slug}`),
-    'x-default': absoluteUrl(`/tools/${slug}`),
-    'de-DE': absoluteUrl(`/de/tools/${slug}`),
-    'fr-FR': absoluteUrl(`/fr/tools/${slug}`),
-    'ja-JP': absoluteUrl(`/jp/tools/${slug}`),
-    es: absoluteUrl(`/es/tools/${slug}`),
-    pt: absoluteUrl(`/pt/tools/${slug}`),
-  });
-
   return (Object.keys(packs) as LocaleCode[]).flatMap((locale) =>
     LOCALIZED_TOOL_SLUGS.map((slug) => ({
       url: absoluteUrl(`/${locale}/tools/${slug}`),
       lastModified: SITE_CONTENT_UPDATED,
       changeFrequency: 'weekly' as const,
       priority: 0.84,
-      alternates: {
-        languages: languageAlternatesFor(slug),
-      },
+      alternates: toolSitemapAlternates(slug),
     })),
   );
 }

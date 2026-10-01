@@ -12,6 +12,7 @@ import { HowItWorks } from '@/components/home/how-it-works';
 import { TestimonialsSection } from '@/components/home/testimonials-section';
 import { FeaturesSection } from '@/components/home/features-section';
 import { GuidesSection } from '@/components/home/guides-section';
+import { WorkflowGuides } from '@/components/home/workflow-guides';
 import { CTASection } from '@/components/home/cta-section';
 
 import { Metadata } from 'next';
@@ -49,6 +50,7 @@ export default function Home() {
         <HomePageSchemas />
         <ToolsSection />
         <StatsBanner />
+        <WorkflowGuides />
         <HowItWorks />
         <AnswerEngineSection />
         <AIContentSection />

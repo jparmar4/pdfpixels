@@ -17,6 +17,7 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test:tools": "node scripts/test-recent-tools.mjs",
+    "test:seo": "node scripts/check-seo-build.mjs",
     "db:push": "prisma db push",
     "db:migrate": "prisma migrate dev",
     "db:reset": "prisma migrate reset",
@@ -109,4 +110,3 @@
     "deepmerge-ts": "^8.0.2"
   }
 }
-

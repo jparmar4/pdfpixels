@@ -17,7 +17,7 @@ import { ADSENSE_REVIEW_MODE } from '@/lib/seo';
 export function localizedMetadata(locale: LocaleCode, slug: string): Metadata {
   const copy = getLocalizedTool(locale, slug);
   const languages = toolLanguageAlternates(slug);
-  if (!copy || !languages) return {};
+  if (!copy) return {};
   const pack = getLocalePack(locale);
   return {
     title: copy.title,

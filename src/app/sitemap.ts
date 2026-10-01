@@ -5,7 +5,7 @@ import { ADSENSE_REVIEW_MODE, SITE_CONTENT_UPDATED, absoluteUrl } from '@/lib/se
 import { allTools, toolCategories } from '@/lib/tools-data';
 import { useCasePages } from '@/lib/use-cases';
 import { geoRegions } from '@/lib/geo-data';
-import { localizedSitemapEntries } from '@/lib/localized-tools';
+import { localizedSitemapEntries, toolSitemapAlternates } from '@/lib/localized-tools';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const evergreen = SITE_CONTENT_UPDATED;
@@ -50,12 +50,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: evergreen,
       changeFrequency: 'weekly',
       priority: 0.78,
-    },
-    {
-      url: absoluteUrl('/compare'),
-      lastModified: evergreen,
-      changeFrequency: 'weekly',
-      priority: 0.74,
     },
     {
       url: absoluteUrl('/pricing'),
@@ -121,6 +115,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     lastModified: evergreen,
     changeFrequency: 'weekly' as const,
     priority: tool.popular || tool.isAI ? 0.9 : 0.8,
+    alternates: toolSitemapAlternates(tool.slug),
   }));
 
   const blogPages: MetadataRoute.Sitemap = blogPosts
@@ -176,6 +171,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...legalPages,
     ...(ADSENSE_REVIEW_MODE
       ? []
-      : [...comparisonEntries, ...geoEntries, ...localizedSitemapEntries()]),
+      : [{ url: absoluteUrl('/compare'), lastModified: evergreen, changeFrequency: 'weekly' as const, priority: 0.74 }, ...comparisonEntries, ...geoEntries, ...localizedSitemapEntries()]),
   ];
 }

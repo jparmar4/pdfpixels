@@ -28,7 +28,9 @@ export function websiteId() {
 
 /** Shared hreflang cluster: homepage is x-default, geo hubs are locale targets. */
 export function getGeoLanguageAlternates(): Record<string, string> {
+  if (ADSENSE_REVIEW_MODE) return {};
   const languages: Record<string, string> = {
+    en: '/',
     'x-default': '/',
   };
   for (const region of geoRegions) {
