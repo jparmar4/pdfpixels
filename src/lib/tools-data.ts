@@ -72,6 +72,10 @@ export type Tool = {
   badge?: string;
   isAI?: boolean;
   processing: 'client' | 'server' | 'ai';
+  // Optional SERP overrides. When absent, the generic tool template in
+  // src/app/tools/[slug]/page.tsx builds the title/description instead.
+  seoTitle?: string;
+  seoDescription?: string;
 };
 
 export type ToolCategory = {
@@ -170,11 +174,17 @@ export const toolCategories: ToolCategory[] = [
         description: 'Increase image quality online free with AI. Sharpen blurry photos, fix lighting, reduce noise.',
         icon: Sparkles,
         category: 'most-used',
-        keywords: ['increase image quality', 'increase photo quality', 'ai image enhancer', 'enhance image quality', 'improve image quality', 'fix blurry image', 'ai photo enhancer', 'image enhancer'],
+        // Transactional intent only. The informational "ai image enhancer" /
+        // "how to fix blurry photos" cluster belongs to
+        // /blog/ai-image-enhancer-fix-blurry-photos — keep the two apart so
+        // Google never has to pick between our own pages.
+        keywords: ['increase image quality', 'increase image quality online', 'increase photo quality', 'improve image quality', 'improve photo quality', 'enhance image quality', 'photo quality enhancer', 'image quality increaser', 'make photo clearer', 'sharpen blurry photo online', 'fix blurry image', 'reduce noise in photo'],
         popular: true,
         badge: 'AI',
         isAI: true,
         processing: 'ai',
+        seoTitle: 'Increase Image Quality Online Free - AI Photo Enhancer',
+        seoDescription: 'Sharpen a blurry, dark, or grainy photo in seconds. Increase image quality online free with AI — no signup, no watermark, works on iPhone, Android and PC.',
       },
     ],
   },

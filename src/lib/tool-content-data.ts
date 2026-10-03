@@ -228,7 +228,7 @@ export const toolContentMap: Record<string, ToolContent> = {
     },
 
     'increase-image-quality': {
-        about: 'Increase Image Quality is a free AI image enhancer that uses deep learning algorithms to restore lost visual fidelity in compressed, underexposed, or low-resolution photographs. When photos are compressed with lossy algorithms or shot in dim lighting, high-frequency image data like facial textures, hair strands, fabric weaves, and small typography are typically replaced with compression blocks or digital sensor noise. This tool analyzes luminance channels and color gradients to reconstruct missing detail, suppress chroma noise, and optimize tonal contrast without creating harsh unnatural halos. Ideal for historical photo restoration, e-commerce catalog cleanups, family album archiving, and social media enhancement, the tool delivers crisp, natural results with zero manual retouching.',
+        about: 'Increase Image Quality is a free online tool that makes a blurry, dark, grainy, or heavily compressed picture look sharp again — no software install, no account, no watermark. Upload a photo from a phone, camera, screenshot, scan, or old family album and the AI raises perceived quality in three ways: it recovers edge detail that lossy compression flattened, it clears ISO grain from low-light shots, and it rebalances exposure and color so faces and text read clearly. Because the original file is never overwritten, you can enhance a copy and keep the source untouched. The same pass works before you upload to WhatsApp, Instagram, a job portal, or a school form, where a soft photo is usually the reason the picture is rejected or looks bad in the preview. If you also need more pixels for printing, run Upscale Image after this step.',
         directAnswer: 'Increase Image Quality employs neural network models to restore contrast, suppress ISO noise, recover fine edge detail, and balance exposure across under-lit or degraded photos in seconds.',
         steps: [
             { title: 'Upload low-quality photo', description: 'Drag and drop your JPG, PNG, WebP, or HEIC image into the enhancement workspace.' },
@@ -237,7 +237,8 @@ export const toolContentMap: Record<string, ToolContent> = {
         ],
         commonProblems: [
             { problem: 'Photo appears over-sharpened with visible halos', solution: 'If an image was already compressed multiple times, edge enhancement can exaggerate compression artifacts. Try running a mild noise reduction or resizing the image before applying sharpening.' },
-            { problem: 'Facial details appear overly smooth', solution: 'For close-up portraits, moderate enhancement levels preserve natural skin texture and eyelash definition while balancing tone and removing shadow grain.' }
+            { problem: 'Facial details appear overly smooth', solution: 'For close-up portraits, moderate enhancement levels preserve natural skin texture and eyelash definition while balancing tone and removing shadow grain.' },
+            { problem: 'The enhanced photo looks good but is still small in pixels', solution: 'This tool improves sharpness, color, and noise without changing pixel dimensions. If you need a larger file for print, run Upscale Image afterwards to multiply the resolution.' }
         ],
         features: [
             'AI-driven luminance recovery, edge sharpening, and color grading',
@@ -245,12 +246,15 @@ export const toolContentMap: Record<string, ToolContent> = {
             'Recovers edge definition without introducing harsh ringing or edge halos',
             'Automatic white balance correction for warm indoor and cold outdoor lighting',
             'Optimized for portraits, scanned vintage memories, product photos, and graphics',
+            'Works on iPhone HEIC, Android, screenshots, scans, and camera JPEGs — up to 20 MB',
         ],
         useCases: [
             'Restoring vintage family photo prints and scanned historical records',
             'Correcting dark, grainy smartphone photos taken in low-light evening conditions',
             'Upgrading product listings on Amazon, Shopify, and eBay to look clean and professional',
             'Sharpening screenshot slides, text graphics, and diagram captures for presentations',
+            'Cleaning up a soft photo before uploading it to WhatsApp, Instagram, or a job application form',
+            'Making passport, ID, and exam application photos look crisp before the portal rejects them',
         ],
         faqs: [
             { question: 'How does AI image enhancement restore degraded photos?', answer: 'Our AI model evaluates pixel neighborhood gradients to identify compression artifacts, sensor noise, and motion blur. By matching degraded features against deep visual models trained on millions of high-resolution images, it infers missing textures and sharpens boundaries while removing grain.' },
@@ -258,6 +262,11 @@ export const toolContentMap: Record<string, ToolContent> = {
             { question: 'Does enhancing an image increase its file size?', answer: 'Yes, enhanced images often have slightly larger file sizes because recovered textures, finer edges, and cleaner gradients contain more high-frequency entropy than muddy, low-quality compression blocks.' },
             { question: 'Are my uploaded personal or family photos kept private?', answer: 'Yes. Processed files are held in temporary memory solely for the enhancement operation and are automatically deleted immediately after download or permanently purged within 60 minutes. We never store, publish, or train models on user images.' },
             { question: 'What is the difference between Increase Image Quality and Upscale Image?', answer: 'Increase Image Quality enhances sharpness, lighting, color, and noise without necessarily changing pixel dimensions. Upscale Image increases resolution and size (e.g. 2x) for large prints. If your photo looks blurry or dark, start here; if you need more pixels for printing, run Upscale Image after enhancing.' },
+            { question: 'How can I increase the quality of a photo without losing the original?', answer: 'Download the enhanced copy and leave the source file alone. This tool never edits or overwrites your upload — it returns a new JPG or PNG, so the original stays in your gallery exactly as it was.' },
+            { question: 'How do I increase image quality on my iPhone or Android phone?', answer: 'Open this page in your mobile browser, tap the upload area, and pick the photo from your gallery. HEIC files from iPhones are converted automatically, so there is no app to install and no separate converter to run first.' },
+            { question: 'How do I make a blurry picture clear before sending it on WhatsApp or Instagram?', answer: 'Upload the photo here first, let the enhancement run, then download the sharpened file and send that instead. Both apps compress aggressively, so starting from a sharper source is the only way to keep the final post looking clean.' },
+            { question: 'Can I increase the image quality of a scanned document or an old photograph?', answer: 'Yes. Scans and old prints usually suffer from low DPI, paper grain, and yellowing. The enhancement pass sharpens text edges, reduces scan noise, and corrects color cast, which makes faded documents and vintage photos readable again.' },
+            { question: 'Does increasing image quality change the pixel size of my photo?', answer: 'No. Dimensions stay exactly the same — only sharpness, exposure, color, and noise are adjusted. Use Resize Image to change dimensions, or Upscale Image when you need both more pixels and more detail.' },
         ],
         supportedFormats: 'JPG, JPEG, PNG, WebP, HEIC',
         relatedTools: ['upscale-image', 'remove-image-background', 'beautify-image', 'convert-dpi', 'retouch-photo'],

@@ -157,8 +157,13 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const cleanName = normalizeDisplayText(tool.name);
   const cleanDescription = normalizeDisplayText(tool.description);
   const isAI = tool.isAI;
-  const title = `Free ${cleanName} Online - No Sign Up Required`;
-  const description = `${cleanDescription} Use our fast, secure, and completely free online ${cleanName.toLowerCase()} tool. Works instantly on Windows, Mac, and Mobile with no signup or installation needed.`;
+  // Per-tool SERP override when the generic pattern under-performs.
+  const title = tool.seoTitle
+    ? normalizeDisplayText(tool.seoTitle)
+    : `Free ${cleanName} Online - No Sign Up Required`;
+  const description = tool.seoDescription
+    ? normalizeDisplayText(tool.seoDescription)
+    : `${cleanDescription} Use our fast, secure, and completely free online ${cleanName.toLowerCase()} tool. Works instantly on Windows, Mac, and Mobile with no signup or installation needed.`;
   const canonicalUrl = absoluteUrl(`/tools/${tool.slug}`);
   const keywords = dedupeKeywords([
     ...tool.keywords.map((keyword) => normalizeDisplayText(keyword)),
