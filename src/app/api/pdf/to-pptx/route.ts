@@ -33,14 +33,26 @@ export async function POST(request: NextRequest) {
     // Render every page to PNG via Ghostscript (same engine as secure rasterization).
     const input = path.join(dir, 'input.pdf');
     await writeFile(input, buffer);
-    await runGhostscriptWithFallback([
-      '-dSAFER', '-dBATCH', '-dNOPAUSE', '-dQUIET', '-sDEVICE=png16m',
-      '-r150', '-dTextAlphaBits=4', '-dGraphicsAlphaBits=4', '-dUseCropBox',
-      `-sOutputFile=${path.join(dir, 'page-%05d.png')}`, input,
-    ], { timeoutMs: 90_000 });
+    try {
+      await runGhostscriptWithFallback([
+        '-dSAFER', '-dBATCH', '-dNOPAUSE', '-dQUIET', '-sDEVICE=png16m',
+        '-r150', '-dTextAlphaBits=4', '-dGraphicsAlphaBits=4', '-dUseCropBox',
+        `-sOutputFile=${path.join(dir, 'page-%05d.png')}`, input,
+      ], { timeoutMs: 90_000 });
+    } catch (gsError) {
+      const message = gsError instanceof Error ? gsError.message : '';
+      if (/not available|ENOENT|spawn|not recognized/i.test(message)) {
+        return apiError('The conversion engine is temporarily unavailable. Please try again in a few minutes.', 503);
+      }
+      if (/timed out|timed-out|timeout|aborted|abort/i.test(message)) {
+        return apiError('Conversion timed out. Try a smaller PDF or fewer pages.', 408);
+      }
+      return apiError('Not every page could be rendered. The document may be damaged — try Repair PDF first.', 422);
+    }
     const files = (await readdir(dir)).filter(n => /^page-\d+\.png$/.test(n)).sort();
     if (files.length !== pageCount) {
-      return apiError('Not every page could be converted. The document may be damaged — try Repair PDF first.', 400);
+      // A render shortfall is an engine/input problem, not a bad request.
+      return apiError('Not every page could be converted. The document may be damaged — try Repair PDF first.', 422);
     }
 
     const pptx = new PptxGenJS();

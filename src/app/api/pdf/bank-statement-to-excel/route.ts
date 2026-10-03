@@ -220,18 +220,24 @@ export async function POST(request: NextRequest) {
       if (customRowsJson.length > 5_000_000) {
         return apiError('Edited transactions are too large (5MB max).', 413);
       }
+      let parsed: unknown = null;
       try {
-        const parsed = JSON.parse(customRowsJson);
-        const sanitized = sanitizeCustomTransactions(parsed);
-        if (sanitized) {
-          transactions = sanitized;
-        }
-        // Invalid JSON falls back to parsing the PDF below.
+        parsed = JSON.parse(customRowsJson);
       } catch {
-        // Fallback to parsing file if JSON parse fails
+        return apiError('Edited transactions are not valid JSON. Re-apply your edits and try again.', 400);
       }
-      if (Array.isArray(transactions) && transactions.length > MAX_CUSTOM_TRANSACTIONS) {
+      const sanitized = sanitizeCustomTransactions(parsed);
+      // Never silently discard user edits: malformed or oversized rows are a
+      // client error (400/413), not a signal to re-parse the PDF.
+      if (!sanitized) {
+        return apiError('Edited transactions are invalid or exceed the row limit. Re-apply your edits and try again.', 400);
+      }
+      transactions = sanitized;
+      if (transactions.length > MAX_CUSTOM_TRANSACTIONS) {
         return apiError(`Too many transactions (${transactions.length}). Maximum ${MAX_CUSTOM_TRANSACTIONS} rows.`, 413);
+      }
+      if (transactions.length === 0) {
+        return apiError('Edited transactions are empty. Add at least one row.', 400);
       }
     }
 

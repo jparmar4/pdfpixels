@@ -42,6 +42,7 @@ export async function POST(request: NextRequest) {
     ];
 
     let processedBytes: Buffer | Uint8Array | null = null;
+    let gsMissing = false;
 
     try {
       await runGhostscriptWithFallback(gsArgs, {
@@ -53,13 +54,23 @@ export async function POST(request: NextRequest) {
         processedBytes = await fs.promises.readFile(tempOutputPath);
       }
     } catch (gsError) {
-      console.warn('Ghostscript grayscale failed, using pdf-lib fallback:', gsError);
+      const message = gsError instanceof Error ? gsError.message : '';
+      gsMissing = /not available|ENOENT|spawn|not recognized/i.test(message);
+      console.warn('Ghostscript grayscale failed:', gsError);
     }
 
     if (!processedBytes || processedBytes.length === 0) {
+      // Distinguish a missing engine (503, retry later) from an input the
+      // engine rejected (422, file problem) so users get actionable output.
+      if (gsMissing) {
+        return apiError(
+          'Grayscale conversion requires Ghostscript which is not available on this server. Please try again later.',
+          503,
+        );
+      }
       return apiError(
-        'Grayscale conversion requires Ghostscript which is not available on this server. Please try again later.',
-        503
+        'This PDF could not be converted to grayscale. The file may use unsupported features — try Repair PDF first.',
+        422,
       );
     }
 

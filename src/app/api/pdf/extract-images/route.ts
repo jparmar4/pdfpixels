@@ -1,7 +1,7 @@
 import { apiError, apiInternalError } from '@/lib/api-response';
 import { openEditablePdf, sanitizeDownloadFileName } from '@/lib/pdf-api';
 import { NextRequest, NextResponse } from 'next/server';
-import { PDFName, PDFRawStream, PDFDict, PDFNumber, decodePDFRawStream } from 'pdf-lib';
+import { PDFName, PDFRawStream, PDFDict, PDFNumber, PDFArray, decodePDFRawStream } from 'pdf-lib';
 
 export const maxDuration = 60;
 export const runtime = 'nodejs';
@@ -42,16 +42,33 @@ export async function POST(request: NextRequest) {
       if (!(subtype instanceof PDFName) || subtype.asString() !== '/Image') continue;
 
       const filter = dict.get(PDFName.of('Filter'));
-      const isDct = filter instanceof PDFName && filter.asString() === '/DCTDecode';
-      const isFlate = filter instanceof PDFName && filter.asString() === '/FlateDecode';
+      // Filter may be a single name or an array chain such as
+      // [/ASCII85Decode /DCTDecode] — check every stage of the chain.
+      const filterNames: string[] = [];
+      if (filter instanceof PDFName) {
+        filterNames.push(filter.asString());
+      } else if (filter instanceof PDFArray) {
+        for (let i = 0; i < filter.size(); i += 1) {
+          const entry = filter.get(i);
+          if (entry instanceof PDFName) filterNames.push(entry.asString());
+        }
+      }
+      const isDct = filterNames.includes('/DCTDecode');
+      const isFlate = !isDct && filterNames.includes('/FlateDecode');
 
       try {
         if (isDct) {
           // JPEG bytes are stored verbatim — hand them back untouched.
-          extracted.push({
-            name: `image-${String(extracted.length + 1).padStart(3, '0')}.jpg`,
-            data: Buffer.from(obj.getContents()),
-          });
+          const contents = Buffer.from(obj.getContents());
+          // Validate JPEG magic so corrupt streams don't ship as broken .jpg files.
+          if (contents.length > 2 && contents[0] === 0xff && contents[1] === 0xd8) {
+            extracted.push({
+              name: `image-${String(extracted.length + 1).padStart(3, '0')}.jpg`,
+              data: contents,
+            });
+            continue;
+          }
+          skippedUnsupported += 1;
           continue;
         }
 
@@ -108,9 +125,12 @@ export async function POST(request: NextRequest) {
     const AdmZip = (await import('adm-zip')).default;
     const zip = new AdmZip();
     let total = 0;
+    let zippedCount = 0;
     for (const image of extracted) {
+      if (total + image.data.length > MAX_ZIP_BYTES && zippedCount > 0) break;
       zip.addFile(image.name, image.data);
       total += image.data.length;
+      zippedCount += 1;
       if (total > MAX_ZIP_BYTES) break;
     }
     const zipBuffer = zip.toBuffer();
@@ -121,8 +141,8 @@ export async function POST(request: NextRequest) {
         'Content-Type': 'application/zip',
         'Content-Disposition': `attachment; filename="${sanitizeDownloadFileName(`images-${Date.now()}.zip`)}"`,
         'Cache-Control': 'no-store, max-age=0',
-        'X-Images-Extracted': String(Math.min(extracted.length, MAX_IMAGES)),
-        'X-Images-Skipped': String(skippedUnsupported),
+        'X-Images-Extracted': String(zippedCount),
+        'X-Images-Skipped': String(skippedUnsupported + (extracted.length - zippedCount)),
       },
     });
   } catch (error) {

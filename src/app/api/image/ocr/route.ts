@@ -12,10 +12,10 @@ export const maxDuration = 60;
 export async function POST(request: NextRequest) {
     try {
         const formData = await request.formData();
-        const file = formData.get('image') as File;
+        const file = (formData.get('image') || formData.get('file')) as File;
         const language = (formData.get('language') as string) || 'eng';
 
-        if (!file) {
+        if (!file || typeof (file as File).arrayBuffer !== 'function') {
             return apiError('No image provided', 400);
         }
 

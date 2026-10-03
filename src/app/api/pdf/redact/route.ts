@@ -37,6 +37,16 @@ export async function POST(request: NextRequest) {
     if (!Array.isArray(redactions)) return apiError('Redactions must be an array.', 400);
     if (redactionsJson && !redactions.length) return apiError('Add at least one redaction box.', 400);
     if (redactions.length === 0) {
+      const hasExplicitBox =
+        formData.get('pageNumber') !== null ||
+        formData.get('x') !== null ||
+        formData.get('y') !== null ||
+        formData.get('width') !== null ||
+        formData.get('height') !== null;
+      // Never redact a silent default area: without explicit coordinates the
+      // caller forgot to draw a box, and a 200 "success" would burn the wrong
+      // region into their document.
+      if (!hasExplicitBox) return apiError('Add at least one redaction box.', 400);
       const pageNumber = parseInt(String(formData.get('pageNumber') || '1'), 10);
       const x = parseFloat(String(formData.get('x') || '50'));
       const y = parseFloat(String(formData.get('y') || '50'));
@@ -95,7 +105,18 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    const outBytes = await rasterizePdf(await pdf.save(), totalPages);
+    let outBytes: Uint8Array | Buffer;
+    try {
+      outBytes = await rasterizePdf(await pdf.save(), totalPages);
+    } catch (rasterError) {
+      const message = rasterError instanceof Error ? rasterError.message : '';
+      // Render failures for a file pdf-lib could open are input problems
+      // (unsupported features, corrupt streams) — not server crashes.
+      if (/timed out|timed-out|timeout|aborted|abort/i.test(message)) {
+        return apiError('Redaction timed out. Try fewer pages or a smaller file.', 408);
+      }
+      return apiError('Could not render this PDF for redaction. The file may use unsupported features.', 422);
+    }
     const baseName = file?.name ? file.name.replace(/\.pdf$/i, '') : 'document';
     const fileName = `${sanitizeDownloadFileName(baseName)}-redacted.pdf`;
 

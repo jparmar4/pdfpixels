@@ -1,5 +1,5 @@
 import { apiError, apiInternalError } from '@/lib/api-response';
-import { openEditablePdf, pdfBinaryResponse } from '@/lib/pdf-api';
+import { openEditablePdf, pdfBinaryResponse, sanitizeDownloadFileName, toSafeWinAnsi } from '@/lib/pdf-api';
 import { NextRequest } from 'next/server';
 import { rgb, StandardFonts } from 'pdf-lib';
 
@@ -51,8 +51,16 @@ export async function POST(request: NextRequest) {
 
     let defaultImgBytes: Uint8Array | null = null;
     if (typeof signatureImage === 'string' && signatureImage.startsWith('data:image/')) {
-      const base64Data = signatureImage.split(',')[1];
-      defaultImgBytes = Buffer.from(base64Data, 'base64');
+      const commaIdx = signatureImage.indexOf(',');
+      if (commaIdx === -1 || commaIdx + 1 >= signatureImage.length) {
+        return apiError('Please provide a valid signature image.', 400);
+      }
+      try {
+        defaultImgBytes = Buffer.from(signatureImage.slice(commaIdx + 1), 'base64');
+      } catch {
+        return apiError('Please provide a valid signature image.', 400);
+      }
+      if (!defaultImgBytes.length) return apiError('Please provide a valid signature image.', 400);
     } else if (signatureImage && typeof signatureImage === 'object' && 'arrayBuffer' in signatureImage) {
       defaultImgBytes = new Uint8Array(await signatureImage.arrayBuffer());
     }
@@ -69,7 +77,15 @@ export async function POST(request: NextRequest) {
 
       let imgBytes = defaultImgBytes;
       if (item.dataUrl && item.dataUrl.startsWith('data:image/')) {
-        imgBytes = Buffer.from(item.dataUrl.split(',')[1], 'base64');
+        const commaIdx = item.dataUrl.indexOf(',');
+        if (commaIdx === -1 || commaIdx + 1 >= item.dataUrl.length) {
+          return apiError('Please provide a valid signature image.', 400);
+        }
+        try {
+          imgBytes = Buffer.from(item.dataUrl.slice(commaIdx + 1), 'base64');
+        } catch {
+          return apiError('Please provide a valid signature image.', 400);
+        }
       }
 
       if (!imgBytes?.length) return apiError('Please provide a valid signature image.', 400);
@@ -100,7 +116,7 @@ export async function POST(request: NextRequest) {
           });
 
           if (item.dateText) {
-            page.drawText(item.dateText, {
+            page.drawText(toSafeWinAnsi(item.dateText), {
               x: Math.max(0, item.x),
               y: Math.max(0, yPos - 14),
               size: 10,
@@ -116,7 +132,8 @@ export async function POST(request: NextRequest) {
     }
 
     const outBytes = await pdf.save();
-    const fileName = file!.name ? file!.name.replace(/\.pdf$/i, '-signed.pdf') : `signed-${Date.now()}.pdf`;
+    const baseName = file?.name ? file.name.replace(/\.pdf$/i, '') : 'document';
+    const fileName = sanitizeDownloadFileName(`${baseName}-signed.pdf`);
 
     return pdfBinaryResponse(outBytes, fileName);
   } catch (error) {

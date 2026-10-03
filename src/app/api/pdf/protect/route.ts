@@ -192,8 +192,14 @@ export async function POST(request: NextRequest) {
     if (!read.ok) return read.response;
     const inputBuffer = read.buffer;
 
-    const srcPdf = await loadPdfWithTimeout(inputBuffer, { ignoreEncryption: true });
-    const pageCount = srcPdf.getPageCount();
+    let srcPdf;
+    let pageCount = 0;
+    try {
+      srcPdf = await loadPdfWithTimeout(inputBuffer, { ignoreEncryption: true });
+      pageCount = srcPdf.getPageCount();
+    } catch {
+      return apiError('Could not read this PDF. The file may be damaged.', 400);
+    }
     srcPdfEncrypted = srcPdf.isEncrypted;
 
     if (action === 'protect' && srcPdf.isEncrypted) {

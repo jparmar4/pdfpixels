@@ -3,7 +3,6 @@ import { PDFDocument } from 'pdf-lib';
 import { NextRequest, NextResponse } from 'next/server';
 import {
   PDF_CACHE_HEADERS,
-  readAndValidatePdfFile,
   sanitizeDownloadFileName,
   validatePdfUpload,
 } from '@/lib/pdf-api';
@@ -58,13 +57,15 @@ export async function POST(request: NextRequest) {
 
     const validation = validatePdfUpload(file);
     if (!validation.ok) return validation.response;
-    const read = await readAndValidatePdfFile(file!);
-    if (!read.ok) return read.response;
-    const { buffer } = read;
+    // Repair must accept header-damaged files (its core use case), so read
+    // raw bytes instead of gating on %PDF- magic here. Recovery below
+    // decides whether anything is salvageable (422 when it is not).
+    const rawBuffer = Buffer.from(await file!.arrayBuffer());
 
-    if (buffer.length < 100) {
+    if (rawBuffer.length < 100) {
       return apiError('This file is too small to contain a recoverable PDF.', 400);
     }
+    const buffer = rawBuffer;
 
     let result: { pdf: PDFDocument; strategy: string };
     try {
@@ -77,10 +78,18 @@ export async function POST(request: NextRequest) {
     }
 
     const { pdf, strategy } = result;
+    if (pdf.isEncrypted) {
+      return apiError('This PDF is password-protected. Unlock it first, then repair.', 400);
+    }
 
     // Rebuild into a fresh document so broken structures are replaced.
     const out = await PDFDocument.create();
-    const pages = await out.copyPages(pdf, pdf.getPageIndices());
+    let pages;
+    try {
+      pages = await out.copyPages(pdf, pdf.getPageIndices());
+    } catch {
+      return apiError('No readable pages could be recovered from this PDF.', 422);
+    }
     for (const page of pages) out.addPage(page);
 
     if (out.getPageCount() === 0) {

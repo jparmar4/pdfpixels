@@ -20,6 +20,9 @@ export async function POST(request: NextRequest) {
     if (!pagesToDelete.trim()) {
       return apiError('No pages specified for deletion', 400);
     }
+    if (pagesToDelete.length > 2000) {
+      return apiError('Page selection is too long. Keep it under 2000 characters.', 413);
+    }
 
     const opened = await openEditablePdf(file);
     if (!opened.ok) return opened.response;

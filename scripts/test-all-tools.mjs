@@ -204,6 +204,28 @@ await check('delete-pages empty → 400', async () => {
   const res = await callPdf('delete-pages', { file: pdfFile(A), pages: '' });
   assert.equal(res.status, 400);
 });
+await check('delete-pages overlong selection → 413', async () => {
+  const res = await callPdf('delete-pages', { file: pdfFile(C), pages: '1,'.repeat(1500) });
+  assert.equal(res.status, 413);
+});
+await check('sanitize bad action → 400', async () => {
+  const res = await callPdf('sanitize', { file: pdfFile(A), action: 'explode' });
+  assert.equal(res.status, 400);
+});
+await check('redact no boxes → 400 (not silent default)', async () => {
+  const res = await callPdf('redact', { file: pdfFile(A) });
+  assert.equal(res.status, 400);
+});
+await check('sign malformed dataURL → 400 (not 500)', async () => {
+  const res = await callPdf('sign', { file: pdfFile(A), signature: 'data:image/png;base64', page: '1', x: '100', y: '100', width: '100', height: '50' });
+  assert.equal(res.status, 400);
+});
+await check('extract x-total-pages reports source', async () => {
+  const res = await callPdf('extract', { file: pdfFile(C), pages: '1-2' });
+  assert.equal(res.status, 200);
+  assert.equal(res.headers.get('x-total-pages'), '3');
+  assert.equal(res.headers.get('x-page-count'), '2');
+});
 
 await check('reorder [2,1] happy', async () => {
   const res = await callPdf('reorder', { file: pdfFile(A), order: JSON.stringify([2, 1]) });
@@ -226,6 +248,10 @@ await check('reorder non-permutation → 400', async () => {
 await check('linearize happy (GS fallback)', async () => {
   const res = await callPdf('linearize', { file: pdfFile(A) });
   await expectPdfBytes(res, 'linearize');
+});
+await check('linearize reports real engine', async () => {
+  const res = await callPdf('linearize', { file: pdfFile(A) });
+  assert.ok(['qpdf', 'ghostscript'].includes(res.headers.get('X-Linearize-Engine')));
 });
 
 await check('protect short password → 400', async () => {

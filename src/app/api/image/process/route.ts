@@ -136,7 +136,7 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Unknown error';
-    if (/corrupt|unsupported|invalid|too large|too many pixels|empty/i.test(message)) {
+    if (/corrupt|unsupported|invalid|too large|too many pixels|empty|unable to|decode|bad header|unrecognised|unrecognized/i.test(message)) {
       console.error('Image processing error:', error);
       return NextResponse.json(
         { error: message, success: false },

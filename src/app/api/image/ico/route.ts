@@ -82,15 +82,19 @@ export async function POST(request: NextRequest) {
 
     // Pad non-square sources onto a transparent square so icons stay undistorted.
     const side = Math.max(metadata.width, metadata.height);
-    const square = await sharp(input, { failOn: 'none' })
-      .resize(side, side, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } })
-      .png()
-      .toBuffer();
-
     const entries: IcoEntry[] = [];
-    for (const size of sizes) {
-      const png = await sharp(square).resize(size, size, { fit: 'cover', kernel: 'lanczos3' }).png().toBuffer();
-      entries.push({ size, data: png });
+    try {
+      const square = await sharp(input, { failOn: 'none' })
+        .resize(side, side, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } })
+        .png()
+        .toBuffer();
+
+      for (const size of sizes) {
+        const png = await sharp(square).resize(size, size, { fit: 'cover', kernel: 'lanczos3' }).png().toBuffer();
+        entries.push({ size, data: png });
+      }
+    } catch {
+      return apiError('Could not render this image into an icon. Use PNG, JPG, or WebP.', 422);
     }
 
     const ico = packIco(entries);

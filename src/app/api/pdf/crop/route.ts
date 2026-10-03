@@ -10,6 +10,9 @@ export async function POST(request: NextRequest) {
     const formData = await request.formData();
     const file = formData.get('file') as File | null;
     const pagesInput = (formData.get('pages') as string) || 'all';
+    if (pagesInput.length > 2000) {
+      return apiError('Page selection is too long. Keep it under 2000 characters.', 413);
+    }
 
     // Either margins: { top, right, bottom, left } (in points) or absolute box { x, y, width, height }
     const topMargin = parseFloat(String(formData.get('top') || '0'));

@@ -13,6 +13,10 @@ export async function POST(request: NextRequest) {
     const action = (formData.get('action') as string) || 'sanitize'; // 'inspect' or 'sanitize'
     const flatten = formData.get('flatten') === '1' || formData.get('flatten') === 'true';
 
+    if (action !== 'inspect' && action !== 'sanitize') {
+      return apiError("Invalid action. Use 'inspect' or 'sanitize'.", 400);
+    }
+
     const opened = await openEditablePdf(file);
     if (!opened.ok) return opened.response;
     const { pdf } = opened;

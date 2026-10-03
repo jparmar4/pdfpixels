@@ -110,7 +110,7 @@ export async function POST(request: NextRequest) {
     if (file.size === 0) return apiError('This spreadsheet is empty. Please choose a valid file.', 400);
     if (file.size > OFFICE_BYTES) return apiError('Spreadsheet files must be 25MB or smaller.', 400);
 
-    const name = file.name.toLowerCase();
+    const name = (file.name || '').toLowerCase();
     const isCsv = name.endsWith('.csv');
     const isXlsx = name.endsWith('.xlsx');
     const isXls = name.endsWith('.xls');

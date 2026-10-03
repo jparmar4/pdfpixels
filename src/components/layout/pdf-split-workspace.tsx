@@ -358,7 +358,7 @@ export function PDFSplitWorkspace() {
               <input
                 ref={fileInputRef}
                 type="file"
-                accept=".pdf"
+                accept=".pdf,application/pdf,application/x-pdf"
                 onChange={handleFileSelect}
                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
               />

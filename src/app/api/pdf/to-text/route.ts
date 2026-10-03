@@ -44,7 +44,7 @@ export async function POST(request: NextRequest) {
       fileName: `${baseName}.txt`,
       charCount: extractedText.length,
       wordCount: extractedText.trim() ? extractedText.trim().split(/\s+/).length : 0,
-    });
+    }, { headers: { 'Cache-Control': 'no-store, max-age=0' } });
   } catch (error) {
     console.error('PDF to text error:', error);
     return apiError(

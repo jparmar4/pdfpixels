@@ -1,5 +1,5 @@
 import { apiError, apiInternalError } from '@/lib/api-response';
-import { openEditablePdf, pdfBinaryResponse, toSafeWinAnsi } from '@/lib/pdf-api';
+import { openEditablePdf, pdfBinaryResponse, sanitizeDownloadFileName, toSafeWinAnsi } from '@/lib/pdf-api';
 import { NextRequest } from 'next/server';
 import { rgb, StandardFonts } from 'pdf-lib';
 
@@ -106,7 +106,8 @@ export async function POST(request: NextRequest) {
 
     if (!filledCount) return apiError('Provide at least one field or text entry to fill.', 400);
     const outBytes = await pdf.save();
-    const fileName = file!.name ? file!.name.replace(/\.pdf$/i, '-filled.pdf') : `filled-${Date.now()}.pdf`;
+    const baseName = file?.name ? file.name.replace(/\.pdf$/i, '') : 'document';
+    const fileName = sanitizeDownloadFileName(`${baseName}-filled.pdf`);
 
     return pdfBinaryResponse(outBytes, fileName, {
       'x-filled-count': String(filledCount),

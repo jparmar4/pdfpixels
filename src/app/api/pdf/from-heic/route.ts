@@ -60,7 +60,12 @@ export async function POST(request: NextRequest) {
         }
       }
 
-      const embeddedJpg = await pdfDoc.embedJpg(jpegBuf);
+      let embeddedJpg;
+      try {
+        embeddedJpg = await pdfDoc.embedJpg(jpegBuf);
+      } catch {
+        throw new Error(`Failed to decode HEIC image "${file.name}". Ensure the file is a valid HEIC/HEIF photo.`);
+      }
       const imgWidth = embeddedJpg.width;
       const imgHeight = embeddedJpg.height;
 

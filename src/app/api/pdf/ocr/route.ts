@@ -1,5 +1,5 @@
 import { apiInternalError } from '@/lib/api-response';
-import { validatePdfUpload, readAndValidatePdfFile, pdfJsonError } from '@/lib/pdf-api';
+import { loadPdfWithTimeout, validatePdfUpload, readAndValidatePdfFile, pdfJsonError, rejectEncryptedPdf } from '@/lib/pdf-api';
 import { NextRequest } from 'next/server';
 
 export const maxDuration = 60;
@@ -19,6 +19,24 @@ export async function POST(request: NextRequest) {
     const read = await readAndValidatePdfFile(file!);
     if (!read.ok) return read.response;
 
+    // Encrypted PDFs fail deep inside text extraction/OCR with opaque
+    // errors — reject early with an actionable message instead.
+    try {
+      const probe = await loadPdfWithTimeout(read.buffer, { ignoreEncryption: true, updateMetadata: false });
+      const encrypted = rejectEncryptedPdf(probe);
+      if (encrypted) return encrypted;
+    } catch {
+      // Load failures fall through: extraction/OCR below report them as
+      // 422/503 with their own context.
+    }
+    let totalPages = 0;
+    try {
+      const counter = await loadPdfWithTimeout(read.buffer, { ignoreEncryption: true, updateMetadata: false });
+      totalPages = counter.getPageCount();
+    } catch {
+      // Leave totalPages 0 when the catalog is unreadable.
+    }
+
     // A PDF with a real text layer needs no OCR — extraction is instant and
     // perfectly accurate, so return that instead (mirrors the workspace copy).
     const { extractPdfLines } = await import('@/lib/pdf-text');
@@ -33,11 +51,11 @@ export async function POST(request: NextRequest) {
         text: existingText,
         usedOcr: false,
         pagesProcessed: 0,
-        totalPages: 0,
+        totalPages,
         truncated: false,
         charCount: existingText.length,
         wordCount: existingText.split(/\s+/).filter(Boolean).length,
-      });
+      }, { headers: { 'Cache-Control': 'no-store, max-age=0' } });
     }
 
     const { ocrPdfPages } = await import('@/lib/pdf-ocr');
@@ -49,11 +67,11 @@ export async function POST(request: NextRequest) {
           text: existingText,
           usedOcr: false,
           pagesProcessed: 0,
-          totalPages: 0,
+          totalPages,
           truncated: false,
           charCount: existingText.length,
           wordCount: existingText.split(/\s+/).filter(Boolean).length,
-        });
+        }, { headers: { 'Cache-Control': 'no-store, max-age=0' } });
       }
       if (result.unavailable) {
         return pdfJsonError('OCR is temporarily unavailable on this server. Please try again later.', 503);
@@ -69,11 +87,11 @@ export async function POST(request: NextRequest) {
       text,
       usedOcr: true,
       pagesProcessed: result.pages.length,
-      totalPages: result.totalPages,
+      totalPages: result.totalPages || totalPages,
       truncated: result.truncated,
       charCount: text.length,
       wordCount: text.split(/\s+/).filter(Boolean).length,
-    });
+    }, { headers: { 'Cache-Control': 'no-store, max-age=0' } });
   } catch (error) {
     return apiInternalError(error, 'Failed to OCR PDF', 'PDF OCR error');
   }

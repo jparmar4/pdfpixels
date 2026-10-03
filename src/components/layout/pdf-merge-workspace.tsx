@@ -19,11 +19,20 @@ interface PDFFile {
   pageCount?: number;
 }
 
+const PDF_MIME_OK = new Set([
+  'application/pdf',
+  'application/x-pdf',
+  'application/acrobat',
+  'applications/pdf',
+  'binary/octet-stream',
+  'application/octet-stream',
+]);
+
 export function PDFMergeWorkspace() {
   const { activeTool, isProcessing, progress, setIsProcessing, setProgress, reset } = useActiveTool();
 
   const [files, setFiles] = useState<PDFFile[]>([]);
-  const [result, setResult] = useState<{ pdfUrl: string; fileName: string; pageCount: number } | null>(null);
+  const [result, setResult] = useState<{ pdfUrl: string; fileName: string; pageCount: number; warning?: string } | null>(null);
   const [statusLabel, setStatusLabel] = useState<'Idle' | 'Uploading' | 'Processing' | 'Finalizing'>('Idle');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const prefersReducedMotion = useReducedMotion();
@@ -45,12 +54,28 @@ export function PDFMergeWorkspace() {
         items.map(async (item) => {
           try {
             const bytes = await item.file.arrayBuffer();
-            const pdf = await PDFDocument.load(bytes, { ignoreEncryption: true });
+            const pdf = await Promise.race([
+              PDFDocument.load(bytes, { ignoreEncryption: true, updateMetadata: false }),
+              new Promise<never>((_, reject) =>
+                setTimeout(() => reject(new Error('meta-timeout')), 10000),
+              ),
+            ]);
             if (pdf.isEncrypted) {
               toast.warning(`"${item.name}" is password-protected — unlock it before merging.`);
               return item;
             }
-            return { ...item, pageCount: pdf.getPageCount() };
+            let pageCount = 0;
+            try {
+              pageCount = pdf.getPageCount();
+            } catch {
+              toast.warning(`"${item.name}" could not be read and may fail to merge.`);
+              return item;
+            }
+            if (!pageCount) {
+              toast.warning(`"${item.name}" has no readable pages and will be skipped.`);
+              return item;
+            }
+            return { ...item, pageCount };
           } catch {
             toast.warning(`"${item.name}" could not be read and may fail to merge.`);
             return item;
@@ -65,7 +90,11 @@ export function PDFMergeWorkspace() {
 
   const addPdfFiles = useCallback(async (fileList: FileList | File[]) => {
     const list = Array.from(fileList);
-    const pdfs = list.filter((f) => f.name.toLowerCase().endsWith('.pdf') || f.type === 'application/pdf');
+    const pdfs = list.filter((f) => {
+      const name = f.name?.toLowerCase() || '';
+      if (name.endsWith('.pdf')) return true;
+      return PDF_MIME_OK.has((f.type || '').toLowerCase());
+    });
     if (pdfs.length === 0) {
       toast.error('Please add PDF files only');
       return;
@@ -169,28 +198,55 @@ export function PDFMergeWorkspace() {
       if (!response.ok) {
         let message = 'Processing failed';
         try {
-          const err = await response.json();
-          message = err?.error || message;
-          if (Array.isArray(err?.skipped) && err.skipped.length > 0) {
-            const names = err.skipped
-              .slice(0, 3)
-              .map((s: { name?: string; reason?: string }) =>
-                s?.name ? `${s.name}${s.reason ? ` — ${s.reason}` : ''}` : s?.reason || 'unknown',
-              )
-              .join('; ');
-            message = `${message}${names ? ` (${names}${err.skipped.length > 3 ? '…' : ''})` : ''}`;
+          const contentType = response.headers.get('content-type') || '';
+          if (contentType.includes('application/json')) {
+            const err = await response.json();
+            message = err?.error || message;
+            if (Array.isArray(err?.skipped) && err.skipped.length > 0) {
+              const names = err.skipped
+                .slice(0, 3)
+                .map((s: { name?: string; reason?: string }) =>
+                  s?.name ? `${s.name}${s.reason ? ` — ${s.reason}` : ''}` : s?.reason || 'unknown',
+                )
+                .join('; ');
+              message = `${message}${names ? ` (${names}${err.skipped.length > 3 ? '…' : ''})` : ''}`;
+            }
+          } else {
+            const text = (await response.text()).slice(0, 300);
+            if (text) message = text;
           }
         } catch { /* ignore parse error */ }
         throw new Error(message);
       }
 
       const blob = await response.blob();
+      if (!blob.size || (blob.type && !blob.type.includes('pdf') && blob.type !== 'application/octet-stream')) {
+        // Defensive: server may return JSON error with 200 in some proxies.
+        try {
+          const text = await blob.text();
+          if (text.trim().startsWith('{')) {
+            const err = JSON.parse(text);
+            throw new Error(err?.error || 'Processing failed');
+          }
+        } catch (e) {
+          if (e instanceof Error && e.message !== 'Processing failed') throw e;
+        }
+      }
       const pdfUrl = URL.createObjectURL(blob);
       const disposition = response.headers.get('content-disposition') || '';
       const fileNameMatch = disposition.match(/filename="?([^";]+)"?/i);
       const fileName = fileNameMatch?.[1] || `merged-${Date.now()}.pdf`;
 
       const pageCount = Number(response.headers.get('x-page-count') || 0);
+      const mergedFiles = Number(response.headers.get('x-merged-files') || files.length);
+      const skippedCount = Number(response.headers.get('x-skipped-count') || 0);
+      const skippedDetails = response.headers.get('x-skipped-details') || '';
+      const formsFlattened = response.headers.get('x-forms-flattened') === 'true';
+      const warning = skippedCount > 0
+        ? `${skippedCount} file(s) skipped${skippedDetails ? `: ${skippedDetails}` : '. Your valid PDFs were still merged.'}`
+        : formsFlattened
+          ? 'Note: fillable form fields were flattened into page content.'
+          : undefined;
 
       setResult((previous) => {
         if (previous?.pdfUrl?.startsWith('blob:')) {
@@ -200,9 +256,14 @@ export function PDFMergeWorkspace() {
           pdfUrl,
           fileName,
           pageCount,
+          warning,
         };
       });
-      toast.success(`Merged ${files.length} PDFs into ${pageCount || 'multiple'} pages!`);
+      if (warning) {
+        toast.warning(`Merged ${mergedFiles} PDFs. ${warning}`);
+      } else {
+        toast.success(`Merged ${mergedFiles} PDFs into ${pageCount || 'multiple'} pages!`);
+      }
       requestAnimationFrame(() => {
         document.getElementById('merge-result')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       });
@@ -296,7 +357,7 @@ export function PDFMergeWorkspace() {
             <input
               ref={fileInputRef}
               type="file"
-              accept=".pdf"
+              accept=".pdf,application/pdf,application/x-pdf"
               multiple
               onChange={handleFileSelect}
               className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
@@ -404,7 +465,7 @@ export function PDFMergeWorkspace() {
               >
                 <ResultCard
                   title="PDF merged successfully"
-                  description="Your files have been combined in the selected order."
+                  description={result.warning || 'Your files have been combined in the selected order.'}
                   primaryMeta={`${result.pageCount || 'Multiple'} page${result.pageCount === 1 ? '' : 's'} · ${result.fileName}`}
                   onDownload={handleDownload}
                   downloadLabel="Download merged PDF"

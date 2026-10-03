@@ -58,6 +58,7 @@ export async function POST(request: NextRequest) {
 
     // Fast Web View requires qpdf --linearize. Do not pretend pdf-lib object streams are linearized.
     let outputBuffer: Buffer;
+    let engine = 'qpdf';
 
     try {
       await runQpdf(
@@ -85,6 +86,7 @@ export async function POST(request: NextRequest) {
             inputPath,
           ], { timeoutMs: 45_000, timeoutMessage: 'PDF linearize operation timed out.' });
           outputBuffer = fs.readFileSync(outputPath);
+          engine = 'ghostscript';
         } catch (gsErr) {
           console.warn('Ghostscript fast web view fallback failed:', gsErr);
           return jsonError(
@@ -103,7 +105,7 @@ export async function POST(request: NextRequest) {
 
     return pdfBinaryResponse(outputBuffer, fileName, {
         'X-Page-Count': String(pageCount),
-        'X-Linearize-Engine': 'qpdf',
+        'X-Linearize-Engine': engine,
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : '';

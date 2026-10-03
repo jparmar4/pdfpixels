@@ -25,13 +25,13 @@ export async function POST(request: NextRequest) {
     const subject = clean(formData.get('subject'));
     const keywords = clean(formData.get('keywords'));
 
-    if (!title && !author && !subject && !keywords) {
-      return apiError('Provide at least one property to edit (title, author, subject, or keywords).', 400);
-    }
-
     const opened = await openEditablePdf(file);
     if (!opened.ok) return opened.response;
     const { pdf } = opened;
+
+    if (!title && !author && !subject && !keywords) {
+      return apiError('Provide at least one property to edit (title, author, subject, or keywords).', 400);
+    }
 
     if (title !== undefined) pdf.setTitle(title);
     if (author !== undefined) pdf.setAuthor(author);

@@ -104,27 +104,31 @@ export async function POST(request: NextRequest) {
       const isPng = file.type === 'image/png' || (metadata.format === 'png');
       const isJpeg = file.type === 'image/jpeg' || file.type === 'image/jpg' || metadata.format === 'jpeg';
       let imageEmbed;
-      if (isPng) {
-        const pngBuffer = isPng && metadata.format === 'png'
-          ? Buffer.from(imageBytes)
-          : await sharp(Buffer.from(imageBytes)).png().toBuffer();
-        imageEmbed = await pdfDoc.embedPng(pngBuffer);
-      } else if (isJpeg) {
-        try {
-          imageEmbed = await pdfDoc.embedJpg(imageBytes);
-        } catch {
-          const jpegBuffer = await sharp(Buffer.from(imageBytes)).jpeg({ quality: 92 }).toBuffer();
-          imageEmbed = await pdfDoc.embedJpg(jpegBuffer);
-        }
-      } else {
-        const hasAlpha = Boolean(metadata.hasAlpha);
-        if (hasAlpha) {
-          const pngBuffer = await sharp(Buffer.from(imageBytes)).png().toBuffer();
+      try {
+        if (isPng) {
+          const pngBuffer = isPng && metadata.format === 'png'
+            ? Buffer.from(imageBytes)
+            : await sharp(Buffer.from(imageBytes)).png().toBuffer();
           imageEmbed = await pdfDoc.embedPng(pngBuffer);
+        } else if (isJpeg) {
+          try {
+            imageEmbed = await pdfDoc.embedJpg(imageBytes);
+          } catch {
+            const jpegBuffer = await sharp(Buffer.from(imageBytes)).jpeg({ quality: 92 }).toBuffer();
+            imageEmbed = await pdfDoc.embedJpg(jpegBuffer);
+          }
         } else {
-          const jpegBuffer = await sharp(Buffer.from(imageBytes)).jpeg({ quality: 92 }).toBuffer();
-          imageEmbed = await pdfDoc.embedJpg(jpegBuffer);
+          const hasAlpha = Boolean(metadata.hasAlpha);
+          if (hasAlpha) {
+            const pngBuffer = await sharp(Buffer.from(imageBytes)).png().toBuffer();
+            imageEmbed = await pdfDoc.embedPng(pngBuffer);
+          } else {
+            const jpegBuffer = await sharp(Buffer.from(imageBytes)).jpeg({ quality: 92 }).toBuffer();
+            imageEmbed = await pdfDoc.embedJpg(jpegBuffer);
+          }
         }
+      } catch {
+        return apiError(`Could not read "${file.name}". The image may be corrupt.`, 400);
       }
       
       // Determine page size
