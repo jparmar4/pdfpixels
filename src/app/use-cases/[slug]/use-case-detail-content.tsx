@@ -11,7 +11,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { getToolBySlug, allTools, toolCategories } from '@/lib/tools-data';
-import type { UseCasePage } from '@/lib/use-cases';
+import { useCasePages, type UseCasePage } from '@/lib/use-cases';
 import { InContentAd, FooterAd } from '@/components/ads/ad-banner';
 
 interface UseCaseDetailContentProps {
@@ -30,6 +30,14 @@ export function UseCaseDetailContent({
   const category = tool
     ? toolCategories.find((c) => c.id === tool.category)
     : undefined;
+  const peerUseCases = useCasePages
+    .filter((u) => u.slug !== entry.slug)
+    .sort((a, b) => {
+      const aMatch = a.targetToolSlug === entry.targetToolSlug ? 1 : 0;
+      const bMatch = b.targetToolSlug === entry.targetToolSlug ? 1 : 0;
+      return bMatch - aMatch;
+    })
+    .slice(0, 4);
 
   if (!tool) return null;
 
@@ -250,6 +258,46 @@ export function UseCaseDetailContent({
                       </Link>
                     );
                   })}
+                </div>
+              </div>
+            </section>
+          )}
+
+          {peerUseCases.length > 0 && (
+            <section className="mt-6">
+              <div className="section-panel rounded-[2rem] p-6 md:p-8">
+                <div className="mb-6 flex items-center justify-between">
+                  <div>
+                    <p className="mb-1 text-xs font-bold uppercase tracking-[0.2em] text-primary">
+                      Related workflows
+                    </p>
+                    <h2 className="text-2xl font-bold text-foreground">Explore more practical guides</h2>
+                  </div>
+                  <Link
+                    href="/use-cases"
+                    className="hidden text-sm font-medium text-primary underline-offset-4 hover:underline sm:block"
+                  >
+                    View all use cases
+                  </Link>
+                </div>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  {peerUseCases.map((peer) => (
+                    <Link
+                      key={peer.slug}
+                      href={`/use-cases/${peer.slug}`}
+                      className="group flex flex-col justify-between rounded-2xl border border-border/60 bg-background/75 p-5 shadow-soft transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/20 hover:shadow-premium"
+                    >
+                      <div>
+                        <p className="flex items-center justify-between text-base font-semibold text-foreground transition-colors group-hover:text-primary">
+                          {peer.title}
+                          <ArrowRight className="h-4 w-4 shrink-0 transition-transform group-hover:translate-x-1" />
+                        </p>
+                        <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-muted-foreground">
+                          {peer.description}
+                        </p>
+                      </div>
+                    </Link>
+                  ))}
                 </div>
               </div>
             </section>

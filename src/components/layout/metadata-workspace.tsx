@@ -542,7 +542,7 @@ export function MetadataWorkspace() {
                     id="meta-copyright"
                     value={fields.copyright}
                     onChange={(e) => setFields((f) => ({ ...f, copyright: e.target.value }))}
-                    placeholder="Â© 2026 Your Name"
+                    placeholder="© 2026 Your Name"
                   />
                 </div>
                 <div className="space-y-2">

@@ -62,7 +62,7 @@ export default function PricingPage() {
             Free tools for real file jobs
           </h1>
           <p className="text-lg font-medium leading-relaxed text-muted-foreground">
-            PdfPixels is free for everyday personal and work use. There is no paid â€œProâ€ checkout on this site
+            PdfPixels is free for everyday personal and work use. There is no paid "Pro" checkout on this site
             today — open a tool, process your file, download the result.
           </p>
         </div>

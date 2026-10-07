@@ -11,7 +11,7 @@ import { ErrorBoundary } from '@/components/ui/error-boundary';
 import { comparisonPages } from '@/lib/comparisons';
 import { normalizeDisplayText } from '@/lib/display-text';
 import { siteConfig } from '@/lib/seo-config';
-import { absoluteUrl, dedupeKeywords, SITE_CONTENT_UPDATED } from '@/lib/seo';
+import { absoluteUrl, dedupeKeywords, SITE_CONTENT_UPDATED, ADSENSE_REVIEW_MODE } from '@/lib/seo';
 import { toolLanguageAlternates } from '@/lib/localized-tools';
 import { toolContentMap } from '@/lib/tool-content-data';
 import { getPostsForTool } from '@/config/blog';
@@ -398,7 +398,9 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
   const hasRichContent = !!toolContentMap[tool.slug];
   const relatedTools = allTools.filter((candidate) => candidate.category === tool.category && candidate.slug !== tool.slug).slice(0, 6);
   const relatedUseCases = useCasePages.filter((useCase) => useCase.targetToolSlug === tool.slug).slice(0, 4);
-  const relatedComparisons = comparisonPages.filter((comparison) => comparison.primaryToolSlug === tool.slug).slice(0, 3);
+  const relatedComparisons = ADSENSE_REVIEW_MODE
+    ? []
+    : comparisonPages.filter((comparison) => comparison.primaryToolSlug === tool.slug).slice(0, 3);
   const relatedPosts = getPostsForTool(tool.slug).slice(0, 3);
 
   return (

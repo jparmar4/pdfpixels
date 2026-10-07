@@ -18,6 +18,12 @@ const REPLACEMENTS = [
   ['ðŸ—‘', '🗑️'],
   ['ðŸ” ', '🔍 '],
   ['ðŸ”', '🔍'],
+  ['â€œ', '"'],
+  ['â€', '"'],
+  ['Â©', '©'],
+  ['Ac 2026', '© 2026'],
+  ['left +" right', 'left ↔ right'],
+  ['top +" bottom', 'top ↕ bottom'],
 ];
 
 let totalReplacements = 0;

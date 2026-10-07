@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { allTools, allPdfTools, toolCategories } from '@/lib/tools-data';
 import { geoRegions } from '@/lib/geo-data';
+import { ADSENSE_REVIEW_MODE } from '@/lib/seo';
 import { useAppStore } from '@/store/app-store';
 
 const toolLinkIds = ['compress', 'resize', 'remove-background', 'image-to-pdf', 'pdf-merge', 'pdf-split'];
@@ -68,15 +69,17 @@ export function Footer() {
     href: `/tools/category/${cat.id}`,
   }));
 
-  const regionLinks = geoRegions.map((region) => ({
-    name: region.name,
-    href: `/${region.code}`,
-  }));
+  const regionLinks = ADSENSE_REVIEW_MODE
+    ? []
+    : geoRegions.map((region) => ({
+        name: region.name,
+        href: `/${region.code}`,
+      }));
 
   // Hub-level guides strip: compare / use-cases / research hubs have no main-nav
   // entry, so this gives crawlers (and users) a sitewide path to every cluster.
   const guideLinks = [
-    { name: 'Compare tools', href: '/compare' },
+    ...(ADSENSE_REVIEW_MODE ? [] : [{ name: 'Compare tools', href: '/compare' }]),
     { name: 'Use-case guides', href: '/use-cases' },
     { name: 'PDF size limits research (2026)', href: '/research/pdf-size-limits-2026' },
     { name: 'Blog & tutorials', href: '/blog' },
@@ -202,7 +205,7 @@ export function Footer() {
       {/* ── Footer Columns ── */}
       <div className="border-t border-border/30 bg-muted/15">
         <div className="container mx-auto px-4 py-14 lg:px-8">
-          <div className="grid gap-10 lg:grid-cols-[minmax(0,1.3fr)_repeat(6,minmax(0,1fr))]">
+          <div className={`grid gap-10 ${ADSENSE_REVIEW_MODE ? 'lg:grid-cols-[minmax(0,1.3fr)_repeat(5,minmax(0,1fr))]' : 'lg:grid-cols-[minmax(0,1.3fr)_repeat(6,minmax(0,1fr))]'}`}>
             {/* Brand Column */}
             <div className="space-y-6">
               <Link href="/" className="flex items-center gap-3" onClick={() => setActiveTool(null)}>
@@ -270,13 +273,17 @@ export function Footer() {
               </div>
             ))}
 
-            {/* Regions Column */}
-            <div className="lg:hidden">
-              <CollapsibleFooterColumn title="Regions" links={regionLinks} />
-            </div>
-            <div className="hidden lg:block">
-              <FooterColumn title="Regions" links={regionLinks} />
-            </div>
+            {/* Regions Column (hidden while AdSense review freeze is active) */}
+            {!ADSENSE_REVIEW_MODE && regionLinks.length > 0 && (
+              <>
+                <div className="lg:hidden">
+                  <CollapsibleFooterColumn title="Regions" links={regionLinks} />
+                </div>
+                <div className="hidden lg:block">
+                  <FooterColumn title="Regions" links={regionLinks} />
+                </div>
+              </>
+            )}
 
             {/* Legal Column */}
             <div className="lg:hidden">
