@@ -107,6 +107,7 @@
   },
   "overrides": {
     "image-size": "^2.0.4",
-    "deepmerge-ts": "^8.0.2"
+    "deepmerge-ts": "^8.0.2",
+    "source-map-js": "^1.2.2"
   }
 }
