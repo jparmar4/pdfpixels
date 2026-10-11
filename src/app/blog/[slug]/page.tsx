@@ -205,10 +205,10 @@ export default async function BlogPostPage({
             {/compress-pdf|compress-scanned|reduce-pdf-size|pdf-compressor|pdf-file-size|pdf-file-so-large/.test(slug) ? (
               <div className="container mx-auto px-4 pt-6">
                 <p className="rounded-xl border border-border bg-card px-4 py-3 text-sm text-muted-foreground">
-                  {slug === 'how-to-compress-pdf-online' ? (
-                    <Link className="font-semibold text-primary" href="/tools/compress-pdf">Open the compress PDF tool</Link>
+                  {slug === 'compress-pdf-complete-guide' || slug === 'how-to-compress-pdf-online' ? (
+                    <Link className="font-semibold text-primary" href="/tools/compress-pdf">Open the free Compress PDF tool →</Link>
                   ) : (
-                    <Link className="font-semibold text-primary" href="/blog/how-to-compress-pdf-online">Read the compress PDF hub</Link>
+                    <Link className="font-semibold text-primary" href="/blog/compress-pdf-complete-guide">Read the complete Compress PDF guide →</Link>
                   )}
                 </p>
               </div>

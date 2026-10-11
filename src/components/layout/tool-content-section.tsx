@@ -121,7 +121,7 @@ function RelatedArticleCard({ slug, title, excerpt, date, readTime }: {
  * the tool → guide triangle for high-traffic intents so crawlers and answer
  * engines always find a complete cluster. Slugs must exist in blogPosts. */
 const curatedRelatedGuides: Record<string, string[]> = {
-  'compress-pdf': ['how-to-compress-pdf-online', 'reduce-pdf-size-for-email', 'compress-pdf-under-1mb'],
+  'compress-pdf': ['compress-pdf-complete-guide', 'how-to-compress-pdf-online', 'reduce-pdf-size-for-email', 'compress-pdf-under-1mb'],
   'compress-pdf-to-100kb': ['compress-pdf-under-1mb', 'compress-pdf-to-200kb-email-attachment', 'reduce-pdf-size-gmail-25mb-fix'],
   'compress-pdf-to-200kb': ['compress-pdf-to-200kb-email-attachment', 'reduce-pdf-size-gmail-25mb-fix', 'compress-pdf-under-1mb'],
   'compress-pdf-to-300kb': ['compress-pdf-to-200kb-email-attachment', 'how-to-compress-pdf-online', 'reduce-pdf-size-for-email'],
