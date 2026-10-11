@@ -3480,7 +3480,7 @@ Need CV + cover letter as one PDF under 1MB?
 
 Merge-first then compress is usually worse. Small pieces in, small package out.
 
-General file-size methods (desktop options, when online isn't enough) live in our [how to compress PDF online guide](/blog/how-to-compress-pdf-online).
+General file-size methods, desktop workflows, and benchmarks live in our comprehensive [Compress PDF: The Complete 2026 Guide](/blog/compress-pdf-complete-guide).
 
 ## Does compression wreck quality?
 
@@ -4508,7 +4508,7 @@ The solution isn't complicated. You need a compressor that understands image-bas
 
 The [PdfPixels Compress PDF tool](/tools/compress-pdf) handles this in under a minute, for free, with your documents never leaving your device. If you're hitting upload limits on government portals, job applications, or professional platforms — or just tired of scanned PDFs clogging up your email — that's the place to start.
 
-And for related PDF tasks — splitting out just the pages you need before compressing, merging several scanned files into one submission, or just learning more about [how PDF compression works in general](/blog/how-to-compress-pdf-online) — the tools are all there and ready.
+And for related PDF tasks — splitting out just the pages you need before compressing, merging several scanned files into one submission, or exploring our full pillar breakdown in the [Compress PDF: The Complete 2026 Guide](/blog/compress-pdf-complete-guide) — the tools are all there and ready.
 
 **External references:**
 - [Adobe's guide on PDF optimization](https://helpx.adobe.com/acrobat/using/optimizing-pdfs-acrobat-pro.html) — technical background on PDF optimization techniques
@@ -4641,7 +4641,7 @@ The best fix is prevention. Here is how to stop creating giant PDFs in the first
 
 The "File too large attachment" error is incredibly common, but it shouldn't hold up your workday. Nine times out of ten, the culprit is simply unoptimized images or a scanner set to a high resolution. 
 
-By running your bulky documents through a secure, browser-based [PDF compressor](/tools/compress-pdf), you can reduce their size by up to 90% in a matter of seconds, keeping the text sharp and getting that email successfully out of your outbox.
+By running your bulky documents through a secure, browser-based [PDF compressor](/tools/compress-pdf), you can reduce their size by up to 90% in a matter of seconds, keeping the text sharp and getting that email successfully out of your outbox. For an in-depth breakdown of compression algorithms, safe DPI thresholds, and real test benchmarks, consult our [Compress PDF: The Complete 2026 Guide](/blog/compress-pdf-complete-guide).
 `,
         faq: [
             {
