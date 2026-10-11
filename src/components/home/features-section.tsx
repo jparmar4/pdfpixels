@@ -1,6 +1,3 @@
-'use client';
-
-import { motion } from 'framer-motion';
 import { CheckCircle2, Files, Server, ShieldCheck, Sparkles, Zap } from 'lucide-react';
 import { allTools } from '@/lib/tools-data';
 
@@ -59,13 +56,7 @@ export function FeaturesSection() {
   return (
     <section className="relative overflow-hidden border-t border-border/60 bg-muted/30 py-16 md:py-20">
       <div className="container mx-auto max-w-6xl px-4 lg:px-8 relative z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-100px' }}
-          transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
-          className="mb-10 text-center md:mb-12"
-        >
+        <div className="mb-10 text-center md:mb-12">
           <span className="inline-flex items-center gap-2 rounded-full border border-primary/15 bg-primary/8 px-4 py-1.5 text-xs font-semibold text-primary">
             Trust and quality
           </span>
@@ -76,16 +67,10 @@ export function FeaturesSection() {
           <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-muted-foreground md:text-lg">
             PdfPixels is built to stay fast and predictable under real work: contracts, applications, invoices, photos, and everything in between.
           </p>
-        </motion.div>
+        </div>
 
         <div className="grid gap-6 lg:grid-cols-[minmax(0,1.2fr)_minmax(320px,0.8fr)] lg:items-stretch">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-80px' }}
-            transition={{ duration: 0.5 }}
-            className="relative overflow-hidden rounded-3xl border border-border bg-card p-7 shadow-soft md:p-9"
-          >
+          <div className="relative overflow-hidden rounded-3xl border border-border bg-card p-7 shadow-soft md:p-9">
             <div className="relative z-10 flex h-full flex-col">
               <div className="flex flex-wrap items-center gap-2">
                 <span className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-3 py-1.5 text-xs font-semibold text-muted-foreground">
@@ -119,16 +104,12 @@ export function FeaturesSection() {
                 ))}
               </div>
             </div>
-          </motion.div>
+          </div>
 
           <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-1">
-            {valueCards.map((card, idx) => (
-              <motion.div
+            {valueCards.map((card) => (
+              <div
                 key={card.label}
-                initial={{ opacity: 0, y: 18 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: '-80px' }}
-                transition={{ duration: 0.45, delay: idx * 0.06 }}
                 className="group card-shine relative overflow-hidden rounded-3xl border border-border bg-card p-5 shadow-soft transition-all duration-300 hover:-translate-y-1 hover:border-primary/25 hover:shadow-elevated"
               >
                 <div className="relative z-10 flex h-full flex-col">
@@ -143,7 +124,7 @@ export function FeaturesSection() {
                   </div>
                   <p className="mt-3 text-[13px] leading-5 text-muted-foreground">{card.description}</p>
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>

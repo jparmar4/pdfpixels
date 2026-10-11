@@ -1,6 +1,3 @@
-'use client';
-
-import { motion } from 'framer-motion';
 import { Download, Sliders, Upload } from 'lucide-react';
 import { howToData } from '@/lib/seo-config';
 
@@ -31,12 +28,7 @@ export function HowItWorks() {
       <div className="absolute inset-0 dot-pattern opacity-40" />
 
       <div className="container mx-auto px-4 lg:px-8 max-w-5xl relative z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-16"
-        >
+        <div className="text-center mb-16">
           <span className="inline-flex items-center gap-2 text-xs font-bold text-primary uppercase tracking-[0.2em] px-4 py-1.5 rounded-full bg-primary/8 border border-primary/15 mb-4">Simple Process</span>
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold mt-3 mb-4">
             How It <span className="text-foreground">Works</span>
@@ -44,7 +36,7 @@ export function HowItWorks() {
           <p className="text-muted-foreground max-w-lg mx-auto">
             Three simple steps. No accounts, no installations, no hassle.
           </p>
-        </motion.div>
+        </div>
 
         <div className="grid md:grid-cols-3 gap-10 relative">
           <div className="hidden md:block absolute top-16 left-[20%] right-[20%] h-0.5 overflow-hidden rounded-full">
@@ -52,12 +44,8 @@ export function HowItWorks() {
           </div>
 
           {steps.map((step, idx) => (
-            <motion.div
+            <div
               key={step.title}
-              initial={{ opacity: 0, y: 25 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: idx * 0.15 }}
               className="relative text-center group"
             >
               <div className={`relative w-24 h-24 rounded-3xl bg-gradient-to-br ${step.color} flex items-center justify-center mx-auto mb-6 shadow-lg group-hover:scale-110 group-hover:-rotate-3 group-hover:shadow-[0_18px_38px_-14px_rgba(79,70,229,0.55)] transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]`}>
@@ -68,7 +56,7 @@ export function HowItWorks() {
               </div>
               <h3 className="text-lg font-bold mb-2 transition-colors duration-200 group-hover:text-primary">{step.title}</h3>
               <p className="text-sm text-muted-foreground leading-relaxed max-w-xs mx-auto">{step.description}</p>
-            </motion.div>
+            </div>
           ))}
         </div>
 

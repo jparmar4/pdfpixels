@@ -1,6 +1,3 @@
-'use client';
-
-import { motion } from 'framer-motion';
 import { ArrowRight, BookOpen, Sparkles } from 'lucide-react';
 import Link from 'next/link';
 
@@ -8,11 +5,7 @@ export function CTASection() {
   return (
     <section className="py-16 md:py-20 border-t border-border/60 relative overflow-hidden">
       <div className="container mx-auto px-4 lg:px-8">
-        <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-        >
+        <div>
           <div className="relative mx-auto max-w-4xl overflow-hidden rounded-[2rem] bg-gradient-to-br from-indigo-950 via-indigo-900 to-violet-950 px-6 py-12 text-center shadow-premium md:px-12 md:py-16">
             {/* Subtle decorative wash */}
             <div className="pointer-events-none absolute inset-0" aria-hidden="true">
@@ -64,7 +57,7 @@ export function CTASection() {
               </Link>
             </div>
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

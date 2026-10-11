@@ -1,6 +1,5 @@
 'use client';
 
-import { motion } from 'framer-motion';
 import { DollarSign, Files, Server, Wrench } from 'lucide-react';
 import { allTools } from '@/lib/tools-data';
 import { AnimatedCounter } from './animated-counter';
@@ -18,13 +17,9 @@ export function StatsBanner() {
       <div className="absolute inset-0 bg-gradient-to-r from-primary/[0.04] to-transparent" />
       <div className="container mx-auto px-4 lg:px-8 relative z-10">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-5 max-w-4xl mx-auto">
-          {stats.map((stat, idx) => (
-            <motion.div
+          {stats.map((stat) => (
+            <div
               key={stat.label}
-              initial={{ opacity: 0, y: 15 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: idx * 0.1 }}
               className="relative text-center p-6 rounded-2xl glass-card group card-shine hover:-translate-y-1 hover:shadow-premium transition-all duration-300"
             >
               <div className={`absolute top-0 left-4 right-4 h-0.5 rounded-full bg-gradient-to-r ${stat.gradient} opacity-60`} />
@@ -35,7 +30,7 @@ export function StatsBanner() {
                 {stat.display ? stat.display : <AnimatedCounter end={stat.value} suffix={stat.suffix} />}
               </div>
               <div className="text-sm text-muted-foreground font-medium">{stat.label}</div>
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>

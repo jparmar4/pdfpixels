@@ -1,5 +1,3 @@
-'use client';
-
 import Link from 'next/link';
 import { ArrowRight, FileText, Image as ImageIcon, Shield, Sparkles, Users } from 'lucide-react';
 
