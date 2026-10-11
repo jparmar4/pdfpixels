@@ -1,0 +1,383 @@
+'use client';
+
+import Link from 'next/link';
+import { useState, useCallback } from 'react';
+import {
+  Mail,
+  ShieldCheck,
+  Sparkles,
+  Zap,
+  Globe,
+  ArrowRight,
+  Image as ImageIcon,
+  ChevronDown,
+  Send,
+  ArrowUp,
+} from 'lucide-react';
+import { useAppStore } from '@/store/app-store';
+
+interface FooterLink {
+  name: string;
+  href: string;
+}
+
+interface CategoryColumn {
+  title: string;
+  links: FooterLink[];
+}
+
+interface FooterClientProps {
+  toolLinks: FooterLink[];
+  categoryColumns: CategoryColumn[];
+  legalLinks: FooterLink[];
+  categoryLinks: FooterLink[];
+  regionLinks: FooterLink[];
+  guideLinks: FooterLink[];
+  totalToolCount: number;
+  pdfToolCount: number;
+  adsenseReviewMode: boolean;
+}
+
+export function FooterClient({
+  toolLinks,
+  categoryColumns,
+  legalLinks,
+  categoryLinks,
+  regionLinks,
+  guideLinks,
+  totalToolCount,
+  pdfToolCount,
+  adsenseReviewMode,
+}: FooterClientProps) {
+  const currentYear = new Date().getFullYear();
+  const setActiveTool = useAppStore((state) => state.setActiveTool);
+  const [email, setEmail] = useState('');
+  const [subscribed, setSubscribed] = useState(false);
+
+  const socialLinks = [
+    { icon: Mail, href: 'mailto:support@pdfpixels.com', label: 'Send us an email', tooltip: 'Email Us' },
+  ];
+
+  const trustFeatures = [
+    { icon: ShieldCheck, label: 'Secure-by-default' },
+    { icon: Zap, label: 'Fast output' },
+    { icon: Globe, label: 'Global access' },
+  ];
+
+  const [subscribeError, setSubscribeError] = useState('');
+
+  const handleSubscribe = useCallback(async () => {
+    if (!email.trim() || !email.includes('@')) return;
+    setSubscribeError('');
+    try {
+      const res = await fetch('/api/newsletter', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email.trim() }),
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setSubscribed(true);
+        setEmail('');
+      } else {
+        setSubscribeError(data.error || 'Something went wrong. Please try again.');
+      }
+    } catch {
+      setSubscribeError('Network error. Please try again.');
+    }
+  }, [email]);
+
+  return (
+    <footer className="relative mt-auto border-t border-border/40 bg-[linear-gradient(180deg,rgba(255,255,255,0),rgba(79,70,229,0.02))]">
+      {/* ── CTA Banner with Newsletter ── */}
+      <div className="container mx-auto px-4 py-12 lg:px-8 lg:py-14">
+        <div
+          className="relative overflow-hidden rounded-[2rem] border border-border/50 bg-card p-8 shadow-premium md:p-10"
+        >
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(79,70,229,0.06),transparent_28%),radial-gradient(circle_at_bottom_right,rgba(109,40,217,0.04),transparent_28%)] pointer-events-none" />
+          <div className="relative z-10 flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
+            <div className="max-w-2xl space-y-4">
+              <p className="inline-flex items-center gap-2 rounded-full border border-primary/15 bg-primary/8 px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] text-primary">
+                <Sparkles className="h-3.5 w-3.5" />
+                Premium web workflow
+              </p>
+              <p className="text-3xl font-extrabold tracking-tight text-foreground md:text-4xl">
+                A faster front door for PDF and image workflows.
+              </p>
+              <p className="text-base leading-7 text-muted-foreground">
+                PdfPixels provides {totalToolCount}+ tools designed for fast, privacy-friendly document and image processing directly in your browser without requiring an account.
+              </p>
+
+              {/* Newsletter Signup */}
+              <div className="pt-2">
+                <p className="mb-2.5 text-sm font-medium text-muted-foreground">
+                  Get notified about new tools and features
+                </p>
+                <div className="flex flex-col gap-2.5 sm:flex-row sm:items-center">
+                  <div className="relative flex-1">
+                    <Mail className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/60" />
+                    <input
+                      type="email"
+                      placeholder="Enter your email for updates"
+                      aria-label="Email for newsletter"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      onKeyDown={(e) => e.key === 'Enter' && handleSubscribe()}
+                      className="h-12 w-full rounded-2xl border border-border/60 bg-background/80 pl-10 pr-4 text-sm text-foreground placeholder:text-muted-foreground/50 outline-none transition-colors focus:border-primary/40 focus:ring-2 focus:ring-primary/10"
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleSubscribe}
+                    disabled={subscribed}
+                    className="btn-premium inline-flex h-12 items-center justify-center gap-2 rounded-2xl px-6 text-sm font-semibold disabled:opacity-60"
+                  >
+                    {subscribed ? (
+                      <>
+                        <ShieldCheck className="h-4 w-4" />
+                        Subscribed!
+                      </>
+                    ) : (
+                      <>
+                        <Send className="h-4 w-4" />
+                        Subscribe
+                      </>
+                    )}
+                  </button>
+                </div>
+                {subscribeError && (
+                  <p role="alert" className="text-xs text-destructive mt-1">{subscribeError}</p>
+                )}
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <Link href="/pdf-tools" className="btn-premium inline-flex h-12 items-center justify-center gap-2 rounded-2xl px-6 text-sm font-semibold">
+                Explore {pdfToolCount} PDF Tools
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+              <button
+                type="button"
+                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                className="icon-btn-premium inline-flex h-12 items-center justify-center gap-2 rounded-2xl border border-border/60 bg-background/80 px-6 text-sm font-semibold text-foreground hover:border-primary/30 hover:text-primary"
+              >
+                Explore homepage
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Footer Columns ── */}
+      <div className="border-t border-border/30 bg-muted/15">
+        <div className="container mx-auto px-4 py-14 lg:px-8">
+          <div className={`grid gap-10 ${adsenseReviewMode ? 'lg:grid-cols-[minmax(0,1.3fr)_repeat(5,minmax(0,1fr))]' : 'lg:grid-cols-[minmax(0,1.3fr)_repeat(6,minmax(0,1fr))]'}`}>
+            {/* Brand Column */}
+            <div className="space-y-6">
+              <Link href="/" className="flex items-center gap-3" onClick={() => setActiveTool(null)}>
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-violet-600 text-white shadow-lg shadow-primary/20">
+                  <ImageIcon className="h-5 w-5" />
+                </div>
+                <div>
+                  <p className="text-xl font-extrabold tracking-tight text-foreground">PdfPixels</p>
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-muted-foreground">Professional suite</p>
+                </div>
+              </Link>
+
+              <p className="max-w-sm text-sm leading-7 text-muted-foreground">
+                Modern PDF and image tooling for users who want premium polish, dependable processing, and a workflow that feels fast from upload to download.
+              </p>
+
+              <div className="flex flex-wrap gap-3">
+                {trustFeatures.map((feature) => (
+                  <div key={feature.label} className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-card/80 px-3 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+                    <feature.icon className="h-3.5 w-3.5 text-primary" />
+                    {feature.label}
+                  </div>
+                ))}
+              </div>
+
+              {/* Social Links with Tooltips */}
+              <div className="flex items-center gap-3">
+                {socialLinks.map((link) => (
+                  <a
+                    key={link.label}
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group relative flex h-11 w-11 items-center justify-center rounded-2xl border border-border/60 bg-card/80 text-muted-foreground transition-all duration-300 hover:-translate-y-0.5 hover:scale-105 hover:border-primary/30 hover:text-primary hover:shadow-lg hover:shadow-primary/5 active:scale-95"
+                    aria-label={link.label}
+                    title={link.tooltip}
+                  >
+                    <link.icon className="h-[18px] w-[18px]" />
+                    {/* Tooltip */}
+                    <span className="pointer-events-none absolute -top-9 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-lg bg-foreground px-2.5 py-1 text-[11px] font-medium text-background opacity-0 shadow-lg transition-opacity duration-200 group-hover:opacity-100">
+                      {link.tooltip}
+                      <span className="absolute left-1/2 top-full -translate-x-1/2 border-4 border-transparent border-t-foreground" />
+                    </span>
+                  </a>
+                ))}
+              </div>
+            </div>
+
+            {/* Dynamic Tool Categories */}
+            <div className="lg:hidden">
+              <CollapsibleFooterColumn title="Popular tools" links={toolLinks} />
+            </div>
+            <div className="hidden lg:block">
+              <FooterColumn title="Popular tools" links={toolLinks} />
+            </div>
+
+            {categoryColumns.map((col) => (
+              <div key={col.title} className="lg:hidden">
+                <CollapsibleFooterColumn title={col.title} links={col.links} />
+              </div>
+            ))}
+            {categoryColumns.map((col) => (
+              <div key={col.title} className="hidden lg:block">
+                <FooterColumn title={col.title} links={col.links} />
+              </div>
+            ))}
+
+            {/* Regions Column (hidden while AdSense review freeze is active) */}
+            {!adsenseReviewMode && regionLinks.length > 0 && (
+              <>
+                <div className="lg:hidden">
+                  <CollapsibleFooterColumn title="Regions" links={regionLinks} />
+                </div>
+                <div className="hidden lg:block">
+                  <FooterColumn title="Regions" links={regionLinks} />
+                </div>
+              </>
+            )}
+
+            {/* Legal Column */}
+            <div className="lg:hidden">
+              <CollapsibleFooterColumn title="Company & Legal" links={legalLinks} />
+            </div>
+            <div className="hidden lg:block">
+              <FooterColumn title="Company & Legal" links={legalLinks} />
+            </div>
+          </div>
+        </div>
+
+        {/* ── Category index (crawlable links to every category page) ── */}
+        <div className="border-t border-border/30">
+          <div className="container mx-auto px-4 py-4 lg:px-8">
+            <nav
+              aria-label="Tool categories"
+              className="flex flex-wrap items-center justify-center gap-x-1.5 gap-y-1 text-xs text-muted-foreground"
+            >
+              <span className="mr-1 font-semibold uppercase tracking-[0.14em]">Categories</span>
+              {categoryLinks.map((link, i) => (
+                <span key={link.href} className="flex items-center gap-1.5">
+                  {i > 0 && <span aria-hidden="true" className="text-border">·</span>}
+                  <Link href={link.href} className="transition-colors hover:text-primary">
+                    {link.name}
+                  </Link>
+                </span>
+              ))}
+            </nav>
+          </div>
+        </div>
+
+        {/* ── Guides index (crawlable links to hub pages with no main-nav entry) ── */}
+        <div className="border-t border-border/30">
+          <div className="container mx-auto px-4 py-4 lg:px-8">
+            <nav
+              aria-label="Guides and comparisons"
+              className="flex flex-wrap items-center justify-center gap-x-1.5 gap-y-1 text-xs text-muted-foreground"
+            >
+              <span className="mr-1 font-semibold uppercase tracking-[0.14em]">Guides</span>
+              {guideLinks.map((link, i) => (
+                <span key={link.href} className="flex items-center gap-1.5">
+                  {i > 0 && <span aria-hidden="true" className="text-border">·</span>}
+                  <Link href={link.href} className="transition-colors hover:text-primary">
+                    {link.name}
+                  </Link>
+                </span>
+              ))}
+            </nav>
+          </div>
+        </div>
+
+        {/* ── Bottom Bar ── */}
+        <div className="border-t border-border/30">
+          <div className="container mx-auto flex flex-col items-center gap-4 px-4 py-5 lg:px-8">
+            {/* Back to Top */}
+            <button
+              type="button"
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              className="inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground transition-colors hover:text-primary"
+            >
+              Back to top
+              <ArrowUp className="h-3.5 w-3.5" />
+            </button>
+
+            {/* Copyright */}
+            <div className="flex flex-col items-center justify-between gap-3 text-xs text-muted-foreground sm:flex-row">
+              <p>&copy; {currentYear} PdfPixels. All rights reserved.</p>
+              <p>Built for clean UX, reliable output, and production deployment.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+/* ── Desktop-only column ── */
+function FooterColumn({ title, links }: { title: string; links: Array<{ name: string; href: string }> }) {
+  return (
+    <div>
+      <h3 className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-muted-foreground">{title}</h3>
+      <ul className="space-y-3">
+        {links.map((link) => (
+          <li key={`${title}-${link.href}`}>
+            <Link href={link.href} className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary">
+              {link.name}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+/* ── Mobile collapsible column ── */
+function CollapsibleFooterColumn({ title, links }: { title: string; links: Array<{ name: string; href: string }> }) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div className="border-b border-border/30 pb-4">
+      <button
+        type="button"
+        onClick={() => setOpen(!open)}
+        className="flex w-full items-center justify-between py-1"
+        aria-expanded={open}
+      >
+        <h3 className="text-xs font-bold uppercase tracking-[0.18em] text-muted-foreground">{title}</h3>
+        <span
+          className={`text-muted-foreground transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
+        >
+          <ChevronDown className="h-4 w-4" />
+        </span>
+      </button>
+      {open ? (
+        <ul className="space-y-3 pt-3 animate-in fade-in slide-in-from-top-1 duration-200">
+          {links.map((link) => (
+            <li key={`${title}-${link.href}`}>
+              <Link
+                href={link.href}
+                className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+                onClick={() => setOpen(false)}
+              >
+                {link.name}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      ) : null}
+    </div>
+  );
+}
