@@ -73,13 +73,6 @@ export default function PdfToolsPage() {
       price: '0',
       priceCurrency: 'USD',
     },
-    aggregateRating: {
-      '@type': 'AggregateRating',
-      ratingValue: '4.9',
-      reviewCount: '3840',
-      bestRating: '5',
-      worstRating: '1',
-    },
     featureList: [
       '52 free online PDF tools with client-side & server processing',
       'Fast PDF compression with custom target sizes (50KB, 100KB, 200KB, 500KB, 1MB)',

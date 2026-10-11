@@ -52,9 +52,9 @@ function WorkspaceLoading({ tool, containerClass = 'container mx-auto px-4 lg:px
 
               <div className="space-y-3">
                 <div className="flex flex-wrap items-center gap-2.5">
-                  <p className="tool-hero-title text-3xl font-bold tracking-tight text-foreground md:text-4xl">
+                  <h1 className="tool-hero-title text-3xl font-bold tracking-tight text-foreground md:text-4xl">
                     {cleanName}
-                  </p>
+                  </h1>
                   {tool.isAI && (
                     <span className="rounded-full border-0 bg-gradient-to-r from-violet-500 to-sky-500 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em] text-white">
                       AI powered

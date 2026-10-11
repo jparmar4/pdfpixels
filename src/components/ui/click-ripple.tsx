@@ -25,17 +25,12 @@ export function ClickRipple() {
       const target = (event.target as Element | null)?.closest?.(SELECTOR);
       if (!(target instanceof HTMLElement)) return;
 
-      const style = window.getComputedStyle(target);
-      if (style.display === 'inline' || style.position === 'fixed') return;
-
       const rect = target.getBoundingClientRect();
       if (rect.width === 0 || rect.height === 0) return;
 
       // Guard against ripple accumulation on held-down buttons.
       const existing = target.querySelectorAll(':scope > .click-ripple');
       if (existing.length >= 2) existing[0].remove();
-
-      if (style.position === 'static') target.style.position = 'relative';
 
       const span = document.createElement('span');
       span.className = 'click-ripple';

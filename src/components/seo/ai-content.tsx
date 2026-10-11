@@ -61,7 +61,7 @@ export function AIContentSection() {
               Search and AI discovery
             </span>
             <h2 id="ai-discovery-heading" className="mt-4 text-3xl font-extrabold tracking-tight text-foreground md:text-4xl lg:text-5xl">
-              Clear, factual platform context for search engines and AI systems.
+              Everything you need to work with PDFs and images, in one place.
             </h2>
             <p className="mt-4 text-base leading-7 text-muted-foreground md:text-lg">
               PdfPixels focuses on practical PDF and image workflows, descriptive tool pages, and answer-friendly content that helps users discover the right workflow quickly.

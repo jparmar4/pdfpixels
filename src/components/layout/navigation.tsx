@@ -446,9 +446,9 @@ export function Navigation() {
                           </div>
                           <div className="space-y-0.5">
                             {group.tools.map((tool) => (
-                              <button
+                              <Link
                                 key={tool.id}
-                                type="button"
+                                href={`/tools/${tool.slug}`}
                                 onClick={() => handleToolSelect(tool)}
                                 className="group flex w-full items-center justify-between rounded-lg px-2 py-1.5 text-left text-xs transition-colors hover:bg-primary/10 hover:text-primary"
                               >
@@ -460,7 +460,7 @@ export function Navigation() {
                                     {tool.badge}
                                   </span>
                                 )}
-                              </button>
+                              </Link>
                             ))}
                           </div>
                         </div>
@@ -503,9 +503,9 @@ export function Navigation() {
                       {activeCategory.tools.map((tool) => {
                         const Icon = tool.icon;
                         return (
-                          <button
+                          <Link
                             key={tool.id}
-                            type="button"
+                            href={`/tools/${tool.slug}`}
                             onClick={() => handleToolSelect(tool)}
                             className="group rounded-[1.35rem] border border-border/50 bg-background/75 p-3.5 text-left transition-all duration-200 hover:border-primary/30 hover:bg-background hover:shadow-soft"
                           >
@@ -517,7 +517,7 @@ export function Navigation() {
                             </div>
                             <p className="text-sm font-semibold text-foreground group-hover:text-primary">{normalizeDisplayText(tool.name)}</p>
                             <p className="mt-1 line-clamp-1 text-sm leading-5 text-muted-foreground">{normalizeDisplayText(tool.description)}</p>
-                          </button>
+                          </Link>
                         );
                       })}
                     </div>
@@ -619,9 +619,9 @@ export function Navigation() {
                       </div>
                       <div className="grid gap-2 sm:grid-cols-2">
                         {category.tools.map((tool) => (
-                          <button
+                          <Link
                             key={tool.id}
-                            type="button"
+                            href={`/tools/${tool.slug}`}
                             onClick={() => handleToolSelect(tool)}
                             className="flex items-center gap-3 rounded-2xl border border-border/50 bg-background/75 px-3 py-3 text-left"
                           >
@@ -632,7 +632,7 @@ export function Navigation() {
                               <p className="truncate text-sm font-semibold text-foreground">{normalizeDisplayText(tool.name)}</p>
                               <p className="truncate text-xs text-muted-foreground">{normalizeDisplayText(tool.description)}</p>
                             </div>
-                          </button>
+                          </Link>
                         ))}
                       </div>
                     </div>
@@ -753,9 +753,9 @@ export function Navigation() {
                   {searchResults.length > 0 ? (
                     <div className="space-y-2">
                       {searchResults.map((tool) => (
-                        <button
+                        <Link
                           key={tool.id}
-                          type="button"
+                          href={`/tools/${tool.slug}`}
                           onClick={() => handleToolSelect(tool)}
                           className="flex w-full items-center gap-3 rounded-[1.35rem] border border-transparent px-3 py-3 text-left transition-colors hover:border-primary/20 hover:bg-primary/5"
                         >
@@ -770,7 +770,7 @@ export function Navigation() {
                             <p className="truncate text-sm text-muted-foreground">{normalizeDisplayText(tool.description)}</p>
                           </div>
                           <ArrowRight className="h-4 w-4 text-muted-foreground/60" />
-                        </button>
+                        </Link>
                       ))}
                     </div>
                   ) : searchQuery.length > 0 ? (
@@ -789,9 +789,9 @@ export function Navigation() {
                         <p className="mb-2 text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Popular starts</p>
                         <div className="grid gap-2 sm:grid-cols-2">
                           {featuredTools.map((tool) => (
-                            <button
+                            <Link
                               key={tool.id}
-                              type="button"
+                              href={`/tools/${tool.slug}`}
                               onClick={() => handleToolSelect(tool)}
                               className="flex items-center gap-3 rounded-[1.2rem] border border-border/50 bg-background/75 px-3 py-3 text-left"
                             >
@@ -802,7 +802,7 @@ export function Navigation() {
                                 <p className="truncate text-sm font-semibold text-foreground">{normalizeDisplayText(tool.name)}</p>
                                 <p className="truncate text-xs text-muted-foreground">{normalizeDisplayText(tool.description)}</p>
                               </div>
-                            </button>
+                            </Link>
                           ))}
                         </div>
                       </div>

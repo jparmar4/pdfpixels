@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from 'next';
+import Script from 'next/script';
 import { Inter, Sora, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
 import { Toaster as SonnerToaster } from '@/components/ui/sonner';
@@ -150,11 +151,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
         <link rel="dns-prefetch" href="https://www.google-analytics.com" />
         <meta name="google-adsense-account" content="ca-pub-3541576002060495" />
-        <script
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3541576002060495"
-          crossOrigin="anonymous"
-        />
         <link rel="search" type="application/opensearchdescription+xml" title="PdfPixels" href="/opensearch.xml" />
         <link rel="alternate" type="application/rss+xml" title="PdfPixels RSS Feed" href="/feed" />
         <link rel="alternate" type="text/plain" title="PdfPixels for LLMs" href="/llms.txt" />
@@ -164,6 +160,12 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-lg focus:text-sm focus:font-semibold focus:outline-none focus:ring-2 focus:ring-primary/50">
           Skip to main content
         </a>
+        <Script
+          id="adsense-init"
+          strategy="lazyOnload"
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3541576002060495"
+          crossOrigin="anonymous"
+        />
         <JsonLdSchemas />
         <ChunkReloadHandler />
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
