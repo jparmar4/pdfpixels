@@ -136,7 +136,7 @@ const nextConfig: NextConfig = {
       },
       // Static images - long cache
       {
-        source: '/:all*(svg|jpg|jpeg|png|gif|ico|webp|avif)',
+        source: '/:path*.:ext(svg|jpg|jpeg|png|gif|ico|webp|avif)',
         headers: [
           {
             key: 'Cache-Control',
@@ -146,7 +146,7 @@ const nextConfig: NextConfig = {
       },
       // JS and CSS - long cache (fallback for non-_next hashed assets)
       {
-        source: '/:all*(js|css)',
+        source: '/:path*.:ext(js|css)',
         headers: [
           {
             key: 'Cache-Control',

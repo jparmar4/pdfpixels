@@ -48,7 +48,6 @@ export const metadata: Metadata = {
   creator: siteConfig.creator,
   publisher: siteConfig.publisher,
   alternates: {
-    canonical: '/',
     types: {
       'application/rss+xml': '/feed',
     },
