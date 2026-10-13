@@ -161,7 +161,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         </a>
         <Script
           id="adsense-init"
-          strategy="lazyOnload"
+          strategy="afterInteractive"
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3541576002060495"
           crossOrigin="anonymous"
         />
