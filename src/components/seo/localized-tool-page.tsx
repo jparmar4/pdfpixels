@@ -12,7 +12,7 @@ import {
   type LocaleCode,
 } from '@/lib/localized-tools';
 import { getToolBySlug } from '@/lib/tools-data';
-import { ADSENSE_REVIEW_MODE } from '@/lib/seo';
+import { ADSENSE_REVIEW_MODE, absoluteUrl, organizationId, websiteId } from '@/lib/seo';
 
 export function localizedMetadata(locale: LocaleCode, slug: string): Metadata {
   const copy = getLocalizedTool(locale, slug);
@@ -51,6 +51,70 @@ export function LocalizedToolPage({ locale, slug }: { locale: LocaleCode; slug: 
   if (!copy || !tool) notFound();
   const pack = getLocalePack(locale);
   const siblings = LOCALIZED_TOOL_SLUGS.filter((item) => item !== slug);
+  const pageUrl = absoluteUrl(`/${locale}/tools/${slug}`);
+
+  const localizedSchemas = [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'WebPage',
+      '@id': `${pageUrl}#webpage`,
+      url: pageUrl,
+      name: copy.title,
+      description: copy.description,
+      inLanguage: pack.htmlLang,
+      isPartOf: { '@id': websiteId() },
+      speakable: {
+        '@type': 'SpeakableSpecification',
+        cssSelector: ['h2', 'p', 'ol'],
+      },
+      mainEntity: {
+        '@id': `${pageUrl}#software`,
+      },
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'SoftwareApplication',
+      '@id': `${pageUrl}#software`,
+      name: copy.name,
+      description: copy.description,
+      url: pageUrl,
+      applicationCategory: 'UtilitiesApplication',
+      operatingSystem: 'Any',
+      isAccessibleForFree: true,
+      inLanguage: pack.htmlLang,
+      offers: {
+        '@type': 'Offer',
+        price: '0',
+        priceCurrency: 'USD',
+        availability: 'https://schema.org/InStock',
+      },
+      provider: {
+        '@id': organizationId(),
+      },
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'HowTo',
+      name: copy.howTitle,
+      description: copy.intro,
+      inLanguage: pack.htmlLang,
+      step: copy.steps.map((step, idx) => ({
+        '@type': 'HowToStep',
+        position: idx + 1,
+        name: `Step ${idx + 1}`,
+        text: step,
+      })),
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: absoluteUrl('/') },
+        { '@type': 'ListItem', position: 2, name: locale.toUpperCase(), item: absoluteUrl(`/${locale}/tools/${slug}`) },
+        { '@type': 'ListItem', position: 3, name: copy.name, item: pageUrl },
+      ],
+    },
+  ];
 
   return (
     // The lang attribute is SSR'd so non-JS crawlers (LLM scrapers, social
@@ -62,6 +126,13 @@ export function LocalizedToolPage({ locale, slug }: { locale: LocaleCode; slug: 
       className={locale === 'jp' ? "[font-family:var(--font-inter),'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,sans-serif]" : undefined}
     >
       <SetHtmlLang lang={pack.htmlLang} />
+      {localizedSchemas.map((schema, index) => (
+        <script
+          key={`loc-schema-${index}`}
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+        />
+      ))}
       <ToolPageClient toolId={tool.id} toolName={copy.name} toolDescription={copy.description} />
       <section className="container mx-auto max-w-3xl px-4 py-10">
         <h2 className="text-2xl font-bold text-foreground">{copy.howTitle}</h2>

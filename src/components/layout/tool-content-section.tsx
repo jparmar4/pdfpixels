@@ -255,7 +255,7 @@ export function ToolContentSection({ toolSlug, toolName, isAI, processing }: {
             About {toolName}
           </SectionHeader>
           {content.directAnswer && (
-            <p className="text-foreground font-medium text-base leading-relaxed mt-4 mb-3 border-l-4 border-primary/60 pl-4 py-1">
+            <p id="direct-answer" className="text-foreground font-medium text-base leading-relaxed mt-4 mb-3 border-l-4 border-primary/60 pl-4 py-1">
               {content.directAnswer}
             </p>
           )}

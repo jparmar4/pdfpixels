@@ -222,6 +222,37 @@ export default function robots(): MetadataRoute.Robots {
         allow: '/',
         disallow: ['/api/'],
       },
+      // 2026 AI Search & Global Crawlers
+      {
+        userAgent: 'DeepSeekBot',
+        allow: '/',
+        disallow: ['/api/'],
+      },
+      {
+        userAgent: 'Baiduspider',
+        allow: '/',
+        disallow: ['/api/'],
+      },
+      {
+        userAgent: 'Yeti',
+        allow: '/',
+        disallow: ['/api/'],
+      },
+      {
+        userAgent: 'Sogou web spider',
+        allow: '/',
+        disallow: ['/api/'],
+      },
+      {
+        userAgent: 'KagiBot',
+        allow: '/',
+        disallow: ['/api/'],
+      },
+      {
+        userAgent: 'Exabot',
+        allow: '/',
+        disallow: ['/api/'],
+      },
     ],
     sitemap: [`${siteConfig.url}/sitemap.xml`, `${siteConfig.url}/image-sitemap.xml`],
     host,

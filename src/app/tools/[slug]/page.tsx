@@ -317,7 +317,7 @@ function getToolJsonLd(tool: ReturnType<typeof getToolBySlug>) {
       },
       speakable: {
         '@type': 'SpeakableSpecification',
-        cssSelector: ['.tool-hero-title', '.tool-hero-description'],
+        cssSelector: ['.tool-hero-title', '.tool-hero-description', '#direct-answer'],
       },
       mainEntity: {
         '@id': `${url}#software`,
