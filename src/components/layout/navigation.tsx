@@ -28,6 +28,7 @@ import {
   allPdfTools,
   allImageTools,
   pdfToolGroups,
+  searchTools,
 } from '@/lib/tools-data';
 import { useAppStore } from '@/store/app-store';
 import { normalizeDisplayText } from '@/lib/display-text';
@@ -106,14 +107,15 @@ export function Navigation() {
       return;
     }
 
-    const q = query.toLowerCase().trim();
-    const results = pool.filter(
-      (tool) =>
-        tool.name.toLowerCase().includes(q) ||
-        tool.description.toLowerCase().includes(q) ||
-        tool.keywords.some((kw) => kw.toLowerCase().includes(q))
-    );
-    setSearchResults(results.slice(0, 20));
+    const matched = searchTools(query);
+    const filtered = filter === 'all'
+      ? matched
+      : filter === 'pdf'
+        ? matched.filter((t) => t.category.startsWith('pdf') || t.id.includes('pdf'))
+        : filter === 'image'
+          ? matched.filter((t) => !t.category.startsWith('pdf'))
+          : matched.filter((t) => t.popular);
+    setSearchResults(filtered.slice(0, 20));
   };
 
   const closeSearch = () => {

@@ -214,6 +214,10 @@
   - `/tools/png-to-jpg` -> `/tools/png-to-jpeg`
   - `/tools/jpg-to-png` -> `/tools/jpeg-to-png`
 - [x] Dynamic Tool Alias Recovery: in `src/app/tools/[slug]/page.tsx`, if a requested slug does not match directly, the server checks `TOOL_SLUG_ALIASES` and fallback matches by tool `id`, seamlessly 301-redirecting visitors and crawlers to the canonical tool URL rather than returning a 404.
-- [x] Core Web Vitals (LCP/FID) Preconnect Hints: added `<link rel="preconnect">` alongside `dns-prefetch` in `src/app/layout.tsx` for Google Tag Manager, Google Analytics, and ad domains, eliminating up to 300ms in handshake latency.
-- [x] Automated test assertions added in `scripts/test-recent-tools.mjs` verifying tool alias resolution and tool count integrity.
 - [x] Verification (all green): `npm run typecheck` 0 errors, `npm run lint` 0 warnings, `npm run test:tools` passed, `npm run build` 410 static pages prerendered, `npm run test:seo` 354 sitemap URLs / 1,344 hreflang links passed.
+
+# Intelligent Search & UX Wave (2026-10-19, Wave 3)
+- [x] Ranked Multi-Term Search Algorithm: replaced basic substring checking in `src/lib/tools-data.ts` (`searchTools` and `searchPdfTools`) with an intelligent multi-tier scoring model. Matches are weighted by exact title (100), exact slug/id (90), title prefix (80), title substring (70), exact keyword (60), keyword prefix (50), slug/id prefix (40), description (30), and multi-word token overlap across all properties (45/20).
+- [x] Nav Search Experience Upgrade: wired `searchTools()` into the top navigation search dialog (`src/components/layout/navigation.tsx`), allowing natural multi-word searches (e.g. "pdf merge", "jpg to pdf", "compress 100kb", "bg remove") to instantly rank the correct tool at #1.
+- [x] Automated test assertions added to `scripts/test-recent-tools.mjs` validating that multi-term search queries ("pdf merge" -> `merge-pdf`, "jpg to pdf" -> `image-to-pdf`) return top-ranked results correctly.
+- [x] Verification (all green): `npm run typecheck` 0 errors, `npm run lint` 0 warnings, `npm run test:tools` passed, `npm run build` 410 static pages prerendered, `npm run test:seo` passed.

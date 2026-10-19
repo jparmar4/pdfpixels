@@ -1520,25 +1520,78 @@ export const pdfToolGroups: PdfToolGroup[] = [
   },
 ];
 
+function scoreToolMatch(tool: Tool, lowerQuery: string, terms: string[]): number {
+  const name = tool.name.toLowerCase();
+  const desc = tool.description.toLowerCase();
+  const slug = tool.slug.toLowerCase();
+  const id = tool.id.toLowerCase();
+  const kws = tool.keywords.map((k) => k.toLowerCase());
+
+  // 1. Exact name match
+  if (name === lowerQuery) return 100;
+  // 2. Exact slug or ID match
+  if (slug === lowerQuery || id === lowerQuery) return 90;
+  // 3. Name starts with query
+  if (name.startsWith(lowerQuery)) return 80;
+  // 4. Exact substring in name
+  if (name.includes(lowerQuery)) return 70;
+  // 5. Exact keyword match
+  if (kws.includes(lowerQuery)) return 60;
+  // 6. Keyword starts with or includes query
+  if (kws.some((k) => k.includes(lowerQuery))) return 50;
+  // 7. Slug or ID includes query
+  if (slug.includes(lowerQuery) || id.includes(lowerQuery)) return 40;
+  // 8. Description includes full query
+  if (desc.includes(lowerQuery)) return 30;
+
+  // 9. Multi-term matching: all terms appear somewhere in name, slug, id, keywords, or desc
+  if (terms.length > 1) {
+    const allTermsMatch = terms.every(
+      (term) =>
+        name.includes(term) ||
+        slug.includes(term) ||
+        id.includes(term) ||
+        desc.includes(term) ||
+        kws.some((k) => k.includes(term))
+    );
+    if (allTermsMatch) {
+      const termsInName = terms.every((term) => name.includes(term));
+      return termsInName ? 45 : 20;
+    }
+  }
+
+  return 0;
+}
+
 export const searchTools = (query: string): Tool[] => {
   const lowerQuery = query.toLowerCase().trim();
   if (!lowerQuery) return [];
+  const terms = lowerQuery.split(/\s+/).filter(Boolean);
 
-  return allTools.filter(tool =>
-    tool.name.toLowerCase().includes(lowerQuery) ||
-    tool.description.toLowerCase().includes(lowerQuery) ||
-    tool.keywords.some(kw => kw.includes(lowerQuery))
-  );
+  const scored: { tool: Tool; score: number }[] = [];
+  for (const tool of allTools) {
+    const score = scoreToolMatch(tool, lowerQuery, terms);
+    if (score > 0) {
+      scored.push({ tool, score });
+    }
+  }
+
+  return scored.sort((a, b) => b.score - a.score).map((s) => s.tool);
 };
 
 export const searchPdfTools = (query: string): Tool[] => {
   const lowerQuery = query.toLowerCase().trim();
   if (!lowerQuery) return allPdfTools;
+  const terms = lowerQuery.split(/\s+/).filter(Boolean);
 
-  return allPdfTools.filter(tool =>
-    tool.name.toLowerCase().includes(lowerQuery) ||
-    tool.description.toLowerCase().includes(lowerQuery) ||
-    tool.keywords.some(kw => kw.includes(lowerQuery))
-  );
+  const scored: { tool: Tool; score: number }[] = [];
+  for (const tool of allPdfTools) {
+    const score = scoreToolMatch(tool, lowerQuery, terms);
+    if (score > 0) {
+      scored.push({ tool, score });
+    }
+  }
+
+  return scored.sort((a, b) => b.score - a.score).map((s) => s.tool);
 };
 
