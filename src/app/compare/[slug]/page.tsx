@@ -6,7 +6,7 @@ import { AnimatedMeshBg } from '@/components/ui/animated-mesh-bg';
 
 
 import { Button } from '@/components/ui/button';
-import { InContentAd, FooterAd } from '@/components/ads/ad-banner';
+import { HeaderAd, InContentAd, FooterAd, NativeAd } from '@/components/ads/ad-banner';
 import { comparisonPages } from '@/lib/comparisons';
 import { getToolBySlug } from '@/lib/tools-data';
 import { ADSENSE_REVIEW_MODE, DEFAULT_OG_IMAGE_URL, SITE_CONTENT_UPDATED } from '@/lib/seo';
@@ -171,6 +171,9 @@ export default async function ComparisonPage({ params }: { params: Promise<{ slu
 
         <div className="container mx-auto px-4 py-12 lg:px-8 lg:py-16">
           <div className="mx-auto max-w-5xl space-y-8">
+            {/* Top Leaderboard Ad */}
+            <HeaderAd className="mb-4" />
+
             <section className="rounded-[2rem] border border-border bg-card p-6 shadow-sm md:p-8">
               <h2 className="text-2xl font-bold text-foreground">Honest overview</h2>
               <p className="mt-4 text-sm leading-7 text-muted-foreground md:text-base">{item.overview}</p>
@@ -274,6 +277,9 @@ export default async function ComparisonPage({ params }: { params: Promise<{ slu
                 </div>
               </section>
             )}
+
+            {/* Native Recommendation Ad */}
+            <NativeAd className="my-8" />
 
             <section className="flex flex-col items-center justify-center gap-4 pt-4 sm:flex-row">
               <Button asChild size="lg" className="btn-premium rounded-2xl px-8 shadow-xl shadow-primary/20 transition-all hover:-translate-y-1">

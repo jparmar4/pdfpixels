@@ -8,7 +8,7 @@ import { allTools } from "@/lib/tools-data";
 import { Clock, ArrowRight, BookOpen, Sparkles, CalendarDays } from "lucide-react";
 import { AnimatedMeshBg } from "@/components/ui/animated-mesh-bg";
 import { SpotlightCard } from "@/components/ui/spotlight-card";
-import { InContentAd, FooterAd } from "@/components/ads/ad-banner";
+import { HeaderAd, InContentAd, FooterAd, NativeAd } from "@/components/ads/ad-banner";
 
 export const metadata: Metadata = {
     title: "Blog - Image & PDF Tips, Guides & Tutorials",
@@ -130,6 +130,9 @@ export default function BlogPage() {
                         </p>
                     </div>
                 </section>
+
+                {/* Top Leaderboard Ad */}
+                <HeaderAd className="my-8" />
 
                 {/* Featured Post */}
                 {featuredPost && (
@@ -297,6 +300,9 @@ export default function BlogPage() {
                         </div>
                     </section>
                 )}
+
+                {/* Native Recommendation Ad */}
+                <NativeAd className="my-12 max-w-5xl mx-auto px-4" />
 
                 {/* CTA Section */}
                 <section className="py-32 border-t border-border/50 relative overflow-hidden">

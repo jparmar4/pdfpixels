@@ -12,7 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { getToolBySlug, allTools, toolCategories } from '@/lib/tools-data';
 import { useCasePages, type UseCasePage } from '@/lib/use-cases';
-import { InContentAd, FooterAd } from '@/components/ads/ad-banner';
+import { HeaderAd, InContentAd, FooterAd, NativeAd } from '@/components/ads/ad-banner';
 
 interface UseCaseDetailContentProps {
   entry: UseCasePage;
@@ -112,6 +112,9 @@ export function UseCaseDetailContent({
         </section>
 
         <div className="container mx-auto max-w-5xl px-4 py-8 lg:px-8">
+          {/* Top Leaderboard Ad */}
+          <HeaderAd className="mb-8" />
+
           {/* Unique overview — primary quality signal */}
           <section className="section-panel rounded-[2rem] p-6 md:p-8">
             <h2 className="text-2xl font-bold text-foreground">Why this workflow matters</h2>
@@ -262,6 +265,9 @@ export function UseCaseDetailContent({
               </div>
             </section>
           )}
+
+          {/* Native Recommendation Ad */}
+          <NativeAd className="my-8" />
 
           {peerUseCases.length > 0 && (
             <section className="mt-6">

@@ -10,7 +10,7 @@ import { ReadingProgressBar } from "@/components/blog/ReadingProgressBar";
 import { ProcessContentWithToc } from "@/components/blog/ProcessContentWithToc";
 import { ShareButtons } from "@/components/blog/ShareButtons";
 import { ArticleNavigation } from "@/components/blog/ArticleNavigation";
-import { InContentAd, FooterAd } from "@/components/ads/ad-banner";
+import { HeaderAd, InContentAd, FooterAd, NativeAd } from "@/components/ads/ad-banner";
 import { ArrowLeft, Clock, Calendar, ArrowRight, User } from "lucide-react";
 
 // Generate static params
@@ -336,6 +336,9 @@ export default async function BlogPostPage({
                     </div>
                 )}
 
+                {/* Top Leaderboard Ad */}
+                <HeaderAd className="my-8" />
+
                 {/* Main Content — full width (no sidebar) for easier reading */}
                 <div className="container mx-auto px-4 sm:px-6 lg:px-10 py-12 lg:py-16">
                     <div className="max-w-4xl mx-auto">
@@ -437,8 +440,11 @@ export default async function BlogPostPage({
                             nextPost={nextPost ? { slug: nextPost.slug, title: nextPost.title } : null}
                         />
 
+                        {/* Native Recommendations Ad */}
+                        <NativeAd className="my-14" />
+
                         {/* Related Articles */}
-                        <div className="mt-20">
+                        <div className="mt-16">
                             {relatedPosts.length > 0 && (
                                 <>
                                     <div className="flex items-center gap-4 mb-10">

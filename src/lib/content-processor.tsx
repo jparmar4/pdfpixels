@@ -2,6 +2,7 @@ import Link from "next/link";
 import NextImage from "next/image";
 import { allTools } from "@/lib/tools-data";
 import { getPublicImageDimensions } from "@/lib/image-dims";
+import { InContentAd } from "@/components/ads/ad-banner";
 
 // Map of keywords to tool URLs for auto-linking
 const keywordMap: Record<string, string> = {};
@@ -52,6 +53,7 @@ export function processContent(content: string): React.ReactNode[] {
     let blockquoteType: AlertType | null = null;
 
     const linkedKeywords = new Set<string>();
+    let h2Count = 0;
 
     const flushList = (key: string) => {
         if (listItems.length > 0) {
@@ -424,6 +426,14 @@ export function processContent(content: string): React.ReactNode[] {
         // H2 heading
         if (trimmedLine.startsWith('## ')) {
             flushList(`list-${index}`);
+            h2Count++;
+            if (h2Count === 2 || h2Count === 5) {
+                elements.push(
+                    <div key={`in-article-ad-${index}`} className="my-10 not-prose flex justify-center w-full">
+                        <InContentAd />
+                    </div>
+                );
+            }
             elements.push(
                 <h2 key={index} className="text-2xl md:text-3xl font-bold text-foreground mt-14 mb-6 tracking-tight leading-tight">
                     {trimmedLine.replace('## ', '')}

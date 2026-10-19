@@ -18,7 +18,7 @@ import { toolCategories } from '@/lib/tools-data';
 import { normalizeDisplayText } from '@/lib/display-text';
 import { absoluteUrl, DEFAULT_OG_IMAGE_URL } from '@/lib/seo';
 import { siteConfig } from '@/lib/seo-config';
-import { HeaderAd, FooterAd } from '@/components/ads/ad-banner';
+import { HeaderAd, FooterAd, InContentAd, NativeAd } from '@/components/ads/ad-banner';
 import { CategoryGridClient } from './category-grid-client';
 import { categoryContentData } from '@/lib/category-content-data';
 
@@ -237,6 +237,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
             </Link>
           </div>
           <CategoryGridClient categorySlug={category.id} />
+          <InContentAd className="my-8" />
         </section>
 
         {/* Rich Editorial & Guides Section */}
@@ -346,6 +347,9 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
                   ))}
                 </div>
               </div>
+
+              {/* Native Recommendations */}
+              <NativeAd className="my-10" />
 
               {/* Category FAQs */}
               <div className="rounded-3xl border border-border bg-card p-6 shadow-soft md:p-8">

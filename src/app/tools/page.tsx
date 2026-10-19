@@ -4,6 +4,7 @@ import { allTools } from '@/lib/tools-data';
 import { collectionItemListJsonLd } from '@/app/jsonld-helpers';
 import { SITE_URL } from '@/lib/seo';
 import { ToolsClient } from './tools-client';
+import { HeaderAd, FooterAd, NativeAd } from '@/components/ads/ad-banner';
 
 export default function ToolsPage() {
   const items = allTools.map((tool) => ({
@@ -26,9 +27,12 @@ export default function ToolsPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <main id="main-content" className="flex-1">
+        <HeaderAd className="my-6" />
         <Suspense fallback={<div className="h-72 animate-pulse rounded-2xl bg-muted/20" />}>
           <ToolsClient />
         </Suspense>
+        <NativeAd className="my-12 max-w-5xl mx-auto px-4" />
+        <FooterAd className="my-6" />
       </main>
     </div>
   );

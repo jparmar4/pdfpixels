@@ -6,7 +6,8 @@ import { ArrowRight, BookOpen, ChevronRight, GitCompareArrows, Layers3, LayoutTe
 import { ToolContentSection } from '@/components/layout/tool-content-section';
 import { ToolPageClient } from '@/components/layout/tool-page-client';
 import { ToolSidebarAd } from '@/components/ads/tool-sidebar-ad';
-import { FooterAd } from '@/components/ads/ad-banner';
+import { HeaderAd, InContentAd, FooterAd, NativeAd } from '@/components/ads/ad-banner';
+import { adsterraConfig } from '@/lib/ads-config';
 import { ErrorBoundary } from '@/components/ui/error-boundary';
 import { comparisonPages } from '@/lib/comparisons';
 import { normalizeDisplayText } from '@/lib/display-text';
@@ -405,7 +406,7 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
 
   return (
     <>
-      <div id="main-content" className={process.env.NEXT_PUBLIC_ADSENSE_SLOT_SIDEBAR ? 'min-[1400px]:pr-[332px]' : undefined}>
+      <div id="main-content" className={adsterraConfig.enabled ? 'min-[1400px]:pr-[210px]' : undefined}>
         {schemas?.map((schema, index) => (
           <script key={index} type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
         ))}
@@ -451,16 +452,25 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
           </ol>
         </nav>
 
+        {/* Top Leaderboard Ad */}
+        <HeaderAd className="my-4" />
+
         <ErrorBoundary>
           <Suspense fallback={<WorkspaceLoading tool={tool} containerClass={WORKSPACE_CONTAINER_CLASS[tool.id]} />}>
             <ToolPageClient toolId={tool.id} toolName={cleanToolName} toolDescription={normalizeDisplayText(tool.description)} />
           </Suspense>
         </ErrorBoundary>
 
+        {/* Below-Workspace In-Content Ad */}
+        <InContentAd className="my-6" />
+
         <ToolSidebarAd />
 
-        {/* Editorial content (indexable) sits before mid-page ads for better AdSense policy ratio */}
+        {/* Editorial content (indexable) */}
         <ToolContentSection toolSlug={tool.slug} toolName={cleanToolName} isAI={tool.isAI} processing={tool.processing} />
+
+        {/* Native Recommendation Ad */}
+        <NativeAd className="my-10 max-w-5xl mx-auto px-4" />
 
         {(relatedTools.length > 0 || relatedUseCases.length > 0 || relatedComparisons.length > 0 || relatedPosts.length > 0) ? (
           <section className="container mx-auto px-4 pb-12 lg:px-8">
