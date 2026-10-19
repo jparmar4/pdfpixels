@@ -283,7 +283,7 @@ function getWorkspaceComponent(toolId: string) {
   if (toolId === 'pdf-split') return <PDFSplitWorkspace />;
   if (toolId === 'image-to-pdf') return <ImageToPDFWorkspace />;
   if (toolId === 'pdf-compress') return <PDFCompressWorkspace />;
-  if (toolId === 'pdf-to-image') return <ConvertWorkspace />;
+  if (toolId === 'pdf-to-image' || toolId === 'pdf-to-png') return <ConvertWorkspace />;
   if (toolId === 'pdf-sign') return <PDFSignWorkspace />;
   if (toolId === 'pdf-redact') return <PDFRedactWorkspace />;
   if (toolId === 'pdf-flatten') return <PDFFlattenWorkspace />;
@@ -366,7 +366,7 @@ function getWorkspaceComponent(toolId: string) {
   if (toolId === 'resize' || toolId === 'passport-photo' || toolId === 'dpi-converter') return <ResizeWorkspace />;
 
   // ── Format conversion ──
-  if (['png-to-jpg', 'jpg-to-png', 'webp-to-jpg', 'heic-to-jpg', 'svg-to-png', 'svg-to-jpg', 'webp-to-png', 'avif-to-jpg', 'avif-to-png', 'jpg-to-avif'].includes(toolId)) {
+  if (['png-to-jpg', 'jpg-to-png', 'webp-to-jpg', 'heic-to-jpg', 'svg-to-png', 'svg-to-jpg', 'webp-to-png', 'avif-to-jpg', 'avif-to-png', 'jpg-to-avif', 'jpg-to-webp', 'png-to-webp'].includes(toolId)) {
     return <ConvertWorkspace />;
   }
 

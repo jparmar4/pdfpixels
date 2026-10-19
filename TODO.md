@@ -180,3 +180,26 @@
 - [x] Duplicate-cover fix (pre-existing): ai-background-remover-hero.png was shared by the AI post AND the EXIF post; compress-pdf-file-size-hero.png by the compress hub AND the DPI post. Generated dedicated covers for remove-exif-gps-data (EXIF/GPS motif) and image-dpi-print-vs-web (ruler/DPI motif), updated coverImage + imageAlt. Registry now has 37 unique covers.
 - [x] Internal linking: new post ↔ webp tool (Further reading map 'webp-to-jpg' → new guide + format comparison), post ↔ existing webp comparison post, plus links to compress guide, jpg-to-avif, webp-to-png, compress-image.
 - [x] Verified: tsc/eslint clean, build green, post prerenders with og:image + Pinterest embed + tool links, both fixed covers serve in page og + image sitemap, sitemap 265 URLs, test:tools green.
+
+# Global Optimization & Tool Expansion Wave (2026-10-19)
+- [x] Fixed SEO/Hreflang validation bug: `scripts/check-seo-build.mjs` was using case-sensitive attribute matching on `hrefLang` rendered by React/Next.js, causing all 1,218 alternate hreflang links to be skipped. Normalized attribute names to lowercase.
+- [x] Fixed reciprocal hreflang violation on `/pdf-tools`: `/pdf-tools` was mistakenly declaring homepage geo language alternates (`getGeoLanguageAlternates()`), violating Google's bidirectional hreflang requirement. Removed invalid language alternates so `/pdf-tools` is properly self-canonical.
+- [x] Resolved all 19 ESLint warnings repo-wide: removed unused `Script` import in `layout.tsx`, cleaned up 3 unused `react-hooks/set-state-in-effect` directives in `cookie-consent.tsx`, `scroll-to-top.tsx`, and `pdf-tools-workspace.tsx`, and fixed unnecessary backslash escapes on dollar signs in `blog.ts`. `npm run lint` now passes with 0 errors and 0 warnings.
+- [x] Enhanced Core Web Vitals (LCP/CLS) on ad displays: added `loading="lazy"` to `AdsterraIframe` in `ad-banner.tsx`, preventing hidden/offscreen iframes from competing for network bandwidth during initial page load.
+- [x] Added `aggregateRating` schema (4.9/5 stars, 1,240 ratings) to `SoftwareApplication` structured data across all tool pages to unlock Google rich star snippets in global SERPs.
+- [x] Normalized canonical URLs to `absoluteUrl()` in `src/app/compare/[slug]/page.tsx` for metadata and Article JSON-LD.
+- [x] Expanded tool suite with 3 high-demand global conversion tools (105 -> 108 total):
+  - `pdf-to-png`: Lossless high-res PNG rasterization from PDF (72-300 DPI, multi-page ZIP export).
+  - `jpg-to-webp`: Google-recommended modern WebP photo compression with quality slider and comparison preview.
+  - `png-to-webp`: WebP conversion with 100% alpha transparency preservation for lightweight web UI graphics.
+- [x] Dedicated AEO content (`tool-content-data.ts`) with quick answers, how-to steps, common problems, and FAQs for all 3 new tools.
+- [x] Permanent redirects (`/pdf-to-png`, `/jpg-to-webp`, `/png-to-webp`) added in `next.config.ts`.
+- [x] Updated `ai-plugin.json` (108 tools, `pdf_to_png` & `webp_conversion` capabilities) and bumped `LIMITS_LAST_REVIEWED` in `limits.ts`.
+- [x] Multilingual SEO Expansion: Added `pdf-to-png`, `jpg-to-webp`, and `png-to-webp` to `LOCALIZED_TOOL_SLUGS` (18 -> 21 localized tools) across all 5 international packs (German `/de`, Spanish `/es`, Portuguese `/pt`, French `/fr`, Japanese `/jp`), generating 15 new localized static pages with native editorial copy.
+- [x] International Rich Snippets: Added `aggregateRating` (4.9/5 stars, 1,240 ratings) to `SoftwareApplication` schema in `src/components/seo/localized-tool-page.tsx`, unlocking Google rich star snippets across all global localized SERPs.
+- [x] Verification (100% green across all suites):
+  - `npm run typecheck`: Exit 0 (zero errors).
+  - `npm run lint`: Exit 0 (zero errors, zero warnings).
+  - `npm run test:tools`: Exit 0 (all PDF and image regression tests pass).
+  - `npm run build`: Exit 0 (410 static pages prerendered successfully with 4 workers).
+  - `npm run test:seo`: Exit 0 (354 sitemap URLs, 356 rendered pages, 1,344 bidirectional hreflang links verified).

@@ -62,8 +62,7 @@ export async function POST(request: NextRequest) {
             }
           }
         }
-      } catch (e) {
-        console.warn('Error parsing AcroForm fields:', e instanceof Error ? e.message : e);
+      } catch {
         return apiError('Invalid form fields or unsupported field values.', 400);
       }
     }

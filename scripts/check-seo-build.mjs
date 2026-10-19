@@ -14,7 +14,7 @@ assert.ok(urls.length > 100, 'Sitemap is unexpectedly empty or incomplete.');
 assert.equal(new Set(urls).size, urls.length, 'Duplicate sitemap URLs');
 
 function attributes(tag) {
-  return Object.fromEntries([...tag.matchAll(/([\w:-]+)="([^"]*)"/g)].map((m) => [m[1], m[2]]));
+  return Object.fromEntries([...tag.matchAll(/([\w:-]+)="([^"]*)"/g)].map((m) => [m[1].toLowerCase(), m[2]]));
 }
 
 function readSignals(file) {

@@ -72,6 +72,7 @@ export function AdsterraIframe({
         title={`adsterra-${adKey}`}
         width={width}
         height={height}
+        loading="lazy"
         scrolling="no"
         frameBorder="0"
         style={{ border: 'none', overflow: 'hidden', maxWidth: '100%' }}

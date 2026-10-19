@@ -250,7 +250,6 @@ function DeletePagesSettings({ pages, setPages, totalPages, resetKey }: {
     useEffect(() => {
         // Intentional: reset local selection + parent page string when a new file
         // arrives (resetKey changes). Remount-by-key would not clear the parent state.
-        // eslint-disable-next-line react-hooks/set-state-in-effect
         setSelectedPages(new Set());
         setPages('');
     }, [resetKey, setPages]);

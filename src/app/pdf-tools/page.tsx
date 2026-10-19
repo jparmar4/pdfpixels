@@ -2,7 +2,7 @@ import { Suspense } from 'react';
 import type { Metadata } from 'next';
 import Script from 'next/script';
 import { allPdfTools } from '@/lib/tools-data';
-import { SITE_URL, absoluteUrl, websiteId, getGeoLanguageAlternates, DEFAULT_OG_IMAGE_URL } from '@/lib/seo';
+import { SITE_URL, absoluteUrl, websiteId, DEFAULT_OG_IMAGE_URL } from '@/lib/seo';
 import { siteConfig } from '@/lib/seo-config';
 import { PdfToolsClient } from './pdf-tools-client';
 
@@ -30,7 +30,6 @@ export const metadata: Metadata = {
   ],
   alternates: {
     canonical: '/pdf-tools',
-    languages: getGeoLanguageAlternates(),
   },
   openGraph: {
     title: `All PDF Tools Online Free – Compress, Merge, Convert & Edit | ${siteConfig.name}`,

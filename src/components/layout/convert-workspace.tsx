@@ -149,7 +149,7 @@ export function ConvertWorkspace() {
     return 'Image';
   }, [activeTool?.id]);
 
-  const isPdfToImage = activeTool?.id === 'pdf-to-image';
+  const isPdfToImage = activeTool?.id === 'pdf-to-image' || activeTool?.id === 'pdf-to-png';
   const [dpi, setDpi] = useState(150);
   const [pdfPageCount, setPdfPageCount] = useState(0);
   const [convertedPageCount, setConvertedPageCount] = useState(0);

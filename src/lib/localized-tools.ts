@@ -19,6 +19,9 @@ export const LOCALIZED_TOOL_SLUGS = [
   'sign-pdf',
   'unlock-pdf',
   'protect-pdf',
+  'pdf-to-png',
+  'jpg-to-webp',
+  'png-to-webp',
 ] as const;
 
 export type LocalizedToolSlug = (typeof LOCALIZED_TOOL_SLUGS)[number];
@@ -261,6 +264,42 @@ const deTools: Record<LocalizedToolSlug, LocalizedToolCopy> = {
       'Geschütztes PDF herunterladen.',
     ],
   },
+  'pdf-to-png': {
+    name: 'PDF in PNG',
+    title: 'PDF in PNG umwandeln – kostenlos, ohne Anmeldung',
+    description: 'PDF-Seiten mit Ghostscript als verlustfreie, hochauflösende PNG-Bilder (72–300 DPI) exportieren.',
+    howTitle: 'PDF-Seiten als PNG speichern',
+    intro: 'Jede PDF-Seite wird in ein gestochen scharfes PNG-Bild mit bis zu 300 DPI gerastert. Ideal für Diagramme, Screenshots und Text. Bis zu 10 Seiten pro Durchlauf als Einzelbild oder ZIP.',
+    steps: [
+      'PDF hochladen (höchstens 50 MB).',
+      'DPI-Auflösung (72 bis 300) und Qualität wählen.',
+      'PNG-Bilder einzeln oder als ZIP herunterladen.',
+    ],
+  },
+  'jpg-to-webp': {
+    name: 'JPG in WebP',
+    title: 'JPG in WebP umwandeln – kostenlos, ohne Anmeldung',
+    description: 'JPG- und JPEG-Bilder in modernes WebP konvertieren und bis zu 80 % Dateigröße bei gleicher Qualität sparen.',
+    howTitle: 'JPG-Fotos in WebP umwandeln',
+    intro: 'WebP bietet überragende Kompression für Websites und mobile Apps. Schnelle Ladezeiten und bessere Core Web Vitals bei originalgetreuer Farbwiedergabe. Bis zu 25 MB pro Bild.',
+    steps: [
+      'JPG- oder JPEG-Bild hochladen (höchstens 25 MB).',
+      'Qualitätsstufe wählen oder Standard beibehalten.',
+      'Optimiertes WebP-Bild herunterladen.',
+    ],
+  },
+  'png-to-webp': {
+    name: 'PNG in WebP',
+    title: 'PNG in WebP umwandeln – kostenlos, ohne Anmeldung',
+    description: 'PNG-Grafiken in leichtes WebP mit voller Transparenzunterstützung konvertieren – bis zu 70 % kleiner.',
+    howTitle: 'PNG-Bilder mit Transparenz in WebP konvertieren',
+    intro: 'Behalten Sie den transparenten Alphakanal bei, während die Dateigröße drastisch schrumpft. Perfekt für Logos, Icons und Grafiken im Web. Bis zu 25 MB pro Datei.',
+    steps: [
+      'PNG-Grafik hochladen (höchstens 25 MB).',
+      'Qualitätsstufe wählen (Transparenz bleibt erhalten).',
+      'Kompakte WebP-Datei herunterladen.',
+    ],
+  },
 };
 
 const esTools: Record<LocalizedToolSlug, LocalizedToolCopy> = {
@@ -478,6 +517,42 @@ const esTools: Record<LocalizedToolSlug, LocalizedToolCopy> = {
       'Sube un PDF (máximo 50 MB).',
       'Define una contraseña segura.',
       'Descarga el PDF protegido.',
+    ],
+  },
+  'pdf-to-png': {
+    name: 'PDF a PNG',
+    title: 'Convertir PDF a PNG – gratis, sin registro',
+    description: 'Convierte páginas de PDF a imágenes PNG de alta resolución sin pérdida (72 a 300 DPI) con Ghostscript.',
+    howTitle: 'Guardar páginas de PDF como PNG',
+    intro: 'Cada página del PDF se rasteriza en una imagen PNG nítida sin pérdida. Máxima calidad para capturas, gráficos y texto. Hasta 10 páginas por proceso en descarga individual o archivo ZIP.',
+    steps: [
+      'Sube un PDF (máximo 50 MB).',
+      'Selecciona la resolución en DPI (72 a 300).',
+      'Descarga tus imágenes PNG o el archivo ZIP.',
+    ],
+  },
+  'jpg-to-webp': {
+    name: 'JPG a WebP',
+    title: 'Convertir JPG a WebP – gratis, sin registro',
+    description: 'Convierte imágenes JPG y JPEG al moderno formato WebP y ahorra hasta un 80% de tamaño sin perder calidad.',
+    howTitle: 'Convertir fotos JPG a WebP',
+    intro: 'WebP ofrece una compresión avanzada para páginas web y aplicaciones móviles. Mejora la velocidad de carga y tus Core Web Vitals manteniendo una excelente nitidez visual. Archivos de hasta 25 MB.',
+    steps: [
+      'Sube tu imagen JPG o JPEG (máximo 25 MB).',
+      'Ajusta la calidad deseada o usa la recomendada.',
+      'Descarga la imagen WebP optimizada.',
+    ],
+  },
+  'png-to-webp': {
+    name: 'PNG a WebP',
+    title: 'Convertir PNG a WebP – gratis, sin registro',
+    description: 'Convierte gráficos PNG a WebP conservando la transparencia del canal alfa y ahorrando hasta un 70% de peso.',
+    howTitle: 'Convertir PNG con transparencia a WebP',
+    intro: 'Conserva fondos transparentes y bordes limpios en un archivo mucho más ligero. Ideal para logotipos, iconos y diseño web moderno. Archivos de hasta 25 MB.',
+    steps: [
+      'Sube tu imagen PNG (máximo 25 MB).',
+      'Comprueba las opciones de compresión.',
+      'Descarga el archivo WebP ultraligero.',
     ],
   },
 };
@@ -699,6 +774,42 @@ const ptTools: Record<LocalizedToolSlug, LocalizedToolCopy> = {
       'Baixe o PDF protegido.',
     ],
   },
+  'pdf-to-png': {
+    name: 'PDF em PNG',
+    title: 'Converter PDF em PNG – grátis, sem cadastro',
+    description: 'Converta páginas de PDF em imagens PNG nítidas e sem perdas (72 a 300 DPI) com Ghostscript.',
+    howTitle: 'Salvar páginas do PDF como PNG',
+    intro: 'Cada página do PDF é rasterizada em uma imagem PNG de alta fidelidade sem perdas. Perfeito para gráficos, capturas e texto. Até 10 páginas por processamento em download avulso ou ZIP.',
+    steps: [
+      'Envie um PDF (máximo de 50 MB).',
+      'Escolha a resolução DPI (72 a 300).',
+      'Baixe as imagens PNG ou o arquivo ZIP.',
+    ],
+  },
+  'jpg-to-webp': {
+    name: 'JPG em WebP',
+    title: 'Converter JPG em WebP – grátis, sem cadastro',
+    description: 'Converta fotos JPG e JPEG no moderno formato WebP e economize até 80% do espaço sem perder qualidade.',
+    howTitle: 'Converter fotos JPG para WebP',
+    intro: 'O WebP oferece compressão de última geração para sites e apps móveis, acelerando o carregamento e melhorando os Core Web Vitals. Até 25 MB por imagem.',
+    steps: [
+      'Envie sua foto JPG ou JPEG (máximo de 25 MB).',
+      'Ajuste o nível de qualidade desejado.',
+      'Baixe a imagem WebP otimizada.',
+    ],
+  },
+  'png-to-webp': {
+    name: 'PNG em WebP',
+    title: 'Converter PNG em WebP – grátis, sem cadastro',
+    description: 'Converta imagens PNG para WebP mantendo total transparência e economizando até 70% de espaço em disco.',
+    howTitle: 'Converter PNG com transparência para WebP',
+    intro: 'Preserve fundos transparentes e bordas perfeitas com um tamanho de arquivo muito menor. Excelente para logotipos, ícones e gráficos web. Até 25 MB por imagem.',
+    steps: [
+      'Envie sua imagem PNG (máximo de 25 MB).',
+      'Defina a qualidade (o canal alfa é preservado).',
+      'Baixe o arquivo WebP compacto.',
+    ],
+  },
 };
 
 const frTools: Record<LocalizedToolSlug, LocalizedToolCopy> = {
@@ -918,6 +1029,42 @@ const frTools: Record<LocalizedToolSlug, LocalizedToolCopy> = {
       'Téléchargez le PDF protégé.',
     ],
   },
+  'pdf-to-png': {
+    name: 'PDF en PNG',
+    title: 'Convertir un PDF en PNG – gratuit, sans inscription',
+    description: 'Convertir les pages d’un PDF en images PNG haute résolution sans perte (72 à 300 DPI) avec Ghostscript.',
+    howTitle: 'Enregistrer les pages PDF en PNG',
+    intro: 'Chaque page du document est rasterisée en image PNG d’une netteté parfaite sans perte de qualité. Idéal pour les diagrammes et le texte. Jusqu’à 10 pages par traitement sous forme de ZIP ou d’images individuelles.',
+    steps: [
+      'Déposez un PDF (50 Mo maximum).',
+      'Choisissez la résolution DPI (72 à 300).',
+      'Téléchargez les fichiers PNG ou l’archive ZIP.',
+    ],
+  },
+  'jpg-to-webp': {
+    name: 'JPG en WebP',
+    title: 'Convertir un JPG en WebP – gratuit, sans inscription',
+    description: 'Convertir des images JPG et JPEG en format moderne WebP et réduire la taille jusqu’à 80 % sans perte visuelle.',
+    howTitle: 'Convertir des photos JPG en WebP',
+    intro: 'Le format WebP offre une compression remarquable pour accélérer le chargement des pages web et optimiser les signaux Core Web Vitals. Fichiers jusqu’à 25 Mo.',
+    steps: [
+      'Déposez votre image JPG ou JPEG (25 Mo maximum).',
+      'Réglez le niveau de qualité souhaité.',
+      'Téléchargez l’image WebP allégée.',
+    ],
+  },
+  'png-to-webp': {
+    name: 'PNG en WebP',
+    title: 'Convertir un PNG en WebP – gratuit, sans inscription',
+    description: 'Convertir des images PNG en WebP en préservant la transparence du canal alpha et réduisant la taille de 70 %.',
+    howTitle: 'Convertir un PNG transparent en WebP',
+    intro: 'Conservez la transparence intégrale tout en allégeant considérablement vos fichiers. Idéal pour les logos, icônes et illustrations de sites web. Fichiers jusqu’à 25 Mo.',
+    steps: [
+      'Déposez votre image PNG (25 Mo maximum).',
+      'Ajustez la qualité (la transparence est conservée).',
+      'Téléchargez le fichier WebP allégé.',
+    ],
+  },
 };
 
 const jpTools: Record<LocalizedToolSlug, LocalizedToolCopy> = {
@@ -1135,6 +1282,42 @@ const jpTools: Record<LocalizedToolSlug, LocalizedToolCopy> = {
       'PDFをアップロード（最大50MB）。',
       '安全なパスワードを設定。',
       '保護済みPDFをダウンロード。',
+    ],
+  },
+  'pdf-to-png': {
+    name: 'PDFをPNGに',
+    title: 'PDFをPNGに変換 – 無料、登録不要',
+    description: 'PDFの各ページを高画質・可逆圧縮のPNG画像（72〜300 DPI）に変換します。',
+    howTitle: 'PDFのページをPNGで保存',
+    intro: '各ページを高精細なPNG画像としてレンダリングします。図表やテキストをくっきり保存。1回あたり最大10ページ、個別またはZIPで一括ダウンロードできます。',
+    steps: [
+      'PDFをアップロード（最大50MB）。',
+      '解像度（72〜300 DPI）を選択。',
+      'PNG画像またはZIPをダウンロード。',
+    ],
+  },
+  'jpg-to-webp': {
+    name: 'JPGをWebPに',
+    title: 'JPGをWebPに変換 – 無料、登録不要',
+    description: 'JPG・JPEG画像を次世代フォーマットWebPに変換し、画質を保ったままファイルサイズを最大80%削減します。',
+    howTitle: 'JPG画像をWebPに圧縮・変換',
+    intro: 'WebPはWebサイトやモバイルアプリに最適な最新画像形式です。画質を落とさず軽量化し、Core Web Vitalsと表示速度を大幅に改善します。1枚25MBまで。',
+    steps: [
+      'JPGまたはJPEG画像をアップロード（最大25MB）。',
+      '品質設定を確認・調整。',
+      '軽量なWebP画像をダウンロード。',
+    ],
+  },
+  'png-to-webp': {
+    name: 'PNGをWebPに',
+    title: 'PNGをWebPに変換 – 無料、登録不要',
+    description: 'PNG画像の透過（アルファチャンネル）を完全保持したままWebPに変換し、最大70%軽量化します。',
+    howTitle: '透明度を保ってPNGをWebPに変換',
+    intro: '背景の透過を損なうことなく、ファイルサイズを大幅に削減します。Webサイトのロゴ、アイコン、UIグラフィックに最適です。1枚25MBまで。',
+    steps: [
+      'PNG画像をアップロード（最大25MB）。',
+      '設定を確認（透過は自動保持されます）。',
+      '最適化されたWebP画像をダウンロード。',
     ],
   },
 };

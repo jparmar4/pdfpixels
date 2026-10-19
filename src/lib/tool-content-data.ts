@@ -3699,4 +3699,109 @@ export const toolContentMap: Record<string, ToolContent> = {
         supportedFormats: 'Input: PDF | Output: On-screen analytics, TXT (.txt)',
         relatedTools: ['pdf-to-text', 'ocr-pdf', 'pdf-reader', 'pdf-to-word'],
     },
+
+    'pdf-to-png': {
+        about: 'PDF to PNG converts PDF document pages into high-resolution, uncompressed PNG raster images. While JPEG compression is suitable for photographs, it frequently introduces fuzzy compression artifacts around sharp vector text, logos, diagrams, and fine table lines. PNG uses lossless compression with full alpha channel support, ensuring that converted presentation slides, architectural blueprints, legal documents, and digital illustrations retain crisp, pixel-perfect fidelity. Extract individual pages or convert entire documents into a convenient ZIP archive directly in your browser.',
+        directAnswer: 'The free PDF to PNG converter by PdfPixels transforms your PDF pages into high-resolution, crystal-clear PNG images. Upload your PDF, select specific pages or convert all, and download individual PNGs or a zipped archive instantly.',
+        features: [
+            'Lossless PNG rasterization with razor-sharp text and graphics rendering',
+            'Full support for high-DPI output (72 to 300 DPI) for print and digital publishing',
+            'Flexible page selection: convert all pages or specify custom page ranges',
+            'Batch ZIP archive download for multi-page documents',
+            '100% free with no registration, email requirements, or watermarks',
+        ],
+        useCases: [
+            'Designers extracting slides, vector logos, and infographic figures for web use',
+            'Researchers and students saving crisp diagrams and equations from academic papers',
+            'Accountants and lawyers saving high-clarity document pages as visual legal records',
+            'Web developers generating sharp, lossless preview thumbnails of PDF brochures',
+        ],
+        faqs: [
+            { question: 'Why should I convert PDF to PNG instead of JPG?', answer: 'PNG uses lossless compression, meaning text and vector linework remain sharp with zero compression noise or blur. JPG uses lossy compression that can cause artifacts around letters.' },
+            { question: 'Can I extract specific pages from a PDF to PNG?', answer: 'Yes. You can choose to convert all pages or enter a specific page selection like 1, 3-5 to convert only the pages you need.' },
+            { question: 'What is the maximum PDF file size supported?', answer: 'You can upload PDFs up to 50 MB in size. Up to 10 pages are rasterized per batch run to maintain rapid processing speeds.' },
+            { question: 'Is PDF to PNG free to use?', answer: 'Yes, completely free with no account creation, credit cards, or hidden paywalls.' },
+        ],
+        steps: [
+            { title: 'Upload your PDF', description: 'Drag and drop your PDF document into the PDF to PNG workspace.' },
+            { title: 'Choose DPI and pages', description: 'Select your preferred resolution (150 or 300 DPI) and choose all pages or a custom range.' },
+            { title: 'Download your PNGs', description: 'Download individual page images or grab all converted pages in a single ZIP file.' },
+        ],
+        commonProblems: [
+            { problem: 'Small text appears slightly blurry', solution: 'Increase the rasterization DPI to 300 in the settings panel to produce ultra-high-resolution output.' },
+            { problem: 'PDF has many pages', solution: 'Use the page range selector to convert pages in batches of 10 for the fastest download experience.' },
+        ],
+        supportedFormats: 'Input: PDF (.pdf) | Output: PNG (.png), ZIP archive',
+        relatedTools: ['pdf-to-jpg', 'extract-pdf-images', 'pdf-to-word', 'image-to-pdf'],
+    },
+
+    'jpg-to-webp': {
+        about: 'JPG to WebP converts standard JPEG and JPG photos into modern, Google-developed WebP format. WebP utilizes advanced predictive compression algorithms to produce image files that are 25% to 35% smaller than comparable JPEGs at identical perceived visual quality, and up to 80% smaller with optimized settings. Converting your website images from JPG to WebP is one of the most impactful optimizations for passing Google Core Web Vitals (Largest Contentful Paint) and boosting mobile page load speeds.',
+        directAnswer: 'Convert JPG and JPEG photos to modern WebP format instantly with PdfPixels. Slash image file size by up to 80% while retaining crisp visual fidelity for faster websites and better SEO.',
+        features: [
+            'Next-generation WebP compression powered by high-performance Sharp engine',
+            'Interactive before/after comparison slider to verify visual quality before saving',
+            'Customizable quality slider to balance maximum compression against fidelity',
+            'Smart chroma subsampling and near-lossless optimization options',
+            'Zero account creation, no watermarks, and 100% free unlimited usage',
+        ],
+        useCases: [
+            'Web developers and SEO specialists optimizing hero images for Google Core Web Vitals',
+            'Bloggers and e-commerce stores shrinking product catalogs for faster mobile browsing',
+            'Photographers preparing digital portfolio galleries with minimal bandwidth footprint',
+            'App creators reducing application bundle size by replacing heavy JPEG assets',
+        ],
+        faqs: [
+            { question: 'How much file size do I save converting JPG to WebP?', answer: 'WebP images are typically 25% to 35% smaller than JPEGs at equal visual quality, and up to 70-80% smaller when optimizing for high-speed web delivery.' },
+            { question: 'Do all modern web browsers support WebP?', answer: 'Yes. All modern browsers including Google Chrome, Apple Safari (iOS & macOS), Mozilla Firefox, Microsoft Edge, and Opera natively support WebP.' },
+            { question: 'Will converting JPG to WebP reduce photo quality?', answer: 'When converted with high quality settings (90-95%), WebP is visually indistinguishable from the original JPEG while taking up significantly less data.' },
+            { question: 'Is JPG to WebP free on PdfPixels?', answer: 'Yes, 100% free with no signups, subscriptions, or watermarks added to your images.' },
+        ],
+        steps: [
+            { title: 'Upload your JPG photo', description: 'Drag and drop your JPG or JPEG image into the workspace.' },
+            { title: 'Adjust quality settings', description: 'Use the quality slider to calibrate between maximum file savings and photographic clarity.' },
+            { title: 'Download your WebP file', description: 'Inspect the live preview and download your lightweight WebP image immediately.' },
+        ],
+        commonProblems: [
+            { problem: 'Output file size is similar to original JPG', solution: 'If the input JPEG was already heavily compressed, lower the quality slider to 80% or 85% to achieve substantial byte savings.' },
+            { problem: 'Legacy desktop software cannot open WebP', solution: 'Most modern operating systems open WebP natively. If sharing with legacy software, keep an original copy or convert back using WebP to JPG.' },
+        ],
+        supportedFormats: 'Input: JPG, JPEG (.jpg, .jpeg) | Output: WebP (.webp)',
+        relatedTools: ['webp-to-jpg', 'png-to-webp', 'compress-image', 'resize-image'],
+    },
+
+    'png-to-webp': {
+        about: 'PNG to WebP converts bulky PNG graphics into lightweight, next-generation WebP images while preserving full alpha channel transparency. PNG is the industry standard for logos, UI components, badges, screenshots, and graphics requiring transparent backgrounds, but PNG file sizes can quickly balloon into megabytes. WebP delivers both lossless and lossy compression with 8-bit alpha transparency, slashing graphic file sizes by 60% to 80% without introducing jagged edges or discolored backgrounds.',
+        directAnswer: 'The free PNG to WebP converter by PdfPixels transforms bulky PNG files into compact WebP images while maintaining 100% transparent backgrounds. Upload your PNG and download an optimized WebP file in seconds.',
+        features: [
+            'Full 8-bit alpha transparency preservation for logos, icons, and UI assets',
+            '60% to 80% file size reduction compared to traditional 24-bit PNG files',
+            'Interactive comparison slider to inspect transparent contours and edge anti-aliasing',
+            'Supports lossless and high-efficiency lossy WebP encoding modes',
+            'Free unlimited conversion with no software installation or registration needed',
+        ],
+        useCases: [
+            'UI and web designers optimizing transparent logos, icons, and illustrations for web apps',
+            'Developers aiming for 100/100 Lighthouse Performance scores by modernizing PNG assets',
+            'Technical writers converting transparent screenshots and diagrams for fast online documentation',
+            'Digital marketers building fast-loading HTML newsletters and landing pages',
+        ],
+        faqs: [
+            { question: 'Does WebP support transparent backgrounds like PNG?', answer: 'Yes! WebP fully supports 8-bit alpha channel transparency, ensuring that transparent cutouts, soft shadows, and anti-aliased edges look identical to PNG.' },
+            { question: 'How much smaller is WebP compared to PNG?', answer: 'WebP is typically 60% to 80% smaller than an uncompressed or standard 24-bit PNG, delivering huge bandwidth and speed improvements.' },
+            { question: 'How do I use WebP on my website?', answer: 'You can use WebP directly inside `<img src="image.webp">` or wrap it inside a `<picture>` element with a PNG fallback for legacy browsers.' },
+            { question: 'Is PNG to WebP free to use?', answer: 'Yes, 100% free with zero registration, watermarks, or hidden limitations.' },
+        ],
+        steps: [
+            { title: 'Upload your PNG', description: 'Drag and drop your transparent or solid PNG image into the upload dropzone.' },
+            { title: 'Fine-tune quality', description: 'Select your preferred compression balance and preview the transparent edges.' },
+            { title: 'Download your WebP image', description: 'Save the optimized WebP graphic with full transparency intact.' },
+        ],
+        commonProblems: [
+            { problem: 'Transparent background looks washed out', solution: 'Keep the quality slider above 90% or use high quality mode to ensure subtle transparency gradients are preserved perfectly.' },
+            { problem: 'File is not accepted', solution: 'Ensure the uploaded file is a valid PNG under 25 MB. Corrupt or zero-byte files will be rejected.' },
+        ],
+        supportedFormats: 'Input: PNG (.png) | Output: WebP (.webp) with transparency',
+        relatedTools: ['jpg-to-webp', 'webp-to-png', 'png-to-jpeg', 'compress-image'],
+    },
 };

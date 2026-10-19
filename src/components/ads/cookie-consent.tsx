@@ -249,7 +249,6 @@ export function CookieSettingsButton() {
   useEffect(() => {
     // Hydration-safe: the stored preference is browser-only, so reading it
     // after mount keeps the server HTML identical to the client's first paint.
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setConsent(getConsent());
   }, []);
 

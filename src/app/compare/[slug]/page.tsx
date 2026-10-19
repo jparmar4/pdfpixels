@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { HeaderAd, InContentAd, FooterAd, NativeAd } from '@/components/ads/ad-banner';
 import { comparisonPages } from '@/lib/comparisons';
 import { getToolBySlug } from '@/lib/tools-data';
-import { ADSENSE_REVIEW_MODE, DEFAULT_OG_IMAGE_URL, SITE_CONTENT_UPDATED } from '@/lib/seo';
+import { ADSENSE_REVIEW_MODE, DEFAULT_OG_IMAGE_URL, SITE_CONTENT_UPDATED, absoluteUrl } from '@/lib/seo';
 
 export function generateStaticParams() {
   return comparisonPages.map((comparison) => ({ slug: comparison.slug }));
@@ -28,7 +28,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     openGraph: {
       title: `${item.title} | PdfPixels`,
       description: item.description,
-      url: `https://www.pdfpixels.com/compare/${item.slug}`,
+      url: absoluteUrl(`/compare/${item.slug}`),
       type: 'article',
       images: [
         {
@@ -73,14 +73,14 @@ export default async function ComparisonPage({ params }: { params: Promise<{ slu
     '@type': 'Article',
     headline: item.title,
     description: item.description,
-    mainEntityOfPage: `https://www.pdfpixels.com/compare/${item.slug}`,
+    mainEntityOfPage: absoluteUrl(`/compare/${item.slug}`),
     image: DEFAULT_OG_IMAGE_URL,
     datePublished: SITE_CONTENT_UPDATED.toISOString(),
     dateModified: SITE_CONTENT_UPDATED.toISOString(),
     author: {
       '@type': 'Organization',
       name: 'PdfPixels',
-      url: 'https://www.pdfpixels.com/about',
+      url: absoluteUrl('/about'),
     },
     about: [tool.name, ...item.alternatives],
     mentions: {

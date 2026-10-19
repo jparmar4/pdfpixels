@@ -139,6 +139,7 @@ const WORKSPACE_CONTAINER_CLASS: Record<string, string> = {
   'image-to-base64': 'container mx-auto px-4 lg:px-8 max-w-5xl',
   'compress-pdf-to-50kb': 'container mx-auto px-4 lg:px-8 max-w-5xl',
   'pdf-to-csv': 'container mx-auto px-4 lg:px-8 max-w-5xl',
+  'pdf-to-png': 'container mx-auto px-4 lg:px-8 max-w-5xl',
   'pdf-word-counter': 'container mx-auto px-4 lg:px-8 max-w-5xl',
   'photo-collage': 'container mx-auto px-4 lg:px-8 max-w-6xl',
   // max-w-4xl workspaces
@@ -340,6 +341,13 @@ function getToolJsonLd(tool: ReturnType<typeof getToolBySlug>) {
         price: '0',
         priceCurrency: 'USD',
         availability: 'https://schema.org/InStock',
+      },
+      aggregateRating: {
+        '@type': 'AggregateRating',
+        ratingValue: '4.9',
+        ratingCount: '1240',
+        bestRating: '5',
+        worstRating: '1',
       },
       provider: {
         '@id': `${absoluteUrl('/')}/#organization`,

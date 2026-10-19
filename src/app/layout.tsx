@@ -1,5 +1,4 @@
 import type { Metadata, Viewport } from 'next';
-import Script from 'next/script';
 import { Inter, Sora, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
 import { Toaster as SonnerToaster } from '@/components/ui/sonner';

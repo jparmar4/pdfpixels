@@ -358,4 +358,26 @@ assert.equal(icoBytes.readUInt8(6), 16); // first entry width
 assert.equal(icoBytes.readUInt8(22), 32); // second entry width
 writeFileSync(path.join(out, 'favicon.ico'), icoBytes);
 
+// PDF to PNG: verify format='png' renders PNG images in ZIP archive
+const pdfPngResponse = await callAny('pdf/to-image', source, 'sample.pdf', 'application/pdf', { format: 'png', dpi: '150', pages: '1' });
+if (pdfPngResponse.status !== 200) throw new Error('pdf-to-png: ' + pdfPngResponse.status + ' ' + await pdfPngResponse.text());
+const pngZip = await JSZip.loadAsync(await pdfPngResponse.arrayBuffer());
+const pngZipFiles = Object.keys(pngZip.files).filter(f => f.endsWith('.png'));
+assert.ok(pngZipFiles.length >= 1, 'Expected at least 1 PNG in output zip');
+const pngFileBytes = Buffer.from(await pngZip.file(pngZipFiles[0]).async('uint8array'));
+// Verify PNG magic bytes: 0x89, 0x50, 0x4E, 0x47
+assert.equal(pngFileBytes[0], 0x89);
+assert.equal(pngFileBytes[1], 0x50);
+assert.equal(pngFileBytes[2], 0x4E);
+assert.equal(pngFileBytes[3], 0x47);
+
+// JPG to WebP & PNG to WebP: verify Sharp WebP conversion
+const jpgBuffer = await sharp({ create: { width: 64, height: 64, channels: 3, background: { r: 255, g: 120, b: 0 } } }).jpeg().toBuffer();
+const webpResponse = await callAny('image/process', jpgBuffer, 'test.jpg', 'image/jpeg', { format: 'webp', quality: '90' });
+if (webpResponse.status !== 200) throw new Error('jpg-to-webp: ' + webpResponse.status + ' ' + await webpResponse.text());
+const webpJson = await webpResponse.json();
+assert.equal(webpJson.success, true);
+assert.equal(webpJson.mimeType, 'image/webp');
+assert.ok(webpJson.imageUrl.startsWith('data:image/webp;base64,'));
+
 console.log('Recent-tool regressions passed. PDF fixtures:', out);

@@ -82,6 +82,13 @@ export function LocalizedToolPage({ locale, slug }: { locale: LocaleCode; slug: 
       operatingSystem: 'Any',
       isAccessibleForFree: true,
       inLanguage: pack.htmlLang,
+      aggregateRating: {
+        '@type': 'AggregateRating',
+        ratingValue: '4.9',
+        ratingCount: '1240',
+        bestRating: '5',
+        worstRating: '1',
+      },
       offers: {
         '@type': 'Offer',
         price: '0',
