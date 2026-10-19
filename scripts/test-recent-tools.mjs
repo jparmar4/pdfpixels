@@ -380,4 +380,12 @@ assert.equal(webpJson.success, true);
 assert.equal(webpJson.mimeType, 'image/webp');
 assert.ok(webpJson.imageUrl.startsWith('data:image/webp;base64,'));
 
+// Verify tool aliases and redirect consistency
+const { allTools, getToolBySlug, getToolById } = await import('../src/lib/tools-data.ts');
+assert.ok(allTools.length >= 108, 'at least 108 tools registered');
+assert.ok(getToolBySlug('image-to-pdf'), 'image-to-pdf tool exists');
+assert.ok(getToolBySlug('pdf-to-csv'), 'pdf-to-csv tool exists');
+assert.equal(getToolById('pdf-merge')?.slug, 'merge-pdf');
+assert.equal(getToolById('pdf-split')?.slug, 'split-pdf');
+
 console.log('Recent-tool regressions passed. PDF fixtures:', out);

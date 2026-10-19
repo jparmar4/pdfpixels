@@ -145,8 +145,11 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en" suppressHydrationWarning className={`scroll-smooth ${fontInter.variable} ${fontSora.variable} ${fontMono.variable}`}>
       <head>
+        <link rel="preconnect" href="https://www.googletagmanager.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+        <link rel="preconnect" href="https://www.google-analytics.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://www.google-analytics.com" />
+        <link rel="preconnect" href="https://bauval.org" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://bauval.org" />
         <link rel="search" type="application/opensearchdescription+xml" title="PdfPixels" href="/opensearch.xml" />
         <link rel="alternate" type="application/rss+xml" title="PdfPixels RSS Feed" href="/feed" />

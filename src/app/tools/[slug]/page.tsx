@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Suspense } from 'react';
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import { ArrowRight, BookOpen, ChevronRight, GitCompareArrows, Layers3, LayoutTemplate, type LucideIcon } from 'lucide-react';
 import { ToolContentSection } from '@/components/layout/tool-content-section';
 import { ToolPageClient } from '@/components/layout/tool-page-client';
@@ -16,8 +16,22 @@ import { absoluteUrl, dedupeKeywords, SITE_CONTENT_UPDATED, ADSENSE_REVIEW_MODE 
 import { toolLanguageAlternates } from '@/lib/localized-tools';
 import { toolContentMap } from '@/lib/tool-content-data';
 import { getPostsForTool } from '@/config/blog';
-import { allTools, getToolBySlug, toolCategories, type Tool } from '@/lib/tools-data';
+import { allTools, getToolBySlug, getToolById, toolCategories, type Tool } from '@/lib/tools-data';
 import { useCasePages } from '@/lib/use-cases';
+
+const TOOL_SLUG_ALIASES: Record<string, string> = {
+  'jpg-to-pdf': 'image-to-pdf',
+  'jpeg-to-pdf': 'image-to-pdf',
+  'png-to-pdf': 'image-to-pdf',
+  'webp-to-pdf': 'image-to-pdf',
+  'png-to-jpg': 'png-to-jpeg',
+  'jpg-to-png': 'jpeg-to-png',
+  'pdf-to-doc': 'pdf-to-word',
+  'pdf-to-docx': 'pdf-to-word',
+  'docx-to-pdf': 'word-to-pdf',
+  'pdf-to-xlsx': 'pdf-to-excel',
+  'watermark-pdf': 'add-watermark-pdf',
+};
 
 function WorkspaceLoading({ tool, containerClass = 'container mx-auto px-4 lg:px-8' }: { tool: Tool; containerClass?: string }) {
   const cleanName = normalizeDisplayText(tool.name);
@@ -150,7 +164,14 @@ const WORKSPACE_CONTAINER_CLASS: Record<string, string> = {
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
-  const tool = getToolBySlug(slug);
+  let tool = getToolBySlug(slug);
+
+  if (!tool) {
+    const aliasSlug = TOOL_SLUG_ALIASES[slug] || getToolById(slug)?.slug;
+    if (aliasSlug) {
+      tool = getToolBySlug(aliasSlug);
+    }
+  }
 
   if (!tool) {
     return { title: 'Tool Not Found | PdfPixels' };
@@ -399,6 +420,10 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
   const tool = getToolBySlug(slug);
 
   if (!tool) {
+    const aliasSlug = TOOL_SLUG_ALIASES[slug] || getToolById(slug)?.slug;
+    if (aliasSlug && aliasSlug !== slug) {
+      redirect(`/tools/${aliasSlug}`);
+    }
     notFound();
   }
 

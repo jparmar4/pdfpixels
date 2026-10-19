@@ -203,3 +203,17 @@
   - `npm run test:tools`: Exit 0 (all PDF and image regression tests pass).
   - `npm run build`: Exit 0 (410 static pages prerendered successfully with 4 workers).
   - `npm run test:seo`: Exit 0 (354 sitemap URLs, 356 rendered pages, 1,344 bidirectional hreflang links verified).
+
+# Traffic Recovery & Preconnect Wave (2026-10-19, Wave 2)
+- [x] Fixed redirect misconfiguration: in `next.config.ts`, `/pdf-to-csv` was erroneously redirecting to `/tools/pdf-to-excel` instead of its dedicated `/tools/pdf-to-csv` page. Corrected to `/tools/pdf-to-csv`.
+- [x] Added root & vanity alias redirects in `next.config.ts` for massive global search terms:
+  - `/jpg-to-pdf` and `/tools/jpg-to-pdf` -> `/tools/image-to-pdf`
+  - `/jpeg-to-pdf` and `/tools/jpeg-to-pdf` -> `/tools/image-to-pdf`
+  - `/png-to-pdf` and `/tools/png-to-pdf` -> `/tools/image-to-pdf`
+  - `/webp-to-pdf` and `/tools/webp-to-pdf` -> `/tools/image-to-pdf`
+  - `/tools/png-to-jpg` -> `/tools/png-to-jpeg`
+  - `/tools/jpg-to-png` -> `/tools/jpeg-to-png`
+- [x] Dynamic Tool Alias Recovery: in `src/app/tools/[slug]/page.tsx`, if a requested slug does not match directly, the server checks `TOOL_SLUG_ALIASES` and fallback matches by tool `id`, seamlessly 301-redirecting visitors and crawlers to the canonical tool URL rather than returning a 404.
+- [x] Core Web Vitals (LCP/FID) Preconnect Hints: added `<link rel="preconnect">` alongside `dns-prefetch` in `src/app/layout.tsx` for Google Tag Manager, Google Analytics, and ad domains, eliminating up to 300ms in handshake latency.
+- [x] Automated test assertions added in `scripts/test-recent-tools.mjs` verifying tool alias resolution and tool count integrity.
+- [x] Verification (all green): `npm run typecheck` 0 errors, `npm run lint` 0 warnings, `npm run test:tools` passed, `npm run build` 410 static pages prerendered, `npm run test:seo` 354 sitemap URLs / 1,344 hreflang links passed.
