@@ -1,277 +1,281 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { cn } from '@/lib/utils';
-import { adsConfig, getConsent } from '@/lib/ads-config';
+import { adsterraConfig } from '@/lib/ads-config';
 
 interface AdBannerProps {
-  slot: string;
-  format?: 'auto' | 'horizontal' | 'vertical' | 'rectangle';
+  slot?: string;
+  format?: 'auto' | 'horizontal' | 'vertical' | 'rectangle' | 'native';
   responsive?: boolean;
   className?: string;
   style?: React.CSSProperties;
-  /** Fixed min height to protect CLS (AdSense requires reserved space) */
   minHeight?: number;
-  /** Show "Advertisement" label (recommended for policy + UX) */
   labeled?: boolean;
-}
-
-declare global {
-  interface Window {
-    adsbygoogle: unknown[];
-  }
 }
 
 function AdLabel() {
   return (
-    <p className="mb-1.5 text-center text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground/80">
+    <p className="mb-1 text-center text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground/80">
       Advertisement
     </p>
   );
 }
 
-function ReservedSpace({
+/**
+ * Isolated iframe container for Adsterra banner scripts.
+ * Isolates `atOptions` on the iframe's own window to avoid race conditions,
+ * eliminates CLS with explicit width/height, and prevents Next.js hydration issues.
+ */
+export function AdsterraIframe({
+  adKey,
+  width,
+  height,
   className,
-  style,
-  minHeight = 90,
 }: {
+  adKey: string;
+  width: number;
+  height: number;
   className?: string;
-  style?: React.CSSProperties;
-  minHeight?: number;
 }) {
+  const srcDoc = `<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 100%; height: 100%; overflow: hidden; background: transparent; display: flex; align-items: center; justify-content: center; }
+    </style>
+  </head>
+  <body>
+    <script type="text/javascript">
+      atOptions = {
+        'key' : '${adKey}',
+        'format' : 'iframe',
+        'height' : ${height},
+        'width' : ${width},
+        'params' : {}
+      };
+    </script>
+    <script type="text/javascript" src="https://bauval.org/22/${adKey}"></script>
+  </body>
+</html>`;
+
   return (
     <div
-      className={cn('overflow-hidden rounded-xl bg-transparent', className)}
-      style={{ minHeight, ...style }}
-      aria-hidden="true"
-      data-ad-placeholder="reserved"
-    />
+      className={cn('flex items-center justify-center overflow-hidden', className)}
+      style={{ width: '100%', minHeight: height }}
+    >
+      <iframe
+        title={`adsterra-${adKey}`}
+        width={width}
+        height={height}
+        scrolling="no"
+        frameBorder="0"
+        style={{ border: 'none', overflow: 'hidden', maxWidth: '100%' }}
+        srcDoc={srcDoc}
+      />
+    </div>
   );
 }
 
-export function AdBanner({
-  slot,
-  format = 'auto',
-  responsive = true,
-  className,
-  style,
-  minHeight = 90,
-  labeled = false,
-}: AdBannerProps) {
-  const adRef = useRef<HTMLModElement>(null);
+/**
+ * Adsterra Native Banner container (4-item / responsive recommendation grid)
+ */
+export function AdsterraNativeBanner({ className }: { className?: string }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const isLoaded = useRef(false);
-  // Initialize to server-consistent values and read the real values in
-  // effects. Reading document.cookie / IntersectionObserver during render
-  // made the server HTML differ from the client's first paint for consented
-  // visitors (hydration mismatch), so this is deferred to useEffect.
-  //
-  // 'unknown'  = no stored choice yet → reserve the slot so accepting later
-  //              never causes a layout shift (CLS protection).
-  // 'granted'  = show the ad inside the already-reserved slot (no shift).
-  // 'denied'   = render nothing; the reserved slot collapses instead of
-  //              leaving a permanent blank gap for decliners.
-  const [consentState, setConsentState] = useState<'unknown' | 'granted' | 'denied'>('unknown');
-  const [inView, setInView] = useState(false);
 
   useEffect(() => {
-    // Hydration-safe: read browser-only state after mount so the server HTML
-    // matches the client's first render (see the comment on useState above).
-    const syncConsent = () => {
-      const record = getConsent();
-      setConsentState(record ? (record.advertising ? 'granted' : 'denied') : 'unknown');
-    };
-    syncConsent();
+    if (!adsterraConfig.enabled || isLoaded.current || !containerRef.current) return;
+    isLoaded.current = true;
 
-    window.addEventListener('cookie-consent-updated', syncConsent);
-    return () => {
-      window.removeEventListener('cookie-consent-updated', syncConsent);
-    };
+    const script = document.createElement('script');
+    script.async = true;
+    script.setAttribute('data-cfasync', 'false');
+    script.src = adsterraConfig.slots.nativeBanner.scriptSrc;
+    containerRef.current.appendChild(script);
   }, []);
 
-  // Lazy-init: only push ads when near viewport (better CWV + fill rate).
-  // The reserved slot exists from the server render (state 'unknown'), so the
-  // container is available immediately on mount.
-  useEffect(() => {
-    const el = containerRef.current;
-    if (!el) return;
-    if (typeof IntersectionObserver === 'undefined') {
-      // No IO support: load eagerly. Server-consistent initial state is false,
-      // so this only runs on the client after mount.
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setInView(true);
-      return;
-    }
+  if (!adsterraConfig.enabled) return null;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries.some((e) => e.isIntersecting)) {
-          setInView(true);
-          observer.disconnect();
-        }
-      },
-      { rootMargin: '200px 0px', threshold: 0.01 },
-    );
+  return (
+    <div className={cn('my-6 w-full flex flex-col items-center justify-center overflow-hidden', className)}>
+      <AdLabel />
+      <div
+        id={adsterraConfig.slots.nativeBanner.containerId}
+        ref={containerRef}
+        className="w-full min-h-[140px] flex items-center justify-center"
+      />
+    </div>
+  );
+}
 
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
+/**
+ * Universal AdBanner component maintaining backwards compatibility with any slot call.
+ */
+export function AdBanner({
+  format = 'auto',
+  className,
+  labeled = true,
+}: AdBannerProps) {
+  if (!adsterraConfig.enabled) return null;
 
-  useEffect(() => {
-    if (!adsConfig.enabled || consentState !== 'granted' || !slot || !inView || isLoaded.current) return;
-
-    // Defer push to next frame so layout is stable
-    const id = requestAnimationFrame(() => {
-      try {
-        if (typeof window !== 'undefined') {
-          window.adsbygoogle = window.adsbygoogle || [];
-          window.adsbygoogle.push({});
-          isLoaded.current = true;
-        }
-      } catch {
-        // Silently handle ad errors
-      }
-    });
-    return () => cancelAnimationFrame(id);
-  }, [consentState, slot, inView]);
-
-  // Development placeholder — fixed height avoids CLS
-  if (adsConfig.testMode || !adsConfig.enabled) {
+  if (format === 'vertical') {
     return (
-      <div ref={containerRef} className={cn('w-full', className)}>
-        {labeled ? <AdLabel /> : null}
-        <ReservedSpace
-          className="flex items-center justify-center border border-dashed border-border/40 text-[10px] text-muted-foreground/50"
-          style={style}
-          minHeight={minHeight}
+      <div className={cn('flex flex-col items-center justify-center', className)}>
+        {labeled && <AdLabel />}
+        <AdsterraIframe
+          adKey={adsterraConfig.slots.banner160x600.key}
+          width={adsterraConfig.slots.banner160x600.width}
+          height={adsterraConfig.slots.banner160x600.height}
         />
       </div>
     );
   }
 
-  // Missing slot: no chrome at all.
-  if (!slot) return null;
-
-  // Advertising declined: render nothing so the reserved slot collapses
-  // instead of leaving a permanent blank gap for decliners.
-  if (consentState === 'denied') return null;
-
-  // Consent unknown (server HTML + first client render, or banner unanswered):
-  // reserve the slot so a later "Accept" never causes a layout shift.
-  if (consentState !== 'granted') {
+  if (format === 'rectangle') {
     return (
-      <div ref={containerRef} className={cn('w-full', className)} style={{ minHeight }}>
-        {labeled ? <AdLabel /> : null}
-        <ReservedSpace minHeight={minHeight} style={style} />
+      <div className={cn('flex flex-col items-center justify-center', className)}>
+        {labeled && <AdLabel />}
+        <AdsterraIframe
+          adKey={adsterraConfig.slots.banner300x250.key}
+          width={adsterraConfig.slots.banner300x250.width}
+          height={adsterraConfig.slots.banner300x250.height}
+        />
       </div>
     );
   }
 
+  if (format === 'native') {
+    return <AdsterraNativeBanner className={className} />;
+  }
+
+  // Horizontal (default) - responsive 728x90 on desktop, 320x50 on mobile
   return (
-    <div ref={containerRef} className={cn('w-full', className)} style={{ minHeight }}>
-      {labeled ? <AdLabel /> : null}
-      <div className="ad-container overflow-hidden" style={{ minHeight }}>
-        {inView ? (
-          <ins
-            ref={adRef}
-            className="adsbygoogle"
-            style={{
-              display: 'block',
-              minHeight,
-              ...style,
-            }}
-            data-ad-client={adsConfig.publisherId}
-            data-ad-slot={slot}
-            data-ad-format={format}
-            data-full-width-responsive={responsive ? 'true' : 'false'}
-          />
-        ) : (
-          <ReservedSpace minHeight={minHeight} style={style} />
-        )}
+    <div className={cn('w-full flex flex-col items-center justify-center', className)}>
+      {labeled && <AdLabel />}
+      <div className="hidden md:flex justify-center w-full">
+        <AdsterraIframe
+          adKey={adsterraConfig.slots.banner728x90.key}
+          width={adsterraConfig.slots.banner728x90.width}
+          height={adsterraConfig.slots.banner728x90.height}
+        />
+      </div>
+      <div className="flex md:hidden justify-center w-full">
+        <AdsterraIframe
+          adKey={adsterraConfig.slots.banner320x50.key}
+          width={adsterraConfig.slots.banner320x50.width}
+          height={adsterraConfig.slots.banner320x50.height}
+        />
       </div>
     </div>
   );
 }
 
-// Pre-configured ad components for common placements
-
+/**
+ * Top header leaderboard (728x90 on desktop, 320x50 on mobile)
+ */
 export function HeaderAd({ className }: { className?: string } = {}) {
-  if (!adsConfig.slots.header && !adsConfig.testMode) return null;
+  if (!adsterraConfig.enabled) return null;
   return (
     <div
-      className={cn('mx-auto w-full max-w-5xl px-4 py-3 lg:px-8', className)}
+      className={cn('mx-auto w-full max-w-5xl px-4 py-3 lg:px-8 flex flex-col items-center', className)}
       aria-label="Advertisement"
       role="complementary"
     >
-      <AdBanner
-        slot={adsConfig.slots.header}
-        format="horizontal"
-        minHeight={90}
-        labeled
-        className="w-full max-w-[728px] mx-auto"
-      />
+      <AdLabel />
+      <div className="hidden md:flex justify-center w-full">
+        <AdsterraIframe
+          adKey={adsterraConfig.slots.banner728x90.key}
+          width={728}
+          height={90}
+        />
+      </div>
+      <div className="flex md:hidden justify-center w-full">
+        <AdsterraIframe
+          adKey={adsterraConfig.slots.banner320x50.key}
+          width={320}
+          height={50}
+        />
+      </div>
     </div>
   );
 }
 
+/**
+ * Desktop sidebar skyscraper (160x600 wide skyscraper)
+ */
 export function SidebarAd({ className }: { className?: string } = {}) {
-  if (!adsConfig.slots.sidebar && !adsConfig.testMode) return null;
+  if (!adsterraConfig.enabled) return null;
   return (
-    <div className={cn('w-full', className)} aria-label="Advertisement" role="complementary">
-      <AdBanner
-        slot={adsConfig.slots.sidebar}
-        format="vertical"
-        minHeight={250}
-        labeled
-        className="w-[300px] max-w-full"
+    <div className={cn('w-full flex flex-col items-center justify-center', className)} aria-label="Advertisement" role="complementary">
+      <AdLabel />
+      <AdsterraIframe
+        adKey={adsterraConfig.slots.banner160x600.key}
+        width={160}
+        height={600}
       />
     </div>
   );
 }
 
+/**
+ * High-performing In-Content 300x250 Medium Rectangle (ideal for articles and tool post-processing)
+ */
 export function InContentAd({ className }: { className?: string } = {}) {
-  if (!adsConfig.slots.inContent && !adsConfig.testMode) return null;
+  if (!adsterraConfig.enabled) return null;
   return (
     <div
-      className={cn('my-8 w-full flex justify-center', className)}
+      className={cn('my-8 w-full flex flex-col items-center justify-center', className)}
       aria-label="Advertisement"
       role="complementary"
     >
-      <AdBanner
-        slot={adsConfig.slots.inContent}
-        format="rectangle"
-        minHeight={280}
-        labeled
-        className="w-full max-w-[336px]"
+      <AdLabel />
+      <AdsterraIframe
+        adKey={adsterraConfig.slots.banner300x250.key}
+        width={300}
+        height={250}
       />
     </div>
   );
 }
 
+/**
+ * Footer leaderboard (728x90 on desktop, 320x50 on mobile)
+ */
 export function FooterAd({ className }: { className?: string } = {}) {
-  if (!adsConfig.slots.footer && !adsConfig.testMode) return null;
+  if (!adsterraConfig.enabled) return null;
   return (
     <div
-      className={cn('mx-auto w-full max-w-5xl px-4 py-6 lg:px-8', className)}
+      className={cn('mx-auto w-full max-w-5xl px-4 py-6 lg:px-8 flex flex-col items-center', className)}
       aria-label="Advertisement"
       role="complementary"
     >
-      <AdBanner
-        slot={adsConfig.slots.footer}
-        format="horizontal"
-        minHeight={90}
-        labeled
-        className="w-full max-w-[728px] mx-auto"
-      />
+      <AdLabel />
+      <div className="hidden md:flex justify-center w-full">
+        <AdsterraIframe
+          adKey={adsterraConfig.slots.banner728x90.key}
+          width={728}
+          height={90}
+        />
+      </div>
+      <div className="flex md:hidden justify-center w-full">
+        <AdsterraIframe
+          adKey={adsterraConfig.slots.banner320x50.key}
+          width={320}
+          height={50}
+        />
+      </div>
     </div>
   );
 }
 
-export function NativeAd({ className }: { className?: string }) {
-  if (!adsConfig.slots.native && !adsConfig.testMode) return null;
-  return (
-    <div className={cn('w-full', className)} aria-label="Advertisement" role="complementary">
-      <AdBanner slot={adsConfig.slots.native} format="auto" responsive minHeight={200} labeled />
-    </div>
-  );
+/**
+ * Native banner ad
+ */
+export function NativeAd({ className }: { className?: string } = {}) {
+  if (!adsterraConfig.enabled) return null;
+  return <AdsterraNativeBanner className={className} />;
 }

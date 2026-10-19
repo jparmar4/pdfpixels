@@ -27,10 +27,10 @@ export function ToolSidebarAd() {
     <>
       {hasSidebar ? (
         <aside
-          className="pointer-events-none fixed right-4 top-24 z-30 hidden w-[300px] min-[1400px]:block"
+          className="pointer-events-none fixed right-4 top-24 z-30 hidden w-[190px] min-[1400px]:block"
           aria-label="Sponsored"
         >
-          <div className="pointer-events-auto sticky top-24 rounded-2xl border border-border/50 bg-card/90 p-3 shadow-soft backdrop-blur-md">
+          <div className="pointer-events-auto sticky top-24 rounded-2xl border border-border/50 bg-card/90 p-2 shadow-soft backdrop-blur-md flex flex-col items-center">
             <SidebarAd />
           </div>
         </aside>

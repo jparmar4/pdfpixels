@@ -16,7 +16,7 @@ export const SITE_CONTENT_UPDATED = new Date('2026-10-01T00:00:00.000Z');
  *  in Search Console, and run `npm run submit-sitemap` — the ~133 expansion
  *  URLs re-enter search and AI surfaces automatically (llms.txt, sitemap,
  *  robots directives, and hreflang all read this flag). */
-export const ADSENSE_REVIEW_MODE = true;
+export const ADSENSE_REVIEW_MODE = false;
 
 export function organizationId() {
   return `${SITE_URL}/#organization`;

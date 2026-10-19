@@ -6,7 +6,7 @@ import { ArrowRight, BookOpen, ChevronRight, GitCompareArrows, Layers3, LayoutTe
 import { ToolContentSection } from '@/components/layout/tool-content-section';
 import { ToolPageClient } from '@/components/layout/tool-page-client';
 import { ToolSidebarAd } from '@/components/ads/tool-sidebar-ad';
-import { FooterAd, InContentAd } from '@/components/ads/ad-banner';
+import { FooterAd } from '@/components/ads/ad-banner';
 import { ErrorBoundary } from '@/components/ui/error-boundary';
 import { comparisonPages } from '@/lib/comparisons';
 import { normalizeDisplayText } from '@/lib/display-text';
@@ -457,7 +457,6 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
           </Suspense>
         </ErrorBoundary>
 
-        <InContentAd />
         <ToolSidebarAd />
 
         {/* Editorial content (indexable) sits before mid-page ads for better AdSense policy ratio */}

@@ -1,47 +1,60 @@
-// Google AdSense Configuration
-// Update these values with your actual AdSense credentials after approval
+// Adsterra Advertising Configuration
+// Supported formats: 728x90, 468x60, 320x50, 300x250, 160x600, 160x300, and Native Banner
 
-// Keep in sync with public/ads.txt (pub-XXXXXXXX)
-const DEFAULT_PUBLISHER_ID = 'ca-pub-3541576002060495';
+export const adsterraConfig = {
+  enabled: process.env.NEXT_PUBLIC_ADSTERRA_ENABLED !== 'false',
+  slots: {
+    banner728x90: {
+      key: 'cc2cce8a2df76b72b3ff70946c516588',
+      width: 728,
+      height: 90,
+    },
+    banner320x50: {
+      key: '0b00c66251afffc9b834943d1a7cbf35',
+      width: 320,
+      height: 50,
+    },
+    banner468x60: {
+      key: 'b07dd02b30ebdc4eabb7f2497e3f1627',
+      width: 468,
+      height: 60,
+    },
+    banner300x250: {
+      key: '60e2f20431171a62210e7189380ed0f4',
+      width: 300,
+      height: 250,
+    },
+    banner160x300: {
+      key: '23a0c5d83de92016cac66cd6006e3bc6',
+      width: 160,
+      height: 300,
+    },
+    banner160x600: {
+      key: '4db808e74356da4d4bdee2f7720cf1cc',
+      width: 160,
+      height: 600,
+    },
+    nativeBanner: {
+      scriptSrc: 'https://bauval.org/21/a71ba0b513f2755b9f56ff45b5814958',
+      containerId: 'container-a71ba0b513f2755b9f56ff45b5814958',
+    },
+  },
+};
 
 export function hasConfiguredAdSlot(): boolean {
-  return Boolean(
-    process.env.NEXT_PUBLIC_ADSENSE_SLOT_HEADER?.trim() ||
-      process.env.NEXT_PUBLIC_ADSENSE_SLOT_SIDEBAR?.trim() ||
-      process.env.NEXT_PUBLIC_ADSENSE_SLOT_IN_CONTENT?.trim() ||
-      process.env.NEXT_PUBLIC_ADSENSE_SLOT_FOOTER?.trim() ||
-      process.env.NEXT_PUBLIC_ADSENSE_SLOT_NATIVE?.trim(),
-  );
+  return adsterraConfig.enabled;
 }
 
 export const adsConfig = {
-  // Your AdSense Publisher ID (starts with ca-pub-)
-  // Find it in your AdSense dashboard: Account > Account information
-  publisherId: process.env.NEXT_PUBLIC_ADSENSE_PUBLISHER_ID || DEFAULT_PUBLISHER_ID,
-
-  // Enable/disable ads globally (set to false during development)
-  enabled:
-    process.env.NODE_ENV === 'production' &&
-    process.env.NEXT_PUBLIC_ADSENSE_ENABLED !== 'false' &&
-    Boolean(process.env.NEXT_PUBLIC_ADSENSE_PUBLISHER_ID || DEFAULT_PUBLISHER_ID),
-
-  // Ad slot IDs for different placements
-  // Get these from your AdSense dashboard when you create ad units
+  enabled: adsterraConfig.enabled,
+  testMode: false,
   slots: {
-    header: process.env.NEXT_PUBLIC_ADSENSE_SLOT_HEADER || '',
-    sidebar: process.env.NEXT_PUBLIC_ADSENSE_SLOT_SIDEBAR || '',
-    inContent: process.env.NEXT_PUBLIC_ADSENSE_SLOT_IN_CONTENT || '',
-    footer: process.env.NEXT_PUBLIC_ADSENSE_SLOT_FOOTER || '',
-    native: process.env.NEXT_PUBLIC_ADSENSE_SLOT_NATIVE || '',
+    header: adsterraConfig.slots.banner728x90.key,
+    sidebar: adsterraConfig.slots.banner160x600.key,
+    inContent: adsterraConfig.slots.banner300x250.key,
+    footer: adsterraConfig.slots.banner728x90.key,
+    native: adsterraConfig.slots.nativeBanner.containerId,
   },
-
-  // AdSense script URL
-  get scriptUrl() {
-    return `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${this.publisherId}`;
-  },
-
-  // Test mode - shows placeholder ads in development
-  testMode: process.env.NODE_ENV !== 'production',
 };
 
 // Cookie consent configuration

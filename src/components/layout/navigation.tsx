@@ -337,11 +337,11 @@ export function Navigation() {
 
             {/* Right Actions */}
             <div className="flex flex-shrink-0 items-center gap-2 xl:gap-3">
-              <Link href="/blog" className="hidden xl:inline-flex text-sm font-medium text-muted-foreground hover:text-foreground transition-colors px-3 py-2">
+              <Link href="/blog" className="hidden lg:inline-flex text-sm font-medium text-muted-foreground hover:text-foreground transition-colors px-3 py-2">
                 Blog
               </Link>
 
-              <div className="hidden xl:block h-4 w-px bg-border/60 mx-1" />
+              <div className="hidden lg:block h-4 w-px bg-border/60 mx-1" />
 
               <Button
                 variant="outline"
