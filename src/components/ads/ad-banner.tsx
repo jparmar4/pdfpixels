@@ -42,6 +42,7 @@ export function AdsterraIframe({
 <html>
   <head>
     <meta charset="utf-8">
+    <base target="_blank">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
       * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -95,7 +96,7 @@ export function AdsterraNativeBanner({ className }: { className?: string }) {
     script.async = true;
     script.setAttribute('data-cfasync', 'false');
     script.src = adsterraConfig.slots.nativeBanner.scriptSrc;
-    containerRef.current.appendChild(script);
+    document.body.appendChild(script);
   }, []);
 
   if (!adsterraConfig.enabled) return null;
