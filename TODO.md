@@ -221,3 +221,15 @@
 - [x] Nav Search Experience Upgrade: wired `searchTools()` into the top navigation search dialog (`src/components/layout/navigation.tsx`), allowing natural multi-word searches (e.g. "pdf merge", "jpg to pdf", "compress 100kb", "bg remove") to instantly rank the correct tool at #1.
 - [x] Automated test assertions added to `scripts/test-recent-tools.mjs` validating that multi-term search queries ("pdf merge" -> `merge-pdf`, "jpg to pdf" -> `image-to-pdf`) return top-ranked results correctly.
 - [x] Verification (all green): `npm run typecheck` 0 errors, `npm run lint` 0 warnings, `npm run test:tools` passed, `npm run build` 410 static pages prerendered, `npm run test:seo` passed.
+
+# International Power Trio Expansion (2026-10-19, Wave 4)
+- [x] Expanded Multilingual Tool Suite: Added `word-to-pdf`, `rotate-pdf`, and `webp-to-png` to `LOCALIZED_TOOL_SLUGS` (21 -> 24 localized tools, 120 total localized routes) with dedicated native editorial copy in all 5 international packs:
+  - German (`/de`): Word in PDF, PDF drehen, WebP in PNG
+  - Spanish (`/es`): Word a PDF, Rotar PDF, WebP a PNG
+  - Portuguese (`/pt`): Word em PDF, Girar PDF, WebP em PNG
+  - French (`/fr`): Word en PDF, Faire pivoter un PDF, WebP en PNG
+  - Japanese (`/jp`): WordをPDFに, PDFを回転, WebPをPNGに
+- [x] Pre-rendered static pages grew from 410 to **425 static pages**.
+- [x] Bidirectional alternate hreflang cluster expanded from 1,344 to **1,470 verified hreflang links**.
+- [x] Sitemap URLs expanded from 354 to **369 verified sitemap URLs**.
+- [x] Verification (all green): `npm run typecheck` 0 errors, `npm run lint` 0 warnings, `npm run test:tools` passed, `npm run build` 425 static pages prerendered, `npm run test:seo` 369 sitemap URLs / 1,470 hreflang links verified bidirectionally.

@@ -22,6 +22,9 @@ export const LOCALIZED_TOOL_SLUGS = [
   'pdf-to-png',
   'jpg-to-webp',
   'png-to-webp',
+  'word-to-pdf',
+  'rotate-pdf',
+  'webp-to-png',
 ] as const;
 
 export type LocalizedToolSlug = (typeof LOCALIZED_TOOL_SLUGS)[number];
@@ -300,6 +303,42 @@ const deTools: Record<LocalizedToolSlug, LocalizedToolCopy> = {
       'Kompakte WebP-Datei herunterladen.',
     ],
   },
+  'word-to-pdf': {
+    name: 'Word in PDF',
+    title: 'Word in PDF umwandeln – kostenlos, ohne Anmeldung',
+    description: 'Microsoft Word-Dokumente (.docx) in schreibgeschützte PDF-Dateien konvertieren, Formatierung bleibt erhalten.',
+    howTitle: 'Word-Dokumente als PDF speichern',
+    intro: 'Wandeln Sie Word-Dateien serverseitig in standardkonforme PDFs um. Layout, Schriftarten, Tabellen und Bilder bleiben originalgetreu erhalten. Bis zu 50 MB pro Datei.',
+    steps: [
+      'Word-Datei (.docx) hochladen (höchstens 50 MB).',
+      'Die Umwandlung in PDF starten.',
+      'Fertige PDF-Datei herunterladen.',
+    ],
+  },
+  'rotate-pdf': {
+    name: 'PDF drehen',
+    title: 'PDF drehen – Seiten dauerhaft ausrichten, kostenlos',
+    description: 'Einzelne oder alle Seiten eines PDFs um 90°, 180° oder 270° im Uhrzeigersinn drehen und speichern.',
+    howTitle: 'Seiten im PDF drehen',
+    intro: 'Bringen Sie falsch gescannte oder querformatige Seiten in die richtige Leserichtung. Drehen Sie einzelne Seiten oder das gesamte Dokument auf einmal. Bis zu 50 MB pro Datei.',
+    steps: [
+      'PDF hochladen (höchstens 50 MB).',
+      'Drehwinkel wählen (90°, 180° oder 270°) oder Einzelseiten ausrichten.',
+      'Dauerhaft gedrehtes PDF herunterladen.',
+    ],
+  },
+  'webp-to-png': {
+    name: 'WebP in PNG',
+    title: 'WebP in PNG umwandeln – kostenlos, ohne Anmeldung',
+    description: 'WebP-Bilder in universell kompatible PNG-Dateien mit voller Alpha-Transparenz konvertieren.',
+    howTitle: 'WebP-Bilder in verlustfreies PNG umwandeln',
+    intro: 'Konvertieren Sie moderne WebP-Grafiken in das überall kompatible PNG-Format. Ideal für Bildbearbeitungsprogramme, Drucklayouts und ältere Browser. Bis zu 25 MB pro Bild.',
+    steps: [
+      'WebP-Bild hochladen (höchstens 25 MB).',
+      'Die Umwandlung in PNG starten.',
+      'Verlustfreies PNG-Bild herunterladen.',
+    ],
+  },
 };
 
 const esTools: Record<LocalizedToolSlug, LocalizedToolCopy> = {
@@ -553,6 +592,42 @@ const esTools: Record<LocalizedToolSlug, LocalizedToolCopy> = {
       'Sube tu imagen PNG (máximo 25 MB).',
       'Comprueba las opciones de compresión.',
       'Descarga el archivo WebP ultraligero.',
+    ],
+  },
+  'word-to-pdf': {
+    name: 'Word a PDF',
+    title: 'Convertir Word a PDF – gratis, sin registro',
+    description: 'Convierte documentos Word (.docx) a archivos PDF manteniendo formato, tipografías e imágenes intactos.',
+    howTitle: 'Convertir documentos Word en PDF',
+    intro: 'Convierte documentos .docx a PDF en el servidor con total fidelidad. Se preservan tablas, márgenes, encabezados e imágenes. Archivos de hasta 50 MB.',
+    steps: [
+      'Sube tu archivo Word (.docx, máximo 50 MB).',
+      'Inicia la conversión a PDF.',
+      'Descarga tu documento PDF listo para compartir.',
+    ],
+  },
+  'rotate-pdf': {
+    name: 'Rotar PDF',
+    title: 'Rotar PDF – girar páginas online, gratis y sin registro',
+    description: 'Gira páginas individuales o todo el documento PDF 90°, 180° o 270° de forma permanente.',
+    howTitle: 'Girar páginas de un documento PDF',
+    intro: 'Corrige la orientación de páginas escaneadas al revés o documentos en apaisado. Puedes girar todas las páginas a la vez o ajustar páginas individuales. Archivos de hasta 50 MB.',
+    steps: [
+      'Sube un PDF (máximo 50 MB).',
+      'Selecciona el ángulo de rotación (90°, 180° o 270°).',
+      'Descarga el PDF con la orientación corregida.',
+    ],
+  },
+  'webp-to-png': {
+    name: 'WebP a PNG',
+    title: 'Convertir WebP a PNG – gratis, sin registro',
+    description: 'Convierte imágenes WebP a formato PNG universal conservando la transparencia y la máxima nitidez.',
+    howTitle: 'Convertir archivos WebP en imágenes PNG',
+    intro: 'Transforma imágenes WebP en archivos PNG compatibles con cualquier software de edición o visor. La transparencia del canal alfa se conserva al 100%. Hasta 25 MB por imagen.',
+    steps: [
+      'Sube tu imagen WebP (máximo 25 MB).',
+      'Inicia la conversión directa.',
+      'Descarga tu imagen PNG sin pérdida.',
     ],
   },
 };
@@ -810,6 +885,42 @@ const ptTools: Record<LocalizedToolSlug, LocalizedToolCopy> = {
       'Baixe o arquivo WebP compacto.',
     ],
   },
+  'word-to-pdf': {
+    name: 'Word em PDF',
+    title: 'Converter Word em PDF – grátis, sem cadastro',
+    description: 'Converta documentos Word (.docx) em arquivos PDF preservando fontes, tabelas e formatação original.',
+    howTitle: 'Transformar arquivos Word em PDF',
+    intro: 'Transforme seus arquivos .docx em PDFs seguros e compatíveis com qualquer dispositivo. Formatação, imagens e quebras de página preservadas. Até 50 MB por arquivo.',
+    steps: [
+      'Envie o documento Word (.docx, máximo de 50 MB).',
+      'Inicie a conversão rápida.',
+      'Baixe o PDF finalizado.',
+    ],
+  },
+  'rotate-pdf': {
+    name: 'Girar PDF',
+    title: 'Girar PDF – rotacionar páginas online, grátis',
+    description: 'Gire páginas avulsas ou todo o documento PDF em 90°, 180° ou 270° de forma permanente.',
+    howTitle: 'Mudar a orientação das páginas do PDF',
+    intro: 'Corrija documentos escaneados de cabeça para baixo ou páginas em formato paisagem. Gire todas as páginas juntas ou selecione páginas específicas. Até 50 MB por arquivo.',
+    steps: [
+      'Envie o PDF (máximo de 50 MB).',
+      'Escolha a rotação desejada (90°, 180° ou 270°).',
+      'Baixe o PDF com as páginas corrigidas.',
+    ],
+  },
+  'webp-to-png': {
+    name: 'WebP em PNG',
+    title: 'Converter WebP em PNG – grátis, sem cadastro',
+    description: 'Converta imagens WebP para PNG universal com total transparência e alta qualidade gráfica.',
+    howTitle: 'Transformar imagens WebP em PNG',
+    intro: 'Converta arquivos WebP no formato PNG compatível com qualquer aplicativo, editor de imagem ou navegador antigo. Mantém a transparência integral. Até 25 MB por arquivo.',
+    steps: [
+      'Envie sua imagem WebP (máximo de 25 MB).',
+      'Inicie a conversão para PNG.',
+      'Baixe a imagem PNG preservada.',
+    ],
+  },
 };
 
 const frTools: Record<LocalizedToolSlug, LocalizedToolCopy> = {
@@ -1065,6 +1176,42 @@ const frTools: Record<LocalizedToolSlug, LocalizedToolCopy> = {
       'Téléchargez le fichier WebP allégé.',
     ],
   },
+  'word-to-pdf': {
+    name: 'Word en PDF',
+    title: 'Convertir Word en PDF – gratuit, sans inscription',
+    description: 'Convertir des documents Word (.docx) en fichiers PDF en conservant la mise en page, les polices et les images.',
+    howTitle: 'Enregistrer un document Word au format PDF',
+    intro: 'Convertissez vos fichiers .docx en documents PDF professionnels côté serveur. Les marges, tableaux, styles et images sont fidèlement reproduits. Jusqu’à 50 Mo par fichier.',
+    steps: [
+      'Déposez votre document Word (.docx, 50 Mo maximum).',
+      'Lancez la conversion en PDF.',
+      'Téléchargez votre document PDF prêt à l’emploi.',
+    ],
+  },
+  'rotate-pdf': {
+    name: 'Faire pivoter un PDF',
+    title: 'Faire pivoter un PDF – tourner les pages en ligne, gratuit',
+    description: 'Tourner des pages spécifiques ou l’ensemble d’un PDF de 90°, 180° ou 270° de manière permanente.',
+    howTitle: 'Réorienter les pages d’un document PDF',
+    intro: 'Remettez à l’endroit les pages numérisées à l’envers ou réorientez les pages au format paysage. Traitement instantané sur tout le fichier ou page par page. Fichiers jusqu’à 50 Mo.',
+    steps: [
+      'Déposez votre PDF (50 Mo maximum).',
+      'Choisissez l’angle de rotation (90°, 180° ou 270°).',
+      'Téléchargez le PDF correctement orienté.',
+    ],
+  },
+  'webp-to-png': {
+    name: 'WebP en PNG',
+    title: 'Convertir un WebP en PNG – gratuit, sans inscription',
+    description: 'Convertir des images WebP en fichiers PNG universels avec conservation intégrale de la transparence.',
+    howTitle: 'Convertir des images WebP en PNG sans perte',
+    intro: 'Transformez vos visuels WebP en fichiers PNG exploitables dans tous les logiciels de graphisme et visionneuses d’images. La couche de transparence est fidèlement conservée. Jusqu’à 25 Mo.',
+    steps: [
+      'Déposez votre image WebP (25 Mo maximum).',
+      'Lancez la conversion en PNG.',
+      'Téléchargez l’image PNG haute fidélité.',
+    ],
+  },
 };
 
 const jpTools: Record<LocalizedToolSlug, LocalizedToolCopy> = {
@@ -1318,6 +1465,42 @@ const jpTools: Record<LocalizedToolSlug, LocalizedToolCopy> = {
       'PNG画像をアップロード（最大25MB）。',
       '設定を確認（透過は自動保持されます）。',
       '最適化されたWebP画像をダウンロード。',
+    ],
+  },
+  'word-to-pdf': {
+    name: 'WordをPDFに',
+    title: 'WordをPDFに変換 – 無料、登録不要',
+    description: 'Word文書（.docx）をレイアウトやフォントを保持したままPDFに変換します。',
+    howTitle: 'WordファイルをPDFとして保存',
+    intro: 'Word（.docx）ファイルをサーバーで高品質なPDFに変換します。文字配置、表、画像、ページ番号を忠実に再現。1ファイル50MBまで対応。',
+    steps: [
+      'Wordファイル（.docx、最大50MB）をアップロード。',
+      'PDFへの変換を開始。',
+      '作成されたPDFをダウンロード。',
+    ],
+  },
+  'rotate-pdf': {
+    name: 'PDFを回転',
+    title: 'PDFを回転 – ページの向きをオンラインで変更、無料',
+    description: 'PDFの特定ページまたは全ページを90度・180度・270度回転して恒久的に保存します。',
+    howTitle: 'PDFのページを回転して保存',
+    intro: '逆さまにスキャンされたページや横向きのページを正しい向きに修正します。全ページ一括または個別ページの回転に対応。1ファイル50MBまで。',
+    steps: [
+      'PDFをアップロード（最大50MB）。',
+      '回転角度（90度、180度、270度）を選択。',
+      '向きを修正したPDFをダウンロード。',
+    ],
+  },
+  'webp-to-png': {
+    name: 'WebPをPNGに',
+    title: 'WebPをPNGに変換 – 無料、登録不要',
+    description: 'WebP画像を透過を保持したまま汎用性の高いPNG形式に変換します。',
+    howTitle: 'WebP画像をPNGに変換して保存',
+    intro: 'WebP画像をあらゆる画像編集ソフトや古いブラウザで開けるPNGに変換します。アルファチャンネルの透過情報を完全保持。1枚25MBまで。',
+    steps: [
+      'WebP画像をアップロード（最大25MB）。',
+      'PNGへの変換を実行。',
+      '透過PNG画像をダウンロード。',
     ],
   },
 };
