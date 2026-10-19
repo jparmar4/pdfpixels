@@ -1,6 +1,6 @@
 import { ImageResponse } from 'next/og';
 
-export const runtime = 'edge';
+export const runtime = 'nodejs';
 
 export const alt = 'PdfPixels - Free Online Image & PDF Tools';
 export const size = {

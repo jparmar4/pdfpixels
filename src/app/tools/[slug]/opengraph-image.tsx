@@ -1,7 +1,7 @@
 import { ImageResponse } from 'next/og';
 import { getToolBySlug } from '@/lib/tools-data';
 
-export const runtime = 'edge';
+export const runtime = 'nodejs';
 
 // Route segment config
 export const alt = 'Tool by PdfPixels';

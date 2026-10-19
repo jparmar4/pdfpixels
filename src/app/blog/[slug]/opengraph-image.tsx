@@ -1,7 +1,7 @@
 import { ImageResponse } from 'next/og';
 import { getBlogPostBySlug } from '@/config/blog';
 
-export const runtime = 'edge';
+export const runtime = 'nodejs';
 
 export const alt = 'Blog Post by PdfPixels';
 export const size = {

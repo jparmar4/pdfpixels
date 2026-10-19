@@ -1,5 +1,10 @@
 import type { NextConfig } from "next";
 
+// Ensure Node.js build workers have sufficient heap allocation on CI/cloud build containers
+if (!process.env.NODE_OPTIONS?.includes('--max-old-space-size')) {
+  process.env.NODE_OPTIONS = `${process.env.NODE_OPTIONS || ''} --max-old-space-size=4096`.trim();
+}
+
 const allowedImageHosts = (process.env.NEXT_PUBLIC_IMAGE_HOSTS || 'www.pdfpixels.com')
   .split(',')
   .map((h) => h.trim())
@@ -69,6 +74,9 @@ const nextConfig: NextConfig = {
 
   // Experimental features for performance
   experimental: {
+    // Limit parallel worker threads during build/static-generation.
+    // CI/cloud hosts often have 64 vCPUs with tight RAM limits, where spawning 63 workers causes OOM / SIGABRT.
+    cpus: 4,
     optimizePackageImports: [
       'lucide-react',
       'framer-motion',
