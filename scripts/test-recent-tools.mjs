@@ -396,4 +396,16 @@ const jpgPdfSearch = searchTools('jpg to pdf');
 assert.ok(jpgPdfSearch.length > 0);
 assert.equal(jpgPdfSearch[0].slug, 'image-to-pdf', 'jpg to pdf ranks image-to-pdf first');
 
+// Verify comparisons integrity
+const { comparisonPages } = await import('../src/lib/comparisons.ts');
+assert.ok(comparisonPages.length >= 26, 'at least 26 comparisons registered');
+for (const cmp of comparisonPages) {
+  assert.ok(cmp.slug && cmp.title && cmp.description, `comparison ${cmp.slug} has title/description`);
+  const tool = getToolBySlug(cmp.primaryToolSlug);
+  assert.ok(tool, `comparison ${cmp.slug} references valid tool: ${cmp.primaryToolSlug}`);
+}
+assert.ok(comparisonPages.some(c => c.slug === 'pdfpixels-vs-pdf24-merge-pdf'), 'pdf24 merge comparison exists');
+assert.ok(comparisonPages.some(c => c.slug === 'pdfpixels-vs-ilovepdf-split-pdf'), 'ilovepdf split comparison exists');
+assert.ok(comparisonPages.some(c => c.slug === 'pdfpixels-vs-ilovepdf-word-to-pdf'), 'ilovepdf word-to-pdf comparison exists');
+
 console.log('Recent-tool regressions passed. PDF fixtures:', out);

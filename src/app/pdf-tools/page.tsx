@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     absolute: `All PDF Tools Online Free – Compress, Merge, Convert & Edit | ${siteConfig.name}`,
   },
   description:
-    'Free online suite of 52 PDF tools. Compress PDF to target KB, merge, split, convert to/from Word & Excel, sign, fill forms, and secure documents without software installation or signup.',
+    'Free online suite of 53 PDF tools. Compress PDF to target KB, merge, split, convert to/from Word & Excel, sign, fill forms, and secure documents without software installation or signup.',
   keywords: [
     'online pdf tools',
     'free pdf tools',
@@ -34,7 +34,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: `All PDF Tools Online Free – Compress, Merge, Convert & Edit | ${siteConfig.name}`,
     description:
-      'Free online suite of 52 PDF tools. Compress, merge, split, convert to Word/Excel, sign, and edit PDFs directly in your browser with zero registration.',
+      'Free online suite of 53 PDF tools. Compress, merge, split, convert to Word/Excel, sign, and edit PDFs directly in your browser with zero registration.',
     url: `${SITE_URL}/pdf-tools`,
     siteName: siteConfig.name,
     type: 'website',
@@ -51,7 +51,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: `All PDF Tools Online Free – Compress, Merge, Convert & Edit | ${siteConfig.name}`,
     description:
-      'Free online suite of 52 PDF tools. Compress, merge, split, convert to Word/Excel, sign, and edit PDFs directly in your browser with zero registration.',
+      'Free online suite of 53 PDF tools. Compress, merge, split, convert to Word/Excel, sign, and edit PDFs directly in your browser with zero registration.',
     images: [DEFAULT_OG_IMAGE_URL],
   },
 };
@@ -73,7 +73,7 @@ export default function PdfToolsPage() {
       priceCurrency: 'USD',
     },
     featureList: [
-      '52 free online PDF tools with client-side & server processing',
+      `${allPdfTools.length} free online PDF tools with client-side & server processing`,
       'Fast PDF compression with custom target sizes (50KB, 100KB, 200KB, 500KB, 1MB)',
       'Merge, split, reorder, crop, and rotate PDF pages',
       'Convert PDF to Word, Excel, PPTX, JPG, PNG, and Text',
@@ -90,7 +90,7 @@ export default function PdfToolsPage() {
     url: pageUrl,
     name: 'All Online PDF Tools - Free Suite',
     description:
-      'Browse our complete suite of 52 free online PDF tools for organizing, compressing, converting, signing, and securing documents.',
+      `Browse our complete suite of ${allPdfTools.length} free online PDF tools for organizing, compressing, converting, signing, and securing documents.`,
     isPartOf: { '@id': websiteId() },
     mainEntity: {
       '@type': 'ItemList',

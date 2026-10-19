@@ -36,7 +36,7 @@ export async function GET() {
   lines.push('- Organize: Merge PDF, Split PDF (range or by file size), Rotate PDF, Delete Pages, Extract Pages, Reorder Pages, Crop PDF, Resize to paper sizes, N-up layouts, Page Numbers, Bates Numbering, PDF Reader, Word Counter, Extract Images');
   lines.push('- Compress & Optimize: Compress PDF (Extreme/Recommended/Low plus 50KB-1MB targets), Fast Web View (Linearize), Repair PDF, Grayscale PDF, Flatten PDF, PDF/A archival, Sanitize (metadata strip), CMYK print conversion');
   lines.push('- Convert to PDF: Word to PDF, Excel to PDF, PowerPoint to PDF, Text to PDF, TIFF to PDF, HEIC to PDF, Images to PDF');
-  lines.push('- Convert from PDF: PDF to Word, PDF to Excel, PDF to CSV, PDF to PowerPoint, PDF to JPG, PDF to Text, OCR scanned PDFs, Bank Statement to Excel');
+  lines.push('- Convert from PDF: PDF to Word, PDF to Excel, PDF to CSV, PDF to PowerPoint, PDF to JPG, PDF to PNG, PDF to Text, OCR scanned PDFs, Bank Statement to Excel');
   lines.push('- Edit & Sign: Sign PDF (draw, type, or upload signature), Fill PDF Forms, PDF Metadata Editor, Watermark PDF, Redact PDF (permanent blackout), Compare PDFs');
   lines.push('- Security & Privacy: Protect PDF (password encrypt), Unlock PDF');
   lines.push('');

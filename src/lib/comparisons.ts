@@ -1078,5 +1078,152 @@ export const comparisonPages: ComparisonPage[] = [
       },
     ],
   },
+  {
+    slug: 'pdfpixels-vs-pdf24-merge-pdf',
+    title: 'PdfPixels vs PDF24 for Merge PDF',
+    description: 'Compare PdfPixels and PDF24 Creator for combining PDF documents online, speed, page arrangement, and mobile usability.',
+    primaryToolSlug: 'merge-pdf',
+    alternatives: ['PDF24'],
+    bestFor: ['Zero-installation mobile merges', 'Instant browser file combination', 'Modern drag-and-drop page sorting'],
+    overview:
+      'PDF24 is a venerable suite known for its Windows launcher and free browser utilities. PdfPixels Merge PDF delivers a modern, lightweight, mobile-first browser experience engineered for immediate file combining without legacy UI clutter, heavy desktop installers, or account friction.',
+    whenToChooseUs: [
+      'You want an instant, touch-friendly merge workflow on mobile, tablet, or Mac without installing desktop software',
+      'You prefer a fast, clean modern interface with live visual page reordering',
+      'You work across both PDF documents and modern image formats (WebP, HEIC, PNG) in one place',
+    ],
+    whenToChooseAlt: [
+      'You require an offline Windows desktop app for air-gapped corporate environments',
+      'You use PDF24 Fax or custom printer drivers on Windows workstations',
+      'Your enterprise has pre-installed the PDF24 desktop suite on company laptops',
+    ],
+    keyDifferences: [
+      {
+        topic: 'Platform & Installation',
+        pdfpixels: 'Pure browser-based WebAssembly app, works seamlessly on phone, tablet, Mac, and PC with zero install',
+        alternative: 'Primary reputation built on downloadable Windows desktop suite alongside browser web tools',
+      },
+      {
+        topic: 'Mobile Experience',
+        pdfpixels: 'Touch-optimized responsive UI with intuitive mobile gesture reordering',
+        alternative: 'Desktop-oriented legacy UI layouts that feel dense on modern smartphones',
+      },
+      {
+        topic: 'Workflow Simplicity',
+        pdfpixels: 'Streamlined upload → reorder → merge → instant download loop',
+        alternative: 'Multi-screen modal dialogs with numerous auxiliary options',
+      },
+    ],
+    verdict:
+      'Choose PdfPixels Merge PDF for instant, clean merging across any modern phone, tablet, or browser with zero installation. Choose PDF24 if your IT policy requires an offline Windows desktop application.',
+    faqs: [
+      {
+        question: 'Can I reorder pages before merging in PdfPixels?',
+        answer: 'Yes. You can drag and drop file cards and preview pages to set the exact sequence before generating your merged PDF.',
+      },
+      {
+        question: 'Is there a limit on how many PDFs I can combine for free?',
+        answer: 'PdfPixels allows combining everyday multi-document batches without paywalls or forced signup requirements.',
+      },
+    ],
+  },
+  {
+    slug: 'pdfpixels-vs-ilovepdf-split-pdf',
+    title: 'PdfPixels vs iLovePDF for Split PDF',
+    description: 'Compare splitting PDF pages, extracting page ranges, file size limits, and privacy between PdfPixels and iLovePDF.',
+    primaryToolSlug: 'split-pdf',
+    alternatives: ['iLovePDF'],
+    bestFor: ['Extracting specific pages', 'Custom page range splitting', 'Zero-account browser extraction'],
+    overview:
+      'iLovePDF Split PDF is a widely known utility for breaking apart multi-page PDFs into separate files or ranges. PdfPixels Split PDF matches this capability with a privacy-conscious, client-side approach that does not push upsells, account registrations, or hourly task caps for everyday extraction jobs.',
+    whenToChooseUs: [
+      'You want to split or extract pages quickly without hitting free-tier task limits or timers',
+      'You value local client-side processing where documents remain in your browser memory',
+      'You need clean page range extraction (e.g. 1-3, 5, 8-12) without navigating subscription banners',
+    ],
+    whenToChooseAlt: [
+      'You already pay for iLovePDF Premium for bulk API batch processing',
+      'You need integration with Google Drive or Dropbox direct cloud save',
+      'Your company workflows are already built around the iLovePDF enterprise ecosystem',
+    ],
+    keyDifferences: [
+      {
+        topic: 'Free Usage Limits',
+        pdfpixels: 'No artificial task counters, forced waiting cooldowns, or hidden paywalls',
+        alternative: 'Enforces daily or hourly task limits and file size restrictions on free non-registered users',
+      },
+      {
+        topic: 'Document Privacy',
+        pdfpixels: 'WebAssembly client-side execution processes pages in-browser without server retention',
+        alternative: 'Uploads files to cloud processing clusters before returning download links',
+      },
+      {
+        topic: 'Interface Speed',
+        pdfpixels: 'Lightweight interface designed for instant visual range selection',
+        alternative: 'Feature-heavy interface with frequent premium subscription prompts',
+      },
+    ],
+    verdict:
+      'Pick PdfPixels Split PDF for fast, private, and unrestricted page extraction right in your browser. Choose iLovePDF if you already subscribe to their premium cloud ecosystem or require automated cloud-drive export.',
+    faqs: [
+      {
+        question: 'Can I extract non-consecutive pages like 1, 4, and 7 into a single PDF?',
+        answer: 'Yes. Enter comma-separated page numbers or ranges (e.g., 1, 4, 7-10) and PdfPixels will compile exactly those pages into a new document.',
+      },
+      {
+        question: 'Are split documents uploaded to any remote server?',
+        answer: 'No. PdfPixels executes splitting locally in your browser using modern WebAssembly, keeping confidential records private.',
+      },
+    ],
+  },
+  {
+    slug: 'pdfpixels-vs-ilovepdf-word-to-pdf',
+    title: 'PdfPixels vs iLovePDF for Word to PDF',
+    description: 'Compare Word to PDF document conversion, typography preservation, layout fidelity, and privacy between PdfPixels and iLovePDF.',
+    primaryToolSlug: 'word-to-pdf',
+    alternatives: ['iLovePDF'],
+    bestFor: ['Converting DOCX to PDF', 'Preserving document formatting', 'Private document conversion'],
+    overview:
+      'Converting DOC and DOCX files into universally readable PDF documents is critical for job applications, legal contracts, and academic papers. iLovePDF routes documents through remote conversion servers, while PdfPixels Word to PDF provides a clean, modern conversion flow emphasizing document privacy and typography preservation.',
+    whenToChooseUs: [
+      'You want to convert Word DOCX documents into clean PDFs without registration or watermarks',
+      'You are converting resumes, legal forms, or business letters and prioritize document confidentiality',
+      'You want instant conversion with immediate download and zero queue delays',
+    ],
+    whenToChooseAlt: [
+      'You are processing legacy binary .DOC files from Microsoft Office 97-2003 requiring server-side rendering',
+      'You have an active iLovePDF team subscription with shared cloud storage',
+      'You need multi-file bulk batch conversion queues of 50+ documents at once',
+    ],
+    keyDifferences: [
+      {
+        topic: 'Conversion Privacy',
+        pdfpixels: 'Minimal data footprint with zero commercial retention of document contents',
+        alternative: 'Files upload to cloud conversion servers subject to cloud retention policies',
+      },
+      {
+        topic: 'Access & Friction',
+        pdfpixels: 'Instant drop-and-convert with zero mandatory signups or email requirements',
+        alternative: 'Aggressive prompts to sign up or upgrade to premium for faster queue priority',
+      },
+      {
+        topic: 'Output Quality',
+        pdfpixels: 'High-fidelity PDF vector rendering preserving fonts, margins, and tables',
+        alternative: 'Standard cloud office conversion with reliable font fallback',
+      },
+    ],
+    verdict:
+      'Choose PdfPixels Word to PDF for private, frictionless conversion of DOCX documents with crisp typography. Choose iLovePDF if you regularly convert legacy 90s .DOC files in massive multi-file batches.',
+    faqs: [
+      {
+        question: 'Will Word formatting, headings, and margins stay identical after conversion?',
+        answer: 'Yes. Our conversion engine preserves standard document styling, tables, fonts, and page layouts faithfully.',
+      },
+      {
+        question: 'Does the converted PDF contain any watermark?',
+        answer: 'No. PdfPixels produces completely clean, unwatermarked PDF files ready for professional submission.',
+      },
+    ],
+  },
 ];
 

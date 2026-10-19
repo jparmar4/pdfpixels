@@ -293,7 +293,7 @@ One of the most catastrophic security failures in corporate legal history is the
 
 Because annotations exist on an independent rendering layer, the underlying ASCII and Unicode text streams remain completely intact inside the PDF source! Any journalist, competitor, or opposing counsel can click "Select All," copy the page content, and paste the unredacted text into Notepad.
 
-True document redaction requires deep document sanitization: the underlying text glyphs, vector paths, and overlapping image pixels must be permanently stripped and overwritten. For complete step-by-step guidance on sanitizing legal paperwork, read our deep dive on [how to redact sensitive financial and legal PDFs](/blog/redact-sensitive-financial-legal-pdfs) or use our browser-based [PdfPixels Redact PDF Tool](/tools/redact-pdf).
+True document redaction requires deep document sanitization: the underlying text glyphs, vector paths, and overlapping image pixels must be permanently stripped and overwritten. For complete step-by-step guidance on sanitizing legal paperwork, use our browser-based [PdfPixels Redact PDF Tool](/tools/redact-pdf) or [PdfPixels Sanitize PDF Tool](/tools/sanitize-pdf) for complete client-side document sanitization.
 
 ### 3. Comprehensive, Tamper-Evident Audit Trails
 When a contract is challenged in commercial litigation or an arbitration tribunal, the visual signature on the signature block carries minimal weight. The court demands the **Audit Trail Certificate**. 

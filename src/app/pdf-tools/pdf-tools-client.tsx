@@ -23,7 +23,7 @@ import {
   X,
   Zap,
 } from 'lucide-react';
-import { allPdfTools, pdfToolGroups, type Tool } from '@/lib/tools-data';
+import { allPdfTools, pdfToolGroups, searchPdfTools, type Tool } from '@/lib/tools-data';
 import { useAppStore } from '@/store/app-store';
 import { normalizeDisplayText } from '@/lib/display-text';
 import { AnimatedMeshBg } from '@/components/ui/animated-mesh-bg';
@@ -92,13 +92,13 @@ export function PdfToolsClient() {
     }
 
     if (searchQuery.trim()) {
-      const q = searchQuery.toLowerCase().trim();
-      tools = tools.filter(
-        (tool) =>
-          tool.name.toLowerCase().includes(q) ||
-          tool.description.toLowerCase().includes(q) ||
-          tool.keywords.some((k) => k.toLowerCase().includes(q))
-      );
+      const scored = searchPdfTools(searchQuery);
+      if (activeGroupId === 'all') {
+        tools = scored;
+      } else {
+        const groupToolSlugs = new Set(tools.map((t) => t.slug));
+        tools = scored.filter((t) => groupToolSlugs.has(t.slug));
+      }
     }
 
     return tools;

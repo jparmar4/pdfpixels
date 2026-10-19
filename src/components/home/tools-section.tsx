@@ -5,7 +5,7 @@ import { ArrowRight, ArrowUpRight, Clock, FileImage, Files, Minimize2, Search, S
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { CategorySection } from '@/components/layout/category-section';
-import { allTools, allPdfTools, allImageTools, toolCategories, ToolCategory } from '@/lib/tools-data';
+import { allTools, allPdfTools, allImageTools, toolCategories, ToolCategory, searchTools, searchPdfTools } from '@/lib/tools-data';
 import { HeaderAd } from '@/components/ads/ad-banner';
 import { TypingText } from './typing-text';
 import { GeoRegion } from '@/lib/geo-data';
@@ -259,17 +259,14 @@ function ToolsSectionInner({
         .filter((cat) => cat.tools.length > 0);
     }
 
-    // 2. Filter by search query
+    // 2. Filter by search query using multi-term ranked search algorithm
     if (query) {
+      const searchFn = activeTab === 'pdf' ? searchPdfTools : searchTools;
+      const matchedSlugs = new Set(searchFn(query).map((t) => t.slug));
       return baseCategories
         .map((cat) => ({
           ...cat,
-          tools: cat.tools.filter(
-            (t) =>
-              t.name.toLowerCase().includes(query) ||
-              t.description.toLowerCase().includes(query) ||
-              t.keywords.some((k) => k.includes(query))
-          ),
+          tools: cat.tools.filter((t) => matchedSlugs.has(t.slug)),
         }))
         .filter((cat) => cat.tools.length > 0);
     }

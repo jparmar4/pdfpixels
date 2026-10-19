@@ -7,7 +7,7 @@ import { AnimatedCounter } from './animated-counter';
 export function StatsBanner() {
   const stats = [
     { value: allTools.length, suffix: '+', label: 'Free Tools', icon: Wrench, gradient: 'from-indigo-600 to-violet-600' },
-    { value: 8, suffix: '+', label: 'File Formats', icon: Files, gradient: 'from-violet-600 to-purple-600' },
+    { value: 14, suffix: '+', label: 'File Formats', icon: Files, gradient: 'from-violet-600 to-purple-600' },
     { value: 0, suffix: '', label: 'Account required', display: 'None', icon: Server, gradient: 'from-emerald-600 to-teal-600' },
     { value: 0, suffix: '', label: 'Cost', display: 'Free', icon: DollarSign, gradient: 'from-sky-600 to-blue-600' },
   ];
