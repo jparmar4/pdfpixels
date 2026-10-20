@@ -408,4 +408,21 @@ assert.ok(comparisonPages.some(c => c.slug === 'pdfpixels-vs-pdf24-merge-pdf'), 
 assert.ok(comparisonPages.some(c => c.slug === 'pdfpixels-vs-ilovepdf-split-pdf'), 'ilovepdf split comparison exists');
 assert.ok(comparisonPages.some(c => c.slug === 'pdfpixels-vs-ilovepdf-word-to-pdf'), 'ilovepdf word-to-pdf comparison exists');
 
+// Verify use cases integrity
+const { useCasePages } = await import('../src/lib/use-cases.ts');
+assert.ok(useCasePages.length >= 35, 'at least 35 use cases registered');
+for (const uc of useCasePages) {
+  assert.ok(uc.slug && uc.title && uc.description, `use case ${uc.slug} has title/description`);
+  const tool = getToolBySlug(uc.targetToolSlug);
+  assert.ok(tool, `use case ${uc.slug} references valid tool: ${uc.targetToolSlug}`);
+}
+assert.ok(useCasePages.some(u => u.slug === 'compress-pdf-for-uscis-upload'), 'uscis upload use case exists');
+assert.ok(useCasePages.some(u => u.slug === 'bates-numbering-pdf-legal-filing'), 'bates numbering legal filing use case exists');
+assert.ok(useCasePages.some(u => u.slug === 'combine-bank-statements-for-mortgage'), 'combine bank statements for mortgage use case exists');
+
+// Verify Adsterra Smartlink & Social Bar config
+const { adsterraConfig } = await import('../src/lib/ads-config.ts');
+assert.ok(adsterraConfig.smartlink && adsterraConfig.smartlink.startsWith('https://'), 'smartlink configured');
+assert.ok(adsterraConfig.slots.socialBar && adsterraConfig.slots.socialBar.scriptSrc, 'social bar configured');
+
 console.log('Recent-tool regressions passed. PDF fixtures:', out);

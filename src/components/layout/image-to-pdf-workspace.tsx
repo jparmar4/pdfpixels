@@ -13,6 +13,7 @@ import { isHeicUpload, normalizeHeicFile } from '@/lib/heic-client';
 import { Badge } from '@/components/ui/badge';
 import { ToolLimitNotice } from './tool-limit-notice';
 import { ResultScreenAd } from '@/components/ads/ad-banner';
+import { triggerSmartlinkOncePerSession } from '@/lib/ads-config';
 import {
   Select,
   SelectContent,
@@ -233,6 +234,7 @@ export function ImageToPDFWorkspace() {
       document.body.appendChild(link);
       link.click();
       link.remove();
+      triggerSmartlinkOncePerSession();
       toast.success('Download started');
     }
   }, [result]);

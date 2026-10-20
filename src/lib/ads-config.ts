@@ -3,6 +3,7 @@
 
 export const adsterraConfig = {
   enabled: process.env.NEXT_PUBLIC_ADSTERRA_ENABLED !== 'false',
+  smartlink: 'https://araplhn.org/4/e2520ac9b4a8217fc6f4ca143b25a1a2',
   slots: {
     banner728x90: {
       key: 'cc2cce8a2df76b72b3ff70946c516588',
@@ -46,6 +47,25 @@ export const adsterraConfig = {
 
 export function hasConfiguredAdSlot(): boolean {
   return adsterraConfig.enabled;
+}
+
+/**
+ * Triggers the Adsterra Smartlink (Direct Link) in a background/new tab
+ * at most ONCE per user browser session when a conversion download happens.
+ * Ensures 100% of the user's file is downloaded first without interruption.
+ */
+export function triggerSmartlinkOncePerSession(): void {
+  if (typeof window === 'undefined') return;
+  if (!adsterraConfig.enabled || !adsterraConfig.smartlink) return;
+  try {
+    const visited = sessionStorage.getItem('pp_sl_seen');
+    if (!visited) {
+      sessionStorage.setItem('pp_sl_seen', '1');
+      window.open(adsterraConfig.smartlink, '_blank', 'noopener,noreferrer');
+    }
+  } catch {
+    // Silently continue if popups are blocked
+  }
 }
 
 export const adsConfig = {

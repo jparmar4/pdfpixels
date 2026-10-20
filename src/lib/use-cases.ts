@@ -977,5 +977,104 @@ export const useCasePages: UseCasePage[] = [
       { question: 'Does it support credit card statements as well as checking accounts?', answer: 'Yes. The parser recognizes common statement layouts across major banks (Chase, Bank of America, Wells Fargo, Citi, Capital One, Barclays, HSBC, etc.).' },
     ],
   },
+  {
+    slug: 'compress-pdf-for-uscis-upload',
+    title: 'Compress PDF for USCIS Online Filing (Under 6MB / 12MB Limit)',
+    description: 'Compress immigration petitions, passports, marriage certificates, and tax filings to meet strict USCIS online upload ceilings while preserving text sharpness.',
+    targetToolSlug: 'compress-pdf',
+    intent: 'compress pdf for uscis upload',
+    overview:
+      'United States Citizenship and Immigration Services (USCIS) enforces strict upload size caps (typically 6MB for photos/scans and 12MB for multi-page document packets on myUSCIS online accounts). When filing Form N-400 (Naturalization), I-130 (Petition for Alien Relative), I-485 (Adjustment of Status), or I-765 (Employment Authorization), oversized scans are rejected immediately by the portal. PdfPixels Compress PDF enables US immigration filers and attorneys to shrink evidence bundles under official USCIS thresholds while maintaining the 300 DPI text clarity demanded by immigration adjudicators.',
+    whoItsFor: [
+      'USCIS petitioners and green card applicants filing forms online via myUSCIS',
+      'Immigration attorneys, paralegals, and legal clinics preparing Form N-400 and I-130 exhibit packets',
+      'Spousal and employment visa applicants uploading multi-year tax transcripts, bank statements, and photo albums',
+    ],
+    steps: [
+      { title: 'Upload USCIS evidence PDF', description: 'Drag and drop your supporting evidence scan, tax return, or translation certificate.' },
+      { title: 'Select Recommended or Custom Target', description: 'Choose our Recommended preset (optimizes for under 6MB) or enter an exact KB target.' },
+      { title: 'Verify text and seal legibility', description: 'Review the preview to ensure notary stamps, embossed seals, and passport numbers remain crisp.' },
+      { title: 'Download and upload to myUSCIS', description: 'Download your certified, portal-compliant PDF and submit directly to your USCIS portal.' },
+    ],
+    tips: [
+      'USCIS requires all evidence to be English or accompanied by a certified English translation; compress both into a single document before uploading.',
+      'Do not compress below 150 DPI for foreign civil certificates containing fine micro-text or watermarks.',
+      'If your document has many color photos, choose our High or Recommended compression to strip redundant image metadata without compromising clarity.',
+    ],
+    pitfalls: [
+      { problem: 'myUSCIS portal throws error "File size exceeds maximum allowed"', solution: 'Check file size before upload; ensure the total bundle is under 6MB (or 12MB depending on form type) and re-compress if necessary.' },
+      { problem: 'Notary seals or signatures look pixelated after extreme compression', solution: 'Use Recommended compression rather than Extreme, or flatten vector streams first to preserve linework.' },
+    ],
+    faqs: [
+      { question: 'What is the maximum file size for USCIS online uploads?', answer: 'Most USCIS online forms enforce a 6MB limit per file, while certain multi-page exhibit slots allow up to 12MB. Keeping files between 2MB and 5MB guarantees reliable submission.' },
+      { question: 'Will USCIS reject a compressed PDF?', answer: 'No, provided the text, dates, official seals, and signatures remain clearly readable and searchable. PdfPixels optimizes image downsampling without blurring text.' },
+    ],
+  },
+  {
+    slug: 'bates-numbering-pdf-legal-filing',
+    title: 'Bates Numbering PDF Online for Court Filings & Discovery',
+    description: 'Add sequential alphanumeric Bates stamps, case numbers, and prefix labels to litigation discovery packets and court exhibits online for free.',
+    targetToolSlug: 'bates-numbering-pdf',
+    intent: 'bates numbering pdf free online',
+    overview:
+      'In American, British, Canadian, and Australian litigation, court discovery rules mandate that every page of produced evidence carry a sequential Bates number (e.g., PLAINTIFF-000001 or DEF-001245). Paying hundreds of dollars for desktop legal software just to stamp discovery bundles is an unnecessary overhead for small firms, pro se litigants, and solo practitioners. PdfPixels Bates Numbering applies custom legal prefixes, suffixes, digit padding, font sizing, and placement (header or footer, left, center, or right) with zero software download or signup.',
+    whoItsFor: [
+      'Litigation attorneys, paralegals, and legal assistants preparing document productions for trial or mediation',
+      'Pro se litigants filing evidence and exhibit binders in US federal, state, or small claims courts',
+      'Corporate legal counsel and compliance officers organizing internal audit discovery bundles',
+    ],
+    steps: [
+      { title: 'Upload legal document bundle', description: 'Select your multi-page contract, deposition transcript, or exhibit bundle.' },
+      { title: 'Set prefix and starting number', description: 'Enter your case identifier (e.g., PLTF- or CONFIDENTIAL-) and choose your starting page index.' },
+      { title: 'Select margin position', description: 'Place Bates stamps in the bottom-right footer, top-right header, or custom margin zone.' },
+      { title: 'Generate & download Bates-stamped PDF', description: 'Download the stamped, courtroom-ready PDF with immutable sequential numbering.' },
+    ],
+    tips: [
+      'Use 6-digit padding (e.g., PLTF-000001) for large discovery productions to prevent numbering overflow during supplementary filings.',
+      'Position Bates numbers in the bottom-right margin to avoid overlapping official court clerk filing stamps at the top of the page.',
+      'Always redact confidential personal data (SSNs, bank accounts) using PdfPixels Redact PDF before applying Bates numbers.',
+    ],
+    pitfalls: [
+      { problem: 'Bates stamp overlaps preexisting page numbers or footer text', solution: 'Adjust the vertical margin offset in the settings panel to ensure the stamp sits cleanly in the outer margin.' },
+      { problem: 'Case prefix contains unsupported characters', solution: 'Stick to alphanumeric characters, hyphens, and underscores (e.g., SMITH-V-JONES_EXH-A-) for maximum court clerk compatibility.' },
+    ],
+    faqs: [
+      { question: 'Does PdfPixels Bates numbering comply with US Federal Rules of Civil Procedure?', answer: 'Yes. FRCP Rule 26 discovery production standards accept sequential alphanumeric identification stamped in headers or footers.' },
+      { question: 'Can I add "CONFIDENTIAL - SUBJECT TO PROTECTIVE ORDER" alongside the number?', answer: 'Yes. You can customize the prefix text to include protective order warnings and confidentiality designations.' },
+    ],
+  },
+  {
+    slug: 'combine-bank-statements-for-mortgage',
+    title: 'Combine Bank Statements into One PDF for Mortgage & Loan Underwriting',
+    description: 'Merge multiple monthly checking and savings account statements into a single, chronological PDF packet for mortgage lenders and underwriter review.',
+    targetToolSlug: 'merge-pdf',
+    intent: 'combine bank statements into one pdf for mortgage',
+    overview:
+      'When applying for a home mortgage (Fannie Mae, Freddie Mac, FHA, VA, or conventional loan in the US, UK, Canada, or Australia), loan underwriters require 2 to 6 consecutive months of complete checking, savings, and investment statements. Submitting dozens of loose PDFs or screenshot files delays loan approval and frustrates loan officers. PdfPixels Merge PDF enables borrowers and brokers to combine multi-month statements into a single chronological PDF binder, verify page order, and ensure every page from cover to reconciliation is intact.',
+    whoItsFor: [
+      'Home buyers preparing document packages for mortgage loan officers and underwriters',
+      'Mortgage brokers and loan processors organizing borrower documentation packages',
+      'Small business borrowers compiling financial records for SBA loans or commercial credit lines',
+    ],
+    steps: [
+      { title: 'Gather monthly statement PDFs', description: 'Download official digital PDFs directly from your online banking portal for each consecutive month.' },
+      { title: 'Upload to PdfPixels Merge PDF', description: 'Drag and drop all monthly bank statement files into the browser workspace.' },
+      { title: 'Arrange in chronological order', description: 'Reorder files from earliest to most recent month so the underwriter can trace funds seamlessly.' },
+      { title: 'Merge and download single packet', description: 'Download your unified statement packet ready for email or upload to the lender portal.' },
+    ],
+    tips: [
+      'Lenders require ALL pages of each statement, even blank or disclosure pages (e.g., "Page 4 of 4 intentionally left blank"); never delete trailing pages.',
+      'Place checking accounts first, followed by savings and investment accounts for each consecutive monthly period.',
+      'If your combined packet exceeds the lender upload limit (e.g., 25MB), use PdfPixels Compress PDF immediately afterward.',
+    ],
+    pitfalls: [
+      { problem: 'Underwriter rejects packet due to missing pages', solution: 'Ensure all pages from "Page 1 of X" through "Page X of X" are included for every calendar statement.' },
+      { problem: 'Statements are out of chronological order', solution: 'Use our drag-and-drop file reordering grid before clicking Merge to ensure correct statement sequence.' },
+    ],
+    faqs: [
+      { question: 'Can mortgage underwriters tell if a statement was merged?', answer: 'Merging simply compiles standard PDF streams into a continuous document. The underlying bank data, transaction dates, and running balances remain 100% original and untampered.' },
+      { question: 'Is it safe to upload personal bank statements to PdfPixels?', answer: 'Yes. All file merging takes place client-side in your local browser memory using WebAssembly. Your banking records never touch third-party servers.' },
+    ],
+  },
 ];
 

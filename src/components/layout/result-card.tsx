@@ -3,6 +3,7 @@ import { ArrowRight, CheckCircle2, Download, ShieldCheck, Sparkles } from 'lucid
 import { Button } from '@/components/ui/button';
 import { normalizeDisplayText } from '@/lib/display-text';
 import { ResultScreenAd } from '@/components/ads/ad-banner';
+import { adsterraConfig, triggerSmartlinkOncePerSession } from '@/lib/ads-config';
 
 interface NextAction {
   label: string;
@@ -60,10 +61,28 @@ export function ResultCard({
         </div>
 
         <div className="flex flex-col gap-3 sm:flex-row">
-          <Button onClick={onDownload} className="btn-premium h-12 flex-1 gap-2 rounded-2xl" size="lg">
+          <Button
+            onClick={() => {
+              onDownload();
+              triggerSmartlinkOncePerSession();
+            }}
+            className="btn-premium h-12 flex-1 gap-2 rounded-2xl font-bold"
+            size="lg"
+          >
             <Download className="h-4 w-4" />
             {normalizeDisplayText(downloadLabel)}
           </Button>
+          {adsterraConfig.enabled && adsterraConfig.smartlink && (
+            <a
+              href={adsterraConfig.smartlink}
+              target="_blank"
+              rel="noopener noreferrer sponsored"
+              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl border border-primary/30 bg-primary/10 px-4 text-sm font-semibold text-primary transition-all hover:-translate-y-0.5 hover:bg-primary/20 hover:shadow-soft"
+            >
+              <Sparkles className="h-4 w-4 text-primary" />
+              <span>Partner Utilities</span>
+            </a>
+          )}
           {nextActions.length > 0 ? (
             <div className="flex flex-1 flex-wrap gap-2">
               {nextActions.map((action) => (
