@@ -32,11 +32,13 @@ export function AdsterraIframe({
   width,
   height,
   className,
+  loading = 'lazy',
 }: {
   adKey: string;
   width: number;
   height: number;
   className?: string;
+  loading?: 'lazy' | 'eager';
 }) {
   const srcDoc = `<!DOCTYPE html>
 <html>
@@ -72,7 +74,7 @@ export function AdsterraIframe({
         title={`adsterra-${adKey}`}
         width={width}
         height={height}
-        loading="lazy"
+        loading={loading}
         scrolling="no"
         frameBorder="0"
         style={{ border: 'none', overflow: 'hidden', maxWidth: '100%' }}
@@ -177,7 +179,8 @@ export function AdBanner({
 }
 
 /**
- * Top header leaderboard (728x90 on desktop, 320x50 on mobile)
+ * Top header leaderboard (728x90 on desktop, 320x50 on mobile).
+ * Uses loading="eager" so immediate landing page impressions count reliably.
  */
 export function HeaderAd({ className }: { className?: string } = {}) {
   if (!adsterraConfig.enabled) return null;
@@ -193,6 +196,7 @@ export function HeaderAd({ className }: { className?: string } = {}) {
           adKey={adsterraConfig.slots.banner728x90.key}
           width={728}
           height={90}
+          loading="eager"
         />
       </div>
       <div className="flex md:hidden justify-center w-full">
@@ -200,6 +204,40 @@ export function HeaderAd({ className }: { className?: string } = {}) {
           adKey={adsterraConfig.slots.banner320x50.key}
           width={320}
           height={50}
+          loading="eager"
+        />
+      </div>
+    </div>
+  );
+}
+
+/**
+ * High-converting Result / Post-Processing Ad (300x250 on desktop, 320x50 on mobile).
+ * Displayed directly under the download button where user engagement and CTR are highest.
+ */
+export function ResultScreenAd({ className }: { className?: string } = {}) {
+  if (!adsterraConfig.enabled) return null;
+  return (
+    <div
+      className={cn('w-full flex flex-col items-center justify-center pt-4 mt-2 border-t border-border/40', className)}
+      aria-label="Advertisement"
+      role="complementary"
+    >
+      <AdLabel />
+      <div className="hidden sm:flex justify-center w-full">
+        <AdsterraIframe
+          adKey={adsterraConfig.slots.banner300x250.key}
+          width={300}
+          height={250}
+          loading="eager"
+        />
+      </div>
+      <div className="flex sm:hidden justify-center w-full">
+        <AdsterraIframe
+          adKey={adsterraConfig.slots.banner320x50.key}
+          width={320}
+          height={50}
+          loading="eager"
         />
       </div>
     </div>

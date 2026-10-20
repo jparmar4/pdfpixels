@@ -1,7 +1,8 @@
-﻿import Link from 'next/link';
+import Link from 'next/link';
 import { ArrowRight, CheckCircle2, Download, ShieldCheck, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { normalizeDisplayText } from '@/lib/display-text';
+import { ResultScreenAd } from '@/components/ads/ad-banner';
 
 interface NextAction {
   label: string;
@@ -78,6 +79,8 @@ export function ResultCard({
             </div>
           ) : null}
         </div>
+
+        <ResultScreenAd />
       </div>
     </div>
   );

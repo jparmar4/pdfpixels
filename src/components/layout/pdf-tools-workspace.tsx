@@ -14,6 +14,7 @@ import { useActiveTool } from '@/hooks/use-active-tool';
 import { FileUpload } from './file-upload';
 import { ToolPageHeader } from './tool-page-header';
 import { ToolLimitNotice } from './tool-limit-notice';
+import { ResultScreenAd } from '@/components/ads/ad-banner';
 import { useState, useCallback, useEffect } from 'react';
 import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
@@ -1034,6 +1035,7 @@ return (
                                 <Download className="w-4 h-4" />
                                 Download PDF
                             </Button>
+                            <ResultScreenAd />
                         </motion.div>
                     )}
                 </AnimatePresence>

@@ -8,6 +8,7 @@ import { seoConfig, siteConfig } from '@/lib/seo-config';
 import { DEFAULT_OG_IMAGE_URL } from '@/lib/seo';
 import { CookieConsentBanner } from '@/components/ads/cookie-consent';
 import { Analytics } from '@/components/ads/analytics';
+import { AdsterraSocialBar } from '@/components/ads/adsterra-social-bar';
 import { Navigation } from '@/components/layout/navigation';
 import { Footer } from '@/components/layout/footer';
 import { ScrollToTop } from '@/components/home/scroll-to-top';
@@ -163,6 +164,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <JsonLdSchemas />
         <ChunkReloadHandler />
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
+          <AdsterraSocialBar />
           <Navigation />
           <div className="flex-1 flex flex-col">
             {children}

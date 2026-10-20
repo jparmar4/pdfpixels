@@ -12,6 +12,7 @@ import { isImageUpload } from '@/lib/heic-detect';
 import { isHeicUpload, normalizeHeicFile } from '@/lib/heic-client';
 import { Badge } from '@/components/ui/badge';
 import { ToolLimitNotice } from './tool-limit-notice';
+import { ResultScreenAd } from '@/components/ads/ad-banner';
 import {
   Select,
   SelectContent,
@@ -424,6 +425,7 @@ export function ImageToPDFWorkspace() {
                   <Download className="w-4 h-4" />
                   Download PDF
                 </Button>
+                <ResultScreenAd />
               </motion.div>
             )}
           </AnimatePresence>

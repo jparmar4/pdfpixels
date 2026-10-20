@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { ToolPageClient } from '@/components/layout/tool-page-client';
+import { HeaderAd, InContentAd } from '@/components/ads/ad-banner';
 import { SetHtmlLang } from '@/components/seo/set-html-lang';
 import {
   getLocalePack,
@@ -140,7 +141,9 @@ export function LocalizedToolPage({ locale, slug }: { locale: LocaleCode; slug: 
           dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
         />
       ))}
+      <HeaderAd className="my-4" />
       <ToolPageClient toolId={tool.id} toolName={copy.name} toolDescription={copy.description} />
+      <InContentAd className="my-8" />
       <section className="container mx-auto max-w-3xl px-4 py-10">
         <h2 className="text-2xl font-bold text-foreground">{copy.howTitle}</h2>
         <p className="mt-4 text-sm leading-7 text-muted-foreground">{copy.intro}</p>

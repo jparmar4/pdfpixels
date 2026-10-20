@@ -38,6 +38,9 @@ export const adsterraConfig = {
       scriptSrc: 'https://bauval.org/21/a71ba0b513f2755b9f56ff45b5814958',
       containerId: 'container-a71ba0b513f2755b9f56ff45b5814958',
     },
+    socialBar: {
+      scriptSrc: 'https://bauval.org/14/4cb2c6ce7427559857aecec157fd016f',
+    },
   },
 };
 
@@ -54,6 +57,7 @@ export const adsConfig = {
     inContent: adsterraConfig.slots.banner300x250.key,
     footer: adsterraConfig.slots.banner728x90.key,
     native: adsterraConfig.slots.nativeBanner.containerId,
+    socialBar: adsterraConfig.slots.socialBar.scriptSrc,
   },
 };
 
