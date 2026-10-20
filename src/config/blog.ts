@@ -7512,6 +7512,12 @@ const toolSlugToPostSlugs: Record<string, string[]> = {
     'svg-to-png': ['svg-to-png-converter-free-guide'],
     'photo-metadata-viewer': ['remove-exif-gps-data-from-photos'],
     'remove-image-metadata': ['remove-exif-gps-data-from-photos'],
+    'word-to-pdf': ['pdf-to-word-converter-guide', 'how-to-edit-pdf-online-free-adobe-alternative'],
+    'pdf-to-png': ['png-to-jpg-converter-how-when-to-switch', 'convert-jpg-to-pdf-online-no-software'],
+    'jpg-to-webp': ['webp-vs-jpg-vs-png-which-format', 'webp-to-jpg-converter-guide'],
+    'png-to-webp': ['webp-vs-jpg-vs-png-which-format', 'png-to-jpg-converter-how-when-to-switch'],
+    'bates-numbering-pdf': ['enterprise-esignature-pdf-security-compared'],
+    'bank-statement-to-excel': ['compress-pdf-complete-guide'],
 };
 
 export function getPostsForTool(toolSlug: string): BlogPost[] {

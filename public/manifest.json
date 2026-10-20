@@ -45,6 +45,18 @@
   ],
   "shortcuts": [
     {
+      "name": "Compress PDF",
+      "short_name": "Compress PDF",
+      "description": "Reduce PDF file size online",
+      "url": "/tools/compress-pdf",
+      "icons": [
+        {
+          "src": "/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
       "name": "Compress Image",
       "short_name": "Compress",
       "description": "Reduce image file size online",

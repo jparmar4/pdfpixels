@@ -63,6 +63,11 @@ function KnowledgeGraphSchema() {
           'lossless image optimization',
           'Bates numbering legal workflow',
           'linearized Fast Web View PDF streaming',
+          'PDF to PNG conversion',
+          'Bank statement financial parsing',
+          'PDF sanitization & redaction',
+          'USCIS document preparation',
+          'Mortgage bank statement merging',
         ],
       },
       {
