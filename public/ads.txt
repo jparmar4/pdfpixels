@@ -1,1 +1,3 @@
 google.com, pub-3541576002060495, DIRECT, f08c47fec0942fa0
+# Adsterra programmatic ad network declaration
+adsterra.com, 1882671, DIRECT, 1ad675c9d9d15e06
