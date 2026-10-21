@@ -1274,5 +1274,203 @@ export const useCasePages: UseCasePage[] = [
       { question: 'Does my PDF get uploaded to a server when I sign it on PdfPixels?', answer: 'No. The entire signing process happens inside your phone\'s browser memory using WebAssembly. Your document is never transmitted to any external server, making it safe for confidential contracts and personal legal agreements.' },
     ],
   },
+  {
+    slug: 'compress-pdf-for-google-classroom',
+    title: 'Compress PDF for Google Classroom — Under 10MB Upload Limit Free',
+    description: 'Reduce your PDF below Google Classroom\'s 10MB per-file upload limit — free, in your browser, no login required.',
+    targetToolSlug: 'compress-pdf',
+    intent: 'compress pdf for google classroom upload limit',
+    overview:
+      'Google Classroom enforces a 10MB file size limit per attachment, which catches students and teachers off guard when sharing scanned worksheets, lecture slides, or research papers. A single scan of a 20-page handout using a phone camera can easily exceed 15–20MB before any compression. PdfPixels Compress PDF shrinks your PDF directly in the browser using smart image downsampling and metadata removal — no cloud upload, no account needed. In under 30 seconds you can have a submission-ready PDF that passes Google Classroom\'s upload check on the first try.',
+    whoItsFor: [
+      'Students uploading assignment PDFs that exceed Google Classroom\'s 10MB attachment limit',
+      'Teachers sharing lecture slides, handouts, or scanned worksheets with their class',
+      'Parents and tutors helping students prepare digital submissions for online classes',
+    ],
+    steps: [
+      { title: 'Open PdfPixels Compress PDF', description: 'Go to PdfPixels Compress PDF in your browser — no account, no software download required.' },
+      { title: 'Upload your PDF', description: 'Drag your PDF into the tool or click to browse. The tool shows you the current file size immediately.' },
+      { title: 'Choose compression level', description: 'Select "Strong" or "Maximum" compression to hit under 10MB. The preview shows the estimated output size before you compress.' },
+      { title: 'Download and upload to Google Classroom', description: 'Download the compressed PDF and attach it to your Google Classroom assignment — it should now pass the upload limit.' },
+    ],
+    tips: [
+      'If your PDF is a scanned document, "Strong" compression reduces image DPI significantly — choose "Balanced" if the text needs to stay crisp for reading.',
+      'Google Classroom\'s limit applies per file, not per assignment — if you have multiple attachments, compress each one separately.',
+      'After compressing, open the PDF in your browser\'s PDF viewer and zoom to 100% to verify that all text and diagrams remain readable before submitting.',
+    ],
+    pitfalls: [
+      { problem: 'Compressed PDF still over 10MB', solution: 'Switch to "Maximum" compression level, which aggressively reduces embedded image resolution. If the PDF is still too large, try splitting it into two parts using PdfPixels Split PDF.' },
+      { problem: 'Text looks blurry after compression', solution: 'PDFs with scanned pages at low original DPI will degrade further under strong compression. Re-scan at 200 DPI minimum, or use "Balanced" compression to preserve legibility.' },
+    ],
+    faqs: [
+      { question: 'What is Google Classroom\'s file size limit?', answer: 'Google Classroom allows attachments up to 10MB per file. If you need to share larger files, consider uploading to Google Drive and sharing the link instead — Drive files have a 5TB limit.' },
+      { question: 'Does compressing a PDF affect its readability in Google Classroom?', answer: 'For text-based PDFs (created from Word or PowerPoint), compression has minimal visual impact. For scanned PDFs, "Balanced" compression at 150 DPI is usually sufficient for on-screen reading in Classroom while staying well under 10MB.' },
+    ],
+  },
+  {
+    slug: 'convert-png-to-jpg-free',
+    title: 'Convert PNG to JPG Free Online — Reduce File Size Without Losing Quality',
+    description: 'Turn any PNG into a smaller JPG file free online — no software, no signup, works on any device.',
+    targetToolSlug: 'png-to-jpeg',
+    intent: 'convert png to jpg free online',
+    overview:
+      'PNG files use lossless compression, which makes them ideal for screenshots, logos, and graphics — but for photographs and complex images, PNGs can be 3–10× larger than an equivalent JPG at the same visual quality. Web developers, bloggers, and social media managers frequently need to convert PNGs to JPG to speed up page loads, meet email attachment limits, and reduce WordPress media library bloat. PdfPixels PNG to JPG converter runs entirely in your browser: drag your PNG in, set your quality level, and download a web-ready JPG in seconds with no watermark and no file count limit.',
+    whoItsFor: [
+      'Web developers and bloggers converting PNG screenshots and graphics to smaller JPGs for faster page load times',
+      'Social media managers reducing PNG file sizes before uploading to Instagram, Twitter, or LinkedIn',
+      'Anyone who needs to attach a photo to an email but their PNG file is too large to send',
+    ],
+    steps: [
+      { title: 'Open PdfPixels PNG to JPG', description: 'Visit PdfPixels PNG to JPG in your browser — free, no account needed.' },
+      { title: 'Upload your PNG file', description: 'Drag your PNG image into the upload area. Multiple files are supported if you need to batch convert.' },
+      { title: 'Set quality level', description: 'Choose a quality percentage (80–90% is ideal for most photos — noticeably smaller files with no visible quality loss at normal viewing sizes).' },
+      { title: 'Download your JPG', description: 'Click convert and download your JPG. Compare the file sizes — typical savings are 60–80% for photographic PNGs.' },
+    ],
+    tips: [
+      'Use 85% quality for photographs — this is the sweet spot where JPG compression artifacts are invisible to the human eye but file size drops significantly.',
+      'Don\'t convert PNG logos, icons, or screenshots with text to JPG — JPG compression creates visible artifacts around sharp edges and text. Use PNG for graphics, JPG for photos.',
+      'If your PNG has a transparent background, the transparent areas will become white in the JPG — use a different background color tool first if you need a colored background.',
+    ],
+    pitfalls: [
+      { problem: 'JPG looks pixelated or blocky around text', solution: 'JPG is not suitable for images with sharp text or line art — it introduces compression artifacts around high-contrast edges. Keep these images as PNG.' },
+      { problem: 'JPG is larger than the original PNG', solution: 'This can happen with very small or simple graphics where PNG compression is already very efficient. In these cases, stick with PNG.' },
+    ],
+    faqs: [
+      { question: 'Does converting PNG to JPG lose quality?', answer: 'At 80–90% quality settings, the visual difference is imperceptible for photographs at normal viewing sizes on screen. JPG uses lossy compression, so some data is discarded — but at high quality settings, this is not visible. Avoid JPG for images with text, logos, or flat colors where compression artifacts are more noticeable.' },
+      { question: 'Can I convert PNG to JPG without a white background?', answer: 'If your PNG has transparency, converting to JPG will replace transparent pixels with white by default (since JPG does not support transparency). To get a different background color, fill the transparent areas with your desired color before converting, or use a PNG with a solid background.' },
+    ],
+  },
+  {
+    slug: 'password-protect-pdf-free',
+    title: 'Password Protect a PDF Free Online — Add Encryption Without Adobe Acrobat',
+    description: 'Lock any PDF with a password using AES-256 encryption — free, in your browser, no Adobe Acrobat needed.',
+    targetToolSlug: 'protect-pdf',
+    intent: 'password protect pdf free online without adobe',
+    overview:
+      'Freelancers sending client proposals, HR teams sharing salary information, and lawyers emailing confidential documents all face the same problem: PDFs sent over email or shared links can be opened by anyone who gets hold of the file. Adobe Acrobat Pro is the traditional way to password-protect PDFs, but it costs $19.99/month and is overkill for occasional use. PdfPixels Protect PDF applies AES-256 encryption — the same standard used by banks and governments — directly in your browser without uploading your file to any external server. Set a strong password, download the encrypted PDF, and share it knowing that only recipients with the password can open it.',
+    whoItsFor: [
+      'Freelancers and consultants sharing confidential proposals, contracts, or financial reports with clients',
+      'HR teams and managers distributing salary data, performance reviews, or employee records securely',
+      'Lawyers and legal professionals emailing sensitive case documents, NDAs, and agreements',
+    ],
+    steps: [
+      { title: 'Open PdfPixels Protect PDF', description: 'Go to PdfPixels Protect PDF in your browser — no Adobe Acrobat, no subscription needed.' },
+      { title: 'Upload your PDF', description: 'Drag the PDF you want to protect into the tool. The file is processed locally in your browser — it never leaves your device.' },
+      { title: 'Set a strong password', description: 'Enter a password of at least 12 characters mixing uppercase, lowercase, numbers, and symbols. Avoid dictionary words or names.' },
+      { title: 'Download and share your encrypted PDF', description: 'Click "Protect PDF" and download the encrypted file. Share it by email and communicate the password via a separate channel (phone call or SMS).' },
+    ],
+    tips: [
+      'Never send the password in the same email as the PDF — if the email is intercepted, the document is exposed. Use a phone call, SMS, or a separate messaging app to share the password.',
+      'Use a unique password for each sensitive document — reusing the same password means if one document\'s password is discovered, all your other documents are also at risk.',
+      'AES-256 encryption is computationally unbreakable with a strong password. However, a weak or guessable password (like "password123") undermines the encryption entirely — strength of protection depends on password quality.',
+    ],
+    pitfalls: [
+      { problem: 'Recipient can\'t open the PDF', solution: 'Confirm the password is correct — passwords are case-sensitive. Also ensure the recipient is using a PDF viewer that supports AES-256 encryption (Adobe Reader, Chrome\'s PDF viewer, and Foxit Reader all support it).' },
+      { problem: 'Forgot the password after protecting', solution: 'AES-256 encryption cannot be brute-forced with a strong password — there is no "forgot password" recovery. Always store your document passwords in a password manager (Bitwarden, 1Password) before distributing.' },
+    ],
+    faqs: [
+      { question: 'What encryption does PdfPixels use to protect PDFs?', answer: 'PdfPixels uses AES-256 encryption, the same standard used by banks, government agencies, and enterprise security software. A correctly encrypted PDF with a strong password cannot be opened without the password, even with commercial PDF password recovery tools.' },
+      { question: 'Is my PDF uploaded to a server when I password-protect it?', answer: 'No. PdfPixels processes your PDF entirely within your browser using WebAssembly. Your document never leaves your device, making it safe to use with confidential financial documents, legal agreements, and sensitive personal information.' },
+    ],
+  },
+  {
+    slug: 'compress-image-for-whatsapp',
+    title: 'Compress Image for WhatsApp — Send Full Quality Photos Without Compression',
+    description: 'Compress your photos before sending on WhatsApp to preserve quality — and send as a document to skip WhatsApp\'s auto-compression entirely.',
+    targetToolSlug: 'compress-image',
+    intent: 'compress image for whatsapp without quality loss',
+    overview:
+      'WhatsApp automatically compresses photos sent as "Photos" — typically reducing a 4K smartphone photo to under 100KB, which causes significant quality loss, color washing, and detail blur. The trick most users don\'t know: WhatsApp does not compress images sent as "Documents" — the file is delivered exactly as uploaded. The optimal workflow is to compress your photo to a reasonable size first (300–600KB) using a tool like PdfPixels Compress Image, then send it via WhatsApp as a document (not a photo). The recipient gets near-original quality at a fraction of the raw file size, and neither device burns through mobile data transmitting a 10MB camera RAW.',
+    whoItsFor: [
+      'Anyone wanting to share high-quality photos via WhatsApp without the app degrading them to blurry, washed-out images',
+      'Photographers sharing client preview photos through WhatsApp and needing to preserve color accuracy and detail',
+      'Real estate agents, architects, and designers sending professional property or product photos to clients on WhatsApp',
+    ],
+    steps: [
+      { title: 'Compress your photo with PdfPixels', description: 'Open PdfPixels Compress Image and upload your photo. Set the target output to 300–600KB — this balances quality and WhatsApp document transfer speed.' },
+      { title: 'Download the compressed image', description: 'Download the compressed photo to your phone\'s camera roll or gallery.' },
+      { title: 'Open WhatsApp and attach as a document', description: 'In the WhatsApp chat, tap the attachment (paperclip) icon. Choose "Document" — NOT "Gallery" or "Photo". Browse to your compressed image file.' },
+      { title: 'Send and verify quality', description: 'Send the document. The recipient receives a file they can open at full resolution — no WhatsApp compression applied.' },
+    ],
+    tips: [
+      'Sending as a "Document" bypasses WhatsApp\'s photo compression completely — the recipient gets the exact file you send, preserving colors, sharpness, and EXIF data.',
+      'Aim for 300–500KB per image for the best balance — small enough to send quickly on mobile data, large enough to look sharp on any screen.',
+      'If you\'re sending multiple photos, compress them all first and send as multiple documents in one message — this is faster than sending individual gallery photos that WhatsApp recompresses individually.',
+    ],
+    pitfalls: [
+      { problem: 'Recipient sees the image as a file, not a preview', solution: 'When sent as a document, WhatsApp shows a file attachment rather than an inline photo preview. The recipient taps the file to open it in their phone\'s image viewer at full quality. This is the expected behavior for document mode.' },
+      { problem: 'Image still looks low quality after compressing and sending as document', solution: 'Check the original photo resolution — if the source image was already low resolution (under 1MP), there\'s no quality to preserve. Also verify you selected "Document" not "Photo" in WhatsApp\'s attachment menu.' },
+    ],
+    faqs: [
+      { question: 'Why does WhatsApp compress photos?', answer: 'WhatsApp compresses photos sent through the "Photos/Gallery" sharing method to reduce data usage for users on limited mobile data plans. The compression is automatic and aggressive — reducing megapixels and applying heavy JPEG compression. Sending as a "Document" bypasses this compression system entirely.' },
+      { question: 'What file size should I target for WhatsApp photos?', answer: 'For sending as a document, aim for 300–600KB. This loads quickly even on slow 3G connections (under 2 seconds), displays sharply on modern phone screens, and preserves enough quality for most photography needs. For professional photography previews, 1–2MB is acceptable.' },
+    ],
+  },
+  {
+    slug: 'pdf-to-word-free-online',
+    title: 'Convert PDF to Word Free Online — Editable DOCX Without Adobe Acrobat',
+    description: 'Turn any PDF into a fully editable Word document free online — works on text PDFs and scanned documents.',
+    targetToolSlug: 'pdf-to-word',
+    intent: 'convert pdf to word free online editable',
+    overview:
+      'Office workers who only have a PDF version of a document they need to edit, students retyping text from a PDF they can\'t select, and job applicants trying to customize a PDF resume all need the same thing: an editable Word document from a PDF they can\'t otherwise modify. Adobe Acrobat Pro offers PDF-to-Word conversion but costs $19.99/month. PdfPixels PDF to Word converts your PDF to a properly formatted DOCX file directly in your browser — no software to install, no account to create, and no watermarks on the output. Both standard text PDFs and scanned PDFs with OCR (optical character recognition) are supported.',
+    whoItsFor: [
+      'Office workers and employees needing to edit or update a PDF document they only have in PDF format',
+      'Students who receive PDF lecture notes or research papers and want to annotate, edit, or reformat them in Word',
+      'Job seekers converting a PDF resume to DOCX to update it or tailor it for a specific application',
+    ],
+    steps: [
+      { title: 'Open PdfPixels PDF to Word', description: 'Visit PdfPixels PDF to Word in your browser — no Adobe Acrobat needed, no software download.' },
+      { title: 'Upload your PDF', description: 'Drag your PDF into the tool. Both text-based PDFs and scanned image PDFs are accepted.' },
+      { title: 'Convert to DOCX', description: 'Click "Convert to Word". For text PDFs, conversion is instant. Scanned PDFs may take a moment longer as OCR processes the page images.' },
+      { title: 'Download and edit your Word file', description: 'Download the DOCX file and open it in Microsoft Word, Google Docs, or LibreOffice. Edit, reformat, and save normally.' },
+    ],
+    tips: [
+      'Text-based PDFs (created from Word, Excel, or PowerPoint) produce near-perfect Word conversions with accurate formatting, fonts, and layout. Scanned PDFs depend on scan quality — 300 DPI scans produce excellent OCR results.',
+      'Complex layouts with columns, tables, and floating text boxes may need minor reformatting after conversion — PDFs use absolute positioning, while Word uses flow-based layouts.',
+      'After converting, run a quick spell-check in Word to catch any OCR errors in scanned documents before distributing the edited version.',
+    ],
+    pitfalls: [
+      { problem: 'Converted Word document has jumbled text order', solution: 'Multi-column PDFs or documents with text boxes can confuse the layout parser. In Word, use "View > Draft" mode to see text in reading order, then manually restructure columns if needed.' },
+      { problem: 'Scanned PDF produces garbled or missing text', solution: 'The scan quality is too low for accurate OCR. Re-scan the original document at 300 DPI minimum with good lighting, or use a dedicated OCR tool to pre-process the scan before converting.' },
+    ],
+    faqs: [
+      { question: 'Can I convert a password-protected PDF to Word?', answer: 'You need to remove the password first using PdfPixels Unlock PDF before converting. If you don\'t have the password, the file cannot be processed.' },
+      { question: 'Does the PDF to Word converter work on scanned documents?', answer: 'Yes. PdfPixels uses OCR (Optical Character Recognition) to extract text from scanned page images. Quality of the output depends on the scan resolution and clarity — clean 300 DPI scans produce very accurate Word documents, while low-resolution or blurry scans produce less accurate results.' },
+    ],
+  },
+  {
+    slug: 'resize-image-for-passport-photo-us',
+    title: 'Resize Image to US Passport Photo Size Free — 2x2 Inch 600x600px Online',
+    description: 'Create a compliant US passport photo free online — exact 2×2 inch (600×600px at 300 DPI) dimensions per State Department requirements.',
+    targetToolSlug: 'passport-size-photo',
+    intent: 'resize image to us passport photo size 2x2 inch free',
+    overview:
+      'The US State Department has precise, non-negotiable specifications for passport photos: exactly 2×2 inches (51×51mm) with the head filling 50–69% of the frame measured from the bottom of the chin to the top of the head. At 300 DPI (the standard for photo printing), this means a digital image of exactly 600×600 pixels. Getting this wrong — even slightly off dimensions or head size — results in your application being rejected and delayed by weeks. PdfPixels Passport Size Photo tool resizes your photo to the exact US passport specification in seconds, with a free grid overlay to help you verify head positioning before downloading.',
+    whoItsFor: [
+      'US citizens applying for a new passport or passport renewal and needing a compliant digital photo',
+      'US visa applicants who need a passport-format photo for embassy or consulate submissions',
+      'Global Entry, TSA PreCheck, and NEXUS applicants needing a compliant 2×2 inch photo for trusted traveler program enrollment',
+    ],
+    steps: [
+      { title: 'Take or prepare your photo', description: 'Use a plain white or off-white background. Face directly at the camera with a neutral expression. Ensure your full face and top of shoulders are visible. Natural daylight or bright indoor lighting works best.' },
+      { title: 'Upload to PdfPixels Passport Size Photo', description: 'Go to PdfPixels Passport Size Photo and upload your photo. The tool accepts JPEG and PNG files.' },
+      { title: 'Crop and position your head', description: 'Use the crop tool to center your face. Ensure your head (chin to crown) fills approximately 60% of the frame height — this is within the State Department\'s 50–69% requirement.' },
+      { title: 'Download your 600×600px photo', description: 'Download the resized photo at 600×600px (2×2 inches at 300 DPI). This file is ready for online passport applications or can be printed at any pharmacy photo counter (specify 2×2 inch print size).' },
+    ],
+    tips: [
+      'The head size requirement (50–69% of frame) is strictly enforced — a head that\'s too small or too large is the most common reason passport photos are rejected. Use the grid overlay to measure carefully.',
+      'Wear everyday clothing — no hats, headscarves (except for religious reasons), or glasses. Open eyes looking directly at the camera are required. Smiling is allowed but a neutral expression photographs better.',
+      'For online applications (such as the State Department\'s Online Passport Renewal system), submit the digital 600×600px JPEG. For in-person applications, take the 600×600px file to a pharmacy or print shop and specify a 2×2 inch print.',
+    ],
+    pitfalls: [
+      { problem: 'Passport application rejected: photo does not meet requirements', solution: 'The most common rejections are: head too large or small (outside 50–69% range), background not plain white, eyes obscured by glasses or glare, or photo printed at wrong size. Re-check all requirements on travel.state.gov before resubmitting.' },
+      { problem: 'Photo looks pixelated when printed at 2×2 inches', solution: 'Ensure the source photo has sufficient resolution — a 600×600px image should print clearly at exactly 2×2 inches at 300 DPI. If the original photo is very low resolution, the print will be pixelated. Use a modern smartphone camera in good lighting for best results.' },
+    ],
+    faqs: [
+      { question: 'What are the exact US passport photo requirements?', answer: 'US State Department requirements: 2×2 inches (51×51mm) at 300 DPI = 600×600 pixels. Head must be 1–1⅜ inches tall (50–69% of frame). Plain white or off-white background. Taken within the last 6 months. Color photo. No glasses, no headwear (except religious). Neutral expression, eyes open and looking at camera. See travel.state.gov for the complete official specification.' },
+      { question: 'Can I use this photo for other US government IDs?', answer: 'The 2×2 inch (600×600px) format is also accepted for US visas, Global Entry, NEXUS, SENTRI, and most US government ID applications. For driver\'s licenses and state IDs, requirements vary by state — check your state DMV for specific dimensions.' },
+    ],
+  },
 ];
 

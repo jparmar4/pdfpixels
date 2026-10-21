@@ -3,12 +3,12 @@ import { ArrowRight } from 'lucide-react';
 import { useCasePages } from '@/lib/use-cases';
 
 const featuredWorkflows = [
-  { slug: 'compress-pdf-for-email', label: 'Prepare PDFs for email' },
-  { slug: 'convert-heic-to-jpg-windows', label: 'Open iPhone photos on Windows' },
-  { slug: 'merge-pdf-files-windows', label: 'Combine documents on Windows' },
-  { slug: 'sign-pdf-free-without-login', label: 'Add a signature to a PDF' },
-  { slug: 'convert-word-to-pdf-free', label: 'Convert Word docs to PDF free' },
-  { slug: 'remove-background-product-photo', label: 'Remove product photo backgrounds' },
+  { slug: 'compress-pdf-to-1mb', label: 'Compress PDF to under 1MB' },
+  { slug: 'convert-word-to-pdf-free', label: 'Convert Word to PDF without Microsoft 365' },
+  { slug: 'remove-background-product-photo', label: 'Remove background for Amazon & Etsy listings' },
+  { slug: 'password-protect-pdf-free', label: 'Password-protect a PDF for free' },
+  { slug: 'pdf-to-word-free-online', label: 'Edit any PDF by converting to Word' },
+  { slug: 'resize-image-for-passport-photo-us', label: 'Make a US passport-size photo for free' },
 ];
 
 export function WorkflowGuides() {
