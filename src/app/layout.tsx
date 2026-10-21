@@ -8,7 +8,6 @@ import { seoConfig, siteConfig } from '@/lib/seo-config';
 import { DEFAULT_OG_IMAGE_URL } from '@/lib/seo';
 import { CookieConsentBanner } from '@/components/ads/cookie-consent';
 import { Analytics } from '@/components/ads/analytics';
-import { AdsterraSocialBar } from '@/components/ads/adsterra-social-bar';
 import { Navigation } from '@/components/layout/navigation';
 import { Footer } from '@/components/layout/footer';
 import { ScrollToTop } from '@/components/home/scroll-to-top';
@@ -156,6 +155,13 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <link rel="alternate" type="application/rss+xml" title="PdfPixels RSS Feed" href="/feed" />
         <link rel="alternate" type="text/plain" title="PdfPixels for LLMs" href="/llms.txt" />
         <link rel="alternate" type="text/plain" title="PdfPixels full reference for LLMs" href="/llms-full.txt" />
+        {/* Adsterra Social Bar (In-Page Push) — high CPM notification format */}
+        <script
+          type="text/javascript"
+          src="https://bauval.org/14/4cb2c6ce7427559857aecec157fd016f"
+          data-cfasync="false"
+          async
+        />
       </head>
       <body className="bg-background text-foreground antialiased min-h-screen flex flex-col">
         <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-lg focus:text-sm focus:font-semibold focus:outline-none focus:ring-2 focus:ring-primary/50">
@@ -164,7 +170,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <JsonLdSchemas />
         <ChunkReloadHandler />
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
-          <AdsterraSocialBar />
           <Navigation />
           <div className="flex-1 flex flex-col">
             {children}

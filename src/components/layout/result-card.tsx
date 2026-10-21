@@ -63,8 +63,10 @@ export function ResultCard({
         <div className="flex flex-col gap-3 sm:flex-row">
           <Button
             onClick={() => {
-              onDownload();
               triggerSmartlinkOncePerSession();
+              setTimeout(() => {
+                onDownload();
+              }, 80);
             }}
             className="btn-premium h-12 flex-1 gap-2 rounded-2xl font-bold"
             size="lg"
@@ -80,7 +82,7 @@ export function ResultCard({
               className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl border border-primary/30 bg-primary/10 px-4 text-sm font-semibold text-primary transition-all hover:-translate-y-0.5 hover:bg-primary/20 hover:shadow-soft"
             >
               <Sparkles className="h-4 w-4 text-primary" />
-              <span>Partner Utilities</span>
+              <span>Recommended Tools (Partner)</span>
             </a>
           )}
           {nextActions.length > 0 ? (

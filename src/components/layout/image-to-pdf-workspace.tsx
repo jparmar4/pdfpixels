@@ -228,14 +228,16 @@ export function ImageToPDFWorkspace() {
 
   const handleDownload = useCallback(() => {
     if (result) {
-      const link = document.createElement('a');
-      link.href = result.pdfUrl;
-      link.download = result.fileName;
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
       triggerSmartlinkOncePerSession();
-      toast.success('Download started');
+      setTimeout(() => {
+        const link = document.createElement('a');
+        link.href = result.pdfUrl;
+        link.download = result.fileName;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        toast.success('Download started');
+      }, 80);
     }
   }, [result]);
 
