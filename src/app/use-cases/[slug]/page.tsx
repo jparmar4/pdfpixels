@@ -130,6 +130,19 @@ export default async function UseCasePage({ params }: { params: Promise<{ slug: 
         }
       : null;
 
+  const howToSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'HowTo',
+    name: entry.title,
+    description: entry.description,
+    step: entry.steps.map((step, index) => ({
+      '@type': 'HowToStep',
+      position: index + 1,
+      name: step.title,
+      text: step.description,
+    })),
+  };
+
   return (
     <>
       <Script id="breadcrumb-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
@@ -138,6 +151,7 @@ export default async function UseCasePage({ params }: { params: Promise<{ slug: 
       {faqSchema && (
         <Script id="faq-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
       )}
+      <Script id="howto-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(howToSchema) }} />
       <UseCaseDetailContent
         entry={entry}
         targetToolSlug={tool.slug}
