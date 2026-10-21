@@ -7,8 +7,8 @@ const featuredWorkflows = [
   { slug: 'convert-heic-to-jpg-windows', label: 'Open iPhone photos on Windows' },
   { slug: 'merge-pdf-files-windows', label: 'Combine documents on Windows' },
   { slug: 'sign-pdf-free-without-login', label: 'Add a signature to a PDF' },
-  { slug: 'split-pdf-by-size-for-email', label: 'Split a PDF to fit an upload limit' },
-  { slug: 'compress-image-to-50kb', label: 'Prepare photos for application forms' },
+  { slug: 'convert-word-to-pdf-free', label: 'Convert Word docs to PDF free' },
+  { slug: 'remove-background-product-photo', label: 'Remove product photo backgrounds' },
 ];
 
 export function WorkflowGuides() {

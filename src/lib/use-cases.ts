@@ -1076,5 +1076,203 @@ export const useCasePages: UseCasePage[] = [
       { question: 'Is it safe to upload personal bank statements to PdfPixels?', answer: 'Yes. All file merging takes place client-side in your local browser memory using WebAssembly. Your banking records never touch third-party servers.' },
     ],
   },
+  {
+    slug: 'compress-pdf-to-1mb',
+    title: 'Compress PDF to Under 1MB Online Free',
+    description: 'Reduce any PDF to under 1MB for college application portals, HR upload systems, and government forms — free, no signup.',
+    targetToolSlug: 'compress-pdf',
+    intent: 'compress pdf to 1mb online free',
+    overview:
+      'College application portals, HR recruitment systems, and government upload forms routinely cap résumés and transcripts at 1MB. A scanned multi-page résumé or academic portfolio can easily reach 8–20MB, making submission impossible without compression. The challenge is getting under 1MB without blurring text or making scanned certificates unreadable. PdfPixels Compress PDF lets you choose a balanced or aggressive compression level to reliably land under that 1MB ceiling — processing entirely in your browser so your personal documents never touch an external server. Students submitting Common App essays, job seekers attaching résumés to ATS platforms, and visa applicants uploading financial affidavits all face this exact constraint every day.',
+    whoItsFor: [
+      'Students submitting college applications or scholarship documents online',
+      'Job seekers uploading CVs to HR and ATS portals with file-size limits',
+      'Visa and government applicants uploading financial or identity documents',
+    ],
+    steps: [
+      { title: 'Identify the portal limit', description: 'Check the upload error message or form instructions — confirm it is a 1MB (1,024KB) limit, not 1MB in megabytes of a different definition.' },
+      { title: 'Upload your PDF to Compress PDF', description: 'Open PdfPixels Compress PDF in your browser and drag your oversized file into the upload zone.' },
+      { title: 'Select Balanced or Extreme compression', description: 'Choose Balanced (keeps text sharp, 70–80% size reduction) or Extreme (maximum shrink to ~72 DPI) if balanced still exceeds 1MB.' },
+      { title: 'Download and verify file size', description: 'After downloading, right-click the file and check Properties to confirm it is under 1,024KB before submitting.' },
+    ],
+    tips: [
+      'If your PDF is a scanned document with photos, try Extreme compression — text stays readable at 72 DPI for most scanned pages.',
+      'Remove blank trailing pages before compressing; fewer pages means a smaller footprint.',
+      'If one pass is not enough, re-upload the compressed output for a second round — diminishing returns apply but it often squeezes out the final few KB.',
+    ],
+    pitfalls: [
+      { problem: 'Portal still rejects a file showing 1.02MB', solution: 'Target 900KB on your second attempt to leave a safe margin for rounding differences between browsers and upload validators.' },
+      { problem: 'Scanned text becomes blurry after compression', solution: 'Use Balanced instead of Extreme for text-heavy scans — Extreme is best reserved for photo-heavy portfolios.' },
+    ],
+    faqs: [
+      { question: 'Can I compress a 20MB scanned résumé to under 1MB?', answer: 'Yes. Scanned PDFs are essentially embedded images, and aggressive downsampling from 300 DPI to 72–96 DPI achieves 90–95% size reduction. Text remains readable for screen review at those settings.' },
+      { question: 'Does compressing a PDF damage the original file?', answer: 'No. PdfPixels works on a copy in your browser memory and downloads a new file. Your original PDF on disk is never modified.' },
+    ],
+  },
+  {
+    slug: 'convert-word-to-pdf-free',
+    title: 'Convert Word to PDF Free Online — No Microsoft 365 Needed',
+    description: 'Convert DOCX or DOC files to PDF free online without a Microsoft 365 subscription — preserves fonts, formatting, and margins.',
+    targetToolSlug: 'word-to-pdf',
+    intent: 'convert word to pdf free online',
+    overview:
+      'Sending a Word document to an employer, university, or client is risky: if they use a different version of Word or a different operating system, fonts shift, bullet points break, and page margins collapse. Converting to PDF locks your formatting in place so every recipient sees your document exactly as you designed it. Most free methods require either a Microsoft 365 subscription or uploading to a third-party cloud service that may retain your file. PdfPixels converts DOCX to PDF directly in your browser using WebAssembly — your résumé, cover letter, or proposal never leaves your device, and there is no subscription, watermark, or page limit. Students submitting assignments, job seekers converting CVs, and freelancers sending proposals all benefit from instant, private Word-to-PDF conversion.',
+    whoItsFor: [
+      'Job seekers converting résumés and cover letters to PDF for employer submission',
+      'Students submitting DOCX assignments to learning management systems that require PDF',
+      'Freelancers and consultants sending proposals or contracts in universally readable format',
+    ],
+    steps: [
+      { title: 'Open the Word to PDF tool', description: 'Navigate to PdfPixels Word to PDF in your browser — no installation or account required.' },
+      { title: 'Upload your DOCX or DOC file', description: 'Drag and drop your Word document or click to browse. Both modern DOCX and legacy DOC formats are supported.' },
+      { title: 'Convert in seconds', description: 'The WebAssembly engine converts your document client-side. Complex formatting including tables, images, and custom fonts is preserved.' },
+      { title: 'Download your PDF', description: 'Click Download and save your new PDF. Verify the layout in a PDF viewer before sending to confirm formatting is intact.' },
+    ],
+    tips: [
+      'Embed fonts in your Word document before converting (File → Options → Save → Embed fonts) to guarantee custom typefaces render correctly.',
+      'Use Print Layout view in Word to catch formatting issues before converting — what you see there is what the PDF will look like.',
+      'For résumés specifically, convert and open in Google Docs viewer or Adobe Reader to check line breaks and column alignment on a fresh render.',
+    ],
+    pitfalls: [
+      { problem: 'Bullet points or numbering appear shifted in the PDF', solution: 'Switch your list style to a standard Word built-in list theme rather than a manually indented custom format before converting.' },
+      { problem: 'Images are blurry in the converted PDF', solution: 'Ensure your images are embedded at full resolution in the Word file (not linked externally) before you upload for conversion.' },
+    ],
+    faqs: [
+      { question: 'Is converting Word to PDF free on PdfPixels?', answer: 'Yes. The conversion runs entirely in your browser for free with no watermarks, no page limits, and no registration required.' },
+      { question: 'Will my fonts look the same in the PDF?', answer: 'Standard system fonts (Arial, Times New Roman, Calibri) are reliably reproduced. Custom or downloaded fonts render best when embedded in the Word file before conversion.' },
+    ],
+  },
+  {
+    slug: 'compress-image-for-linkedin',
+    title: 'Compress Image for LinkedIn Profile & Posts (Free)',
+    description: 'Optimize profile photos and banner images for LinkedIn upload — reduce file size without losing the sharpness recruiters notice.',
+    targetToolSlug: 'compress-image',
+    intent: 'compress image for linkedin',
+    overview:
+      'LinkedIn caps profile photos at 8MB and banner images at 8MB, but large files slow page loads and can appear pixelated when LinkedIn re-encodes them on their servers. The platform applies its own compression algorithm after upload, so starting with a bloated 5MB phone photo means LinkedIn compresses an already mediocre file, producing a muddy profile picture that undermines your professional brand. The practical strategy is to pre-compress your image to roughly 200–500KB at the correct dimensions before uploading — this gives LinkedIn a clean, well-optimized source to work with. PdfPixels Compress Image handles JPEG, PNG, and WebP in your browser with no cloud upload of your personal photo. Professionals, recruiters, and B2B marketers who rely on LinkedIn for pipeline and personal brand will notice the difference in sharpness immediately.',
+    whoItsFor: [
+      'Professionals and executives optimizing LinkedIn profile photos for recruiter visibility',
+      'Recruiters and HR managers maintaining sharp, brand-consistent LinkedIn presence',
+      'B2B marketers and agency owners managing LinkedIn company page banner images',
+    ],
+    steps: [
+      { title: 'Resize to LinkedIn recommended dimensions first', description: 'Profile photos should be 400×400px minimum; banners 1584×396px. Use PdfPixels Resize Image to set exact dimensions before compressing.' },
+      { title: 'Upload to Compress Image', description: 'Drop your JPEG, PNG, or WebP into the PdfPixels Compress Image tool.' },
+      { title: 'Target 200–400KB for profile photos', description: 'Set the output target to around 250KB for headshots — this leaves plenty of headroom for LinkedIn\'s own resampling without double-degrading quality.' },
+      { title: 'Upload directly to LinkedIn', description: 'Go to your LinkedIn profile, click the photo icon, and upload your compressed image. Expect noticeably sharper results compared to uploading a raw phone photo.' },
+    ],
+    tips: [
+      'Use a plain or blurred background in your profile photo — busy backgrounds compress poorly and look noisy at small display sizes.',
+      'Save profile photos as JPEG for best compression; use PNG only if you need transparency (rare for LinkedIn headshots).',
+      'For banner images, keep text away from the edges — LinkedIn crops banner images differently on mobile and desktop, and edge text often gets cut off.',
+    ],
+    pitfalls: [
+      { problem: 'Profile photo looks blurry after LinkedIn upload', solution: 'You likely uploaded a very small pixel resolution. Ensure the photo is at least 400×400px before compressing to avoid LinkedIn upscaling a tiny image.' },
+      { problem: 'Banner image appears stretched or cropped incorrectly', solution: 'LinkedIn banners display at 1584×396px on desktop but crop differently on mobile. Use the exact recommended pixel size and preview on both devices after upload.' },
+    ],
+    faqs: [
+      { question: 'What is the ideal LinkedIn profile photo file size?', answer: 'Aim for 200–400KB at 400×400px or larger. This gives LinkedIn a high-quality source image while keeping upload fast and preventing excessive platform re-compression.' },
+      { question: 'Does compressing my LinkedIn photo affect my profile ranking?', answer: 'LinkedIn does not rank profiles based on photo file size, but a sharp, professional headshot increases profile click-through rates and recruiter engagement significantly.' },
+    ],
+  },
+  {
+    slug: 'pdf-to-jpg-converter-free',
+    title: 'Convert PDF to JPG Free Online — Extract PDF Pages as Images',
+    description: 'Turn any PDF page into a high-quality JPG image free — no software install needed, works on desktop and mobile.',
+    targetToolSlug: 'pdf-to-jpg',
+    intent: 'pdf to jpg converter free online',
+    overview:
+      'Designers extracting slide thumbnails, marketers turning presentation pages into social media assets, and teachers sharing individual PDF pages as image attachments all need PDF-to-JPG conversion regularly. The challenge with most free tools is either a watermark stamped across the output, a restrictive page count limit, or low-resolution rendering that makes text in the image illegible. PdfPixels converts each PDF page to a full-resolution JPG directly in your browser — no installation, no cloud upload, and no watermark regardless of how many pages your document has. You get clean, download-ready JPEG images that work in any design tool, email client, or social media scheduler without round-tripping through desktop software.',
+    whoItsFor: [
+      'Designers and marketers extracting PDF slide pages as images for social media or presentations',
+      'Teachers and educators sharing individual PDF textbook pages as image attachments',
+      'Real estate agents and architects converting floor plan PDFs to JPG for property listings',
+    ],
+    steps: [
+      { title: 'Open PDF to JPG tool', description: 'Go to PdfPixels PDF to JPG in your browser — no account, no software download.' },
+      { title: 'Upload your PDF', description: 'Drag your PDF file into the tool. Multi-page PDFs are supported — each page converts to a separate JPG.' },
+      { title: 'Select resolution and quality', description: 'Higher DPI (150–300) gives sharper images suitable for print; lower DPI (72–96) creates smaller files for web and social media.' },
+      { title: 'Download your JPG images', description: 'Download individual pages or get all pages as a ZIP archive. Images are ready to drop into Canva, Figma, or your email client immediately.' },
+    ],
+    tips: [
+      'Use 150 DPI for most presentation slides and social media — it balances sharpness with manageable file sizes.',
+      'For PDF pages with lots of small text (financial reports, legal docs), use 300 DPI to keep text readable after conversion.',
+      'If you only need one specific page, most PDF viewers let you print a single page range first to isolate it before converting the whole PDF.',
+    ],
+    pitfalls: [
+      { problem: 'Converted JPG text looks blurry or pixelated', solution: 'Increase the DPI setting to 200–300. Low DPI settings produce small, low-resolution outputs that look sharp at thumbnail size but blurry at full view.' },
+      { problem: 'Colors look washed out or shifted compared to the original PDF', solution: 'This typically occurs with PDFs that use CMYK color profiles. Convert to RGB in a design tool before the PDF-to-JPG step for accurate color reproduction.' },
+    ],
+    faqs: [
+      { question: 'Can I convert a multi-page PDF to individual JPG files?', answer: 'Yes. PdfPixels PDF to JPG converts each page to a separate JPEG image. Multi-page PDFs are downloaded as a ZIP file containing all individual page images.' },
+      { question: 'Is there a page limit for PDF to JPG conversion?', answer: 'No. PdfPixels does not restrict the number of pages. Very large PDFs may take longer to process depending on your device speed, but there is no hard page cap.' },
+    ],
+  },
+  {
+    slug: 'remove-background-product-photo',
+    title: 'Remove Background from Product Photo Free — Transparent PNG for Amazon & Etsy',
+    description: 'Get clean transparent or white product photo backgrounds for Amazon, Etsy, and Shopify listings — free, no Photoshop needed.',
+    targetToolSlug: 'remove-image-background',
+    intent: 'remove background from product photo free',
+    overview:
+      'Amazon, Etsy, and Shopify all enforce strict product photo guidelines: Amazon requires a pure white background (#FFFFFF) for main listing images, Etsy recommends clean, uncluttered backgrounds, and Shopify themes display product images most cleanly on transparent PNGs. Hiring a photographer or editing each product shot in Photoshop costs time and money — especially when you launch a new catalog of 50+ SKUs. PdfPixels Remove Background uses AI-powered edge detection to isolate your product from its background in seconds, returning a transparent PNG ready for any marketplace or a white-background JPEG for Amazon compliance. Amazon sellers launching new products, Etsy shop owners photographing handmade goods on kitchen tables, and Shopify merchants building brand-consistent catalogs all use background removal as a core part of their product photography workflow.',
+    whoItsFor: [
+      'Amazon sellers preparing main listing images that meet the pure white background requirement',
+      'Etsy shop owners cleaning up handmade product photos shot at home',
+      'Shopify merchants building brand-consistent product catalog images at scale',
+    ],
+    steps: [
+      { title: 'Photograph your product against any background', description: 'A neutral gray or well-lit surface makes AI removal cleaner, but the tool handles complex backgrounds including wood, fabric, and outdoor settings.' },
+      { title: 'Upload to Remove Background', description: 'Go to PdfPixels Remove Image Background and upload your JPEG, PNG, or WebP product photo.' },
+      { title: 'Download transparent PNG or white-background JPEG', description: 'Get the transparent PNG for Etsy and Shopify, or add a white fill layer (available in the tool) for Amazon-compliant JPEG.' },
+      { title: 'Resize for platform requirements', description: 'Amazon requires 1000px minimum on the longest side. Use PdfPixels Resize Image to hit the exact dimensions after background removal.' },
+    ],
+    tips: [
+      'Shoot products on a surface that contrasts sharply with the item — a white cup on a white table is harder for AI to separate than a white cup on a dark wood surface.',
+      'For jewelry and items with fine detail (fur, lace, mesh), zoom in on the downloaded PNG and use a free tool like remove.bg\'s manual editor for hairline edge cleanup if needed.',
+      'Amazon allows TIFF and PNG in addition to JPEG for main images — transparent PNGs are accepted and let Amazon\'s system composite backgrounds for different storefronts.',
+    ],
+    pitfalls: [
+      { problem: 'Product edges look jagged or have a halo effect', solution: 'Use a photo with more contrast between product and background. Avoid matching the product color to the background color — even a slight hue difference improves AI edge detection significantly.' },
+      { problem: 'Amazon rejects the image despite a white background', solution: 'Amazon requires a pure white (#FFFFFF) background with no shadows. After removing the background, fill it with pure white (not off-white or gray) and ensure the product occupies at least 85% of the image frame.' },
+    ],
+    faqs: [
+      { question: 'Can I remove the background from multiple product photos at once?', answer: 'Currently PdfPixels processes one image at a time for best accuracy. For high-volume catalog work, process your hero product image and lifestyle photos separately.' },
+      { question: 'Does background removal work on products with transparent elements like glass?', answer: 'Partially. Completely transparent glass or acrylic products are challenging for AI edge detection since the background shows through the product itself. Opaque products with defined edges (clothing, electronics, packaged goods) produce the best results.' },
+    ],
+  },
+  {
+    slug: 'sign-pdf-on-phone',
+    title: 'Sign a PDF on Your Phone Free — No App Download Required',
+    description: 'Add your signature to any PDF on iPhone or Android in your mobile browser — no app, no subscription, no login needed.',
+    targetToolSlug: 'sign-pdf',
+    intent: 'sign pdf on phone free',
+    overview:
+      'Receiving a job offer letter, apartment lease, or freelance contract on your phone used to mean printing it, signing it by hand, scanning it, and emailing it back — a process that could take 30 minutes and required a printer. Or it meant paying for a monthly DocuSign subscription just to sign one document. PdfPixels Sign PDF runs entirely in your mobile browser on iPhone Safari or Android Chrome using WebAssembly — you draw, type, or upload your signature, place it on the correct page, and download a signed PDF in under two minutes with no app installation and no account creation. The file never leaves your phone, which matters for sensitive documents like employment contracts, rental agreements, and financial authorization forms.',
+    whoItsFor: [
+      'Mobile users signing job offer letters, employment contracts, or NDAs on the go',
+      'Renters and buyers reviewing and signing lease or purchase agreements from their phone',
+      'Freelancers and contractors approving client agreements without access to a desktop computer',
+    ],
+    steps: [
+      { title: 'Open PdfPixels Sign PDF in your mobile browser', description: 'On iPhone, open Safari. On Android, open Chrome. Navigate to PdfPixels Sign PDF — no app download required.' },
+      { title: 'Upload the PDF from your phone', description: 'Tap the upload button and select your PDF from Files (iPhone) or Files/Downloads (Android). The document loads directly in your browser.' },
+      { title: 'Draw or type your signature', description: 'Use your finger or stylus to draw a natural-looking signature on the touch canvas, or type your full legal name and select a script font.' },
+      { title: 'Place signature and download', description: 'Drag your signature to the correct line on the document, resize if needed, then tap Download Signed PDF. The file saves to your phone instantly.' },
+    ],
+    tips: [
+      'Draw your signature in landscape orientation on your phone — the wider canvas gives you more room for natural cursive strokes.',
+      'Use the typed signature with a script font if your drawn signature looks rough on a small phone screen — typed signatures are legally equivalent in most jurisdictions.',
+      'Save the signed PDF to your cloud storage (iCloud Drive, Google Drive) immediately after signing so you always have a backup copy.',
+    ],
+    pitfalls: [
+      { problem: 'Signature appears too small or in the wrong position', solution: 'After placing the signature, use the resize handles to scale it to match the signature line size. Pinch-to-zoom the document to navigate to the correct page before placing.' },
+      { problem: 'PDF does not download after signing on iPhone', solution: 'Ensure Safari is allowed to download files in iOS Settings → Safari → Downloads. Set the download location to "On My iPhone" or iCloud Drive.' },
+    ],
+    faqs: [
+      { question: 'Is a typed or drawn signature on a PDF legally binding?', answer: 'Yes. In the United States, the ESIGN Act and UETA recognize electronic signatures — including typed names and drawn marks — as legally binding on contracts where all parties agree to transact electronically. This covers employment contracts, leases, NDAs, and most commercial agreements.' },
+      { question: 'Does my PDF get uploaded to a server when I sign it on PdfPixels?', answer: 'No. The entire signing process happens inside your phone\'s browser memory using WebAssembly. Your document is never transmitted to any external server, making it safe for confidential contracts and personal legal agreements.' },
+    ],
+  },
 ];
 
