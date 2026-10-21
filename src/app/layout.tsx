@@ -151,6 +151,8 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <link rel="dns-prefetch" href="https://www.google-analytics.com" />
         <link rel="preconnect" href="https://bauval.org" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://bauval.org" />
+        <link rel="preconnect" href="https://araplhn.org" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://araplhn.org" />
         <link rel="search" type="application/opensearchdescription+xml" title="PdfPixels" href="/opensearch.xml" />
         <link rel="alternate" type="application/rss+xml" title="PdfPixels RSS Feed" href="/feed" />
         <link rel="alternate" type="text/plain" title="PdfPixels for LLMs" href="/llms.txt" />
