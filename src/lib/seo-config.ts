@@ -148,6 +148,41 @@ export const faqData = [
     answer: 'Upload limits vary by tool. PdfPixels shows the current file limits and accepted formats inside each workflow before processing starts.',
     keywords: ['file size limit', 'maximum upload', 'large image processing', 'file limits'],
   },
+  {
+    question: 'How do I convert a Word document to PDF for free?',
+    answer: 'Upload your DOC or DOCX file to the Word to PDF tool on PdfPixels. The converter preserves your formatting, fonts, and layout. Download the result as a standard PDF — no Microsoft 365 subscription or software install needed.',
+    keywords: ['word to pdf free', 'convert docx to pdf online', 'doc to pdf converter', 'word to pdf no subscription'],
+  },
+  {
+    question: 'How do I compress a PDF to under 1MB?',
+    answer: 'Open Compress PDF, upload your document, and select the "High" or "Extreme" compression level. Most PDFs that are image-heavy will compress to under 1MB. If the result is still over 1MB, try the next level up. Text-only PDFs are typically already under 1MB without compression.',
+    keywords: ['compress pdf to 1mb', 'reduce pdf under 1mb', 'pdf too large', 'shrink pdf file size'],
+  },
+  {
+    question: 'How do I remove a password from a PDF?',
+    answer: 'Use the Unlock PDF tool. Upload the password-protected PDF, enter the current password to verify you own the document, and download the unlocked version. The tool cannot bypass passwords on documents you do not have access to.',
+    keywords: ['remove pdf password', 'unlock pdf online free', 'decrypt pdf', 'pdf password remover'],
+  },
+  {
+    question: 'Can I edit text in a PDF for free?',
+    answer: 'PdfPixels supports filling PDF form fields, adding text annotations, watermarks, and page numbers. For converting a PDF to an editable Word document (DOCX), use the PDF to Word tool which extracts and converts the text.',
+    keywords: ['edit pdf text free', 'pdf editor online free', 'fill pdf form', 'pdf to word editable'],
+  },
+  {
+    question: 'How do I split a PDF into separate pages?',
+    answer: 'Open Split PDF, upload your document, choose to split by page range, extract specific pages, or split all pages into individual files. Download each page as a separate PDF or as a ZIP archive.',
+    keywords: ['split pdf pages', 'extract pages from pdf', 'separate pdf pages online', 'split pdf free'],
+  },
+  {
+    question: 'How do I add a signature to a PDF?',
+    answer: 'Use Sign PDF to draw your signature, type it in a handwriting font, or upload an image of your signature. Place it on the page, resize it, and download the signed PDF. No Adobe Acrobat required.',
+    keywords: ['sign pdf online free', 'add signature to pdf', 'electronic signature pdf', 'sign document online'],
+  },
+  {
+    question: 'How do I convert a PDF to a JPG image?',
+    answer: 'Upload your PDF to the PDF to JPG tool. Each page is converted to a JPG image at your chosen resolution. Download individual page images or a ZIP of all pages. Useful for sharing slides, extracting diagrams, or creating thumbnail previews.',
+    keywords: ['pdf to jpg converter free', 'convert pdf to image online', 'pdf pages to jpg', 'save pdf as image'],
+  },
 ];
 
 export const howToData = [

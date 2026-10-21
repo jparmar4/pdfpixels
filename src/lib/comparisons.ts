@@ -1225,5 +1225,168 @@ export const comparisonPages: ComparisonPage[] = [
       },
     ],
   },
+  // ─── New high-traffic VS comparisons ────────────────────────────────────────
+  {
+    slug: 'pdfpixels-vs-adobe-compress-pdf',
+    title: 'PdfPixels vs Adobe Acrobat for Compress PDF',
+    description: 'Compare PdfPixels and Adobe Acrobat for compressing PDF files — cost, speed, file size results, and no-signup access.',
+    primaryToolSlug: 'compress-pdf',
+    alternatives: ['Adobe Acrobat'],
+    bestFor: ['Free PDF compression without a subscription', 'Quick one-off compress jobs', 'Users without an Adobe license'],
+    overview:
+      'Adobe Acrobat is the industry-standard PDF editor and includes robust compression options, but it requires a subscription starting at $19.99/month — expensive for users who only need to compress the occasional PDF. PdfPixels provides free, browser-based PDF compression with three quality presets covering most everyday compression needs: email attachments, portal uploads, and archiving. For organizations with existing Adobe enterprise licenses, Acrobat\'s batch compression and Optimizer profiles offer deeper control. For individuals and small teams who need fast, free, no-login compression, PdfPixels delivers the result in seconds.',
+    whenToChooseUs: [
+      'You need to compress a PDF without paying for an Adobe subscription',
+      'You want to compress a file in seconds from any device without installing software',
+      'You are compressing documents for email, portal uploads, or USCIS submissions',
+    ],
+    whenToChooseAlt: [
+      'You have an existing Adobe Acrobat Pro subscription and need batch compression',
+      'You need PDF Optimizer with granular control over image downsampling, font subsetting, and transparency flattening',
+      'Your organization requires PDF/A archival compliance on compressed output',
+    ],
+    keyDifferences: [
+      {
+        topic: 'Cost',
+        pdfpixels: 'Free — no subscription, no credit card',
+        alternative: 'Adobe Acrobat Pro from $19.99/month or $239.88/year',
+      },
+      {
+        topic: 'Setup',
+        pdfpixels: 'Browser-based, no install, no account required',
+        alternative: 'Desktop app install or Creative Cloud subscription required',
+      },
+      {
+        topic: 'Compression control',
+        pdfpixels: 'Recommended / High / Extreme presets covering most use cases',
+        alternative: 'Full PDF Optimizer: per-image DPI, font handling, color conversion',
+      },
+      {
+        topic: 'Batch processing',
+        pdfpixels: 'One file per session',
+        alternative: 'Action Wizard supports batch compression across hundreds of files',
+      },
+    ],
+    verdict:
+      'If you need to compress PDFs without spending on a subscription, PdfPixels is the clear choice. For enterprise users who already pay for Adobe Acrobat and need batch workflows or archival-grade output, Acrobat\'s Optimizer is more powerful. For 95% of individual compression tasks, PdfPixels produces comparable results for free.',
+    faqs: [
+      {
+        question: 'Can PdfPixels match Adobe Acrobat compression quality?',
+        answer: 'For typical office and scanned PDFs, PdfPixels produces comparable file size reductions. Acrobat\'s PDF Optimizer allows more granular control (e.g., targeting a specific DPI for embedded images), which can be valuable for specialized archiving workflows.',
+      },
+      {
+        question: 'Is PdfPixels safe for confidential PDF compression?',
+        answer: 'PdfPixels processes files server-side for compression. Files are discarded after processing and are not stored or shared. For highly sensitive documents, you can also review our privacy policy at pdfpixels.com/privacy.',
+      },
+    ],
+  },
+  {
+    slug: 'pdfpixels-vs-smallpdf-sign-pdf',
+    title: 'PdfPixels vs Smallpdf for Sign PDF',
+    description: 'Compare PdfPixels and Smallpdf for adding electronic signatures to PDF documents — free access, ease of use, and legal validity.',
+    primaryToolSlug: 'sign-pdf',
+    alternatives: ['Smallpdf'],
+    bestFor: ['Free PDF signing without usage limits', 'Quick one-off signatures on leases or contracts', 'Mobile signing without an app'],
+    overview:
+      'Smallpdf\'s free tier limits users to two tasks per day and does not allow downloading without creating an account. PdfPixels lets you draw, type, or upload your signature and place it on any PDF page without creating an account or hitting a daily cap. Both tools produce signatures that are visually embedded in the PDF — these are not cryptographic digital signatures with PKI certificates (which require tools like DocuSign or Adobe Sign), but are sufficient for most everyday document sign-offs where the counter-party accepts a scanned/drawn signature.',
+    whenToChooseUs: [
+      'You need to sign a PDF more than twice per day without an account',
+      'You want to sign a document on mobile without installing an app',
+      'You need to sign and download immediately without waiting for email verification',
+    ],
+    whenToChooseAlt: [
+      'You need legally binding eSignatures with tamper-evident PKI certificates and full audit trails',
+      'You regularly use Smallpdf\'s suite of other tools and prefer one platform',
+      'Your counterparty specifically requests a Smallpdf or similar qualified eSignature',
+    ],
+    keyDifferences: [
+      {
+        topic: 'Free usage limits',
+        pdfpixels: 'No daily limit on signing — sign as many PDFs as needed',
+        alternative: 'Smallpdf free tier: 2 tasks per day; Pro required for unlimited',
+      },
+      {
+        topic: 'Account requirement',
+        pdfpixels: 'No account required to sign and download',
+        alternative: 'Account required to download on free tier',
+      },
+      {
+        topic: 'Signature type',
+        pdfpixels: 'Draw, type, or upload image signature embedded as PDF annotation',
+        alternative: 'Draw, type, or upload; same visual embed approach',
+      },
+      {
+        topic: 'Legal enforceability',
+        pdfpixels: 'Suitable for informal sign-offs; not a PKI/certified eSignature',
+        alternative: 'Smallpdf\'s standard Sign tool is also visual-embed, not certified',
+      },
+    ],
+    verdict:
+      'For everyday PDF signing without a daily cap or account wall, PdfPixels is the better free option. If you need certified electronic signatures with audit trails for high-value contracts, consider a dedicated eSignature platform like DocuSign or Adobe Sign instead.',
+    faqs: [
+      {
+        question: 'Is a drawn/typed signature on a PDF legally binding?',
+        answer: 'A visually embedded signature is generally accepted for informal agreements and internal documents. For legally binding contracts requiring a certified electronic signature (with identity verification and PKI audit trail), use a dedicated eSignature service. Requirements vary by country and contract type — consult legal counsel for high-stakes documents.',
+      },
+      {
+        question: 'Can I sign a PDF on my iPhone without an app?',
+        answer: 'Yes. Open PdfPixels Sign PDF in your iPhone\'s Safari browser, upload the PDF, draw or type your signature, place it on the page, and download the signed PDF. No app download or account is needed.',
+      },
+    ],
+  },
+  {
+    slug: 'pdfpixels-vs-sejda-compress-pdf',
+    title: 'PdfPixels vs Sejda for Compress PDF',
+    description: 'Compare PdfPixels and Sejda PDF for online PDF compression — free limits, speed, quality, and ease of use.',
+    primaryToolSlug: 'compress-pdf',
+    alternatives: ['Sejda PDF'],
+    bestFor: ['Free PDF compression without task limits', 'Users who hit Sejda\'s 3-task-per-hour cap', 'Fast no-account compression'],
+    overview:
+      'Sejda PDF is a solid online PDF toolkit that includes compression, but its free tier enforces a 3-tasks-per-hour limit and 50-page or 50MB file caps. PdfPixels supports PDF files up to 50MB for compression with no hourly task cap. Both tools offer good compression quality for typical office and scanned PDFs. The practical choice often comes down to how frequently you compress files: occasional users may not notice Sejda\'s limits, while users who compress multiple PDFs throughout the workday will hit the cap and either wait or look for an alternative.',
+    whenToChooseUs: [
+      'You compress PDFs frequently throughout the day and will hit Sejda\'s 3/hour free limit',
+      'You want no-account, no-wait compression from your browser',
+      'You need to compress a PDF that is close to 50MB',
+    ],
+    whenToChooseAlt: [
+      'You need Sejda\'s specific features like splitting, editing text, or adding pages in the same session',
+      'You prefer Sejda\'s desktop app for offline batch compression',
+      'You use Sejda Pro for its larger file limits and unlimited tasks',
+    ],
+    keyDifferences: [
+      {
+        topic: 'Free task limits',
+        pdfpixels: 'No hourly or daily compression task limit',
+        alternative: 'Sejda free: 3 tasks per hour, then a waiting period',
+      },
+      {
+        topic: 'File size limit',
+        pdfpixels: 'Up to 50MB per PDF',
+        alternative: 'Sejda free: 50MB and 50-page cap per task',
+      },
+      {
+        topic: 'Account requirement',
+        pdfpixels: 'No account needed to compress and download',
+        alternative: 'No account for free tier; Pro subscription for higher limits',
+      },
+      {
+        topic: 'Compression options',
+        pdfpixels: 'Recommended / High / Extreme presets',
+        alternative: 'Screen / Ebook / Printer / Prepress / Default quality presets (Ghostscript-based)',
+      },
+    ],
+    verdict:
+      'Both tools are capable free PDF compressors. PdfPixels has no hourly task caps, making it better for users who compress multiple documents per hour. Sejda has a broader set of PDF editing features in one platform, which is valuable if you need to do more than just compress.',
+    faqs: [
+      {
+        question: 'How does PdfPixels compression compare to Sejda quality?',
+        answer: 'Both use server-side compression engines that produce comparable results for typical office and scanned PDFs. At equivalent preset levels, the output file size difference is usually under 5-10%. Test both with your specific document type if compression ratio is critical.',
+      },
+      {
+        question: 'What happens when I hit Sejda\'s free limit?',
+        answer: 'Sejda imposes a 1-hour waiting period after 3 free tasks. During this time, you can use PdfPixels as an alternative with no waiting period.',
+      },
+    ],
+  },
 ];
 
