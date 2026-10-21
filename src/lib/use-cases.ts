@@ -1,10 +1,10 @@
-export type UseCasePage = {
+﻿export type UseCasePage = {
   slug: string;
   title: string;
   description: string;
   targetToolSlug: string;
   intent: string;
-  /** Unique editorial body for AdSense/quality reviewers — not shared template copy */
+  /** Unique editorial body for AdSense/quality reviewers â€” not shared template copy */
   overview: string;
   whoItsFor: string[];
   steps: { title: string; description: string }[];
@@ -21,7 +21,7 @@ export const useCasePages: UseCasePage[] = [
     targetToolSlug: 'compress-image',
     intent: 'compress image to 20kb',
     overview:
-      'Many government forms, exam portals, and membership applications cap photo uploads at 20KB. A phone photo is usually 1–5MB, so naive resizing alone rarely hits that limit. The practical approach is to reduce dimensions first (face and document photos often only need 300–600px on the long edge), then compress to the 20KB target. PdfPixels Compress Image lets you set an exact KB target and preview the result before download. Expect some softness at 20KB — that is normal for such a tight budget — but ID-style photos with plain backgrounds usually stay readable.',
+      'Many government forms, exam portals, and membership applications cap photo uploads at 20KB. A phone photo is usually 1â€“5MB, so naive resizing alone rarely hits that limit. The practical approach is to reduce dimensions first (face and document photos often only need 300â€“600px on the long edge), then compress to the 20KB target. PdfPixels Compress Image lets you set an exact KB target and preview the result before download. Expect some softness at 20KB â€” that is normal for such a tight budget â€” but ID-style photos with plain backgrounds usually stay readable.',
     whoItsFor: [
       'Students uploading photos to exam or scholarship portals',
       'Applicants filling government or bank KYC forms',
@@ -34,7 +34,7 @@ export const useCasePages: UseCasePage[] = [
       { title: 'Preview, then download', description: 'Check face or text readability. If it is too soft, crop tighter first, then compress again.' },
     ],
     tips: [
-      'Crop to the subject first — less empty background means more quality at the same file size.',
+      'Crop to the subject first â€” less empty background means more quality at the same file size.',
       'JPEG usually beats PNG for tiny photo targets; convert if needed.',
       'If 20KB still fails quality checks, try a slightly lower resolution rather than extreme quality only.',
     ],
@@ -54,7 +54,7 @@ export const useCasePages: UseCasePage[] = [
     targetToolSlug: 'compress-image',
     intent: 'compress image to 50kb',
     overview:
-      'A 50KB image limit is common on job sites, college applications, and many Indian government forms. It is usually enough for a clear passport-style portrait if you control resolution. Start around 600–900px on the long side for a face photo, then compress to 50KB. That balance keeps eyes, hairline, and text on ID cards readable while meeting the upload cap. PdfPixels targets exact KB values so you do not need trial-and-error quality sliders for every attempt.',
+      'A 50KB image limit is common on job sites, college applications, and many Indian government forms. It is usually enough for a clear passport-style portrait if you control resolution. Start around 600â€“900px on the long side for a face photo, then compress to 50KB. That balance keeps eyes, hairline, and text on ID cards readable while meeting the upload cap. PdfPixels targets exact KB values so you do not need trial-and-error quality sliders for every attempt.',
     whoItsFor: [
       'Job applicants uploading profile photos',
       'Students submitting application photos',
@@ -72,7 +72,7 @@ export const useCasePages: UseCasePage[] = [
       'If quality dips, resize to a slightly smaller pixel size then re-compress.',
     ],
     pitfalls: [
-      { problem: 'File is 51–55KB and still rejected', solution: 'Re-run with target 45–48KB to leave headroom for portal rounding.' },
+      { problem: 'File is 51â€“55KB and still rejected', solution: 'Re-run with target 45â€“48KB to leave headroom for portal rounding.' },
       { problem: 'Colors look flat', solution: 'Avoid double-compressing an already tiny web image; start from the original camera file.' },
     ],
     faqs: [
@@ -101,7 +101,7 @@ export const useCasePages: UseCasePage[] = [
     ],
     tips: [
       'For screenshots with text, try PNG or higher quality JPEG; for photos, JPEG/WebP usually wins.',
-      'Match output dimensions to where the image will appear — full camera resolution is rarely needed.',
+      'Match output dimensions to where the image will appear â€” full camera resolution is rarely needed.',
     ],
     pitfalls: [
       { problem: 'Quality is fine but dimensions are huge', solution: 'Resize first if the host also enforces max width/height.' },
@@ -117,7 +117,7 @@ export const useCasePages: UseCasePage[] = [
     targetToolSlug: 'passport-size-photo',
     intent: 'resize image for passport photo',
     overview:
-      'Passport and visa photos fail rejections for size, head position, and background more often than for “quality” alone. US passports commonly need a 2×2 inch photo; many countries use 35×45 mm. Lighting should be even, the face centered, and the background plain (often light). PdfPixels Passport Photo tools help crop to official proportions so you can print or upload without visiting a studio for a first draft. Always double-check the latest rules for your country before submitting.',
+      'Passport and visa photos fail rejections for size, head position, and background more often than for â€œqualityâ€ alone. US passports commonly need a 2Ã—2 inch photo; many countries use 35Ã—45 mm. Lighting should be even, the face centered, and the background plain (often light). PdfPixels Passport Photo tools help crop to official proportions so you can print or upload without visiting a studio for a first draft. Always double-check the latest rules for your country before submitting.',
     whoItsFor: [
       'Travelers preparing passport or visa applications',
       'Users renewing IDs that need standard photo sizes',
@@ -125,12 +125,12 @@ export const useCasePages: UseCasePage[] = [
     ],
     steps: [
       { title: 'Take or choose a compliant photo', description: 'Face the camera, keep a neutral expression if required, and use a plain light background.' },
-      { title: 'Open Passport Size Photo', description: 'Upload the portrait and pick the size that matches your document (for example 2×2 in or 35×45 mm).' },
+      { title: 'Open Passport Size Photo', description: 'Upload the portrait and pick the size that matches your document (for example 2Ã—2 in or 35Ã—45 mm).' },
       { title: 'Align the face in the crop', description: 'Keep eyes at the recommended height and leave space above the head per guidelines.' },
       { title: 'Export and verify', description: 'Download the result and compare against your embassy or passport office checklist.' },
     ],
     tips: [
-      'Do not wear hats or heavy filters unless your country’s rules allow them.',
+      'Do not wear hats or heavy filters unless your countryâ€™s rules allow them.',
       'Print at the correct DPI (often 300 DPI) if you need a paper photo.',
     ],
     pitfalls: [
@@ -148,7 +148,7 @@ export const useCasePages: UseCasePage[] = [
     targetToolSlug: 'resize-image',
     intent: 'resize image for instagram',
     overview:
-      'Instagram crops aggressively. A landscape photo posted as a square can cut off important edges; a story needs a tall 9:16 frame. Common targets include 1080×1080 for feed posts, 1080×1350 for portrait posts, and 1080×1920 for stories and reels covers. Resizing before upload keeps control in your hands instead of letting the app guess. PdfPixels Resize Image supports pixel-accurate dimensions so brands and creators can stay consistent across posts.',
+      'Instagram crops aggressively. A landscape photo posted as a square can cut off important edges; a story needs a tall 9:16 frame. Common targets include 1080Ã—1080 for feed posts, 1080Ã—1350 for portrait posts, and 1080Ã—1920 for stories and reels covers. Resizing before upload keeps control in your hands instead of letting the app guess. PdfPixels Resize Image supports pixel-accurate dimensions so brands and creators can stay consistent across posts.',
     whoItsFor: [
       'Content creators preparing feed and story assets',
       'Small businesses standardizing brand images',
@@ -156,12 +156,12 @@ export const useCasePages: UseCasePage[] = [
     ],
     steps: [
       { title: 'Pick the placement', description: 'Decide whether the image is for feed square, portrait, or story/reel.' },
-      { title: 'Upload and set pixels', description: 'Enter 1080×1080, 1080×1350, or 1080×1920 as needed.' },
+      { title: 'Upload and set pixels', description: 'Enter 1080Ã—1080, 1080Ã—1350, or 1080Ã—1920 as needed.' },
       { title: 'Lock aspect ratio when scaling', description: 'Avoid stretching logos or faces; crop first if composition matters.' },
       { title: 'Export and post', description: 'Download and upload to Instagram or your scheduler.' },
     ],
     tips: [
-      'Keep critical text inside a safe margin — Instagram UI overlays the edges on stories.',
+      'Keep critical text inside a safe margin â€” Instagram UI overlays the edges on stories.',
       'Compress after resize if upload is slow, but do not crush quality for brand photos.',
     ],
     pitfalls: [
@@ -178,7 +178,7 @@ export const useCasePages: UseCasePage[] = [
     targetToolSlug: 'heic-to-jpg',
     intent: 'convert heic to jpg online',
     overview:
-      'The rejection usually arrives as “your photo won’t open” or “unsupported format” — and the culprit is almost always HEIC, the space-saving format iPhones use by default. This guide covers the whole scenario, not just the conversion click: how to tell a file is HEIC, transfer traps (AirDrop set to “Automatic” already converts to JPG; WhatsApp and Instagram convert on send; email keeps the original HEIC), and when to convert copies instead of originals. Once you have the HEIC on your device, the fix itself takes seconds with PdfPixels HEIC to JPG — no app install, straight to a universal JPG you can submit anywhere.',
+      'The rejection usually arrives as â€œyour photo wonâ€™t openâ€ or â€œunsupported formatâ€ â€” and the culprit is almost always HEIC, the space-saving format iPhones use by default. This guide covers the whole scenario, not just the conversion click: how to tell a file is HEIC, transfer traps (AirDrop set to â€œAutomaticâ€ already converts to JPG; WhatsApp and Instagram convert on send; email keeps the original HEIC), and when to convert copies instead of originals. Once you have the HEIC on your device, the fix itself takes seconds with PdfPixels HEIC to JPG â€” no app install, straight to a universal JPG you can submit anywhere.',
     whoItsFor: [
       'iPhone users sharing photos with Windows users',
       'People uploading iPhone photos to websites that reject HEIC',
@@ -198,7 +198,7 @@ export const useCasePages: UseCasePage[] = [
     ],
     faqs: [
       { question: 'Is quality lost converting HEIC to JPG?', answer: 'JPG is lossy, but a high-quality export is usually indistinguishable for social and form use.' },
-      { question: 'Should I use this guide or go straight to the HEIC to JPG tool?', answer: 'If your photo was already rejected somewhere, read this guide first — the transfer and format checks above fix most “won’t open” cases without converting. If you already hold the HEIC file and just need it converted, go straight to the HEIC to JPG tool.' },
+      { question: 'Should I use this guide or go straight to the HEIC to JPG tool?', answer: 'If your photo was already rejected somewhere, read this guide first â€” the transfer and format checks above fix most â€œwonâ€™t openâ€ cases without converting. If you already hold the HEIC file and just need it converted, go straight to the HEIC to JPG tool.' },
     ],
   },
   {
@@ -208,7 +208,7 @@ export const useCasePages: UseCasePage[] = [
     targetToolSlug: 'png-to-jpeg',
     intent: 'png to jpg converter',
     overview:
-      'This is a decision guide, not just a converter button: PNG is the right format for sharp graphics and anything needing transparency, but it is often 3–10x oversized for photographs, screenshots, and email attachments. The expensive mistake is converting the wrong file — a logo with transparency becomes a white-boxed rectangle in JPG, while a 5MB PNG photo needlessly clogs inboxes. Rule of thumb: photo-like pixels → JPG (or WebP); flat graphics, text-heavy screenshots you will edit again, or anything needing a transparent background → stay on PNG. When the answer is JPG, PdfPixels PNG to JPEG does the conversion with adjustable quality.',
+      'This is a decision guide, not just a converter button: PNG is the right format for sharp graphics and anything needing transparency, but it is often 3â€“10x oversized for photographs, screenshots, and email attachments. The expensive mistake is converting the wrong file â€” a logo with transparency becomes a white-boxed rectangle in JPG, while a 5MB PNG photo needlessly clogs inboxes. Rule of thumb: photo-like pixels â†’ JPG (or WebP); flat graphics, text-heavy screenshots you will edit again, or anything needing a transparent background â†’ stay on PNG. When the answer is JPG, PdfPixels PNG to JPEG does the conversion with adjustable quality.',
     whoItsFor: [
       'Users emailing large PNG screenshots or photos that bounce on size limits',
       'Bloggers and developers shrinking content images for faster pages',
@@ -228,7 +228,7 @@ export const useCasePages: UseCasePage[] = [
     ],
     faqs: [
       { question: 'Should product photos be PNG or JPG?', answer: 'JPG or WebP is usually better for photos; PNG is better for UI graphics and transparent assets.' },
-      { question: 'Should I use this guide or go straight to the PNG to JPEG tool?', answer: 'Use this guide when you are unsure which format you need — the transparency trap above ruins logos. If you already know the file is a photo-like PNG and just want it smaller, go straight to the PNG to JPEG tool.' },
+      { question: 'Should I use this guide or go straight to the PNG to JPEG tool?', answer: 'Use this guide when you are unsure which format you need â€” the transparency trap above ruins logos. If you already know the file is a photo-like PNG and just want it smaller, go straight to the PNG to JPEG tool.' },
     ],
   },
   {
@@ -238,7 +238,7 @@ export const useCasePages: UseCasePage[] = [
     targetToolSlug: 'merge-pdf',
     intent: 'merge pdf files online free',
     overview:
-      'This guide owns the assembly job end to end: turning a messy pile — phone scans, exported invoices, certificates — into one ordered, sendable dossier. The merge click is the easy part; what actually goes wrong is order (application packets read top to bottom), mixed page sizes and rotations from scans, and a finished file that is too big to email. Practical sequence: rename files 01, 02, 03 first, merge with PdfPixels Merge PDF with no account, then compress the result if it exceeds your email or portal cap. That assembly-plus-delivery workflow is what this page covers; the tool page itself is just the merge action.',
+      'This guide owns the assembly job end to end: turning a messy pile â€” phone scans, exported invoices, certificates â€” into one ordered, sendable dossier. The merge click is the easy part; what actually goes wrong is order (application packets read top to bottom), mixed page sizes and rotations from scans, and a finished file that is too big to email. Practical sequence: rename files 01, 02, 03 first, merge with PdfPixels Merge PDF with no account, then compress the result if it exceeds your email or portal cap. That assembly-plus-delivery workflow is what this page covers; the tool page itself is just the merge action.',
     whoItsFor: [
       'Freelancers combining invoices, contracts, and ID proofs into one client pack',
       'Students assembling multi-part applications (resume + certificates + transcripts)',
@@ -258,7 +258,7 @@ export const useCasePages: UseCasePage[] = [
     ],
     faqs: [
       { question: 'Can I merge password-protected PDFs?', answer: 'Usually you must unlock them first. Protect the final file again after merging if needed.' },
-      { question: 'Should I use this guide or go straight to the Merge PDF tool?', answer: 'If you are assembling a packet from mixed sources and it must arrive by email or portal, follow this guide — ordering and post-merge size are where merges fail. If your files are already ordered and small, go straight to the Merge PDF tool.' },
+      { question: 'Should I use this guide or go straight to the Merge PDF tool?', answer: 'If you are assembling a packet from mixed sources and it must arrive by email or portal, follow this guide â€” ordering and post-merge size are where merges fail. If your files are already ordered and small, go straight to the Merge PDF tool.' },
     ],
   },
   {
@@ -268,7 +268,7 @@ export const useCasePages: UseCasePage[] = [
     targetToolSlug: 'split-pdf',
     intent: 'split pdf pages online',
     overview:
-      'Sometimes you only need pages 2–4 of a long PDF, or one appendix for a client. Splitting avoids sending the entire file. You can extract a page range or separate every page depending on the tool mode. PdfPixels Split PDF is useful when you want a smaller attachment or a clean excerpt without desktop Acrobat.',
+      'Sometimes you only need pages 2â€“4 of a long PDF, or one appendix for a client. Splitting avoids sending the entire file. You can extract a page range or separate every page depending on the tool mode. PdfPixels Split PDF is useful when you want a smaller attachment or a clean excerpt without desktop Acrobat.',
     whoItsFor: [
       'Users extracting a single form page from a packet',
       'Teams sharing only relevant sections of a report',
@@ -276,7 +276,7 @@ export const useCasePages: UseCasePage[] = [
     ],
     steps: [
       { title: 'Upload the PDF', description: 'Open Split PDF and add the source document.' },
-      { title: 'Choose pages or ranges', description: 'Specify what to keep (for example pages 1, 3–5).' },
+      { title: 'Choose pages or ranges', description: 'Specify what to keep (for example pages 1, 3â€“5).' },
       { title: 'Download the new file', description: 'Open it to confirm only the intended pages remain.' },
     ],
     tips: [
@@ -296,11 +296,11 @@ export const useCasePages: UseCasePage[] = [
     targetToolSlug: 'compress-pdf',
     intent: 'compress pdf for email',
     overview:
-      'This is the “attachment too large” rescue ladder, with exact numbers: Gmail caps the entire message around 25MB (aim under 20MB), Outlook.com around 20MB, and many corporate servers and portals enforce 5–10MB or even 1–5MB caps. Scanned PDFs balloon because every page is a high-resolution image. Step one is compression that keeps text readable; if the file is still over the cap, step two is splitting out only the pages the recipient needs; step three is a share link instead of an attachment. PdfPixels Compress PDF is tuned for step one of this email-and-portal workflow.',
+      'This is the â€œattachment too largeâ€ rescue ladder, with exact numbers: Gmail caps the entire message around 25MB (aim under 20MB), Outlook.com around 20MB, and many corporate servers and portals enforce 5â€“10MB or even 1â€“5MB caps. Scanned PDFs balloon because every page is a high-resolution image. Step one is compression that keeps text readable; if the file is still over the cap, step two is splitting out only the pages the recipient needs; step three is a share link instead of an attachment. PdfPixels Compress PDF is tuned for step one of this email-and-portal workflow.',
     whoItsFor: [
-      'Anyone whose PDF bounced with “attachment too large” on Gmail or Outlook',
+      'Anyone whose PDF bounced with â€œattachment too largeâ€ on Gmail or Outlook',
       'HR and admissions teams receiving application packets with strict caps',
-      'Users submitting scanned PDFs to portals with 1–5MB limits',
+      'Users submitting scanned PDFs to portals with 1â€“5MB limits',
     ],
     steps: [
       { title: 'Upload the oversized PDF', description: 'Open Compress PDF and add the file that failed to send.' },
@@ -309,15 +309,15 @@ export const useCasePages: UseCasePage[] = [
       { title: 'Attach and send', description: 'Use the smaller file in Gmail, Outlook, or your portal.' },
     ],
     tips: [
-      'For scanned homework or IDs, slightly lower scan DPI next time (200–300) prevents huge originals.',
-      'Merge only what you need — fewer pages means a smaller email.',
+      'For scanned homework or IDs, slightly lower scan DPI next time (200â€“300) prevents huge originals.',
+      'Merge only what you need â€” fewer pages means a smaller email.',
     ],
     pitfalls: [
       { problem: 'Text becomes hard to read', solution: 'Use a lighter compression level or compress only image-heavy sections by splitting first.' },
     ],
     faqs: [
       { question: 'What size should I aim for?', answer: 'Stay under your provider or portal limit with headroom (for example under 20MB for Gmail, or under 1MB when a form requires it).' },
-      { question: 'Should I use this guide or go straight to the Compress PDF tool?', answer: 'If an email bounced or a portal rejected your file, follow this guide — the cap numbers and compress-then-split ladder above save trial and error. If you already know your target size, go straight to the Compress PDF tool.' },
+      { question: 'Should I use this guide or go straight to the Compress PDF tool?', answer: 'If an email bounced or a portal rejected your file, follow this guide â€” the cap numbers and compress-then-split ladder above save trial and error. If you already know your target size, go straight to the Compress PDF tool.' },
     ],
   },
   {
@@ -327,7 +327,7 @@ export const useCasePages: UseCasePage[] = [
     targetToolSlug: 'remove-image-background',
     intent: 'remove background from image',
     overview:
-      'This guide covers the outcome, not just the cutout: what makes a removal succeed (sharp focus, clear subject-background contrast), what to do with the transparent PNG afterward, and where it fails (hair, fur, glass, and shadows need touch-ups). Marketplace specifics included: Amazon-style listings generally want a pure-white (RGB 255,255,255) backdrop and large images around 2000px on the long edge — so the usual pipeline is remove, composite onto white, then compress under the storefront limit. PdfPixels Remove Background handles the AI isolation step without a design-suite learning curve; the rest of this page is the before-and-after around it.',
+      'This guide covers the outcome, not just the cutout: what makes a removal succeed (sharp focus, clear subject-background contrast), what to do with the transparent PNG afterward, and where it fails (hair, fur, glass, and shadows need touch-ups). Marketplace specifics included: Amazon-style listings generally want a pure-white (RGB 255,255,255) backdrop and large images around 2000px on the long edge â€” so the usual pipeline is remove, composite onto white, then compress under the storefront limit. PdfPixels Remove Background handles the AI isolation step without a design-suite learning curve; the rest of this page is the before-and-after around it.',
     whoItsFor: [
       'E-commerce sellers making clean product images for Amazon, Shopify, or Etsy',
       'Job seekers preparing profile photos with neutral backdrops',
@@ -339,15 +339,15 @@ export const useCasePages: UseCasePage[] = [
       { title: 'Download transparent PNG', description: 'Place the PNG on white, brand colors, or a new scene in your editor.' },
     ],
     tips: [
-      'Hair and semi-transparent objects are harder — use a higher-contrast source photo when possible.',
+      'Hair and semi-transparent objects are harder â€” use a higher-contrast source photo when possible.',
       'After removal, compress the PNG if your storefront has size limits.',
     ],
     pitfalls: [
       { problem: 'Parts of the subject missing', solution: 'Retake with better lighting/contrast or touch up in an editor after export.' },
     ],
     faqs: [
-      { question: 'Can I get a white background instead of transparent?', answer: 'Yes — export transparent PNG, then place it on a white canvas in any editor, or use a tool that composites a solid background.' },
-      { question: 'Should I use this guide or go straight to the Remove Background tool?', answer: 'If the cutout must meet marketplace or profile-photo requirements, read this guide — the composite-onto-white and size steps are where listings get rejected. If you just need a quick transparent PNG, go straight to the Remove Background tool.' },
+      { question: 'Can I get a white background instead of transparent?', answer: 'Yes â€” export transparent PNG, then place it on a white canvas in any editor, or use a tool that composites a solid background.' },
+      { question: 'Should I use this guide or go straight to the Remove Background tool?', answer: 'If the cutout must meet marketplace or profile-photo requirements, read this guide â€” the composite-onto-white and size steps are where listings get rejected. If you just need a quick transparent PNG, go straight to the Remove Background tool.' },
     ],
   },
   {
@@ -386,7 +386,7 @@ export const useCasePages: UseCasePage[] = [
     targetToolSlug: 'compress-pdf',
     intent: 'compress pdf to 300kb',
     overview:
-      'Some application portals enforce very small PDF limits such as 300KB. That is tight for multi-page scans but achievable for short text PDFs or heavily optimized scans. Set expectations by content: 300KB comfortably holds 1–3 pages of digital text, one well-compressed black-and-white scan, or a single page with a small photo — not a 10-page color scan set. Strategy: remove unnecessary pages, use stronger compression, and ensure the source is not a 600 DPI color scan of a simple form. PdfPixels helps you iterate quickly until the file is under 300KB.',
+      'Some application portals enforce very small PDF limits such as 300KB. That is tight for multi-page scans but achievable for short text PDFs or heavily optimized scans. Set expectations by content: 300KB comfortably holds 1â€“3 pages of digital text, one well-compressed black-and-white scan, or a single page with a small photo â€” not a 10-page color scan set. Strategy: remove unnecessary pages, use stronger compression, and ensure the source is not a 600 DPI color scan of a simple form. PdfPixels helps you iterate quickly until the file is under 300KB.',
     whoItsFor: [
       'Applicants facing strict portal file caps',
       'Users uploading single-form PDFs to government sites',
@@ -398,13 +398,13 @@ export const useCasePages: UseCasePage[] = [
     ],
     tips: [
       'Black-and-white scans compress far better than full-color photos of paper.',
-      'If still too large, rescan at 150–200 DPI when possible.',
+      'If still too large, rescan at 150â€“200 DPI when possible.',
     ],
     pitfalls: [
       { problem: 'Cannot reach 300KB', solution: 'Reduce page count first; compression alone cannot fix a 40-page photo scan.' },
     ],
     faqs: [
-      { question: 'Will 300KB be accepted everywhere?', answer: 'Only if that is your portal’s rule. Always follow the specific limit shown on the form.' },
+      { question: 'Will 300KB be accepted everywhere?', answer: 'Only if that is your portalâ€™s rule. Always follow the specific limit shown on the form.' },
       { question: 'How many pages fit in a 300KB PDF?', answer: 'One to three pages of digital text, or one optimized scan. Image-heavy pages consume the budget fastest, so drop photos you do not strictly need before compressing.' },
     ],
   },
@@ -429,10 +429,10 @@ export const useCasePages: UseCasePage[] = [
       'Export from Word/Google Docs to PDF often beats compressing a photo scan for tiny limits.',
     ],
     pitfalls: [
-      { problem: 'Unreadable after compression', solution: '100KB may be impossible for that scan — reduce content or regenerate the file digitally.' },
+      { problem: 'Unreadable after compression', solution: '100KB may be impossible for that scan â€” reduce content or regenerate the file digitally.' },
     ],
     faqs: [
-      { question: 'Is 100KB realistic for a passport scan?', answer: 'Rarely at good quality. Check whether the portal allows 200–500KB or image formats instead.' },
+      { question: 'Is 100KB realistic for a passport scan?', answer: 'Rarely at good quality. Check whether the portal allows 200â€“500KB or image formats instead.' },
       { question: 'Why will my scanned PDF not compress to 100KB?', answer: 'A scan stores each page as an image, and 100KB is smaller than most usable photos. Retype the content or re-export it digitally if the source document exists on your computer.' },
     ],
   },
@@ -443,7 +443,7 @@ export const useCasePages: UseCasePage[] = [
     targetToolSlug: 'compress-image',
     intent: 'compress image to 200kb',
     overview:
-      '200KB is a comfortable target for many web images, email photos, and application uploads. You can usually keep good detail on a resized photo. Think of it as "web quality": sharp enough for screens, small enough for slow connections. Pair the size budget with sensible dimensions — a 200KB photo looks great at 800–1600px wide, but pushing a 4000px camera original into 200KB forces heavy quality loss that no target can hide. For document scans, 200KB covers roughly one page of text at screen resolution; multi-page scans need PDF compression instead. Set the PdfPixels target to 200KB after choosing dimensions that match where the image will actually be shown.',
+      '200KB is a comfortable target for many web images, email photos, and application uploads. You can usually keep good detail on a resized photo. Think of it as "web quality": sharp enough for screens, small enough for slow connections. Pair the size budget with sensible dimensions â€” a 200KB photo looks great at 800â€“1600px wide, but pushing a 4000px camera original into 200KB forces heavy quality loss that no target can hide. For document scans, 200KB covers roughly one page of text at screen resolution; multi-page scans need PDF compression instead. Set the PdfPixels target to 200KB after choosing dimensions that match where the image will actually be shown.',
     whoItsFor: [
       'Bloggers and marketers preparing web images',
       'Users attaching photos under common 200KB rules',
@@ -454,15 +454,15 @@ export const useCasePages: UseCasePage[] = [
       { title: 'Download and use', description: 'Confirm the file size in your file explorer if the portal is strict.' },
     ],
     tips: [
-      'For full-width website heroes you may need more than 200KB — follow your site’s performance budget.',
-      'Resize very large originals down to display dimensions first, then apply the 200KB target — quality holds up noticeably better.',
+      'For full-width website heroes you may need more than 200KB â€” follow your siteâ€™s performance budget.',
+      'Resize very large originals down to display dimensions first, then apply the 200KB target â€” quality holds up noticeably better.',
     ],
     pitfalls: [
       { problem: 'Slightly over 200KB', solution: 'Target 190KB to allow for encoder variance.' },
     ],
     faqs: [
       { question: 'Is WebP better than JPEG at 200KB?', answer: 'Often yes for web, but only if your destination accepts WebP.' },
-      { question: 'What image dimensions work best at 200KB?', answer: 'Around 800–1600 pixels wide for photos. If your original is a 4000px+ camera shot, resize to display size first — forcing a huge image into 200KB produces visible blur no compressor can avoid.' },
+      { question: 'What image dimensions work best at 200KB?', answer: 'Around 800â€“1600 pixels wide for photos. If your original is a 4000px+ camera shot, resize to display size first â€” forcing a huge image into 200KB produces visible blur no compressor can avoid.' },
       { question: 'Can I compress a scanned document image to 200KB?', answer: 'A single page of black-and-white text usually fits. Color scans of forms work better as a PDF run through PDF compression, which handles multi-page documents more predictably.' },
     ],
   },
@@ -473,7 +473,7 @@ export const useCasePages: UseCasePage[] = [
     targetToolSlug: 'compress-image',
     intent: 'resize image to kb',
     overview:
-      'People say “resize to KB” when they mean “make the file weigh X kilobytes,” not just change width and height. True KB targeting is compression (and sometimes dimension reduction) until the byte size matches. PdfPixels Compress Image is the right tool: set the KB target and let the engine balance quality and size. Pair with Resize Image when a form also demands exact pixel or print dimensions.',
+      'People say â€œresize to KBâ€ when they mean â€œmake the file weigh X kilobytes,â€ not just change width and height. True KB targeting is compression (and sometimes dimension reduction) until the byte size matches. PdfPixels Compress Image is the right tool: set the KB target and let the engine balance quality and size. Pair with Resize Image when a form also demands exact pixel or print dimensions.',
     whoItsFor: [
       'Anyone filling forms that list a maximum KB size',
       'Users who tried only changing width/height and still failed the limit',
@@ -484,7 +484,7 @@ export const useCasePages: UseCasePage[] = [
       { title: 'Also match dimensions if required', description: 'Use Resize Image when the form lists pixels or inches too.' },
     ],
     tips: [
-      'Dimensions and file size are related but not the same — you often need both tools.',
+      'Dimensions and file size are related but not the same â€” you often need both tools.',
     ],
     pitfalls: [
       { problem: 'Resized pixels but file still too big', solution: 'You changed resolution only; run KB compression next.' },
@@ -500,13 +500,13 @@ export const useCasePages: UseCasePage[] = [
     targetToolSlug: 'resize-image',
     intent: 'resize image in cm',
     overview:
-      'Print sizes are specified in centimeters or inches, not raw pixels. A 10×15 cm photo at 300 DPI needs a different pixel count than the same print at 150 DPI. When you resize in cm, always consider DPI for print sharpness. PdfPixels Resize Image supports cm/mm/inch style workflows so school forms, lab prints, and document photos land at the right physical size.',
+      'Print sizes are specified in centimeters or inches, not raw pixels. A 10Ã—15 cm photo at 300 DPI needs a different pixel count than the same print at 150 DPI. When you resize in cm, always consider DPI for print sharpness. PdfPixels Resize Image supports cm/mm/inch style workflows so school forms, lab prints, and document photos land at the right physical size.',
     whoItsFor: [
       'Users preparing photos for print labs',
       'Students submitting documents with cm photo requirements',
     ],
     steps: [
-      { title: 'Confirm print size and DPI', description: 'Example: 3.5×4.5 cm at 300 DPI for some ID photos.' },
+      { title: 'Confirm print size and DPI', description: 'Example: 3.5Ã—4.5 cm at 300 DPI for some ID photos.' },
       { title: 'Upload and choose cm units', description: 'Enter width and height in centimeters.' },
       { title: 'Export and print-test', description: 'Print one copy to verify size before submitting many copies.' },
     ],
@@ -527,7 +527,7 @@ export const useCasePages: UseCasePage[] = [
     targetToolSlug: 'heic-to-jpg',
     intent: 'convert heic to jpg windows',
     overview:
-      'Windows does not always open HEIC out of the box. Microsoft Store codecs help, but an online converter is often faster when you just need a JPG for a form or email — and it sidesteps the codec maze entirely (some HEIC files need a separate paid HEVC extension even after the free one is installed). Transfer the photo from iPhone (cable, OneDrive, email, or chat), then convert on the PC. If you transfer by cable often, flip iPhone Settings → Photos → Transfer to Mac or PC to "Automatic" and iOS converts to JPEG during transfer. PdfPixels runs in the browser on Windows 10/11 with Chrome, Edge, or Firefox — no extra codec required for the conversion step.',
+      'Windows does not always open HEIC out of the box. Microsoft Store codecs help, but an online converter is often faster when you just need a JPG for a form or email â€” and it sidesteps the codec maze entirely (some HEIC files need a separate paid HEVC extension even after the free one is installed). Transfer the photo from iPhone (cable, OneDrive, email, or chat), then convert on the PC. If you transfer by cable often, flip iPhone Settings â†’ Photos â†’ Transfer to Mac or PC to "Automatic" and iOS converts to JPEG during transfer. PdfPixels runs in the browser on Windows 10/11 with Chrome, Edge, or Firefox â€” no extra codec required for the conversion step.',
     whoItsFor: [
       'Windows users receiving iPhone photos',
       'Offices standardizing on JPG for records',
@@ -538,7 +538,7 @@ export const useCasePages: UseCasePage[] = [
       { title: 'Save JPG to a known folder', description: 'Use the JPG for Outlook, Word, or web uploads.' },
     ],
     tips: [
-      'If you convert often, you can also enable HEIF support in Windows — but a browser tool works immediately.',
+      'If you convert often, you can also enable HEIF support in Windows â€” but a browser tool works immediately.',
     ],
     pitfalls: [
       { problem: 'File explorer shows blank thumbnail', solution: 'That can still convert; blank thumbs often mean missing codec, not a bad file.' },
@@ -555,7 +555,7 @@ export const useCasePages: UseCasePage[] = [
     targetToolSlug: 'compress-image',
     intent: 'reduce photo size for email',
     overview:
-      'Modern phone photos are several megabytes each. A handful of originals can exceed email limits or clog inboxes. For email, you rarely need full camera resolution — a 1280–1920px wide JPEG at moderate quality is usually enough to view on phones and desktops. Budget by message, not by photo: Gmail caps a message around 25MB of attachments and Outlook.com around 20MB, so ten 2MB photos fit — thirty do not. Compress Image on PdfPixels reduces weight quickly; resize first if you are sending many pictures, and consider a shared album link when the set runs into dozens of photos.',
+      'Modern phone photos are several megabytes each. A handful of originals can exceed email limits or clog inboxes. For email, you rarely need full camera resolution â€” a 1280â€“1920px wide JPEG at moderate quality is usually enough to view on phones and desktops. Budget by message, not by photo: Gmail caps a message around 25MB of attachments and Outlook.com around 20MB, so ten 2MB photos fit â€” thirty do not. Compress Image on PdfPixels reduces weight quickly; resize first if you are sending many pictures, and consider a shared album link when the set runs into dozens of photos.',
     whoItsFor: [
       'Families sharing event photos by email',
       'Workers sending site or receipt photos to colleagues',
@@ -573,7 +573,7 @@ export const useCasePages: UseCasePage[] = [
     ],
     faqs: [
       { question: 'Should I use ZIP for photos?', answer: 'ZIP rarely helps already-compressed JPEGs. Resize/compress images instead.' },
-      { question: 'What file size should each photo be for email?', answer: 'Roughly 100–500KB per photo keeps a batch sendable and still looks good on screens. Reserve multi-MB originals for cloud links where the recipient needs full resolution.' },
+      { question: 'What file size should each photo be for email?', answer: 'Roughly 100â€“500KB per photo keeps a batch sendable and still looks good on screens. Reserve multi-MB originals for cloud links where the recipient needs full resolution.' },
     ],
   },
   {
@@ -583,7 +583,7 @@ export const useCasePages: UseCasePage[] = [
     targetToolSlug: 'merge-pdf',
     intent: 'merge pdf files windows',
     overview:
-      'Windows users often look for "free PDF merger" software and end up with toolbars or trials. A browser-based merge avoids installs on locked work PCs. Windows 10 and 11 have no built-in way to combine several existing PDFs — Microsoft Edge can print a single file to PDF, but joining multiple documents is not part of the OS. Upload PDFs from File Explorer into PdfPixels Merge PDF, order them, and download a single document. That is usually enough for office and school tasks without admin rights to install apps, and the same flow works identically in Edge, Chrome, and Firefox.',
+      'Windows users often look for "free PDF merger" software and end up with toolbars or trials. A browser-based merge avoids installs on locked work PCs. Windows 10 and 11 have no built-in way to combine several existing PDFs â€” Microsoft Edge can print a single file to PDF, but joining multiple documents is not part of the OS. Upload PDFs from File Explorer into PdfPixels Merge PDF, order them, and download a single document. That is usually enough for office and school tasks without admin rights to install apps, and the same flow works identically in Edge, Chrome, and Firefox.',
     whoItsFor: [
       'Windows office users without install permissions',
       'Students combining assignment PDFs on a PC',
@@ -600,8 +600,8 @@ export const useCasePages: UseCasePage[] = [
       { problem: 'Work browser blocks uploads', solution: 'Try another approved browser or ask IT; do not upload confidential files to untrusted tools.' },
     ],
     faqs: [
-      { question: 'Is this a Windows app?', answer: 'No — it is a web tool that runs in your Windows browser.' },
-      { question: 'Does Windows 11 have a built-in PDF merger?', answer: 'No. Windows can print to PDF and open PDFs in Edge, but combining multiple PDF files into one requires a separate tool — a browser merger needs no installation.' },
+      { question: 'Is this a Windows app?', answer: 'No â€” it is a web tool that runs in your Windows browser.' },
+      { question: 'Does Windows 11 have a built-in PDF merger?', answer: 'No. Windows can print to PDF and open PDFs in Edge, but combining multiple PDF files into one requires a separate tool â€” a browser merger needs no installation.' },
     ],
   },
   {
@@ -611,7 +611,7 @@ export const useCasePages: UseCasePage[] = [
     targetToolSlug: 'image-to-pdf',
     intent: 'jpg to pdf converter',
     overview:
-      'Turning images into a PDF is ideal for applications that only accept PDF uploads: photo sets, signed forms photographed on a phone, or multi-page scans. Order the images as pages, then export one PDF. Three settings decide how usable the result is: page size (A4 or Letter keeps documents printable; fit-to-image preserves photos exactly), orientation, and the fit mode — contain shrinks each image to show fully, while fill crops edges to cover the page. If the portal also caps file size, compress the finished PDF rather than degrading every photo individually. PdfPixels Image to PDF keeps the flow simple for phone and desktop users who do not want a full desktop publisher.',
+      'Turning images into a PDF is ideal for applications that only accept PDF uploads: photo sets, signed forms photographed on a phone, or multi-page scans. Order the images as pages, then export one PDF. Three settings decide how usable the result is: page size (A4 or Letter keeps documents printable; fit-to-image preserves photos exactly), orientation, and the fit mode â€” contain shrinks each image to show fully, while fill crops edges to cover the page. If the portal also caps file size, compress the finished PDF rather than degrading every photo individually. PdfPixels Image to PDF keeps the flow simple for phone and desktop users who do not want a full desktop publisher.',
     whoItsFor: [
       'Users submitting photo evidence as PDF',
       'Anyone converting scans to a single PDF packet',
@@ -623,7 +623,7 @@ export const useCasePages: UseCasePage[] = [
     ],
     tips: [
       'Capture pages straight-on with good light to avoid unreadable scans.',
-      'Photograph documents against a dark mat — auto-crop and page edges become far cleaner.',
+      'Photograph documents against a dark mat â€” auto-crop and page edges become far cleaner.',
     ],
     pitfalls: [
       { problem: 'PDF too large', solution: 'Compress images before conversion or compress the PDF after.' },
@@ -631,7 +631,7 @@ export const useCasePages: UseCasePage[] = [
     faqs: [
       { question: 'Can I mix PNG and JPG?', answer: 'Yes on most converters, including typical image-to-PDF workflows.' },
       { question: 'What page size will my photos get?', answer: 'You choose: A4, Letter, Legal, A3, A5, or fit-to-image, which sizes each page to the photo itself. Portrait/landscape can be auto-detected or forced.' },
-      { question: 'Why is my PDF much larger than the photos combined?', answer: 'Usually it is not — images are embedded at original quality. If the PDF faces a strict upload cap, compress the finished PDF; one compression pass on the final file beats re-saving every photo.' },
+      { question: 'Why is my PDF much larger than the photos combined?', answer: 'Usually it is not â€” images are embedded at original quality. If the PDF faces a strict upload cap, compress the finished PDF; one compression pass on the final file beats re-saving every photo.' },
     ],
   },
   {
@@ -644,7 +644,7 @@ export const useCasePages: UseCasePage[] = [
       'JPEG to PNG is useful when you need a lossless-style export for editing, or a format some tools prefer. Converting JPEG to PNG does not magically restore quality lost in the original JPEG, and PNG files are often larger. Transparency is only available if you add it later (JPEG has no alpha). The conversion earns its keep in specific spots: design tools that prefer PNG imports, archives where the file will be edited and re-saved many times (PNG avoids stacking JPEG artifacts), and workflows that require a "PNG only" upload. Use this conversion when a workflow requires PNG, not as a general way to shrink files.',
     whoItsFor: [
       'Editors who need PNG for a design tool',
-      'Users meeting a “PNG only” upload requirement',
+      'Users meeting a â€œPNG onlyâ€ upload requirement',
     ],
     steps: [
       { title: 'Upload the JPEG', description: 'Open JPEG to PNG and add your file.' },
@@ -658,8 +658,8 @@ export const useCasePages: UseCasePage[] = [
     ],
     faqs: [
       { question: 'Will PNG fix blurry JPEG artifacts?', answer: 'No. Artifacts remain; PNG just stores them in another container.' },
-      { question: 'Why does my file size triple after converting to PNG?', answer: 'PNG stores photos less efficiently than JPEG by design. For camera images, a 2MB JPEG commonly becomes a 5–8MB PNG. The size jump is normal and does not mean quality improved.' },
-      { question: 'Can I get a transparent PNG from a JPEG?', answer: 'Not from the conversion alone — JPEG has no transparency, so the converted PNG gets a solid background. Use a background remover on the PNG if you need a transparent cutout.' },
+      { question: 'Why does my file size triple after converting to PNG?', answer: 'PNG stores photos less efficiently than JPEG by design. For camera images, a 2MB JPEG commonly becomes a 5â€“8MB PNG. The size jump is normal and does not mean quality improved.' },
+      { question: 'Can I get a transparent PNG from a JPEG?', answer: 'Not from the conversion alone â€” JPEG has no transparency, so the converted PNG gets a solid background. Use a background remover on the PNG if you need a transparent cutout.' },
     ],
   },
   {
@@ -696,7 +696,7 @@ export const useCasePages: UseCasePage[] = [
     targetToolSlug: 'remove-image-metadata',
     intent: 'remove image metadata online',
     overview:
-      'Photos can embed EXIF metadata: camera model, timestamps, and sometimes GPS location. Before publishing sensitive images online, many people strip metadata for privacy. The risk concentrates on the paths that deliver your original file: email attachments, cloud drive links, smaller classifieds sites, and images you upload to your own site keep metadata, while major social networks strip it on upload. Removing metadata does not change what is visible in the picture itself — it clears hidden fields. Use PdfPixels metadata tools when you want a cleaner file for public posts or client delivery, and keep the unstripped original in a private archive if you shoot professionally.',
+      'Photos can embed EXIF metadata: camera model, timestamps, and sometimes GPS location. Before publishing sensitive images online, many people strip metadata for privacy. The risk concentrates on the paths that deliver your original file: email attachments, cloud drive links, smaller classifieds sites, and images you upload to your own site keep metadata, while major social networks strip it on upload. Removing metadata does not change what is visible in the picture itself â€” it clears hidden fields. Use PdfPixels metadata tools when you want a cleaner file for public posts or client delivery, and keep the unstripped original in a private archive if you shoot professionally.',
     whoItsFor: [
       'Users sharing photos publicly without location data',
       'Professionals delivering files without camera EXIF clutter',
@@ -714,7 +714,7 @@ export const useCasePages: UseCasePage[] = [
     ],
     faqs: [
       { question: 'Is metadata removal permanent?', answer: 'For the exported file yes. Keep the original separately if you still need EXIF for your archive.' },
-      { question: 'Do social networks remove EXIF automatically?', answer: 'Facebook, Instagram, X, and WhatsApp strip metadata on upload. The riskier paths are direct sharing — email attachments, cloud drive links, and smaller websites — which usually deliver your original file untouched.' },
+      { question: 'Do social networks remove EXIF automatically?', answer: 'Facebook, Instagram, X, and WhatsApp strip metadata on upload. The riskier paths are direct sharing â€” email attachments, cloud drive links, and smaller websites â€” which usually deliver your original file untouched.' },
     ],
   },
   {
@@ -724,7 +724,7 @@ export const useCasePages: UseCasePage[] = [
     targetToolSlug: 'passport-size-photo',
     intent: 'create passport size photo free',
     overview:
-      'Studio passport photos are convenient but not always necessary for a first draft. With a clear selfie or portrait, a plain background, and correct crop ratios, you can produce a free passport-size photo at home for many applications. Rules differ by country and document: the classic US passport photo is 2×2 inches with the head between 1 and 1⅜ inches; India commonly uses 3.5×4.5 cm; many visa applications now specify pixel dimensions for digital uploads (the US diversity visa lottery, for example, wants a square image within a defined pixel range). Use PdfPixels to get dimensions right, then validate against the official checklist for your document type — acceptance depends on meeting the rules, not on who cropped the photo.',
+      'Studio passport photos are convenient but not always necessary for a first draft. With a clear selfie or portrait, a plain background, and correct crop ratios, you can produce a free passport-size photo at home for many applications. Rules differ by country and document: the classic US passport photo is 2Ã—2 inches with the head between 1 and 1â…œ inches; India commonly uses 3.5Ã—4.5 cm; many visa applications now specify pixel dimensions for digital uploads (the US diversity visa lottery, for example, wants a square image within a defined pixel range). Use PdfPixels to get dimensions right, then validate against the official checklist for your document type â€” acceptance depends on meeting the rules, not on who cropped the photo.',
     whoItsFor: [
       'Travelers drafting passport or visa photos',
       'Users renewing IDs with standard photo sizes',
@@ -735,25 +735,25 @@ export const useCasePages: UseCasePage[] = [
       { title: 'Export print or digital copy', description: 'Follow whether your application wants a digital upload or printed photos.' },
     ],
     tips: [
-      'Read the latest official photo guide — automated crops help size, not every legal rule.',
-      'Digital uploads often specify pixels and KB limits; check those numbers before printing 4×6 sheets.',
+      'Read the latest official photo guide â€” automated crops help size, not every legal rule.',
+      'Digital uploads often specify pixels and KB limits; check those numbers before printing 4Ã—6 sheets.',
     ],
     pitfalls: [
       { problem: 'Rejected for shadows or background', solution: 'Retake the photo; editing cannot always fix poor lighting acceptably.' },
     ],
     faqs: [
       { question: 'Is a free online passport photo always accepted?', answer: 'Acceptance depends on meeting official rules, not on the tool brand. Always verify requirements.' },
-      { question: 'What size is a US passport photo?', answer: '2×2 inches (51×51 mm) with the head measuring 1 to 1⅜ inches from chin to crown. Requirements differ by country and visa type, so confirm against the official checklist for your application.' },
+      { question: 'What size is a US passport photo?', answer: '2Ã—2 inches (51Ã—51 mm) with the head measuring 1 to 1â…œ inches from chin to crown. Requirements differ by country and visa type, so confirm against the official checklist for your application.' },
     ],
   },
   {
     slug: 'extract-images-from-pdf',
     title: 'Extract Images from PDF at Full Quality',
-    description: 'Pull the original embedded photos and graphics out of any PDF and download them in one ZIP — no screenshots.',
+    description: 'Pull the original embedded photos and graphics out of any PDF and download them in one ZIP â€” no screenshots.',
     targetToolSlug: 'extract-pdf-images',
     intent: 'extract images from pdf',
     overview:
-      'A PDF is often the only surviving copy of a document — the report with the product shots, the catalog with the supplier photos, the design handoff where the original image files were never shared. Taking screenshots of pages re-captures those images at screen resolution, scaled and re-compressed. Extracting returns the actual image data embedded in the file: the same bytes the PDF displays, at the resolution the author placed. The difference is obvious on anything you plan to reuse — print, crop, or drop into a deck.',
+      'A PDF is often the only surviving copy of a document â€” the report with the product shots, the catalog with the supplier photos, the design handoff where the original image files were never shared. Taking screenshots of pages re-captures those images at screen resolution, scaled and re-compressed. Extracting returns the actual image data embedded in the file: the same bytes the PDF displays, at the resolution the author placed. The difference is obvious on anything you plan to reuse â€” print, crop, or drop into a deck.',
     whoItsFor: [
       'Designers recovering assets from PDF handoffs',
       'Marketers reusing charts and photos from company reports',
@@ -763,15 +763,15 @@ export const useCasePages: UseCasePage[] = [
       { title: 'Upload the PDF', description: 'Drop the file whose images you need into the extractor.' },
       { title: 'Run the extraction', description: 'The tool walks the document and saves every embedded image.' },
       { title: 'Download the ZIP', description: 'Unzip to get image-001.jpg, image-002.png and so on, in document order.' },
-      { title: 'Reuse freely', description: 'Crop, edit, or place the images — they are full original quality.' },
+      { title: 'Reuse freely', description: 'Crop, edit, or place the images â€” they are full original quality.' },
     ],
     tips: [
       'Fewer images than expected usually means reuse: logos and backgrounds are stored once and shown on many pages.',
-      'If nothing extracts, the PDF is vector art or uses an exotic codec — render pages with PDF to JPG instead.',
+      'If nothing extracts, the PDF is vector art or uses an exotic codec â€” render pages with PDF to JPG instead.',
       'Extracted images can appear rotated if the page displays them turned; rotate the image file itself afterwards.',
     ],
     pitfalls: [
-      { problem: 'Images look identical on several pages', solution: 'That is one shared image, correctly extracted once — not a bug.' },
+      { problem: 'Images look identical on several pages', solution: 'That is one shared image, correctly extracted once â€” not a bug.' },
       { problem: 'Quality is lower than expected', solution: 'The author embedded a low-resolution image. Extraction returns what is stored; no tool can invent pixels that were never there.' },
     ],
     faqs: [
@@ -782,11 +782,11 @@ export const useCasePages: UseCasePage[] = [
   {
     slug: 'make-scanned-pdf-searchable',
     title: 'Make a Scanned PDF Searchable with OCR',
-    description: 'Turn image-only scanned PDFs into text you can select, search, and copy — using free online OCR.',
+    description: 'Turn image-only scanned PDFs into text you can select, search, and copy â€” using free online OCR.',
     targetToolSlug: 'ocr-pdf',
     intent: 'make scanned pdf searchable',
     overview:
-      'When you press Ctrl+F in a scanned PDF, nothing happens: the pages are photographs of paper, and there is no text underneath to search. OCR (optical character recognition) closes that gap — each page is analyzed, the shapes of letters are recognized, and the words come back as real, selectable text. It is the difference between a scan you can only squint at and a document you can quote, search, and edit. Recognition quality tracks source quality: clean 300 DPI prints of typed text recognize very well, while faxes and handwriting need proofreading.',
+      'When you press Ctrl+F in a scanned PDF, nothing happens: the pages are photographs of paper, and there is no text underneath to search. OCR (optical character recognition) closes that gap â€” each page is analyzed, the shapes of letters are recognized, and the words come back as real, selectable text. It is the difference between a scan you can only squint at and a document you can quote, search, and edit. Recognition quality tracks source quality: clean 300 DPI prints of typed text recognize very well, while faxes and handwriting need proofreading.',
     whoItsFor: [
       'Students quoting from scanned course readings',
       'Professionals digitizing signed contracts and letters',
@@ -799,50 +799,50 @@ export const useCasePages: UseCasePage[] = [
       { title: 'Copy or download', description: 'Save the text as a .txt file or paste it where you need it.' },
     ],
     tips: [
-      'If the PDF already has selectable text, use PDF to Text instead — it is instant and perfectly accurate.',
+      'If the PDF already has selectable text, use PDF to Text instead â€” it is instant and perfectly accurate.',
       'Re-scan at 300 DPI and straighten pages before OCR for the biggest accuracy gain.',
       'Long documents exceed the per-run page cap; split into ranges and process each part.',
     ],
     pitfalls: [
-      { problem: 'Recognized text is garbled', solution: 'Low resolution or skew is the usual cause — re-scan at higher quality rather than re-running OCR on the same image.' },
+      { problem: 'Recognized text is garbled', solution: 'Low resolution or skew is the usual cause â€” re-scan at higher quality rather than re-running OCR on the same image.' },
       { problem: 'Non-English characters are missing', solution: 'Recognition currently runs with English language data; other scripts will not convert reliably.' },
     ],
     faqs: [
-      { question: 'Does OCR change my original PDF?', answer: 'No — the tool reads the file and returns recognized text. Your original PDF stays untouched on your device.' },
+      { question: 'Does OCR change my original PDF?', answer: 'No â€” the tool reads the file and returns recognized text. Your original PDF stays untouched on your device.' },
       { question: 'Can OCR read handwriting?', answer: 'Neat printing sometimes works; cursive handwriting generally does not. Expect to proofread heavily and consider manual transcription for handwriting.' },
     ],
   },
   {
     slug: 'split-pdf-by-size-for-email',
     title: 'Split a PDF by Size So It Fits Email and Upload Limits',
-    description: 'Divide an oversized PDF into parts that each stay under Gmail, Outlook, or portal size caps — automatically.',
+    description: 'Divide an oversized PDF into parts that each stay under Gmail, Outlook, or portal size caps â€” automatically.',
     targetToolSlug: 'split-pdf-by-size',
     intent: 'split pdf by size',
     overview:
-      'Compression alone cannot always solve a size cap: a 60MB scan squeezed below 10MB turns to mush, and some portals cap uploads at 5MB or less no matter what the document contains. Splitting by size takes a different route — the document stays at full quality, but is divided into consecutive parts (pages 1–40, 41–78, and so on) that each fit the limit you choose. Recipients read part one, then part two; nothing is lost and nothing is degraded. It is the honest fix when quality matters more than a single attachment.',
+      'Compression alone cannot always solve a size cap: a 60MB scan squeezed below 10MB turns to mush, and some portals cap uploads at 5MB or less no matter what the document contains. Splitting by size takes a different route â€” the document stays at full quality, but is divided into consecutive parts (pages 1â€“40, 41â€“78, and so on) that each fit the limit you choose. Recipients read part one, then part two; nothing is lost and nothing is degraded. It is the honest fix when quality matters more than a single attachment.',
     whoItsFor: [
-      'Anyone stuck under Gmail’s 25MB or Outlook’s 20MB cap',
+      'Anyone stuck under Gmailâ€™s 25MB or Outlookâ€™s 20MB cap',
       'Applicants whose single-file portal limits defeat compression',
       'Teams sharing long, high-quality scans internally',
     ],
     steps: [
       { title: 'Upload the large PDF', description: 'Drop in the file that is too big to send whole.' },
-      { title: 'Pick a size limit', description: 'Choose 25MB for Gmail, 20MB for Outlook, or the portal’s stated cap.' },
+      { title: 'Pick a size limit', description: 'Choose 25MB for Gmail, 20MB for Outlook, or the portalâ€™s stated cap.' },
       { title: 'Split', description: 'Parts are built in page order, each measured against the real saved file size.' },
-      { title: 'Send the parts in order', description: 'Download the ZIP and attach part-1, part-2, … in sequence.' },
+      { title: 'Send the parts in order', description: 'Download the ZIP and attach part-1, part-2, â€¦ in sequence.' },
     ],
     tips: [
       'Leave headroom: email encoding inflates files by roughly a third, so pick a limit about a quarter below the stated cap.',
       'Tell the recipient how many parts to expect so they know the set is complete.',
-      'Try compression first if the limit is generous — one file is always easier than five.',
+      'Try compression first if the limit is generous â€” one file is always easier than five.',
     ],
     pitfalls: [
       { problem: 'A single page exceeds the limit on its own', solution: 'A page cannot be divided; compress the document first or send that page separately through a file-sharing link.' },
-      { problem: 'Parts arrived out of order', solution: 'Filenames are part-1.pdf, part-2.pdf in page order — re-sort by name before forwarding.' },
+      { problem: 'Parts arrived out of order', solution: 'Filenames are part-1.pdf, part-2.pdf in page order â€” re-sort by name before forwarding.' },
     ],
     faqs: [
       { question: 'How is splitting by size different from compressing?', answer: 'Compression shrinks the whole file, with some quality cost. Splitting keeps every page at original quality and divides the document into parts that each fit the limit.' },
-      { question: 'Will the parts still open as normal PDFs?', answer: 'Yes — every part is a complete, standalone PDF with its pages copied unchanged. Open, print, and forward them like any PDF.' },
+      { question: 'Will the parts still open as normal PDFs?', answer: 'Yes â€” every part is a complete, standalone PDF with its pages copied unchanged. Open, print, and forward them like any PDF.' },
     ],
   },
   {
@@ -918,7 +918,7 @@ export const useCasePages: UseCasePage[] = [
     targetToolSlug: 'pdf-to-word',
     intent: 'convert scanned pdf to word',
     overview:
-      'Paper agreements, printed book pages, and legacy office memos scanned into PDFs are essentially flat picture files — you cannot highlight, copy, or edit any of the text. PdfPixels PDF to Word combines high-fidelity optical character recognition (OCR) and document flow parsing to reconstruct paragraphs, tables, and bulleted lists into a fully editable Microsoft Word (.docx) document, saving hours of manual re-typing.',
+      'Paper agreements, printed book pages, and legacy office memos scanned into PDFs are essentially flat picture files â€” you cannot highlight, copy, or edit any of the text. PdfPixels PDF to Word combines high-fidelity optical character recognition (OCR) and document flow parsing to reconstruct paragraphs, tables, and bulleted lists into a fully editable Microsoft Word (.docx) document, saving hours of manual re-typing.',
     whoItsFor: [
       'Attorneys editing historical court documents and scanned discovery materials',
       'Students and researchers transcribing physical book excerpts and paper journals',
@@ -1079,59 +1079,59 @@ export const useCasePages: UseCasePage[] = [
   {
     slug: 'compress-pdf-to-1mb',
     title: 'Compress PDF to Under 1MB Online Free',
-    description: 'Reduce any PDF to under 1MB for college application portals, HR upload systems, and government forms — free, no signup.',
+    description: 'Reduce any PDF to under 1MB for college application portals, HR upload systems, and government forms â€” free, no signup.',
     targetToolSlug: 'compress-pdf',
     intent: 'compress pdf to 1mb online free',
     overview:
-      'College application portals, HR recruitment systems, and government upload forms routinely cap résumés and transcripts at 1MB. A scanned multi-page résumé or academic portfolio can easily reach 8–20MB, making submission impossible without compression. The challenge is getting under 1MB without blurring text or making scanned certificates unreadable. PdfPixels Compress PDF lets you choose a balanced or aggressive compression level to reliably land under that 1MB ceiling — processing entirely in your browser so your personal documents never touch an external server. Students submitting Common App essays, job seekers attaching résumés to ATS platforms, and visa applicants uploading financial affidavits all face this exact constraint every day.',
+      'College application portals, HR recruitment systems, and government upload forms routinely cap rÃ©sumÃ©s and transcripts at 1MB. A scanned multi-page rÃ©sumÃ© or academic portfolio can easily reach 8â€“20MB, making submission impossible without compression. The challenge is getting under 1MB without blurring text or making scanned certificates unreadable. PdfPixels Compress PDF lets you choose a balanced or aggressive compression level to reliably land under that 1MB ceiling â€” processing entirely in your browser so your personal documents never touch an external server. Students submitting Common App essays, job seekers attaching rÃ©sumÃ©s to ATS platforms, and visa applicants uploading financial affidavits all face this exact constraint every day.',
     whoItsFor: [
       'Students submitting college applications or scholarship documents online',
       'Job seekers uploading CVs to HR and ATS portals with file-size limits',
       'Visa and government applicants uploading financial or identity documents',
     ],
     steps: [
-      { title: 'Identify the portal limit', description: 'Check the upload error message or form instructions — confirm it is a 1MB (1,024KB) limit, not 1MB in megabytes of a different definition.' },
+      { title: 'Identify the portal limit', description: 'Check the upload error message or form instructions â€” confirm it is a 1MB (1,024KB) limit, not 1MB in megabytes of a different definition.' },
       { title: 'Upload your PDF to Compress PDF', description: 'Open PdfPixels Compress PDF in your browser and drag your oversized file into the upload zone.' },
-      { title: 'Select Balanced or Extreme compression', description: 'Choose Balanced (keeps text sharp, 70–80% size reduction) or Extreme (maximum shrink to ~72 DPI) if balanced still exceeds 1MB.' },
+      { title: 'Select Balanced or Extreme compression', description: 'Choose Balanced (keeps text sharp, 70â€“80% size reduction) or Extreme (maximum shrink to ~72 DPI) if balanced still exceeds 1MB.' },
       { title: 'Download and verify file size', description: 'After downloading, right-click the file and check Properties to confirm it is under 1,024KB before submitting.' },
     ],
     tips: [
-      'If your PDF is a scanned document with photos, try Extreme compression — text stays readable at 72 DPI for most scanned pages.',
+      'If your PDF is a scanned document with photos, try Extreme compression â€” text stays readable at 72 DPI for most scanned pages.',
       'Remove blank trailing pages before compressing; fewer pages means a smaller footprint.',
-      'If one pass is not enough, re-upload the compressed output for a second round — diminishing returns apply but it often squeezes out the final few KB.',
+      'If one pass is not enough, re-upload the compressed output for a second round â€” diminishing returns apply but it often squeezes out the final few KB.',
     ],
     pitfalls: [
       { problem: 'Portal still rejects a file showing 1.02MB', solution: 'Target 900KB on your second attempt to leave a safe margin for rounding differences between browsers and upload validators.' },
-      { problem: 'Scanned text becomes blurry after compression', solution: 'Use Balanced instead of Extreme for text-heavy scans — Extreme is best reserved for photo-heavy portfolios.' },
+      { problem: 'Scanned text becomes blurry after compression', solution: 'Use Balanced instead of Extreme for text-heavy scans â€” Extreme is best reserved for photo-heavy portfolios.' },
     ],
     faqs: [
-      { question: 'Can I compress a 20MB scanned résumé to under 1MB?', answer: 'Yes. Scanned PDFs are essentially embedded images, and aggressive downsampling from 300 DPI to 72–96 DPI achieves 90–95% size reduction. Text remains readable for screen review at those settings.' },
+      { question: 'Can I compress a 20MB scanned rÃ©sumÃ© to under 1MB?', answer: 'Yes. Scanned PDFs are essentially embedded images, and aggressive downsampling from 300 DPI to 72â€“96 DPI achieves 90â€“95% size reduction. Text remains readable for screen review at those settings.' },
       { question: 'Does compressing a PDF damage the original file?', answer: 'No. PdfPixels works on a copy in your browser memory and downloads a new file. Your original PDF on disk is never modified.' },
     ],
   },
   {
     slug: 'convert-word-to-pdf-free',
-    title: 'Convert Word to PDF Free Online — No Microsoft 365 Needed',
-    description: 'Convert DOCX or DOC files to PDF free online without a Microsoft 365 subscription — preserves fonts, formatting, and margins.',
+    title: 'Convert Word to PDF Free Online â€” No Microsoft 365 Needed',
+    description: 'Convert DOCX or DOC files to PDF free online without a Microsoft 365 subscription â€” preserves fonts, formatting, and margins.',
     targetToolSlug: 'word-to-pdf',
     intent: 'convert word to pdf free online',
     overview:
-      'Sending a Word document to an employer, university, or client is risky: if they use a different version of Word or a different operating system, fonts shift, bullet points break, and page margins collapse. Converting to PDF locks your formatting in place so every recipient sees your document exactly as you designed it. Most free methods require either a Microsoft 365 subscription or uploading to a third-party cloud service that may retain your file. PdfPixels converts DOCX to PDF directly in your browser using WebAssembly — your résumé, cover letter, or proposal never leaves your device, and there is no subscription, watermark, or page limit. Students submitting assignments, job seekers converting CVs, and freelancers sending proposals all benefit from instant, private Word-to-PDF conversion.',
+      'Sending a Word document to an employer, university, or client is risky: if they use a different version of Word or a different operating system, fonts shift, bullet points break, and page margins collapse. Converting to PDF locks your formatting in place so every recipient sees your document exactly as you designed it. Most free methods require either a Microsoft 365 subscription or uploading to a third-party cloud service that may retain your file. PdfPixels converts DOCX to PDF directly in your browser using WebAssembly â€” your rÃ©sumÃ©, cover letter, or proposal never leaves your device, and there is no subscription, watermark, or page limit. Students submitting assignments, job seekers converting CVs, and freelancers sending proposals all benefit from instant, private Word-to-PDF conversion.',
     whoItsFor: [
-      'Job seekers converting résumés and cover letters to PDF for employer submission',
+      'Job seekers converting rÃ©sumÃ©s and cover letters to PDF for employer submission',
       'Students submitting DOCX assignments to learning management systems that require PDF',
       'Freelancers and consultants sending proposals or contracts in universally readable format',
     ],
     steps: [
-      { title: 'Open the Word to PDF tool', description: 'Navigate to PdfPixels Word to PDF in your browser — no installation or account required.' },
+      { title: 'Open the Word to PDF tool', description: 'Navigate to PdfPixels Word to PDF in your browser â€” no installation or account required.' },
       { title: 'Upload your DOCX or DOC file', description: 'Drag and drop your Word document or click to browse. Both modern DOCX and legacy DOC formats are supported.' },
       { title: 'Convert in seconds', description: 'The WebAssembly engine converts your document client-side. Complex formatting including tables, images, and custom fonts is preserved.' },
       { title: 'Download your PDF', description: 'Click Download and save your new PDF. Verify the layout in a PDF viewer before sending to confirm formatting is intact.' },
     ],
     tips: [
-      'Embed fonts in your Word document before converting (File → Options → Save → Embed fonts) to guarantee custom typefaces render correctly.',
-      'Use Print Layout view in Word to catch formatting issues before converting — what you see there is what the PDF will look like.',
-      'For résumés specifically, convert and open in Google Docs viewer or Adobe Reader to check line breaks and column alignment on a fresh render.',
+      'Embed fonts in your Word document before converting (File â†’ Options â†’ Save â†’ Embed fonts) to guarantee custom typefaces render correctly.',
+      'Use Print Layout view in Word to catch formatting issues before converting â€” what you see there is what the PDF will look like.',
+      'For rÃ©sumÃ©s specifically, convert and open in Google Docs viewer or Adobe Reader to check line breaks and column alignment on a fresh render.',
     ],
     pitfalls: [
       { problem: 'Bullet points or numbering appear shifted in the PDF', solution: 'Switch your list style to a standard Word built-in list theme rather than a manually indented custom format before converting.' },
@@ -1145,62 +1145,62 @@ export const useCasePages: UseCasePage[] = [
   {
     slug: 'compress-image-for-linkedin',
     title: 'Compress Image for LinkedIn Profile & Posts (Free)',
-    description: 'Optimize profile photos and banner images for LinkedIn upload — reduce file size without losing the sharpness recruiters notice.',
+    description: 'Optimize profile photos and banner images for LinkedIn upload â€” reduce file size without losing the sharpness recruiters notice.',
     targetToolSlug: 'compress-image',
     intent: 'compress image for linkedin',
     overview:
-      'LinkedIn caps profile photos at 8MB and banner images at 8MB, but large files slow page loads and can appear pixelated when LinkedIn re-encodes them on their servers. The platform applies its own compression algorithm after upload, so starting with a bloated 5MB phone photo means LinkedIn compresses an already mediocre file, producing a muddy profile picture that undermines your professional brand. The practical strategy is to pre-compress your image to roughly 200–500KB at the correct dimensions before uploading — this gives LinkedIn a clean, well-optimized source to work with. PdfPixels Compress Image handles JPEG, PNG, and WebP in your browser with no cloud upload of your personal photo. Professionals, recruiters, and B2B marketers who rely on LinkedIn for pipeline and personal brand will notice the difference in sharpness immediately.',
+      'LinkedIn caps profile photos at 8MB and banner images at 8MB, but large files slow page loads and can appear pixelated when LinkedIn re-encodes them on their servers. The platform applies its own compression algorithm after upload, so starting with a bloated 5MB phone photo means LinkedIn compresses an already mediocre file, producing a muddy profile picture that undermines your professional brand. The practical strategy is to pre-compress your image to roughly 200â€“500KB at the correct dimensions before uploading â€” this gives LinkedIn a clean, well-optimized source to work with. PdfPixels Compress Image handles JPEG, PNG, and WebP in your browser with no cloud upload of your personal photo. Professionals, recruiters, and B2B marketers who rely on LinkedIn for pipeline and personal brand will notice the difference in sharpness immediately.',
     whoItsFor: [
       'Professionals and executives optimizing LinkedIn profile photos for recruiter visibility',
       'Recruiters and HR managers maintaining sharp, brand-consistent LinkedIn presence',
       'B2B marketers and agency owners managing LinkedIn company page banner images',
     ],
     steps: [
-      { title: 'Resize to LinkedIn recommended dimensions first', description: 'Profile photos should be 400×400px minimum; banners 1584×396px. Use PdfPixels Resize Image to set exact dimensions before compressing.' },
+      { title: 'Resize to LinkedIn recommended dimensions first', description: 'Profile photos should be 400Ã—400px minimum; banners 1584Ã—396px. Use PdfPixels Resize Image to set exact dimensions before compressing.' },
       { title: 'Upload to Compress Image', description: 'Drop your JPEG, PNG, or WebP into the PdfPixels Compress Image tool.' },
-      { title: 'Target 200–400KB for profile photos', description: 'Set the output target to around 250KB for headshots — this leaves plenty of headroom for LinkedIn\'s own resampling without double-degrading quality.' },
+      { title: 'Target 200â€“400KB for profile photos', description: 'Set the output target to around 250KB for headshots â€” this leaves plenty of headroom for LinkedIn\'s own resampling without double-degrading quality.' },
       { title: 'Upload directly to LinkedIn', description: 'Go to your LinkedIn profile, click the photo icon, and upload your compressed image. Expect noticeably sharper results compared to uploading a raw phone photo.' },
     ],
     tips: [
-      'Use a plain or blurred background in your profile photo — busy backgrounds compress poorly and look noisy at small display sizes.',
+      'Use a plain or blurred background in your profile photo â€” busy backgrounds compress poorly and look noisy at small display sizes.',
       'Save profile photos as JPEG for best compression; use PNG only if you need transparency (rare for LinkedIn headshots).',
-      'For banner images, keep text away from the edges — LinkedIn crops banner images differently on mobile and desktop, and edge text often gets cut off.',
+      'For banner images, keep text away from the edges â€” LinkedIn crops banner images differently on mobile and desktop, and edge text often gets cut off.',
     ],
     pitfalls: [
-      { problem: 'Profile photo looks blurry after LinkedIn upload', solution: 'You likely uploaded a very small pixel resolution. Ensure the photo is at least 400×400px before compressing to avoid LinkedIn upscaling a tiny image.' },
-      { problem: 'Banner image appears stretched or cropped incorrectly', solution: 'LinkedIn banners display at 1584×396px on desktop but crop differently on mobile. Use the exact recommended pixel size and preview on both devices after upload.' },
+      { problem: 'Profile photo looks blurry after LinkedIn upload', solution: 'You likely uploaded a very small pixel resolution. Ensure the photo is at least 400Ã—400px before compressing to avoid LinkedIn upscaling a tiny image.' },
+      { problem: 'Banner image appears stretched or cropped incorrectly', solution: 'LinkedIn banners display at 1584Ã—396px on desktop but crop differently on mobile. Use the exact recommended pixel size and preview on both devices after upload.' },
     ],
     faqs: [
-      { question: 'What is the ideal LinkedIn profile photo file size?', answer: 'Aim for 200–400KB at 400×400px or larger. This gives LinkedIn a high-quality source image while keeping upload fast and preventing excessive platform re-compression.' },
+      { question: 'What is the ideal LinkedIn profile photo file size?', answer: 'Aim for 200â€“400KB at 400Ã—400px or larger. This gives LinkedIn a high-quality source image while keeping upload fast and preventing excessive platform re-compression.' },
       { question: 'Does compressing my LinkedIn photo affect my profile ranking?', answer: 'LinkedIn does not rank profiles based on photo file size, but a sharp, professional headshot increases profile click-through rates and recruiter engagement significantly.' },
     ],
   },
   {
     slug: 'pdf-to-jpg-converter-free',
-    title: 'Convert PDF to JPG Free Online — Extract PDF Pages as Images',
-    description: 'Turn any PDF page into a high-quality JPG image free — no software install needed, works on desktop and mobile.',
+    title: 'Convert PDF to JPG Free Online â€” Extract PDF Pages as Images',
+    description: 'Turn any PDF page into a high-quality JPG image free â€” no software install needed, works on desktop and mobile.',
     targetToolSlug: 'pdf-to-jpg',
     intent: 'pdf to jpg converter free online',
     overview:
-      'Designers extracting slide thumbnails, marketers turning presentation pages into social media assets, and teachers sharing individual PDF pages as image attachments all need PDF-to-JPG conversion regularly. The challenge with most free tools is either a watermark stamped across the output, a restrictive page count limit, or low-resolution rendering that makes text in the image illegible. PdfPixels converts each PDF page to a full-resolution JPG directly in your browser — no installation, no cloud upload, and no watermark regardless of how many pages your document has. You get clean, download-ready JPEG images that work in any design tool, email client, or social media scheduler without round-tripping through desktop software.',
+      'Designers extracting slide thumbnails, marketers turning presentation pages into social media assets, and teachers sharing individual PDF pages as image attachments all need PDF-to-JPG conversion regularly. The challenge with most free tools is either a watermark stamped across the output, a restrictive page count limit, or low-resolution rendering that makes text in the image illegible. PdfPixels converts each PDF page to a full-resolution JPG directly in your browser â€” no installation, no cloud upload, and no watermark regardless of how many pages your document has. You get clean, download-ready JPEG images that work in any design tool, email client, or social media scheduler without round-tripping through desktop software.',
     whoItsFor: [
       'Designers and marketers extracting PDF slide pages as images for social media or presentations',
       'Teachers and educators sharing individual PDF textbook pages as image attachments',
       'Real estate agents and architects converting floor plan PDFs to JPG for property listings',
     ],
     steps: [
-      { title: 'Open PDF to JPG tool', description: 'Go to PdfPixels PDF to JPG in your browser — no account, no software download.' },
-      { title: 'Upload your PDF', description: 'Drag your PDF file into the tool. Multi-page PDFs are supported — each page converts to a separate JPG.' },
-      { title: 'Select resolution and quality', description: 'Higher DPI (150–300) gives sharper images suitable for print; lower DPI (72–96) creates smaller files for web and social media.' },
+      { title: 'Open PDF to JPG tool', description: 'Go to PdfPixels PDF to JPG in your browser â€” no account, no software download.' },
+      { title: 'Upload your PDF', description: 'Drag your PDF file into the tool. Multi-page PDFs are supported â€” each page converts to a separate JPG.' },
+      { title: 'Select resolution and quality', description: 'Higher DPI (150â€“300) gives sharper images suitable for print; lower DPI (72â€“96) creates smaller files for web and social media.' },
       { title: 'Download your JPG images', description: 'Download individual pages or get all pages as a ZIP archive. Images are ready to drop into Canva, Figma, or your email client immediately.' },
     ],
     tips: [
-      'Use 150 DPI for most presentation slides and social media — it balances sharpness with manageable file sizes.',
+      'Use 150 DPI for most presentation slides and social media â€” it balances sharpness with manageable file sizes.',
       'For PDF pages with lots of small text (financial reports, legal docs), use 300 DPI to keep text readable after conversion.',
       'If you only need one specific page, most PDF viewers let you print a single page range first to isolate it before converting the whole PDF.',
     ],
     pitfalls: [
-      { problem: 'Converted JPG text looks blurry or pixelated', solution: 'Increase the DPI setting to 200–300. Low DPI settings produce small, low-resolution outputs that look sharp at thumbnail size but blurry at full view.' },
+      { problem: 'Converted JPG text looks blurry or pixelated', solution: 'Increase the DPI setting to 200â€“300. Low DPI settings produce small, low-resolution outputs that look sharp at thumbnail size but blurry at full view.' },
       { problem: 'Colors look washed out or shifted compared to the original PDF', solution: 'This typically occurs with PDFs that use CMYK color profiles. Convert to RGB in a design tool before the PDF-to-JPG step for accurate color reproduction.' },
     ],
     faqs: [
@@ -1210,12 +1210,12 @@ export const useCasePages: UseCasePage[] = [
   },
   {
     slug: 'remove-background-product-photo',
-    title: 'Remove Background from Product Photo Free — Transparent PNG for Amazon & Etsy',
-    description: 'Get clean transparent or white product photo backgrounds for Amazon, Etsy, and Shopify listings — free, no Photoshop needed.',
+    title: 'Remove Background from Product Photo Free â€” Transparent PNG for Amazon & Etsy',
+    description: 'Get clean transparent or white product photo backgrounds for Amazon, Etsy, and Shopify listings â€” free, no Photoshop needed.',
     targetToolSlug: 'remove-image-background',
     intent: 'remove background from product photo free',
     overview:
-      'Amazon, Etsy, and Shopify all enforce strict product photo guidelines: Amazon requires a pure white background (#FFFFFF) for main listing images, Etsy recommends clean, uncluttered backgrounds, and Shopify themes display product images most cleanly on transparent PNGs. Hiring a photographer or editing each product shot in Photoshop costs time and money — especially when you launch a new catalog of 50+ SKUs. PdfPixels Remove Background uses AI-powered edge detection to isolate your product from its background in seconds, returning a transparent PNG ready for any marketplace or a white-background JPEG for Amazon compliance. Amazon sellers launching new products, Etsy shop owners photographing handmade goods on kitchen tables, and Shopify merchants building brand-consistent catalogs all use background removal as a core part of their product photography workflow.',
+      'Amazon, Etsy, and Shopify all enforce strict product photo guidelines: Amazon requires a pure white background (#FFFFFF) for main listing images, Etsy recommends clean, uncluttered backgrounds, and Shopify themes display product images most cleanly on transparent PNGs. Hiring a photographer or editing each product shot in Photoshop costs time and money â€” especially when you launch a new catalog of 50+ SKUs. PdfPixels Remove Background uses AI-powered edge detection to isolate your product from its background in seconds, returning a transparent PNG ready for any marketplace or a white-background JPEG for Amazon compliance. Amazon sellers launching new products, Etsy shop owners photographing handmade goods on kitchen tables, and Shopify merchants building brand-consistent catalogs all use background removal as a core part of their product photography workflow.',
     whoItsFor: [
       'Amazon sellers preparing main listing images that meet the pure white background requirement',
       'Etsy shop owners cleaning up handmade product photos shot at home',
@@ -1228,12 +1228,12 @@ export const useCasePages: UseCasePage[] = [
       { title: 'Resize for platform requirements', description: 'Amazon requires 1000px minimum on the longest side. Use PdfPixels Resize Image to hit the exact dimensions after background removal.' },
     ],
     tips: [
-      'Shoot products on a surface that contrasts sharply with the item — a white cup on a white table is harder for AI to separate than a white cup on a dark wood surface.',
+      'Shoot products on a surface that contrasts sharply with the item â€” a white cup on a white table is harder for AI to separate than a white cup on a dark wood surface.',
       'For jewelry and items with fine detail (fur, lace, mesh), zoom in on the downloaded PNG and use a free tool like remove.bg\'s manual editor for hairline edge cleanup if needed.',
-      'Amazon allows TIFF and PNG in addition to JPEG for main images — transparent PNGs are accepted and let Amazon\'s system composite backgrounds for different storefronts.',
+      'Amazon allows TIFF and PNG in addition to JPEG for main images â€” transparent PNGs are accepted and let Amazon\'s system composite backgrounds for different storefronts.',
     ],
     pitfalls: [
-      { problem: 'Product edges look jagged or have a halo effect', solution: 'Use a photo with more contrast between product and background. Avoid matching the product color to the background color — even a slight hue difference improves AI edge detection significantly.' },
+      { problem: 'Product edges look jagged or have a halo effect', solution: 'Use a photo with more contrast between product and background. Avoid matching the product color to the background color â€” even a slight hue difference improves AI edge detection significantly.' },
       { problem: 'Amazon rejects the image despite a white background', solution: 'Amazon requires a pure white (#FFFFFF) background with no shadows. After removing the background, fill it with pure white (not off-white or gray) and ensure the product occupies at least 85% of the image frame.' },
     ],
     faqs: [
@@ -1243,59 +1243,59 @@ export const useCasePages: UseCasePage[] = [
   },
   {
     slug: 'sign-pdf-on-phone',
-    title: 'Sign a PDF on Your Phone Free — No App Download Required',
-    description: 'Add your signature to any PDF on iPhone or Android in your mobile browser — no app, no subscription, no login needed.',
+    title: 'Sign a PDF on Your Phone Free â€” No App Download Required',
+    description: 'Add your signature to any PDF on iPhone or Android in your mobile browser â€” no app, no subscription, no login needed.',
     targetToolSlug: 'sign-pdf',
     intent: 'sign pdf on phone free',
     overview:
-      'Receiving a job offer letter, apartment lease, or freelance contract on your phone used to mean printing it, signing it by hand, scanning it, and emailing it back — a process that could take 30 minutes and required a printer. Or it meant paying for a monthly DocuSign subscription just to sign one document. PdfPixels Sign PDF runs entirely in your mobile browser on iPhone Safari or Android Chrome using WebAssembly — you draw, type, or upload your signature, place it on the correct page, and download a signed PDF in under two minutes with no app installation and no account creation. The file never leaves your phone, which matters for sensitive documents like employment contracts, rental agreements, and financial authorization forms.',
+      'Receiving a job offer letter, apartment lease, or freelance contract on your phone used to mean printing it, signing it by hand, scanning it, and emailing it back â€” a process that could take 30 minutes and required a printer. Or it meant paying for a monthly DocuSign subscription just to sign one document. PdfPixels Sign PDF runs entirely in your mobile browser on iPhone Safari or Android Chrome using WebAssembly â€” you draw, type, or upload your signature, place it on the correct page, and download a signed PDF in under two minutes with no app installation and no account creation. The file never leaves your phone, which matters for sensitive documents like employment contracts, rental agreements, and financial authorization forms.',
     whoItsFor: [
       'Mobile users signing job offer letters, employment contracts, or NDAs on the go',
       'Renters and buyers reviewing and signing lease or purchase agreements from their phone',
       'Freelancers and contractors approving client agreements without access to a desktop computer',
     ],
     steps: [
-      { title: 'Open PdfPixels Sign PDF in your mobile browser', description: 'On iPhone, open Safari. On Android, open Chrome. Navigate to PdfPixels Sign PDF — no app download required.' },
+      { title: 'Open PdfPixels Sign PDF in your mobile browser', description: 'On iPhone, open Safari. On Android, open Chrome. Navigate to PdfPixels Sign PDF â€” no app download required.' },
       { title: 'Upload the PDF from your phone', description: 'Tap the upload button and select your PDF from Files (iPhone) or Files/Downloads (Android). The document loads directly in your browser.' },
       { title: 'Draw or type your signature', description: 'Use your finger or stylus to draw a natural-looking signature on the touch canvas, or type your full legal name and select a script font.' },
       { title: 'Place signature and download', description: 'Drag your signature to the correct line on the document, resize if needed, then tap Download Signed PDF. The file saves to your phone instantly.' },
     ],
     tips: [
-      'Draw your signature in landscape orientation on your phone — the wider canvas gives you more room for natural cursive strokes.',
-      'Use the typed signature with a script font if your drawn signature looks rough on a small phone screen — typed signatures are legally equivalent in most jurisdictions.',
+      'Draw your signature in landscape orientation on your phone â€” the wider canvas gives you more room for natural cursive strokes.',
+      'Use the typed signature with a script font if your drawn signature looks rough on a small phone screen â€” typed signatures are legally equivalent in most jurisdictions.',
       'Save the signed PDF to your cloud storage (iCloud Drive, Google Drive) immediately after signing so you always have a backup copy.',
     ],
     pitfalls: [
       { problem: 'Signature appears too small or in the wrong position', solution: 'After placing the signature, use the resize handles to scale it to match the signature line size. Pinch-to-zoom the document to navigate to the correct page before placing.' },
-      { problem: 'PDF does not download after signing on iPhone', solution: 'Ensure Safari is allowed to download files in iOS Settings → Safari → Downloads. Set the download location to "On My iPhone" or iCloud Drive.' },
+      { problem: 'PDF does not download after signing on iPhone', solution: 'Ensure Safari is allowed to download files in iOS Settings â†’ Safari â†’ Downloads. Set the download location to "On My iPhone" or iCloud Drive.' },
     ],
     faqs: [
-      { question: 'Is a typed or drawn signature on a PDF legally binding?', answer: 'Yes. In the United States, the ESIGN Act and UETA recognize electronic signatures — including typed names and drawn marks — as legally binding on contracts where all parties agree to transact electronically. This covers employment contracts, leases, NDAs, and most commercial agreements.' },
+      { question: 'Is a typed or drawn signature on a PDF legally binding?', answer: 'Yes. In the United States, the ESIGN Act and UETA recognize electronic signatures â€” including typed names and drawn marks â€” as legally binding on contracts where all parties agree to transact electronically. This covers employment contracts, leases, NDAs, and most commercial agreements.' },
       { question: 'Does my PDF get uploaded to a server when I sign it on PdfPixels?', answer: 'No. The entire signing process happens inside your phone\'s browser memory using WebAssembly. Your document is never transmitted to any external server, making it safe for confidential contracts and personal legal agreements.' },
     ],
   },
   {
     slug: 'compress-pdf-for-google-classroom',
-    title: 'Compress PDF for Google Classroom — Under 10MB Upload Limit Free',
-    description: 'Reduce your PDF below Google Classroom\'s 10MB per-file upload limit — free, in your browser, no login required.',
+    title: 'Compress PDF for Google Classroom â€” Under 10MB Upload Limit Free',
+    description: 'Reduce your PDF below Google Classroom\'s 10MB per-file upload limit â€” free, in your browser, no login required.',
     targetToolSlug: 'compress-pdf',
     intent: 'compress pdf for google classroom upload limit',
     overview:
-      'Google Classroom enforces a 10MB file size limit per attachment, which catches students and teachers off guard when sharing scanned worksheets, lecture slides, or research papers. A single scan of a 20-page handout using a phone camera can easily exceed 15–20MB before any compression. PdfPixels Compress PDF shrinks your PDF directly in the browser using smart image downsampling and metadata removal — no cloud upload, no account needed. In under 30 seconds you can have a submission-ready PDF that passes Google Classroom\'s upload check on the first try.',
+      'Google Classroom enforces a 10MB file size limit per attachment, which catches students and teachers off guard when sharing scanned worksheets, lecture slides, or research papers. A single scan of a 20-page handout using a phone camera can easily exceed 15â€“20MB before any compression. PdfPixels Compress PDF shrinks your PDF directly in the browser using smart image downsampling and metadata removal â€” no cloud upload, no account needed. In under 30 seconds you can have a submission-ready PDF that passes Google Classroom\'s upload check on the first try.',
     whoItsFor: [
       'Students uploading assignment PDFs that exceed Google Classroom\'s 10MB attachment limit',
       'Teachers sharing lecture slides, handouts, or scanned worksheets with their class',
       'Parents and tutors helping students prepare digital submissions for online classes',
     ],
     steps: [
-      { title: 'Open PdfPixels Compress PDF', description: 'Go to PdfPixels Compress PDF in your browser — no account, no software download required.' },
+      { title: 'Open PdfPixels Compress PDF', description: 'Go to PdfPixels Compress PDF in your browser â€” no account, no software download required.' },
       { title: 'Upload your PDF', description: 'Drag your PDF into the tool or click to browse. The tool shows you the current file size immediately.' },
       { title: 'Choose compression level', description: 'Select "Strong" or "Maximum" compression to hit under 10MB. The preview shows the estimated output size before you compress.' },
-      { title: 'Download and upload to Google Classroom', description: 'Download the compressed PDF and attach it to your Google Classroom assignment — it should now pass the upload limit.' },
+      { title: 'Download and upload to Google Classroom', description: 'Download the compressed PDF and attach it to your Google Classroom assignment â€” it should now pass the upload limit.' },
     ],
     tips: [
-      'If your PDF is a scanned document, "Strong" compression reduces image DPI significantly — choose "Balanced" if the text needs to stay crisp for reading.',
-      'Google Classroom\'s limit applies per file, not per assignment — if you have multiple attachments, compress each one separately.',
+      'If your PDF is a scanned document, "Strong" compression reduces image DPI significantly â€” choose "Balanced" if the text needs to stay crisp for reading.',
+      'Google Classroom\'s limit applies per file, not per assignment â€” if you have multiple attachments, compress each one separately.',
       'After compressing, open the PDF in your browser\'s PDF viewer and zoom to 100% to verify that all text and diagrams remain readable before submitting.',
     ],
     pitfalls: [
@@ -1303,70 +1303,70 @@ export const useCasePages: UseCasePage[] = [
       { problem: 'Text looks blurry after compression', solution: 'PDFs with scanned pages at low original DPI will degrade further under strong compression. Re-scan at 200 DPI minimum, or use "Balanced" compression to preserve legibility.' },
     ],
     faqs: [
-      { question: 'What is Google Classroom\'s file size limit?', answer: 'Google Classroom allows attachments up to 10MB per file. If you need to share larger files, consider uploading to Google Drive and sharing the link instead — Drive files have a 5TB limit.' },
+      { question: 'What is Google Classroom\'s file size limit?', answer: 'Google Classroom allows attachments up to 10MB per file. If you need to share larger files, consider uploading to Google Drive and sharing the link instead â€” Drive files have a 5TB limit.' },
       { question: 'Does compressing a PDF affect its readability in Google Classroom?', answer: 'For text-based PDFs (created from Word or PowerPoint), compression has minimal visual impact. For scanned PDFs, "Balanced" compression at 150 DPI is usually sufficient for on-screen reading in Classroom while staying well under 10MB.' },
     ],
   },
   {
     slug: 'convert-png-to-jpg-free',
-    title: 'Convert PNG to JPG Free Online — Reduce File Size Without Losing Quality',
-    description: 'Turn any PNG into a smaller JPG file free online — no software, no signup, works on any device.',
+    title: 'Convert PNG to JPG Free Online â€” Reduce File Size Without Losing Quality',
+    description: 'Turn any PNG into a smaller JPG file free online â€” no software, no signup, works on any device.',
     targetToolSlug: 'png-to-jpeg',
     intent: 'convert png to jpg free online',
     overview:
-      'PNG files use lossless compression, which makes them ideal for screenshots, logos, and graphics — but for photographs and complex images, PNGs can be 3–10× larger than an equivalent JPG at the same visual quality. Web developers, bloggers, and social media managers frequently need to convert PNGs to JPG to speed up page loads, meet email attachment limits, and reduce WordPress media library bloat. PdfPixels PNG to JPG converter runs entirely in your browser: drag your PNG in, set your quality level, and download a web-ready JPG in seconds with no watermark and no file count limit.',
+      'PNG files use lossless compression, which makes them ideal for screenshots, logos, and graphics â€” but for photographs and complex images, PNGs can be 3â€“10Ã— larger than an equivalent JPG at the same visual quality. Web developers, bloggers, and social media managers frequently need to convert PNGs to JPG to speed up page loads, meet email attachment limits, and reduce WordPress media library bloat. PdfPixels PNG to JPG converter runs entirely in your browser: drag your PNG in, set your quality level, and download a web-ready JPG in seconds with no watermark and no file count limit.',
     whoItsFor: [
       'Web developers and bloggers converting PNG screenshots and graphics to smaller JPGs for faster page load times',
       'Social media managers reducing PNG file sizes before uploading to Instagram, Twitter, or LinkedIn',
       'Anyone who needs to attach a photo to an email but their PNG file is too large to send',
     ],
     steps: [
-      { title: 'Open PdfPixels PNG to JPG', description: 'Visit PdfPixels PNG to JPG in your browser — free, no account needed.' },
+      { title: 'Open PdfPixels PNG to JPG', description: 'Visit PdfPixels PNG to JPG in your browser â€” free, no account needed.' },
       { title: 'Upload your PNG file', description: 'Drag your PNG image into the upload area. Multiple files are supported if you need to batch convert.' },
-      { title: 'Set quality level', description: 'Choose a quality percentage (80–90% is ideal for most photos — noticeably smaller files with no visible quality loss at normal viewing sizes).' },
-      { title: 'Download your JPG', description: 'Click convert and download your JPG. Compare the file sizes — typical savings are 60–80% for photographic PNGs.' },
+      { title: 'Set quality level', description: 'Choose a quality percentage (80â€“90% is ideal for most photos â€” noticeably smaller files with no visible quality loss at normal viewing sizes).' },
+      { title: 'Download your JPG', description: 'Click convert and download your JPG. Compare the file sizes â€” typical savings are 60â€“80% for photographic PNGs.' },
     ],
     tips: [
-      'Use 85% quality for photographs — this is the sweet spot where JPG compression artifacts are invisible to the human eye but file size drops significantly.',
-      'Don\'t convert PNG logos, icons, or screenshots with text to JPG — JPG compression creates visible artifacts around sharp edges and text. Use PNG for graphics, JPG for photos.',
-      'If your PNG has a transparent background, the transparent areas will become white in the JPG — use a different background color tool first if you need a colored background.',
+      'Use 85% quality for photographs â€” this is the sweet spot where JPG compression artifacts are invisible to the human eye but file size drops significantly.',
+      'Don\'t convert PNG logos, icons, or screenshots with text to JPG â€” JPG compression creates visible artifacts around sharp edges and text. Use PNG for graphics, JPG for photos.',
+      'If your PNG has a transparent background, the transparent areas will become white in the JPG â€” use a different background color tool first if you need a colored background.',
     ],
     pitfalls: [
-      { problem: 'JPG looks pixelated or blocky around text', solution: 'JPG is not suitable for images with sharp text or line art — it introduces compression artifacts around high-contrast edges. Keep these images as PNG.' },
+      { problem: 'JPG looks pixelated or blocky around text', solution: 'JPG is not suitable for images with sharp text or line art â€” it introduces compression artifacts around high-contrast edges. Keep these images as PNG.' },
       { problem: 'JPG is larger than the original PNG', solution: 'This can happen with very small or simple graphics where PNG compression is already very efficient. In these cases, stick with PNG.' },
     ],
     faqs: [
-      { question: 'Does converting PNG to JPG lose quality?', answer: 'At 80–90% quality settings, the visual difference is imperceptible for photographs at normal viewing sizes on screen. JPG uses lossy compression, so some data is discarded — but at high quality settings, this is not visible. Avoid JPG for images with text, logos, or flat colors where compression artifacts are more noticeable.' },
+      { question: 'Does converting PNG to JPG lose quality?', answer: 'At 80â€“90% quality settings, the visual difference is imperceptible for photographs at normal viewing sizes on screen. JPG uses lossy compression, so some data is discarded â€” but at high quality settings, this is not visible. Avoid JPG for images with text, logos, or flat colors where compression artifacts are more noticeable.' },
       { question: 'Can I convert PNG to JPG without a white background?', answer: 'If your PNG has transparency, converting to JPG will replace transparent pixels with white by default (since JPG does not support transparency). To get a different background color, fill the transparent areas with your desired color before converting, or use a PNG with a solid background.' },
     ],
   },
   {
     slug: 'password-protect-pdf-free',
-    title: 'Password Protect a PDF Free Online — Add Encryption Without Adobe Acrobat',
-    description: 'Lock any PDF with a password using AES-256 encryption — free, in your browser, no Adobe Acrobat needed.',
+    title: 'Password Protect a PDF Free Online â€” Add Encryption Without Adobe Acrobat',
+    description: 'Lock any PDF with a password using AES-256 encryption â€” free, in your browser, no Adobe Acrobat needed.',
     targetToolSlug: 'protect-pdf',
     intent: 'password protect pdf free online without adobe',
     overview:
-      'Freelancers sending client proposals, HR teams sharing salary information, and lawyers emailing confidential documents all face the same problem: PDFs sent over email or shared links can be opened by anyone who gets hold of the file. Adobe Acrobat Pro is the traditional way to password-protect PDFs, but it costs $19.99/month and is overkill for occasional use. PdfPixels Protect PDF applies AES-256 encryption — the same standard used by banks and governments — directly in your browser without uploading your file to any external server. Set a strong password, download the encrypted PDF, and share it knowing that only recipients with the password can open it.',
+      'Freelancers sending client proposals, HR teams sharing salary information, and lawyers emailing confidential documents all face the same problem: PDFs sent over email or shared links can be opened by anyone who gets hold of the file. Adobe Acrobat Pro is the traditional way to password-protect PDFs, but it costs $19.99/month and is overkill for occasional use. PdfPixels Protect PDF applies AES-256 encryption â€” the same standard used by banks and governments â€” directly in your browser without uploading your file to any external server. Set a strong password, download the encrypted PDF, and share it knowing that only recipients with the password can open it.',
     whoItsFor: [
       'Freelancers and consultants sharing confidential proposals, contracts, or financial reports with clients',
       'HR teams and managers distributing salary data, performance reviews, or employee records securely',
       'Lawyers and legal professionals emailing sensitive case documents, NDAs, and agreements',
     ],
     steps: [
-      { title: 'Open PdfPixels Protect PDF', description: 'Go to PdfPixels Protect PDF in your browser — no Adobe Acrobat, no subscription needed.' },
-      { title: 'Upload your PDF', description: 'Drag the PDF you want to protect into the tool. The file is processed locally in your browser — it never leaves your device.' },
+      { title: 'Open PdfPixels Protect PDF', description: 'Go to PdfPixels Protect PDF in your browser â€” no Adobe Acrobat, no subscription needed.' },
+      { title: 'Upload your PDF', description: 'Drag the PDF you want to protect into the tool. The file is processed locally in your browser â€” it never leaves your device.' },
       { title: 'Set a strong password', description: 'Enter a password of at least 12 characters mixing uppercase, lowercase, numbers, and symbols. Avoid dictionary words or names.' },
       { title: 'Download and share your encrypted PDF', description: 'Click "Protect PDF" and download the encrypted file. Share it by email and communicate the password via a separate channel (phone call or SMS).' },
     ],
     tips: [
-      'Never send the password in the same email as the PDF — if the email is intercepted, the document is exposed. Use a phone call, SMS, or a separate messaging app to share the password.',
-      'Use a unique password for each sensitive document — reusing the same password means if one document\'s password is discovered, all your other documents are also at risk.',
-      'AES-256 encryption is computationally unbreakable with a strong password. However, a weak or guessable password (like "password123") undermines the encryption entirely — strength of protection depends on password quality.',
+      'Never send the password in the same email as the PDF â€” if the email is intercepted, the document is exposed. Use a phone call, SMS, or a separate messaging app to share the password.',
+      'Use a unique password for each sensitive document â€” reusing the same password means if one document\'s password is discovered, all your other documents are also at risk.',
+      'AES-256 encryption is computationally unbreakable with a strong password. However, a weak or guessable password (like "password123") undermines the encryption entirely â€” strength of protection depends on password quality.',
     ],
     pitfalls: [
-      { problem: 'Recipient can\'t open the PDF', solution: 'Confirm the password is correct — passwords are case-sensitive. Also ensure the recipient is using a PDF viewer that supports AES-256 encryption (Adobe Reader, Chrome\'s PDF viewer, and Foxit Reader all support it).' },
-      { problem: 'Forgot the password after protecting', solution: 'AES-256 encryption cannot be brute-forced with a strong password — there is no "forgot password" recovery. Always store your document passwords in a password manager (Bitwarden, 1Password) before distributing.' },
+      { problem: 'Recipient can\'t open the PDF', solution: 'Confirm the password is correct â€” passwords are case-sensitive. Also ensure the recipient is using a PDF viewer that supports AES-256 encryption (Adobe Reader, Chrome\'s PDF viewer, and Foxit Reader all support it).' },
+      { problem: 'Forgot the password after protecting', solution: 'AES-256 encryption cannot be brute-forced with a strong password â€” there is no "forgot password" recovery. Always store your document passwords in a password manager (Bitwarden, 1Password) before distributing.' },
     ],
     faqs: [
       { question: 'What encryption does PdfPixels use to protect PDFs?', answer: 'PdfPixels uses AES-256 encryption, the same standard used by banks, government agencies, and enterprise security software. A correctly encrypted PDF with a strong password cannot be opened without the password, even with commercial PDF password recovery tools.' },
@@ -1375,59 +1375,59 @@ export const useCasePages: UseCasePage[] = [
   },
   {
     slug: 'compress-image-for-whatsapp',
-    title: 'Compress Image for WhatsApp — Send Full Quality Photos Without Compression',
-    description: 'Compress your photos before sending on WhatsApp to preserve quality — and send as a document to skip WhatsApp\'s auto-compression entirely.',
+    title: 'Compress Image for WhatsApp â€” Send Full Quality Photos Without Compression',
+    description: 'Compress your photos before sending on WhatsApp to preserve quality â€” and send as a document to skip WhatsApp\'s auto-compression entirely.',
     targetToolSlug: 'compress-image',
     intent: 'compress image for whatsapp without quality loss',
     overview:
-      'WhatsApp automatically compresses photos sent as "Photos" — typically reducing a 4K smartphone photo to under 100KB, which causes significant quality loss, color washing, and detail blur. The trick most users don\'t know: WhatsApp does not compress images sent as "Documents" — the file is delivered exactly as uploaded. The optimal workflow is to compress your photo to a reasonable size first (300–600KB) using a tool like PdfPixels Compress Image, then send it via WhatsApp as a document (not a photo). The recipient gets near-original quality at a fraction of the raw file size, and neither device burns through mobile data transmitting a 10MB camera RAW.',
+      'WhatsApp automatically compresses photos sent as "Photos" â€” typically reducing a 4K smartphone photo to under 100KB, which causes significant quality loss, color washing, and detail blur. The trick most users don\'t know: WhatsApp does not compress images sent as "Documents" â€” the file is delivered exactly as uploaded. The optimal workflow is to compress your photo to a reasonable size first (300â€“600KB) using a tool like PdfPixels Compress Image, then send it via WhatsApp as a document (not a photo). The recipient gets near-original quality at a fraction of the raw file size, and neither device burns through mobile data transmitting a 10MB camera RAW.',
     whoItsFor: [
       'Anyone wanting to share high-quality photos via WhatsApp without the app degrading them to blurry, washed-out images',
       'Photographers sharing client preview photos through WhatsApp and needing to preserve color accuracy and detail',
       'Real estate agents, architects, and designers sending professional property or product photos to clients on WhatsApp',
     ],
     steps: [
-      { title: 'Compress your photo with PdfPixels', description: 'Open PdfPixels Compress Image and upload your photo. Set the target output to 300–600KB — this balances quality and WhatsApp document transfer speed.' },
+      { title: 'Compress your photo with PdfPixels', description: 'Open PdfPixels Compress Image and upload your photo. Set the target output to 300â€“600KB â€” this balances quality and WhatsApp document transfer speed.' },
       { title: 'Download the compressed image', description: 'Download the compressed photo to your phone\'s camera roll or gallery.' },
-      { title: 'Open WhatsApp and attach as a document', description: 'In the WhatsApp chat, tap the attachment (paperclip) icon. Choose "Document" — NOT "Gallery" or "Photo". Browse to your compressed image file.' },
-      { title: 'Send and verify quality', description: 'Send the document. The recipient receives a file they can open at full resolution — no WhatsApp compression applied.' },
+      { title: 'Open WhatsApp and attach as a document', description: 'In the WhatsApp chat, tap the attachment (paperclip) icon. Choose "Document" â€” NOT "Gallery" or "Photo". Browse to your compressed image file.' },
+      { title: 'Send and verify quality', description: 'Send the document. The recipient receives a file they can open at full resolution â€” no WhatsApp compression applied.' },
     ],
     tips: [
-      'Sending as a "Document" bypasses WhatsApp\'s photo compression completely — the recipient gets the exact file you send, preserving colors, sharpness, and EXIF data.',
-      'Aim for 300–500KB per image for the best balance — small enough to send quickly on mobile data, large enough to look sharp on any screen.',
-      'If you\'re sending multiple photos, compress them all first and send as multiple documents in one message — this is faster than sending individual gallery photos that WhatsApp recompresses individually.',
+      'Sending as a "Document" bypasses WhatsApp\'s photo compression completely â€” the recipient gets the exact file you send, preserving colors, sharpness, and EXIF data.',
+      'Aim for 300â€“500KB per image for the best balance â€” small enough to send quickly on mobile data, large enough to look sharp on any screen.',
+      'If you\'re sending multiple photos, compress them all first and send as multiple documents in one message â€” this is faster than sending individual gallery photos that WhatsApp recompresses individually.',
     ],
     pitfalls: [
       { problem: 'Recipient sees the image as a file, not a preview', solution: 'When sent as a document, WhatsApp shows a file attachment rather than an inline photo preview. The recipient taps the file to open it in their phone\'s image viewer at full quality. This is the expected behavior for document mode.' },
-      { problem: 'Image still looks low quality after compressing and sending as document', solution: 'Check the original photo resolution — if the source image was already low resolution (under 1MP), there\'s no quality to preserve. Also verify you selected "Document" not "Photo" in WhatsApp\'s attachment menu.' },
+      { problem: 'Image still looks low quality after compressing and sending as document', solution: 'Check the original photo resolution â€” if the source image was already low resolution (under 1MP), there\'s no quality to preserve. Also verify you selected "Document" not "Photo" in WhatsApp\'s attachment menu.' },
     ],
     faqs: [
-      { question: 'Why does WhatsApp compress photos?', answer: 'WhatsApp compresses photos sent through the "Photos/Gallery" sharing method to reduce data usage for users on limited mobile data plans. The compression is automatic and aggressive — reducing megapixels and applying heavy JPEG compression. Sending as a "Document" bypasses this compression system entirely.' },
-      { question: 'What file size should I target for WhatsApp photos?', answer: 'For sending as a document, aim for 300–600KB. This loads quickly even on slow 3G connections (under 2 seconds), displays sharply on modern phone screens, and preserves enough quality for most photography needs. For professional photography previews, 1–2MB is acceptable.' },
+      { question: 'Why does WhatsApp compress photos?', answer: 'WhatsApp compresses photos sent through the "Photos/Gallery" sharing method to reduce data usage for users on limited mobile data plans. The compression is automatic and aggressive â€” reducing megapixels and applying heavy JPEG compression. Sending as a "Document" bypasses this compression system entirely.' },
+      { question: 'What file size should I target for WhatsApp photos?', answer: 'For sending as a document, aim for 300â€“600KB. This loads quickly even on slow 3G connections (under 2 seconds), displays sharply on modern phone screens, and preserves enough quality for most photography needs. For professional photography previews, 1â€“2MB is acceptable.' },
     ],
   },
   {
     slug: 'pdf-to-word-free-online',
-    title: 'Convert PDF to Word Free Online — Editable DOCX Without Adobe Acrobat',
-    description: 'Turn any PDF into a fully editable Word document free online — works on text PDFs and scanned documents.',
+    title: 'Convert PDF to Word Free Online â€” Editable DOCX Without Adobe Acrobat',
+    description: 'Turn any PDF into a fully editable Word document free online â€” works on text PDFs and scanned documents.',
     targetToolSlug: 'pdf-to-word',
     intent: 'convert pdf to word free online editable',
     overview:
-      'Office workers who only have a PDF version of a document they need to edit, students retyping text from a PDF they can\'t select, and job applicants trying to customize a PDF resume all need the same thing: an editable Word document from a PDF they can\'t otherwise modify. Adobe Acrobat Pro offers PDF-to-Word conversion but costs $19.99/month. PdfPixels PDF to Word converts your PDF to a properly formatted DOCX file directly in your browser — no software to install, no account to create, and no watermarks on the output. Both standard text PDFs and scanned PDFs with OCR (optical character recognition) are supported.',
+      'Office workers who only have a PDF version of a document they need to edit, students retyping text from a PDF they can\'t select, and job applicants trying to customize a PDF resume all need the same thing: an editable Word document from a PDF they can\'t otherwise modify. Adobe Acrobat Pro offers PDF-to-Word conversion but costs $19.99/month. PdfPixels PDF to Word converts your PDF to a properly formatted DOCX file directly in your browser â€” no software to install, no account to create, and no watermarks on the output. Both standard text PDFs and scanned PDFs with OCR (optical character recognition) are supported.',
     whoItsFor: [
       'Office workers and employees needing to edit or update a PDF document they only have in PDF format',
       'Students who receive PDF lecture notes or research papers and want to annotate, edit, or reformat them in Word',
       'Job seekers converting a PDF resume to DOCX to update it or tailor it for a specific application',
     ],
     steps: [
-      { title: 'Open PdfPixels PDF to Word', description: 'Visit PdfPixels PDF to Word in your browser — no Adobe Acrobat needed, no software download.' },
+      { title: 'Open PdfPixels PDF to Word', description: 'Visit PdfPixels PDF to Word in your browser â€” no Adobe Acrobat needed, no software download.' },
       { title: 'Upload your PDF', description: 'Drag your PDF into the tool. Both text-based PDFs and scanned image PDFs are accepted.' },
       { title: 'Convert to DOCX', description: 'Click "Convert to Word". For text PDFs, conversion is instant. Scanned PDFs may take a moment longer as OCR processes the page images.' },
       { title: 'Download and edit your Word file', description: 'Download the DOCX file and open it in Microsoft Word, Google Docs, or LibreOffice. Edit, reformat, and save normally.' },
     ],
     tips: [
-      'Text-based PDFs (created from Word, Excel, or PowerPoint) produce near-perfect Word conversions with accurate formatting, fonts, and layout. Scanned PDFs depend on scan quality — 300 DPI scans produce excellent OCR results.',
-      'Complex layouts with columns, tables, and floating text boxes may need minor reformatting after conversion — PDFs use absolute positioning, while Word uses flow-based layouts.',
+      'Text-based PDFs (created from Word, Excel, or PowerPoint) produce near-perfect Word conversions with accurate formatting, fonts, and layout. Scanned PDFs depend on scan quality â€” 300 DPI scans produce excellent OCR results.',
+      'Complex layouts with columns, tables, and floating text boxes may need minor reformatting after conversion â€” PDFs use absolute positioning, while Word uses flow-based layouts.',
       'After converting, run a quick spell-check in Word to catch any OCR errors in scanned documents before distributing the edited version.',
     ],
     pitfalls: [
@@ -1436,41 +1436,106 @@ export const useCasePages: UseCasePage[] = [
     ],
     faqs: [
       { question: 'Can I convert a password-protected PDF to Word?', answer: 'You need to remove the password first using PdfPixels Unlock PDF before converting. If you don\'t have the password, the file cannot be processed.' },
-      { question: 'Does the PDF to Word converter work on scanned documents?', answer: 'Yes. PdfPixels uses OCR (Optical Character Recognition) to extract text from scanned page images. Quality of the output depends on the scan resolution and clarity — clean 300 DPI scans produce very accurate Word documents, while low-resolution or blurry scans produce less accurate results.' },
+      { question: 'Does the PDF to Word converter work on scanned documents?', answer: 'Yes. PdfPixels uses OCR (Optical Character Recognition) to extract text from scanned page images. Quality of the output depends on the scan resolution and clarity â€” clean 300 DPI scans produce very accurate Word documents, while low-resolution or blurry scans produce less accurate results.' },
     ],
   },
   {
     slug: 'resize-image-for-passport-photo-us',
-    title: 'Resize Image to US Passport Photo Size Free — 2x2 Inch 600x600px Online',
-    description: 'Create a compliant US passport photo free online — exact 2×2 inch (600×600px at 300 DPI) dimensions per State Department requirements.',
+    title: 'Resize Image to US Passport Photo Size Free â€” 2x2 Inch 600x600px Online',
+    description: 'Create a compliant US passport photo free online â€” exact 2Ã—2 inch (600Ã—600px at 300 DPI) dimensions per State Department requirements.',
     targetToolSlug: 'passport-size-photo',
     intent: 'resize image to us passport photo size 2x2 inch free',
     overview:
-      'The US State Department has precise, non-negotiable specifications for passport photos: exactly 2×2 inches (51×51mm) with the head filling 50–69% of the frame measured from the bottom of the chin to the top of the head. At 300 DPI (the standard for photo printing), this means a digital image of exactly 600×600 pixels. Getting this wrong — even slightly off dimensions or head size — results in your application being rejected and delayed by weeks. PdfPixels Passport Size Photo tool resizes your photo to the exact US passport specification in seconds, with a free grid overlay to help you verify head positioning before downloading.',
+      'The US State Department has precise, non-negotiable specifications for passport photos: exactly 2Ã—2 inches (51Ã—51mm) with the head filling 50â€“69% of the frame measured from the bottom of the chin to the top of the head. At 300 DPI (the standard for photo printing), this means a digital image of exactly 600Ã—600 pixels. Getting this wrong â€” even slightly off dimensions or head size â€” results in your application being rejected and delayed by weeks. PdfPixels Passport Size Photo tool resizes your photo to the exact US passport specification in seconds, with a free grid overlay to help you verify head positioning before downloading.',
     whoItsFor: [
       'US citizens applying for a new passport or passport renewal and needing a compliant digital photo',
       'US visa applicants who need a passport-format photo for embassy or consulate submissions',
-      'Global Entry, TSA PreCheck, and NEXUS applicants needing a compliant 2×2 inch photo for trusted traveler program enrollment',
+      'Global Entry, TSA PreCheck, and NEXUS applicants needing a compliant 2Ã—2 inch photo for trusted traveler program enrollment',
     ],
     steps: [
       { title: 'Take or prepare your photo', description: 'Use a plain white or off-white background. Face directly at the camera with a neutral expression. Ensure your full face and top of shoulders are visible. Natural daylight or bright indoor lighting works best.' },
       { title: 'Upload to PdfPixels Passport Size Photo', description: 'Go to PdfPixels Passport Size Photo and upload your photo. The tool accepts JPEG and PNG files.' },
-      { title: 'Crop and position your head', description: 'Use the crop tool to center your face. Ensure your head (chin to crown) fills approximately 60% of the frame height — this is within the State Department\'s 50–69% requirement.' },
-      { title: 'Download your 600×600px photo', description: 'Download the resized photo at 600×600px (2×2 inches at 300 DPI). This file is ready for online passport applications or can be printed at any pharmacy photo counter (specify 2×2 inch print size).' },
+      { title: 'Crop and position your head', description: 'Use the crop tool to center your face. Ensure your head (chin to crown) fills approximately 60% of the frame height â€” this is within the State Department\'s 50â€“69% requirement.' },
+      { title: 'Download your 600Ã—600px photo', description: 'Download the resized photo at 600Ã—600px (2Ã—2 inches at 300 DPI). This file is ready for online passport applications or can be printed at any pharmacy photo counter (specify 2Ã—2 inch print size).' },
     ],
     tips: [
-      'The head size requirement (50–69% of frame) is strictly enforced — a head that\'s too small or too large is the most common reason passport photos are rejected. Use the grid overlay to measure carefully.',
-      'Wear everyday clothing — no hats, headscarves (except for religious reasons), or glasses. Open eyes looking directly at the camera are required. Smiling is allowed but a neutral expression photographs better.',
-      'For online applications (such as the State Department\'s Online Passport Renewal system), submit the digital 600×600px JPEG. For in-person applications, take the 600×600px file to a pharmacy or print shop and specify a 2×2 inch print.',
+      'The head size requirement (50â€“69% of frame) is strictly enforced â€” a head that\'s too small or too large is the most common reason passport photos are rejected. Use the grid overlay to measure carefully.',
+      'Wear everyday clothing â€” no hats, headscarves (except for religious reasons), or glasses. Open eyes looking directly at the camera are required. Smiling is allowed but a neutral expression photographs better.',
+      'For online applications (such as the State Department\'s Online Passport Renewal system), submit the digital 600Ã—600px JPEG. For in-person applications, take the 600Ã—600px file to a pharmacy or print shop and specify a 2Ã—2 inch print.',
     ],
     pitfalls: [
-      { problem: 'Passport application rejected: photo does not meet requirements', solution: 'The most common rejections are: head too large or small (outside 50–69% range), background not plain white, eyes obscured by glasses or glare, or photo printed at wrong size. Re-check all requirements on travel.state.gov before resubmitting.' },
-      { problem: 'Photo looks pixelated when printed at 2×2 inches', solution: 'Ensure the source photo has sufficient resolution — a 600×600px image should print clearly at exactly 2×2 inches at 300 DPI. If the original photo is very low resolution, the print will be pixelated. Use a modern smartphone camera in good lighting for best results.' },
+      { problem: 'Passport application rejected: photo does not meet requirements', solution: 'The most common rejections are: head too large or small (outside 50â€“69% range), background not plain white, eyes obscured by glasses or glare, or photo printed at wrong size. Re-check all requirements on travel.state.gov before resubmitting.' },
+      { problem: 'Photo looks pixelated when printed at 2Ã—2 inches', solution: 'Ensure the source photo has sufficient resolution â€” a 600Ã—600px image should print clearly at exactly 2Ã—2 inches at 300 DPI. If the original photo is very low resolution, the print will be pixelated. Use a modern smartphone camera in good lighting for best results.' },
     ],
     faqs: [
-      { question: 'What are the exact US passport photo requirements?', answer: 'US State Department requirements: 2×2 inches (51×51mm) at 300 DPI = 600×600 pixels. Head must be 1–1⅜ inches tall (50–69% of frame). Plain white or off-white background. Taken within the last 6 months. Color photo. No glasses, no headwear (except religious). Neutral expression, eyes open and looking at camera. See travel.state.gov for the complete official specification.' },
-      { question: 'Can I use this photo for other US government IDs?', answer: 'The 2×2 inch (600×600px) format is also accepted for US visas, Global Entry, NEXUS, SENTRI, and most US government ID applications. For driver\'s licenses and state IDs, requirements vary by state — check your state DMV for specific dimensions.' },
+      { question: 'What are the exact US passport photo requirements?', answer: 'US State Department requirements: 2Ã—2 inches (51Ã—51mm) at 300 DPI = 600Ã—600 pixels. Head must be 1â€“1â…œ inches tall (50â€“69% of frame). Plain white or off-white background. Taken within the last 6 months. Color photo. No glasses, no headwear (except religious). Neutral expression, eyes open and looking at camera. See travel.state.gov for the complete official specification.' },
+      { question: 'Can I use this photo for other US government IDs?', answer: 'The 2Ã—2 inch (600Ã—600px) format is also accepted for US visas, Global Entry, NEXUS, SENTRI, and most US government ID applications. For driver\'s licenses and state IDs, requirements vary by state â€” check your state DMV for specific dimensions.' },
     ],
   },
+  // ─── Batch 3: High-volume Tier-1 use-cases ────────────────────────────────
+  {
+    slug: 'compress-pdf-for-google-classroom',
+    title: 'Compress PDF for Google Classroom — Under 10MB Upload Limit Free',
+    description: "Reduce PDF file size to meet Google Classroom's 10MB per-file upload limit for assignments, worksheets, and handouts.",
+    targetToolSlug: 'compress-pdf',
+    intent: 'compress pdf for google classroom upload limit',
+    overview: 'Google Classroom enforces a 10MB limit per file when students and teachers attach PDFs to assignments. Textbook chapters, scanned worksheet packets, and high-resolution lab reports frequently exceed this limit — especially when exported from scanners at 300 DPI or higher. The quickest fix is to compress the PDF in your browser before uploading: PdfPixels Compress PDF reduces most classroom-sized documents to well under 10MB in seconds with no account required. Teachers can also use this workflow to reduce lesson handout PDFs before distributing them across an entire class.',
+    whoItsFor: ['Students trying to submit a PDF assignment that Google Classroom keeps rejecting as too large', 'Teachers compressing handouts, worksheets, and lesson materials before posting to Classroom', 'School administrators preparing digitized curriculum documents for district-wide Google Classroom distribution'],
+    steps: [{ title: 'Check your PDF size', description: 'Right-click the file and view Properties (Windows) or Get Info (Mac) to confirm the file is over 10MB — the Google Classroom limit.' }, { title: 'Open Compress PDF on PdfPixels', description: 'Go to PdfPixels Compress PDF and drop your file into the upload area. No account or login required.' }, { title: 'Choose compression level', description: 'Select Recommended for a good quality-to-size balance. If the file is still over 10MB after previewing, try High. Extreme gives the smallest size but reduces image clarity.' }, { title: 'Download and upload to Classroom', description: 'Download the compressed PDF, then attach it to your Google Classroom assignment. Files under 10MB upload immediately without errors.' }],
+    tips: ['Scanned PDFs (photos of paper) compress much more than text-only PDFs — if your file is over 10MB and text-only, the content is likely embedded as a large image scan. Try High compression.', 'Google Classroom also supports Google Docs natively — if the PDF contains mostly text, convert it to a Google Doc first for even smaller file sizes.', 'Teachers: compress handouts to under 2MB so they load quickly on student devices with slow mobile data connections.'],
+    pitfalls: [{ problem: 'File is still over 10MB after Recommended compression', solution: 'Try High or Extreme compression. Alternatively, split the PDF into two smaller sections using PdfPixels Split PDF and attach both parts.' }, { problem: 'Compressed PDF looks blurry or hard to read', solution: 'Switch back to Recommended compression. If the content was already low-resolution, blurriness reflects the original scan quality rather than the compression.' }],
+    faqs: [{ question: 'What is the Google Classroom PDF upload limit?', answer: 'Google Classroom limits file attachments to 10MB per file. For files over 10MB, compress the PDF first or link to a file stored in Google Drive (which has higher limits).' }, { question: 'Does compressing a PDF for Google Classroom affect the text quality?', answer: 'Text content in PDFs is stored as vector data and is not affected by image compression. Compression reduces the resolution of embedded images only. For text-heavy PDFs, High compression produces virtually identical visual quality at smaller file sizes.' }],
+  },
+  {
+    slug: 'convert-png-to-jpg-free',
+    title: 'Convert PNG to JPG Free Online — Reduce File Size Without Losing Quality',
+    description: 'Convert PNG images to JPG format online for free to reduce file size for email, web, and upload portals that require JPEG.',
+    targetToolSlug: 'png-to-jpeg',
+    intent: 'convert png to jpg free online',
+    overview: 'PNG files use lossless compression — great for screenshots and logos with sharp edges, but overkill for photographs. A 4MB PNG photo of a product can often be converted to a JPG at the same visual quality in under 400KB — a 10x size reduction. PdfPixels PNG to JPEG converter runs in your browser, respects your quality setting, and outputs a download-ready JPG in seconds. This matters for WordPress uploads, email attachments, social sharing, and any form or portal that only accepts JPEG format.',
+    whoItsFor: ['Bloggers and web developers reducing PNG screenshots to JPG for faster page load times', 'E-commerce sellers converting PNG product photos to smaller JPGs for marketplace uploads', 'Anyone whose email or upload portal only accepts JPEG and refuses PNG files'],
+    steps: [{ title: 'Upload your PNG file', description: 'Open PdfPixels PNG to JPEG and drag your PNG image into the upload area, or click to browse.' }, { title: 'Set output quality', description: '85% quality produces excellent visual results at roughly 20-30% of the PNG file size. For web use, 75-80% is typically indistinguishable from 100%.' }, { title: 'Convert and preview', description: 'The converter processes your image and shows a preview with the output file size so you can judge quality before downloading.' }, { title: 'Download the JPG', description: 'Click Download to save your JPG. The file is ready for email, web upload, or any platform that requires JPEG format.' }],
+    tips: ['For photographs, JPG at 80-85% quality is visually indistinguishable from PNG and typically 5-10x smaller. For logos or text graphics, keep PNG — JPG introduces visible artifacts on hard edges.', 'If you need a transparent background, stay with PNG. JPG does not support transparency — transparent areas become white when converted.', 'Batch-convert multiple PNGs by processing them one at a time — the converter handles each in seconds.'],
+    pitfalls: [{ problem: 'JPG output has visible blocky artifacts around text or logo edges', solution: 'JPG is lossy and compresses hard edges poorly. For screenshots, logos, or text-heavy images, keep the PNG format. Only convert photos and natural images to JPG.' }, { problem: 'Converted JPG is larger than the original PNG', solution: 'This can happen with very small or simple images where PNG compression is already highly efficient. In this case, keep the PNG — no conversion needed.' }],
+    faqs: [{ question: 'Does converting PNG to JPG lose quality?', answer: 'JPG is a lossy format, so some image data is discarded. At quality settings of 80-90%, the visual difference is imperceptible to most viewers for photographs. For graphics with text or sharp edges, the loss is more visible — keep those as PNG.' }, { question: 'Can I convert PNG to JPG on my phone?', answer: 'Yes. PdfPixels PNG to JPEG works in mobile browsers on iPhone and Android. Upload your PNG, convert, and download directly to your phone — no app installation required.' }],
+  },
+  {
+    slug: 'password-protect-pdf-free',
+    title: 'Password Protect a PDF Free Online — Add Encryption Without Adobe Acrobat',
+    description: 'Add a password to your PDF for free online without Adobe Acrobat. Encrypt sensitive documents with AES-128 before sharing by email or cloud.',
+    targetToolSlug: 'protect-pdf',
+    intent: 'password protect pdf free online without adobe',
+    overview: 'Sharing confidential PDFs over email or cloud storage without a password is a common data exposure risk. HR offer letters, financial statements, legal contracts, and personal ID scans should all be password-protected before sending to external recipients. Adobe Acrobat can add PDF passwords but requires a paid subscription. PdfPixels Protect PDF lets you add a password with AES-128 encryption to any PDF in seconds without an account, subscription, or software install. The recipient needs the password to open the file — simple and effective for most everyday confidentiality needs.',
+    whoItsFor: ['HR professionals sending offer letters, salary information, or employee records via email', 'Freelancers and consultants sharing draft contracts or sensitive proposals with clients before signing', 'Students and individuals protecting personal documents like ID scans, tax returns, or bank statements before cloud uploading'],
+    steps: [{ title: 'Upload your PDF', description: 'Open PdfPixels Protect PDF and upload the document you want to password-protect.' }, { title: 'Set a strong password', description: 'Enter a password of at least 8 characters mixing uppercase, lowercase, numbers, and symbols. Avoid common words or sequences like 123456.' }, { title: 'Encrypt and download', description: 'Click Protect to apply AES-128 encryption. Download the password-protected PDF.' }, { title: 'Share the password separately', description: 'Send the protected PDF by email or cloud link. Share the password via a separate channel — never in the same message as the file.' }],
+    tips: ['Always share the password via a different channel than the file. If you email both together, anyone who intercepts the email can open the document.', 'Use a password manager to generate and store a strong random password — you will need to retrieve it to unlock the file later.', 'PDF password protection is a deterrent for casual access. For highly sensitive documents, consult your organization security policy for stronger encryption requirements.'],
+    pitfalls: [{ problem: 'Forgot the password after protecting the PDF', solution: 'PDF passwords cannot be recovered if forgotten — the encryption is one-way. Always store the password in a password manager immediately after setting it.' }, { problem: 'Recipient cannot open the password-protected PDF', solution: 'Confirm the recipient is using a modern PDF reader (Adobe Reader, Preview on Mac, or Chrome built-in PDF viewer). Share the password via a separate channel if they have not received it.' }],
+    faqs: [{ question: 'What encryption does PdfPixels use for PDF passwords?', answer: 'PdfPixels applies AES-128 encryption, which is the standard encryption used by Adobe Acrobat for password protection. This is sufficient for protecting sensitive documents from casual unauthorized access.' }, { question: 'Can a password-protected PDF be cracked?', answer: 'Short or simple passwords can be brute-forced with specialized tools. Use long, random passwords of 12 or more characters for documents that require real confidentiality.' }],
+  },
+  {
+    slug: 'compress-image-for-whatsapp',
+    title: 'Compress Image for WhatsApp — Send Full-Quality Photos Without Auto-Compression',
+    description: 'Compress images before sending on WhatsApp to control quality. Send as a document to bypass WhatsApp automatic photo compression.',
+    targetToolSlug: 'compress-image',
+    intent: 'compress image for whatsapp without quality loss',
+    overview: 'WhatsApp automatically compresses images sent as Photos — often reducing a 3MB original to a blurry 200KB shadow of itself. This matters for business owners sending product photos, photographers sharing portfolio shots, and anyone where image quality counts. The trick is to send the image as a Document instead of a Photo: WhatsApp skips compression entirely on document attachments (up to 100MB). Compress your image first with PdfPixels Compress Image to 1-2MB, then send it as a WhatsApp document to preserve every detail.',
+    whoItsFor: ['Small business owners sending product photos to customers via WhatsApp Business without quality loss', 'Real estate agents sharing property listing photos with clients over WhatsApp', 'Photographers and designers sharing portfolio images where compression artifacts are unacceptable'],
+    steps: [{ title: 'Compress your image first', description: 'Open PdfPixels Compress Image, upload your JPG or PNG photo, and set quality to 85-90%. This reduces file size significantly while keeping the image sharp.' }, { title: 'Download the compressed image', description: 'Download the compressed version. Aim for 1-3MB for a good balance of quality and fast delivery.' }, { title: 'Open WhatsApp and choose Document', description: 'In the WhatsApp chat, tap the attachment icon. Instead of choosing Photo and Video, tap Document. Navigate to your image file and select it.' }, { title: 'Send as document', description: 'The recipient receives the file exactly as you sent it — no WhatsApp compression applied. They open it as a document to view at full quality.' }],
+    tips: ['Sending as Document bypasses WhatsApp photo compression completely. The file arrives exactly as you sent it, though it shows as a file attachment rather than an inline photo preview.', 'WhatsApp Photos mode compresses to roughly 200-300KB regardless of your original size. For anything quality-sensitive, always use Document mode.', 'For product photos, compress to around 1-1.5MB before sending — this loads quickly on the recipient device while preserving professional clarity.'],
+    pitfalls: [{ problem: 'Recipient sees a file attachment instead of an inline photo preview', solution: 'This is expected when sending as a Document. The recipient taps the file to open it at full quality. If you need inline display, send as Photo and accept the compression trade-off.' }, { problem: 'Document attachment fails with a size error', solution: 'WhatsApp document attachments support up to 100MB per file. If your image exceeds this, reduce quality further or use Google Drive for sharing.' }],
+    faqs: [{ question: 'Why does WhatsApp compress photos automatically?', answer: 'WhatsApp compresses images sent as Photos to reduce data usage and storage on recipients devices. The workaround — sending as Document — preserves the original file but removes the inline photo display.' }, { question: 'Does sending as Document work on both iPhone and Android?', answer: 'Yes. On iPhone, tap the plus icon then Document. On Android, tap the paperclip icon then Document. The process is the same on both platforms.' }],
+  },
+  {
+    slug: 'pdf-to-word-free-online',
+    title: 'Convert PDF to Word Free Online — Editable DOCX Without Adobe Acrobat',
+    description: 'Convert any PDF to an editable Word DOCX file for free online. Works for text PDFs and scanned documents with OCR. No Adobe subscription needed.',
+    targetToolSlug: 'pdf-to-word',
+    intent: 'convert pdf to word free online editable',
+    overview: 'Receiving a PDF you need to edit — but only having the PDF and not the original Word file — is one of the most common frustrations in office work. Adobe Acrobat can export PDFs to Word but requires a paid subscription. PdfPixels PDF to Word converts text-based PDFs to editable DOCX files free of charge in seconds. For scanned PDFs (photos of paper documents), the converter applies OCR to extract the text before creating the Word file — converting a scanned invoice or contract into an actually editable document you can open in Microsoft Word, Google Docs, or LibreOffice.',
+    whoItsFor: ['Office workers who receive contracts, reports, or forms as PDFs and need to edit or copy the text', 'Students who have lecture notes, research papers, or textbook extracts as PDFs and need to annotate or reformat them in Word', 'Freelancers editing client-provided PDF briefs or proposals without access to the original source file'],
+    steps: [{ title: 'Upload your PDF', description: 'Open PdfPixels PDF to Word and upload the PDF you want to convert. For scanned PDFs, OCR is applied automatically.' }, { title: 'Wait for conversion', description: 'Text PDFs convert in 5-15 seconds. Scanned PDFs with OCR take 20-60 seconds depending on page count and scan quality.' }, { title: 'Download the DOCX file', description: 'Download the Word document. Open it in Microsoft Word, Google Docs, or LibreOffice Writer to review and edit.' }, { title: 'Review and clean up formatting', description: 'Complex layouts such as multi-column text may need manual cleanup. Simple text documents like letters and contracts typically convert with clean paragraph structure.' }],
+    tips: ['Text-based PDFs (created digitally, not scanned) convert with the highest fidelity. The text is extracted directly and placed in the Word document accurately.', 'For scanned PDFs, ensure the original document was scanned at 300 DPI or higher for the best OCR accuracy. Low-quality scans produce more recognition errors.', 'After conversion, always proofread the DOCX against the original PDF — hyphenation and unusual fonts occasionally need manual correction.'],
+    pitfalls: [{ problem: 'Converted Word document has jumbled formatting or missing text', solution: 'Complex PDF layouts such as magazine-style columns and overlapping graphics do not always convert cleanly. Standard office documents like reports, letters, and contracts convert most reliably.' }, { problem: 'Scanned PDF shows garbled text in the Word output', solution: 'The original scan may be too low-resolution or skewed for accurate OCR. Try scanning again at 300 DPI with correct orientation before converting.' }],
+    faqs: [{ question: 'Can I convert a scanned PDF to an editable Word document?', answer: 'Yes. PdfPixels PDF to Word applies OCR automatically to scanned PDFs, extracting the text from the image and placing it into the Word document. Accuracy depends on the quality of the original scan.' }, { question: 'Is the converted Word file free of watermarks?', answer: 'Yes. PdfPixels produces clean, unwatermarked DOCX files ready for editing and professional use. There is no subscription or payment required.' }],
+  },
 ];
-
