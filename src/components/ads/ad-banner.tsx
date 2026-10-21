@@ -1,6 +1,5 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
 import { cn } from '@/lib/utils';
 import { adsterraConfig } from '@/lib/ads-config';
 
@@ -86,32 +85,44 @@ export function AdsterraIframe({
 
 /**
  * Adsterra Native Banner container (4-item / responsive recommendation grid)
+ * Rendered inside an isolated iframe to prevent ID collisions, eliminate CLS,
+ * and guarantee reliable impression tracking across App Router page navigations.
  */
 export function AdsterraNativeBanner({ className }: { className?: string }) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const isLoaded = useRef(false);
-
-  useEffect(() => {
-    if (!adsterraConfig.enabled || isLoaded.current || !containerRef.current) return;
-    isLoaded.current = true;
-
-    const script = document.createElement('script');
-    script.async = true;
-    script.setAttribute('data-cfasync', 'false');
-    script.src = adsterraConfig.slots.nativeBanner.scriptSrc;
-    document.body.appendChild(script);
-  }, []);
-
   if (!adsterraConfig.enabled) return null;
+
+  const srcDoc = `<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <base target="_blank">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 100%; min-height: 100%; overflow: hidden; background: transparent; }
+    </style>
+  </head>
+  <body>
+    <div id="${adsterraConfig.slots.nativeBanner.containerId}"></div>
+    <script async="async" data-cfasync="false" src="${adsterraConfig.slots.nativeBanner.scriptSrc}"></script>
+  </body>
+</html>`;
 
   return (
     <div className={cn('my-6 w-full flex flex-col items-center justify-center overflow-hidden', className)}>
       <AdLabel />
-      <div
-        id={adsterraConfig.slots.nativeBanner.containerId}
-        ref={containerRef}
-        className="w-full min-h-[140px] flex items-center justify-center"
-      />
+      <div className="w-full flex items-center justify-center min-h-[160px]">
+        <iframe
+          title="adsterra-native-banner"
+          width="100%"
+          height="160"
+          loading="lazy"
+          scrolling="no"
+          frameBorder="0"
+          style={{ border: 'none', overflow: 'hidden', width: '100%', maxWidth: '960px' }}
+          srcDoc={srcDoc}
+        />
+      </div>
     </div>
   );
 }
