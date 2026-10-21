@@ -1388,5 +1388,152 @@ export const comparisonPages: ComparisonPage[] = [
       },
     ],
   },
+  {
+    slug: 'pdfpixels-vs-ilovepdf-compress-image',
+    title: 'PdfPixels vs iLovePDF Image Compressor: Which Free Tool is Better?',
+    description: 'PdfPixels vs iLovePDF for image compression: features, file size limits, task caps, and output quality compared. Find the best free image compressor.',
+    primaryToolSlug: 'compress-image',
+    alternatives: ['iLovePDF'],
+    bestFor: ['Granular quality control', 'WebP compression support', 'No task caps on image compression'],
+    overview:
+      'Both PdfPixels and iLovePDF offer free image compression in the browser. iLovePDF supports slightly larger files per upload (20MB vs 10MB), while PdfPixels provides a compression level slider from 1–100, giving you precise control over output quality rather than forcing you into fixed presets. PdfPixels also compresses WebP images — a format iLovePDF does not currently support — making it a stronger choice for developers optimizing web assets.',
+    whenToChooseUs: [
+      'You need granular quality control via a 1–100 compression slider rather than preset options',
+      'You are compressing WebP images for web delivery',
+      'You want no account required and no hourly task cap on image compression',
+    ],
+    whenToChooseAlt: [
+      'You regularly compress images over 10MB and up to 20MB in a single upload',
+      'You need to compress GIF or TIFF files alongside JPG and PNG',
+      'You already use iLovePDF for PDF workflows and prefer a single platform',
+    ],
+    keyDifferences: [
+      {
+        topic: 'Max file size per image',
+        pdfpixels: '10 MB',
+        alternative: '20 MB',
+      },
+      {
+        topic: 'Supported formats',
+        pdfpixels: 'JPG, PNG, WebP, GIF',
+        alternative: 'JPG, PNG, GIF, TIFF',
+      },
+      {
+        topic: 'Quality control',
+        pdfpixels: 'Compression level slider (1-100)',
+        alternative: 'Compression percentage presets',
+      },
+    ],
+    verdict:
+      'iLovePDF supports slightly larger files. PdfPixels gives more granular quality control and also handles WebP — useful for developers optimizing images for web.',
+    faqs: [
+      {
+        question: 'Does compressing an image reduce its visual quality?',
+        answer: 'At moderate compression levels (70–85%), the quality loss is invisible to the human eye in most use cases. PdfPixels\' 1–100 slider lets you find the sweet spot between file size and quality for your specific image, whereas iLovePDF\'s preset system applies fixed reductions. For critical images, always compare the original and compressed versions before publishing.',
+      },
+      {
+        question: 'Which tool is better for bulk image compression?',
+        answer: 'Both tools process one image at a time in their free tiers. For bulk compression of many images, consider a desktop tool like ImageOptim (Mac) or FileOptimizer (Windows). For web developers, build-time tools like imagemin or Squoosh CLI are better suited to automating compression across hundreds of images.',
+      },
+    ],
+  },
+  {
+    slug: 'pdfpixels-vs-adobe-merge-pdf',
+    title: 'PdfPixels vs Adobe Acrobat PDF Merger: Free vs Paid Compared',
+    description: 'PdfPixels free PDF merger vs Adobe Acrobat online. Features, file limits, cost, and output quality compared. Merge PDFs free without a subscription.',
+    primaryToolSlug: 'merge-pdf',
+    alternatives: ['Adobe Acrobat'],
+    bestFor: ['Free PDF merging with no account', 'Unlimited files per merge', 'No monthly subscription'],
+    overview:
+      'Combining multiple PDFs into one is a common need for reports, contracts, and presentations. Adobe Acrobat Online offers a polished merge experience but limits free users to 2 merges per day and requires a sign-in. Full drag-and-drop page editing and higher file limits require an Adobe Acrobat Pro subscription at \$19.99/month. PdfPixels offers unlimited merges, unlimited files per session, and no account required — making it the practical choice for users who need to merge PDFs without a subscription commitment.',
+    whenToChooseUs: [
+      'You need to merge PDFs without paying \$19.99/month for Adobe Acrobat Pro',
+      'You want to combine more than 2 PDFs per day without hitting a daily limit',
+      'You prefer to work without creating an Adobe account',
+    ],
+    whenToChooseAlt: [
+      'You need advanced page-level editing, redaction, or fill-and-sign in the same workflow',
+      'You require certified electronic signatures with PKI audit trails on merged documents',
+      'Your organization standardizes on Adobe Acrobat for compliance or IT policy reasons',
+    ],
+    keyDifferences: [
+      {
+        topic: 'Cost',
+        pdfpixels: 'Free, no account needed',
+        alternative: 'Free with 2 merges/day limit; Pro requires $19.99/month',
+      },
+      {
+        topic: 'Max files per merge',
+        pdfpixels: 'Unlimited files per merge',
+        alternative: 'Up to 100 files per merge (Pro)',
+      },
+      {
+        topic: 'Page reordering before merge',
+        pdfpixels: 'Drag-and-drop reorder supported',
+        alternative: 'Full drag-and-drop page thumbnail editor (Pro)',
+      },
+    ],
+    verdict:
+      'For occasional merges, PdfPixels is the obvious choice — free with no account needed. Adobe Acrobat Pro is worth considering only if you need advanced page-level editing, redaction, or fill-and-sign in the same workflow.',
+    faqs: [
+      {
+        question: 'Is there a file size limit when merging PDFs on PdfPixels?',
+        answer: 'PdfPixels supports PDF files up to 50MB per file for the merge operation. If your combined document is very large, consider compressing each individual PDF first using PdfPixels Compress PDF before merging to reduce the total size.',
+      },
+      {
+        question: 'Do free PDF merge tools compress or reduce the quality of my PDF?',
+        answer: 'No — merging is a structural operation that combines pages without re-compressing the content. The merged PDF retains the same image quality and text fidelity as the originals. Quality is only reduced if you explicitly run a compression step after merging.',
+      },
+    ],
+  },
+  {
+    slug: 'pdfpixels-vs-canva-remove-background',
+    title: 'PdfPixels vs Canva Background Remover: Which Free Tool Gives Better Results?',
+    description: 'PdfPixels vs Canva for removing image backgrounds. Which gives cleaner edges? Which is free without a Canva Pro subscription? Full comparison.',
+    primaryToolSlug: 'remove-image-background',
+    alternatives: ['Canva'],
+    bestFor: ['Free transparent PNG download without Canva Pro', 'Standalone background removal', 'Product photos and profile pictures'],
+    overview:
+      'Background removal is essential for product photos on Amazon and Shopify, profile pictures, and presentation slides. Canva\'s background remover is integrated into its design canvas and requires a Canva Pro subscription (\$12.99/month) — you can\'t export a standalone transparent PNG without it. PdfPixels removes the background and gives you a transparent PNG to download immediately, free and without an account. If all you need is a clean cutout, PdfPixels removes the friction of building a full design in Canva.',
+    whenToChooseUs: [
+      'You need a standalone transparent PNG download without a Canva Pro subscription',
+      'You are processing product photos, headshots, or profile pictures where only the cutout matters',
+      'You want a fast, no-account removal without opening a design canvas',
+    ],
+    whenToChooseAlt: [
+      'You need to design around the cutout — adding backgrounds, text, logos, or brand elements — in the same session',
+      'You already use Canva Pro and prefer to keep your workflow in one platform',
+      'You need batch design output for social media templates with the removed background',
+    ],
+    keyDifferences: [
+      {
+        topic: 'Cost',
+        pdfpixels: 'Free, no account',
+        alternative: 'Requires Canva Pro ($12.99/month); limited free trial',
+      },
+      {
+        topic: 'Output format',
+        pdfpixels: 'Transparent PNG download',
+        alternative: 'Used within Canva design canvas; PNG export requires Pro',
+      },
+      {
+        topic: 'Batch processing',
+        pdfpixels: 'One image at a time',
+        alternative: 'One image at a time in design canvas',
+      },
+    ],
+    verdict:
+      'PdfPixels is the clear winner for users who need a standalone transparent PNG from a single photo — completely free, no account, instant download. Canva is better if you also need to design around the cutout (add backgrounds, text, brand elements) in the same workflow.',
+    faqs: [
+      {
+        question: 'How does the edge quality of PdfPixels background removal compare to Canva?',
+        answer: 'Both tools use AI-powered background removal that performs well on subjects with clear contrast against the background. PdfPixels\' AI excels at clean product shots and portrait headshots. For complex subjects with fine hair, fur, or transparent elements, neither free tool matches the precision of dedicated tools like remove.bg or manual masking in Photoshop. Test with your actual image — results vary significantly by subject and background complexity.',
+      },
+      {
+        question: 'Which tool is better for Amazon or Etsy product photos?',
+        answer: 'PdfPixels is more practical for e-commerce product photos because it delivers a transparent PNG directly — no design subscription needed. Amazon and Shopify require a white or transparent background for product listings. Upload the transparent PNG from PdfPixels and place it on a white background using any image editor, or use it directly if your platform supports transparent images.',
+      },
+    ],
+  },
 ];
 
