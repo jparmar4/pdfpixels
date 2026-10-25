@@ -6,6 +6,7 @@ import { allTools, toolCategories } from '@/lib/tools-data';
 import { useCasePages } from '@/lib/use-cases';
 import { geoRegions } from '@/lib/geo-data';
 import { localizedSitemapEntries, toolSitemapAlternates } from '@/lib/localized-tools';
+import { INDIAN_EXAM_PRESETS } from '@/lib/indian-exams-data';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const evergreen = SITE_CONTENT_UPDATED;
@@ -157,6 +158,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.8,
   }));
 
+  const indianExamEntries: MetadataRoute.Sitemap = INDIAN_EXAM_PRESETS.map((exam) => ({
+    url: absoluteUrl(`/in/${exam.slug}`),
+    lastModified: evergreen,
+    changeFrequency: 'weekly' as const,
+    priority: 0.85,
+  }));
+
   // AdSense-review freeze: while ADSENSE_REVIEW_MODE is true, geo hubs,
   // comparison pages, and localized packs stay noindexed and out of the
   // sitemap so Google's review crawlers evaluate only primary, high-density
@@ -169,6 +177,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...useCaseEntries,
     ...blogPages,
     ...legalPages,
+    ...indianExamEntries,
     ...(ADSENSE_REVIEW_MODE
       ? []
       : [{ url: absoluteUrl('/compare'), lastModified: evergreen, changeFrequency: 'weekly' as const, priority: 0.74 }, ...comparisonEntries, ...geoEntries, ...localizedSitemapEntries()]),

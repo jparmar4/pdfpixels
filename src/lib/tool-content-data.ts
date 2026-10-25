@@ -3804,4 +3804,38 @@ export const toolContentMap: Record<string, ToolContent> = {
         supportedFormats: 'Input: PNG (.png) | Output: WebP (.webp) with transparency',
         relatedTools: ['jpg-to-webp', 'webp-to-png', 'png-to-jpeg', 'compress-image'],
     },
+    'shipping-label-cropper': {
+        about: 'Shipping Label Cropper transforms multi-page A4 marketplace invoices into standard 4×6 inch (100×150 mm) thermal printer labels. E-commerce sellers on Flipkart, Meesho, Amazon, and India Post typically receive combined A4 PDFs containing both a shipping barcode label and a customer tax invoice. Manually taking screenshots or feeding full A4 sheets into thermal roll printers wastes paper, causes barcode distortion, and slows down order dispatch. PdfPixels uses browser-accelerated PDF bounding-box manipulation to crop the thermal label, optionally place the tax invoice on a separate sheet, and rotate pages 90° or 180° for TVS, TSC, Rollo, and Zebra thermal roll printers.',
+        directAnswer: 'The free Shipping Label Cropper by PdfPixels automatically crops A4 marketplace invoices into 4×6 thermal printer labels for Flipkart, Meesho, Amazon, and India Post with optional invoice separation.',
+        steps: [
+            { title: 'Upload marketplace invoice PDF', description: 'Select your single or batch A4 shipping invoice PDF from Flipkart, Meesho, Amazon, or India Post.' },
+            { title: 'Select marketplace preset', description: 'Choose your platform preset (Flipkart, Meesho, Amazon, or India Post) to auto-align the 4x6 label crop.' },
+            { title: 'Choose invoice separation & rotation', description: 'Toggle "Keep Tax Invoice on Separate Sheet" and choose portrait or 90° rotation to match your thermal printer roll.' },
+            { title: 'Download 4×6 thermal PDF', description: 'Click "Download 4x6 Thermal PDF" to get your ready-to-print shipping labels.' },
+        ],
+        features: [
+            '1-Click Marketplace Presets for Flipkart, Meesho, Amazon, and India Post',
+            'Standard 4×6 inch (100×150 mm) thermal printer roll compatibility',
+            'Optional invoice separation: Sheet 1 shipping label, Sheet 2 customer tax invoice',
+            'Batch processing of multi-page invoices with zero quality loss',
+            '0°, 90°, 180°, and 270° orientation rotation for thermal printer feeders',
+            'Works seamlessly with Rollo, Zebra, TVS, TSC, and wireless Bluetooth label printers',
+        ],
+        faqs: [
+            { question: 'What is the standard size for thermal shipping labels?', answer: 'The standard thermal label size used across logistics and e-commerce is 4×6 inches (100×150 mm, or 288×432 points in PDF).' },
+            { question: 'Can I separate Flipkart invoice and shipping label?', answer: 'Yes. Toggle "Keep Tax Invoice on Separate Sheet". Our tool crops the top shipping label as Page 1 and places the bottom tax invoice as Page 2.' },
+            { question: 'Does it support batch PDFs with 50+ orders?', answer: 'Yes, multi-page order batches are processed in seconds, cropping every order label in sequence.' },
+        ],
+        useCases: [
+            'Flipkart & Meesho daily order dispatch: Bulk crop daily order PDFs directly into thermal printer format without buying third-party label crop software.',
+            'Amazon FBA & Easy Ship labeling: Extract 4x6 barcode package labels without margin distortion.',
+            'Small business warehouse shipping: Eliminate tape and scissors by printing directly on self-adhesive thermal roll labels.',
+        ],
+        commonProblems: [
+            { problem: 'Barcode looks blurry on thermal printer', solution: 'Ensure rotation matches your printer roll orientation (usually Portrait 0° or 90° Clockwise) and print at 100% scale without fit-to-page downscaling.' },
+            { problem: 'Tax invoice is missing in output', solution: 'Enable the "Keep Tax Invoice on Separate Sheet" switch before clicking crop.' },
+        ],
+        supportedFormats: 'Input: PDF (.pdf) | Output: Formatted 4×6 PDF (.pdf)',
+        relatedTools: ['crop-pdf', 'pdf-split', 'resize-pdf', 'merge-pdf'],
+    },
 };

@@ -127,6 +127,11 @@ const PDFToExcelWorkspace = dynamic(
   { loading: () => <WorkspaceLoading /> }
 );
 
+const ShippingLabelCropWorkspace = dynamic(
+  () => import('@/components/layout/shipping-label-workspace').then(mod => ({ default: mod.ShippingLabelCropWorkspace })),
+  { loading: () => <WorkspaceLoading /> }
+);
+
 const BankStatementWorkspace = dynamic(
   () => import('@/components/layout/bank-statement-workspace').then(mod => ({ default: mod.BankStatementWorkspace })),
   { loading: () => <WorkspaceLoading /> }
@@ -300,7 +305,8 @@ function getWorkspaceComponent(toolId: string) {
   if (toolId === 'pdf-to-excel') return <PDFToExcelWorkspace initialFormat="xlsx" />;
   if (toolId === 'pdf-to-csv') return <PDFToExcelWorkspace initialFormat="csv" />;
   if (toolId === 'pdf-word-counter') return <PDFWordCounterWorkspace />;
-  if (toolId === 'bank-statement-to-excel') return <BankStatementWorkspace />;
+  if (toolId.includes('bank-statement-to-excel') || toolId.includes('statement-to-excel')) return <BankStatementWorkspace />;
+  if (toolId === 'shipping-label-cropper') return <ShippingLabelCropWorkspace />;
   if (toolId === 'bates-numbering-pdf') return <BatesNumberingWorkspace />;
   if (toolId === 'sanitize-pdf') return <SanitizePdfWorkspace />;
   if (toolId === 'compare-pdf') return <ComparePdfWorkspace />;

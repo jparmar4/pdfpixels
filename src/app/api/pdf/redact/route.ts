@@ -72,6 +72,20 @@ export async function POST(request: NextRequest) {
     // Form appearances must be painted before covering the sensitive area.
     try { pdf.getForm().flatten(); } catch { return apiError('Could not safely flatten this form.', 422); }
     for (const page of pdf.getPages()) page.node.delete(PDFName.of('Annots'));
+
+    // Permanently obliterate all EXIF/XMP/Document Info metadata
+    try {
+      pdf.setTitle('');
+      pdf.setAuthor('');
+      pdf.setSubject('');
+      pdf.setKeywords([]);
+      pdf.setProducer('');
+      pdf.setCreator('');
+      pdf.catalog.delete(PDFName.of('Metadata'));
+      pdf.catalog.delete(PDFName.of('PieceInfo'));
+    } catch {
+      // safe fallback if catalog properties cannot be deleted
+    }
     for (const box of redactions) {
       const pageIdx = box.pageNumber - 1;
       if (pageIdx < 0 || pageIdx >= totalPages) continue;

@@ -128,6 +128,87 @@ export function BatesNumberingWorkspace() {
 
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div>
+                    {/* 1-Click Legal Exhibit Presets */}
+                    <div className="space-y-2 mb-4 col-span-2">
+                      <span className="text-xs font-semibold text-muted-foreground block">
+                        1-Click Legal Presets:
+                      </span>
+                      <div className="flex flex-wrap gap-2">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          className="text-xs h-7 px-2.5"
+                          onClick={() => {
+                            setPrefix('EXHIBIT-A-');
+                            setPadding(4);
+                            setSuffix('');
+                            setBanner('');
+                            toast.success('Applied Exhibit A preset');
+                          }}
+                        >
+                          Exhibit A (EXHIBIT-A-0001)
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          className="text-xs h-7 px-2.5"
+                          onClick={() => {
+                            setPrefix('PLAINTIFF-');
+                            setPadding(6);
+                            setSuffix('');
+                            setBanner('');
+                            toast.success('Applied Plaintiff preset');
+                          }}
+                        >
+                          Plaintiff (PLAINTIFF-000001)
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          className="text-xs h-7 px-2.5"
+                          onClick={() => {
+                            setPrefix('DEFENDANT-');
+                            setPadding(6);
+                            setSuffix('');
+                            setBanner('');
+                            toast.success('Applied Defendant preset');
+                          }}
+                        >
+                          Defendant (DEFENDANT-000001)
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          className="text-xs h-7 px-2.5"
+                          onClick={() => {
+                            setPrefix('CONFIDENTIAL-');
+                            setPadding(6);
+                            setBanner('CONFIDENTIAL - PROTECTIVE ORDER');
+                            toast.success('Applied Confidential Protective Order preset');
+                          }}
+                        >
+                          Confidential Order
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          className="text-xs h-7 px-2.5"
+                          onClick={() => {
+                            setPrefix('DEP-EXHIBIT-');
+                            setPadding(3);
+                            setBanner('');
+                            toast.success('Applied Deposition Exhibit preset');
+                          }}
+                        >
+                          Deposition Exhibit
+                        </Button>
+                      </div>
+                    </div>
                     <Label htmlFor="prefix-e-g-case-or-party" className="text-xs font-semibold">Prefix (e.g. Case or Party)</Label>
                     <Input id="prefix-e-g-case-or-party"
                       value={prefix}

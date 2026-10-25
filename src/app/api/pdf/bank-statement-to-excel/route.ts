@@ -298,6 +298,53 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    if (format === 'quickbooks') {
+      const qbHeader = 'Date,Description,Amount\n';
+      const qbBody = transactions
+        .map(t => {
+          const dateStr = (t.date || '').replace(/"/g, '""');
+          const descStr = (t.description || '').replace(/"/g, '""');
+          let amount = '0.00';
+          if (t.credit && Number(t.credit) > 0) {
+            amount = Number(t.credit).toFixed(2);
+          } else if (t.debit && Number(t.debit) > 0) {
+            amount = (-Math.abs(Number(t.debit))).toFixed(2);
+          }
+          return `"${dateStr}","${descStr}",${amount}`;
+        })
+        .join('\n');
+
+      return new NextResponse(qbHeader + qbBody, {
+        status: 200,
+        headers: {
+          'Content-Type': 'text/csv; charset=utf-8',
+          'Content-Disposition': `attachment; filename="${sanitizeDownloadFileName(baseName)}-quickbooks.csv"`,
+          'Cache-Control': 'no-store, max-age=0',
+        },
+      });
+    }
+
+    if (format === 'tally') {
+      const tallyHeader = 'Date,Particulars,Voucher Type,Debit Amount,Credit Amount,Balance\n';
+      const tallyBody = transactions
+        .map(t => {
+          const dateStr = (t.date || '').replace(/"/g, '""');
+          const descStr = (t.description || '').replace(/"/g, '""');
+          const vchType = t.credit && Number(t.credit) > 0 ? 'Receipt' : 'Payment';
+          return `"${dateStr}","${descStr}","${vchType}","${t.debit || ''}","${t.credit || ''}","${t.balance || ''}"`;
+        })
+        .join('\n');
+
+      return new NextResponse(tallyHeader + tallyBody, {
+        status: 200,
+        headers: {
+          'Content-Type': 'text/csv; charset=utf-8',
+          'Content-Disposition': `attachment; filename="${sanitizeDownloadFileName(baseName)}-tally.csv"`,
+          'Cache-Control': 'no-store, max-age=0',
+        },
+      });
+    }
+
     if (format === 'csv') {
       const csvHeader = 'Date,Description,Withdrawal (Debit),Deposit (Credit),Balance\n';
       const csvBody = transactions

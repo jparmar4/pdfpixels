@@ -31,6 +31,14 @@ const TOOL_SLUG_ALIASES: Record<string, string> = {
   'docx-to-pdf': 'word-to-pdf',
   'pdf-to-xlsx': 'pdf-to-excel',
   'watermark-pdf': 'add-watermark-pdf',
+  'bank-statement-pdf-to-excel': 'bank-statement-to-excel',
+  'redact-pdf-online': 'redact-pdf',
+  'pdf-redact-online': 'redact-pdf',
+  'bates-numbering': 'bates-numbering-pdf',
+  'legal-bates-numbering': 'bates-numbering-pdf',
+  'ecommerce-shipping-label-cropper': 'shipping-label-cropper',
+  'flipkart-label-cropper': 'shipping-label-cropper',
+  'meesho-label-cropper': 'shipping-label-cropper',
 };
 
 function WorkspaceLoading({ tool, containerClass = 'container mx-auto px-4 lg:px-8' }: { tool: Tool; containerClass?: string }) {
@@ -144,6 +152,7 @@ const WORKSPACE_CONTAINER_CLASS: Record<string, string> = {
   'pdf-to-excel': 'container mx-auto px-4 lg:px-8 max-w-5xl',
   'bank-statement-to-excel': 'container mx-auto px-4 lg:px-8 max-w-5xl',
   'bates-numbering-pdf': 'container mx-auto px-4 lg:px-8 max-w-5xl',
+  'shipping-label-cropper': 'container mx-auto px-4 lg:px-8 max-w-5xl',
   'compare-pdf': 'container mx-auto px-4 lg:px-8 max-w-5xl',
   'compress': 'container mx-auto px-4 lg:px-8 max-w-5xl',
   'pdf-ocr': 'container mx-auto px-4 lg:px-8 max-w-5xl',
@@ -256,7 +265,7 @@ function getToolJsonLd(tool: ReturnType<typeof getToolBySlug>) {
   // pages share the last-reviewed timestamp; bump SITE_CONTENT_UPDATED when
   // tool content actually changes).
   const updatedIso = SITE_CONTENT_UPDATED.toISOString();
-  const contentData = toolContentMap[tool.slug];
+  const contentData = toolContentMap[tool.slug] || (tool.slug.includes('statement-to-excel') ? toolContentMap['bank-statement-to-excel'] : undefined);
   const features = contentData?.features ?? [];
   const howToSteps = contentData?.steps?.length
     ? contentData.steps.map((step, index) => ({

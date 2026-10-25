@@ -5,6 +5,7 @@ import {
   Download, RotateCcw, EyeOff, Trash2, ArrowLeft, ArrowRight, Check, Plus, Shield
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Sparkles, AlertTriangle, Lock } from 'lucide-react';
 import { Slider } from '@/components/ui/slider';
 import { useAppStore } from '@/store/app-store';
 import { FileUpload } from './file-upload';
@@ -34,6 +35,9 @@ export function PDFRedactWorkspace() {
   const [redactions, setRedactions] = useState<RedactionItem[]>([]);
   const [resultUrl, setResultUrl] = useState<string | null>(null);
   const [resultFileName, setResultFileName] = useState<string>('');
+  const [isScanningPii, setIsScanningPii] = useState<boolean>(false);
+  const [piiStats, setPiiStats] = useState<{ ssn: number; aadhaar: number; pan: number; card: number; phone: number; email: number; total: number } | null>(null);
+  const [stripMetadata, setStripMetadata] = useState<boolean>(true);
 
   const previewRef = useRef<HTMLDivElement>(null);
 
@@ -42,6 +46,7 @@ export function PDFRedactWorkspace() {
       setTotalPages(1);
       setResultUrl(null);
       setRedactions([]);
+    setPiiStats(null);
       setCurrentPage(1);
       return;
     }
@@ -89,8 +94,55 @@ export function PDFRedactWorkspace() {
     reset();
     setResultUrl(null);
     setRedactions([]);
+    setPiiStats(null);
     setCurrentPage(1);
   }, [reset, resultUrl]);
+
+  const handleAutoDetectPii = async () => {
+    if (!uploadedFile) {
+      toast.error('Please upload a PDF document first');
+      return;
+    }
+    setIsScanningPii(true);
+    try {
+      const formData = new FormData();
+      formData.append('file', uploadedFile);
+      const res = await fetch('/api/pdf/redact/detect-pii', {
+        method: 'POST',
+        body: formData,
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ error: 'PII scanning failed' }));
+        throw new Error(err.error || 'Failed to detect PII');
+      }
+      const data = await res.json();
+      const detectedItems: RedactionItem[] = (data.detected || []).map((d: any) => ({
+        id: d.id,
+        pageNumber: d.pageNumber,
+        x: d.x,
+        y: d.y,
+        width: d.width,
+        height: d.height,
+      }));
+
+      if (detectedItems.length === 0) {
+        toast.info('No obvious SSN, Aadhaar, PAN, card, email, or phone numbers detected. You can still add blackout boxes manually.');
+        setPiiStats({ ssn: 0, aadhaar: 0, pan: 0, card: 0, phone: 0, email: 0, total: 0 });
+      } else {
+        setRedactions(prev => {
+          const existingIds = new Set(prev.map(p => `${p.pageNumber}-${p.x}-${p.y}`));
+          const newUnique = detectedItems.filter(d => !existingIds.has(`${d.pageNumber}-${d.x}-${d.y}`));
+          return [...prev, ...newUnique];
+        });
+        setPiiStats(data.summary);
+        toast.success(`Found ${data.summary.total} sensitive items (${data.summary.ssn ? `${data.summary.ssn} SSNs, ` : ''}${data.summary.pan ? `${data.summary.pan} PAN, ` : ''}${data.summary.aadhaar ? `${data.summary.aadhaar} Aadhaar, ` : ''}${data.summary.email ? `${data.summary.email} Emails, ` : ''}${data.summary.phone ? `${data.summary.phone} Phones` : ''})! Blackout boxes applied.`);
+      }
+    } catch (err: any) {
+      toast.error(err.message || 'Failed to detect PII');
+    } finally {
+      setIsScanningPii(false);
+    }
+  };
 
   const addRedactionBox = () => {
     const newBox: RedactionItem = {
@@ -305,7 +357,56 @@ export function PDFRedactWorkspace() {
               <div className="bg-card border rounded-2xl p-6 shadow-sm space-y-6">
                 <div className="flex items-center gap-2">
                   <Shield className="w-5 h-5 text-primary" />
-                  <h3 className="font-semibold text-base">Redaction Controls</h3>
+                  <h3 className="font-semibold text-base">Manual Redaction Boxes</h3>
+                </div>
+
+                {/* Smart PII Auto-Detection Banner */}
+                <div className="bg-gradient-to-br from-violet-50/80 via-primary/5 to-card dark:from-violet-950/20 dark:via-primary/5 dark:to-card border border-violet-200 dark:border-violet-900/60 rounded-xl p-4 shadow-sm space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="h-7 w-7 rounded-lg bg-violet-600/10 text-violet-600 dark:text-violet-400 flex items-center justify-center">
+                        <Sparkles className="w-3.5 h-3.5" />
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-xs text-foreground">Smart PII Auto-Redactor</h4>
+                        <p className="text-[10px] text-muted-foreground">SSN, Aadhaar, PAN, Cards, Phones, Emails</p>
+                      </div>
+                    </div>
+                    <Badge variant="secondary" className="text-[10px] bg-violet-100 text-violet-800 dark:bg-violet-900/50 dark:text-violet-300 font-bold">
+                      Regex Scan
+                    </Badge>
+                  </div>
+
+                  <Button
+                    type="button"
+                    onClick={handleAutoDetectPii}
+                    disabled={isScanningPii}
+                    className="w-full h-9 text-xs font-bold gap-2 bg-violet-600 hover:bg-violet-700 text-white shadow-sm"
+                  >
+                    <Sparkles className="w-3.5 h-3.5" />
+                    {isScanningPii ? 'Scanning Document...' : 'Auto-Detect Sensitive Data (PII)'}
+                  </Button>
+
+                  {piiStats && (
+                    <div className="rounded-lg border bg-card/80 p-2.5 space-y-1.5 text-xs">
+                      <span className="font-semibold text-foreground block text-[10px]">
+                        Scan Results ({piiStats.total} detected):
+                      </span>
+                      <div className="flex flex-wrap gap-1">
+                        {piiStats.ssn > 0 && <Badge variant="outline" className="text-[10px]">SSN: {piiStats.ssn}</Badge>}
+                        {piiStats.aadhaar > 0 && <Badge variant="outline" className="text-[10px]">Aadhaar: {piiStats.aadhaar}</Badge>}
+                        {piiStats.pan > 0 && <Badge variant="outline" className="text-[10px]">PAN: {piiStats.pan}</Badge>}
+                        {piiStats.card > 0 && <Badge variant="outline" className="text-[10px]">Cards: {piiStats.card}</Badge>}
+                        {piiStats.email > 0 && <Badge variant="outline" className="text-[10px]">Emails: {piiStats.email}</Badge>}
+                        {piiStats.phone > 0 && <Badge variant="outline" className="text-[10px]">Phones: {piiStats.phone}</Badge>}
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
+                    <Lock className="w-3 h-3 text-emerald-600 shrink-0" />
+                    <span>Auto-strips all EXIF, XMP, Title & Author metadata.</span>
+                  </div>
                 </div>
 
                 <div className="p-3 bg-muted/40 rounded-xl text-xs text-muted-foreground space-y-1.5 border">

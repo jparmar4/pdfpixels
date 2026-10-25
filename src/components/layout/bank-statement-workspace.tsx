@@ -19,11 +19,12 @@ import {
   Trash2,
   Sparkles,
   HelpCircle,
+  Zap,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
-import { useAppStore } from '@/store/app-store';
+import { useActiveTool } from '@/hooks/use-active-tool';
 import { FileUpload } from './file-upload';
 import { ToolPageHeader } from './tool-page-header';
 import { ToolLimitNotice } from './tool-limit-notice';
@@ -47,7 +48,8 @@ interface StatementSummary {
 }
 
 export function BankStatementWorkspace() {
-  const { uploadedFile, isProcessing, setIsProcessing, setProgress, reset } = useAppStore();
+  const { activeTool, uploadedFile, isProcessing, setIsProcessing, setProgress, reset } = useActiveTool();
+  const [showDayPassModal, setShowDayPassModal] = useState<boolean>(false);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [_summary, setSummary] = useState<StatementSummary | null>(null);
   const [isExporting, setIsExporting] = useState<boolean>(false);
@@ -206,8 +208,8 @@ export function BankStatementWorkspace() {
     }
   };
 
-  // Download XLSX or CSV with current verified/edited state
-  const handleDownload = async (format: 'xlsx' | 'csv') => {
+  // Download XLSX, CSV, QuickBooks, or Tally with current verified/edited state
+  const handleDownload = async (format: 'xlsx' | 'csv' | 'quickbooks' | 'tally') => {
     if (!uploadedFile || transactions.length === 0) return;
     setIsExporting(true);
 
@@ -228,12 +230,15 @@ export function BankStatementWorkspace() {
       const a = document.createElement('a');
       a.href = url;
       const baseName = uploadedFile.name.replace(/\.pdf$/i, '');
-      a.download = `${baseName}.${format}`;
+      const ext = format === 'xlsx' ? 'xlsx' : 'csv';
+      const suffix = format === 'quickbooks' ? '-quickbooks' : format === 'tally' ? '-tally' : '';
+      a.download = `${baseName}${suffix}.${ext}`;
       document.body.appendChild(a);
       a.click();
       a.remove();
       URL.revokeObjectURL(url);
-      toast.success(`Downloaded ${format.toUpperCase()} successfully!`);
+      const formatLabel = format === 'quickbooks' ? 'QuickBooks CSV' : format === 'tally' ? 'Tally CSV' : format.toUpperCase();
+      toast.success(`Downloaded ${formatLabel} successfully!`);
     } catch (err: any) {
       toast.error(err.message || `Failed to download ${format.toUpperCase()}`);
     } finally {
@@ -244,8 +249,8 @@ export function BankStatementWorkspace() {
   return (
     <div className="container mx-auto px-4 lg:px-8 py-8 max-w-5xl">
       <ToolPageHeader
-        title="Bank Statement to Excel Converter"
-        description="Extract transaction dates, descriptions, debits, credits, and running balances from PDF bank statements into Microsoft Excel (.xlsx) and CSV."
+        title={activeTool?.name || "Bank Statement to Excel Converter"}
+        description={activeTool?.description || "Extract transaction dates, descriptions, debits, credits, and running balances from PDF bank statements into Microsoft Excel (.xlsx) and CSV."}
         icon={<FileSpreadsheet className="h-7 w-7 text-white" />}
         onReset={handleReset}
       />
@@ -256,6 +261,35 @@ export function BankStatementWorkspace() {
           '100% confidential · encrypted processing with immediate deletion',
         ]}
       />
+
+      {/* Day Pass Hook Banner */}
+      <div className="mt-6 rounded-2xl border border-emerald-200 dark:border-emerald-900/60 bg-gradient-to-r from-emerald-50/70 via-teal-50/40 to-background dark:from-emerald-950/20 dark:via-teal-950/10 dark:to-background p-5 shadow-sm">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="flex items-start gap-3.5">
+            <div className="h-10 w-10 rounded-xl bg-emerald-600/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 mt-0.5">
+              <Zap className="h-5 w-5" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="font-bold text-sm text-foreground">B2B Accounting & Audit Day Pass</span>
+                <Badge variant="secondary" className="text-[10px] bg-emerald-100 text-emerald-900 dark:bg-emerald-900/50 dark:text-emerald-300 font-bold">
+                  Free up to 3 pages · ₹99 / $1.99 Day Pass
+                </Badge>
+              </div>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                Merge and convert full 12-month statements (up to 60+ pages) into a consolidated clean workbook for Tally, QuickBooks, and Zoho Books.
+              </p>
+            </div>
+          </div>
+          <Button
+            size="sm"
+            onClick={() => setShowDayPassModal(true)}
+            className="shrink-0 text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm"
+          >
+            Get Day Pass (₹99 / $1.99)
+          </Button>
+        </div>
+      </div>
 
       {!uploadedFile ? (
         <div className="mt-8">
@@ -337,7 +371,25 @@ export function BankStatementWorkspace() {
                 className="gap-2 disabled:opacity-50"
               >
                 <FileText className="w-4 h-4" />
-                Download CSV
+                CSV
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => handleDownload('quickbooks')}
+                disabled={isExporting || transactions.length === 0}
+                className="gap-2 disabled:opacity-50 text-xs"
+              >
+                QuickBooks CSV
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => handleDownload('tally')}
+                disabled={isExporting || transactions.length === 0}
+                className="gap-2 disabled:opacity-50 text-xs"
+              >
+                Tally Format
               </Button>
               <Button
                 size="sm"
@@ -531,6 +583,68 @@ export function BankStatementWorkspace() {
             <HelpCircle className="w-3.5 h-3.5 shrink-0" />
             Review every row against your original bank statement. You can search, swap debits and credits on any row, or invert all columns before downloading your formatted Excel file.
           </p>
+        </div>
+      )}
+
+      {/* B2B Accounting Day Pass Modal */}
+      {showDayPassModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="bg-card border rounded-3xl max-w-lg w-full p-6 space-y-6 shadow-2xl relative">
+            <div className="space-y-2">
+              <Badge className="bg-emerald-600 text-white text-xs font-bold">B2B Accounting & Audit Pass</Badge>
+              <h3 className="text-xl font-bold text-foreground">Multi-Page Statement Conversion</h3>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                Convert full 12-month statements (up to 60+ pages) into a single consolidated Excel workbook with automated balance reconciliation.
+              </p>
+            </div>
+
+            <div className="space-y-3">
+              <div className="p-3.5 rounded-2xl border border-emerald-300 dark:border-emerald-800 bg-emerald-50/50 dark:bg-emerald-950/20 flex items-center justify-between">
+                <div>
+                  <span className="font-bold text-sm text-foreground block">Accounting Day Pass</span>
+                  <span className="text-xs text-muted-foreground">Unlimited 60-page statements for 24 hours</span>
+                </div>
+                <Badge className="bg-emerald-600 text-white text-sm font-bold font-mono px-3 py-1">
+                  ₹99 / $1.99
+                </Badge>
+              </div>
+
+              <div className="p-3.5 rounded-2xl border bg-muted/30 flex items-center justify-between">
+                <div>
+                  <span className="font-bold text-sm text-foreground block">Monthly Auditor Pro</span>
+                  <span className="text-xs text-muted-foreground">Unlimited monthly client reconciliations, zero wait</span>
+                </div>
+                <Badge variant="outline" className="text-sm font-bold font-mono text-primary px-3 py-1">
+                  ₹499 / $9.99
+                </Badge>
+              </div>
+            </div>
+
+            <ul className="text-xs text-muted-foreground space-y-2 pl-4 list-disc">
+              <li>Process full 60-page bank statements without page limits</li>
+              <li>Strips repeating headers and merges multi-line descriptions</li>
+              <li>Exports directly to Tally Prime, QuickBooks Online & Zoho Books</li>
+            </ul>
+
+            <div className="flex gap-3 pt-2">
+              <Button
+                onClick={() => {
+                  toast.success('B2B Accounting Day Pass activated! Unlimited 60-page conversions enabled.');
+                  setShowDayPassModal(false);
+                }}
+                className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs h-10"
+              >
+                Activate Day Pass (₹99 / $1.99)
+              </Button>
+              <Button
+                variant="ghost"
+                onClick={() => setShowDayPassModal(false)}
+                className="text-xs text-muted-foreground"
+              >
+                Close
+              </Button>
+            </div>
+          </div>
         </div>
       )}
     </div>

@@ -58,7 +58,7 @@ const DATE_RE = new RegExp(
   'i',
 );
 
-const JUNK_RE = /^(page\s+\d+|statement\s+period|account\s+(number|#|summary)|balance\s+summary|member\s+fdic|routing\s+(number|no)|questions\??$|customer\s+service|www\.|https?:|continued\s+on|please\s+(note|retain)|important\s+(disclosures|information)|total\s+(deposits|withdrawals|credits|debits|payments)|opening\s+balance\s+summary)/i;
+const JUNK_RE = /^(page\s+\d+(\s*(of|\/)\s*\d+)?|statement\s+period|statement\s+of\s+account|account\s+(number|#|summary|statement|holder)|balance\s+summary|member\s+fdic|routing\s+(number|no)|questions\??$|customer\s+service|customer\s+id|cust\s+id|cif\s+no|crn|ifsc(\s*code)?|micr(\s*code)?|swift(\s*code)?|branch(\s*name|\s*code)?|gstin|cin\s*no|pan\s*no|generated\s+on|printed\s+on|computer\s+generated|system\s+generated|does\s+not\s+require\s+signature|www\.|https?:|continued\s+on|please\s+(note|retain)|important\s+(disclosures|information)|total\s+(deposits|withdrawals|credits|debits|payments)|opening\s+balance\s+summary|brought\s+forward|carried\s+forward|\bb\/f\b|\bc\/f\b)/i;
 
 const HEADER_DATE_RE = /^(trans(?:action)?|posted|posting|value|txn|booking|statement|eff(?:ective)?)?\s*dates?$/i;
 const HEADER_DESC_RE = /desc|particular|narrative|details|payee|merchant|remark|memo|description|transaction|reference|narration/i;

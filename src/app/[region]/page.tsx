@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import { geoRegions, getRegionByCode } from '@/lib/geo-data';
 import { allPdfTools } from '@/lib/tools-data';
+import { INDIAN_EXAM_PRESETS } from '@/lib/indian-exams-data';
 import { siteConfig } from '@/lib/seo-config';
 import { absoluteUrl, websiteId, getGeoLanguageAlternates, DEFAULT_OG_IMAGE_URL, ADSENSE_REVIEW_MODE } from '@/lib/seo';
 import { ToolsSection } from '@/components/home/tools-section';
@@ -206,6 +207,53 @@ export default async function GeoHubPage({ params }: GeoPageProps) {
                 Explore All {allPdfTools.length} PDF Tools →
               </Link>
             </div>
+
+            {region.code === 'in' && (
+              <div className="mt-10 space-y-5">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 border-t border-border/50 pt-8">
+                  <div>
+                    <span className="text-xs font-bold uppercase tracking-widest text-primary">
+                      One-Click Sarkari Exam Bundles
+                    </span>
+                    <h2 className="text-2xl font-bold tracking-tight text-foreground mt-1">
+                      Indian Exam Photo, Signature & Document Resizer
+                    </h2>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      Exact pixel and KB dimensions for SSC, UPSC, NSDL PAN, NTA (NEET/JEE), Banking, and Railways. Includes candidate name & date stamp.
+                    </p>
+                  </div>
+                  <div className="p-3 rounded-xl border border-sky-200 dark:border-sky-900/60 bg-sky-50/50 dark:bg-sky-950/20 text-xs text-sky-900 dark:text-sky-300 shrink-0">
+                    <span className="font-bold block">Cyber Cafe Bulk Pass: ₹49/day</span>
+                    <span>Zero ads, saved presets for application centers</span>
+                  </div>
+                </div>
+
+                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
+                  {INDIAN_EXAM_PRESETS.slice(0, 15).map((exam) => (
+                    <Link
+                      key={exam.slug}
+                      href={`/in/${exam.slug}`}
+                      className="p-4 rounded-2xl border border-border/60 bg-card hover:border-primary/40 hover:shadow-soft transition-all space-y-2 group block"
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-primary">
+                          {exam.category}
+                        </span>
+                        <span className="text-[10px] font-mono text-muted-foreground">
+                          {exam.photoSpec.minKb}-{exam.photoSpec.maxKb} KB
+                        </span>
+                      </div>
+                      <h3 className="text-sm font-bold text-foreground group-hover:text-primary transition-colors line-clamp-1">
+                        {exam.name}
+                      </h3>
+                      <p className="text-xs text-muted-foreground line-clamp-2">
+                        {exam.photoSpec.widthMm}x{exam.photoSpec.heightMm}mm · {exam.photoSpec.requiresNameAndDate ? 'Print Name & Date' : 'Pre-calibrated crop'} · 300 DPI
+                      </p>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
 
             <nav aria-label="Other regional hubs" className="mt-8 flex flex-wrap gap-2">
               {geoRegions
