@@ -14,7 +14,7 @@ import { FeaturesSection } from '@/components/home/features-section';
 import { GuidesSection } from '@/components/home/guides-section';
 import { WorkflowGuides } from '@/components/home/workflow-guides';
 import { CTASection } from '@/components/home/cta-section';
-import { HeaderAd, InContentAd, FooterAd, NativeAd } from '@/components/ads/ad-banner';
+import { InContentAd, FooterAd, NativeAd } from '@/components/ads/ad-banner';
 
 import { Metadata } from 'next';
 import { siteConfig, seoConfig } from '@/lib/seo-config';
@@ -50,7 +50,6 @@ export default function Home() {
       <main id="main-content" className="flex-1">
         <HomePageSchemas />
         <ToolsSection />
-        <HeaderAd className="my-6" />
         <StatsBanner />
         <WorkflowGuides />
         <InContentAd className="my-8" />

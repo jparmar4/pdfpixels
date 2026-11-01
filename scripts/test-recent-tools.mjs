@@ -420,9 +420,9 @@ assert.ok(useCasePages.some(u => u.slug === 'compress-pdf-for-uscis-upload'), 'u
 assert.ok(useCasePages.some(u => u.slug === 'bates-numbering-pdf-legal-filing'), 'bates numbering legal filing use case exists');
 assert.ok(useCasePages.some(u => u.slug === 'combine-bank-statements-for-mortgage'), 'combine bank statements for mortgage use case exists');
 
-// Verify Adsterra Smartlink & Social Bar config
-const { adsterraConfig } = await import('../src/lib/ads-config.ts');
-assert.ok(adsterraConfig.smartlink && adsterraConfig.smartlink.startsWith('https://'), 'smartlink configured');
-assert.ok(adsterraConfig.slots.socialBar && adsterraConfig.slots.socialBar.scriptSrc, 'social bar configured');
+// Verify Google AdSense & Ads Configuration
+const { adsenseConfig } = await import('../src/lib/ads-config.ts');
+assert.ok(adsenseConfig.enabled, 'AdSense enabled for approval');
+assert.ok(adsenseConfig.clientId && adsenseConfig.clientId.startsWith('ca-pub-'), 'AdSense client ID configured');
 
 console.log('Recent-tool regressions passed. PDF fixtures:', out);

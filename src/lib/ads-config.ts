@@ -17,46 +17,46 @@ export const adsenseConfig = {
 };
 
 export const adsterraConfig = {
-  // Disabled by default during AdSense review and re-application to ensure 100% policy compliance
+  // Disabled during AdSense review and re-application to ensure 100% policy compliance
   enabled: process.env.NEXT_PUBLIC_ADSTERRA_ENABLED === 'true',
-  smartlink: 'https://araplhn.org/4/e2520ac9b4a8217fc6f4ca143b25a1a2',
+  smartlink: '',
   slots: {
     banner728x90: {
-      key: 'cc2cce8a2df76b72b3ff70946c516588',
+      key: process.env.NEXT_PUBLIC_ADSTERRA_728X90 || '',
       width: 728,
       height: 90,
     },
     banner320x50: {
-      key: '0b00c66251afffc9b834943d1a7cbf35',
+      key: process.env.NEXT_PUBLIC_ADSTERRA_320X50 || '',
       width: 320,
       height: 50,
     },
     banner468x60: {
-      key: 'b07dd02b30ebdc4eabb7f2497e3f1627',
+      key: process.env.NEXT_PUBLIC_ADSTERRA_468X60 || '',
       width: 468,
       height: 60,
     },
     banner300x250: {
-      key: '60e2f20431171a62210e7189380ed0f4',
+      key: process.env.NEXT_PUBLIC_ADSTERRA_300X250 || '',
       width: 300,
       height: 250,
     },
     banner160x300: {
-      key: '23a0c5d83de92016cac66cd6006e3bc6',
+      key: process.env.NEXT_PUBLIC_ADSTERRA_160X300 || '',
       width: 160,
       height: 300,
     },
     banner160x600: {
-      key: '4db808e74356da4d4bdee2f7720cf1cc',
+      key: process.env.NEXT_PUBLIC_ADSTERRA_160X600 || '',
       width: 160,
       height: 600,
     },
     nativeBanner: {
-      scriptSrc: 'https://bauval.org/21/a71ba0b513f2755b9f56ff45b5814958',
-      containerId: 'container-a71ba0b513f2755b9f56ff45b5814958',
+      scriptSrc: process.env.NEXT_PUBLIC_ADSTERRA_NATIVE_SRC || '',
+      containerId: process.env.NEXT_PUBLIC_ADSTERRA_NATIVE_CONTAINER || '',
     },
     socialBar: {
-      scriptSrc: 'https://bauval.org/14/4cb2c6ce7427559857aecec157fd016f',
+      scriptSrc: '',
     },
   },
 };

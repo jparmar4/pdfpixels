@@ -249,6 +249,24 @@ const nextConfig: NextConfig = {
           },
         ],
       },
+      // Ads.txt for AdSense publisher verification
+      {
+        source: '/ads.txt',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=3600',
+          },
+          {
+            key: 'Access-Control-Allow-Origin',
+            value: '*',
+          },
+          {
+            key: 'Content-Type',
+            value: 'text/plain; charset=utf-8',
+          },
+        ],
+      },
       // HTML pages - keep CDN cache short so content updates and new posts
       // are visible to crawlers and users quickly (default for prerendered
       // pages is s-maxage=31536000, which pins stale HTML for a year)

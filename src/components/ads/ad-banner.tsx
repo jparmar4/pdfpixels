@@ -84,8 +84,9 @@ export function AdsterraIframe({
   className?: string;
   loading?: 'lazy' | 'eager';
 }) {
-  if (!adsterraConfig.enabled) return null;
+  if (!adsterraConfig.enabled || !adKey) return null;
 
+  const scriptHost = process.env.NEXT_PUBLIC_ADSTERRA_HOST || 'https://www.profitablecpmrate.com';
   const srcDoc = `<!DOCTYPE html>
 <html>
   <head>
@@ -107,7 +108,7 @@ export function AdsterraIframe({
         'params' : {}
       };
     </script>
-    <script type="text/javascript" src="https://bauval.org/22/${adKey}"></script>
+    <script type="text/javascript" src="${scriptHost}/22/${adKey}"></script>
   </body>
 </html>`;
 
@@ -134,7 +135,7 @@ export function AdsterraIframe({
  * Adsterra Native Banner container (fallback).
  */
 export function AdsterraNativeBanner({ className }: { className?: string }) {
-  if (!adsterraConfig.enabled) return null;
+  if (!adsterraConfig.enabled || !adsterraConfig.slots.nativeBanner.scriptSrc) return null;
 
   const srcDoc = `<!DOCTYPE html>
 <html>
