@@ -223,6 +223,48 @@ const COVERS = [
     kicker: 'DOCX GUIDE · FREE',
     icon: ICONS.form,
   },
+  {
+    file: 'how-to-reduce-pdf-file-size-without-losing-quality-hero.jpg',
+    headline: 'Reduce PDF File Size Without Losing Quality',
+    kicker: '5 METHODS THAT WORK',
+    icon: ICONS.repair,
+  },
+  {
+    file: 'how-to-merge-pdf-files-free-hero.jpg',
+    headline: 'Merge PDF Files Free in 60 Seconds',
+    kicker: 'NO SOFTWARE DOWNLOAD',
+    icon: ICONS.stack,
+  },
+  {
+    file: 'best-free-online-image-compressor-hero.jpg',
+    headline: 'Best Free Online Image Compressors 2026',
+    kicker: 'JPG · PNG · WEBP COMPARED',
+    icon: ICONS.photo,
+  },
+  {
+    file: 'sign-pdf-online-free-hero.jpg',
+    headline: 'How to Sign a PDF Online Free',
+    kicker: 'NO ADOBE ACROBAT NEEDED',
+    icon: ICONS.signature,
+  },
+  {
+    file: 'heic-to-jpg-converter-guide-hero.jpg',
+    headline: 'HEIC to JPG: Convert iPhone Photos Free',
+    kicker: 'WINDOWS & ANDROID COMPATIBLE',
+    icon: ICONS.photo,
+  },
+  {
+    file: 'best-free-background-remover-comparison-hero.jpg',
+    headline: 'Best Free Background Removers Compared',
+    kicker: 'AI CUTOUT TOOLS 2026',
+    icon: ICONS.resize,
+  },
+  {
+    file: 'default.jpg',
+    headline: 'Free PDF & Image Tools Online Guides',
+    kicker: 'PDFPIXELS BLOG',
+    icon: ICONS.form,
+  },
 ];
 
 function coverSvg({ headline, kicker, icon }) {

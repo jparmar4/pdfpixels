@@ -21,15 +21,25 @@ export function ProcessContentWithToc({ content, children }: ProcessContentWithT
         const lines = content.split('\n');
         const headingTexts: string[] = [];
         lines.forEach((line) => {
-            if (line.startsWith('## ')) {
-                headingTexts.push(line.replace('## ', '').trim());
+            const trimmed = line.trim();
+            if (trimmed.startsWith('## ')) {
+                headingTexts.push(trimmed.replace('## ', '').trim());
+            } else {
+                const htmlMatch = trimmed.match(/^<h2[^>]*>(.*?)<\/h2>$/i);
+                if (htmlMatch) {
+                    headingTexts.push(htmlMatch[1].replace(/<[^>]+>/g, '').trim());
+                }
             }
         });
 
         const h2Elements = articleRef.current.querySelectorAll('h2');
         headingTexts.forEach((text, index) => {
             if (h2Elements[index]) {
-                h2Elements[index].id = `section-${lines.findIndex((l) => l === `## ${text}`)}`;
+                const idx = lines.findIndex((l) => {
+                    const tr = l.trim();
+                    return tr === `## ${text}` || tr.includes(text);
+                });
+                h2Elements[index].id = `section-${idx !== -1 ? idx : index}`;
             }
         });
     }, [content]);

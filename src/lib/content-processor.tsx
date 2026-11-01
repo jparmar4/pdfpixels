@@ -180,9 +180,17 @@ export function processContent(content: string): React.ReactNode[] {
     };
 
     const parseInlineMarkdown = (text: string, keyPrefix: string, autoLink: boolean = false): React.ReactNode[] => {
+        // Pre-normalize any inline HTML tags to markdown syntax
+        const normalizedText = text
+            .replace(/<strong[^>]*>(.*?)<\/strong>/gi, '**$1**')
+            .replace(/<b[^>]*>(.*?)<\/b>/gi, '**$1**')
+            .replace(/<em[^>]*>(.*?)<\/em>/gi, '*$1*')
+            .replace(/<i[^>]*>(.*?)<\/i>/gi, '*$1*')
+            .replace(/<a\s+[^>]*href=["']([^"']+)["'][^>]*>(.*?)<\/a>/gi, '[$2]($1)');
+
         // Images, markdown links, bold, and inline `code` (often cite-ready URLs)
         const pattern = /(\*\*[^*]+\*\*)|(\[[^\]]+\]\([^)]+\))|(!\[[^\]]*\]\([^)]+\))|(`[^`]+`)/g;
-        const parts = text.split(pattern).filter((p) => p !== undefined && p !== '');
+        const parts = normalizedText.split(pattern).filter((p) => p !== undefined && p !== '');
         const nodes: React.ReactNode[] = [];
 
         parts.forEach((part, i) => {
@@ -423,8 +431,9 @@ export function processContent(content: string): React.ReactNode[] {
 
         flushBlockquote(`quote-${index}`);
 
-        // H2 heading
-        if (trimmedLine.startsWith('## ')) {
+        // H2 heading (Markdown `## ` or HTML `<h2>...</h2>`)
+        const htmlH2Match = trimmedLine.match(/^<h2[^>]*>(.*?)<\/h2>$/i);
+        if (trimmedLine.startsWith('## ') || htmlH2Match) {
             flushList(`list-${index}`);
             h2Count++;
             if (h2Count === 2 || h2Count === 5) {
@@ -434,29 +443,46 @@ export function processContent(content: string): React.ReactNode[] {
                     </div>
                 );
             }
+            const headingText = htmlH2Match
+                ? htmlH2Match[1].replace(/<[^>]+>/g, '').trim()
+                : trimmedLine.replace('## ', '');
             elements.push(
                 <h2 key={index} className="text-2xl md:text-3xl font-bold text-foreground mt-14 mb-6 tracking-tight leading-tight">
-                    {trimmedLine.replace('## ', '')}
+                    {headingText}
                 </h2>
             );
             return;
         }
 
-        // H3 heading
-        if (trimmedLine.startsWith('### ')) {
+        // H3 heading (Markdown `### ` or HTML `<h3>...</h3>`)
+        const htmlH3Match = trimmedLine.match(/^<h3[^>]*>(.*?)<\/h3>$/i);
+        if (trimmedLine.startsWith('### ') || htmlH3Match) {
             flushList(`list-${index}`);
+            const headingText = htmlH3Match
+                ? htmlH3Match[1].replace(/<[^>]+>/g, '').trim()
+                : trimmedLine.replace('### ', '');
             elements.push(
                 <h3 key={index} className="text-xl md:text-2xl font-bold text-foreground mt-10 mb-4 tracking-tight">
-                    {trimmedLine.replace('### ', '')}
+                    {headingText}
                 </h3>
             );
             return;
         }
 
-        // Unordered list item
-        if (trimmedLine.startsWith('- ')) {
+        // HTML container tags like <ul>, </ul>, <ol>, </ol>, <div>, </div>
+        if (/^<\/?(ul|ol|div|tbody|thead|table|tr)[^>]*>$/i.test(trimmedLine)) {
+            if (trimmedLine.startsWith('</ul') || trimmedLine.startsWith('</ol')) {
+                flushList(`list-${index}`);
+            }
+            return;
+        }
+
+        // Unordered list item (Markdown `- ` or HTML `<li>...</li>`)
+        const htmlLiMatch = trimmedLine.match(/^<li>(.*?)<\/li>$/i);
+        if (trimmedLine.startsWith('- ') || (!/^\d+\.\s/.test(trimmedLine) && htmlLiMatch && listType !== 'ol')) {
             listType = 'ul';
-            listItems.push(trimmedLine.replace('- ', ''));
+            const itemText = htmlLiMatch ? htmlLiMatch[1] : trimmedLine.replace('- ', '');
+            listItems.push(itemText);
             return;
         }
 
@@ -481,17 +507,28 @@ export function processContent(content: string): React.ReactNode[] {
         // Regular paragraph
         flushList(`list-${index}`);
 
+        // Clean any enclosing <p>...</p> tags if present
+        let cleanText = trimmedLine;
+        if (/^<p[^>]*>/i.test(cleanText)) {
+            cleanText = cleanText.replace(/^<p[^>]*>/i, '');
+        }
+        if (/<\/p>$/i.test(cleanText)) {
+            cleanText = cleanText.replace(/<\/p>$/i, '');
+        }
+        cleanText = cleanText.trim();
+        if (!cleanText) return;
+
         // If line is exclusively an image, don't wrap in <p> to avoid hydration mismatch (<div> inside <p>)
-        if (trimmedLine.startsWith('![') && trimmedLine.endsWith(')')) {
+        if (cleanText.startsWith('![') && cleanText.endsWith(')')) {
             elements.push(
                 <div key={index}>
-                    {parseInlineMarkdown(trimmedLine, `img-${index}`, false)}
+                    {parseInlineMarkdown(cleanText, `img-${index}`, false)}
                 </div>
             );
         } else {
             elements.push(
                 <p key={index} className="text-muted-foreground my-5 leading-8 text-[1.05rem]">
-                    {parseInlineMarkdown(trimmedLine, `p-${index}`, true)}
+                    {parseInlineMarkdown(cleanText, `p-${index}`, true)}
                 </p>
             );
         }
