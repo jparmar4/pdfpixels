@@ -1,8 +1,24 @@
-// Adsterra Advertising Configuration
-// Supported formats: 728x90, 468x60, 320x50, 300x250, 160x600, 160x300, and Native Banner
+// Advertising & Monetization Configuration (Google AdSense Primary & Adsterra Fallback)
+// Compliant with Google AdSense Policies, Coalition for Better Ads, and GDPR/CCPA.
+
+export const ADSENSE_CLIENT_ID = 'ca-pub-3541576002060495';
+
+export const adsenseConfig = {
+  // Enabled by default for official Google AdSense integration & Auto Ads
+  enabled: process.env.NEXT_PUBLIC_ADSENSE_ENABLED !== 'false',
+  clientId: process.env.NEXT_PUBLIC_ADSENSE_PUBLISHER_ID || ADSENSE_CLIENT_ID,
+  slots: {
+    header: process.env.NEXT_PUBLIC_ADSENSE_SLOT_HEADER || '',
+    sidebar: process.env.NEXT_PUBLIC_ADSENSE_SLOT_SIDEBAR || '',
+    inContent: process.env.NEXT_PUBLIC_ADSENSE_SLOT_IN_CONTENT || '',
+    footer: process.env.NEXT_PUBLIC_ADSENSE_SLOT_FOOTER || '',
+    result: process.env.NEXT_PUBLIC_ADSENSE_SLOT_RESULT || '',
+  },
+};
 
 export const adsterraConfig = {
-  enabled: process.env.NEXT_PUBLIC_ADSTERRA_ENABLED !== 'false',
+  // Disabled by default during AdSense review and re-application to ensure 100% policy compliance
+  enabled: process.env.NEXT_PUBLIC_ADSTERRA_ENABLED === 'true',
   smartlink: 'https://araplhn.org/4/e2520ac9b4a8217fc6f4ca143b25a1a2',
   slots: {
     banner728x90: {
@@ -46,38 +62,28 @@ export const adsterraConfig = {
 };
 
 export function hasConfiguredAdSlot(): boolean {
-  return adsterraConfig.enabled;
+  return adsenseConfig.enabled || adsterraConfig.enabled;
 }
 
 /**
- * Triggers the Adsterra Smartlink (Direct Link) in a background/new tab
- * at most ONCE per user browser session when a conversion download happens.
- * Ensures 100% of the user's file is downloaded first without interruption.
+ * Permanently deactivated: Opening background tabs / smartlinks upon download
+ * is a direct violation of Google AdSense Site Navigation & Better Ads policies
+ * and was the primary trigger for repeated rejections.
  */
 export function triggerSmartlinkOncePerSession(): void {
-  if (typeof window === 'undefined') return;
-  if (!adsterraConfig.enabled || !adsterraConfig.smartlink) return;
-  try {
-    const visited = sessionStorage.getItem('pp_sl_seen');
-    if (!visited) {
-      sessionStorage.setItem('pp_sl_seen', '1');
-      window.open(adsterraConfig.smartlink, '_blank', 'noopener,noreferrer');
-    }
-  } catch {
-    // Silently continue if popups are blocked
-  }
+  // Intentional no-op for policy compliance and clean user experience
 }
 
 export const adsConfig = {
-  enabled: adsterraConfig.enabled,
+  enabled: adsenseConfig.enabled || adsterraConfig.enabled,
   testMode: false,
   slots: {
-    header: adsterraConfig.slots.banner728x90.key,
-    sidebar: adsterraConfig.slots.banner160x600.key,
-    inContent: adsterraConfig.slots.banner300x250.key,
-    footer: adsterraConfig.slots.banner728x90.key,
+    header: adsenseConfig.slots.header || adsterraConfig.slots.banner728x90.key,
+    sidebar: adsenseConfig.slots.sidebar || adsterraConfig.slots.banner160x600.key,
+    inContent: adsenseConfig.slots.inContent || adsterraConfig.slots.banner300x250.key,
+    footer: adsenseConfig.slots.footer || adsterraConfig.slots.banner728x90.key,
     native: adsterraConfig.slots.nativeBanner.containerId,
-    socialBar: adsterraConfig.slots.socialBar.scriptSrc,
+    socialBar: '',
   },
 };
 

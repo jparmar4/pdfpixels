@@ -1,9 +1,8 @@
 import Link from 'next/link';
-import { ArrowRight, CheckCircle2, Download, ExternalLink, ShieldCheck, Sparkles } from 'lucide-react';
+import { ArrowRight, CheckCircle2, Download, ShieldCheck, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { normalizeDisplayText } from '@/lib/display-text';
 import { ResultScreenAd } from '@/components/ads/ad-banner';
-import { adsterraConfig, triggerSmartlinkOncePerSession } from '@/lib/ads-config';
 
 interface NextAction {
   label: string;
@@ -62,29 +61,13 @@ export function ResultCard({
 
         <div className="flex flex-col gap-3 sm:flex-row">
           <Button
-            onClick={() => {
-              triggerSmartlinkOncePerSession();
-              setTimeout(() => {
-                onDownload();
-              }, 80);
-            }}
+            onClick={onDownload}
             className="btn-premium h-12 flex-1 gap-2 rounded-2xl font-bold"
             size="lg"
           >
             <Download className="h-4 w-4" />
             {normalizeDisplayText(downloadLabel)}
           </Button>
-          {adsterraConfig.enabled && adsterraConfig.smartlink && (
-            <a
-              href={adsterraConfig.smartlink}
-              target="_blank"
-              rel="noopener noreferrer sponsored"
-              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl border border-amber-400/50 bg-amber-50 px-4 text-sm font-semibold text-amber-700 transition-all hover:-translate-y-0.5 hover:bg-amber-100 hover:shadow-soft dark:bg-amber-900/20 dark:text-amber-300 dark:hover:bg-amber-900/30"
-            >
-              <ExternalLink className="h-4 w-4" />
-              <span>🎯 Get More PDF &amp; Office Tools →</span>
-            </a>
-          )}
           {nextActions.length > 0 ? (
             <div className="flex flex-1 flex-wrap gap-2">
               {nextActions.map((action) => (

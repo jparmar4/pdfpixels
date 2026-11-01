@@ -7,6 +7,7 @@ import { JsonLdSchemas } from '@/components/seo/json-ld';
 import { seoConfig, siteConfig } from '@/lib/seo-config';
 import { DEFAULT_OG_IMAGE_URL } from '@/lib/seo';
 import { CookieConsentBanner } from '@/components/ads/cookie-consent';
+import { AdSenseScript } from '@/components/ads/adsense-script';
 import { Analytics } from '@/components/ads/analytics';
 import { Navigation } from '@/components/layout/navigation';
 import { Footer } from '@/components/layout/footer';
@@ -145,24 +146,24 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en" suppressHydrationWarning className={`scroll-smooth ${fontInter.variable} ${fontSora.variable} ${fontMono.variable}`}>
       <head>
+        <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
+        <link rel="preconnect" href="https://googleads.g.doubleclick.net" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://googleads.g.doubleclick.net" />
         <link rel="preconnect" href="https://www.googletagmanager.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
         <link rel="preconnect" href="https://www.google-analytics.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://www.google-analytics.com" />
-        <link rel="preconnect" href="https://bauval.org" crossOrigin="anonymous" />
-        <link rel="dns-prefetch" href="https://bauval.org" />
-        <link rel="preconnect" href="https://araplhn.org" crossOrigin="anonymous" />
-        <link rel="dns-prefetch" href="https://araplhn.org" />
+        <meta name="google-adsense-account" content="ca-pub-3541576002060495" />
         <link rel="search" type="application/opensearchdescription+xml" title="PdfPixels" href="/opensearch.xml" />
         <link rel="alternate" type="application/rss+xml" title="PdfPixels RSS Feed" href="/feed" />
         <link rel="alternate" type="text/plain" title="PdfPixels for LLMs" href="/llms.txt" />
         <link rel="alternate" type="text/plain" title="PdfPixels full reference for LLMs" href="/llms-full.txt" />
-        {/* Adsterra Social Bar (In-Page Push) — high CPM notification format */}
+        {/* Google AdSense official script — async in head for reliable crawler detection & Auto Ads */}
         <script
-          type="text/javascript"
-          src="https://bauval.org/14/4cb2c6ce7427559857aecec157fd016f"
-          data-cfasync="false"
           async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3541576002060495"
+          crossOrigin="anonymous"
         />
       </head>
       <body className="bg-background text-foreground antialiased min-h-screen flex flex-col">
@@ -183,6 +184,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <ClickRipple />
           {/* Top-center toasts sit below the floating nav pill (offset.top) */}
           <SonnerToaster richColors closeButton position="top-center" offset={{ top: 84, bottom: 24 }} />
+          <AdSenseScript />
           <Analytics />
           <CookieConsentBanner />
         </ThemeProvider>

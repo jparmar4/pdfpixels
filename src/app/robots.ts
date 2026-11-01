@@ -11,6 +11,10 @@ export default function robots(): MetadataRoute.Robots {
         allow: '/',
       },
       {
+        userAgent: 'Google-AdSense-AutoAds',
+        allow: '/',
+      },
+      {
         userAgent: '*',
         // /_next/static/ (JS/CSS bundles) and /_next/image/ (optimized images)
         // must stay fetchable — blocking them breaks Googlebot rendering, and
