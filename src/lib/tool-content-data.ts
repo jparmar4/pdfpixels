@@ -2561,6 +2561,532 @@ export const toolContentMap: Record<string, ToolContent> = {
         supportedFormats: 'Input: PDF | Output: XLSX, CSV',
         relatedTools: ['pdf-to-excel', 'pdf-to-word', 'pdf-to-text', 'flatten-pdf'],
     },
+    'chase-bank-statement-to-excel': {
+        about: 'Chase Bank Statement to Excel converts locked PDF e-statements from Chase Bank into clean, formatted Microsoft Excel (.xlsx) and CSV spreadsheets. Auditing expenses, preparing annual tax returns, or reconciling monthly business transactions manually is slow and error-prone. Our specialized financial parser automatically recognizes Chase Bank statement layouts (Chase Total Checking, Sapphire Checking, and Chase Ink Business accounts), extracting Transaction Date, Description, Check Number, Amount, and Ending Daily Balance into separate, mathematically structured columns ready for direct import into QuickBooks, Xero, Excel, and TurboTax.',
+        directAnswer: 'Chase Bank Statement to Excel automatically extracts transaction dates, payee descriptions, check numbers, debits, credits, and balances from Chase Bank PDF statements into clean Excel (.xlsx) and CSV spreadsheets with zero manual data entry.',
+        steps: [
+            { title: 'Upload Chase Bank statement PDF', description: 'Select your single or multi-page digital statement downloaded from Chase Bank online banking.' },
+            { title: 'Automatic transaction table extraction', description: 'Our financial engine identifies headers, payee narratives, withdrawal debits, and deposit credits.' },
+            { title: 'Review detected data rows', description: 'Verify row counts, transaction totals, and opening/closing statement balances in the live preview.' },
+            { title: 'Download Excel (.xlsx) or CSV', description: 'Save your clean spreadsheet and import seamlessly into QuickBooks, Xero, Excel, and TurboTax.' }
+        ],
+        commonProblems: [
+            { problem: 'Multi-line merchant descriptions splitting into separate rows', solution: 'Our parsing logic intelligently merges wrapped payee names, transaction IDs, and memo lines into a single clean row.' },
+            { problem: 'Password-protected bank statement PDF', solution: 'If your Chase Bank statement is locked with your password or date of birth, unlock it first using our Unlock PDF tool before converting.' }
+        ],
+        features: [
+            'Tailored extraction tuned specifically for Chase Bank statement table structures',
+            'Separates debit and credit amounts into distinct numeric columns with full =SUM() formula support',
+            'Exports both styled Microsoft Excel (.xlsx) files and universal comma-separated (.csv) tables',
+            'Full support for multi-page statements spanning multiple months or full fiscal years',
+            '100% confidential processing: bank records are processed in memory and purged automatically'
+        ],
+        useCases: [
+            'Accountants and tax preparers importing Chase Bank transactions into QuickBooks, Xero, or Tally',
+            'Mortgage underwriters and loan officers verifying applicant income and average daily balances',
+            'Small business owners tracking deductible business expenses and reconciling merchant accounts',
+            'Individuals and freelance professionals preparing annual tax filings and budget spreadsheets'
+        ],
+        faqs: [
+            { question: 'Is it safe to convert my Chase Bank statement on PdfPixels?', answer: 'Yes. We take financial confidentiality seriously. Files are processed transiently in memory and permanently purged immediately upon completion. We never store, inspect, or sell your account data.' },
+            { question: 'Can I import the resulting spreadsheet into accounting software?', answer: 'Yes. The output matches standard banking feed specifications, compatible with QuickBooks Online, Xero, TallyPrime, Zoho Books, Wave, and Microsoft Excel.' },
+            { question: 'Can it handle multi-page statements with hundreds of transactions?', answer: 'Yes. The converter seamlessly stitches multi-page tables across dozens of pages while preserving consistent column alignments.' },
+            { question: 'What if my Chase Bank statement is password-protected?', answer: 'Most banks protect e-statements with a password (often your PAN, date of birth, or account digits). Use our Unlock PDF tool to remove the password before running table extraction.' }
+        ],
+        supportedFormats: 'Input: PDF | Output: XLSX, CSV',
+        relatedTools: ['bank-statement-to-excel', 'pdf-to-excel', 'pdf-to-csv', 'pdf-to-word'],
+    },
+    'bank-of-america-statement-to-excel': {
+        about: 'Bank of America Statement to Excel converts locked PDF e-statements from Bank of America into clean, formatted Microsoft Excel (.xlsx) and CSV spreadsheets. Auditing expenses, preparing annual tax returns, or reconciling monthly business transactions manually is slow and error-prone. Our specialized financial parser automatically recognizes Bank of America statement layouts (Advantage Banking, Business Advantage, and Credit Card accounts), extracting Posting Date, Description, Reference Number, Amount, and Running Balance into separate, mathematically structured columns ready for direct import into QuickBooks Online, Xero, Excel (.xlsx), and CSV.',
+        directAnswer: 'Bank of America Statement to Excel automatically extracts transaction dates, payee descriptions, check numbers, debits, credits, and balances from Bank of America PDF statements into clean Excel (.xlsx) and CSV spreadsheets with zero manual data entry.',
+        steps: [
+            { title: 'Upload Bank of America statement PDF', description: 'Select your single or multi-page digital statement downloaded from Bank of America online banking.' },
+            { title: 'Automatic transaction table extraction', description: 'Our financial engine identifies headers, payee narratives, withdrawal debits, and deposit credits.' },
+            { title: 'Review detected data rows', description: 'Verify row counts, transaction totals, and opening/closing statement balances in the live preview.' },
+            { title: 'Download Excel (.xlsx) or CSV', description: 'Save your clean spreadsheet and import seamlessly into QuickBooks Online, Xero, Excel (.xlsx), and CSV.' }
+        ],
+        commonProblems: [
+            { problem: 'Multi-line merchant descriptions splitting into separate rows', solution: 'Our parsing logic intelligently merges wrapped payee names, transaction IDs, and memo lines into a single clean row.' },
+            { problem: 'Password-protected bank statement PDF', solution: 'If your Bank of America statement is locked with your password or date of birth, unlock it first using our Unlock PDF tool before converting.' }
+        ],
+        features: [
+            'Tailored extraction tuned specifically for Bank of America statement table structures',
+            'Separates debit and credit amounts into distinct numeric columns with full =SUM() formula support',
+            'Exports both styled Microsoft Excel (.xlsx) files and universal comma-separated (.csv) tables',
+            'Full support for multi-page statements spanning multiple months or full fiscal years',
+            '100% confidential processing: bank records are processed in memory and purged automatically'
+        ],
+        useCases: [
+            'Accountants and tax preparers importing Bank of America transactions into QuickBooks, Xero, or Tally',
+            'Mortgage underwriters and loan officers verifying applicant income and average daily balances',
+            'Small business owners tracking deductible business expenses and reconciling merchant accounts',
+            'Individuals and freelance professionals preparing annual tax filings and budget spreadsheets'
+        ],
+        faqs: [
+            { question: 'Is it safe to convert my Bank of America statement on PdfPixels?', answer: 'Yes. We take financial confidentiality seriously. Files are processed transiently in memory and permanently purged immediately upon completion. We never store, inspect, or sell your account data.' },
+            { question: 'Can I import the resulting spreadsheet into accounting software?', answer: 'Yes. The output matches standard banking feed specifications, compatible with QuickBooks Online, Xero, TallyPrime, Zoho Books, Wave, and Microsoft Excel.' },
+            { question: 'Can it handle multi-page statements with hundreds of transactions?', answer: 'Yes. The converter seamlessly stitches multi-page tables across dozens of pages while preserving consistent column alignments.' },
+            { question: 'What if my Bank of America statement is password-protected?', answer: 'Most banks protect e-statements with a password (often your PAN, date of birth, or account digits). Use our Unlock PDF tool to remove the password before running table extraction.' }
+        ],
+        supportedFormats: 'Input: PDF | Output: XLSX, CSV',
+        relatedTools: ['bank-statement-to-excel', 'pdf-to-excel', 'pdf-to-csv', 'pdf-to-word'],
+    },
+    'wells-fargo-statement-to-excel': {
+        about: 'Wells Fargo Statement to Excel converts locked PDF e-statements from Wells Fargo into clean, formatted Microsoft Excel (.xlsx) and CSV spreadsheets. Auditing expenses, preparing annual tax returns, or reconciling monthly business transactions manually is slow and error-prone. Our specialized financial parser automatically recognizes Wells Fargo statement layouts (Everyday Checking, Way2Save, and Initiate Business Checking accounts), extracting Date, Description, Check Number, Deposits/Credits, Withdrawals/Debits, and Ending Daily Balance into separate, mathematically structured columns ready for direct import into QuickBooks, Quicken, Xero, and Microsoft Excel.',
+        directAnswer: 'Wells Fargo Statement to Excel automatically extracts transaction dates, payee descriptions, check numbers, debits, credits, and balances from Wells Fargo PDF statements into clean Excel (.xlsx) and CSV spreadsheets with zero manual data entry.',
+        steps: [
+            { title: 'Upload Wells Fargo statement PDF', description: 'Select your single or multi-page digital statement downloaded from Wells Fargo online banking.' },
+            { title: 'Automatic transaction table extraction', description: 'Our financial engine identifies headers, payee narratives, withdrawal debits, and deposit credits.' },
+            { title: 'Review detected data rows', description: 'Verify row counts, transaction totals, and opening/closing statement balances in the live preview.' },
+            { title: 'Download Excel (.xlsx) or CSV', description: 'Save your clean spreadsheet and import seamlessly into QuickBooks, Quicken, Xero, and Microsoft Excel.' }
+        ],
+        commonProblems: [
+            { problem: 'Multi-line merchant descriptions splitting into separate rows', solution: 'Our parsing logic intelligently merges wrapped payee names, transaction IDs, and memo lines into a single clean row.' },
+            { problem: 'Password-protected bank statement PDF', solution: 'If your Wells Fargo statement is locked with your password or date of birth, unlock it first using our Unlock PDF tool before converting.' }
+        ],
+        features: [
+            'Tailored extraction tuned specifically for Wells Fargo statement table structures',
+            'Separates debit and credit amounts into distinct numeric columns with full =SUM() formula support',
+            'Exports both styled Microsoft Excel (.xlsx) files and universal comma-separated (.csv) tables',
+            'Full support for multi-page statements spanning multiple months or full fiscal years',
+            '100% confidential processing: bank records are processed in memory and purged automatically'
+        ],
+        useCases: [
+            'Accountants and tax preparers importing Wells Fargo transactions into QuickBooks, Xero, or Tally',
+            'Mortgage underwriters and loan officers verifying applicant income and average daily balances',
+            'Small business owners tracking deductible business expenses and reconciling merchant accounts',
+            'Individuals and freelance professionals preparing annual tax filings and budget spreadsheets'
+        ],
+        faqs: [
+            { question: 'Is it safe to convert my Wells Fargo statement on PdfPixels?', answer: 'Yes. We take financial confidentiality seriously. Files are processed transiently in memory and permanently purged immediately upon completion. We never store, inspect, or sell your account data.' },
+            { question: 'Can I import the resulting spreadsheet into accounting software?', answer: 'Yes. The output matches standard banking feed specifications, compatible with QuickBooks Online, Xero, TallyPrime, Zoho Books, Wave, and Microsoft Excel.' },
+            { question: 'Can it handle multi-page statements with hundreds of transactions?', answer: 'Yes. The converter seamlessly stitches multi-page tables across dozens of pages while preserving consistent column alignments.' },
+            { question: 'What if my Wells Fargo statement is password-protected?', answer: 'Most banks protect e-statements with a password (often your PAN, date of birth, or account digits). Use our Unlock PDF tool to remove the password before running table extraction.' }
+        ],
+        supportedFormats: 'Input: PDF | Output: XLSX, CSV',
+        relatedTools: ['bank-statement-to-excel', 'pdf-to-excel', 'pdf-to-csv', 'pdf-to-word'],
+    },
+    'citibank-statement-to-excel': {
+        about: 'Citibank Statement to Excel converts locked PDF e-statements from Citibank into clean, formatted Microsoft Excel (.xlsx) and CSV spreadsheets. Auditing expenses, preparing annual tax returns, or reconciling monthly business transactions manually is slow and error-prone. Our specialized financial parser automatically recognizes Citibank statement layouts (Citi Priority, Citigold, and Small Business accounts), extracting Date, Description, Debits, Credits, and Balance into separate, mathematically structured columns ready for direct import into Excel, Google Sheets, QuickBooks, and accounting software.',
+        directAnswer: 'Citibank Statement to Excel automatically extracts transaction dates, payee descriptions, check numbers, debits, credits, and balances from Citibank PDF statements into clean Excel (.xlsx) and CSV spreadsheets with zero manual data entry.',
+        steps: [
+            { title: 'Upload Citibank statement PDF', description: 'Select your single or multi-page digital statement downloaded from Citibank online banking.' },
+            { title: 'Automatic transaction table extraction', description: 'Our financial engine identifies headers, payee narratives, withdrawal debits, and deposit credits.' },
+            { title: 'Review detected data rows', description: 'Verify row counts, transaction totals, and opening/closing statement balances in the live preview.' },
+            { title: 'Download Excel (.xlsx) or CSV', description: 'Save your clean spreadsheet and import seamlessly into Excel, Google Sheets, QuickBooks, and accounting software.' }
+        ],
+        commonProblems: [
+            { problem: 'Multi-line merchant descriptions splitting into separate rows', solution: 'Our parsing logic intelligently merges wrapped payee names, transaction IDs, and memo lines into a single clean row.' },
+            { problem: 'Password-protected bank statement PDF', solution: 'If your Citibank statement is locked with your password or date of birth, unlock it first using our Unlock PDF tool before converting.' }
+        ],
+        features: [
+            'Tailored extraction tuned specifically for Citibank statement table structures',
+            'Separates debit and credit amounts into distinct numeric columns with full =SUM() formula support',
+            'Exports both styled Microsoft Excel (.xlsx) files and universal comma-separated (.csv) tables',
+            'Full support for multi-page statements spanning multiple months or full fiscal years',
+            '100% confidential processing: bank records are processed in memory and purged automatically'
+        ],
+        useCases: [
+            'Accountants and tax preparers importing Citibank transactions into QuickBooks, Xero, or Tally',
+            'Mortgage underwriters and loan officers verifying applicant income and average daily balances',
+            'Small business owners tracking deductible business expenses and reconciling merchant accounts',
+            'Individuals and freelance professionals preparing annual tax filings and budget spreadsheets'
+        ],
+        faqs: [
+            { question: 'Is it safe to convert my Citibank statement on PdfPixels?', answer: 'Yes. We take financial confidentiality seriously. Files are processed transiently in memory and permanently purged immediately upon completion. We never store, inspect, or sell your account data.' },
+            { question: 'Can I import the resulting spreadsheet into accounting software?', answer: 'Yes. The output matches standard banking feed specifications, compatible with QuickBooks Online, Xero, TallyPrime, Zoho Books, Wave, and Microsoft Excel.' },
+            { question: 'Can it handle multi-page statements with hundreds of transactions?', answer: 'Yes. The converter seamlessly stitches multi-page tables across dozens of pages while preserving consistent column alignments.' },
+            { question: 'What if my Citibank statement is password-protected?', answer: 'Most banks protect e-statements with a password (often your PAN, date of birth, or account digits). Use our Unlock PDF tool to remove the password before running table extraction.' }
+        ],
+        supportedFormats: 'Input: PDF | Output: XLSX, CSV',
+        relatedTools: ['bank-statement-to-excel', 'pdf-to-excel', 'pdf-to-csv', 'pdf-to-word'],
+    },
+    'barclays-bank-statement-to-excel': {
+        about: 'Barclays Bank Statement to Excel converts locked PDF e-statements from Barclays into clean, formatted Microsoft Excel (.xlsx) and CSV spreadsheets. Auditing expenses, preparing annual tax returns, or reconciling monthly business transactions manually is slow and error-prone. Our specialized financial parser automatically recognizes Barclays statement layouts (Barclays UK Personal Current Accounts, Barclaycard, and Business Premium accounts), extracting Date, Description, Money In (Credit), Money Out (Debit), and Balance in GBP into separate, mathematically structured columns ready for direct import into Xero, QuickBooks UK, FreeAgent, and Excel.',
+        directAnswer: 'Barclays Bank Statement to Excel automatically extracts transaction dates, payee descriptions, check numbers, debits, credits, and balances from Barclays PDF statements into clean Excel (.xlsx) and CSV spreadsheets with zero manual data entry.',
+        steps: [
+            { title: 'Upload Barclays statement PDF', description: 'Select your single or multi-page digital statement downloaded from Barclays online banking.' },
+            { title: 'Automatic transaction table extraction', description: 'Our financial engine identifies headers, payee narratives, withdrawal debits, and deposit credits.' },
+            { title: 'Review detected data rows', description: 'Verify row counts, transaction totals, and opening/closing statement balances in the live preview.' },
+            { title: 'Download Excel (.xlsx) or CSV', description: 'Save your clean spreadsheet and import seamlessly into Xero, QuickBooks UK, FreeAgent, and Excel.' }
+        ],
+        commonProblems: [
+            { problem: 'Multi-line merchant descriptions splitting into separate rows', solution: 'Our parsing logic intelligently merges wrapped payee names, transaction IDs, and memo lines into a single clean row.' },
+            { problem: 'Password-protected bank statement PDF', solution: 'If your Barclays statement is locked with your password or date of birth, unlock it first using our Unlock PDF tool before converting.' }
+        ],
+        features: [
+            'Tailored extraction tuned specifically for Barclays statement table structures',
+            'Separates debit and credit amounts into distinct numeric columns with full =SUM() formula support',
+            'Exports both styled Microsoft Excel (.xlsx) files and universal comma-separated (.csv) tables',
+            'Full support for multi-page statements spanning multiple months or full fiscal years',
+            '100% confidential processing: bank records are processed in memory and purged automatically'
+        ],
+        useCases: [
+            'Accountants and tax preparers importing Barclays transactions into QuickBooks, Xero, or Tally',
+            'Mortgage underwriters and loan officers verifying applicant income and average daily balances',
+            'Small business owners tracking deductible business expenses and reconciling merchant accounts',
+            'Individuals and freelance professionals preparing annual tax filings and budget spreadsheets'
+        ],
+        faqs: [
+            { question: 'Is it safe to convert my Barclays statement on PdfPixels?', answer: 'Yes. We take financial confidentiality seriously. Files are processed transiently in memory and permanently purged immediately upon completion. We never store, inspect, or sell your account data.' },
+            { question: 'Can I import the resulting spreadsheet into accounting software?', answer: 'Yes. The output matches standard banking feed specifications, compatible with QuickBooks Online, Xero, TallyPrime, Zoho Books, Wave, and Microsoft Excel.' },
+            { question: 'Can it handle multi-page statements with hundreds of transactions?', answer: 'Yes. The converter seamlessly stitches multi-page tables across dozens of pages while preserving consistent column alignments.' },
+            { question: 'What if my Barclays statement is password-protected?', answer: 'Most banks protect e-statements with a password (often your PAN, date of birth, or account digits). Use our Unlock PDF tool to remove the password before running table extraction.' }
+        ],
+        supportedFormats: 'Input: PDF | Output: XLSX, CSV',
+        relatedTools: ['bank-statement-to-excel', 'pdf-to-excel', 'pdf-to-csv', 'pdf-to-word'],
+    },
+    'hsbc-bank-statement-to-excel': {
+        about: 'HSBC Bank Statement to Excel converts locked PDF e-statements from HSBC into clean, formatted Microsoft Excel (.xlsx) and CSV spreadsheets. Auditing expenses, preparing annual tax returns, or reconciling monthly business transactions manually is slow and error-prone. Our specialized financial parser automatically recognizes HSBC statement layouts (HSBC Premier, Global Money, and Commercial Banking accounts), extracting Transaction Date, Details / Reference, Payment / Outflow, Deposit / Inflow, and Balance into separate, mathematically structured columns ready for direct import into Excel (.xlsx), CSV, QuickBooks, and international accounting ledgers.',
+        directAnswer: 'HSBC Bank Statement to Excel automatically extracts transaction dates, payee descriptions, check numbers, debits, credits, and balances from HSBC PDF statements into clean Excel (.xlsx) and CSV spreadsheets with zero manual data entry.',
+        steps: [
+            { title: 'Upload HSBC statement PDF', description: 'Select your single or multi-page digital statement downloaded from HSBC online banking.' },
+            { title: 'Automatic transaction table extraction', description: 'Our financial engine identifies headers, payee narratives, withdrawal debits, and deposit credits.' },
+            { title: 'Review detected data rows', description: 'Verify row counts, transaction totals, and opening/closing statement balances in the live preview.' },
+            { title: 'Download Excel (.xlsx) or CSV', description: 'Save your clean spreadsheet and import seamlessly into Excel (.xlsx), CSV, QuickBooks, and international accounting ledgers.' }
+        ],
+        commonProblems: [
+            { problem: 'Multi-line merchant descriptions splitting into separate rows', solution: 'Our parsing logic intelligently merges wrapped payee names, transaction IDs, and memo lines into a single clean row.' },
+            { problem: 'Password-protected bank statement PDF', solution: 'If your HSBC statement is locked with your password or date of birth, unlock it first using our Unlock PDF tool before converting.' }
+        ],
+        features: [
+            'Tailored extraction tuned specifically for HSBC statement table structures',
+            'Separates debit and credit amounts into distinct numeric columns with full =SUM() formula support',
+            'Exports both styled Microsoft Excel (.xlsx) files and universal comma-separated (.csv) tables',
+            'Full support for multi-page statements spanning multiple months or full fiscal years',
+            '100% confidential processing: bank records are processed in memory and purged automatically'
+        ],
+        useCases: [
+            'Accountants and tax preparers importing HSBC transactions into QuickBooks, Xero, or Tally',
+            'Mortgage underwriters and loan officers verifying applicant income and average daily balances',
+            'Small business owners tracking deductible business expenses and reconciling merchant accounts',
+            'Individuals and freelance professionals preparing annual tax filings and budget spreadsheets'
+        ],
+        faqs: [
+            { question: 'Is it safe to convert my HSBC statement on PdfPixels?', answer: 'Yes. We take financial confidentiality seriously. Files are processed transiently in memory and permanently purged immediately upon completion. We never store, inspect, or sell your account data.' },
+            { question: 'Can I import the resulting spreadsheet into accounting software?', answer: 'Yes. The output matches standard banking feed specifications, compatible with QuickBooks Online, Xero, TallyPrime, Zoho Books, Wave, and Microsoft Excel.' },
+            { question: 'Can it handle multi-page statements with hundreds of transactions?', answer: 'Yes. The converter seamlessly stitches multi-page tables across dozens of pages while preserving consistent column alignments.' },
+            { question: 'What if my HSBC statement is password-protected?', answer: 'Most banks protect e-statements with a password (often your PAN, date of birth, or account digits). Use our Unlock PDF tool to remove the password before running table extraction.' }
+        ],
+        supportedFormats: 'Input: PDF | Output: XLSX, CSV',
+        relatedTools: ['bank-statement-to-excel', 'pdf-to-excel', 'pdf-to-csv', 'pdf-to-word'],
+    },
+    'td-bank-statement-to-excel': {
+        about: 'TD Bank Statement to Excel converts locked PDF e-statements from TD Bank into clean, formatted Microsoft Excel (.xlsx) and CSV spreadsheets. Auditing expenses, preparing annual tax returns, or reconciling monthly business transactions manually is slow and error-prone. Our specialized financial parser automatically recognizes TD Bank statement layouts (TD Beyond Checking, Convenience Checking, and Business Convenience accounts), extracting Date, Description, Check Number, Subtractions, Additions, and Balance into separate, mathematically structured columns ready for direct import into QuickBooks, Quicken, Excel, and tax software.',
+        directAnswer: 'TD Bank Statement to Excel automatically extracts transaction dates, payee descriptions, check numbers, debits, credits, and balances from TD Bank PDF statements into clean Excel (.xlsx) and CSV spreadsheets with zero manual data entry.',
+        steps: [
+            { title: 'Upload TD Bank statement PDF', description: 'Select your single or multi-page digital statement downloaded from TD Bank online banking.' },
+            { title: 'Automatic transaction table extraction', description: 'Our financial engine identifies headers, payee narratives, withdrawal debits, and deposit credits.' },
+            { title: 'Review detected data rows', description: 'Verify row counts, transaction totals, and opening/closing statement balances in the live preview.' },
+            { title: 'Download Excel (.xlsx) or CSV', description: 'Save your clean spreadsheet and import seamlessly into QuickBooks, Quicken, Excel, and tax software.' }
+        ],
+        commonProblems: [
+            { problem: 'Multi-line merchant descriptions splitting into separate rows', solution: 'Our parsing logic intelligently merges wrapped payee names, transaction IDs, and memo lines into a single clean row.' },
+            { problem: 'Password-protected bank statement PDF', solution: 'If your TD Bank statement is locked with your password or date of birth, unlock it first using our Unlock PDF tool before converting.' }
+        ],
+        features: [
+            'Tailored extraction tuned specifically for TD Bank statement table structures',
+            'Separates debit and credit amounts into distinct numeric columns with full =SUM() formula support',
+            'Exports both styled Microsoft Excel (.xlsx) files and universal comma-separated (.csv) tables',
+            'Full support for multi-page statements spanning multiple months or full fiscal years',
+            '100% confidential processing: bank records are processed in memory and purged automatically'
+        ],
+        useCases: [
+            'Accountants and tax preparers importing TD Bank transactions into QuickBooks, Xero, or Tally',
+            'Mortgage underwriters and loan officers verifying applicant income and average daily balances',
+            'Small business owners tracking deductible business expenses and reconciling merchant accounts',
+            'Individuals and freelance professionals preparing annual tax filings and budget spreadsheets'
+        ],
+        faqs: [
+            { question: 'Is it safe to convert my TD Bank statement on PdfPixels?', answer: 'Yes. We take financial confidentiality seriously. Files are processed transiently in memory and permanently purged immediately upon completion. We never store, inspect, or sell your account data.' },
+            { question: 'Can I import the resulting spreadsheet into accounting software?', answer: 'Yes. The output matches standard banking feed specifications, compatible with QuickBooks Online, Xero, TallyPrime, Zoho Books, Wave, and Microsoft Excel.' },
+            { question: 'Can it handle multi-page statements with hundreds of transactions?', answer: 'Yes. The converter seamlessly stitches multi-page tables across dozens of pages while preserving consistent column alignments.' },
+            { question: 'What if my TD Bank statement is password-protected?', answer: 'Most banks protect e-statements with a password (often your PAN, date of birth, or account digits). Use our Unlock PDF tool to remove the password before running table extraction.' }
+        ],
+        supportedFormats: 'Input: PDF | Output: XLSX, CSV',
+        relatedTools: ['bank-statement-to-excel', 'pdf-to-excel', 'pdf-to-csv', 'pdf-to-word'],
+    },
+    'sbi-bank-statement-to-excel': {
+        about: 'SBI Bank Statement to Excel converts locked PDF e-statements from State Bank of India (SBI) into clean, formatted Microsoft Excel (.xlsx) and CSV spreadsheets. Auditing expenses, preparing annual tax returns, or reconciling monthly business transactions manually is slow and error-prone. Our specialized financial parser automatically recognizes State Bank of India (SBI) statement layouts (Savings Bank, Current Accounts, and YONO / OnlineSBI e-statements), extracting Txn Date, Value Date, Description / Ref No, Cheque No, Debit, Credit, and Balance in INR into separate, mathematically structured columns ready for direct import into TallyPrime, Zoho Books, Busy, and Microsoft Excel.',
+        directAnswer: 'SBI Bank Statement to Excel automatically extracts transaction dates, payee descriptions, check numbers, debits, credits, and balances from State Bank of India (SBI) PDF statements into clean Excel (.xlsx) and CSV spreadsheets with zero manual data entry.',
+        steps: [
+            { title: 'Upload State Bank of India (SBI) statement PDF', description: 'Select your single or multi-page digital statement downloaded from State Bank of India (SBI) online banking.' },
+            { title: 'Automatic transaction table extraction', description: 'Our financial engine identifies headers, payee narratives, withdrawal debits, and deposit credits.' },
+            { title: 'Review detected data rows', description: 'Verify row counts, transaction totals, and opening/closing statement balances in the live preview.' },
+            { title: 'Download Excel (.xlsx) or CSV', description: 'Save your clean spreadsheet and import seamlessly into TallyPrime, Zoho Books, Busy, and Microsoft Excel.' }
+        ],
+        commonProblems: [
+            { problem: 'Multi-line merchant descriptions splitting into separate rows', solution: 'Our parsing logic intelligently merges wrapped payee names, transaction IDs, and memo lines into a single clean row.' },
+            { problem: 'Password-protected bank statement PDF', solution: 'If your State Bank of India (SBI) statement is locked with your password or date of birth, unlock it first using our Unlock PDF tool before converting.' }
+        ],
+        features: [
+            'Tailored extraction tuned specifically for State Bank of India (SBI) statement table structures',
+            'Separates debit and credit amounts into distinct numeric columns with full =SUM() formula support',
+            'Exports both styled Microsoft Excel (.xlsx) files and universal comma-separated (.csv) tables',
+            'Full support for multi-page statements spanning multiple months or full fiscal years',
+            '100% confidential processing: bank records are processed in memory and purged automatically'
+        ],
+        useCases: [
+            'Accountants and tax preparers importing State Bank of India (SBI) transactions into QuickBooks, Xero, or Tally',
+            'Mortgage underwriters and loan officers verifying applicant income and average daily balances',
+            'Small business owners tracking deductible business expenses and reconciling merchant accounts',
+            'Individuals and freelance professionals preparing annual tax filings and budget spreadsheets'
+        ],
+        faqs: [
+            { question: 'Is it safe to convert my State Bank of India (SBI) statement on PdfPixels?', answer: 'Yes. We take financial confidentiality seriously. Files are processed transiently in memory and permanently purged immediately upon completion. We never store, inspect, or sell your account data.' },
+            { question: 'Can I import the resulting spreadsheet into accounting software?', answer: 'Yes. The output matches standard banking feed specifications, compatible with QuickBooks Online, Xero, TallyPrime, Zoho Books, Wave, and Microsoft Excel.' },
+            { question: 'Can it handle multi-page statements with hundreds of transactions?', answer: 'Yes. The converter seamlessly stitches multi-page tables across dozens of pages while preserving consistent column alignments.' },
+            { question: 'What if my State Bank of India (SBI) statement is password-protected?', answer: 'Most banks protect e-statements with a password (often your PAN, date of birth, or account digits). Use our Unlock PDF tool to remove the password before running table extraction.' }
+        ],
+        supportedFormats: 'Input: PDF | Output: XLSX, CSV',
+        relatedTools: ['bank-statement-to-excel', 'pdf-to-excel', 'pdf-to-csv', 'pdf-to-word'],
+    },
+    'hdfc-bank-statement-to-excel': {
+        about: 'HDFC Bank Statement to Excel converts locked PDF e-statements from HDFC Bank into clean, formatted Microsoft Excel (.xlsx) and CSV spreadsheets. Auditing expenses, preparing annual tax returns, or reconciling monthly business transactions manually is slow and error-prone. Our specialized financial parser automatically recognizes HDFC Bank statement layouts (Regular Savings, Salary Accounts, and HDFC NetBanking PDF e-statements), extracting Date, Narration, Chq/Ref No, Value Dt, Withdrawal Amt, Deposit Amt, and Closing Balance into separate, mathematically structured columns ready for direct import into TallyPrime, Zoho Books, QuickBooks, and Excel.',
+        directAnswer: 'HDFC Bank Statement to Excel automatically extracts transaction dates, payee descriptions, check numbers, debits, credits, and balances from HDFC Bank PDF statements into clean Excel (.xlsx) and CSV spreadsheets with zero manual data entry.',
+        steps: [
+            { title: 'Upload HDFC Bank statement PDF', description: 'Select your single or multi-page digital statement downloaded from HDFC Bank online banking.' },
+            { title: 'Automatic transaction table extraction', description: 'Our financial engine identifies headers, payee narratives, withdrawal debits, and deposit credits.' },
+            { title: 'Review detected data rows', description: 'Verify row counts, transaction totals, and opening/closing statement balances in the live preview.' },
+            { title: 'Download Excel (.xlsx) or CSV', description: 'Save your clean spreadsheet and import seamlessly into TallyPrime, Zoho Books, QuickBooks, and Excel.' }
+        ],
+        commonProblems: [
+            { problem: 'Multi-line merchant descriptions splitting into separate rows', solution: 'Our parsing logic intelligently merges wrapped payee names, transaction IDs, and memo lines into a single clean row.' },
+            { problem: 'Password-protected bank statement PDF', solution: 'If your HDFC Bank statement is locked with your password or date of birth, unlock it first using our Unlock PDF tool before converting.' }
+        ],
+        features: [
+            'Tailored extraction tuned specifically for HDFC Bank statement table structures',
+            'Separates debit and credit amounts into distinct numeric columns with full =SUM() formula support',
+            'Exports both styled Microsoft Excel (.xlsx) files and universal comma-separated (.csv) tables',
+            'Full support for multi-page statements spanning multiple months or full fiscal years',
+            '100% confidential processing: bank records are processed in memory and purged automatically'
+        ],
+        useCases: [
+            'Accountants and tax preparers importing HDFC Bank transactions into QuickBooks, Xero, or Tally',
+            'Mortgage underwriters and loan officers verifying applicant income and average daily balances',
+            'Small business owners tracking deductible business expenses and reconciling merchant accounts',
+            'Individuals and freelance professionals preparing annual tax filings and budget spreadsheets'
+        ],
+        faqs: [
+            { question: 'Is it safe to convert my HDFC Bank statement on PdfPixels?', answer: 'Yes. We take financial confidentiality seriously. Files are processed transiently in memory and permanently purged immediately upon completion. We never store, inspect, or sell your account data.' },
+            { question: 'Can I import the resulting spreadsheet into accounting software?', answer: 'Yes. The output matches standard banking feed specifications, compatible with QuickBooks Online, Xero, TallyPrime, Zoho Books, Wave, and Microsoft Excel.' },
+            { question: 'Can it handle multi-page statements with hundreds of transactions?', answer: 'Yes. The converter seamlessly stitches multi-page tables across dozens of pages while preserving consistent column alignments.' },
+            { question: 'What if my HDFC Bank statement is password-protected?', answer: 'Most banks protect e-statements with a password (often your PAN, date of birth, or account digits). Use our Unlock PDF tool to remove the password before running table extraction.' }
+        ],
+        supportedFormats: 'Input: PDF | Output: XLSX, CSV',
+        relatedTools: ['bank-statement-to-excel', 'pdf-to-excel', 'pdf-to-csv', 'pdf-to-word'],
+    },
+    'icici-bank-statement-to-excel': {
+        about: 'ICICI Bank Statement to Excel converts locked PDF e-statements from ICICI Bank into clean, formatted Microsoft Excel (.xlsx) and CSV spreadsheets. Auditing expenses, preparing annual tax returns, or reconciling monthly business transactions manually is slow and error-prone. Our specialized financial parser automatically recognizes ICICI Bank statement layouts (Savings Accounts, Corporate Current Accounts, and iMobile NetBanking statements), extracting Transaction Date, Particulars, Cheque Number, Withdrawal (Dr), Deposit (Cr), and Available Balance into separate, mathematically structured columns ready for direct import into Tally, Zoho Books, Excel (.xlsx), and CSV.',
+        directAnswer: 'ICICI Bank Statement to Excel automatically extracts transaction dates, payee descriptions, check numbers, debits, credits, and balances from ICICI Bank PDF statements into clean Excel (.xlsx) and CSV spreadsheets with zero manual data entry.',
+        steps: [
+            { title: 'Upload ICICI Bank statement PDF', description: 'Select your single or multi-page digital statement downloaded from ICICI Bank online banking.' },
+            { title: 'Automatic transaction table extraction', description: 'Our financial engine identifies headers, payee narratives, withdrawal debits, and deposit credits.' },
+            { title: 'Review detected data rows', description: 'Verify row counts, transaction totals, and opening/closing statement balances in the live preview.' },
+            { title: 'Download Excel (.xlsx) or CSV', description: 'Save your clean spreadsheet and import seamlessly into Tally, Zoho Books, Excel (.xlsx), and CSV.' }
+        ],
+        commonProblems: [
+            { problem: 'Multi-line merchant descriptions splitting into separate rows', solution: 'Our parsing logic intelligently merges wrapped payee names, transaction IDs, and memo lines into a single clean row.' },
+            { problem: 'Password-protected bank statement PDF', solution: 'If your ICICI Bank statement is locked with your password or date of birth, unlock it first using our Unlock PDF tool before converting.' }
+        ],
+        features: [
+            'Tailored extraction tuned specifically for ICICI Bank statement table structures',
+            'Separates debit and credit amounts into distinct numeric columns with full =SUM() formula support',
+            'Exports both styled Microsoft Excel (.xlsx) files and universal comma-separated (.csv) tables',
+            'Full support for multi-page statements spanning multiple months or full fiscal years',
+            '100% confidential processing: bank records are processed in memory and purged automatically'
+        ],
+        useCases: [
+            'Accountants and tax preparers importing ICICI Bank transactions into QuickBooks, Xero, or Tally',
+            'Mortgage underwriters and loan officers verifying applicant income and average daily balances',
+            'Small business owners tracking deductible business expenses and reconciling merchant accounts',
+            'Individuals and freelance professionals preparing annual tax filings and budget spreadsheets'
+        ],
+        faqs: [
+            { question: 'Is it safe to convert my ICICI Bank statement on PdfPixels?', answer: 'Yes. We take financial confidentiality seriously. Files are processed transiently in memory and permanently purged immediately upon completion. We never store, inspect, or sell your account data.' },
+            { question: 'Can I import the resulting spreadsheet into accounting software?', answer: 'Yes. The output matches standard banking feed specifications, compatible with QuickBooks Online, Xero, TallyPrime, Zoho Books, Wave, and Microsoft Excel.' },
+            { question: 'Can it handle multi-page statements with hundreds of transactions?', answer: 'Yes. The converter seamlessly stitches multi-page tables across dozens of pages while preserving consistent column alignments.' },
+            { question: 'What if my ICICI Bank statement is password-protected?', answer: 'Most banks protect e-statements with a password (often your PAN, date of birth, or account digits). Use our Unlock PDF tool to remove the password before running table extraction.' }
+        ],
+        supportedFormats: 'Input: PDF | Output: XLSX, CSV',
+        relatedTools: ['bank-statement-to-excel', 'pdf-to-excel', 'pdf-to-csv', 'pdf-to-word'],
+    },
+    'axis-bank-statement-to-excel': {
+        about: 'Axis Bank Statement to Excel converts locked PDF e-statements from Axis Bank into clean, formatted Microsoft Excel (.xlsx) and CSV spreadsheets. Auditing expenses, preparing annual tax returns, or reconciling monthly business transactions manually is slow and error-prone. Our specialized financial parser automatically recognizes Axis Bank statement layouts (Easy Access Savings, Liberty Accounts, and Axis Internet Banking statements), extracting Tran Date, Particulars, Chq No, Init. Br, Dr/Cr Amount, and Balance into separate, mathematically structured columns ready for direct import into TallyPrime, Excel, Zoho Books, and GST accounting software.',
+        directAnswer: 'Axis Bank Statement to Excel automatically extracts transaction dates, payee descriptions, check numbers, debits, credits, and balances from Axis Bank PDF statements into clean Excel (.xlsx) and CSV spreadsheets with zero manual data entry.',
+        steps: [
+            { title: 'Upload Axis Bank statement PDF', description: 'Select your single or multi-page digital statement downloaded from Axis Bank online banking.' },
+            { title: 'Automatic transaction table extraction', description: 'Our financial engine identifies headers, payee narratives, withdrawal debits, and deposit credits.' },
+            { title: 'Review detected data rows', description: 'Verify row counts, transaction totals, and opening/closing statement balances in the live preview.' },
+            { title: 'Download Excel (.xlsx) or CSV', description: 'Save your clean spreadsheet and import seamlessly into TallyPrime, Excel, Zoho Books, and GST accounting software.' }
+        ],
+        commonProblems: [
+            { problem: 'Multi-line merchant descriptions splitting into separate rows', solution: 'Our parsing logic intelligently merges wrapped payee names, transaction IDs, and memo lines into a single clean row.' },
+            { problem: 'Password-protected bank statement PDF', solution: 'If your Axis Bank statement is locked with your password or date of birth, unlock it first using our Unlock PDF tool before converting.' }
+        ],
+        features: [
+            'Tailored extraction tuned specifically for Axis Bank statement table structures',
+            'Separates debit and credit amounts into distinct numeric columns with full =SUM() formula support',
+            'Exports both styled Microsoft Excel (.xlsx) files and universal comma-separated (.csv) tables',
+            'Full support for multi-page statements spanning multiple months or full fiscal years',
+            '100% confidential processing: bank records are processed in memory and purged automatically'
+        ],
+        useCases: [
+            'Accountants and tax preparers importing Axis Bank transactions into QuickBooks, Xero, or Tally',
+            'Mortgage underwriters and loan officers verifying applicant income and average daily balances',
+            'Small business owners tracking deductible business expenses and reconciling merchant accounts',
+            'Individuals and freelance professionals preparing annual tax filings and budget spreadsheets'
+        ],
+        faqs: [
+            { question: 'Is it safe to convert my Axis Bank statement on PdfPixels?', answer: 'Yes. We take financial confidentiality seriously. Files are processed transiently in memory and permanently purged immediately upon completion. We never store, inspect, or sell your account data.' },
+            { question: 'Can I import the resulting spreadsheet into accounting software?', answer: 'Yes. The output matches standard banking feed specifications, compatible with QuickBooks Online, Xero, TallyPrime, Zoho Books, Wave, and Microsoft Excel.' },
+            { question: 'Can it handle multi-page statements with hundreds of transactions?', answer: 'Yes. The converter seamlessly stitches multi-page tables across dozens of pages while preserving consistent column alignments.' },
+            { question: 'What if my Axis Bank statement is password-protected?', answer: 'Most banks protect e-statements with a password (often your PAN, date of birth, or account digits). Use our Unlock PDF tool to remove the password before running table extraction.' }
+        ],
+        supportedFormats: 'Input: PDF | Output: XLSX, CSV',
+        relatedTools: ['bank-statement-to-excel', 'pdf-to-excel', 'pdf-to-csv', 'pdf-to-word'],
+    },
+    'kotak-bank-statement-to-excel': {
+        about: 'Kotak Bank Statement to Excel converts locked PDF e-statements from Kotak Mahindra Bank into clean, formatted Microsoft Excel (.xlsx) and CSV spreadsheets. Auditing expenses, preparing annual tax returns, or reconciling monthly business transactions manually is slow and error-prone. Our specialized financial parser automatically recognizes Kotak Mahindra Bank statement layouts (Kotak 811, Everyday Savings, and Corporate NetBanking e-statements), extracting Date, Description / Reference, Chq/Ref No, Amount, Cr/Dr Flag, and Balance into separate, mathematically structured columns ready for direct import into Tally, Excel (.xlsx), CSV, and tax calculation tools.',
+        directAnswer: 'Kotak Bank Statement to Excel automatically extracts transaction dates, payee descriptions, check numbers, debits, credits, and balances from Kotak Mahindra Bank PDF statements into clean Excel (.xlsx) and CSV spreadsheets with zero manual data entry.',
+        steps: [
+            { title: 'Upload Kotak Mahindra Bank statement PDF', description: 'Select your single or multi-page digital statement downloaded from Kotak Mahindra Bank online banking.' },
+            { title: 'Automatic transaction table extraction', description: 'Our financial engine identifies headers, payee narratives, withdrawal debits, and deposit credits.' },
+            { title: 'Review detected data rows', description: 'Verify row counts, transaction totals, and opening/closing statement balances in the live preview.' },
+            { title: 'Download Excel (.xlsx) or CSV', description: 'Save your clean spreadsheet and import seamlessly into Tally, Excel (.xlsx), CSV, and tax calculation tools.' }
+        ],
+        commonProblems: [
+            { problem: 'Multi-line merchant descriptions splitting into separate rows', solution: 'Our parsing logic intelligently merges wrapped payee names, transaction IDs, and memo lines into a single clean row.' },
+            { problem: 'Password-protected bank statement PDF', solution: 'If your Kotak Mahindra Bank statement is locked with your password or date of birth, unlock it first using our Unlock PDF tool before converting.' }
+        ],
+        features: [
+            'Tailored extraction tuned specifically for Kotak Mahindra Bank statement table structures',
+            'Separates debit and credit amounts into distinct numeric columns with full =SUM() formula support',
+            'Exports both styled Microsoft Excel (.xlsx) files and universal comma-separated (.csv) tables',
+            'Full support for multi-page statements spanning multiple months or full fiscal years',
+            '100% confidential processing: bank records are processed in memory and purged automatically'
+        ],
+        useCases: [
+            'Accountants and tax preparers importing Kotak Mahindra Bank transactions into QuickBooks, Xero, or Tally',
+            'Mortgage underwriters and loan officers verifying applicant income and average daily balances',
+            'Small business owners tracking deductible business expenses and reconciling merchant accounts',
+            'Individuals and freelance professionals preparing annual tax filings and budget spreadsheets'
+        ],
+        faqs: [
+            { question: 'Is it safe to convert my Kotak Mahindra Bank statement on PdfPixels?', answer: 'Yes. We take financial confidentiality seriously. Files are processed transiently in memory and permanently purged immediately upon completion. We never store, inspect, or sell your account data.' },
+            { question: 'Can I import the resulting spreadsheet into accounting software?', answer: 'Yes. The output matches standard banking feed specifications, compatible with QuickBooks Online, Xero, TallyPrime, Zoho Books, Wave, and Microsoft Excel.' },
+            { question: 'Can it handle multi-page statements with hundreds of transactions?', answer: 'Yes. The converter seamlessly stitches multi-page tables across dozens of pages while preserving consistent column alignments.' },
+            { question: 'What if my Kotak Mahindra Bank statement is password-protected?', answer: 'Most banks protect e-statements with a password (often your PAN, date of birth, or account digits). Use our Unlock PDF tool to remove the password before running table extraction.' }
+        ],
+        supportedFormats: 'Input: PDF | Output: XLSX, CSV',
+        relatedTools: ['bank-statement-to-excel', 'pdf-to-excel', 'pdf-to-csv', 'pdf-to-word'],
+    },
+    'pnb-bank-statement-to-excel': {
+        about: 'PNB Bank Statement to Excel converts locked PDF e-statements from Punjab National Bank (PNB) into clean, formatted Microsoft Excel (.xlsx) and CSV spreadsheets. Auditing expenses, preparing annual tax returns, or reconciling monthly business transactions manually is slow and error-prone. Our specialized financial parser automatically recognizes Punjab National Bank (PNB) statement layouts (Savings Fund, Current Accounts, and PNB One mobile banking PDF statements), extracting Post Date, Value Date, Description, Cheque No, Debit, Credit, and Balance into separate, mathematically structured columns ready for direct import into TallyPrime, Excel, Busy, and ITR tax prep utilities.',
+        directAnswer: 'PNB Bank Statement to Excel automatically extracts transaction dates, payee descriptions, check numbers, debits, credits, and balances from Punjab National Bank (PNB) PDF statements into clean Excel (.xlsx) and CSV spreadsheets with zero manual data entry.',
+        steps: [
+            { title: 'Upload Punjab National Bank (PNB) statement PDF', description: 'Select your single or multi-page digital statement downloaded from Punjab National Bank (PNB) online banking.' },
+            { title: 'Automatic transaction table extraction', description: 'Our financial engine identifies headers, payee narratives, withdrawal debits, and deposit credits.' },
+            { title: 'Review detected data rows', description: 'Verify row counts, transaction totals, and opening/closing statement balances in the live preview.' },
+            { title: 'Download Excel (.xlsx) or CSV', description: 'Save your clean spreadsheet and import seamlessly into TallyPrime, Excel, Busy, and ITR tax prep utilities.' }
+        ],
+        commonProblems: [
+            { problem: 'Multi-line merchant descriptions splitting into separate rows', solution: 'Our parsing logic intelligently merges wrapped payee names, transaction IDs, and memo lines into a single clean row.' },
+            { problem: 'Password-protected bank statement PDF', solution: 'If your Punjab National Bank (PNB) statement is locked with your password or date of birth, unlock it first using our Unlock PDF tool before converting.' }
+        ],
+        features: [
+            'Tailored extraction tuned specifically for Punjab National Bank (PNB) statement table structures',
+            'Separates debit and credit amounts into distinct numeric columns with full =SUM() formula support',
+            'Exports both styled Microsoft Excel (.xlsx) files and universal comma-separated (.csv) tables',
+            'Full support for multi-page statements spanning multiple months or full fiscal years',
+            '100% confidential processing: bank records are processed in memory and purged automatically'
+        ],
+        useCases: [
+            'Accountants and tax preparers importing Punjab National Bank (PNB) transactions into QuickBooks, Xero, or Tally',
+            'Mortgage underwriters and loan officers verifying applicant income and average daily balances',
+            'Small business owners tracking deductible business expenses and reconciling merchant accounts',
+            'Individuals and freelance professionals preparing annual tax filings and budget spreadsheets'
+        ],
+        faqs: [
+            { question: 'Is it safe to convert my Punjab National Bank (PNB) statement on PdfPixels?', answer: 'Yes. We take financial confidentiality seriously. Files are processed transiently in memory and permanently purged immediately upon completion. We never store, inspect, or sell your account data.' },
+            { question: 'Can I import the resulting spreadsheet into accounting software?', answer: 'Yes. The output matches standard banking feed specifications, compatible with QuickBooks Online, Xero, TallyPrime, Zoho Books, Wave, and Microsoft Excel.' },
+            { question: 'Can it handle multi-page statements with hundreds of transactions?', answer: 'Yes. The converter seamlessly stitches multi-page tables across dozens of pages while preserving consistent column alignments.' },
+            { question: 'What if my Punjab National Bank (PNB) statement is password-protected?', answer: 'Most banks protect e-statements with a password (often your PAN, date of birth, or account digits). Use our Unlock PDF tool to remove the password before running table extraction.' }
+        ],
+        supportedFormats: 'Input: PDF | Output: XLSX, CSV',
+        relatedTools: ['bank-statement-to-excel', 'pdf-to-excel', 'pdf-to-csv', 'pdf-to-word'],
+    },
+    'bank-of-baroda-statement-to-excel': {
+        about: 'Bank of Baroda Statement to Excel converts locked PDF e-statements from Bank of Baroda into clean, formatted Microsoft Excel (.xlsx) and CSV spreadsheets. Auditing expenses, preparing annual tax returns, or reconciling monthly business transactions manually is slow and error-prone. Our specialized financial parser automatically recognizes Bank of Baroda statement layouts (Baroda Advantage Savings, bob World, and Baroda Connect statements), extracting Txn Date, Remarks / Narration, Cheque No, Withdrawals, Deposits, and Running Balance into separate, mathematically structured columns ready for direct import into Tally, Excel, Zoho Books, and accounting spreadsheets.',
+        directAnswer: 'Bank of Baroda Statement to Excel automatically extracts transaction dates, payee descriptions, check numbers, debits, credits, and balances from Bank of Baroda PDF statements into clean Excel (.xlsx) and CSV spreadsheets with zero manual data entry.',
+        steps: [
+            { title: 'Upload Bank of Baroda statement PDF', description: 'Select your single or multi-page digital statement downloaded from Bank of Baroda online banking.' },
+            { title: 'Automatic transaction table extraction', description: 'Our financial engine identifies headers, payee narratives, withdrawal debits, and deposit credits.' },
+            { title: 'Review detected data rows', description: 'Verify row counts, transaction totals, and opening/closing statement balances in the live preview.' },
+            { title: 'Download Excel (.xlsx) or CSV', description: 'Save your clean spreadsheet and import seamlessly into Tally, Excel, Zoho Books, and accounting spreadsheets.' }
+        ],
+        commonProblems: [
+            { problem: 'Multi-line merchant descriptions splitting into separate rows', solution: 'Our parsing logic intelligently merges wrapped payee names, transaction IDs, and memo lines into a single clean row.' },
+            { problem: 'Password-protected bank statement PDF', solution: 'If your Bank of Baroda statement is locked with your password or date of birth, unlock it first using our Unlock PDF tool before converting.' }
+        ],
+        features: [
+            'Tailored extraction tuned specifically for Bank of Baroda statement table structures',
+            'Separates debit and credit amounts into distinct numeric columns with full =SUM() formula support',
+            'Exports both styled Microsoft Excel (.xlsx) files and universal comma-separated (.csv) tables',
+            'Full support for multi-page statements spanning multiple months or full fiscal years',
+            '100% confidential processing: bank records are processed in memory and purged automatically'
+        ],
+        useCases: [
+            'Accountants and tax preparers importing Bank of Baroda transactions into QuickBooks, Xero, or Tally',
+            'Mortgage underwriters and loan officers verifying applicant income and average daily balances',
+            'Small business owners tracking deductible business expenses and reconciling merchant accounts',
+            'Individuals and freelance professionals preparing annual tax filings and budget spreadsheets'
+        ],
+        faqs: [
+            { question: 'Is it safe to convert my Bank of Baroda statement on PdfPixels?', answer: 'Yes. We take financial confidentiality seriously. Files are processed transiently in memory and permanently purged immediately upon completion. We never store, inspect, or sell your account data.' },
+            { question: 'Can I import the resulting spreadsheet into accounting software?', answer: 'Yes. The output matches standard banking feed specifications, compatible with QuickBooks Online, Xero, TallyPrime, Zoho Books, Wave, and Microsoft Excel.' },
+            { question: 'Can it handle multi-page statements with hundreds of transactions?', answer: 'Yes. The converter seamlessly stitches multi-page tables across dozens of pages while preserving consistent column alignments.' },
+            { question: 'What if my Bank of Baroda statement is password-protected?', answer: 'Most banks protect e-statements with a password (often your PAN, date of birth, or account digits). Use our Unlock PDF tool to remove the password before running table extraction.' }
+        ],
+        supportedFormats: 'Input: PDF | Output: XLSX, CSV',
+        relatedTools: ['bank-statement-to-excel', 'pdf-to-excel', 'pdf-to-csv', 'pdf-to-word'],
+    },
+    'canara-bank-statement-to-excel': {
+        about: 'Canara Bank Statement to Excel converts locked PDF e-statements from Canara Bank into clean, formatted Microsoft Excel (.xlsx) and CSV spreadsheets. Auditing expenses, preparing annual tax returns, or reconciling monthly business transactions manually is slow and error-prone. Our specialized financial parser automatically recognizes Canara Bank statement layouts (Canara SB General, Corporate Accounts, and Canara ai1 e-statements), extracting Date, Particulars, Cheque No, Debit, Credit, and Net Balance into separate, mathematically structured columns ready for direct import into TallyPrime, Excel, CSV, and financial reconciliation ledgers.',
+        directAnswer: 'Canara Bank Statement to Excel automatically extracts transaction dates, payee descriptions, check numbers, debits, credits, and balances from Canara Bank PDF statements into clean Excel (.xlsx) and CSV spreadsheets with zero manual data entry.',
+        steps: [
+            { title: 'Upload Canara Bank statement PDF', description: 'Select your single or multi-page digital statement downloaded from Canara Bank online banking.' },
+            { title: 'Automatic transaction table extraction', description: 'Our financial engine identifies headers, payee narratives, withdrawal debits, and deposit credits.' },
+            { title: 'Review detected data rows', description: 'Verify row counts, transaction totals, and opening/closing statement balances in the live preview.' },
+            { title: 'Download Excel (.xlsx) or CSV', description: 'Save your clean spreadsheet and import seamlessly into TallyPrime, Excel, CSV, and financial reconciliation ledgers.' }
+        ],
+        commonProblems: [
+            { problem: 'Multi-line merchant descriptions splitting into separate rows', solution: 'Our parsing logic intelligently merges wrapped payee names, transaction IDs, and memo lines into a single clean row.' },
+            { problem: 'Password-protected bank statement PDF', solution: 'If your Canara Bank statement is locked with your password or date of birth, unlock it first using our Unlock PDF tool before converting.' }
+        ],
+        features: [
+            'Tailored extraction tuned specifically for Canara Bank statement table structures',
+            'Separates debit and credit amounts into distinct numeric columns with full =SUM() formula support',
+            'Exports both styled Microsoft Excel (.xlsx) files and universal comma-separated (.csv) tables',
+            'Full support for multi-page statements spanning multiple months or full fiscal years',
+            '100% confidential processing: bank records are processed in memory and purged automatically'
+        ],
+        useCases: [
+            'Accountants and tax preparers importing Canara Bank transactions into QuickBooks, Xero, or Tally',
+            'Mortgage underwriters and loan officers verifying applicant income and average daily balances',
+            'Small business owners tracking deductible business expenses and reconciling merchant accounts',
+            'Individuals and freelance professionals preparing annual tax filings and budget spreadsheets'
+        ],
+        faqs: [
+            { question: 'Is it safe to convert my Canara Bank statement on PdfPixels?', answer: 'Yes. We take financial confidentiality seriously. Files are processed transiently in memory and permanently purged immediately upon completion. We never store, inspect, or sell your account data.' },
+            { question: 'Can I import the resulting spreadsheet into accounting software?', answer: 'Yes. The output matches standard banking feed specifications, compatible with QuickBooks Online, Xero, TallyPrime, Zoho Books, Wave, and Microsoft Excel.' },
+            { question: 'Can it handle multi-page statements with hundreds of transactions?', answer: 'Yes. The converter seamlessly stitches multi-page tables across dozens of pages while preserving consistent column alignments.' },
+            { question: 'What if my Canara Bank statement is password-protected?', answer: 'Most banks protect e-statements with a password (often your PAN, date of birth, or account digits). Use our Unlock PDF tool to remove the password before running table extraction.' }
+        ],
+        supportedFormats: 'Input: PDF | Output: XLSX, CSV',
+        relatedTools: ['bank-statement-to-excel', 'pdf-to-excel', 'pdf-to-csv', 'pdf-to-word'],
+    },
+
     'bates-numbering-pdf': {
         about: 'Bates Numbering PDF is a specialized legal document processing tool designed for law firms, litigators, corporate paralegals, and court filers. Bates stamping (also known as Bates numbering) applies unique, sequential identification numbers, prefixes, and confidential disclaimers to each page of legal discovery sets, trial exhibits, deposition packets, and government subpoena responses. In high-stakes litigation across federal (PACER) and state jurisdictions in the US, UK, Canada, and Australia, courts mandate precise document indexing to ensure parties can reference exact pages during depositions and trials. Our tool provides complete control over alphanumeric prefixes (e.g. "CONFIDENTIAL-", "DEFENDANT-"), starting numbers, digit padding (e.g. 6 digits: 000001), font sizes, and 6 positioning presets across document margins.',
         directAnswer: 'Bates Numbering PDF adds sequential legal identification numbers, custom case prefixes, and confidentiality labels to PDF discovery sets and trial exhibits with full positioning control.',
