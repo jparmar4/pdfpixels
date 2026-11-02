@@ -7,7 +7,7 @@ import { ToolContentSection } from '@/components/layout/tool-content-section';
 import { ToolPageClient } from '@/components/layout/tool-page-client';
 import { ToolSidebarAd } from '@/components/ads/tool-sidebar-ad';
 import { HeaderAd, InContentAd, FooterAd, NativeAd } from '@/components/ads/ad-banner';
-import { adsConfig } from '@/lib/ads-config';
+import { adsConfig, adsenseConfig } from '@/lib/ads-config';
 import { ErrorBoundary } from '@/components/ui/error-boundary';
 import { comparisonPages } from '@/lib/comparisons';
 import { normalizeDisplayText } from '@/lib/display-text';
@@ -448,7 +448,7 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
 
   return (
     <>
-      <div id="main-content" className={adsConfig.enabled && Boolean(adsConfig.slots.sidebar) ? 'min-[1400px]:pr-[210px]' : undefined}>
+      <div id="main-content" className={adsConfig.enabled && (adsenseConfig.enabled || Boolean(adsConfig.slots.sidebar) || adsConfig.testMode) ? 'min-[1400px]:pr-[210px]' : undefined}>
         {schemas?.map((schema, index) => (
           <script key={index} type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
         ))}

@@ -1,18 +1,18 @@
 'use client';
 
 import { SidebarAd } from '@/components/ads/ad-banner';
-import { adsConfig } from '@/lib/ads-config';
+import { adsConfig, adsenseConfig } from '@/lib/ads-config';
 
 /**
  * Tool-page ad layout:
- * - Desktop (≥1400px): sticky right rail (300×250+)
+ * - Desktop (≥1400px): sticky right rail (160×600 / responsive)
  * - Below that: a single in-content unit between header and tool UI
  *
- * Renders nothing when ads are disabled and not in test mode,
- * so pages don't show empty "Sponsored" chrome.
+ * Renders when ads are enabled, ensuring maximum viewability and revenue
+ * without shifting layout (zero CLS).
  */
 export function ToolSidebarAd() {
-  const hasSidebar = Boolean(adsConfig.slots.sidebar) || adsConfig.testMode;
+  const hasSidebar = adsenseConfig.enabled || Boolean(adsConfig.slots.sidebar) || adsConfig.testMode;
   const hasInContent = Boolean(adsConfig.slots.inContent) || adsConfig.testMode;
 
   if (!adsConfig.enabled && !adsConfig.testMode) {

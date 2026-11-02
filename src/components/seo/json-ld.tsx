@@ -68,6 +68,12 @@ function KnowledgeGraphSchema() {
           'PDF sanitization & redaction',
           'USCIS document preparation',
           'Mortgage bank statement merging',
+          'Small business document management',
+          'Zero-knowledge document workflows',
+          'FTC Safeguards Rule 16 CFR Part 314',
+          'NIST SP 800-88 sanitization',
+          'eSignature compliance and audit logs',
+          'PDF to CSV financial table extraction',
         ],
       },
       {

@@ -2,6 +2,7 @@
 
 import { Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { ResultScreenAd } from '@/components/ads/ad-banner';
 
 export function ToolResultBar({
   error,
@@ -27,20 +28,23 @@ export function ToolResultBar({
       ) : null}
       {summary ? <p className="text-sm font-medium text-foreground">{summary}</p> : null}
       {downloadUrl ? (
-        <Button asChild className="btn-premium h-11 rounded-xl">
-          <a
-            href={downloadUrl}
-            download={downloadName || true}
-            onClick={(event) => {
-              if (!onDownload) return;
-              event.preventDefault();
-              onDownload();
-            }}
-          >
-            <Download className="mr-2 h-4 w-4" />
-            Download
-          </a>
-        </Button>
+        <div className="space-y-4">
+          <Button asChild className="btn-premium h-11 rounded-xl">
+            <a
+              href={downloadUrl}
+              download={downloadName || true}
+              onClick={(event) => {
+                if (!onDownload) return;
+                event.preventDefault();
+                onDownload();
+              }}
+            >
+              <Download className="mr-2 h-4 w-4" />
+              Download
+            </a>
+          </Button>
+          <ResultScreenAd />
+        </div>
       ) : null}
     </div>
   );
