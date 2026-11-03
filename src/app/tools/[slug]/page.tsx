@@ -372,13 +372,6 @@ function getToolJsonLd(tool: ReturnType<typeof getToolBySlug>) {
         priceCurrency: 'USD',
         availability: 'https://schema.org/InStock',
       },
-      aggregateRating: {
-        '@type': 'AggregateRating',
-        ratingValue: '4.9',
-        ratingCount: '1240',
-        bestRating: '5',
-        worstRating: '1',
-      },
       provider: {
         '@id': `${absoluteUrl('/')}/#organization`,
       },
@@ -446,9 +439,14 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
     : comparisonPages.filter((comparison) => comparison.primaryToolSlug === tool.slug).slice(0, 3);
   const relatedPosts = getPostsForTool(tool.slug).slice(0, 3);
 
+  const hasActiveSidebarAd =
+    (adsenseConfig.enabled && Boolean(adsenseConfig.slots.sidebar)) ||
+    Boolean(adsConfig.slots.sidebar) ||
+    adsConfig.testMode;
+
   return (
     <>
-      <div id="main-content" className={adsConfig.enabled && (adsenseConfig.enabled || Boolean(adsConfig.slots.sidebar) || adsConfig.testMode) ? 'min-[1400px]:pr-[210px]' : undefined}>
+      <div id="main-content" className={hasActiveSidebarAd ? 'min-[1400px]:pr-[210px]' : undefined}>
         {schemas?.map((schema, index) => (
           <script key={index} type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
         ))}

@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import { cn } from '@/lib/utils';
-import { adsenseConfig, adsterraConfig } from '@/lib/ads-config';
+import { adsenseConfig, adsterraConfig, adsConfig } from '@/lib/ads-config';
 
 interface AdBannerProps {
   slot?: string;
@@ -25,6 +25,8 @@ function AdLabel() {
 /**
  * Official, policy-compliant Google AdSense Banner Unit.
  * Ensures adsbygoogle push is called safely once on client mount with Zero CLS.
+ * Suppressed when slot is unconfigured and testMode is false, preventing empty ad boxes
+ * from triggering Google AdSense "Low Value Content / Under Construction / Valuable Inventory" rejections.
  */
 export function GoogleAdSenseUnit({
   slot,
@@ -51,7 +53,7 @@ export function GoogleAdSenseUnit({
     }
   }, []);
 
-  if (!adsenseConfig.enabled) return null;
+  if (!adsenseConfig.enabled || (!slot && !adsConfig.testMode)) return null;
 
   return (
     <div className={cn('overflow-hidden flex items-center justify-center w-full min-h-[90px]', className)}>
@@ -182,7 +184,7 @@ export function AdBanner({
   className,
   labeled = true,
 }: AdBannerProps) {
-  if (adsenseConfig.enabled) {
+  if (adsenseConfig.enabled && (slot || adsConfig.testMode)) {
     const adsenseFormat = format === 'native' ? 'auto' : format;
     return (
       <div className={cn('w-full flex flex-col items-center justify-center', className)}>
@@ -251,7 +253,8 @@ export function AdBanner({
  * Top header leaderboard (728x90 desktop / 320x50 mobile).
  */
 export function HeaderAd({ className }: { className?: string } = {}) {
-  if (adsenseConfig.enabled) {
+  const slot = adsenseConfig.slots.header;
+  if (adsenseConfig.enabled && (slot || adsConfig.testMode)) {
     return (
       <div
         className={cn('mx-auto w-full max-w-5xl px-4 py-3 lg:px-8 flex flex-col items-center', className)}
@@ -260,7 +263,7 @@ export function HeaderAd({ className }: { className?: string } = {}) {
       >
         <AdLabel />
         <GoogleAdSenseUnit
-          slot={adsenseConfig.slots.header}
+          slot={slot}
           format="horizontal"
           style={{ minHeight: 90 }}
         />
@@ -268,7 +271,7 @@ export function HeaderAd({ className }: { className?: string } = {}) {
     );
   }
 
-  if (adsterraConfig.enabled) {
+  if (adsterraConfig.enabled && (adsterraConfig.slots.banner728x90.key || adsterraConfig.slots.banner320x50.key)) {
     return (
       <div
         className={cn('mx-auto w-full max-w-5xl px-4 py-3 lg:px-8 flex flex-col items-center', className)}
@@ -303,7 +306,8 @@ export function HeaderAd({ className }: { className?: string } = {}) {
  * High-converting Result / Post-Processing Ad (300x250 desktop / 320x50 mobile).
  */
 export function ResultScreenAd({ className }: { className?: string } = {}) {
-  if (adsenseConfig.enabled) {
+  const slot = adsenseConfig.slots.result;
+  if (adsenseConfig.enabled && (slot || adsConfig.testMode)) {
     return (
       <div
         className={cn('w-full flex flex-col items-center justify-center pt-4 mt-2 border-t border-border/40', className)}
@@ -312,7 +316,7 @@ export function ResultScreenAd({ className }: { className?: string } = {}) {
       >
         <AdLabel />
         <GoogleAdSenseUnit
-          slot={adsenseConfig.slots.result}
+          slot={slot}
           format="rectangle"
           style={{ minHeight: 250 }}
         />
@@ -320,7 +324,7 @@ export function ResultScreenAd({ className }: { className?: string } = {}) {
     );
   }
 
-  if (adsterraConfig.enabled) {
+  if (adsterraConfig.enabled && (adsterraConfig.slots.banner300x250.key || adsterraConfig.slots.banner320x50.key)) {
     return (
       <div
         className={cn('w-full flex flex-col items-center justify-center pt-4 mt-2 border-t border-border/40', className)}
@@ -355,12 +359,13 @@ export function ResultScreenAd({ className }: { className?: string } = {}) {
  * Desktop sidebar skyscraper (160x600).
  */
 export function SidebarAd({ className }: { className?: string } = {}) {
-  if (adsenseConfig.enabled) {
+  const slot = adsenseConfig.slots.sidebar;
+  if (adsenseConfig.enabled && (slot || adsConfig.testMode)) {
     return (
       <div className={cn('w-full flex flex-col items-center justify-center', className)} aria-label="Advertisement" role="complementary">
         <AdLabel />
         <GoogleAdSenseUnit
-          slot={adsenseConfig.slots.sidebar}
+          slot={slot}
           format="vertical"
           style={{ minHeight: 600, width: 160 }}
         />
@@ -368,7 +373,7 @@ export function SidebarAd({ className }: { className?: string } = {}) {
     );
   }
 
-  if (adsterraConfig.enabled) {
+  if (adsterraConfig.enabled && adsterraConfig.slots.banner160x600.key) {
     return (
       <div className={cn('w-full flex flex-col items-center justify-center', className)} aria-label="Advertisement" role="complementary">
         <AdLabel />
@@ -388,7 +393,8 @@ export function SidebarAd({ className }: { className?: string } = {}) {
  * High-performing In-Content 300x250 Medium Rectangle (ideal for articles and tool guides).
  */
 export function InContentAd({ className }: { className?: string } = {}) {
-  if (adsenseConfig.enabled) {
+  const slot = adsenseConfig.slots.inContent;
+  if (adsenseConfig.enabled && (slot || adsConfig.testMode)) {
     return (
       <div
         className={cn('my-8 w-full flex flex-col items-center justify-center', className)}
@@ -397,7 +403,7 @@ export function InContentAd({ className }: { className?: string } = {}) {
       >
         <AdLabel />
         <GoogleAdSenseUnit
-          slot={adsenseConfig.slots.inContent}
+          slot={slot}
           format="rectangle"
           style={{ minHeight: 250 }}
         />
@@ -405,7 +411,7 @@ export function InContentAd({ className }: { className?: string } = {}) {
     );
   }
 
-  if (adsterraConfig.enabled) {
+  if (adsterraConfig.enabled && adsterraConfig.slots.banner300x250.key) {
     return (
       <div
         className={cn('my-8 w-full flex flex-col items-center justify-center', className)}
@@ -429,7 +435,8 @@ export function InContentAd({ className }: { className?: string } = {}) {
  * Footer leaderboard (728x90 desktop / 320x50 mobile).
  */
 export function FooterAd({ className }: { className?: string } = {}) {
-  if (adsenseConfig.enabled) {
+  const slot = adsenseConfig.slots.footer;
+  if (adsenseConfig.enabled && (slot || adsConfig.testMode)) {
     return (
       <div
         className={cn('mx-auto w-full max-w-5xl px-4 py-6 lg:px-8 flex flex-col items-center', className)}
@@ -438,7 +445,7 @@ export function FooterAd({ className }: { className?: string } = {}) {
       >
         <AdLabel />
         <GoogleAdSenseUnit
-          slot={adsenseConfig.slots.footer}
+          slot={slot}
           format="horizontal"
           style={{ minHeight: 90 }}
         />
@@ -446,7 +453,7 @@ export function FooterAd({ className }: { className?: string } = {}) {
     );
   }
 
-  if (adsterraConfig.enabled) {
+  if (adsterraConfig.enabled && (adsterraConfig.slots.banner728x90.key || adsterraConfig.slots.banner320x50.key)) {
     return (
       <div
         className={cn('mx-auto w-full max-w-5xl px-4 py-6 lg:px-8 flex flex-col items-center', className)}
@@ -454,20 +461,24 @@ export function FooterAd({ className }: { className?: string } = {}) {
         role="complementary"
       >
         <AdLabel />
-        <div className="hidden md:flex justify-center w-full">
-          <AdsterraIframe
-            adKey={adsterraConfig.slots.banner728x90.key}
-            width={728}
-            height={90}
-          />
-        </div>
-        <div className="flex md:hidden justify-center w-full">
-          <AdsterraIframe
-            adKey={adsterraConfig.slots.banner320x50.key}
-            width={320}
-            height={50}
-          />
-        </div>
+        {adsterraConfig.slots.banner728x90.key && (
+          <div className="hidden md:flex justify-center w-full">
+            <AdsterraIframe
+              adKey={adsterraConfig.slots.banner728x90.key}
+              width={728}
+              height={90}
+            />
+          </div>
+        )}
+        {adsterraConfig.slots.banner320x50.key && (
+          <div className="flex md:hidden justify-center w-full">
+            <AdsterraIframe
+              adKey={adsterraConfig.slots.banner320x50.key}
+              width={320}
+              height={50}
+            />
+          </div>
+        )}
       </div>
     );
   }
@@ -479,16 +490,17 @@ export function FooterAd({ className }: { className?: string } = {}) {
  * Native banner ad (responsive recommendation grid).
  */
 export function NativeAd({ className }: { className?: string } = {}) {
-  if (adsenseConfig.enabled) {
+  const slot = adsenseConfig.slots.inContent;
+  if (adsenseConfig.enabled && (slot || adsConfig.testMode)) {
     return (
       <div className={cn('my-6 w-full flex flex-col items-center justify-center overflow-hidden', className)} aria-label="Advertisement" role="complementary">
         <AdLabel />
-        <GoogleAdSenseUnit format="auto" style={{ minHeight: 160 }} />
+        <GoogleAdSenseUnit slot={slot} format="auto" style={{ minHeight: 160 }} />
       </div>
     );
   }
 
-  if (adsterraConfig.enabled) {
+  if (adsterraConfig.enabled && adsterraConfig.slots.nativeBanner.containerId) {
     return <AdsterraNativeBanner className={className} />;
   }
 

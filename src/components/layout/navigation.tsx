@@ -339,6 +339,10 @@ export function Navigation() {
 
             {/* Right Actions */}
             <div className="flex flex-shrink-0 items-center gap-2 xl:gap-3">
+              <Link href="/about" className="hidden xl:inline-flex text-sm font-medium text-muted-foreground hover:text-foreground transition-colors px-2.5 py-2">
+                About
+              </Link>
+
               <Link href="/blog" className="hidden lg:inline-flex text-sm font-medium text-muted-foreground hover:text-foreground transition-colors px-3 py-2">
                 Blog
               </Link>

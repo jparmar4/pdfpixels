@@ -12,14 +12,12 @@ import { adsConfig, adsenseConfig } from '@/lib/ads-config';
  * without shifting layout (zero CLS).
  */
 export function ToolSidebarAd() {
-  const hasSidebar = adsenseConfig.enabled || Boolean(adsConfig.slots.sidebar) || adsConfig.testMode;
-  const hasInContent = Boolean(adsConfig.slots.inContent) || adsConfig.testMode;
+  const hasSidebar =
+    (adsenseConfig.enabled && Boolean(adsenseConfig.slots.sidebar)) ||
+    Boolean(adsConfig.slots.sidebar) ||
+    adsConfig.testMode;
 
-  if (!adsConfig.enabled && !adsConfig.testMode) {
-    return null;
-  }
-
-  if (!hasSidebar && !hasInContent) {
+  if (!hasSidebar) {
     return null;
   }
 

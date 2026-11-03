@@ -62,7 +62,21 @@ export const adsterraConfig = {
 };
 
 export function hasConfiguredAdSlot(): boolean {
-  return adsenseConfig.enabled || adsterraConfig.enabled;
+  const hasAdSenseSlot = adsenseConfig.enabled && Boolean(
+    adsenseConfig.slots.header ||
+    adsenseConfig.slots.sidebar ||
+    adsenseConfig.slots.inContent ||
+    adsenseConfig.slots.footer ||
+    adsenseConfig.slots.result
+  );
+  const hasAdsterraSlot = adsterraConfig.enabled && Boolean(
+    adsterraConfig.slots.banner728x90.key ||
+    adsterraConfig.slots.banner160x600.key ||
+    adsterraConfig.slots.banner300x250.key ||
+    adsterraConfig.slots.banner320x50.key ||
+    adsterraConfig.slots.nativeBanner.containerId
+  );
+  return hasAdSenseSlot || hasAdsterraSlot || adsConfig.testMode;
 }
 
 /**
