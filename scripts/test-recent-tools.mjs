@@ -380,6 +380,78 @@ assert.equal(webpJson.success, true);
 assert.equal(webpJson.mimeType, 'image/webp');
 assert.ok(webpJson.imageUrl.startsWith('data:image/webp;base64,'));
 
+// Image Processing suite: verify resize, crop, rotate, flip, compress
+const imgProcessResponse = await callAny('image/process', jpgBuffer, 'test.jpg', 'image/jpeg', {
+  width: '32',
+  height: '32',
+  rotate: '90',
+  flip: 'true',
+  format: 'png',
+  quality: '95',
+});
+assert.equal(imgProcessResponse.status, 200);
+const imgProcessJson = await imgProcessResponse.json();
+assert.equal(imgProcessJson.success, true);
+assert.equal(imgProcessJson.format, 'png');
+
+// AI Tools Suite: verify remove-background, blur-background, enhance, beautify, retouch, upscale
+// Portrait test image with light background, skin face circle, and shirt
+const aiPortraitBuffer = await sharp({
+  create: { width: 120, height: 160, channels: 3, background: { r: 235, g: 238, b: 242 } }
+})
+  .composite([
+    // Face region (centered at x=60, y=45)
+    {
+      input: await sharp({
+        create: { width: 50, height: 50, channels: 3, background: { r: 212, g: 172, b: 140 } }
+      }).png().toBuffer(),
+      left: 35,
+      top: 25,
+    },
+    // Shirt region
+    {
+      input: await sharp({
+        create: { width: 90, height: 75, channels: 3, background: { r: 240, g: 195, b: 25 } }
+      }).png().toBuffer(),
+      left: 15,
+      top: 80,
+    },
+  ])
+  .jpeg()
+  .toBuffer();
+
+for (const tool of ['remove-background', 'blur-background', 'enhance-image', 'beautify', 'retouch', 'upscale']) {
+  const aiResp = await callAny('ai', aiPortraitBuffer, 'portrait.jpg', 'image/jpeg', { tool, mode: 'high' });
+  assert.equal(aiResp.status, 200, `${tool} status: ${aiResp.status}`);
+  const aiJson = await aiResp.json();
+  assert.equal(aiJson.success, true, `${tool} success`);
+  assert.ok(aiJson.imageUrl?.startsWith('data:image/png;base64,'), `${tool} data url`);
+
+  if (tool === 'remove-background') {
+    // Decode result to verify face is preserved and background removed
+    const base64Data = aiJson.imageUrl.split(',')[1];
+    const decoded = Buffer.from(base64Data, 'base64');
+    const { data: resultRaw, info: resInfo } = await sharp(decoded).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+    // Top-left corner (background) must be transparent
+    const bgAlpha = resultRaw[3];
+    assert.ok(bgAlpha < 60, `remove-background corner alpha should be transparent, got ${bgAlpha}`);
+    // Center face area (x=60, y=45) must be preserved
+    const facePixelIdx = (45 * resInfo.width + 60) * 4;
+    const faceAlpha = resultRaw[facePixelIdx + 3];
+    assert.ok(faceAlpha > 200, `remove-background face alpha must be preserved, got ${faceAlpha}`);
+  }
+}
+
+// Test remove-background in balanced mode as well
+const bgBalancedResp = await callAny('ai', aiPortraitBuffer, 'portrait.jpg', 'image/jpeg', { tool: 'remove-background', mode: 'balanced' });
+assert.equal(bgBalancedResp.status, 200);
+const bgBalancedJson = await bgBalancedResp.json();
+assert.equal(bgBalancedJson.success, true);
+const bData = Buffer.from(bgBalancedJson.imageUrl.split(',')[1], 'base64');
+const { data: bRaw, info: bInfo } = await sharp(bData).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+assert.ok(bRaw[3] < 60, `balanced mode corner alpha should be transparent, got ${bRaw[3]}`);
+assert.ok(bRaw[(45 * bInfo.width + 60) * 4 + 3] > 200, `balanced mode face must be preserved`);
+
 // Verify tool aliases, redirects, and intelligent search ranking
 const { allTools, getToolBySlug, getToolById, searchTools } = await import('../src/lib/tools-data.ts');
 assert.ok(allTools.length >= 108, 'at least 108 tools registered');

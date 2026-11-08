@@ -52,6 +52,12 @@ const run = () => {
     path.join(standaloneDir, 'public'),
   );
 
+  // Copy models folder to standalone for production AI runtime
+  const modelsDir = path.join(process.cwd(), 'models');
+  if (fs.existsSync(modelsDir)) {
+    copyDir(modelsDir, path.join(standaloneDir, 'models'));
+  }
+
   // Copy static folder to standalone for production runtime
   const standaloneStaticDir = path.join(standaloneDir, '.next', 'static');
   if (!fs.existsSync(standaloneStaticDir)) fs.mkdirSync(standaloneStaticDir, { recursive: true });

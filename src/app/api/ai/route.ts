@@ -68,7 +68,7 @@ export const maxDuration = 60;
 export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
-    const file = formData.get('image') as File | null;
+    const file = (formData.get('image') || formData.get('file')) as File | null;
     const tool = (formData.get('tool') as string) || 'enhance-image';
     const modeRaw = (formData.get('mode') as string) || 'balanced';
     const mode: QualityMode =
@@ -121,14 +121,14 @@ export async function POST(request: NextRequest) {
 
     switch (tool) {
       case 'remove-background': {
-        const seg = await segmentForeground(sharp, input);
+        const seg = await segmentForeground(sharp, input, mode);
         out = await applyTransparentBackground(sharp, seg.image, seg.softFgMask);
-        engine = `${seg.engine}:${mode}`;
+        engine = seg.engine;
         break;
       }
 
       case 'blur-background': {
-        const seg = await segmentForeground(sharp, input);
+        const seg = await segmentForeground(sharp, input, mode);
         // Optional client-provided blur strength 1–100 (preferred over coarse mode)
         const strengthRaw = parseInt((formData.get('blurStrength') as string) || '', 10);
         let sigma: number;

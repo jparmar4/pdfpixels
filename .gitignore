@@ -68,3 +68,5 @@ server.log
 /compress-headers.txt
 /remote-server.js
 *.traineddata
+# Large ONNX segmentation models (>100MB exceeds GitHub limit; u2netp is 4.5MB and committed)
+/models/segmentation/rmbg-*.onnx
