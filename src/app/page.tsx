@@ -1,20 +1,11 @@
 import { HomePageSchemas } from '@/components/seo/json-ld';
 import { ToolsSection } from '@/components/home/tools-section';
 import { StatsBanner } from '@/components/home/stats-banner';
-import { AnswerEngineSection } from '@/components/home/answer-engine-section';
-import { AIContentSection } from '@/components/seo/ai-content';
-// Static import: the FAQ is a server component using native <details>, so its
-// Q&A text lands in the served HTML for answer engines (AEO). Keeping it
-// dynamic would defer it past first paint and omit the text from the document.
 import { FAQSection } from '@/components/home/faq-section';
-
 import { HowItWorks } from '@/components/home/how-it-works';
-import { TestimonialsSection } from '@/components/home/testimonials-section';
 import { FeaturesSection } from '@/components/home/features-section';
 import { GuidesSection } from '@/components/home/guides-section';
-import { WorkflowGuides } from '@/components/home/workflow-guides';
-import { CTASection } from '@/components/home/cta-section';
-import { InContentAd, FooterAd, NativeAd } from '@/components/ads/ad-banner';
+import { InContentAd, FooterAd } from '@/components/ads/ad-banner';
 
 import { Metadata } from 'next';
 import { siteConfig, seoConfig } from '@/lib/seo-config';
@@ -25,8 +16,6 @@ export const metadata: Metadata = {
   description: seoConfig.description,
   alternates: {
     canonical: '/',
-    // Locale cluster: x-default is the global homepage, geo hubs are the
-    // locale-targeted equivalents. Required for regional ranking signals.
     languages: getGeoLanguageAlternates(),
   },
   openGraph: {
@@ -46,23 +35,16 @@ export const metadata: Metadata = {
 export default function Home() {
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      
       <main id="main-content" className="flex-1">
         <HomePageSchemas />
         <ToolsSection />
         <StatsBanner />
-        <WorkflowGuides />
         <InContentAd className="my-8" />
         <HowItWorks />
-        <AnswerEngineSection />
-        <AIContentSection />
-        <TestimonialsSection />
         <FeaturesSection />
         <GuidesSection />
-        <NativeAd className="my-10 max-w-5xl mx-auto px-4" />
         <FAQSection />
         <FooterAd className="my-8" />
-        <CTASection />
       </main>
     </div>
   );

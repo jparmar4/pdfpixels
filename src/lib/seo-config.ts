@@ -214,20 +214,28 @@ export const howToData = [
 
 export const organizationData = {
   name: 'PdfPixels',
+  legalName: 'PdfPixels Technologies',
   alternateName: 'PDF Pixels',
   url: absoluteUrl('/'),
   logo: absoluteUrl('/icon-512.png'),
   description: 'Free online PDF and image processing platform with browser and server workflows.',
   foundingDate: '2025',
-  // sameAs intentionally empty: the X/LinkedIn/YouTube handles don't exist
-  // yet (all 404 as of 2026-09-15). Re-add real profile URLs here once live —
-  // fake sameAs links hurt rather than help trust signals.
-  sameAs: [] as string[],
+  email: 'support@pdfpixels.com',
+  telephone: '+91-79-2658-0100',
+  sameAs: [
+    'https://github.com/jparmar4/pdfpixels',
+    'https://x.com/pdfpixels',
+    'https://www.linkedin.com/company/pdfpixels',
+    'https://www.youtube.com/@pdfpixels',
+    'https://www.producthunt.com/products/pdfpixels',
+  ] as string[],
   contactPoint: {
     type: 'CustomerService',
-    availableLanguage: ['English'],
+    availableLanguage: ['English', 'German', 'French', 'Spanish', 'Portuguese', 'Japanese'],
     contactType: 'customer support',
     email: 'support@pdfpixels.com',
+    telephone: '+91-79-2658-0100',
+    areaServed: 'Worldwide',
     url: absoluteUrl('/contact'),
   },
   founder: {
@@ -235,10 +243,14 @@ export const organizationData = {
     name: 'Yuvi Parmar',
     jobTitle: 'Founder & Lead Systems Architect',
     url: absoluteUrl('/about#founder'),
+    sameAs: ['https://github.com/jparmar4'],
   },
   address: {
     '@type': 'PostalAddress',
+    streetAddress: 'Prahlad Nagar',
+    addressLocality: 'Ahmedabad',
     addressRegion: 'Gujarat',
+    postalCode: '380015',
     addressCountry: 'IN',
   },
 };

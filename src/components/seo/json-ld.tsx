@@ -15,6 +15,7 @@ function KnowledgeGraphSchema() {
         '@type': 'Organization',
         '@id': organizationId(),
         name: organizationData.name,
+        legalName: organizationData.legalName,
         alternateName: organizationData.alternateName,
         url: organizationData.url,
         logo: {
@@ -23,13 +24,18 @@ function KnowledgeGraphSchema() {
           width: 512,
           height: 512,
         },
+        image: organizationData.logo,
         description: organizationData.description,
         foundingDate: organizationData.foundingDate,
+        email: organizationData.email,
+        telephone: organizationData.telephone,
         sameAs: organizationData.sameAs,
         contactPoint: {
           '@type': 'ContactPoint',
           contactType: organizationData.contactPoint.contactType,
           email: organizationData.contactPoint.email,
+          telephone: organizationData.contactPoint.telephone,
+          areaServed: organizationData.contactPoint.areaServed,
           url: organizationData.contactPoint.url,
           availableLanguage: organizationData.contactPoint.availableLanguage,
         },
@@ -124,10 +130,8 @@ function KnowledgeGraphSchema() {
   return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />;
 }
 
-function FAQSchema() {
-  // Single source of truth: faqData is also what FAQSection renders, so the
-  // schema always matches visible HTML (rich-result eligibility requirement).
-  const standardQuestions = faqData.map((faq) => ({
+export function HomePageSchemas() {
+  const standardQuestions = faqData.slice(0, 6).map((faq) => ({
     '@type': 'Question',
     name: faq.question,
     acceptedAnswer: {
@@ -138,120 +142,90 @@ function FAQSchema() {
 
   const schema = {
     '@context': 'https://schema.org',
-    '@type': 'FAQPage',
-    mainEntity: standardQuestions,
-  };
-
-  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema).replace(/</g, '\\u003c') }} />;
-}
-
-function HowToSchemas() {
-  return (
-    <>
-      {howToData.map((howTo, index) => {
-        const schema = {
-          '@context': 'https://schema.org',
-          '@type': 'HowTo',
-          name: howTo.name,
-          description: howTo.description,
-          totalTime: howTo.estimatedTime,
-          tool: {
-            '@type': 'HowToTool',
-            name: 'PdfPixels',
-          },
-          step: howTo.steps.map((step) => ({
-            '@type': 'HowToStep',
-            position: step.position,
-            name: step.name,
-            text: step.text,
-          })),
-        };
-
-        return <script key={index} type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />;
-      })}
-    </>
-  );
-}
-
-function HomepageCollectionSchema() {
-  const schema = {
-    '@context': 'https://schema.org',
-    '@type': 'CollectionPage',
-    '@id': `${absoluteUrl('/')}/#homepage`,
-    name: 'PdfPixels home',
-    url: absoluteUrl('/'),
-    description: 'Homepage for PdfPixels, a free online platform for PDF and image tools.',
-    isPartOf: {
-      '@id': websiteId(),
-    },
-    primaryImageOfPage: {
-      '@type': 'ImageObject',
-      url: DEFAULT_OG_IMAGE_URL,
-      width: 1200,
-      height: 630,
-    },
-    mainEntity: {
-      '@type': 'ItemList',
-      itemListElement: featuredTools.map((tool, index) => ({
-        '@type': 'ListItem',
-        position: index + 1,
-        url: absoluteUrl(`/tools/${tool.slug}`),
-        name: tool.name,
-        description: tool.description,
-      })),
-    },
-  };
-
-  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />;
-}
-
-function SpeakableSchema() {
-  const schema = {
-    '@context': 'https://schema.org',
-    '@type': 'WebPage',
-    name: 'PdfPixels - Free online PDF and image tools',
-    url: absoluteUrl('/'),
-    speakable: {
-      '@type': 'SpeakableSpecification',
-      cssSelector: ['#home-hero-title', '#home-hero-summary', '#faq-section h2'],
-    },
-  };
-
-  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />;
-}
-
-function ServiceSchema() {
-  // Full offer catalog generated from the tool registry so the homepage
-  // entity graph stays in sync with every tool (previously hardcoded to 5).
-  const schema = {
-    '@context': 'https://schema.org',
-    '@type': 'Service',
-    serviceType: 'Online PDF and image processing',
-    provider: {
-      '@id': organizationId(),
-    },
-    areaServed: 'Worldwide',
-    hasOfferCatalog: {
-      '@type': 'OfferCatalog',
-      name: 'PdfPixels tools',
-      itemListElement: toolCategories.map((category) => ({
-        '@type': 'OfferCatalog',
-        name: category.name,
-        url: absoluteUrl(`/tools/category/${category.id}`),
-        itemListElement: category.tools.map((tool) => ({
-          '@type': 'Offer',
-          itemOffered: {
-            '@type': 'Service',
+    '@graph': [
+      {
+        '@type': 'CollectionPage',
+        '@id': `${absoluteUrl('/')}/#homepage`,
+        name: 'PdfPixels - Free Online PDF & Image Tools',
+        url: absoluteUrl('/'),
+        description: 'Homepage for PdfPixels, a free online platform for PDF and image tools.',
+        isPartOf: {
+          '@id': websiteId(),
+        },
+        about: {
+          '@id': organizationId(),
+        },
+        primaryImageOfPage: {
+          '@type': 'ImageObject',
+          url: DEFAULT_OG_IMAGE_URL,
+          width: 1200,
+          height: 630,
+        },
+        speakable: {
+          '@type': 'SpeakableSpecification',
+          cssSelector: ['#home-hero-title', '#home-hero-summary', '#faq-section h2'],
+        },
+        mainEntity: {
+          '@type': 'ItemList',
+          itemListElement: featuredTools.map((tool, index) => ({
+            '@type': 'ListItem',
+            position: index + 1,
+            url: absoluteUrl(`/tools/${tool.slug}`),
             name: tool.name,
             description: tool.description,
-            url: absoluteUrl(`/tools/${tool.slug}`),
-          },
+          })),
+        },
+      },
+      {
+        '@type': 'FAQPage',
+        '@id': `${absoluteUrl('/')}/#faq`,
+        mainEntity: standardQuestions,
+      },
+      ...howToData.map((howTo) => ({
+        '@type': 'HowTo',
+        name: howTo.name,
+        description: howTo.description,
+        totalTime: howTo.estimatedTime,
+        tool: {
+          '@type': 'HowToTool',
+          name: 'PdfPixels',
+        },
+        step: howTo.steps.map((step) => ({
+          '@type': 'HowToStep',
+          position: step.position,
+          name: step.name,
+          text: step.text,
         })),
       })),
-    },
+      {
+        '@type': 'Service',
+        '@id': `${absoluteUrl('/')}/#service`,
+        serviceType: 'Online PDF and image processing',
+        provider: {
+          '@id': organizationId(),
+        },
+        areaServed: 'Worldwide',
+        hasOfferCatalog: {
+          '@type': 'OfferCatalog',
+          name: 'PdfPixels Tool Categories',
+          itemListElement: toolCategories.map((category) => ({
+            '@type': 'OfferCatalog',
+            name: category.name,
+            description: category.description,
+            numberOfItems: category.tools.length,
+            url: absoluteUrl(`/tools/category/${category.id}`),
+          })),
+        },
+      },
+    ],
   };
 
-  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />;
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema).replace(/</g, '\\u003c') }}
+    />
+  );
 }
 
 export function APISchema() {
@@ -271,21 +245,7 @@ export function APISchema() {
   return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />;
 }
 
-// AEOAnswerSchema has been merged into FAQSchema
-
 export function JsonLdSchemas() {
   return <KnowledgeGraphSchema />;
-}
-
-export function HomePageSchemas() {
-  return (
-    <>
-      <HomepageCollectionSchema />
-      <FAQSchema />
-      <HowToSchemas />
-      <ServiceSchema />
-      <SpeakableSchema />
-    </>
-  );
 }
 

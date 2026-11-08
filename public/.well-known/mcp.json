@@ -1,0 +1,46 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/mcp-server-card/v1.json",
+  "protocolVersion": "2025-06-18",
+  "name": "pdfpixels-mcp-server",
+  "title": "PdfPixels PDF & Image Tools MCP Server",
+  "version": "1.0.0",
+  "description": "Model Context Protocol (MCP) server for PdfPixels — discover, search, and invoke 100+ free online PDF and image processing tools (compress, merge, split, convert, OCR, sign, redact, resize).",
+  "endpoint": "https://www.pdfpixels.com/api/mcp",
+  "url": "https://www.pdfpixels.com/api/mcp",
+  "homepage": "https://www.pdfpixels.com",
+  "documentationUrl": "https://www.pdfpixels.com/api-docs",
+  "iconUrl": "https://www.pdfpixels.com/icon-512.png",
+  "serverInfo": {
+    "name": "pdfpixels-mcp-server",
+    "title": "PdfPixels PDF & Image Tools MCP Server",
+    "version": "1.0.0",
+    "websiteUrl": "https://www.pdfpixels.com"
+  },
+  "provider": {
+    "name": "PdfPixels",
+    "url": "https://www.pdfpixels.com",
+    "contactEmail": "support@pdfpixels.com"
+  },
+  "transport": {
+    "type": "streamable-http",
+    "endpoint": "https://www.pdfpixels.com/api/mcp",
+    "url": "https://www.pdfpixels.com/api/mcp"
+  },
+  "authentication": {
+    "required": false,
+    "type": "none",
+    "schemes": []
+  },
+  "capabilities": {
+    "tools": {
+      "listChanged": false
+    },
+    "resources": {
+      "subscribe": false,
+      "listChanged": false
+    },
+    "prompts": {
+      "listChanged": false
+    }
+  }
+}

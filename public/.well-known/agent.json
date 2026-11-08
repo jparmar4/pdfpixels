@@ -1,0 +1,38 @@
+{
+  "name": "PdfPixels Document & Image Agent",
+  "description": "Free online PDF and image processing platform offering 100+ tools for compression, merging, splitting, conversion, OCR, digital signing, and redaction.",
+  "url": "https://www.pdfpixels.com",
+  "version": "1.0.0",
+  "documentationUrl": "https://www.pdfpixels.com/api-docs",
+  "provider": {
+    "organization": "PdfPixels",
+    "url": "https://www.pdfpixels.com"
+  },
+  "capabilities": {
+    "streaming": false,
+    "pushNotifications": false,
+    "stateTransitionHistory": false
+  },
+  "authentication": {
+    "schemes": ["none"]
+  },
+  "defaultInputModes": ["text/plain", "application/json"],
+  "defaultOutputModes": ["text/markdown", "application/json"],
+  "skills": [
+    {
+      "id": "pdf-tools-discovery",
+      "name": "PDF & Image Tool Discovery",
+      "description": "Search and recommend free online PDF and image processing tools on PdfPixels.",
+      "tags": ["pdf", "image", "compress", "merge", "ocr", "convert", "sign"],
+      "examples": [
+        "Compress a PDF under 2MB for USCIS",
+        "Merge multiple PDF bank statements in the browser",
+        "Convert HEIC photos to JPG"
+      ]
+    }
+  ],
+  "mcp": {
+    "serverCardUrl": "https://www.pdfpixels.com/.well-known/mcp/server-card.json",
+    "endpoint": "https://www.pdfpixels.com/api/mcp"
+  }
+}

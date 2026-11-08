@@ -124,6 +124,21 @@ const nextConfig: NextConfig = {
             key: 'Content-Security-Policy',
             value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' https:; worker-src 'self' blob:; style-src 'self' 'unsafe-inline'; img-src 'self' data: https: blob:; font-src 'self' data:; connect-src 'self' https: blob: data:; frame-src 'self' https: data: blob:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self';",
           },
+          // Content Signals for AI crawlers & agents (https://contentsignals.org/)
+          {
+            key: 'Content-Signal',
+            value: 'search=yes, ai-input=yes, ai-train=no',
+          },
+          // Vary by Accept so CDNs cache HTML and Markdown representations separately
+          {
+            key: 'Vary',
+            value: 'Accept',
+          },
+          // Agent & API discovery links (RFC 8288 / RFC 9727 / SEP-1649)
+          {
+            key: 'Link',
+            value: '</.well-known/api-catalog>; rel="api-catalog"; type="application/linkset+json", </.well-known/mcp/server-card.json>; rel="mcp-server"; type="application/json", </llms.txt>; rel="describedby"; type="text/plain", </openapi.json>; rel="service-desc"; type="application/openapi+json"',
+          },
           // X-Powered-By is already disabled via poweredByHeader: false
         ],
       },

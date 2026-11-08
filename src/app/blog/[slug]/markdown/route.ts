@@ -43,10 +43,14 @@ export async function GET(
   lines.push(`All guides: ${SITE_URL}/blog — Full machine reference: ${SITE_URL}/llms-full.txt`);
   lines.push('');
 
-  return new NextResponse(lines.join('\n'), {
+  const body = lines.join('\n');
+  return new NextResponse(body, {
     status: 200,
     headers: {
       'Content-Type': 'text/markdown; charset=utf-8',
+      Vary: 'Accept',
+      'Content-Signal': 'search=yes, ai-input=yes, ai-train=no',
+      'X-Markdown-Tokens': String(Math.ceil(body.length / 4)),
       'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=604800',
       Link: `<${url}>; rel="canonical"`,
     },

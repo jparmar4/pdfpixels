@@ -91,7 +91,7 @@ export default function ContactPage() {
       icon: Globe,
       title: 'Operations & Transparency',
       description: 'Engineered in Gujarat, India, delivering web-native document tools worldwide.',
-      value: 'Gujarat, India (Global)',
+      value: '+91-79-2658-0100 • Ahmedabad, Gujarat, India',
       href: '/about',
       gradient: 'from-amber-500 to-orange-600',
     },
@@ -252,7 +252,7 @@ export default function ContactPage() {
                       </p>
                     </div>
 
-                    <form onSubmit={handleSubmit} className="mt-8 space-y-6">
+                    <form onSubmit={handleSubmit} toolname="contact_pdfpixels_support" tooldescription="Send a support or business inquiry to PdfPixels" className="mt-8 space-y-6">
                       <div className="grid gap-5 sm:grid-cols-2">
                         <div className="space-y-2">
                           <Label htmlFor="contact-name" className="text-sm font-semibold">

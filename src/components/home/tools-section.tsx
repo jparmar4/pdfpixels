@@ -1,9 +1,8 @@
 'use client';
 
-import { useDeferredValue, useState, useMemo, Suspense } from 'react';
+import { useDeferredValue, useEffect, useState, useMemo } from 'react';
 import { ArrowRight, ArrowUpRight, Clock, FileImage, Files, Minimize2, Search, ShieldCheck, Sparkles, Star, Wrench, X, Zap } from 'lucide-react';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
 import { CategorySection } from '@/components/layout/category-section';
 import { allTools, allPdfTools, allImageTools, toolCategories, ToolCategory, searchTools, searchPdfTools } from '@/lib/tools-data';
 import { HeaderAd } from '@/components/ads/ad-banner';
@@ -83,7 +82,13 @@ function ToolsHeader({
             )}
           </div>
 
-          <div
+          <form
+            action="/tools"
+            method="get"
+            role="search"
+            toolname="search_pdfpixels_tools"
+            tooldescription="Search free online PDF and image tools on PdfPixels by keyword, file format, or workflow task"
+            onSubmit={(e) => e.preventDefault()}
             className="hero-rise relative max-w-2xl mx-auto group z-20"
             style={{ animationDelay: '0.08s' }}
           >
@@ -92,6 +97,7 @@ function ToolsHeader({
             </div>
             <input
               type="search"
+              name="q"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder={`Search ${allTools.length}+ tools — try “compress pdf”`}
@@ -103,6 +109,7 @@ function ToolsHeader({
             />
             {search && (
               <button
+                type="button"
                 onClick={() => setSearch('')}
                 className="absolute inset-y-0 right-0 pr-5 flex items-center text-muted-foreground hover:text-foreground"
                 aria-label="Clear search"
@@ -110,7 +117,7 @@ function ToolsHeader({
                 <X className="h-5 w-5" />
               </button>
             )}
-          </div>
+          </form>
 
           <div className="hero-rise" style={{ animationDelay: '0.16s' }}>
             <div className="mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-[13px]">
@@ -208,6 +215,17 @@ function ToolsSectionInner({
 }) {
   const [search, setSearch] = useState(initialSearch);
   const [activeTab, setActiveTab] = useState<'all' | 'pdf' | 'image' | 'popular' | 'ai'>(initialTab);
+  const [showAllCategories, setShowAllCategories] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const params = new URLSearchParams(window.location.search);
+    const qParam = params.get('search') ?? params.get('q') ?? '';
+    const tabParam = params.get('tab') ?? params.get('category') ?? '';
+    if (qParam) setSearch(qParam);
+    if (tabParam === 'pdf' || tabParam === 'pdf-tools') setActiveTab('pdf');
+    else if (tabParam === 'image' || tabParam === 'image-tools') setActiveTab('image');
+  }, []);
 
   // Defer heavy category filtering so typing stays responsive (INP).
   const deferredSearch = useDeferredValue(search);
@@ -352,14 +370,30 @@ function ToolsSectionInner({
           </p>
         )}
 
-        {filteredCategories.map((category, idx) => (
-          <div key={category.id}>
-            {idx > 0 && <div className="gradient-divider my-10" />}
-            <section id={category.id} aria-labelledby={`${category.id}-heading`}>
-              <CategorySection category={category} />
-            </section>
-          </div>
+        {(activeTab === 'all' && !query && !showAllCategories
+          ? filteredCategories.slice(0, 4)
+          : filteredCategories
+        ).map((category) => (
+          <CategorySection key={category.id} category={category} maxItems={activeTab === 'all' && !query ? 3 : 6} />
         ))}
+
+        {activeTab === 'all' && !query && !showAllCategories && filteredCategories.length > 4 && (
+          <div className="flex flex-wrap items-center justify-center gap-3 pt-4">
+            <button
+              type="button"
+              onClick={() => setShowAllCategories(true)}
+              className="btn-premium inline-flex items-center gap-2 rounded-2xl px-6 py-3 text-sm font-semibold"
+            >
+              Show all {filteredCategories.length} categories ({allTools.length}+ tools)
+            </button>
+            <Link
+              href="/tools"
+              className="inline-flex items-center gap-1.5 rounded-2xl border border-border bg-card px-5 py-3 text-sm font-semibold text-foreground hover:border-primary/40 hover:text-primary"
+            >
+              Open full tools directory <span aria-hidden="true">→</span>
+            </Link>
+          </div>
+        )}
 
         {filteredCategories.length === 0 && (
           <div className="text-center py-20">
@@ -389,24 +423,6 @@ function ToolsSectionInner({
   );
 }
 
-function ToolsSectionWithSearch({ region }: { region?: GeoRegion }) {
-  const searchParams = useSearchParams();
-  const initialSearch = searchParams.get('search') ?? searchParams.get('q') ?? '';
-  const tabParam = searchParams.get('tab') ?? searchParams.get('category') ?? '';
-  const initialTab =
-    tabParam === 'pdf' || tabParam === 'pdf-tools'
-      ? 'pdf'
-      : tabParam === 'image' || tabParam === 'image-tools'
-        ? 'image'
-        : 'all';
-
-  return <ToolsSectionInner region={region} initialSearch={initialSearch} initialTab={initialTab} />;
-}
-
 export function ToolsSection({ region }: { region?: GeoRegion } = {}) {
-  return (
-    <Suspense fallback={<ToolsSectionInner region={region} />}>
-      <ToolsSectionWithSearch region={region} />
-    </Suspense>
-  );
+  return <ToolsSectionInner region={region} />;
 }

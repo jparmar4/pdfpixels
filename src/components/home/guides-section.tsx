@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import { ArrowRight, BookOpen, Clock } from 'lucide-react';
 import { getAllBlogPosts } from '@/config/blog';
 
 /**
@@ -20,7 +19,7 @@ export function GuidesSection() {
         <div className="mb-10 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div className="max-w-2xl">
             <span className="inline-flex items-center gap-2 rounded-full border border-primary/15 bg-primary/8 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.2em] text-primary">
-              Guides & learning
+              Guides &amp; learning
             </span>
             <h2
               id="guides-heading"
@@ -35,10 +34,9 @@ export function GuidesSection() {
           </div>
           <Link
             href="/blog"
-            className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline underline-offset-4"
+            className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline underline-offset-4"
           >
-            Browse all guides
-            <ArrowRight className="h-4 w-4" />
+            Browse all guides <span aria-hidden="true">→</span>
           </Link>
         </div>
 
@@ -46,31 +44,27 @@ export function GuidesSection() {
           {posts.map((post) => (
             <article
               key={post.slug}
-              className="group card-shine flex h-full flex-col rounded-2xl border border-border/60 bg-card/80 p-5 shadow-soft transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-premium"
+              className="group flex h-full flex-col rounded-2xl border border-border/60 bg-card/80 p-5 shadow-soft transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-elevated"
             >
-              <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                <BookOpen className="h-3.5 w-3.5 text-primary" />
+              <div className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                <span className="h-1.5 w-1.5 rounded-full bg-primary" aria-hidden="true" />
                 {post.category}
               </div>
-              <h3 className="mt-3 text-base font-bold leading-6 text-foreground">
+              <h3 className="mt-2.5 text-base font-bold leading-6 text-foreground">
                 <Link href={`/blog/${post.slug}`} className="transition-colors hover:text-primary">
                   {post.title}
                 </Link>
               </h3>
-              <p className="mt-3 flex-1 text-sm leading-6 text-muted-foreground line-clamp-3">
+              <p className="mt-2.5 flex-1 text-sm leading-6 text-muted-foreground line-clamp-3">
                 {post.excerpt}
               </p>
               <div className="mt-4 flex items-center justify-between text-xs text-muted-foreground">
-                <span className="inline-flex items-center gap-1">
-                  <Clock className="h-3 w-3" />
-                  {post.readTime}
-                </span>
+                <span>{post.readTime}</span>
                 <Link
                   href={`/blog/${post.slug}`}
                   className="inline-flex items-center gap-1 font-semibold text-primary hover:underline underline-offset-4"
                 >
-                  Read guide
-                  <ArrowRight className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-1" />
+                  Read guide <span aria-hidden="true">→</span>
                 </Link>
               </div>
             </article>

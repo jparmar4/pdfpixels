@@ -4,6 +4,7 @@ import './globals.css';
 import { Toaster as SonnerToaster } from '@/components/ui/sonner';
 import { ThemeProvider } from 'next-themes';
 import { JsonLdSchemas } from '@/components/seo/json-ld';
+import { WebMCPRegistration } from '@/components/seo/webmcp-provider';
 import { seoConfig, siteConfig } from '@/lib/seo-config';
 import { DEFAULT_OG_IMAGE_URL } from '@/lib/seo';
 import { CookieConsentBanner } from '@/components/ads/cookie-consent';
@@ -159,6 +160,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <link rel="alternate" type="application/rss+xml" title="PdfPixels RSS Feed" href="/feed" />
         <link rel="alternate" type="text/plain" title="PdfPixels for LLMs" href="/llms.txt" />
         <link rel="alternate" type="text/plain" title="PdfPixels full reference for LLMs" href="/llms-full.txt" />
+        <link rel="alternate" type="text/markdown" title="PdfPixels Markdown for Agents" href="/markdown" />
+        <link rel="mcp-server" type="application/json" href="/.well-known/mcp/server-card.json" />
+        <link rel="api-catalog" type="application/linkset+json" href="/.well-known/api-catalog" />
         {/* Google AdSense official script — async in head for reliable crawler detection & Auto Ads */}
         <script
           async
@@ -171,6 +175,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           Skip to main content
         </a>
         <JsonLdSchemas />
+        <WebMCPRegistration />
         <ChunkReloadHandler />
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
           <Navigation />
