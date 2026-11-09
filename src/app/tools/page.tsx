@@ -1,4 +1,3 @@
-import Script from 'next/script';
 import { Suspense } from 'react';
 import { allTools } from '@/lib/tools-data';
 import { collectionItemListJsonLd } from '@/app/jsonld-helpers';
@@ -21,7 +20,7 @@ export default function ToolsPage() {
 
   return (
     <div className="premium-page-bg min-h-screen bg-background text-foreground">
-      <Script
+      <script
         id="tools-collection-schema"
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

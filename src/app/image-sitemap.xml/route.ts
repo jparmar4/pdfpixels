@@ -6,12 +6,30 @@ import { absoluteUrl } from '@/lib/seo';
 export async function GET() {
   const blogPosts = getAllBlogPosts();
 
-  const images = blogPosts.map((post) => ({
-    pageUrl: absoluteUrl(`/blog/${post.slug}`),
-    imageUrl: absoluteUrl(post.coverImage),
-    caption: post.imageAlt || post.title,
-    title: post.title,
-  }));
+  // Cover image first, then every local in-article markdown image (e.g. the
+  // vertical Pinterest pins) so Google Images can discover them too.
+  const images = blogPosts.flatMap((post) => {
+    const pageUrl = absoluteUrl(`/blog/${post.slug}`);
+    const seen = new Set<string>([post.coverImage]);
+    const entries = [{
+      pageUrl,
+      imageUrl: absoluteUrl(post.coverImage),
+      caption: post.imageAlt || post.title,
+      title: post.title,
+    }];
+    for (const match of post.content.matchAll(/!\[([^\]]*)\]\((\/images\/[^)\s]+)\)/g)) {
+      const [, alt, src] = match;
+      if (seen.has(src)) continue;
+      seen.add(src);
+      entries.push({
+        pageUrl,
+        imageUrl: absoluteUrl(src),
+        caption: alt || post.title,
+        title: alt || post.title,
+      });
+    }
+    return entries;
+  });
 
   // Tool pages carry a dynamically generated OG image at /tools/{slug}/opengraph-image
   const toolImages = allTools.map((tool) => ({
@@ -31,16 +49,25 @@ export async function GET() {
 
   const allImages = [...images, ...toolImages];
 
+  // One <url> per page with all of its <image:image> children (sitemap spec
+  // expects unique <loc> values).
+  const byPage = new Map<string, typeof allImages>();
+  for (const img of allImages) {
+    const list = byPage.get(img.pageUrl);
+    if (list) list.push(img);
+    else byPage.set(img.pageUrl, [img]);
+  }
+
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
-${allImages.map((img) => `  <url>
-    <loc>${escapeXml(img.pageUrl)}</loc>
-    <image:image>
+${[...byPage.entries()].map(([pageUrl, imgs]) => `  <url>
+    <loc>${escapeXml(pageUrl)}</loc>
+${imgs.map((img) => `    <image:image>
       <image:loc>${escapeXml(img.imageUrl)}</image:loc>
       <image:caption>${escapeXml(img.caption)}</image:caption>
       <image:title>${escapeXml(img.title)}</image:title>
-    </image:image>
+    </image:image>`).join('\n')}
   </url>`).join('\n')}
 </urlset>`;
 

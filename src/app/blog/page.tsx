@@ -1,7 +1,6 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import NextImage from "next/image";
-import Script from "next/script";
 import { getBlogPostsForListing } from "@/config/blog";
 import { siteConfig } from "@/lib/seo-config";
 import { allTools } from "@/lib/tools-data";
@@ -95,14 +94,14 @@ export default function BlogPage() {
 
     return (
         <>
-            <Script
+            <script
                 id="collection-schema"
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{
                     __html: JSON.stringify(collectionSchema),
                 }}
             />
-            <Script
+            <script
                 id="breadcrumb-schema"
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{

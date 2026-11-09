@@ -3,7 +3,6 @@ import { GitCompareArrows, Zap, Shield, Clock } from 'lucide-react';
 import { AnimatedMeshBg } from '@/components/ui/animated-mesh-bg';
 import { comparisonPages } from '@/lib/comparisons';
 import { CompareClient } from './CompareClient';
-import Script from 'next/script';
 import { collectionItemListJsonLd } from '@/app/jsonld-helpers';
 import { ADSENSE_REVIEW_MODE, SITE_URL, absoluteUrl, DEFAULT_OG_IMAGE_URL } from '@/lib/seo';
 import { siteConfig } from '@/lib/seo-config';
@@ -56,7 +55,7 @@ export default function CompareIndexPage() {
 
     return (
         <>
-            <Script
+            <script
                 id="compare-collection-schema"
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

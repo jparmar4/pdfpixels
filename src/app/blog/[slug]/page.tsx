@@ -2,9 +2,9 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import NextImage from "next/image";
 import Link from "next/link";
-import Script from "next/script";
 import { getBlogPostBySlug, getRelatedPosts, getAllBlogPosts, getAdjacentPosts, getCoverDimensions } from "@/config/blog";
-import { siteConfig } from "@/lib/seo-config";
+import { siteConfig, organizationData } from "@/lib/seo-config";
+import { organizationId } from "@/lib/seo";
 import { processContent } from "@/lib/content-processor";
 import { ReadingProgressBar } from "@/components/blog/ReadingProgressBar";
 import { ProcessContentWithToc } from "@/components/blog/ProcessContentWithToc";
@@ -39,7 +39,9 @@ export async function generateMetadata({
     const coverDims = getCoverDimensions(post.coverImage);
 
     return {
-        title: post.title,
+        // Short SERP <title> when provided; the long Discover-style headline
+        // stays on the H1, og:title and twitter:title.
+        title: post.seoTitle ?? post.title,
         description: post.metaDescription,
         keywords: post.keywords,
         authors: [{ name: post.author }],
@@ -118,6 +120,13 @@ export default async function BlogPostPage({
         : isoDate;
     const postUrl = `${siteConfig.url}/blog/${slug}`;
     const coverDims = getCoverDimensions(post.coverImage);
+    const founder = organizationData.founder;
+    const isFounder = post.author === founder.name;
+    // Cover first, then any local in-article images (e.g. vertical Pinterest pins)
+    const inArticleImages = Array.from(
+        post.content.matchAll(/!\[[^\]]*\]\((\/images\/[^)\s]+)\)/g),
+        (m) => m[1],
+    ).filter((src, i, arr) => src !== post.coverImage && arr.indexOf(src) === i);
 
     // Article Schema
     const articleSchema = {
@@ -129,10 +138,12 @@ export default async function BlogPostPage({
             "@type": "Person",
             name: post.author,
             jobTitle: post.authorRole,
-            url: `${siteConfig.url}/about`,
+            url: isFounder ? founder.url : `${siteConfig.url}/about`,
+            ...(isFounder ? { sameAs: founder.sameAs } : {}),
         },
         publisher: {
             "@type": "Organization",
+            "@id": organizationId(),
             name: "PdfPixels",
             url: siteConfig.url,
             logo: {
@@ -146,12 +157,15 @@ export default async function BlogPostPage({
         dateModified: isoModifiedDate,
         url: `${siteConfig.url}/blog/${slug}`,
         mainEntityOfPage: `${siteConfig.url}/blog/${slug}`,
-        image: post.coverImage ? {
-            "@type": "ImageObject",
-            url: `${siteConfig.url}${post.coverImage}`,
-            width: coverDims.width,
-            height: coverDims.height,
-        } : undefined,
+        image: post.coverImage ? [
+            {
+                "@type": "ImageObject",
+                url: `${siteConfig.url}${post.coverImage}`,
+                width: coverDims.width,
+                height: coverDims.height,
+            },
+            ...inArticleImages.map((src) => `${siteConfig.url}${src}`),
+        ] : undefined,
         keywords: post.keywords.join(", "),
         about: post.keywords.map(keyword => ({
             "@type": "Thing",
@@ -215,23 +229,23 @@ export default async function BlogPostPage({
             ) : null}
 
             {/* JSON-LD Schemas */}
-            <Script
+            <script
                 id="article-schema"
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
             />
-            <Script
+            <script
                 id="breadcrumb-schema"
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
             />
-            <Script
+            <script
                 id="speakable-schema"
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(speakableSchema) }}
             />
             {faqSchema && (
-                <Script
+                <script
                     id="faq-schema"
                     type="application/ld+json"
                     dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}

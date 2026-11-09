@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import Script from 'next/script';
 import { collectionItemListJsonLd } from '@/app/jsonld-helpers';
 import { SITE_URL, absoluteUrl, DEFAULT_OG_IMAGE_URL } from '@/lib/seo';
 import { siteConfig } from '@/lib/seo-config';
@@ -55,7 +54,7 @@ export default function UseCasesIndexPage() {
 
   return (
     <div className="premium-page-bg min-h-screen bg-background text-foreground">
-      <Script
+      <script
         id="use-cases-collection-schema"
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
