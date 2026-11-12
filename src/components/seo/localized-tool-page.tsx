@@ -2,7 +2,9 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { ToolPageClient } from '@/components/layout/tool-page-client';
-import { HeaderAd, InContentAd } from '@/components/ads/ad-banner';
+import { HeaderAd, InContentAd, NativeAd, FooterAd } from '@/components/ads/ad-banner';
+import { ToolSidebarAd } from '@/components/ads/tool-sidebar-ad';
+import { adsConfig, adsenseConfig } from '@/lib/ads-config';
 import { SetHtmlLang } from '@/components/seo/set-html-lang';
 import {
   getLocalePack,
@@ -53,6 +55,10 @@ export function LocalizedToolPage({ locale, slug }: { locale: LocaleCode; slug: 
   const pack = getLocalePack(locale);
   const siblings = LOCALIZED_TOOL_SLUGS.filter((item) => item !== slug);
   const pageUrl = absoluteUrl(`/${locale}/tools/${slug}`);
+  const hasActiveSidebarAd =
+    (adsenseConfig.enabled && Boolean(adsenseConfig.slots.sidebar)) ||
+    Boolean(adsConfig.slots.sidebar) ||
+    adsConfig.testMode;
 
   const localizedSchemas = [
     {
@@ -124,7 +130,10 @@ export function LocalizedToolPage({ locale, slug }: { locale: LocaleCode; slug: 
     <main
       id="main-content"
       lang={pack.htmlLang}
-      className={locale === 'jp' ? "[font-family:var(--font-inter),'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,sans-serif]" : undefined}
+      className={[
+        locale === 'jp' ? "[font-family:var(--font-inter),'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,sans-serif]" : '',
+        hasActiveSidebarAd ? 'xl:pr-[196px]' : '',
+      ].filter(Boolean).join(' ') || undefined}
     >
       <SetHtmlLang lang={pack.htmlLang} />
       {localizedSchemas.map((schema, index) => (
@@ -137,6 +146,7 @@ export function LocalizedToolPage({ locale, slug }: { locale: LocaleCode; slug: 
       <HeaderAd className="my-4" />
       <ToolPageClient toolId={tool.id} toolName={copy.name} toolDescription={copy.description} />
       <InContentAd className="my-8" />
+      <ToolSidebarAd />
       <section className="container mx-auto max-w-3xl px-4 py-10">
         <h2 className="text-2xl font-bold text-foreground">{copy.howTitle}</h2>
         <p className="mt-4 text-sm leading-7 text-muted-foreground">{copy.intro}</p>
@@ -164,6 +174,8 @@ export function LocalizedToolPage({ locale, slug }: { locale: LocaleCode; slug: 
           ))}
         </nav>
       </section>
+      <NativeAd className="my-8 max-w-5xl mx-auto px-4" />
+      <FooterAd className="my-6" />
     </main>
   );
 }

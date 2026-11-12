@@ -445,7 +445,7 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
 
   return (
     <>
-      <div id="main-content" className={hasActiveSidebarAd ? 'min-[1400px]:pr-[210px]' : undefined}>
+      <div id="main-content" className={hasActiveSidebarAd ? 'xl:pr-[196px]' : undefined}>
         {schemas?.map((schema, index) => (
           <script key={index} type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
         ))}

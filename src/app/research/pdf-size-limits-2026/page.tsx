@@ -4,6 +4,7 @@ import { SitePageShell } from '@/components/layout/site-page-shell';
 import { absoluteUrl, SITE_CONTENT_UPDATED } from '@/lib/seo';
 import { siteConfig } from '@/lib/seo-config';
 import { platformLimits } from '@/lib/limits';
+import { HeaderAd, InContentAd, NativeAd, FooterAd } from '@/components/ads/ad-banner';
 
 export const metadata: Metadata = {
   title: 'Email & Portal File Size Limits 2026 (Gmail, Outlook, Forms)',
@@ -110,6 +111,7 @@ export default function ResearchPage() {
         ]}
         contentClassName="max-w-4xl"
       >
+        <HeaderAd className="mb-8" />
         <section className="section-panel rounded-[2rem] p-6 md:p-8">
           <h2 className="text-2xl font-bold text-foreground">The limits table</h2>
           <p className="mt-3 text-sm leading-7 text-muted-foreground">
@@ -185,6 +187,8 @@ export default function ResearchPage() {
           </ul>
         </section>
 
+        <InContentAd className="my-8" />
+
         <section className="mt-8 section-panel rounded-[2rem] p-6 md:p-8">
           <h2 className="text-2xl font-bold text-foreground">Frequently asked questions</h2>
           <div className="mt-4 space-y-3">
@@ -206,6 +210,8 @@ export default function ResearchPage() {
             <li><Link href="/use-cases/compress-pdf-for-email" className="font-semibold text-primary hover:underline">Use case: compress PDF for email</Link></li>
           </ul>
         </section>
+        <NativeAd className="my-8" />
+        <FooterAd className="my-6" />
       </SitePageShell>
     </>
   );

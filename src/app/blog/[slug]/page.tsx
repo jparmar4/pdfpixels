@@ -11,6 +11,8 @@ import { ProcessContentWithToc } from "@/components/blog/ProcessContentWithToc";
 import { ShareButtons } from "@/components/blog/ShareButtons";
 import { ArticleNavigation } from "@/components/blog/ArticleNavigation";
 import { HeaderAd, InContentAd, FooterAd, NativeAd } from "@/components/ads/ad-banner";
+import { ToolSidebarAd } from "@/components/ads/tool-sidebar-ad";
+import { adsConfig, adsenseConfig } from "@/lib/ads-config";
 import { ArrowLeft, Clock, Calendar, ArrowRight, User } from "lucide-react";
 
 // Generate static params
@@ -252,7 +254,17 @@ export default async function BlogPostPage({
                 />
             )}
 
-            <main id="main-content" className="min-h-screen bg-background">
+            <main
+                id="main-content"
+                className={
+                    (adsenseConfig.enabled && Boolean(adsenseConfig.slots.sidebar)) ||
+                    Boolean(adsConfig.slots.sidebar) ||
+                    adsConfig.testMode
+                        ? "min-h-screen bg-background xl:pr-[196px]"
+                        : "min-h-screen bg-background"
+                }
+            >
+                <ToolSidebarAd />
                 {/* Article Header */}
                 <header className="relative overflow-hidden pt-12 pb-16 lg:pt-20 lg:pb-24">
                     {/* Background decorations */}

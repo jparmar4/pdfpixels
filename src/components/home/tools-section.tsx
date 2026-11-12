@@ -39,8 +39,10 @@ function ToolsHeader({
     { label: 'Compress PDF', href: '/tools/compress-pdf' },
     { label: 'Merge PDF', href: '/tools/merge-pdf' },
     { label: 'PDF to Word', href: '/tools/pdf-to-word' },
-    { label: 'Remove background', href: '/tools/remove-image-background' },
+    { label: 'PDF to Excel', href: '/tools/pdf-to-excel' },
+    { label: 'Bank Statement to Excel', href: '/tools/bank-statement-to-excel' },
     { label: 'Sign PDF', href: '/tools/sign-pdf' },
+    { label: 'Remove background', href: '/tools/remove-image-background' },
   ];
 
   return (

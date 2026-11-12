@@ -492,9 +492,15 @@ assert.ok(useCasePages.some(u => u.slug === 'compress-pdf-for-uscis-upload'), 'u
 assert.ok(useCasePages.some(u => u.slug === 'bates-numbering-pdf-legal-filing'), 'bates numbering legal filing use case exists');
 assert.ok(useCasePages.some(u => u.slug === 'combine-bank-statements-for-mortgage'), 'combine bank statements for mortgage use case exists');
 
-// Verify Google AdSense & Ads Configuration
-const { adsenseConfig } = await import('../src/lib/ads-config.ts');
-assert.ok(adsenseConfig.enabled, 'AdSense enabled for approval');
-assert.ok(adsenseConfig.clientId && adsenseConfig.clientId.startsWith('ca-pub-'), 'AdSense client ID configured');
+// Verify Adsterra & Ads Configuration
+const { adsterraConfig, adsenseConfig, adsConfig, hasConfiguredAdSlot } = await import('../src/lib/ads-config.ts');
+assert.ok(adsterraConfig.enabled, 'Adsterra enabled as primary ad network');
+assert.ok(adsConfig.enabled, 'Global ads enabled when Adsterra is active');
+assert.ok(hasConfiguredAdSlot(), 'At least one active ad slot configured');
+assert.ok(adsterraConfig.scriptHost.startsWith('https://'), 'Adsterra anti-adblock scriptHost configured');
+assert.ok(adsterraConfig.smartlink.startsWith('https://'), 'Adsterra smartlink configured');
+assert.ok(adsterraConfig.slots.banner728x90.key && adsterraConfig.slots.banner300x250.key, 'Adsterra banner keys configured');
+assert.ok(adsterraConfig.slots.nativeBanner.scriptSrc && adsterraConfig.slots.socialBar.scriptSrc, 'Adsterra native and social bar configured');
+assert.ok(!adsenseConfig.clientId || adsenseConfig.clientId.startsWith('ca-pub-'), 'AdSense client ID format valid');
 
 console.log('Recent-tool regressions passed. PDF fixtures:', out);

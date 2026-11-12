@@ -17,6 +17,7 @@ import { HowItWorks } from '@/components/home/how-it-works';
 import { TestimonialsSection } from '@/components/home/testimonials-section';
 import { FeaturesSection } from '@/components/home/features-section';
 import { CTASection } from '@/components/home/cta-section';
+import { HeaderAd, InContentAd, NativeAd, FooterAd } from '@/components/ads/ad-banner';
 
 // Restrict this dynamic route to strictly the configured geo regions.
 export const dynamicParams = false;
@@ -146,6 +147,8 @@ export default async function GeoHubPage({ params }: GeoPageProps) {
             dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
           />
         ))}
+
+        <HeaderAd className="my-4" />
 
         {/* Unique regional editorial — not a homepage clone */}
         <section className="border-b border-border/50 bg-background">
@@ -297,12 +300,15 @@ export default async function GeoHubPage({ params }: GeoPageProps) {
 
         <ToolsSection region={region} />
         <StatsBanner />
+        <InContentAd className="my-8" />
         <HowItWorks />
         <AnswerEngineSection />
+        <NativeAd className="my-10 max-w-5xl mx-auto px-4" />
         <TestimonialsSection />
         <FeaturesSection />
         <FAQSection />
         <CTASection />
+        <FooterAd className="my-6" />
       </main>
     </div>
   );

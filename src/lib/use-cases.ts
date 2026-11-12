@@ -1,4 +1,4 @@
-﻿export type UseCasePage = {
+export type UseCasePage = {
   slug: string;
   title: string;
   description: string;
@@ -1630,6 +1630,188 @@ export const useCasePages: UseCasePage[] = [
     faqs: [
       { question: 'Does OCR change how the PDF looks?', answer: 'No. The text layer added by OCR is invisible — it sits behind the scan image. The document looks exactly the same as the original, but you can now search, select, and copy the text as if it were a native digital PDF.' },
       { question: 'What languages does the OCR support?', answer: 'PdfPixels OCR PDF supports English, Spanish, French, German, Portuguese, Italian, Dutch, and several other major languages. OCR works best on printed text — handwriting recognition has lower accuracy.' },
+    ],
+  },
+  {
+    slug: 'convert-chase-bank-statement-to-quickbooks',
+    title: 'Convert Chase PDF Bank Statements to QuickBooks CSV & Excel Free',
+    description: 'Turn Chase checking, savings, and credit card PDF statements into clean QuickBooks-ready CSV and Excel (.xlsx) spreadsheets in seconds — no subscription required.',
+    targetToolSlug: 'chase-bank-statement-to-excel',
+    intent: 'convert chase bank statement pdf to quickbooks csv and excel',
+    overview: 'Chase allows CSV downloads for recent months, but older statements, archived tax-year records, and client bookkeeping packets often arrive only as PDFs. Re-typing hundreds of lines into QuickBooks Online or Excel wastes hours and introduces manual errors. PdfPixels Chase Bank Statement to Excel parses transaction dates, descriptions, debits, credits, and running balances into a clean QuickBooks CSV or Excel workbook without a $39/month accounting add-on.',
+    whoItsFor: [
+      'US bookkeepers and CPAs reconciling client Chase business checking or Ink credit card statements for tax filing',
+      'Small business owners importing historical Chase PDF statements into QuickBooks Online or Xero',
+      'Individuals preparing mortgage underwriting packets or expense audits from archived Chase PDFs',
+    ],
+    steps: [
+      { title: 'Upload your Chase PDF statement', description: 'Open PdfPixels Chase Bank Statement to Excel and upload your PDF statement. Repeating headers and summary footers are filtered automatically.' },
+      { title: 'Review parsed rows and balances', description: 'Inspect the extracted Date, Description, Debit, Credit, and Balance table directly in the preview before exporting.' },
+      { title: 'Export QuickBooks CSV or Excel (.xlsx)', description: 'Choose QuickBooks-compatible CSV for direct bank-feed upload or formatted Excel (.xlsx) for pivot tables and reconciliation.' },
+      { title: 'Import into QuickBooks or Excel', description: 'Upload the CSV via QuickBooks Banking -> Upload from file, map the Date, Description, and Amount columns, and reconcile.' },
+    ],
+    tips: [
+      'Use digital PDFs downloaded directly from Chase.com whenever possible for near-100% column accuracy.',
+      'Check the Opening and Closing Balance summary in the preview to verify every transaction line was captured.',
+      'If you have 12 monthly Chase PDFs, merge them or convert each month and combine inside Excel for annual P&L prep.',
+    ],
+    pitfalls: [
+      { problem: 'Scanned paper Chase statement returns few rows', solution: 'Run OCR PDF first to add a text layer, or download the native digital PDF from your Chase online portal.' },
+      { problem: 'QuickBooks rejects CSV date format', solution: 'Ensure your QuickBooks import setting matches the MM/DD/YYYY date format used on US Chase statements.' },
+    ],
+    faqs: [
+      { question: 'Does PdfPixels store my Chase bank statement?', answer: 'No. Files are processed transiently in isolated memory and purged automatically after download, with zero permanent storage or training.' },
+      { question: 'Can I export both Excel and QuickBooks CSV?', answer: 'Yes. You can preview the extracted ledger and download either a formatted .xlsx workbook or a clean CSV.' },
+    ],
+  },
+  {
+    slug: 'convert-barclays-statement-to-xero-csv',
+    title: 'Convert UK Barclays Bank Statement PDF to Xero CSV & Excel Free',
+    description: 'Extract Barclays UK current and business account PDF statements into Xero-ready CSV and Excel spreadsheets for VAT returns and Self Assessment.',
+    targetToolSlug: 'barclays-bank-statement-to-excel',
+    intent: 'convert barclays pdf statement to xero csv and excel',
+    overview: 'UK accountants, sole traders, and Making Tax Digital (MTD) businesses often receive archived Barclays statements as PDFs rather than live bank feeds. Manually keying hundreds of GBP transactions into Xero, FreeAgent, or Sage is slow and error-prone. PdfPixels Barclays Bank Statement to Excel extracts DD/MM/YYYY dates, Money Out, Money In, and running balances into a clean Xero-ready CSV or Excel spreadsheet.',
+    whoItsFor: [
+      'UK bookkeepers preparing quarterly VAT returns or Self Assessment tax filings in Xero, QuickBooks UK, or Sage',
+      'Limited company directors reconciling historical Barclays Business Banking PDF statements',
+      'Letting agents and landlords auditing rental income and property expenses from PDF statements',
+    ],
+    steps: [
+      { title: 'Upload your Barclays PDF statement', description: 'Select your Barclays PDF statement (up to 50MB). Multi-page statements are parsed in sequence.' },
+      { title: 'Verify UK dates and GBP columns', description: 'Confirm Money Out (Debit), Money In (Credit), and Balance columns align cleanly in the preview table.' },
+      { title: 'Download Xero CSV or Excel', description: 'Export as CSV for direct Xero statement import or .xlsx for Excel bookkeeping.' },
+    ],
+    tips: [
+      'Use official digital PDFs from Barclays Online Banking for clean multi-line payee descriptions.',
+      'Double-check opening and closing balances against page 1 of your Barclays statement before importing into Xero.',
+    ],
+    pitfalls: [
+      { problem: 'Page headers repeat mid-table', solution: 'PdfPixels automatically strips repeating Barclays page headers and footers so only transaction rows remain.' },
+      { problem: 'Paper scan has blurry numbers', solution: 'Use native online-banking PDFs rather than phone photos whenever possible.' },
+    ],
+    faqs: [
+      { question: 'Is it compatible with Xero and FreeAgent?', answer: 'Yes. The exported CSV uses clean standard columns (Date, Description, Debit, Credit, Balance) that map directly inside Xero and FreeAgent.' },
+      { question: 'Does it support Barclays Business accounts?', answer: 'Yes, both Barclays Personal and Barclays Business PDF statements are supported.' },
+    ],
+  },
+  {
+    slug: 'redact-ssn-account-numbers-from-pdf',
+    title: 'Permanently Redact SSN, Bank Account & Sensitive Data from PDFs',
+    description: 'Black out Social Security numbers, bank account digits, addresses, and confidential clauses permanently from PDF documents before sharing.',
+    targetToolSlug: 'redact-pdf',
+    intent: 'permanently redact sensitive information from pdf',
+    overview: 'Drawing a black rectangle in a basic PDF viewer or Preview does NOT remove the underlying text — anyone can still copy-paste or search the hidden SSN, EIN, or bank account number underneath. True PDF redaction strips or flattens the underlying content so sensitive identifiers are permanently unrecoverable. PdfPixels Redact PDF lets you mark sensitive areas on contracts, W-2s, pay stubs, medical records, and legal exhibits cleanly.',
+    whoItsFor: [
+      'US/UK/EU legal teams and HR departments sharing redacted contracts, discovery exhibits, or employee files',
+      'Mortgage applicants and renters submitting pay stubs or tax returns with SSN/account digits masked',
+      'Healthcare and compliance staff preparing HIPAA- or GDPR-compliant PDF disclosures',
+    ],
+    steps: [
+      { title: 'Open your PDF in Redact PDF', description: 'Upload the document containing sensitive text or numbers you need to hide.' },
+      { title: 'Draw redaction boxes over sensitive data', description: 'Cover Social Security numbers, IBAN/routing numbers, signatures, or confidential pricing.' },
+      { title: 'Apply and download the sanitized PDF', description: 'Generate the redacted output and test Ctrl+F on the downloaded file to confirm the hidden text cannot be searched or copied.' },
+    ],
+    tips: [
+      'After redacting, run Sanitize PDF if you also want to strip hidden author name, document title, and XMP metadata.',
+      'Always test the downloaded PDF by trying to highlight and copy the blacked-out region before emailing it.',
+    ],
+    pitfalls: [
+      { problem: 'Using highlight or marker tools instead of real redaction', solution: 'Standard annotations can be deleted in another PDF editor. Always flatten or use a dedicated Redact PDF workflow.' },
+      { problem: 'Forgetting header/footer account numbers on page 2+', solution: 'Inspect every page of multi-page statements or tax returns before finalizing.' },
+    ],
+    faqs: [
+      { question: 'Can someone undo the redaction in Adobe Acrobat?', answer: 'No. Properly applied redaction flattens and removes the redacted area from the output page content.' },
+      { question: 'Does this also remove PDF author metadata?', answer: 'Use PdfPixels Sanitize PDF right after redaction to strip all author, software, and timestamp metadata.' },
+    ],
+  },
+  {
+    slug: 'flatten-fillable-pdf-for-court-filing',
+    title: 'Flatten Fillable PDF Forms for Court e-Filing (PACER) & Submissions',
+    description: 'Lock interactive AcroForm fields, checkboxes, and digital signatures into static PDF pages so court portals like PACER and government systems accept your filing.',
+    targetToolSlug: 'flatten-pdf',
+    intent: 'flatten fillable pdf for court efiling pacer',
+    overview: 'Federal courts (CM/ECF and PACER), state e-filing portals, and government procurement systems frequently reject fillable PDFs because dynamic XFA/AcroForm scripts can hide data or fail archival validation. Flattening bakes every typed field, dropdown, checkbox, and signature directly onto the static page layer so what you see on screen is guaranteed to print and archive identically everywhere.',
+    whoItsFor: [
+      'Attorneys, paralegals, and pro se filers preparing exhibits and motions for PACER / CM/ECF court submission',
+      'Real estate brokers and insurance agents locking signed agreements so terms cannot be edited post-signature',
+      'HR and compliance teams archiving completed onboarding, W-9, and I-9 forms',
+    ],
+    steps: [
+      { title: 'Upload your filled PDF form', description: 'Select the fillable PDF that already contains your typed responses, checkmarks, or signature.' },
+      { title: 'Flatten all form layers', description: 'Convert interactive AcroForm widgets and annotations into static, non-editable page graphics and text.' },
+      { title: 'Download the locked PDF', description: 'Open the output to confirm every field is visible and no longer clickable or editable before uploading to the portal.' },
+    ],
+    tips: [
+      'Keep a copy of the editable original before flattening in case you need to fix a typo later.',
+      'If a court also requires Bates stamps or PDF/A compliance, flatten first, then run Bates Numbering or PDF to PDF/A.',
+    ],
+    pitfalls: [
+      { problem: 'Submitted form appears blank to the recipient', solution: 'Some viewers fail to render unflattened form appearances. Flattening fixes blank-field bugs permanently.' },
+      { problem: 'e-Filing portal rejects dynamic PDF', solution: 'Flattening removes interactive form fields that trigger court portal security rejections.' },
+    ],
+    faqs: [
+      { question: 'Will flattening shrink or blur my text?', answer: 'No. Flattening preserves crisp vector text and appearance streams while removing the interactive form wrapper.' },
+      { question: 'Can I edit a flattened PDF afterward?', answer: 'Form fields can no longer be clicked or altered, which is the exact goal for court filings and finalized contracts.' },
+    ],
+  },
+  {
+    slug: 'convert-pdf-invoice-to-excel-csv',
+    title: 'Extract PDF Invoice & Financial Tables to Excel (.xlsx) & CSV Free',
+    description: 'Convert PDF invoices, expense reports, and financial tables into structured Excel spreadsheets and CSV files without manual data entry.',
+    targetToolSlug: 'pdf-to-excel',
+    intent: 'convert pdf invoice and financial tables to excel csv',
+    overview: 'Finance teams, freelancers, and operations managers constantly receive vendor invoices, purchase orders, and pricing sheets locked inside PDF files. Re-keying line items into Excel or Google Sheets wastes hours every week. PdfPixels PDF to Excel detects tabular columns and numeric rows so you can export clean .xlsx spreadsheets or CSVs ready for bookkeeping, ERP import, or financial analysis.',
+    whoItsFor: [
+      'Accounts payable and bookkeeping teams extracting line items from supplier PDF invoices',
+      'Analysts and researchers pulling structured tables from PDF financial reports and quarterly filings',
+      'E-commerce sellers converting wholesale price lists from PDF into Excel or Shopify CSV',
+    ],
+    steps: [
+      { title: 'Upload your PDF table or invoice', description: 'Select the PDF containing tabular figures, line items, or financial schedules.' },
+      { title: 'Run table extraction', description: 'PdfPixels parses column alignment and row boundaries automatically.' },
+      { title: 'Download Excel (.xlsx) or CSV', description: 'Open the resulting workbook in Microsoft Excel, Google Sheets, or import directly into your accounting tool.' },
+    ],
+    tips: [
+      'If your PDF is a scanned paper invoice, run OCR PDF first so the numbers become selectable text.',
+      'For bank and credit card statements specifically, use Bank Statement to Excel for dedicated debit/credit/balance reconciliation.',
+    ],
+    pitfalls: [
+      { problem: 'Merged multi-line descriptions split across rows', solution: 'Use the structured table preview or tidy wrapped lines quickly in Excel after export.' },
+      { problem: 'Image-only PDF has no text layer', solution: 'Scanned invoices require OCR before table extraction can read numbers.' },
+    ],
+    faqs: [
+      { question: 'Should I use PDF to Excel or PDF to CSV?', answer: 'Use PDF to Excel (.xlsx) for formatted spreadsheets and formulas; choose PDF to CSV for database, Python, or accounting software imports.' },
+      { question: 'Is there a subscription or page paywall?', answer: 'No. PdfPixels lets you extract and download tables without creating an account or paying a monthly fee.' },
+    ],
+  },
+  {
+    slug: 'cmyk-pdf-for-amazon-kdp-print',
+    title: 'Convert RGB PDF to CMYK for Amazon KDP & Commercial Offset Printing',
+    description: 'Convert RGB PDF interiors and book covers into true CMYK color space for Amazon KDP, IngramSpark, and commercial print shops free online.',
+    targetToolSlug: 'cmyk-pdf-converter',
+    intent: 'convert rgb pdf to cmyk for amazon kdp and printing',
+    overview: 'Self-published authors, graphic designers, and agencies routinely hit preflight warnings from Amazon KDP, IngramSpark, and local print shops when uploading RGB PDFs exported from Canva, Word, or Google Docs. Converting RGB to CMYK ensures rich blacks, accurate brand colors, and reliable offset press separation without buying an Adobe Creative Cloud license.',
+    whoItsFor: [
+      'Self-published authors preparing paperback covers and interior PDFs for Amazon KDP and IngramSpark',
+      'Designers and agencies exporting Canva or Figma RGB PDFs for commercial brochures, flyers, and packaging',
+      'Print buyers needing fast prepress RGB-to-CMYK conversion before sending files to a print vendor',
+    ],
+    steps: [
+      { title: 'Upload your RGB PDF', description: 'Select your brochure, book cover, or flyer PDF (up to 50MB).' },
+      { title: 'Convert color space to CMYK', description: 'Apply ICC-calibrated RGB-to-CMYK separation tailored for commercial print output.' },
+      { title: 'Download your print-ready CMYK PDF', description: 'Verify margins, bleed, and color appearance in your prepress viewer before submitting to KDP or your printer.' },
+    ],
+    tips: [
+      'Avoid ultra-bright neon RGB blues and greens in source designs — they naturally shift slightly softer in CMYK ink gamut.',
+      'Combine with Resize PDF or Flatten PDF if your print vendor requires exact trim dimensions and flattened transparencies.',
+    ],
+    pitfalls: [
+      { problem: 'Colors look slightly muted compared to a backlit screen', solution: 'CMYK reflects physical ink on paper rather than glowing RGB pixels; always expect slightly softer saturation in print.' },
+      { problem: 'Missing bleed margins', solution: 'Add 0.125 in (3mm) bleed in your original layout before running CMYK conversion.' },
+    ],
+    faqs: [
+      { question: 'Does Amazon KDP require CMYK PDFs?', answer: 'KDP accepts RGB and converts it, but supplying a properly converted CMYK PDF prevents unexpected color shifts on covers and color interiors.' },
+      { question: 'Can I convert Canva PDFs to CMYK for free?', answer: 'Yes. Export your design from Canva as PDF Print, then run it through PdfPixels CMYK PDF Converter to convert to CMYK without Canva Pro.' },
     ],
   },
 ];

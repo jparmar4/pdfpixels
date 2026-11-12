@@ -7,6 +7,9 @@ import { INDIAN_EXAM_PRESETS, getExamBySlug, type IndianExamPreset } from '@/lib
 import { IndianExamBundleWorkspace } from '@/components/layout/indian-exam-bundle-workspace';
 import { siteConfig } from '@/lib/seo-config';
 import { absoluteUrl } from '@/lib/seo';
+import { HeaderAd, InContentAd, NativeAd, FooterAd } from '@/components/ads/ad-banner';
+import { ToolSidebarAd } from '@/components/ads/tool-sidebar-ad';
+import { adsConfig, adsenseConfig } from '@/lib/ads-config';
 
 interface IndianExamPageProps {
   params: Promise<{ region: string; slug: string }>;
@@ -76,6 +79,10 @@ export default async function IndianExamPage({ params }: IndianExamPageProps) {
   const relatedExams = INDIAN_EXAM_PRESETS
     .filter((e) => e.slug !== exam.slug && (e.category === exam.category || e.category === 'SSC' || e.category === 'UPSC'))
     .slice(0, 8);
+  const hasActiveSidebarAd =
+    (adsenseConfig.enabled && Boolean(adsenseConfig.slots.sidebar)) ||
+    Boolean(adsConfig.slots.sidebar) ||
+    adsConfig.testMode;
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -131,7 +138,7 @@ export default async function IndianExamPage({ params }: IndianExamPageProps) {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className={hasActiveSidebarAd ? 'min-h-screen bg-background xl:pr-[196px]' : 'min-h-screen bg-background'}>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -150,8 +157,13 @@ export default async function IndianExamPage({ params }: IndianExamPageProps) {
         </div>
       </div>
 
+      <HeaderAd className="my-4" />
+
       {/* Main Interactive Tool Workspace */}
       <IndianExamBundleWorkspace exam={exam} />
+
+      <InContentAd className="my-6" />
+      <ToolSidebarAd />
 
       {/* Informational & SEO Editorial Section */}
       <div className="container mx-auto px-4 lg:px-8 py-12 max-w-5xl space-y-12">
@@ -302,7 +314,10 @@ export default async function IndianExamPage({ params }: IndianExamPageProps) {
             </div>
           </section>
         )}
+
+        <NativeAd className="my-8" />
       </div>
+      <FooterAd className="my-6" />
     </div>
   );
 }

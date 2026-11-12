@@ -7,16 +7,14 @@ export const DEFAULT_OG_IMAGE_URL = `${SITE_URL}${DEFAULT_OG_IMAGE_PATH}`;
 /** Stable sitemap lastmod for evergreen pages — do not use `new Date()` per request.
  *  Bump this only when evergreen pages (home/tools/use-cases) actually change,
  *  so lastmod stays truthful for crawlers. */
-export const SITE_CONTENT_UPDATED = new Date('2026-10-01T00:00:00.000Z');
+export const SITE_CONTENT_UPDATED = new Date('2026-11-12T00:00:00.000Z');
 
-/** AdSense-review content freeze (commit a17b403). While true, the 90 localized
- *  tool pages, 20 geo hubs, and 23 comparison pages stay noindexed, out of the
+/** AdSense-review content freeze (commit a17b403). While true, the localized
+ *  tool pages, geo hubs, and comparison pages stay noindexed, out of the
  *  sitemap, and out of llms.txt so review crawlers evaluate only primary pages.
- *  Flip to false AFTER the review clears, then redeploy, resubmit the sitemap
- *  in Search Console, and run `npm run submit-sitemap` — the ~133 expansion
- *  URLs re-enter search and AI surfaces automatically (llms.txt, sitemap,
- *  robots directives, and hreflang all read this flag). */
-export const ADSENSE_REVIEW_MODE = true;
+ *  Disabled (false) so all Tier 1/Tier 2 geo hubs, localized packs, and
+ *  high-intent comparison pages are indexed and monetized via Adsterra. */
+export const ADSENSE_REVIEW_MODE = false;
 
 export function organizationId() {
   return `${SITE_URL}/#organization`;
@@ -47,6 +45,9 @@ const homepageFeaturedToolIds = [
   'image-to-pdf',
   'pdf-merge',
   'pdf-split',
+  'pdf-sign',
+  'pdf-to-excel',
+  'bank-statement-to-excel',
 ] as const;
 
 export function absoluteUrl(path = '/') {

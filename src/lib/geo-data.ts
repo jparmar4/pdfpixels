@@ -24,6 +24,11 @@ export const geoRegions: GeoRegion[] = [
       'In the United States, people often need 2×2 inch passport photos, PDFs small enough for email or college portals, and iPhone HEIC files converted for Windows coworkers. PdfPixels gives US users browser tools for those jobs without installing desktop software — compress, merge, resize, convert, and clean up files on any modern device.',
     commonTasks: [
       {
+        title: 'Chase & BofA statement to Excel',
+        detail: 'Convert US bank and credit card PDF statements into QuickBooks CSV and Excel.',
+        href: '/tools/chase-bank-statement-to-excel',
+      },
+      {
         title: 'US passport-style photos',
         detail: 'Prepare 2×2 inch portrait crops for passport and many ID-style applications.',
         href: '/tools/passport-size-photo',
@@ -34,9 +39,19 @@ export const geoRegions: GeoRegion[] = [
         href: '/tools/compress-pdf',
       },
       {
+        title: 'Sign & redact legal PDFs',
+        detail: 'Electronically sign contracts or permanently black out SSNs and sensitive text.',
+        href: '/tools/sign-pdf',
+      },
+      {
         title: 'HEIC for Windows teams',
         detail: 'Convert iPhone photos to JPG when colleagues cannot open HEIC.',
         href: '/tools/heic-to-jpg',
+      },
+      {
+        title: 'Bates numbering for legal filings',
+        detail: 'Stamp sequential Bates numbers across discovery and court PDF exhibits.',
+        href: '/tools/bates-numbering-pdf',
       },
     ],
     localNotes: [
@@ -68,6 +83,11 @@ export const geoRegions: GeoRegion[] = [
       'UK users often deal with specific photo sizes for passports and visas, PDF uploads for councils or universities, and sharing files across mixed phone and laptop setups. PdfPixels provides free browser tools to compress documents, merge packets, resize photos in mm/cm, and convert formats without a heavyweight desktop suite.',
     commonTasks: [
       {
+        title: 'Barclays & HSBC statement to Excel',
+        detail: 'Convert UK bank PDF statements into Xero/QuickBooks CSV and Excel.',
+        href: '/tools/barclays-bank-statement-to-excel',
+      },
+      {
         title: 'UK-style ID photo sizing',
         detail: 'Resize portraits toward common 35×45 mm style requirements used in many applications.',
         href: '/tools/passport-size-photo',
@@ -78,9 +98,19 @@ export const geoRegions: GeoRegion[] = [
         href: '/tools/compress-pdf',
       },
       {
+        title: 'Sign & fill UK tenancy or HR PDFs',
+        detail: 'Complete PDF forms and add clean digital signatures right in your browser.',
+        href: '/tools/sign-pdf',
+      },
+      {
         title: 'Merge supporting documents',
         detail: 'Combine multiple PDFs into one file for applications.',
         href: '/tools/merge-pdf',
+      },
+      {
+        title: 'PDF to Excel tables',
+        detail: 'Extract invoices, VAT tables, and spreadsheets from PDFs into XLSX.',
+        href: '/tools/pdf-to-excel',
       },
     ],
     localNotes: [
@@ -110,6 +140,11 @@ export const geoRegions: GeoRegion[] = [
       'Canadians frequently upload PDFs for school, immigration-related paperwork, and workplace sharing — often with strict size limits — and need images that open for both iPhone and Windows users. PdfPixels helps compress PDFs, convert HEIC, resize photos, and merge documents in the browser.',
     commonTasks: [
       {
+        title: 'TD Bank statement to Excel',
+        detail: 'Convert Canadian TD & HSBC bank PDFs into QuickBooks CSV and Excel.',
+        href: '/tools/td-bank-statement-to-excel',
+      },
+      {
         title: 'Shrink PDFs for portals',
         detail: 'Compress large scans so application uploads succeed.',
         href: '/tools/compress-pdf',
@@ -120,9 +155,19 @@ export const geoRegions: GeoRegion[] = [
         href: '/tools/heic-to-jpg',
       },
       {
+        title: 'Sign & redact documents',
+        detail: 'Add e-signatures or redact SIN and personal details before sharing PDFs.',
+        href: '/tools/redact-pdf',
+      },
+      {
         title: 'Combine PDF packages',
         detail: 'Merge supporting pages into a single attachment.',
         href: '/tools/merge-pdf',
+      },
+      {
+        title: 'PDF to Word (.docx)',
+        detail: 'Turn read-only PDFs into editable Word documents without installing software.',
+        href: '/tools/pdf-to-word',
       },
     ],
     localNotes: [
@@ -152,6 +197,11 @@ export const geoRegions: GeoRegion[] = [
       'Australian users deal with university and government uploads, email attachment limits, and passport-style photos with clear size rules. PdfPixels offers free online compression, conversion, and photo utilities that work on phone or desktop without installing extra apps.',
     commonTasks: [
       {
+        title: 'Bank statement & PDF to Excel',
+        detail: 'Extract PDF bank statements and invoices into Excel/CSV for Xero and MYOB.',
+        href: '/tools/bank-statement-to-excel',
+      },
+      {
         title: 'Passport-oriented photo crops',
         detail: 'Prepare correctly sized portraits before checking official Australian photo rules.',
         href: '/tools/passport-size-photo',
@@ -162,9 +212,19 @@ export const geoRegions: GeoRegion[] = [
         href: '/tools/compress-pdf',
       },
       {
+        title: 'Sign PDF contracts online',
+        detail: 'Draw or upload a signature for Australian rental, HR, and business forms.',
+        href: '/tools/sign-pdf',
+      },
+      {
         title: 'Image KB limits',
         detail: 'Hit exact image size targets for forms that specify kilobytes.',
         href: '/tools/compress-image',
+      },
+      {
+        title: 'Merge & reorder PDFs',
+        detail: 'Combine visa, university, and tax PDF packs into one ordered file.',
+        href: '/tools/merge-pdf',
       },
     ],
     localNotes: [
@@ -853,6 +913,174 @@ export const geoRegions: GeoRegion[] = [
       {
         question: 'Como juntar vários comprovantes em um só arquivo PDF?',
         answer: 'Acesse Juntar PDF, adicione as páginas desejadas, ordene conforme a exigência do edital e baixe o documento unificado.',
+      },
+    ],
+  },
+  {
+    code: 'ch',
+    name: 'Switzerland',
+    adjective: 'Swiss',
+    locale: 'de-CH',
+    localCopy: 'zuverlässig in der Schweiz',
+    headline: 'Kostenlose PDF- & Bild-Tools für die Schweiz — DSG-konform, sicher & schnell',
+    intro:
+      'In der Schweiz verlangen Unternehmen, Treuhänder, Behörden und Banken präzise formatierte PDFs — von komprimierten Bewerbungsdossiers über geschwärzte Vertragsunterlagen bis zur Excel-Auswertung von Kontoauszügen. PdfPixels verarbeitet gängige Aufgaben direkt im Browser oder löscht temporäre Dateien innert 60 Minuten.',
+    commonTasks: [
+      {
+        title: 'Kontoauszug in Excel / CSV umwandeln',
+        detail: 'PDF-Bankauszüge sauber als strukturierte Excel-Tabelle für die Buchhaltung exportieren.',
+        href: '/tools/bank-statement-to-excel',
+      },
+      {
+        title: 'PDF komprimieren & verbinden',
+        detail: 'Bewerbungsdossiers und Behördendokumente kompakt in eine geordnete Datei zusammenführen.',
+        href: '/de/tools/compress-pdf',
+      },
+      {
+        title: 'Vertrauliche Daten im PDF schwärzen',
+        detail: 'AHV-Nummern, Kontodaten und sensible Passagen vor dem Versand dauerhaft unkenntlich machen.',
+        href: '/de/tools/redact-pdf',
+      },
+    ],
+    localNotes: [
+      'Ideal für Treuhänder, KMU und Verwaltungen in Zürich, Genf, Basel und Bern — ohne Software-Installation.',
+      'Datenschutz nach Schweizer DSG & DSGVO: Browser-Tools arbeiten lokal, Server-Jobs werden nach 60 Minuten gelöscht.',
+      'Rechnungen, Verträge und PDF-Formulare lassen sich direkt digital ausfüllen und unterschreiben.',
+    ],
+    faqs: [
+      {
+        question: 'Ist PdfPixels in der Schweiz kostenlos nutzbar?',
+        answer: 'Ja. Alle Kernwerkzeuge für PDF-Komprimierung, Zusammenführen, Konvertierung und Schwärzung sind kostenlos und ohne Registrierung verfügbar.',
+      },
+      {
+        question: 'Wie schütze ich vertrauliche Schweizer Dokumente beim Bearbeiten?',
+        answer: 'Viele Werkzeuge laufen direkt lokal im Browser. Serverseitige Konvertierungen werden verschlüsselt übertragen und innerhalb von 60 Minuten gelöscht.',
+      },
+    ],
+  },
+  {
+    code: 'nl',
+    name: 'Netherlands',
+    adjective: 'Dutch',
+    locale: 'nl-NL',
+    localCopy: 'vertrouwd in Nederland',
+    headline: 'Gratis PDF & afbeelding tools voor Nederlandse formulieren, administratie & werk',
+    intro:
+      'In Nederland hebben ondernemers, studenten en kantoren dagelijks compacte PDFs nodig voor MijnOverheid, Belastingdienst-dossiers, DUO, sollicitaties en boekhouding. PdfPixels verkleint scans zonder leesbaarheidsverlies, zet bankafschriften om naar Excel en converteert iPhone HEIC-foto’s direct in de browser.',
+    commonTasks: [
+      {
+        title: 'Bankafschrift PDF naar Excel',
+        detail: 'Zet zakelijke en particuliere bankafschriften om naar Excel of CSV voor uw boekhouding.',
+        href: '/tools/bank-statement-to-excel',
+      },
+      {
+        title: 'PDF verkleinen & samenvoegen',
+        detail: 'Combineer contracten, facturen en bijlagen tot één compacte PDF voor e-mail of portalen.',
+        href: '/tools/compress-pdf',
+      },
+      {
+        title: 'PDF digitaal ondertekenen & invullen',
+        detail: 'Vul formulieren in en plaats een handtekening zonder printer of betaald abonnement.',
+        href: '/tools/sign-pdf',
+      },
+    ],
+    localNotes: [
+      'AVG-vriendelijk (GDPR): browser-native tools draaien op uw eigen apparaat; tijdelijke serverbestanden worden binnen 60 minuten verwijderd.',
+      'Ideaal voor ZZP’ers en MKB die snel facturen naar Excel willen exporteren of documenten willen beveiligen.',
+      'Zet HEIC-foto’s van een iPhone direct om naar JPG of PDF voordat een Nederlands portaal ze weigert.',
+    ],
+    faqs: [
+      {
+        question: 'Is PdfPixels gratis te gebruiken in Nederland?',
+        answer: 'Ja. Alle standaard PDF- en afbeeldingstools zijn gratis te gebruiken in moderne browsers zonder account.',
+      },
+      {
+        question: 'Kan ik een gescand PDF-document doorzoekbaar maken?',
+        answer: 'Ja, gebruik de OCR PDF-tool om tekst uit gescande bestanden te herkennen en te kopiëren.',
+      },
+    ],
+  },
+  {
+    code: 'it',
+    name: 'Italy',
+    adjective: 'Italian',
+    locale: 'it-IT',
+    localCopy: 'affidabile in Italia',
+    headline: 'Strumenti PDF e immagini gratuiti per pratiche SPID, PEC, lavoro e azienda',
+    intro:
+      'In Italia, l’invio di documenti via PEC, portali PA, INPS, concorsi pubblici e pratiche aziendali richiede PDF leggeri sotto i limiti di allegato e moduli firmati in ordine. PdfPixels consente di comprimere PDF, unire certificati, convertire estratti conto in Excel e trasformare foto HEIC direttamente dal browser.',
+    commonTasks: [
+      {
+        title: 'Comprimi PDF per PEC e portali',
+        detail: 'Riduci il peso dei documenti scansionati mantenendo il testo nitido per invii PEC e bandi.',
+        href: '/tools/compress-pdf',
+      },
+      {
+        title: 'Unisci e firma PDF online',
+        detail: 'Combina carta d’identità, moduli e allegati in un unico file pronto da firmare.',
+        href: '/tools/merge-pdf',
+      },
+      {
+        title: 'Da PDF ed estratti conto a Excel',
+        detail: 'Estrai tabelle, fatture ed estratti conto PDF in fogli Excel (.xlsx) o CSV.',
+        href: '/tools/bank-statement-to-excel',
+      },
+    ],
+    localNotes: [
+      'Conforme al GDPR: elaborazione locale nel browser o cancellazione automatica dai server entro 60 minuti.',
+      'Ottimo per ridurre allegati PEC troppo pesanti senza perdere la leggibilità di firme e timbri.',
+      'Converti facilmente foto da iPhone (HEIC) in JPG o PDF per moduli universitari e aziendali.',
+    ],
+    faqs: [
+      {
+        question: 'PdfPixels è gratuito in Italia?',
+        answer: 'Sì. Tutti gli strumenti principali per PDF e immagini sono gratuiti e utilizzabili senza registrazione.',
+      },
+      {
+        question: 'Posso estrarre tabelle da un PDF in Excel?',
+        answer: 'Sì. Usa PDF to Excel o Bank Statement to Excel per convertire dati tabellari in fogli modificabili.',
+      },
+    ],
+  },
+  {
+    code: 'mx',
+    name: 'Mexico',
+    adjective: 'Mexican',
+    locale: 'es-MX',
+    localCopy: 'confiable en México',
+    headline: 'Herramientas PDF e imagen gratis para trámites del SAT, empleo, facturas y universidad',
+    intro:
+      'En México, los trámites ante el SAT, IMSS, portales universitarios y procesos de contratación exigen archivos PDF ligeros, actas combinadas en un solo documento y estados de cuenta ordenados. PdfPixels te permite comprimir, unir, firmar y convertir documentos a Excel o Word gratis desde cualquier navegador.',
+    commonTasks: [
+      {
+        title: 'Comprimir PDF para portales y correo',
+        detail: 'Reduce el peso de escaneos y constancias para subirlos sin errores de tamaño.',
+        href: '/es/tools/compress-pdf',
+      },
+      {
+        title: 'Unir comprobantes en un solo PDF',
+        detail: 'Combina INE, CURP, comprobante de domicilio y currículum en un archivo ordenado.',
+        href: '/es/tools/merge-pdf',
+      },
+      {
+        title: 'Estados de cuenta y facturas a Excel',
+        detail: 'Convierte tablas y estados de cuenta PDF a Excel o CSV para tu contabilidad.',
+        href: '/es/tools/bank-statement-to-excel',
+      },
+    ],
+    localNotes: [
+      'Funciona rápido desde celular o computadora sin instalar programas pesados ni crear cuentas.',
+      'Los archivos procesados en servidor se eliminan automáticamente después de 60 minutos.',
+      'Convierte fotos HEIC de iPhone a JPG o PDF antes de subirlas a sistemas de gobierno o empleo.',
+    ],
+    faqs: [
+      {
+        question: '¿PdfPixels es gratis en México?',
+        answer: 'Sí. Las herramientas principales de PDF e imagen son gratuitas y no requieren tarjeta ni registro.',
+      },
+      {
+        question: '¿Puedo firmar un contrato o solicitud en PDF desde mi celular?',
+        answer: 'Sí. Abre Firmar PDF, dibuja o escribe tu firma y descarga el documento firmado al instante.',
       },
     ],
   },

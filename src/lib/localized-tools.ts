@@ -25,6 +25,10 @@ export const LOCALIZED_TOOL_SLUGS = [
   'word-to-pdf',
   'rotate-pdf',
   'webp-to-png',
+  'bank-statement-to-excel',
+  'excel-to-pdf',
+  'redact-pdf',
+  'fill-pdf',
 ] as const;
 
 export type LocalizedToolSlug = (typeof LOCALIZED_TOOL_SLUGS)[number];
@@ -339,6 +343,54 @@ const deTools: Record<LocalizedToolSlug, LocalizedToolCopy> = {
       'Verlustfreies PNG-Bild herunterladen.',
     ],
   },
+  'bank-statement-to-excel': {
+    name: 'Kontoauszug in Excel',
+    title: 'Kontoauszug PDF in Excel umwandeln – kostenlos, ohne Anmeldung',
+    description: 'Bank- und Kreditkartenauszüge im PDF-Format sauber in strukturierte Excel- (.xlsx) und CSV-Tabellen für Buchhaltung & Steuer konvertieren.',
+    howTitle: 'PDF-Kontoauszug in Excel oder CSV exportieren',
+    intro: 'Extrahieren Sie Buchungsdatum, Verwendungszweck, Soll, Haben und Saldo aus PDF-Kontoauszügen deutscher und internationaler Banken in saubere Excel- oder DATEV-kompatible CSV-Dateien.',
+    steps: [
+      'PDF-Kontoauszug hochladen (höchstens 50 MB).',
+      'Erkannte Transaktionen prüfen und bei Bedarf Spalten anpassen.',
+      'Formatierte Excel- (.xlsx) oder CSV-Datei herunterladen.',
+    ],
+  },
+  'excel-to-pdf': {
+    name: 'Excel in PDF',
+    title: 'Excel in PDF umwandeln – kostenlos, ohne Anmeldung',
+    description: 'Excel-Tabellen (.xlsx, .xls, .csv) mit sauberem Tabellenlayout in druckfertige PDF-Dokumente konvertieren.',
+    howTitle: 'Excel-Tabellen in PDF konvertieren',
+    intro: 'Verwandeln Sie Kalkulationstabellen, Rechnungen und CSV-Exporte in professionelle, layouttreue PDF-Dateien für Kunden, Behörden oder das Archiv.',
+    steps: [
+      'Excel- oder CSV-Datei hochladen (XLSX, XLS oder CSV).',
+      'Tabellenformatierung automatisch für PDF aufbereiten.',
+      'Fertige PDF-Datei direkt herunterladen.',
+    ],
+  },
+  'redact-pdf': {
+    name: 'PDF schwärzen',
+    title: 'PDF online schwärzen – DSGVO-sicher & kostenlos',
+    description: 'Vertrauliche Texte, IBANs, Kontonummern und personenbezogene Daten dauerhaft in PDF-Dateien schwärzen.',
+    howTitle: 'Sensible Daten im PDF dauerhaft schwärzen',
+    intro: 'Überdecken Sie sensible Inhalte wie Kontodaten, Adressen oder Vertragsklauseln dauerhaft und nicht wiederherstellbar — ideal für DSGVO-konforme Weitergaben.',
+    steps: [
+      'PDF-Dokument im Browser öffnen.',
+      'Vertrauliche Bereiche oder Textstellen zur Schwärzung markieren.',
+      'Das dauerhaft geschwärzte PDF herunterladen.',
+    ],
+  },
+  'fill-pdf': {
+    name: 'PDF ausfüllen',
+    title: 'PDF-Formulare online ausfüllen – kostenlos, ohne Anmeldung',
+    description: 'Interaktive PDF-Formulare und Anträge direkt im Browser ausfüllen, Text ergänzen und sauber speichern.',
+    howTitle: 'PDF-Anträge und Formulare digital ausfüllen',
+    intro: 'Füllen Sie Behördenformulare, Verträge und Anträge ohne Ausdrucken direkt im Browser aus. Textfelder, Kontrollkästchen und Datumsangaben werden sauber eingebettet.',
+    steps: [
+      'PDF-Formular hochladen.',
+      'Formularfelder anklicken und Text oder Häkchen eintragen.',
+      'Ausgefülltes PDF herunterladen.',
+    ],
+  },
 };
 
 const esTools: Record<LocalizedToolSlug, LocalizedToolCopy> = {
@@ -628,6 +680,54 @@ const esTools: Record<LocalizedToolSlug, LocalizedToolCopy> = {
       'Sube tu imagen WebP (máximo 25 MB).',
       'Inicia la conversión directa.',
       'Descarga tu imagen PNG sin pérdida.',
+    ],
+  },
+  'bank-statement-to-excel': {
+    name: 'Extracto bancario a Excel',
+    title: 'Convertir extracto bancario PDF a Excel – gratis, sin registro',
+    description: 'Convierte estados de cuenta y extractos bancarios en PDF a hojas de Excel (.xlsx) o CSV limpias para contabilidad.',
+    howTitle: 'Pasar un extracto bancario PDF a Excel o CSV',
+    intro: 'Extrae fechas, conceptos, cargos, abonos y saldos de extractos bancarios en PDF a tablas Excel listas para conciliar en tu software contable.',
+    steps: [
+      'Sube tu estado de cuenta o extracto en PDF (máximo 50 MB).',
+      'Revisa las filas de movimientos detectadas.',
+      'Descarga el archivo en Excel (.xlsx) o CSV.',
+    ],
+  },
+  'excel-to-pdf': {
+    name: 'Excel a PDF',
+    title: 'Convertir Excel a PDF – gratis, sin registro',
+    description: 'Transforma hojas de cálculo Excel (.xlsx, .xls, .csv) en documentos PDF listos para imprimir o enviar.',
+    howTitle: 'Convertir archivos de Excel en PDF',
+    intro: 'Convierte presupuestos, facturas y tablas de Excel o CSV a formato PDF estándar manteniendo las columnas limpias y legibles.',
+    steps: [
+      'Sube tu hoja de cálculo (XLSX, XLS o CSV).',
+      'Inicia la conversión a PDF.',
+      'Descarga el documento PDF generado.',
+    ],
+  },
+  'redact-pdf': {
+    name: 'Censurar PDF',
+    title: 'Censurar y tachar texto en PDF – gratis, sin registro',
+    description: 'Oculta de forma permanente datos confidenciales, DNI, cuentas bancarias o información sensible en documentos PDF.',
+    howTitle: 'Eliminar u ocultar datos confidenciales en un PDF',
+    intro: 'Aplica bloques opacos permanentes sobre números de cuenta, identificaciones o cláusulas confidenciales antes de compartir un expediente o contrato.',
+    steps: [
+      'Sube el archivo PDF que deseas censurar.',
+      'Selecciona las áreas con información sensible.',
+      'Descarga el PDF censurado de forma permanente.',
+    ],
+  },
+  'fill-pdf': {
+    name: 'Rellenar PDF',
+    title: 'Rellenar formularios PDF online – gratis, sin registro',
+    description: 'Completa formularios, contratos y solicitudes en PDF directamente desde el navegador sin imprimir.',
+    howTitle: 'Completar un formulario PDF en línea',
+    intro: 'Escribe texto, marca casillas y completa trámites oficiales o contratos en PDF sin instalar programas ni imprimir papel.',
+    steps: [
+      'Sube tu formulario PDF.',
+      'Haz clic en los campos para escribir tus datos.',
+      'Descarga el PDF ya rellenado.',
     ],
   },
 };
@@ -921,6 +1021,54 @@ const ptTools: Record<LocalizedToolSlug, LocalizedToolCopy> = {
       'Baixe a imagem PNG preservada.',
     ],
   },
+  'bank-statement-to-excel': {
+    name: 'Extrato bancário em Excel',
+    title: 'Converter extrato bancário PDF para Excel – grátis, sem cadastro',
+    description: 'Transforme extratos bancários e faturas de cartão em PDF em planilhas Excel (.xlsx) e CSV organizadas para contabilidade.',
+    howTitle: 'Extrair extrato bancário PDF para Excel ou CSV',
+    intro: 'Converta lançamentos, datas, débitos, créditos e saldos de extratos bancários em PDF para planilhas Excel prontas para conciliação financeira.',
+    steps: [
+      'Envie o extrato bancário em PDF (máximo de 50 MB).',
+      'Confira os lançamentos e colunas extraídos.',
+      'Baixe a planilha em Excel (.xlsx) ou CSV.',
+    ],
+  },
+  'excel-to-pdf': {
+    name: 'Excel em PDF',
+    title: 'Converter Excel em PDF – grátis, sem cadastro',
+    description: 'Converta planilhas Excel (.xlsx, .xls, .csv) em arquivos PDF limpos e prontos para impressão ou envio.',
+    howTitle: 'Transformar planilhas Excel em PDF',
+    intro: 'Converta orçamentos, relatórios financeiros e tabelas CSV para PDF preservando o alinhamento das colunas sem precisar do Office instalado.',
+    steps: [
+      'Envie sua planilha (XLSX, XLS ou CSV).',
+      'Inicie a conversão para PDF.',
+      'Baixe o arquivo PDF pronto.',
+    ],
+  },
+  'redact-pdf': {
+    name: 'Tarjar PDF',
+    title: 'Tarjar e ocultar dados em PDF – grátis, sem cadastro',
+    description: 'Oculte permanentemente CPF, dados bancários, valores e trechos sigilosos de documentos PDF antes de compartilhar.',
+    howTitle: 'Tarjar informações confidenciais em um PDF',
+    intro: 'Proteja dados pessoais e bancários conforme a LGPD aplicando tarjas definitivas em documentos, contratos e comprovantes PDF.',
+    steps: [
+      'Envie o documento PDF.',
+      'Marque as áreas com dados pessoais ou sigilosos.',
+      'Baixe o PDF com as tarjas permanentes aplicadas.',
+    ],
+  },
+  'fill-pdf': {
+    name: 'Preencher PDF',
+    title: 'Preencher formulários PDF online – grátis, sem cadastro',
+    description: 'Preencha formulários, fichas cadastrais e contratos em PDF direto no navegador, sem precisar imprimir.',
+    howTitle: 'Preencher um formulário PDF gratuitamente',
+    intro: 'Digite textos, preencha campos interativos e marque opções em documentos PDF com rapidez diretamente pelo navegador.',
+    steps: [
+      'Envie o formulário PDF.',
+      'Preencha os campos necessários na página.',
+      'Baixe o PDF preenchido.',
+    ],
+  },
 };
 
 const frTools: Record<LocalizedToolSlug, LocalizedToolCopy> = {
@@ -1212,6 +1360,54 @@ const frTools: Record<LocalizedToolSlug, LocalizedToolCopy> = {
       'Téléchargez l’image PNG haute fidélité.',
     ],
   },
+  'bank-statement-to-excel': {
+    name: 'Relevé bancaire en Excel',
+    title: 'Convertir un relevé bancaire PDF en Excel – gratuit, sans inscription',
+    description: 'Convertissez vos relevés bancaires et cartes de crédit PDF en fichiers Excel (.xlsx) ou CSV structurés pour la comptabilité.',
+    howTitle: 'Exporter un relevé bancaire PDF vers Excel ou CSV',
+    intro: 'Extrayez automatiquement les dates, libellés, débits, crédits et soldes de vos relevés bancaires PDF vers un tableau Excel prêt pour votre logiciel comptable.',
+    steps: [
+      'Déposez votre relevé bancaire PDF (50 Mo maximum).',
+      'Vérifiez les opérations détectées à l’écran.',
+      'Téléchargez le classeur Excel (.xlsx) ou CSV.',
+    ],
+  },
+  'excel-to-pdf': {
+    name: 'Excel en PDF',
+    title: 'Convertir Excel en PDF – gratuit, sans inscription',
+    description: 'Convertissez des feuilles de calcul Excel (.xlsx, .xls, .csv) en documents PDF nets et prêts pour l’impression.',
+    howTitle: 'Convertir un tableau Excel en PDF',
+    intro: 'Transformez vos devis, factures et tableaux CSV en fichiers PDF lisibles tout en préservant l’alignement des colonnes, sans installer Microsoft Office.',
+    steps: [
+      'Déposez votre fichier Excel ou CSV (XLSX, XLS ou CSV).',
+      'Lancez la conversion en PDF.',
+      'Téléchargez le document PDF généré.',
+    ],
+  },
+  'redact-pdf': {
+    name: 'Biffer un PDF',
+    title: 'Masquer et biffer un PDF en ligne – conforme RGPD, gratuit',
+    description: 'Masquez définitivement les données sensibles, IBAN, numéros fiscaux et informations personnelles dans vos fichiers PDF.',
+    howTitle: 'Supprimer ou biffer des données sensibles dans un PDF',
+    intro: 'Appliquez des zones de masquage irréversibles sur les informations confidentielles avant d’envoyer un dossier administratif ou un contrat.',
+    steps: [
+      'Importez le document PDF à anonymiser.',
+      'Sélectionnez les zones contenant des données sensibles.',
+      'Téléchargez le PDF définitivement biffé.',
+    ],
+  },
+  'fill-pdf': {
+    name: 'Remplir un PDF',
+    title: 'Remplir un formulaire PDF en ligne – gratuit, sans inscription',
+    description: 'Complétez des formulaires administratifs, CERFA et contrats PDF directement dans votre navigateur sans imprimer.',
+    howTitle: 'Remplir un formulaire PDF gratuitement',
+    intro: 'Saisissez du texte, cochez des cases et complétez vos formulaires PDF directement en ligne, puis téléchargez le fichier prêt à envoyer.',
+    steps: [
+      'Importez votre formulaire PDF.',
+      'Cliquez sur les champs pour saisir vos informations.',
+      'Téléchargez le PDF rempli.',
+    ],
+  },
 };
 
 const jpTools: Record<LocalizedToolSlug, LocalizedToolCopy> = {
@@ -1501,6 +1697,54 @@ const jpTools: Record<LocalizedToolSlug, LocalizedToolCopy> = {
       'WebP画像をアップロード（最大25MB）。',
       'PNGへの変換を実行。',
       '透過PNG画像をダウンロード。',
+    ],
+  },
+  'bank-statement-to-excel': {
+    name: '銀行明細PDFをExcelに',
+    title: '銀行取引明細・通帳PDFをExcelに変換 – 無料、登録不要',
+    description: '銀行の入出金明細やクレジットカード利用明細PDFを、会計処理に使えるきれいなExcel（.xlsx）・CSVデータに変換します。',
+    howTitle: '銀行明細PDFをExcelまたはCSVに出力する',
+    intro: 'PDF形式の取引明細から日付・摘要・出金・入金・残高を自動抽出し、確定申告や経理ソフトに取り込みやすいExcel／CSV形式でダウンロードできます。',
+    steps: [
+      '銀行またはカード明細のPDFをアップロード（最大50MB）。',
+      '抽出された明細行と金額を確認。',
+      'Excel（.xlsx）またはCSVファイルをダウンロード。',
+    ],
+  },
+  'excel-to-pdf': {
+    name: 'ExcelをPDFに',
+    title: 'ExcelをPDFに変換 – 無料、登録不要',
+    description: 'Excel表計算ファイル（.xlsx、.xls、.csv）のレイアウトを保ったまま、印刷や提出用のPDFに変換します。',
+    howTitle: 'ExcelやCSVファイルをPDFに変換する',
+    intro: '請求書、見積書、集計表などのExcel・CSVデータを、崩れにくい見やすいPDF書類へブラウザ上ですばやく変換できます。',
+    steps: [
+      'ExcelまたはCSVファイルをアップロード（XLSX・XLS・CSV対応）。',
+      'PDF変換を実行。',
+      '作成されたPDFをダウンロード。',
+    ],
+  },
+  'redact-pdf': {
+    name: 'PDFの黒塗り（墨消し）',
+    title: 'PDFをオンラインで黒塗り・墨消し – 無料、登録不要',
+    description: 'マイナンバー、口座番号、住所などの機密情報や個人情報をPDF上で完全に黒塗り（墨消し）して保護します。',
+    howTitle: 'PDF内の機密情報を黒塗りして隠す',
+    intro: '社外共有や行政提出の前に、個人情報や非公開金額を復元できない形で黒塗り処理できます。情報漏えい対策に最適です。',
+    steps: [
+      '黒塗りしたいPDFファイルをアップロード。',
+      '隠したい箇所を範囲指定して墨消しを適用。',
+      '黒塗り済みのPDFをダウンロード。',
+    ],
+  },
+  'fill-pdf': {
+    name: 'PDFフォームに入力',
+    title: 'PDF書類・申請書にオンライン入力 – 無料、登録不要',
+    description: '印刷せずにブラウザ上でPDFの申請書や契約書へ文字入力・チェックマーク記入ができる無料ツールです。',
+    howTitle: 'PDF書類に文字やチェックを入力する',
+    intro: '役所への申請書やビジネスの申込書PDFを印刷する手間なく、画面上で直接テキストを入力してPDFとして保存できます。',
+    steps: [
+      '入力したいPDFフォームをアップロード。',
+      '入力欄をクリックして文字やチェックを記入。',
+      '入力済みのPDFをダウンロード。',
     ],
   },
 };
