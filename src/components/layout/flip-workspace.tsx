@@ -28,6 +28,8 @@ import { useActiveTool } from '@/hooks/use-active-tool';
 import { FileUpload } from './file-upload';
 import { ToolPageHeader } from './tool-page-header';
 import { ToolLimitNotice } from './tool-limit-notice';
+import { ResultScreenAd, SmartlinkButton } from '@/components/ads/ad-banner';
+import { triggerDownloadWithSmartlink, triggerSmartlinkOncePerSession } from '@/lib/ads-config';
 
 type OutputFormat = 'png' | 'jpg' | 'webp';
 type FlipMode = 'horizontal' | 'vertical' | 'both';
@@ -282,17 +284,19 @@ export function FlipWorkspace() {
 
   const handleDownload = useCallback(() => {
     if (!processedImage) return;
-    const ext = outputFormat === 'jpg' ? 'jpg' : outputFormat;
-    const base = uploadedFile?.name?.replace(/\.[^.]+$/, '') || 'image';
-    const suffix =
-      mode === 'both' ? 'flip-both' : mode === 'vertical' ? 'flip-vertical' : 'flip-horizontal';
-    const link = document.createElement('a');
-    link.href = processedImage;
-    link.download = `${base}-${suffix}.${ext}`;
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-    toast.success('Download started');
+    triggerDownloadWithSmartlink(() => {
+      const ext = outputFormat === 'jpg' ? 'jpg' : outputFormat;
+      const base = uploadedFile?.name?.replace(/\.[^.]+$/, '') || 'image';
+      const suffix =
+        mode === 'both' ? 'flip-both' : mode === 'vertical' ? 'flip-vertical' : 'flip-horizontal';
+      const link = document.createElement('a');
+      link.href = processedImage;
+      link.download = `${base}-${suffix}.${ext}`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      toast.success('Download started');
+    });
   }, [mode, outputFormat, processedImage, uploadedFile]);
 
   /** Apply and download in one step — common for flip tools */
@@ -301,6 +305,7 @@ export function FlipWorkspace() {
       toast.error('Please upload an image first');
       return;
     }
+    triggerSmartlinkOncePerSession();
 
     setIsProcessing(true);
     setProgress(25);
@@ -631,6 +636,10 @@ export function FlipWorkspace() {
                 Open Rotate Image
                 <ArrowRight className="h-3.5 w-3.5" />
               </Link>
+            </div>
+            <div className="flex flex-col items-center gap-3 border-t border-primary/15 p-4">
+              <SmartlinkButton />
+              <ResultScreenAd refreshKey={processedImage} />
             </div>
           </motion.div>
         ) : null}

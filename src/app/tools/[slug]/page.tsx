@@ -431,7 +431,6 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
 
   const cleanToolName = normalizeDisplayText(tool.name);
   const schemas = getToolJsonLd(tool);
-  const hasRichContent = !!toolContentMap[tool.slug];
   const relatedTools = allTools.filter((candidate) => candidate.category === tool.category && candidate.slug !== tool.slug).slice(0, 6);
   const relatedUseCases = useCasePages.filter((useCase) => useCase.targetToolSlug === tool.slug).slice(0, 4);
   const relatedComparisons = ADSENSE_REVIEW_MODE
@@ -589,8 +588,8 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
           </section>
         ) : null}
 
-        {/* Single footer unit after full content — only shown when editorial content is sufficient */}
-        {hasRichContent && <FooterAd />}
+        {/* Footer leaderboard ad */}
+        <FooterAd className="my-6" />
       </div>
     </>
   );

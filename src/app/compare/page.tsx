@@ -6,6 +6,7 @@ import { CompareClient } from './CompareClient';
 import { collectionItemListJsonLd } from '@/app/jsonld-helpers';
 import { ADSENSE_REVIEW_MODE, SITE_URL, absoluteUrl, DEFAULT_OG_IMAGE_URL } from '@/lib/seo';
 import { siteConfig } from '@/lib/seo-config';
+import { HeaderAd, NativeAd, FooterAd } from '@/components/ads/ad-banner';
 
 export const metadata: Metadata = {
     title: 'Tool Comparisons & Guides',
@@ -93,12 +94,17 @@ export default function CompareIndexPage() {
                     </div>
                 </section>
 
+                <HeaderAd className="my-4" />
+
                 {/* Content */}
                 <section className="py-12 lg:py-16">
                     <div className="container mx-auto px-4 lg:px-8 max-w-6xl">
                         <CompareClient comparisons={comparisonPages} />
                     </div>
                 </section>
+
+                <NativeAd className="my-10 max-w-5xl mx-auto px-4" />
+                <FooterAd className="my-6" />
             </main>
         </>
     );

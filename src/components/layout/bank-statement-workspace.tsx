@@ -28,6 +28,8 @@ import { useActiveTool } from '@/hooks/use-active-tool';
 import { FileUpload } from './file-upload';
 import { ToolPageHeader } from './tool-page-header';
 import { ToolLimitNotice } from './tool-limit-notice';
+import { ResultScreenAd, SmartlinkButton } from '@/components/ads/ad-banner';
+import { triggerSmartlinkOncePerSession } from '@/lib/ads-config';
 import { toast } from 'sonner';
 
 interface Transaction {
@@ -211,6 +213,7 @@ export function BankStatementWorkspace() {
   // Download XLSX, CSV, QuickBooks, or Tally with current verified/edited state
   const handleDownload = async (format: 'xlsx' | 'csv' | 'quickbooks' | 'tally') => {
     if (!uploadedFile || transactions.length === 0) return;
+    triggerSmartlinkOncePerSession();
     setIsExporting(true);
 
     try {
@@ -353,7 +356,7 @@ export function BankStatementWorkspace() {
               </p>
             </div>
 
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-3">
               <Button
                 size="sm"
                 onClick={() => handleDownload('xlsx')}
@@ -391,6 +394,7 @@ export function BankStatementWorkspace() {
               >
                 Tally Format
               </Button>
+              <SmartlinkButton className="min-h-9 py-1.5 text-xs rounded-xl" />
               <Button
                 size="sm"
                 variant="ghost"
@@ -401,6 +405,8 @@ export function BankStatementWorkspace() {
               </Button>
             </div>
           </div>
+
+          {transactions.length > 0 && <ResultScreenAd />}
 
           {/* Financial Summary Cards */}
           {transactions.length > 0 && (

@@ -10,6 +10,8 @@ import { useAppStore } from '@/store/app-store';
 import { FileUpload } from './file-upload';
 import { ToolPageHeader } from './tool-page-header';
 import { ToolLimitNotice } from './tool-limit-notice';
+import { ResultScreenAd, SmartlinkButton } from '@/components/ads/ad-banner';
+import { triggerDownloadWithSmartlink } from '@/lib/ads-config';
 import { toast } from 'sonner';
 
 type Position = 'top-left' | 'top-center' | 'top-right' | 'bottom-left' | 'bottom-center' | 'bottom-right';
@@ -81,13 +83,15 @@ export function BatesNumberingWorkspace() {
 
   const handleDownload = () => {
     if (!downloadUrl) return;
-    const a = document.createElement('a');
-    a.href = downloadUrl;
-    a.download = stampedFileName || 'bates-stamped-document.pdf';
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    toast.success('Downloaded Bates-stamped document!');
+    triggerDownloadWithSmartlink(() => {
+      const a = document.createElement('a');
+      a.href = downloadUrl;
+      a.download = stampedFileName || 'bates-stamped-document.pdf';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      toast.success('Downloaded Bates-stamped document!');
+    });
   };
 
   return (
@@ -340,6 +344,8 @@ export function BatesNumberingWorkspace() {
                     <Button onClick={handleDownload} className="w-full gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold">
                       <Download className="w-4 h-4" /> Download Stamped PDF
                     </Button>
+                    <SmartlinkButton className="w-full justify-center" />
+                    <ResultScreenAd refreshKey={downloadUrl} />
                   </div>
                 )}
 

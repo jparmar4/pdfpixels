@@ -19,6 +19,8 @@ import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { ToolLimitNotice } from './tool-limit-notice';
 import { platformLimits } from '@/lib/limits';
+import { ResultScreenAd, SmartlinkButton } from '@/components/ads/ad-banner';
+import { triggerDownloadWithSmartlink } from '@/lib/ads-config';
 
 const LANGUAGES = [
     { value: 'eng', label: 'English' },
@@ -136,17 +138,19 @@ export function OCRWorkspace() {
 
     const handleDownloadText = useCallback(() => {
         if (!extractedText) return;
-        const blob = new Blob([extractedText], { type: 'text/plain;charset=utf-8' });
-        const url = URL.createObjectURL(blob);
-        const base = uploadedFile?.name?.replace(/\.[^.]+$/, '') || 'extracted-text';
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = `${base}-ocr.txt`;
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
-        URL.revokeObjectURL(url);
-        toast.success('Download started');
+        triggerDownloadWithSmartlink(() => {
+            const blob = new Blob([extractedText], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const base = uploadedFile?.name?.replace(/\.[^.]+$/, '') || 'extracted-text';
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `${base}-ocr.txt`;
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            URL.revokeObjectURL(url);
+            toast.success('Download started');
+        });
     }, [extractedText, uploadedFile]);
 
     const handleReset = useCallback(() => {
@@ -236,6 +240,10 @@ export function OCRWorkspace() {
                                             {copied ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
                                             {copied ? 'Copied!' : 'Copy All'}
                                         </Button>
+                                    </div>
+                                    <div className="flex flex-col items-center gap-3 pt-4 mt-3 border-t border-primary/15">
+                                        <SmartlinkButton />
+                                        <ResultScreenAd refreshKey={charCount} />
                                     </div>
                                 </div>
                             </motion.div>

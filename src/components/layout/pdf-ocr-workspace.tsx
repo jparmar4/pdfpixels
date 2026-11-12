@@ -9,6 +9,8 @@ import { useActiveTool } from '@/hooks/use-active-tool';
 import { FileUpload } from './file-upload';
 import { ToolPageHeader } from './tool-page-header';
 import { ToolLimitNotice } from './tool-limit-notice';
+import { ResultScreenAd, SmartlinkButton } from '@/components/ads/ad-banner';
+import { triggerDownloadWithSmartlink } from '@/lib/ads-config';
 import { useState, useCallback, useEffect } from 'react';
 import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
@@ -100,16 +102,18 @@ export function PDFOcrWorkspace() {
 
   const handleDownloadTxt = () => {
     if (!result?.text) return;
-    const blob = new Blob([result.text], { type: 'text/plain;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = uploadedFile ? uploadedFile.name.replace(/\.pdf$/i, '-ocr.txt') : 'ocr-text.txt';
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(url);
-    toast.success('Downloaded .txt file');
+    triggerDownloadWithSmartlink(() => {
+      const blob = new Blob([result.text], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = uploadedFile ? uploadedFile.name.replace(/\.pdf$/i, '-ocr.txt') : 'ocr-text.txt';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      toast.success('Downloaded .txt file');
+    });
   };
 
   return (
@@ -180,6 +184,13 @@ export function PDFOcrWorkspace() {
               aria-label="Recognized text"
             />
           </div>
+
+          {result && (
+            <div className="flex flex-col items-center gap-3 pt-2">
+              <SmartlinkButton />
+              <ResultScreenAd refreshKey={result.charCount} />
+            </div>
+          )}
 
           {result?.truncated && (
             <p className="text-xs text-muted-foreground">

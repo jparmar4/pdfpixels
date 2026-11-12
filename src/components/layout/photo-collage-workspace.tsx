@@ -15,6 +15,8 @@ import {
 import { useActiveTool } from '@/hooks/use-active-tool';
 import { ToolPageHeader } from './tool-page-header';
 import { ToolLimitNotice } from './tool-limit-notice';
+import { ResultScreenAd, SmartlinkButton } from '@/components/ads/ad-banner';
+import { triggerSmartlinkOncePerSession } from '@/lib/ads-config';
 import { toast } from 'sonner';
 
 const MAX_IMAGES = 9;
@@ -128,6 +130,7 @@ export function PhotoCollageWorkspace() {
   const handleDownload = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas || images.length === 0) return;
+    triggerSmartlinkOncePerSession();
     const mime = format === 'png' ? 'image/png' : 'image/jpeg';
     canvas.toBlob(
       (blob) => {
@@ -365,6 +368,12 @@ export function PhotoCollageWorkspace() {
               <Button variant="outline" className="w-full gap-2 rounded-xl" onClick={handleReset}>
                 <RotateCcw className="w-4 h-4" /> Start Over
               </Button>
+              {images.length > 0 && (
+                <div className="space-y-3 pt-2">
+                  <SmartlinkButton className="w-full justify-center" />
+                  <ResultScreenAd refreshKey={images.length} />
+                </div>
+              )}
             </div>
           </div>
 

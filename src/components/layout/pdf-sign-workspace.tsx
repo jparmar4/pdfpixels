@@ -13,6 +13,8 @@ import { useAppStore } from '@/store/app-store';
 import { FileUpload } from './file-upload';
 import { ToolPageHeader } from './tool-page-header';
 import { ToolLimitNotice } from './tool-limit-notice';
+import { ResultScreenAd, SmartlinkButton } from '@/components/ads/ad-banner';
+import { triggerDownloadWithSmartlink } from '@/lib/ads-config';
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
@@ -255,13 +257,15 @@ export function PDFSignWorkspace() {
 
   const handleDownload = () => {
     if (!resultUrl) return;
-    const a = document.createElement('a');
-    a.href = resultUrl;
-    a.download = resultFileName || 'signed-document.pdf';
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    toast.success('Download started');
+    triggerDownloadWithSmartlink(() => {
+      const a = document.createElement('a');
+      a.href = resultUrl;
+      a.download = resultFileName || 'signed-document.pdf';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      toast.success('Download started');
+    });
   };
 
   const handleReset = useCallback(() => {
@@ -595,6 +599,8 @@ export function PDFSignWorkspace() {
                   <Button onClick={handleDownload} className="w-full font-semibold gap-2 rounded-xl">
                     <Download className="w-4 h-4" /> Download Signed PDF
                   </Button>
+                  <SmartlinkButton className="w-full justify-center" />
+                  <ResultScreenAd refreshKey={resultUrl} />
                 </motion.div>
               )}
             </div>

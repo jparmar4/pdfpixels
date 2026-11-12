@@ -7,6 +7,8 @@ import { useActiveTool } from '@/hooks/use-active-tool';
 import { FileUpload } from './file-upload';
 import { ToolPageHeader } from './tool-page-header';
 import { ToolLimitNotice } from './tool-limit-notice';
+import { ResultScreenAd, SmartlinkButton } from '@/components/ads/ad-banner';
+import { triggerDownloadWithSmartlink } from '@/lib/ads-config';
 import { useState, useCallback, useEffect } from 'react';
 import { toast } from 'sonner';
 
@@ -74,13 +76,15 @@ export function PDFToPptxWorkspace() {
 
   const handleDownload = () => {
     if (!result) return;
-    const link = document.createElement('a');
-    link.href = result.url;
-    link.download = result.name;
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-    toast.success('Download started');
+    triggerDownloadWithSmartlink(() => {
+      const link = document.createElement('a');
+      link.href = result.url;
+      link.download = result.name;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      toast.success('Download started');
+    });
   };
 
   return (
@@ -120,29 +124,35 @@ export function PDFToPptxWorkspace() {
           )}
 
           {result && !isProcessing && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="rounded-2xl border border-emerald-500/30 bg-emerald-500/5 p-6 flex flex-wrap items-center justify-between gap-3"
-            >
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center">
-                  <Presentation className="w-6 h-6 text-emerald-600" />
+            <div className="space-y-4">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="rounded-2xl border border-emerald-500/30 bg-emerald-500/5 p-6 flex flex-wrap items-center justify-between gap-3"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center">
+                    <Presentation className="w-6 h-6 text-emerald-600" />
+                  </div>
+                  <div>
+                    <p className="font-semibold">{result.name}</p>
+                    <p className="text-sm text-muted-foreground">Each PDF page is one slide — add your own text on top.</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="font-semibold">{result.name}</p>
-                  <p className="text-sm text-muted-foreground">Each PDF page is one slide — add your own text on top.</p>
+                <div className="flex items-center gap-2">
+                  <Button onClick={handleDownload} className="gap-2 btn-premium rounded-xl">
+                    <Download className="w-4 h-4" /> Download .PPTX
+                  </Button>
+                  <Button size="sm" variant="ghost" onClick={handleReset} className="text-xs text-muted-foreground">
+                    <RotateCcw className="w-3.5 h-3.5 mr-1.5" /> Start Over
+                  </Button>
                 </div>
+              </motion.div>
+              <div className="flex flex-col items-center gap-3">
+                <SmartlinkButton />
+                <ResultScreenAd refreshKey={result.url} />
               </div>
-              <div className="flex items-center gap-2">
-                <Button onClick={handleDownload} className="gap-2 btn-premium rounded-xl">
-                  <Download className="w-4 h-4" /> Download .PPTX
-                </Button>
-                <Button size="sm" variant="ghost" onClick={handleReset} className="text-xs text-muted-foreground">
-                  <RotateCcw className="w-3.5 h-3.5 mr-1.5" /> Start Over
-                </Button>
-              </div>
-            </motion.div>
+            </div>
           )}
         </div>
       )}

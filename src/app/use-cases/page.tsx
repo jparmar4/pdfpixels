@@ -3,6 +3,7 @@ import { collectionItemListJsonLd } from '@/app/jsonld-helpers';
 import { SITE_URL, absoluteUrl, DEFAULT_OG_IMAGE_URL } from '@/lib/seo';
 import { siteConfig } from '@/lib/seo-config';
 import { useCasePages } from '@/lib/use-cases';
+import { HeaderAd, NativeAd, FooterAd } from '@/components/ads/ad-banner';
 import { UseCasesClient } from './use-cases-client';
 
 export const metadata: Metadata = {
@@ -60,7 +61,10 @@ export default function UseCasesIndexPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <main id="main-content" className="flex-1">
+        <HeaderAd className="my-4" />
         <UseCasesClient />
+        <NativeAd className="my-10 max-w-5xl mx-auto px-4" />
+        <FooterAd className="my-6" />
       </main>
     </div>
   );

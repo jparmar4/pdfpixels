@@ -8,6 +8,8 @@ import { Input } from '@/components/ui/input';
 import { useActiveTool } from '@/hooks/use-active-tool';
 import { FileUpload } from './file-upload';
 import { ToolPageHeader } from './tool-page-header';
+import { ResultScreenAd, SmartlinkButton } from '@/components/ads/ad-banner';
+import { triggerDownloadWithSmartlink } from '@/lib/ads-config';
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
@@ -273,13 +275,15 @@ export function SignatureWorkspace() {
   const handleDownload = useCallback(() => {
     const src = processedImage || signatureData;
     if (!src) return;
-    const link = document.createElement('a');
-    link.href = src;
-    link.download = `${toolId}-${Date.now()}.png`;
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-    toast.success('Download started');
+    triggerDownloadWithSmartlink(() => {
+      const link = document.createElement('a');
+      link.href = src;
+      link.download = `${toolId}-${Date.now()}.png`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      toast.success('Download started');
+    });
   }, [processedImage, signatureData, toolId]);
 
   const handleReset = useCallback(() => {
@@ -390,6 +394,10 @@ export function SignatureWorkspace() {
               </div>
               <div className="flex items-center justify-center bg-[linear-gradient(45deg,#e5e7eb_25%,transparent_25%),linear-gradient(-45deg,#e5e7eb_25%,transparent_25%),linear-gradient(45deg,transparent_75%,#e5e7eb_75%),linear-gradient(-45deg,transparent_75%,#e5e7eb_75%)] bg-[length:16px_16px] p-6">
                 <img src={processedImage || signatureData || ''} alt="Signature result" className="max-h-64 max-w-full object-contain" />
+              </div>
+              <div className="flex flex-col items-center gap-3 border-t border-primary/15 p-4">
+                <SmartlinkButton />
+                <ResultScreenAd refreshKey={processedImage || signatureData || undefined} />
               </div>
             </motion.div>
           ) : null}

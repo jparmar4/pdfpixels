@@ -85,7 +85,7 @@ export function CookieConsentBanner() {
                     <h3 className="font-semibold text-lg mb-1">Cookie Preferences</h3>
                     <p className="text-sm text-muted-foreground">
                       We use cookies to enhance your experience, analyze site traffic, and serve 
-                      personalized ads through Google AdSense. You can choose your preferences below.
+                      personalized ads through our advertising partners. You can choose your preferences below.
                     </p>
                   </div>
                   <button

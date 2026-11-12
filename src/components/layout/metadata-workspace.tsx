@@ -9,6 +9,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { useActiveTool } from '@/hooks/use-active-tool';
 import { FileUpload } from './file-upload';
 import { ToolPageHeader } from './tool-page-header';
+import { ResultScreenAd, SmartlinkButton } from '@/components/ads/ad-banner';
+import { triggerDownloadWithSmartlink } from '@/lib/ads-config';
 import { useState, useCallback, useEffect } from 'react';
 import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
@@ -459,13 +461,15 @@ export function MetadataWorkspace() {
 
   const handleDownload = useCallback(() => {
     if (!processedImage) return;
-    const link = document.createElement('a');
-    link.href = processedImage;
-    link.download = outputName;
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-    toast.success('Download started');
+    triggerDownloadWithSmartlink(() => {
+      const link = document.createElement('a');
+      link.href = processedImage;
+      link.download = outputName;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      toast.success('Download started');
+    });
   }, [outputName, processedImage]);
 
   const handleReset = useCallback(() => {
@@ -608,6 +612,10 @@ export function MetadataWorkspace() {
               </div>
               <div className="aspect-video bg-muted/50 flex items-center justify-center p-4">
                 <img src={processedImage} alt="Processed metadata output" className="max-w-full max-h-full object-contain" />
+              </div>
+              <div className="flex flex-col items-center gap-3 border-t border-border p-4">
+                <SmartlinkButton />
+                <ResultScreenAd refreshKey={processedImage} />
               </div>
             </div>
           )}

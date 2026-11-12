@@ -5,6 +5,7 @@ import { RotateCcw, ArrowLeftRight, FileText, Plus, Minus, Copy, Check } from 'l
 import { Button } from '@/components/ui/button';
 import { ToolPageHeader } from './tool-page-header';
 import { ToolLimitNotice } from './tool-limit-notice';
+import { ResultScreenAd, SmartlinkButton } from '@/components/ads/ad-banner';
 import { toast } from 'sonner';
 
 interface DiffItem {
@@ -276,6 +277,11 @@ export function ComparePdfWorkspace() {
                   );
                 })}
               </div>
+            </div>
+
+            <div className="flex flex-col items-center gap-3 pt-2">
+              <SmartlinkButton />
+              <ResultScreenAd refreshKey={stats.similarity} />
             </div>
           </div>
         )}

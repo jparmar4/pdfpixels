@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { ExternalLink } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { adsenseConfig, adsterraConfig, adsConfig } from '@/lib/ads-config';
 
@@ -70,8 +71,9 @@ export function GoogleAdSenseUnit({
 }
 
 /**
- * Isolated iframe container for Adsterra banner scripts (fallback).
- * Isolates atOptions on the iframe's own window to avoid race conditions.
+ * Isolated iframe container for Adsterra banner scripts.
+ * Isolates atOptions on the iframe's own window to avoid race conditions,
+ * eliminates CLS with explicit dimensions, and supports refreshKey for multi-run tools.
  */
 export function AdsterraIframe({
   adKey,
@@ -79,16 +81,18 @@ export function AdsterraIframe({
   height,
   className,
   loading = 'lazy',
+  refreshKey,
 }: {
   adKey: string;
   width: number;
   height: number;
   className?: string;
   loading?: 'lazy' | 'eager';
+  refreshKey?: string | number;
 }) {
   if (!adsterraConfig.enabled || !adKey) return null;
 
-  const scriptHost = process.env.NEXT_PUBLIC_ADSTERRA_HOST || 'https://www.profitablecpmrate.com';
+  const scriptHost = adsterraConfig.scriptHost || 'https://bauval.org';
   const srcDoc = `<!DOCTYPE html>
 <html>
   <head>
@@ -120,6 +124,7 @@ export function AdsterraIframe({
       style={{ width: '100%', minHeight: height }}
     >
       <iframe
+        key={refreshKey !== undefined ? `${adKey}-${refreshKey}` : adKey}
         title={`adsterra-${adKey}`}
         width={width}
         height={height}
@@ -134,7 +139,9 @@ export function AdsterraIframe({
 }
 
 /**
- * Adsterra Native Banner container (fallback).
+ * Adsterra Native Banner container (4-item / responsive recommendation grid).
+ * Rendered inside an isolated iframe to prevent ID collisions, eliminate CLS,
+ * and guarantee reliable impression tracking across App Router page navigations.
  */
 export function AdsterraNativeBanner({ className }: { className?: string }) {
   if (!adsterraConfig.enabled || !adsterraConfig.slots.nativeBanner.scriptSrc) return null;
@@ -159,11 +166,11 @@ export function AdsterraNativeBanner({ className }: { className?: string }) {
   return (
     <div className={cn('my-6 w-full flex flex-col items-center justify-center overflow-hidden', className)}>
       <AdLabel />
-      <div className="w-full flex items-center justify-center min-h-[160px]">
+      <div className="w-full flex items-center justify-center min-h-[240px]">
         <iframe
           title="adsterra-native-banner"
           width="100%"
-          height="160"
+          height="240"
           loading="lazy"
           scrolling="no"
           frameBorder="0"
@@ -172,6 +179,65 @@ export function AdsterraNativeBanner({ className }: { className?: string }) {
         />
       </div>
     </div>
+  );
+}
+
+/**
+ * High-converting Adsterra Smartlink CTA button shown alongside download buttons.
+ */
+export function SmartlinkButton({ className }: { className?: string } = {}) {
+  if (!adsterraConfig.enabled || !adsterraConfig.smartlink) return null;
+
+  return (
+    <a
+      href={adsterraConfig.smartlink}
+      target="_blank"
+      rel="noopener noreferrer sponsored"
+      className={cn(
+        'inline-flex min-h-11 items-center justify-center gap-2 rounded-2xl border border-amber-400/50 bg-amber-50 px-4 py-2.5 text-sm font-semibold text-amber-700 transition-all hover:-translate-y-0.5 hover:bg-amber-100 hover:shadow-soft dark:bg-amber-900/20 dark:text-amber-300 dark:hover:bg-amber-900/30',
+        className,
+      )}
+    >
+      <ExternalLink className="h-4 w-4 shrink-0" />
+      <span>🎯 Get More PDF &amp; Office Tools →</span>
+    </a>
+  );
+}
+
+function ResponsiveHorizontalAdsterra({ loading = 'lazy' }: { loading?: 'lazy' | 'eager' }) {
+  return (
+    <>
+      {adsterraConfig.slots.banner728x90.key && (
+        <div className="hidden md:flex justify-center w-full">
+          <AdsterraIframe
+            adKey={adsterraConfig.slots.banner728x90.key}
+            width={adsterraConfig.slots.banner728x90.width}
+            height={adsterraConfig.slots.banner728x90.height}
+            loading={loading}
+          />
+        </div>
+      )}
+      {adsterraConfig.slots.banner468x60.key && (
+        <div className="hidden min-[520px]:flex md:hidden justify-center w-full">
+          <AdsterraIframe
+            adKey={adsterraConfig.slots.banner468x60.key}
+            width={adsterraConfig.slots.banner468x60.width}
+            height={adsterraConfig.slots.banner468x60.height}
+            loading={loading}
+          />
+        </div>
+      )}
+      {adsterraConfig.slots.banner320x50.key && (
+        <div className="flex min-[520px]:hidden justify-center w-full">
+          <AdsterraIframe
+            adKey={adsterraConfig.slots.banner320x50.key}
+            width={adsterraConfig.slots.banner320x50.width}
+            height={adsterraConfig.slots.banner320x50.height}
+            loading={loading}
+          />
+        </div>
+      )}
+    </>
   );
 }
 
@@ -228,20 +294,7 @@ export function AdBanner({
     return (
       <div className={cn('w-full flex flex-col items-center justify-center', className)}>
         {labeled && <AdLabel />}
-        <div className="hidden md:flex justify-center w-full">
-          <AdsterraIframe
-            adKey={adsterraConfig.slots.banner728x90.key}
-            width={adsterraConfig.slots.banner728x90.width}
-            height={adsterraConfig.slots.banner728x90.height}
-          />
-        </div>
-        <div className="flex md:hidden justify-center w-full">
-          <AdsterraIframe
-            adKey={adsterraConfig.slots.banner320x50.key}
-            width={adsterraConfig.slots.banner320x50.width}
-            height={adsterraConfig.slots.banner320x50.height}
-          />
-        </div>
+        <ResponsiveHorizontalAdsterra />
       </div>
     );
   }
@@ -250,7 +303,7 @@ export function AdBanner({
 }
 
 /**
- * Top header leaderboard (728x90 desktop / 320x50 mobile).
+ * Top header leaderboard (728x90 desktop / 468x60 tablet / 320x50 mobile).
  */
 export function HeaderAd({ className }: { className?: string } = {}) {
   const slot = adsenseConfig.slots.header;
@@ -271,7 +324,12 @@ export function HeaderAd({ className }: { className?: string } = {}) {
     );
   }
 
-  if (adsterraConfig.enabled && (adsterraConfig.slots.banner728x90.key || adsterraConfig.slots.banner320x50.key)) {
+  if (
+    adsterraConfig.enabled &&
+    (adsterraConfig.slots.banner728x90.key ||
+      adsterraConfig.slots.banner468x60.key ||
+      adsterraConfig.slots.banner320x50.key)
+  ) {
     return (
       <div
         className={cn('mx-auto w-full max-w-5xl px-4 py-3 lg:px-8 flex flex-col items-center', className)}
@@ -279,22 +337,7 @@ export function HeaderAd({ className }: { className?: string } = {}) {
         role="complementary"
       >
         <AdLabel />
-        <div className="hidden md:flex justify-center w-full">
-          <AdsterraIframe
-            adKey={adsterraConfig.slots.banner728x90.key}
-            width={728}
-            height={90}
-            loading="eager"
-          />
-        </div>
-        <div className="flex md:hidden justify-center w-full">
-          <AdsterraIframe
-            adKey={adsterraConfig.slots.banner320x50.key}
-            width={320}
-            height={50}
-            loading="eager"
-          />
-        </div>
+        <ResponsiveHorizontalAdsterra loading="eager" />
       </div>
     );
   }
@@ -303,9 +346,15 @@ export function HeaderAd({ className }: { className?: string } = {}) {
 }
 
 /**
- * High-converting Result / Post-Processing Ad (300x250 desktop / 320x50 mobile).
+ * High-converting Result / Post-Processing Ad (300x250 down to 360px+ screens / 320x50 on narrow mobile).
  */
-export function ResultScreenAd({ className }: { className?: string } = {}) {
+export function ResultScreenAd({
+  className,
+  refreshKey,
+}: {
+  className?: string;
+  refreshKey?: string | number;
+} = {}) {
   const slot = adsenseConfig.slots.result;
   if (adsenseConfig.enabled && (slot || adsConfig.testMode)) {
     return (
@@ -332,22 +381,28 @@ export function ResultScreenAd({ className }: { className?: string } = {}) {
         role="complementary"
       >
         <AdLabel />
-        <div className="hidden sm:flex justify-center w-full">
-          <AdsterraIframe
-            adKey={adsterraConfig.slots.banner300x250.key}
-            width={300}
-            height={250}
-            loading="eager"
-          />
-        </div>
-        <div className="flex sm:hidden justify-center w-full">
-          <AdsterraIframe
-            adKey={adsterraConfig.slots.banner320x50.key}
-            width={320}
-            height={50}
-            loading="eager"
-          />
-        </div>
+        {adsterraConfig.slots.banner300x250.key && (
+          <div className="hidden min-[360px]:flex justify-center w-full">
+            <AdsterraIframe
+              adKey={adsterraConfig.slots.banner300x250.key}
+              width={300}
+              height={250}
+              loading="eager"
+              refreshKey={refreshKey}
+            />
+          </div>
+        )}
+        {adsterraConfig.slots.banner320x50.key && (
+          <div className="flex min-[360px]:hidden justify-center w-full">
+            <AdsterraIframe
+              adKey={adsterraConfig.slots.banner320x50.key}
+              width={320}
+              height={50}
+              loading="eager"
+              refreshKey={refreshKey}
+            />
+          </div>
+        )}
       </div>
     );
   }
@@ -356,7 +411,7 @@ export function ResultScreenAd({ className }: { className?: string } = {}) {
 }
 
 /**
- * Desktop sidebar skyscraper (160x600).
+ * Desktop sidebar skyscraper (160x600 on tall viewports, 160x300 on shorter laptop screens).
  */
 export function SidebarAd({ className }: { className?: string } = {}) {
   const slot = adsenseConfig.slots.sidebar;
@@ -373,15 +428,31 @@ export function SidebarAd({ className }: { className?: string } = {}) {
     );
   }
 
-  if (adsterraConfig.enabled && adsterraConfig.slots.banner160x600.key) {
+  if (
+    adsterraConfig.enabled &&
+    (adsterraConfig.slots.banner160x600.key || adsterraConfig.slots.banner160x300.key)
+  ) {
     return (
       <div className={cn('w-full flex flex-col items-center justify-center', className)} aria-label="Advertisement" role="complementary">
         <AdLabel />
-        <AdsterraIframe
-          adKey={adsterraConfig.slots.banner160x600.key}
-          width={160}
-          height={600}
-        />
+        {adsterraConfig.slots.banner160x600.key && (
+          <div className={cn(adsterraConfig.slots.banner160x300.key ? 'hidden [@media(min-height:760px)]:flex' : 'flex', 'justify-center')}>
+            <AdsterraIframe
+              adKey={adsterraConfig.slots.banner160x600.key}
+              width={160}
+              height={600}
+            />
+          </div>
+        )}
+        {adsterraConfig.slots.banner160x300.key && (
+          <div className={cn(adsterraConfig.slots.banner160x600.key ? 'flex [@media(min-height:760px)]:hidden' : 'flex', 'justify-center')}>
+            <AdsterraIframe
+              adKey={adsterraConfig.slots.banner160x300.key}
+              width={160}
+              height={300}
+            />
+          </div>
+        )}
       </div>
     );
   }
@@ -453,7 +524,12 @@ export function FooterAd({ className }: { className?: string } = {}) {
     );
   }
 
-  if (adsterraConfig.enabled && (adsterraConfig.slots.banner728x90.key || adsterraConfig.slots.banner320x50.key)) {
+  if (
+    adsterraConfig.enabled &&
+    (adsterraConfig.slots.banner728x90.key ||
+      adsterraConfig.slots.banner468x60.key ||
+      adsterraConfig.slots.banner320x50.key)
+  ) {
     return (
       <div
         className={cn('mx-auto w-full max-w-5xl px-4 py-6 lg:px-8 flex flex-col items-center', className)}
@@ -461,24 +537,7 @@ export function FooterAd({ className }: { className?: string } = {}) {
         role="complementary"
       >
         <AdLabel />
-        {adsterraConfig.slots.banner728x90.key && (
-          <div className="hidden md:flex justify-center w-full">
-            <AdsterraIframe
-              adKey={adsterraConfig.slots.banner728x90.key}
-              width={728}
-              height={90}
-            />
-          </div>
-        )}
-        {adsterraConfig.slots.banner320x50.key && (
-          <div className="flex md:hidden justify-center w-full">
-            <AdsterraIframe
-              adKey={adsterraConfig.slots.banner320x50.key}
-              width={320}
-              height={50}
-            />
-          </div>
-        )}
+        <ResponsiveHorizontalAdsterra />
       </div>
     );
   }

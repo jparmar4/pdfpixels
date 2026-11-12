@@ -14,6 +14,8 @@ import {
 import { useActiveTool } from '@/hooks/use-active-tool';
 import { ToolPageHeader } from './tool-page-header';
 import { ToolLimitNotice } from './tool-limit-notice';
+import { ResultScreenAd, SmartlinkButton } from '@/components/ads/ad-banner';
+import { triggerDownloadWithSmartlink } from '@/lib/ads-config';
 import { toast } from 'sonner';
 
 export function TextToPDFWorkspace() {
@@ -69,13 +71,15 @@ export function TextToPDFWorkspace() {
 
   const download = () => {
     if (!resultUrl) return;
-    const link = document.createElement('a');
-    link.href = resultUrl;
-    link.download = resultName;
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-    toast.success('Download started');
+    triggerDownloadWithSmartlink(() => {
+      const link = document.createElement('a');
+      link.href = resultUrl;
+      link.download = resultName;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      toast.success('Download started');
+    });
   };
 
   if (!activeTool) return null;
@@ -124,14 +128,20 @@ export function TextToPDFWorkspace() {
           </div>
 
           {resultUrl && (
-            <div className="rounded-2xl border border-emerald-500/30 bg-emerald-500/5 p-5 flex flex-wrap items-center justify-between gap-3">
-              <div>
-                <p className="font-semibold">PDF ready</p>
-                <p className="text-sm text-muted-foreground">Paginated with your page and font settings.</p>
+            <div className="space-y-4">
+              <div className="rounded-2xl border border-emerald-500/30 bg-emerald-500/5 p-5 flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <p className="font-semibold">PDF ready</p>
+                  <p className="text-sm text-muted-foreground">Paginated with your page and font settings.</p>
+                </div>
+                <Button onClick={download} className="gap-2 btn-premium rounded-xl">
+                  <Download className="w-4 h-4" /> Download PDF
+                </Button>
               </div>
-              <Button onClick={download} className="gap-2 btn-premium rounded-xl">
-                <Download className="w-4 h-4" /> Download PDF
-              </Button>
+              <div className="flex flex-col items-center gap-3">
+                <SmartlinkButton />
+                <ResultScreenAd refreshKey={resultUrl} />
+              </div>
             </div>
           )}
         </div>

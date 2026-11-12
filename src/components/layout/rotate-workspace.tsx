@@ -28,6 +28,8 @@ import { useActiveTool } from '@/hooks/use-active-tool';
 import { FileUpload } from './file-upload';
 import { ToolPageHeader } from './tool-page-header';
 import { ToolLimitNotice } from './tool-limit-notice';
+import { ResultScreenAd, SmartlinkButton } from '@/components/ads/ad-banner';
+import { triggerDownloadWithSmartlink } from '@/lib/ads-config';
 
 type BgMode = 'auto' | 'transparent' | 'white' | 'black';
 type OutputFormat = 'png' | 'jpg' | 'webp';
@@ -344,15 +346,17 @@ export function RotateWorkspace() {
 
   const handleDownload = useCallback(() => {
     if (!processedImage) return;
-    const ext = exportFormat === 'jpg' ? 'jpg' : exportFormat;
-    const base = uploadedFile?.name?.replace(/\.[^.]+$/, '') || 'image';
-    const link = document.createElement('a');
-    link.href = processedImage;
-    link.download = `${base}-${isFlipTool ? 'flipped' : 'rotated'}.${ext}`;
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-    toast.success('Download started');
+    triggerDownloadWithSmartlink(() => {
+      const ext = exportFormat === 'jpg' ? 'jpg' : exportFormat;
+      const base = uploadedFile?.name?.replace(/\.[^.]+$/, '') || 'image';
+      const link = document.createElement('a');
+      link.href = processedImage;
+      link.download = `${base}-${isFlipTool ? 'flipped' : 'rotated'}.${ext}`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      toast.success('Download started');
+    });
   }, [exportFormat, isFlipTool, processedImage, uploadedFile]);
 
   const handleReset = useCallback(() => {
@@ -732,6 +736,10 @@ export function RotateWorkspace() {
                 alt="Rotated result"
                 className="max-h-96 max-w-full rounded-lg object-contain shadow-md"
               />
+            </div>
+            <div className="flex flex-col items-center gap-3 border-t border-primary/15 p-4">
+              <SmartlinkButton />
+              <ResultScreenAd refreshKey={processedImage} />
             </div>
           </motion.div>
         ) : null}

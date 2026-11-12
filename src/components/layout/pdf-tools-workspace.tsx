@@ -14,7 +14,8 @@ import { useActiveTool } from '@/hooks/use-active-tool';
 import { FileUpload } from './file-upload';
 import { ToolPageHeader } from './tool-page-header';
 import { ToolLimitNotice } from './tool-limit-notice';
-import { ResultScreenAd } from '@/components/ads/ad-banner';
+import { ResultScreenAd, SmartlinkButton } from '@/components/ads/ad-banner';
+import { triggerDownloadWithSmartlink } from '@/lib/ads-config';
 import { useState, useCallback, useEffect } from 'react';
 import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
@@ -847,13 +848,15 @@ export function PDFToolsWorkspace() {
 
     const handleDownload = useCallback(() => {
         if (!result) return;
-        const link = document.createElement('a');
-        link.href = result.pdfUrl;
-        link.download = result.fileName;
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
-        toast.success('Download started');
+        triggerDownloadWithSmartlink(() => {
+            const link = document.createElement('a');
+            link.href = result.pdfUrl;
+            link.download = result.fileName;
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            toast.success('Download started');
+        });
     }, [result]);
 
     const handleReset = useCallback(() => {
@@ -1031,11 +1034,14 @@ return (
                                     </p>
                                 </div>
                             </div>
-                            <Button onClick={handleDownload} className="w-full gap-2 btn-premium py-6 rounded-xl font-bold" size="lg">
-                                <Download className="w-4 h-4" />
-                                Download PDF
-                            </Button>
-                            <ResultScreenAd />
+                            <div className="flex flex-col gap-3 sm:flex-row">
+                                <Button onClick={handleDownload} className="w-full flex-1 gap-2 btn-premium py-6 rounded-xl font-bold" size="lg">
+                                    <Download className="w-4 h-4" />
+                                    Download PDF
+                                </Button>
+                                <SmartlinkButton className="min-h-12" />
+                            </div>
+                            <ResultScreenAd refreshKey={result.pdfUrl} />
                         </motion.div>
                     )}
                 </AnimatePresence>

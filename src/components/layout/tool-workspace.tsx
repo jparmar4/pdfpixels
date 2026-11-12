@@ -9,6 +9,8 @@ import { Slider } from '@/components/ui/slider';
 import { useActiveTool } from '@/hooks/use-active-tool';
 import { FileUpload } from './file-upload';
 import { ToolPageHeader } from './tool-page-header';
+import { ResultScreenAd, SmartlinkButton } from '@/components/ads/ad-banner';
+import { triggerDownloadWithSmartlink } from '@/lib/ads-config';
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
@@ -378,15 +380,17 @@ export function ToolWorkspace() {
 
   const handleDownload = useCallback(() => {
     if (processedImage) {
-      const base = uploadedFile?.name?.replace(/\.[^.]+$/, '') || 'image';
-      const ext = outputFormat === 'jpg' ? 'jpg' : outputFormat;
-      const link = document.createElement('a');
-      link.href = processedImage;
-      link.download = `${base}-${toolId || 'edited'}.${ext}`;
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      toast.success('Download started');
+      triggerDownloadWithSmartlink(() => {
+        const base = uploadedFile?.name?.replace(/\.[^.]+$/, '') || 'image';
+        const ext = outputFormat === 'jpg' ? 'jpg' : outputFormat;
+        const link = document.createElement('a');
+        link.href = processedImage;
+        link.download = `${base}-${toolId || 'edited'}.${ext}`;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        toast.success('Download started');
+      });
     }
   }, [processedImage, outputFormat, toolId, uploadedFile]);
 
@@ -587,6 +591,10 @@ export function ToolWorkspace() {
                   alt="Processed"
                   className="max-w-full max-h-full object-contain"
                 />
+              </div>
+              <div className="p-4 border-t border-border flex flex-col items-center gap-3">
+                <SmartlinkButton />
+                <ResultScreenAd refreshKey={processedImage} />
               </div>
             </motion.div>
           )}

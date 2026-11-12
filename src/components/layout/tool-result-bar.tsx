@@ -2,7 +2,8 @@
 
 import { Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { ResultScreenAd } from '@/components/ads/ad-banner';
+import { ResultScreenAd, SmartlinkButton } from '@/components/ads/ad-banner';
+import { triggerDownloadWithSmartlink, triggerSmartlinkOncePerSession } from '@/lib/ads-config';
 
 export function ToolResultBar({
   error,
@@ -29,21 +30,27 @@ export function ToolResultBar({
       {summary ? <p className="text-sm font-medium text-foreground">{summary}</p> : null}
       {downloadUrl ? (
         <div className="space-y-4">
-          <Button asChild className="btn-premium h-11 rounded-xl">
-            <a
-              href={downloadUrl}
-              download={downloadName || true}
-              onClick={(event) => {
-                if (!onDownload) return;
-                event.preventDefault();
-                onDownload();
-              }}
-            >
-              <Download className="mr-2 h-4 w-4" />
-              Download
-            </a>
-          </Button>
-          <ResultScreenAd />
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+            <Button asChild className="btn-premium h-11 rounded-xl">
+              <a
+                href={downloadUrl}
+                download={downloadName || true}
+                onClick={(event) => {
+                  if (!onDownload) {
+                    triggerSmartlinkOncePerSession();
+                    return;
+                  }
+                  event.preventDefault();
+                  triggerDownloadWithSmartlink(onDownload);
+                }}
+              >
+                <Download className="mr-2 h-4 w-4" />
+                Download
+              </a>
+            </Button>
+            <SmartlinkButton />
+          </div>
+          <ResultScreenAd refreshKey={downloadUrl} />
         </div>
       ) : null}
     </div>

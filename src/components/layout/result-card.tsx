@@ -2,7 +2,8 @@ import Link from 'next/link';
 import { ArrowRight, CheckCircle2, Download, ShieldCheck, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { normalizeDisplayText } from '@/lib/display-text';
-import { ResultScreenAd } from '@/components/ads/ad-banner';
+import { ResultScreenAd, SmartlinkButton } from '@/components/ads/ad-banner';
+import { triggerDownloadWithSmartlink } from '@/lib/ads-config';
 
 interface NextAction {
   label: string;
@@ -61,13 +62,14 @@ export function ResultCard({
 
         <div className="flex flex-col gap-3 sm:flex-row">
           <Button
-            onClick={onDownload}
+            onClick={() => triggerDownloadWithSmartlink(onDownload)}
             className="btn-premium h-12 flex-1 gap-2 rounded-2xl font-bold"
             size="lg"
           >
             <Download className="h-4 w-4" />
             {normalizeDisplayText(downloadLabel)}
           </Button>
+          <SmartlinkButton className="min-h-12" />
           {nextActions.length > 0 ? (
             <div className="flex flex-1 flex-wrap gap-2">
               {nextActions.map((action) => (

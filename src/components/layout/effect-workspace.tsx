@@ -21,6 +21,8 @@ import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
 import { Slider } from '@/components/ui/slider';
 import { ToolLimitNotice } from './tool-limit-notice';
+import { ResultScreenAd, SmartlinkButton } from '@/components/ads/ad-banner';
+import { triggerDownloadWithSmartlink, triggerSmartlinkOncePerSession } from '@/lib/ads-config';
 
 type EffectMeta = {
   emoji: string;
@@ -638,22 +640,24 @@ export function EffectWorkspace() {
 
   const handleDownload = useCallback(() => {
     if (!processedImage) return;
-    const base = uploadedFile?.name?.replace(/\.[^.]+$/, '') || 'image';
-    const suffix =
-      toolId === 'black-white'
-        ? 'bw'
-        : toolId === 'grayscale'
-          ? 'grayscale'
-          : toolId === 'pixelate'
-            ? 'pixelate'
-            : toolId || 'effect';
-    const link = document.createElement('a');
-    link.href = processedImage;
-    link.download = `${base}-${suffix}.png`;
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-    toast.success('Download started');
+    triggerDownloadWithSmartlink(() => {
+      const base = uploadedFile?.name?.replace(/\.[^.]+$/, '') || 'image';
+      const suffix =
+        toolId === 'black-white'
+          ? 'bw'
+          : toolId === 'grayscale'
+            ? 'grayscale'
+            : toolId === 'pixelate'
+              ? 'pixelate'
+              : toolId || 'effect';
+      const link = document.createElement('a');
+      link.href = processedImage;
+      link.download = `${base}-${suffix}.png`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      toast.success('Download started');
+    });
   }, [processedImage, toolId, uploadedFile]);
 
   const handleProcessAndDownload = useCallback(async () => {
@@ -661,6 +665,7 @@ export function EffectWorkspace() {
       toast.error('Please upload an image first');
       return;
     }
+    triggerSmartlinkOncePerSession();
     setIsProcessing(true);
     setProgress(20);
     try {
@@ -935,6 +940,10 @@ export function EffectWorkspace() {
                   <img src={processedImage} alt="Processed" className="max-h-[480px] max-w-full rounded-lg object-contain" />
                 </div>
               )}
+              <div className="flex flex-col items-center gap-3 border-t border-primary/15 p-4">
+                <SmartlinkButton />
+                <ResultScreenAd refreshKey={processedImage} />
+              </div>
             </motion.div>
           ) : null}
         </div>

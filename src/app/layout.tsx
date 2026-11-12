@@ -8,8 +8,8 @@ import { WebMCPRegistration } from '@/components/seo/webmcp-provider';
 import { seoConfig, siteConfig } from '@/lib/seo-config';
 import { DEFAULT_OG_IMAGE_URL } from '@/lib/seo';
 import { CookieConsentBanner } from '@/components/ads/cookie-consent';
-import { AdSenseScript } from '@/components/ads/adsense-script';
 import { Analytics } from '@/components/ads/analytics';
+import { adsterraConfig } from '@/lib/ads-config';
 import { Navigation } from '@/components/layout/navigation';
 import { Footer } from '@/components/layout/footer';
 import { ScrollToTop } from '@/components/home/scroll-to-top';
@@ -147,15 +147,14 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en" suppressHydrationWarning className={`scroll-smooth ${fontInter.variable} ${fontSora.variable} ${fontMono.variable}`}>
       <head>
-        <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossOrigin="anonymous" />
-        <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
-        <link rel="preconnect" href="https://googleads.g.doubleclick.net" crossOrigin="anonymous" />
-        <link rel="dns-prefetch" href="https://googleads.g.doubleclick.net" />
         <link rel="preconnect" href="https://www.googletagmanager.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
         <link rel="preconnect" href="https://www.google-analytics.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://www.google-analytics.com" />
-        <meta name="google-adsense-account" content="ca-pub-3541576002060495" />
+        <link rel="preconnect" href="https://bauval.org" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://bauval.org" />
+        <link rel="preconnect" href="https://araplhn.org" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://araplhn.org" />
         <link rel="search" type="application/opensearchdescription+xml" title="PdfPixels" href="/opensearch.xml" />
         <link rel="alternate" type="application/rss+xml" title="PdfPixels RSS Feed" href="/feed" />
         <link rel="alternate" type="text/plain" title="PdfPixels for LLMs" href="/llms.txt" />
@@ -163,12 +162,15 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <link rel="alternate" type="text/markdown" title="PdfPixels Markdown for Agents" href="/markdown" />
         <link rel="mcp-server" type="application/json" href="/.well-known/mcp/server-card.json" />
         <link rel="api-catalog" type="application/linkset+json" href="/.well-known/api-catalog" />
-        {/* Google AdSense official script — async in head for reliable crawler detection & Auto Ads */}
-        <script
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3541576002060495"
-          crossOrigin="anonymous"
-        />
+        {/* Adsterra Social Bar (In-Page Push) — high CPM notification format */}
+        {adsterraConfig.enabled && adsterraConfig.slots.socialBar.scriptSrc && (
+          <script
+            type="text/javascript"
+            src={adsterraConfig.slots.socialBar.scriptSrc}
+            data-cfasync="false"
+            async
+          />
+        )}
       </head>
       <body className="bg-background text-foreground antialiased min-h-screen flex flex-col">
         <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-lg focus:text-sm focus:font-semibold focus:outline-none focus:ring-2 focus:ring-primary/50">
@@ -189,7 +191,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <ClickRipple />
           {/* Top-center toasts sit below the floating nav pill (offset.top) */}
           <SonnerToaster richColors closeButton position="top-center" offset={{ top: 84, bottom: 24 }} />
-          <AdSenseScript />
           <Analytics />
           <CookieConsentBanner />
         </ThemeProvider>

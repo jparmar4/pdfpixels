@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { useActiveTool } from '@/hooks/use-active-tool';
 import { ToolPageHeader } from './tool-page-header';
 import { ToolLimitNotice } from './tool-limit-notice';
+import { ResultScreenAd, SmartlinkButton } from '@/components/ads/ad-banner';
 import { toast } from 'sonner';
 
 type OutputFormat = 'datauri' | 'html' | 'css' | 'json';
@@ -184,6 +185,11 @@ export function ImageToBase64Workspace() {
               className="w-full bg-transparent font-mono text-xs md:text-sm leading-relaxed outline-none resize-y p-4 text-foreground/90 select-text"
               aria-label={`Base64 output as ${FORMAT_META[format].label}`}
             />
+          </div>
+
+          <div className="flex flex-col items-center gap-3 pt-2">
+            <SmartlinkButton />
+            <ResultScreenAd refreshKey={source.name} />
           </div>
         </div>
       )}

@@ -7,6 +7,8 @@ import { useActiveTool } from '@/hooks/use-active-tool';
 import { FileUpload } from './file-upload';
 import { ToolPageHeader } from './tool-page-header';
 import { ToolLimitNotice } from './tool-limit-notice';
+import { ResultScreenAd, SmartlinkButton } from '@/components/ads/ad-banner';
+import { triggerDownloadWithSmartlink } from '@/lib/ads-config';
 import { useState, useCallback, useEffect } from 'react';
 import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
@@ -75,13 +77,15 @@ export function PDFExtractImagesWorkspace() {
 
   const handleDownload = () => {
     if (!result) return;
-    const link = document.createElement('a');
-    link.href = result.url;
-    link.download = result.name;
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-    toast.success('Download started');
+    triggerDownloadWithSmartlink(() => {
+      const link = document.createElement('a');
+      link.href = result.url;
+      link.download = result.name;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      toast.success('Download started');
+    });
   };
 
   return (
@@ -153,6 +157,10 @@ export function PDFExtractImagesWorkspace() {
               <p className="text-xs text-muted-foreground">
                 Images are numbered in document order. Pages often reuse the same image (headers, backgrounds) — it is stored once and extracted once.
               </p>
+              <div className="flex flex-col items-center gap-3 pt-2">
+                <SmartlinkButton />
+                <ResultScreenAd refreshKey={result.url} />
+              </div>
             </motion.div>
           )}
         </div>

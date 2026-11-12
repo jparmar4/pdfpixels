@@ -8,6 +8,8 @@ import { useAppStore } from '@/store/app-store';
 import { FileUpload } from './file-upload';
 import { ToolPageHeader } from './tool-page-header';
 import { ToolLimitNotice } from './tool-limit-notice';
+import { ResultScreenAd, SmartlinkButton } from '@/components/ads/ad-banner';
+import { triggerDownloadWithSmartlink } from '@/lib/ads-config';
 import { toast } from 'sonner';
 
 export function CmykPdfWorkspace() {
@@ -63,13 +65,15 @@ export function CmykPdfWorkspace() {
 
   const handleDownload = () => {
     if (!downloadUrl) return;
-    const a = document.createElement('a');
-    a.href = downloadUrl;
-    a.download = cmykFileName || 'print-ready-cmyk.pdf';
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    toast.success('Downloaded print-ready CMYK PDF!');
+    triggerDownloadWithSmartlink(() => {
+      const a = document.createElement('a');
+      a.href = downloadUrl;
+      a.download = cmykFileName || 'print-ready-cmyk.pdf';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      toast.success('Downloaded print-ready CMYK PDF!');
+    });
   };
 
   return (
@@ -154,6 +158,13 @@ export function CmykPdfWorkspace() {
                 <RotateCcw className="w-3.5 h-3.5 mr-1" /> Start Over
               </Button>
             </div>
+
+            {downloadUrl && (
+              <div className="flex flex-col items-center gap-3 pt-2 border-t">
+                <SmartlinkButton />
+                <ResultScreenAd refreshKey={downloadUrl} />
+              </div>
+            )}
           </div>
         </div>
       )}

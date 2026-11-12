@@ -5,6 +5,8 @@ import { Download, RotateCcw, FileImage, CheckCircle2, Smartphone, Layers } from
 import { Button } from '@/components/ui/button';
 import { ToolPageHeader } from './tool-page-header';
 import { ToolLimitNotice } from './tool-limit-notice';
+import { ResultScreenAd, SmartlinkButton } from '@/components/ads/ad-banner';
+import { triggerDownloadWithSmartlink } from '@/lib/ads-config';
 import { toast } from 'sonner';
 
 export function HeicToPdfWorkspace() {
@@ -71,13 +73,15 @@ export function HeicToPdfWorkspace() {
 
   const handleDownload = () => {
     if (!downloadUrl) return;
-    const a = document.createElement('a');
-    a.href = downloadUrl;
-    a.download = pdfFileName || 'converted-photos.pdf';
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    toast.success('Downloaded compiled PDF!');
+    triggerDownloadWithSmartlink(() => {
+      const a = document.createElement('a');
+      a.href = downloadUrl;
+      a.download = pdfFileName || 'converted-photos.pdf';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      toast.success('Downloaded compiled PDF!');
+    });
   };
 
   return (
@@ -208,6 +212,13 @@ export function HeicToPdfWorkspace() {
                   </div>
                 )}
               </div>
+
+              {downloadUrl && (
+                <div className="flex flex-col items-center gap-3 pt-2 border-t">
+                  <SmartlinkButton />
+                  <ResultScreenAd refreshKey={downloadUrl} />
+                </div>
+              )}
             </div>
           </div>
         )}

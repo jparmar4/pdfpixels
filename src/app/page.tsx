@@ -5,7 +5,7 @@ import { FAQSection } from '@/components/home/faq-section';
 import { HowItWorks } from '@/components/home/how-it-works';
 import { FeaturesSection } from '@/components/home/features-section';
 import { GuidesSection } from '@/components/home/guides-section';
-import { InContentAd, FooterAd } from '@/components/ads/ad-banner';
+import { InContentAd, FooterAd, NativeAd } from '@/components/ads/ad-banner';
 
 import { Metadata } from 'next';
 import { siteConfig, seoConfig } from '@/lib/seo-config';
@@ -43,6 +43,7 @@ export default function Home() {
         <HowItWorks />
         <FeaturesSection />
         <GuidesSection />
+        <NativeAd className="my-10 max-w-5xl mx-auto px-4" />
         <FAQSection />
         <FooterAd className="my-8" />
       </main>

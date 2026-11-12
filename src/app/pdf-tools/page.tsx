@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import { allPdfTools } from '@/lib/tools-data';
 import { SITE_URL, absoluteUrl, websiteId, DEFAULT_OG_IMAGE_URL } from '@/lib/seo';
 import { siteConfig } from '@/lib/seo-config';
+import { HeaderAd, NativeAd, FooterAd } from '@/components/ads/ad-banner';
 import { PdfToolsClient } from './pdf-tools-client';
 
 export const metadata: Metadata = {
@@ -223,9 +224,12 @@ export default function PdfToolsPage() {
       />
 
       <main id="main-content" className="flex-1">
+        <HeaderAd className="my-4" />
         <Suspense fallback={<div className="h-96 animate-pulse rounded-3xl bg-muted/20" />}>
           <PdfToolsClient />
         </Suspense>
+        <NativeAd className="my-10 max-w-5xl mx-auto px-4" />
+        <FooterAd className="my-6" />
       </main>
     </div>
   );

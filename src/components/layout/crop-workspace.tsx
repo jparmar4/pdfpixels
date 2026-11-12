@@ -20,6 +20,8 @@ import { Input } from '@/components/ui/input';
 import { useActiveTool } from '@/hooks/use-active-tool';
 import { FileUpload } from './file-upload';
 import { ToolPageHeader } from './tool-page-header';
+import { ResultScreenAd, SmartlinkButton } from '@/components/ads/ad-banner';
+import { triggerDownloadWithSmartlink } from '@/lib/ads-config';
 import { useState, useCallback, useRef, useEffect, useMemo } from 'react';
 import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
@@ -777,22 +779,24 @@ export function CropWorkspace() {
 
   const handleDownload = useCallback(() => {
     if (!processedImage) return;
-    const link = document.createElement('a');
-    link.href = processedImage;
-    const base = uploadedFile?.name?.replace(/\.[^.]+$/, '') || 'image';
-    const mode =
-      cropMode === 'circle'
-        ? 'circle-crop'
-        : cropMode === 'square'
-          ? 'square-crop'
-          : cropMode === 'freehand'
-            ? 'freehand-crop'
-            : 'crop';
-    link.download = `${base}-${mode}.png`;
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-    toast.success('Download started');
+    triggerDownloadWithSmartlink(() => {
+      const link = document.createElement('a');
+      link.href = processedImage;
+      const base = uploadedFile?.name?.replace(/\.[^.]+$/, '') || 'image';
+      const mode =
+        cropMode === 'circle'
+          ? 'circle-crop'
+          : cropMode === 'square'
+            ? 'square-crop'
+            : cropMode === 'freehand'
+              ? 'freehand-crop'
+              : 'crop';
+      link.download = `${base}-${mode}.png`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      toast.success('Download started');
+    });
   }, [cropMode, processedImage, uploadedFile]);
 
   const handleReset = useCallback(() => {
@@ -955,6 +959,10 @@ export function CropWorkspace() {
                   Transparent background outside your freehand shape is preserved as PNG alpha.
                 </p>
               ) : null}
+              <div className="flex flex-col items-center gap-3 border-t border-primary/15 p-4">
+                <SmartlinkButton />
+                <ResultScreenAd refreshKey={processedImage} />
+              </div>
             </motion.div>
           ) : null}
         </div>

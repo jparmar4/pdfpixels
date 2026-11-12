@@ -8,6 +8,8 @@ import { useAppStore } from '@/store/app-store';
 import { FileUpload } from './file-upload';
 import { ToolPageHeader } from './tool-page-header';
 import { ToolLimitNotice } from './tool-limit-notice';
+import { ResultScreenAd, SmartlinkButton } from '@/components/ads/ad-banner';
+import { triggerDownloadWithSmartlink } from '@/lib/ads-config';
 import { useState, useCallback, useEffect } from 'react';
 import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
@@ -91,16 +93,18 @@ export function PDFToTextWorkspace() {
 
   const handleDownloadTxt = () => {
     if (!extractedText) return;
-    const blob = new Blob([extractedText], { type: 'text/plain;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = uploadedFile ? uploadedFile.name.replace(/\.pdf$/i, '.txt') : 'extracted-text.txt';
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(url);
-    toast.success('Downloaded .txt file');
+    triggerDownloadWithSmartlink(() => {
+      const blob = new Blob([extractedText], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = uploadedFile ? uploadedFile.name.replace(/\.pdf$/i, '.txt') : 'extracted-text.txt';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      toast.success('Downloaded .txt file');
+    });
   };
 
   return (
@@ -168,6 +172,13 @@ export function PDFToTextWorkspace() {
               placeholder={isProcessing ? 'Extracting text from PDF...' : 'No text extracted'}
             />
           </div>
+
+          {extractedText && (
+            <div className="flex flex-col items-center gap-3 pt-2">
+              <SmartlinkButton />
+              <ResultScreenAd refreshKey={charCount} />
+            </div>
+          )}
         </div>
       )}
     </div>

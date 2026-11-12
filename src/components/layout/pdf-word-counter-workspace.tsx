@@ -10,6 +10,8 @@ import { useActiveTool } from '@/hooks/use-active-tool';
 import { FileUpload } from './file-upload';
 import { ToolPageHeader } from './tool-page-header';
 import { ToolLimitNotice } from './tool-limit-notice';
+import { ResultScreenAd, SmartlinkButton } from '@/components/ads/ad-banner';
+import { triggerDownloadWithSmartlink } from '@/lib/ads-config';
 import { toast } from 'sonner';
 
 interface TextStats {
@@ -97,16 +99,18 @@ export function PDFWordCounterWorkspace() {
 
   const handleDownloadTxt = useCallback(() => {
     if (!stats?.text) return;
-    const blob = new Blob([stats.text], { type: 'text/plain;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = stats.fileName.replace(/\.pdf$/i, '-text.txt');
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    toast.success('Text file downloaded');
+    triggerDownloadWithSmartlink(() => {
+      const blob = new Blob([stats.text], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = stats.fileName.replace(/\.pdf$/i, '-text.txt');
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      toast.success('Text file downloaded');
+    });
   }, [stats]);
 
   const handleReset = useCallback(() => {
@@ -297,6 +301,11 @@ export function PDFWordCounterWorkspace() {
                     </div>
                   </div>
                 )}
+
+                <div className="flex flex-col items-center gap-3 pt-2">
+                  <SmartlinkButton />
+                  <ResultScreenAd refreshKey={stats.words} />
+                </div>
               </motion.div>
             )}
           </div>

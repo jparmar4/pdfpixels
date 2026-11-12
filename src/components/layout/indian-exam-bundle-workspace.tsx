@@ -31,6 +31,8 @@ import { Slider } from '@/components/ui/slider';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ToolPageHeader } from './tool-page-header';
 import { ToolLimitNotice } from './tool-limit-notice';
+import { ResultScreenAd, SmartlinkButton } from '@/components/ads/ad-banner';
+import { triggerDownloadWithSmartlink, triggerSmartlinkOncePerSession } from '@/lib/ads-config';
 import { toast } from 'sonner';
 import type { IndianExamPreset } from '@/lib/indian-exams-data';
 
@@ -235,15 +237,17 @@ export function IndianExamBundleWorkspace({ exam }: IndianExamBundleWorkspacePro
       toast.error('Please upload and process a photo first');
       return;
     }
-    const url = URL.createObjectURL(processedPhotoBlob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${exam.slug}-photo.jpg`;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(url);
-    toast.success(`Downloaded ${exam.shortName} compliant photo (${processedPhotoSizeKb} KB)!`);
+    triggerDownloadWithSmartlink(() => {
+      const url = URL.createObjectURL(processedPhotoBlob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${exam.slug}-photo.jpg`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      toast.success(`Downloaded ${exam.shortName} compliant photo (${processedPhotoSizeKb} KB)!`);
+    });
   };
 
   // Download processed signature
@@ -252,6 +256,7 @@ export function IndianExamBundleWorkspace({ exam }: IndianExamBundleWorkspacePro
       toast.error('Please upload a signature');
       return;
     }
+    triggerSmartlinkOncePerSession();
 
     const img = new Image();
     img.src = signaturePreview;
@@ -294,6 +299,7 @@ export function IndianExamBundleWorkspace({ exam }: IndianExamBundleWorkspacePro
       toast.error('Please upload at least your photo to create an exam pack');
       return;
     }
+    triggerSmartlinkOncePerSession();
 
     setIsPackaging(true);
     try {
@@ -855,6 +861,13 @@ export function IndianExamBundleWorkspace({ exam }: IndianExamBundleWorkspacePro
                 Download Photo + Signature + PDF Dossier
               </Button>
             </div>
+
+            {processedPhotoBlob && (
+              <div className="space-y-3 pt-2">
+                <SmartlinkButton className="w-full justify-center" />
+                <ResultScreenAd refreshKey={processedPhotoSizeKb} />
+              </div>
+            )}
           </div>
         </div>
       </div>

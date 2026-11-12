@@ -25,6 +25,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { ToolPageHeader } from './tool-page-header';
 import { ToolLimitNotice } from './tool-limit-notice';
 import { FileUpload } from './file-upload';
+import { ResultScreenAd, SmartlinkButton } from '@/components/ads/ad-banner';
+import { triggerDownloadWithSmartlink } from '@/lib/ads-config';
 import { useAppStore } from '@/store/app-store';
 import { toast } from 'sonner';
 
@@ -116,13 +118,15 @@ export function ShippingLabelCropWorkspace() {
 
   const handleDownload = () => {
     if (!downloadUrl) return;
-    const a = document.createElement('a');
-    a.href = downloadUrl;
-    a.download = outputFileName || 'shipping-labels-4x6.pdf';
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    toast.success('Downloaded ready-to-print 4x6 labels!');
+    triggerDownloadWithSmartlink(() => {
+      const a = document.createElement('a');
+      a.href = downloadUrl;
+      a.download = outputFileName || 'shipping-labels-4x6.pdf';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      toast.success('Downloaded ready-to-print 4x6 labels!');
+    });
   };
 
   return (
@@ -371,6 +375,8 @@ export function ShippingLabelCropWorkspace() {
                       <Download className="w-4 h-4" />
                       Download 4×6 Thermal PDF
                     </Button>
+                    <SmartlinkButton className="w-full text-xs" />
+                    <ResultScreenAd refreshKey={downloadUrl} />
                   </div>
                 )}
               </div>

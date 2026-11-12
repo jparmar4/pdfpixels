@@ -12,7 +12,8 @@ import { isImageUpload } from '@/lib/heic-detect';
 import { isHeicUpload, normalizeHeicFile } from '@/lib/heic-client';
 import { Badge } from '@/components/ui/badge';
 import { ToolLimitNotice } from './tool-limit-notice';
-import { ResultScreenAd } from '@/components/ads/ad-banner';
+import { ResultScreenAd, SmartlinkButton } from '@/components/ads/ad-banner';
+import { triggerDownloadWithSmartlink } from '@/lib/ads-config';
 import {
   Select,
   SelectContent,
@@ -227,13 +228,15 @@ export function ImageToPDFWorkspace() {
 
   const handleDownload = useCallback(() => {
     if (result) {
-      const link = document.createElement('a');
-      link.href = result.pdfUrl;
-      link.download = result.fileName;
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      toast.success('Download started');
+      triggerDownloadWithSmartlink(() => {
+        const link = document.createElement('a');
+        link.href = result.pdfUrl;
+        link.download = result.fileName;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        toast.success('Download started');
+      });
     }
   }, [result]);
 
@@ -421,11 +424,14 @@ export function ImageToPDFWorkspace() {
                     </p>
                   </div>
                 </div>
-                <Button onClick={handleDownload} className="w-full btn-premium gap-2 rounded-xl py-6 font-bold">
-                  <Download className="w-4 h-4" />
-                  Download PDF
-                </Button>
-                <ResultScreenAd />
+                <div className="flex flex-col gap-3 sm:flex-row">
+                  <Button onClick={handleDownload} className="w-full flex-1 btn-premium gap-2 rounded-xl py-6 font-bold">
+                    <Download className="w-4 h-4" />
+                    Download PDF
+                  </Button>
+                  <SmartlinkButton className="min-h-12" />
+                </div>
+                <ResultScreenAd refreshKey={result.pdfUrl} />
               </motion.div>
             )}
           </AnimatePresence>

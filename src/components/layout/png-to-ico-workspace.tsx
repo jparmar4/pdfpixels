@@ -8,6 +8,8 @@ import { Label } from '@/components/ui/label';
 import { useActiveTool } from '@/hooks/use-active-tool';
 import { ToolPageHeader } from './tool-page-header';
 import { ToolLimitNotice } from './tool-limit-notice';
+import { ResultScreenAd, SmartlinkButton } from '@/components/ads/ad-banner';
+import { triggerDownloadWithSmartlink } from '@/lib/ads-config';
 import { toast } from 'sonner';
 
 const ALL_SIZES = [16, 32, 48, 64, 128, 256] as const;
@@ -82,13 +84,15 @@ export function PNGToIcoWorkspace() {
 
   const download = () => {
     if (!resultUrl) return;
-    const link = document.createElement('a');
-    link.href = resultUrl;
-    link.download = resultName;
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-    toast.success('Download started');
+    triggerDownloadWithSmartlink(() => {
+      const link = document.createElement('a');
+      link.href = resultUrl;
+      link.download = resultName;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      toast.success('Download started');
+    });
   };
 
   if (!activeTool) return null;
@@ -179,6 +183,10 @@ export function PNGToIcoWorkspace() {
                     className="border border-border rounded bg-background"
                   />
                 ))}
+              </div>
+              <div className="flex flex-col items-center gap-3 pt-2 border-t border-emerald-500/20">
+                <SmartlinkButton />
+                <ResultScreenAd refreshKey={resultUrl} />
               </div>
             </div>
           )}
