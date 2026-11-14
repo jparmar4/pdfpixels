@@ -1680,5 +1680,101 @@ export const comparisonPages: ComparisonPage[] = [
       },
     ],
   },
+  {
+    slug: 'pdfpixels-vs-foxit-pdf-editor',
+    title: 'PdfPixels vs Foxit PDF Editor: Free Browser Suite vs Paid Desktop Subscription',
+    description: 'Compare PdfPixels against Foxit PDF Editor ($109+/yr) for compressing PDFs, redacting confidential data, Bates numbering legal exhibits, and signing forms.',
+    primaryToolSlug: 'compress-pdf',
+    alternatives: ['Foxit PDF Editor'],
+    bestFor: ['Zero-license teams and contractors', 'Legal, tax & compliance quick tasks', 'Cross-platform browser workflows'],
+    overview:
+      'Foxit PDF Editor is a well-known Windows and macOS desktop suite competing with Adobe Acrobat Pro at $109+ per year per seat. While IT departments buy desktop seats for heavy everyday document authoring, most accountants, paralegals, realtors, and small business staff only need to compress oversized packets, permanently redact SSNs, stamp Bates numbers, sign leases, or convert bank statements a few times a day. PdfPixels runs straight in Chrome, Edge, or Safari at $0 with zero installer or seat management.',
+    whenToChooseUs: [
+      'You need Compress PDF, Redact PDF, Bates Numbering, Merge PDF, and Sign PDF free on any machine',
+      'You switch between Mac, Windows, Chromebook, and iPhone without carrying desktop licenses',
+      'You prefer local WebAssembly browser execution without creating vendor accounts',
+    ],
+    whenToChooseAlt: [
+      'You edit multi-page desktop publishing PDF typography inline every day',
+      'Your enterprise IT mandates MSI/GPO offline desktop software distribution',
+    ],
+    keyDifferences: [
+      {
+        topic: 'Annual Cost',
+        pdfpixels: '$0 — free without account or per-seat license',
+        alternative: '$109+/year per seat depending on Pro/AI add-on tiers',
+      },
+      {
+        topic: 'Legal & Tax Tools',
+        pdfpixels: 'Built-in Bates numbering, permanent redaction, PDF/A, and bank statement to Excel',
+        alternative: 'Included mostly in higher Pro tier desktop packages',
+      },
+      {
+        topic: 'Deployment',
+        pdfpixels: 'Instant browser execution across OS and mobile',
+        alternative: 'Large local desktop installation and license key activation',
+      },
+    ],
+    verdict:
+      'Skip expensive desktop renewals with PdfPixels whenever your core work is compressing, merging, redacting, Bates stamping, converting, or signing PDFs across browser devices. Choose Foxit PDF Editor only if you require heavy offline desktop layout editing.',
+    faqs: [
+      {
+        question: 'Does PdfPixels include Foxit Pro features like redaction and Bates numbering for free?',
+        answer: 'Yes. Permanent Redact PDF, Bates Numbering PDF, PDF to PDF/A, and Bank Statement to Excel are available free with no Pro paywall.',
+      },
+      {
+        question: 'Can client documents stay on my own computer in PdfPixels?',
+        answer: 'Yes. Core client-side tools process directly in browser memory via WebAssembly without uploading documents externally.',
+      },
+    ],
+  },
+  {
+    slug: 'pdfpixels-vs-nitro-pdf-pro',
+    title: 'PdfPixels vs Nitro PDF Pro: Instant PDF to Word & Spreadsheet Extraction vs Enterprise License',
+    description: 'Compare PdfPixels vs Nitro PDF Pro (~$180/license) for PDF to Word, OCR, PDF compression, bank statement to Excel, and electronic signatures.',
+    primaryToolSlug: 'pdf-to-word',
+    alternatives: ['Nitro PDF Pro'],
+    bestFor: ['Free PDF to Word & Excel conversion', 'Mac, Linux & Chromebook compatibility', 'No license key friction'],
+    overview:
+      'Nitro PDF Pro targets corporate Windows and Mac rollouts with licensing around $180+ per user and enterprise procurement cycles. When finance analysts, HR coordinators, or consultants simply need to turn a PDF report into an editable Word document, pull transactions into Excel, OCR a scan, or compress exhibits under a portal limit, waiting on IT procurement makes little sense. PdfPixels delivers fast browser-based conversions and legal/finance PDF tools instantly for free.',
+    whenToChooseUs: [
+      'You want fast PDF to Word (.docx), PDF to Excel, OCR, and compression at zero cost',
+      'You collaborate on Chromebooks, Linux workstations, iPads, or phones where Nitro desktop does not run cleanly',
+      'You also need image optimization, passport photo sizing, and background removal in one toolkit',
+    ],
+    whenToChooseAlt: [
+      'Your enterprise has already deployed Nitro Sign and centralized Nitro desktop volume licensing',
+      'You require offline Windows shell integration for heavy local document batching',
+    ],
+    keyDifferences: [
+      {
+        topic: 'Pricing Model',
+        pdfpixels: 'Free forever for core tools — zero seat fees or trials',
+        alternative: 'Paid per-user licenses (~$180+) and subscription tiers',
+      },
+      {
+        topic: 'OS Compatibility',
+        pdfpixels: 'Windows, macOS, Linux, ChromeOS, iOS, and Android via browser',
+        alternative: 'Dedicated Windows/Mac installers; separate web plan required',
+      },
+      {
+        topic: 'Accounting Workflows',
+        pdfpixels: 'Dedicated Bank Statement to Excel/CSV and PDF to CSV extractors',
+        alternative: 'General Office conversion without specialized bank-statement table parsing',
+      },
+    ],
+    verdict:
+      'Choose PdfPixels for immediate, free PDF to Word, Excel extraction, compression, and OCR from any browser. Choose Nitro PDF Pro only if your organization standardizes on enterprise volume desktop seats.',
+    faqs: [
+      {
+        question: 'How close is PdfPixels PDF to Word formatting compared to desktop suites?',
+        answer: 'For native digital PDFs with clean text and tables, PdfPixels outputs structured editable DOCX paragraphs and tables ready for Word and Google Docs.',
+      },
+      {
+        question: 'Do I have to enter a credit card for a free trial?',
+        answer: 'Never. PdfPixels requires no signup, no credit card, and imposes no hidden trial expiry.',
+      },
+    ],
+  },
 ];
 

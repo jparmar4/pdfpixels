@@ -5,7 +5,9 @@ import { FAQSection } from '@/components/home/faq-section';
 import { HowItWorks } from '@/components/home/how-it-works';
 import { FeaturesSection } from '@/components/home/features-section';
 import { GuidesSection } from '@/components/home/guides-section';
-import { InContentAd, FooterAd, NativeAd } from '@/components/ads/ad-banner';
+import { AnswerEngineSection } from '@/components/home/answer-engine-section';
+import { AIContentSection } from '@/components/seo/ai-content';
+import { HeaderAd, InContentAd, FooterAd, NativeAd } from '@/components/ads/ad-banner';
 
 import { Metadata } from 'next';
 import { siteConfig, seoConfig } from '@/lib/seo-config';
@@ -38,13 +40,16 @@ export default function Home() {
       <main id="main-content" className="flex-1">
         <HomePageSchemas />
         <ToolsSection />
+        <HeaderAd className="my-4" />
         <StatsBanner />
         <InContentAd className="my-8" />
         <HowItWorks />
         <FeaturesSection />
         <GuidesSection />
         <NativeAd className="my-10 max-w-5xl mx-auto px-4" />
+        <AnswerEngineSection />
         <FAQSection />
+        <AIContentSection />
         <FooterAd className="my-8" />
       </main>
     </div>

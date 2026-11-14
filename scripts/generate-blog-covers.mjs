@@ -148,6 +148,29 @@ const ICONS = {
       </g>
       <path d="M400 260 v-210 M400 50 l-14 14 M400 50 l14 14 M400 260 l-14 -14 M400 260 l14 -14" stroke="rgba(255,255,255,0.75)" stroke-width="6" stroke-linecap="round"/>
     </g>`,
+  // bank statement to spreadsheet motif
+  ledger: `
+    <g transform="translate(895,150)">
+      <rect x="0" y="0" width="250" height="260" rx="20" fill="rgba(255,255,255,0.14)" stroke="rgba(255,255,255,0.85)" stroke-width="6"/>
+      <rect x="26" y="30" width="198" height="36" rx="8" fill="rgba(16,185,129,0.35)"/>
+      <text x="125" y="55" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#ffffff">CSV / XLSX</text>
+      <line x1="26" y1="92" x2="224" y2="92" stroke="rgba(255,255,255,0.5)" stroke-width="4"/>
+      <line x1="26" y1="136" x2="224" y2="136" stroke="rgba(255,255,255,0.5)" stroke-width="4"/>
+      <line x1="26" y1="180" x2="224" y2="180" stroke="rgba(255,255,255,0.5)" stroke-width="4"/>
+      <line x1="26" y1="224" x2="224" y2="224" stroke="rgba(255,255,255,0.5)" stroke-width="4"/>
+      <line x1="94" y1="78" x2="94" y2="238" stroke="rgba(255,255,255,0.4)" stroke-width="4"/>
+      <line x1="162" y1="78" x2="162" y2="238" stroke="rgba(255,255,255,0.4)" stroke-width="4"/>
+    </g>`,
+  // permanent redaction / lock motif
+  redact: `
+    <g transform="translate(905,145)">
+      <rect x="0" y="0" width="220" height="270" rx="20" fill="rgba(255,255,255,0.14)" stroke="rgba(255,255,255,0.85)" stroke-width="6"/>
+      <path d="M34 52 h152" stroke="rgba(255,255,255,0.7)" stroke-width="8" stroke-linecap="round"/>
+      <rect x="34" y="84" width="152" height="28" rx="6" fill="#0f172a" stroke="#f43f5e" stroke-width="3"/>
+      <path d="M34 140 h120" stroke="rgba(255,255,255,0.7)" stroke-width="8" stroke-linecap="round"/>
+      <rect x="34" y="168" width="144" height="28" rx="6" fill="#0f172a" stroke="#f43f5e" stroke-width="3"/>
+      <path d="M34 224 h96" stroke="rgba(255,255,255,0.7)" stroke-width="8" stroke-linecap="round"/>
+    </g>`,
 };
 
 const COVERS = [
@@ -258,6 +281,18 @@ const COVERS = [
     headline: 'Best Free Background Removers Compared',
     kicker: 'AI CUTOUT TOOLS 2026',
     icon: ICONS.resize,
+  },
+  {
+    file: 'bank-statement-pdf-to-excel-quickbooks-guide-hero.jpg',
+    headline: 'Bank Statement PDF to QuickBooks & Xero',
+    kicker: 'ACCOUNTING WORKFLOW · FREE',
+    icon: ICONS.ledger,
+  },
+  {
+    file: 'redact-pdf-permanent-legal-privacy-guide-hero.jpg',
+    headline: 'How to Redact a PDF Permanently Without Leaks',
+    kicker: 'LEGAL & PRIVACY GUIDE',
+    icon: ICONS.redact,
   },
   {
     file: 'default.jpg',

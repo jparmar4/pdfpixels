@@ -9,7 +9,8 @@ import { seoConfig, siteConfig } from '@/lib/seo-config';
 import { DEFAULT_OG_IMAGE_URL } from '@/lib/seo';
 import { CookieConsentBanner } from '@/components/ads/cookie-consent';
 import { Analytics } from '@/components/ads/analytics';
-import { adsterraConfig } from '@/lib/ads-config';
+import { AdSenseScript } from '@/components/ads/adsense-script';
+import { adsenseConfig, adsterraConfig } from '@/lib/ads-config';
 import { Navigation } from '@/components/layout/navigation';
 import { Footer } from '@/components/layout/footer';
 import { ScrollToTop } from '@/components/home/scroll-to-top';
@@ -155,6 +156,13 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <link rel="dns-prefetch" href="https://bauval.org" />
         <link rel="preconnect" href="https://araplhn.org" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://araplhn.org" />
+        <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
+        <link rel="preconnect" href="https://googleads.g.doubleclick.net" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://googleads.g.doubleclick.net" />
+        {adsenseConfig.clientId && (
+          <meta name="google-adsense-account" content={adsenseConfig.clientId} />
+        )}
         <link rel="search" type="application/opensearchdescription+xml" title="PdfPixels" href="/opensearch.xml" />
         <link rel="alternate" type="application/rss+xml" title="PdfPixels RSS Feed" href="/feed" />
         <link rel="alternate" type="text/plain" title="PdfPixels for LLMs" href="/llms.txt" />
@@ -162,6 +170,14 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <link rel="alternate" type="text/markdown" title="PdfPixels Markdown for Agents" href="/markdown" />
         <link rel="mcp-server" type="application/json" href="/.well-known/mcp/server-card.json" />
         <link rel="api-catalog" type="application/linkset+json" href="/.well-known/api-catalog" />
+        {/* Google AdSense Auto Ads & Ad Serving */}
+        {adsenseConfig.enabled && adsenseConfig.clientId && (
+          <script
+            async
+            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseConfig.clientId}`}
+            crossOrigin="anonymous"
+          />
+        )}
         {/* Adsterra Social Bar (In-Page Push) — high CPM notification format */}
         {adsterraConfig.enabled && adsterraConfig.slots.socialBar.scriptSrc && (
           <script
@@ -192,6 +208,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           {/* Top-center toasts sit below the floating nav pill (offset.top) */}
           <SonnerToaster richColors closeButton position="top-center" offset={{ top: 84, bottom: 24 }} />
           <Analytics />
+          <AdSenseScript />
           <CookieConsentBanner />
         </ThemeProvider>
       </body>

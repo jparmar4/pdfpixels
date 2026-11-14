@@ -131,7 +131,7 @@ function KnowledgeGraphSchema() {
 }
 
 export function HomePageSchemas() {
-  const standardQuestions = faqData.slice(0, 6).map((faq) => ({
+  const standardQuestions = faqData.slice(0, 12).map((faq) => ({
     '@type': 'Question',
     name: faq.question,
     acceptedAnswer: {

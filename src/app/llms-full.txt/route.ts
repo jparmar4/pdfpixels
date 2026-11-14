@@ -4,6 +4,8 @@ import { allTools, toolCategories } from '@/lib/tools-data';
 import { toolContentMap } from '@/lib/tool-content-data';
 import { absoluteUrl } from '@/lib/seo';
 import { useCasePages } from '@/lib/use-cases';
+import { comparisonPages } from '@/lib/comparisons';
+import { geoRegions } from '@/lib/geo-data';
 
 export const dynamic = 'force-static';
 
@@ -68,6 +70,33 @@ export async function GET() {
     ].join('\n');
   }).join('\n\n');
 
+  const comparisonBlocks = comparisonPages
+    .map((cmp) => {
+      const url = absoluteUrl(`/compare/${cmp.slug}`);
+      return [
+        `### [${cmp.title}](${url})`,
+        `- **URL:** [${url}](${url})`,
+        `- **Primary Tool:** [${cmp.primaryToolSlug}](${absoluteUrl(`/tools/${cmp.primaryToolSlug}`)})`,
+        `- **Compared Against:** ${cmp.alternatives.join(', ')}`,
+        `- **Summary:** ${cmp.description}`,
+        `- **Verdict:** ${cmp.verdict}`,
+      ].join('\n');
+    })
+    .join('\n\n');
+
+  const regionBlocks = geoRegions
+    .map((region) => {
+      const url = absoluteUrl(`/${region.code}`);
+      const tasks = region.commonTasks.map((t) => `  - **${t.title}**: ${t.detail}`).join('\n');
+      return [
+        `### [${region.name} (${region.locale})](${url})`,
+        `- **URL:** [${url}](${url})`,
+        `- **Headline:** ${region.headline}`,
+        `- **Regional Focus:**\n${tasks}`,
+      ].join('\n');
+    })
+    .join('\n\n');
+
   const blogBlocks = blogPosts
     .map((post) => {
       const url = absoluteUrl(`/blog/${post.slug}`);
@@ -106,6 +135,18 @@ ${categoryDetailBlocks}
 ## Industry & Role Use-Case Hubs
 
 ${useCaseBlocks}
+
+---
+
+## Software & Platform Comparisons
+
+${comparisonBlocks}
+
+---
+
+## Tier 1 & Tier 2 Regional Hubs
+
+${regionBlocks}
 
 ---
 

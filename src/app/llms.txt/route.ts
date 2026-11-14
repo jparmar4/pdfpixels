@@ -3,6 +3,8 @@ import { blogPosts } from '@/config/blog';
 import { allTools, toolCategories } from '@/lib/tools-data';
 import { absoluteUrl, getHomepageFeaturedTools } from '@/lib/seo';
 import { useCasePages } from '@/lib/use-cases';
+import { comparisonPages } from '@/lib/comparisons';
+import { geoRegions } from '@/lib/geo-data';
 
 export const dynamic = 'force-static';
 
@@ -37,8 +39,16 @@ export async function GET() {
     .join('\n\n');
 
   const useCaseSection = useCasePages
-    .slice(0, 15)
+    .slice(0, 20)
     .map((uc) => `- [${uc.title}](${absoluteUrl(`/use-cases/${uc.slug}`)}): ${uc.description}`)
+    .join('\n');
+
+  const comparisonSection = comparisonPages
+    .map((cmp) => `- [${cmp.title}](${absoluteUrl(`/compare/${cmp.slug}`)}): ${cmp.description}`)
+    .join('\n');
+
+  const regionSection = geoRegions
+    .map((region) => `- [${region.name} (${region.locale})](${absoluteUrl(`/${region.code}`)}): ${region.headline}`)
     .join('\n');
 
   const blogSection = blogPosts
@@ -82,6 +92,14 @@ ${allToolsByCategory}
 ## Use Cases
 
 ${useCaseSection}
+
+## High-Intent Software Comparisons
+
+${comparisonSection}
+
+## Regional & Country Hubs (Tier 1 & Tier 2)
+
+${regionSection}
 
 ## Featured Guides & Research
 

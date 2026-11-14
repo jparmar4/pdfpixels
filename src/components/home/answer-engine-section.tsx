@@ -38,6 +38,18 @@ const answerCards = [
     href: '/tools/increase-image-size-in-kb',
     cta: 'Increase Image Size',
   },
+  {
+    question: 'How do I convert a PDF bank statement to Excel or CSV for QuickBooks and Xero?',
+    answer: 'Open the Bank Statement to Excel tool, upload your digital or scanned bank statement PDF, and extract transaction tables into a clean XLSX or CSV spreadsheet. All account numbers and balances are processed locally in your browser without cloud uploads.',
+    href: '/tools/bank-statement-to-excel',
+    cta: 'Convert Bank Statement',
+  },
+  {
+    question: 'How do I permanently redact confidential text and Bates stamp legal PDFs?',
+    answer: 'Use Redact PDF to burn black redaction boxes directly into the page image and strip hidden text layers or metadata, then apply sequential court exhibit labels with Bates Numbering PDF before e-filing.',
+    href: '/tools/redact-pdf',
+    cta: 'Redact PDF Permanently',
+  },
 ];
 
 export function AnswerEngineSection() {
@@ -56,7 +68,7 @@ export function AnswerEngineSection() {
           </p>
         </div>
 
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 md:grid-cols-2">
           {answerCards.map((card) => (
             <article
               key={card.question}

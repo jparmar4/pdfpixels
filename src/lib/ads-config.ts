@@ -4,8 +4,8 @@
 export const ADSENSE_CLIENT_ID = 'ca-pub-3541576002060495';
 
 export const adsenseConfig = {
-  // Disabled by default; Adsterra is primary monetization
-  enabled: process.env.NEXT_PUBLIC_ADSENSE_ENABLED === 'true',
+  // Enabled by default for Auto Ads & site verification; manual slots upgrade seamlessly when configured
+  enabled: process.env.NEXT_PUBLIC_ADSENSE_ENABLED !== 'false',
   clientId: process.env.NEXT_PUBLIC_ADSENSE_PUBLISHER_ID || ADSENSE_CLIENT_ID,
   slots: {
     header: process.env.NEXT_PUBLIC_ADSENSE_SLOT_HEADER || '',
@@ -117,29 +117,34 @@ export function triggerDownloadWithSmartlink(downloadFn: () => void): void {
 }
 
 export const adsConfig = {
-  enabled: adsterraConfig.enabled || adsenseConfig.enabled,
+  enabled: adsenseConfig.enabled || adsterraConfig.enabled,
+  clientId: adsenseConfig.clientId,
   testMode: false,
   slots: {
-    header: adsenseConfig.enabled
-      ? adsenseConfig.slots.header
-      : adsterraConfig.enabled
-        ? adsterraConfig.slots.banner728x90.key
-        : '',
-    sidebar: adsenseConfig.enabled
-      ? adsenseConfig.slots.sidebar
-      : adsterraConfig.enabled
-        ? adsterraConfig.slots.banner160x600.key || adsterraConfig.slots.banner160x300.key
-        : '',
-    inContent: adsenseConfig.enabled
-      ? adsenseConfig.slots.inContent
-      : adsterraConfig.enabled
-        ? adsterraConfig.slots.banner300x250.key
-        : '',
-    footer: adsenseConfig.enabled
-      ? adsenseConfig.slots.footer
-      : adsterraConfig.enabled
-        ? adsterraConfig.slots.banner728x90.key
-        : '',
+    header:
+      adsenseConfig.enabled && adsenseConfig.slots.header
+        ? adsenseConfig.slots.header
+        : adsterraConfig.enabled
+          ? adsterraConfig.slots.banner728x90.key
+          : '',
+    sidebar:
+      adsenseConfig.enabled && adsenseConfig.slots.sidebar
+        ? adsenseConfig.slots.sidebar
+        : adsterraConfig.enabled
+          ? adsterraConfig.slots.banner160x600.key || adsterraConfig.slots.banner160x300.key
+          : '',
+    inContent:
+      adsenseConfig.enabled && adsenseConfig.slots.inContent
+        ? adsenseConfig.slots.inContent
+        : adsterraConfig.enabled
+          ? adsterraConfig.slots.banner300x250.key
+          : '',
+    footer:
+      adsenseConfig.enabled && adsenseConfig.slots.footer
+        ? adsenseConfig.slots.footer
+        : adsterraConfig.enabled
+          ? adsterraConfig.slots.banner728x90.key
+          : '',
     native: adsterraConfig.enabled ? adsterraConfig.slots.nativeBanner.containerId : '',
     socialBar: adsterraConfig.enabled ? adsterraConfig.slots.socialBar.scriptSrc : '',
   },

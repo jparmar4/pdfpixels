@@ -1084,6 +1084,258 @@ export const geoRegions: GeoRegion[] = [
       },
     ],
   },
+  {
+    code: 'se',
+    name: 'Sweden',
+    adjective: 'Swedish',
+    locale: 'sv-SE',
+    localCopy: 'betrodd i Sverige',
+    headline: 'Gratis PDF- & bildverktyg för Sverige — Skatteverket, CSN & bokföring',
+    intro:
+      'I Sverige kräver Skatteverket, CSN, Bolagsverket och Arbetsförmedlingen ofta lätta, läsbara PDF-bilagor under strikta storleksgränser, medan företagare behöver omvandla kontoutdrag från SEB, Swedbank och Handelsbanken till Excel. PdfPixels kör de flesta verktyg direkt i webbläsaren utan uppladdning.',
+    commonTasks: [
+      {
+        title: 'Komprimera & slå ihop PDF',
+        detail: 'Minska skannade avtal och kvitton för Skatteverket, CSN och Bolagsverket utan kvalitetsförlust.',
+        href: '/tools/compress-pdf',
+      },
+      {
+        title: 'Kontoutdrag PDF till Excel / CSV',
+        detail: 'Extrahera transaktioner från svenska bankutdrag till snygga Excel- och CSV-filer för bokföringen.',
+        href: '/tools/bank-statement-to-excel',
+      },
+      {
+        title: 'Maskera & signera PDF säkert',
+        detail: 'Stryk över personnummer och signera hyresavtal eller kundkontrakt direkt i webbläsaren.',
+        href: '/tools/redact-pdf',
+      },
+    ],
+    localNotes: [
+      'GDPR-säkert arbetsflöde: vanliga PDF- och bildverktyg körs lokalt i din webbläsare utan molnlagring.',
+      'Konvertera PDF/A för långtidsarkivering av bokföringsmaterial enligt svensk bokföringslag.',
+      'Omvandla iPhone HEIC-bilder till JPG eller PDF innan du laddar upp till svenska myndighetsportaler.',
+    ],
+    faqs: [
+      {
+        question: 'Är PdfPixels gratis att använda i Sverige?',
+        answer: 'Ja. Alla grundläggande PDF- och bildverktyg är kostnadsfria direkt i webbläsaren utan konto.',
+      },
+      {
+        question: 'Kan jag konvertera ett svenskt bankutdrag till Excel?',
+        answer: 'Ja. Öppna Bank Statement to Excel för att extrahera tabeller och transaktioner till XLSX eller CSV.',
+      },
+    ],
+  },
+  {
+    code: 'no',
+    name: 'Norway',
+    adjective: 'Norwegian',
+    locale: 'nb-NO',
+    localCopy: 'pålitelig i Norge',
+    headline: 'Gratis PDF- og bildeverktøy for Norge — Altinn, Skatteetaten & regnskap',
+    intro:
+      'I Norge trenger både privatpersoner, regnskapsførere og bedrifter ryddige PDF-vedlegg til Altinn, Skatteetaten og NAV, samt rask konvertering av kontoutskrifter fra DNB og Nordea til Excel. PdfPixels behandler dokumenter raskt og personvernvennlig direkte i nettleseren.',
+    commonTasks: [
+      {
+        title: 'Komprimer og slå sammen PDF',
+        detail: 'Gjør søknader, attester og fakturaer klare for Altinn, NAV og e-post med lav filstørrelse.',
+        href: '/tools/compress-pdf',
+      },
+      {
+        title: 'Kontoutskrift PDF til Excel / CSV',
+        detail: 'Gjør om PDF-kontoutskrifter til strukturerte Excel-ark for rask regnskapsavstemming.',
+        href: '/tools/bank-statement-to-excel',
+      },
+      {
+        title: 'Signer og sladd fødselsnummer i PDF',
+        detail: 'Fjern sensitiv tekst permanent eller signer kontrakter digitalt uten programvareinstallasjon.',
+        href: '/tools/sign-pdf',
+      },
+    ],
+    localNotes: [
+      'Personvern i fokus (GDPR/Datatilsynet): klientside-verktøy behandler filene lokalt på egen enhet.',
+      'Lag søkbare PDF-er fra skannede bilag med gratis OCR PDF før arkivering.',
+      'Konverter HEIC-bilder fra mobil til JPG eller samle flere sider i én PDF-fil.',
+    ],
+    faqs: [
+      {
+        question: 'Er PdfPixels gratis i Norge?',
+        answer: 'Ja. Du kan komprimere, slå sammen, konvertere og signere PDF-er gratis uten innlogging.',
+      },
+      {
+        question: 'Hvordan sladder jeg sensitive opplysninger i en PDF?',
+        answer: 'Bruk Redact PDF til å fjerne tekstlaget permanent under de sorte boksene før du deler filen.',
+      },
+    ],
+  },
+  {
+    code: 'dk',
+    name: 'Denmark',
+    adjective: 'Danish',
+    locale: 'da-DK',
+    localCopy: 'pålidelig i Danmark',
+    headline: 'Gratis PDF- & billedværktøjer til Danmark — Borger.dk, Virk & bogholderi',
+    intro:
+      'I Danmark kræver indsendelse til Borger.dk, Virk.dk, Skat.dk og e-Boks ofte kompakte PDF-dokumenter samlet i én fil, mens bogholdere sparer timer ved at konvertere kontoudtog fra Danske Bank og Nordea til Excel. PdfPixels leverer hurtige browserværktøjer uden abonnement.',
+    commonTasks: [
+      {
+        title: 'Komprimer & flet PDF til e-Boks og Virk',
+        detail: 'Reducer filstørrelsen og saml bilag, fuldmagter og kontrakter i ét ordnet PDF-dokument.',
+        href: '/tools/merge-pdf',
+      },
+      {
+        title: 'Kontoudtog PDF til Excel / CSV',
+        detail: 'Udtræk transaktionstabeller fra danske bankkontoudtog til direkte import i regnskabsprogrammer.',
+        href: '/tools/bank-statement-to-excel',
+      },
+      {
+        title: 'Overstreg CPR-numre & signer PDF',
+        detail: 'Fjern personfølsomme oplysninger permanent eller underskriv aftaler direkte online.',
+        href: '/tools/redact-pdf',
+      },
+    ],
+    localNotes: [
+      'GDPR-venlig behandling: de fleste værktøjer kører lokalt i browseren uden at gemme dine dokumenter.',
+      'Konverter skannede kvitteringer til søgbare dokumenter eller PDF/A til arkivering.',
+      'Skift hurtigt mellem Word, Excel, JPG, HEIC og PDF på både Windows, Mac og mobil.',
+    ],
+    faqs: [
+      {
+        question: 'Koster det noget at bruge PdfPixels i Danmark?',
+        answer: 'Nej. Alle kerneværktøjer til PDF og billeder er gratis uden brugerkonto eller vandmærker.',
+      },
+      {
+        question: 'Kan jeg konvertere en PDF til redigerbar Word?',
+        answer: 'Ja. Brug PDF to Word-værktøjet til at eksportere tekstdokumenter til .docx på få sekunder.',
+      },
+    ],
+  },
+  {
+    code: 'at',
+    name: 'Austria',
+    adjective: 'Austrian',
+    locale: 'de-AT',
+    localCopy: 'bewährt in Österreich',
+    headline: 'Kostenlose PDF- & Bild-Tools für Österreich — FinanzOnline, USP & Kanzleien',
+    intro:
+      'In Österreich verlangen FinanzOnline, oesterreich.gv.at, das Unternehmensserviceportal (USP) und Gerichte kompakte, saubere PDF-Beilagen. Steuerberater, KMU und Privatpersonen nutzen PdfPixels zum Verkleinern, Verbinden, Schwärzen und Umwandeln von Kontoauszügen (Erste Bank, Raiffeisen) in Excel.',
+    commonTasks: [
+      {
+        title: 'PDF komprimieren & verbinden',
+        detail: 'Scans und Anträge für FinanzOnline, Behörden und Bewerbungen auf kompakte Dateigröße bringen.',
+        href: '/de/tools/compress-pdf',
+      },
+      {
+        title: 'Kontoauszug PDF in Excel / CSV',
+        detail: 'Bankumsätze aus österreichischen Kontoauszügen strukturiert als Excel-Tabelle exportieren.',
+        href: '/tools/bank-statement-to-excel',
+      },
+      {
+        title: 'PDF dauerhaft schwärzen & signieren',
+        detail: 'SV-Nummern, IBANs und vertrauliche Stellen DSGVO-konform unkenntlich machen oder unterschreiben.',
+        href: '/de/tools/redact-pdf',
+      },
+    ],
+    localNotes: [
+      'DSGVO-orientierte Verarbeitung: Browser-Tools arbeiten lokal auf Ihrem Gerät; Server-Dateien werden automatisch gelöscht.',
+      'PDF/A-Konvertierung und OCR-Texterkennung unterstützen rechtssichere Ablagen in Wien, Graz, Linz und Salzburg.',
+      'Kompatibel mit Smartphone-Fotos (HEIC zu JPG/PDF) für rasche Beleg-Uploads.',
+    ],
+    faqs: [
+      {
+        question: 'Ist PdfPixels in Österreich kostenlos und ohne Anmeldung nutzbar?',
+        answer: 'Ja. Alle wesentlichen PDF- und Bildfunktionen stehen sofort kostenlos und ohne Registrierung bereit.',
+      },
+      {
+        question: 'Werden vertrauliche Belege dauerhaft gespeichert?',
+        answer: 'Nein. Clientseitige Tools verlassen das Gerät nicht, und temporäre Server-Jobs werden nach 60 Minuten gelöscht.',
+      },
+    ],
+  },
+  {
+    code: 'be',
+    name: 'Belgium',
+    adjective: 'Belgian',
+    locale: 'nl-BE',
+    localCopy: 'betrouwbaar in België',
+    headline: 'Gratis PDF & afbeelding tools voor België — MyMinfin, Tax-on-web & ondernemingen',
+    intro:
+      'In België hebben boekhouders, bedrijven en burgers bij MyMinfin, Tax-on-web, Intervat en overheidsportalen nood aan lichte PDF-bundels en foutloze documentconversie. PdfPixels comprimeert scans, zet rekeninguittreksels van KBC, BNP Paribas Fortis en ING om naar Excel en beveiligt vertrouwelijke bestanden.',
+    commonTasks: [
+      {
+        title: 'PDF verkleinen & samenvoegen',
+        detail: 'Bundel attesten, facturen en bewijsstukken tot één licht PDF-bestand voor MyMinfin of e-mail.',
+        href: '/tools/compress-pdf',
+      },
+      {
+        title: 'Rekeninguittreksel PDF naar Excel / CSV',
+        detail: 'Converteer bankafschriften en financiële tabellen naar overzichtelijke Excel- en CSV-bestanden.',
+        href: '/tools/bank-statement-to-excel',
+      },
+      {
+        title: 'Rijksregisternummer zwart maken & ondertekenen',
+        detail: 'Verwijder gevoelige gegevens definitief uit een PDF of plaats snel uw handtekening online.',
+        href: '/tools/redact-pdf',
+      },
+    ],
+    localNotes: [
+      'AVG / GDPR-vriendelijk: veel bewerkingen gebeuren lokaal in uw eigen browser zonder bestandsopslag.',
+      'Zet gescande documenten om naar doorzoekbare PDF/A-bestanden voor Belgische bedrijfsdossiers.',
+      'Converteer iPhone HEIC-foto’s direct naar JPG of combineer ze in één PDF-bestand.',
+    ],
+    faqs: [
+      {
+        question: 'Is PdfPixels gratis te gebruiken in België?',
+        answer: 'Ja. Alle kernfuncties voor PDF en afbeeldingen zijn gratis zonder account of watermerk.',
+      },
+      {
+        question: 'Kan ik meerdere facturen samenvoegen in één PDF?',
+        answer: 'Ja. Gebruik Merge PDF om afzonderlijke bestanden te sorteren en in één document op te slaan.',
+      },
+    ],
+  },
+  {
+    code: 'kr',
+    name: 'South Korea',
+    adjective: 'South Korean',
+    locale: 'ko-KR',
+    localCopy: 'trusted across South Korea',
+    headline: 'Free PDF & Image Tools for South Korea — Hometax, Gov.kr & Business Workflows',
+    intro:
+      'Professionals, students, and international teams in South Korea rely on compact PDFs and properly sized ID photos for Hometax filings, Government24 (Gov.kr), HiKorea visa submissions, and corporate reporting. PdfPixels provides fast browser-based PDF compression, merging, bank statement to Excel conversion, OCR, and 35×45mm passport photo resizing.',
+    commonTasks: [
+      {
+        title: 'Compress & merge PDFs for portals',
+        detail: 'Shrink oversized scans and combine supporting certificates under Korean portal upload limits.',
+        href: '/tools/compress-pdf',
+      },
+      {
+        title: 'Convert bank statements & tables to Excel',
+        detail: 'Extract structured transaction tables and financial PDFs into clean XLSX or CSV sheets.',
+        href: '/tools/bank-statement-to-excel',
+      },
+      {
+        title: 'ID photo 3.5×4.5cm & passport resizing',
+        detail: 'Crop portrait photos for visa, resident card, and Korean passport photo dimension guidelines.',
+        href: '/tools/passport-size-photo',
+      },
+    ],
+    localNotes: [
+      'Privacy-focused processing aligns with strict corporate security needs — client-side tools stay in your browser.',
+      'Useful for Mac, iPhone (HEIC to JPG/PDF), and Windows workflows across Seoul, Busan, and global teams.',
+      'Pair OCR PDF with PDF to Word or Excel to recover editable text and tables from scanned certificates.',
+    ],
+    faqs: [
+      {
+        question: 'Is PdfPixels free to use in South Korea?',
+        answer: 'Yes. Core PDF and image utilities work free in modern browsers with no signup or watermarks.',
+      },
+      {
+        question: 'Can I resize a 35×45mm photo for visa or ID applications?',
+        answer: 'Yes. Open Passport Size Photo, select 35×45mm dimensions, and verify official background and lighting rules.',
+      },
+    ],
+  },
 ];
 
 export function getRegionByCode(code: string): GeoRegion | undefined {

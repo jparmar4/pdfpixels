@@ -3,7 +3,7 @@ import { faqData } from '@/lib/seo-config';
 // Server component using native <details>/<summary> so every Q&A pair is
 // present in the served HTML (AEO extraction) and works without JS.
 export function FAQSection() {
-  const visibleFaqs = faqData.slice(0, 6);
+  const visibleFaqs = faqData.slice(0, 12);
 
   return (
     <section id="faq-section" className="py-16 md:py-20 bg-muted/20 border-t border-border/50">

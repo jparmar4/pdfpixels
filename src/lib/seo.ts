@@ -7,7 +7,7 @@ export const DEFAULT_OG_IMAGE_URL = `${SITE_URL}${DEFAULT_OG_IMAGE_PATH}`;
 /** Stable sitemap lastmod for evergreen pages — do not use `new Date()` per request.
  *  Bump this only when evergreen pages (home/tools/use-cases) actually change,
  *  so lastmod stays truthful for crawlers. */
-export const SITE_CONTENT_UPDATED = new Date('2026-11-12T00:00:00.000Z');
+export const SITE_CONTENT_UPDATED = new Date('2026-11-14T00:00:00.000Z');
 
 /** AdSense-review content freeze (commit a17b403). While true, the localized
  *  tool pages, geo hubs, and comparison pages stay noindexed, out of the

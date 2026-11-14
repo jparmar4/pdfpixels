@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getAllBlogPosts } from '@/config/blog';
+import { getAllBlogPosts, getCoverDimensions } from '@/config/blog';
 import { SITE_URL } from '@/lib/seo';
 
 export async function GET() {
@@ -7,15 +7,22 @@ export async function GET() {
   const currentDate = new Date().toUTCString();
   const blogPosts = getAllBlogPosts();
 
-  const blogItems = blogPosts.map((post) => ({
-    title: post.title,
-    description: post.metaDescription || post.excerpt,
-    link: `${baseUrl}/blog/${post.slug}`,
-    pubDate: new Date(post.date).toUTCString(),
-    category: post.category,
-    author: post.author,
-    coverImage: post.coverImage,
-  }));
+  const blogItems = blogPosts.map((post) => {
+    const dims = getCoverDimensions(post.coverImage);
+    const mimeType = post.coverImage.toLowerCase().endsWith('.png') ? 'image/png' : 'image/jpeg';
+    return {
+      title: post.title,
+      description: post.metaDescription || post.excerpt,
+      link: `${baseUrl}/blog/${post.slug}`,
+      pubDate: new Date(post.date).toUTCString(),
+      category: post.category,
+      author: post.author,
+      coverImage: post.coverImage,
+      width: dims.width,
+      height: dims.height,
+      mimeType,
+    };
+  });
 
   const rssFeed = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0"
@@ -61,7 +68,8 @@ export async function GET() {
       <pubDate>${item.pubDate}</pubDate>
       <guid isPermaLink="true">${item.link}</guid>
       <dc:creator>${escapeXml(item.author)}</dc:creator>
-      <media:content url="${baseUrl}${item.coverImage}" medium="image" />
+      <enclosure url="${baseUrl}${item.coverImage}" length="0" type="${item.mimeType}"/>
+      <media:content url="${baseUrl}${item.coverImage}" medium="image" width="${item.width}" height="${item.height}" type="${item.mimeType}" />
       <content:encoded><![CDATA[
         <img src="${baseUrl}${item.coverImage}" alt="${escapeXml(item.title)}" />
         <p>${escapeXml(item.description)}</p>

@@ -6,6 +6,7 @@ import { toolContentMap } from '@/lib/tool-content-data';
 import { absoluteUrl, getHomepageFeaturedTools } from '@/lib/seo';
 import { useCasePages } from '@/lib/use-cases';
 import { comparisonPages } from '@/lib/comparisons';
+import { geoRegions, getRegionByCode } from '@/lib/geo-data';
 
 export const runtime = 'nodejs';
 
@@ -28,8 +29,17 @@ function buildHomepageMarkdown(): { markdown: string; canonical: string } {
     )
     .join('\n');
 
+  const regionLines = geoRegions
+    .map((r) => `- [${r.name} (${r.locale})](${absoluteUrl(`/${r.code}`)}): ${r.headline}`)
+    .join('\n');
+
+  const comparisonLines = comparisonPages
+    .slice(0, 12)
+    .map((c) => `- [${c.title}](${absoluteUrl(`/compare/${c.slug}`)}): ${c.description}`)
+    .join('\n');
+
   const faqLines = faqData
-    .slice(0, 8)
+    .slice(0, 12)
     .map((f) => `### ${f.question}\n\n${f.answer}`)
     .join('\n\n');
 
@@ -51,6 +61,14 @@ ${popularLines}
 ## Tool Categories
 
 ${categoryLines}
+
+## High-Intent Software Comparisons
+
+${comparisonLines}
+
+## Tier 1 & Tier 2 Regional Hubs
+
+${regionLines}
 
 ## Why PdfPixels?
 
@@ -197,6 +215,24 @@ function buildPathMarkdown(rawPath: string): { markdown: string; canonical: stri
     return {
       canonical,
       markdown: `# PdfPixels Tool Comparisons\n\nCanonical URL: ${canonical}\n\n${list}\n`,
+    };
+  }
+
+  // Regional hub pages (/[region])
+  const regionCode = path.replace(/^\//, '').split('/')[0];
+  const matchedRegion = path.split('/').filter(Boolean).length === 1 ? getRegionByCode(regionCode) : undefined;
+  if (matchedRegion) {
+    const canonical = absoluteUrl(`/${matchedRegion.code}`);
+    const tasks = matchedRegion.commonTasks
+      .map((t) => `- [${t.title}](${absoluteUrl(t.href)}): ${t.detail}`)
+      .join('\n');
+    const notes = matchedRegion.localNotes.map((n) => `- ${n}`).join('\n');
+    const faqs = matchedRegion.faqs
+      .map((f) => `### ${f.question}\n\n${f.answer}`)
+      .join('\n\n');
+    return {
+      canonical,
+      markdown: `# ${matchedRegion.headline}\n\n> ${matchedRegion.intro}\n\n- **Region:** ${matchedRegion.name} (\`${matchedRegion.locale}\`)\n- **Canonical URL:** [${canonical}](${canonical})\n\n## Popular Workflows in ${matchedRegion.name}\n\n${tasks}\n\n## Local Guidelines & Privacy\n\n${notes}\n\n## Frequently Asked Questions (${matchedRegion.name})\n\n${faqs}\n`,
     };
   }
 

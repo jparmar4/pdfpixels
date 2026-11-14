@@ -1814,4 +1814,101 @@ export const useCasePages: UseCasePage[] = [
       { question: 'Can I convert Canva PDFs to CMYK for free?', answer: 'Yes. Export your design from Canva as PDF Print, then run it through PdfPixels CMYK PDF Converter to convert to CMYK without Canva Pro.' },
     ],
   },
+  {
+    slug: 'convert-bank-statement-pdf-to-quickbooks-xero-csv',
+    title: 'Convert Bank Statement PDF to QuickBooks & Xero CSV Free',
+    description: 'Extract clean transaction tables from Chase, Bank of America, Wells Fargo, Barclays, HSBC, RBC, and CommBank PDF statements into QuickBooks or Xero CSV/Excel without uploading to cloud SaaS.',
+    targetToolSlug: 'bank-statement-to-excel',
+    intent: 'convert bank statement pdf to quickbooks and xero csv',
+    overview:
+      'CPAs, bookkeepers, and small business owners in the US, UK, Canada, and Australia lose hours every month re-keying PDF statements into QuickBooks Online, Xero, or Sage when older periods drop out of live bank feeds. Commercial statement parsers commonly charge $39 to $99 per month and require uploading client financial records to external servers. PdfPixels Bank Statement to Excel parses digital statements cleanly into date, description, debit, credit, and balance columns so you can export QuickBooks-ready CSV or Excel (.xlsx) spreadsheets fast with zero per-page fees.',
+    whoItsFor: [
+      'CPAs and tax preparers reconstructing missing months of client bank history for QuickBooks or Xero',
+      'Small business owners importing Chase, BofA, Wells Fargo, Barclays, HSBC, RBC, or CommBank statements into accounting software',
+      'Mortgage underwriters and loan officers auditing cash-flow summaries across multi-month statement packets',
+    ],
+    steps: [
+      { title: 'Download the native e-statement PDF', description: 'Export the digital PDF directly from online banking so numbers and columns remain crisp.' },
+      { title: 'Upload to Bank Statement to Excel', description: 'Open the free Bank Statement to Excel tool and drop your PDF statement into the converter.' },
+      { title: 'Verify dates and debit/credit columns', description: 'Review the extracted preview table and opening/closing balances before exporting.' },
+      { title: 'Download CSV or XLSX for QuickBooks / Xero', description: 'Export as CSV for instant QuickBooks Online or Xero bank import, or Excel for custom pivot tables.' },
+    ],
+    tips: [
+      'Use CSV UTF-8 export when importing directly into QuickBooks Online or Xero banking feeds.',
+      'Check date ordering (MM/DD/YYYY vs DD/MM/YYYY) if combining statements from both US and UK banks.',
+      'For scanned paper statements, run OCR PDF first to add a selectable text layer.',
+    ],
+    pitfalls: [
+      { problem: 'QuickBooks rejects signed amounts in two columns', solution: 'Confirm your template maps Debit and Credit columns or combines them into a single Amount column in Excel first.' },
+      { problem: 'Wrap-around merchant descriptions span two lines', solution: 'Review multi-line merchant memos in the preview table before finalizing import.' },
+    ],
+    faqs: [
+      { question: 'Is converting bank statement PDFs to CSV free for business accounts?', answer: 'Yes. PdfPixels converts bank statements to Excel (.xlsx) and CSV free with no page caps or subscription.' },
+      { question: 'Which banks work best with the QuickBooks CSV exporter?', answer: 'Digital PDF statements from Chase, Bank of America, Wells Fargo, Citibank, TD Bank, Barclays, HSBC, RBC, and most modern retail banks parse reliably.' },
+    ],
+  },
+  {
+    slug: 'redact-pdf-for-hipaa-gdpr-compliance',
+    title: 'Redact PDF Permanently for HIPAA, GDPR & Corporate Privacy Compliance',
+    description: 'Destroy sensitive SSNs, patient health data (PHI), account numbers, and hidden PDF metadata directly in your browser for HIPAA, GDPR, and FOIA compliance.',
+    targetToolSlug: 'redact-pdf',
+    intent: 'redact pdf permanently for hipaa and gdpr compliance',
+    overview:
+      'Drawing black boxes in an ordinary preview app or PDF editor only covers confidential text visually — anyone can select underneath the box, copy-paste hidden SSNs, or inspect XML metadata. Real HIPAA privacy rules, GDPR subject-access disclosures, HR investigations, and legal discovery require irreversible redaction where the underlying glyphs, annotations, and author metadata are destroyed. PdfPixels Redact PDF permanently burns redactions into sanitized pages inside your browser without uploading sensitive patient or client files to third-party storage.',
+    whoItsFor: [
+      'Healthcare clinics and billing teams removing HIPAA Protected Health Information (PHI) before sharing records',
+      'EU and UK legal, HR, and compliance officers answering GDPR Data Subject Access Requests (DSAR)',
+      'Accounting firms and payroll admins hiding SSNs, EINs, ITINs, and routing numbers on tax transcripts',
+    ],
+    steps: [
+      { title: 'Open Redact PDF in your browser', description: 'Launch Redact PDF so client-side processing keeps sensitive documents on your device.' },
+      { title: 'Mark sensitive text and regions', description: 'Draw redaction rectangles cleanly over names, SSNs, dates of birth, diagnoses, and account numbers.' },
+      { title: 'Apply irreversible redaction', description: 'Burn the redaction masks permanently into the page content so hidden text layers cannot be copied.' },
+      { title: 'Strip metadata and double-check', description: 'Follow up with PDF Metadata Editor to clear author and title fields, then verify with Cmd/Ctrl+F search.' },
+    ],
+    tips: [
+      'Always test the redacted output with Ctrl+F / Cmd+F for the removed word and try selecting across the black box.',
+      'Pair redaction with Flatten PDF and Sanitize PDF before sending court or regulatory attachments.',
+    ],
+    pitfalls: [
+      { problem: 'Author or original filename leaks client identity', solution: 'Clear Info dictionary and XMP metadata fields using the PDF Metadata tool after redacting pages.' },
+      { problem: 'Leaving margin comments or sticky notes intact', solution: 'Flatten annotations and inspect every page margin before disclosure.' },
+    ],
+    faqs: [
+      { question: 'Can redacted text be recovered from a PdfPixels redacted PDF?', answer: 'No when permanent redaction is applied — the underlying characters under the masked area are removed/rasterized rather than merely covered.' },
+      { question: 'Does Redact PDF upload HIPAA or GDPR documents to external servers?', answer: 'No. Redact PDF runs locally inside your browser so confidential medical, tax, and HR records stay on your computer.' },
+    ],
+  },
+  {
+    slug: 'prepare-pdf-exhibits-for-pacer-court-efiling',
+    title: 'Prepare PDF Exhibits for PACER & Court E-Filing (Bates Stamp, Flatten & PDF/A)',
+    description: 'Bates stamp legal exhibits, flatten fillable forms, convert to archival PDF/A, and compress court filings under CM/ECF and PACER size limits free.',
+    targetToolSlug: 'bates-numbering-pdf',
+    intent: 'prepare pdf exhibits for pacer court e-filing with bates numbering',
+    overview:
+      'US federal CM/ECF portals, PACER systems, and state court e-filing gateways enforce strict technical rules: filings must have flattened signatures and annotations, archival-safe fonts (often PDF/A-1b or PDF/A-2b), sequential Bates identifiers across multi-document production sets, and per-file caps between 10 MB and 35 MB. PdfPixels equips solo practitioners, paralegals, and litigation teams to handle the entire pre-filing pipeline free in any browser.',
+    whoItsFor: [
+      'Paralegals and legal assistants preparing document productions and motion exhibits',
+      'Solo attorneys and law firms seeking a zero-seat-cost alternative to Adobe Acrobat Pro for routine filings',
+      'Corporate legal ops teams Bates numbering compliance binders and arbitration packets',
+    ],
+    steps: [
+      { title: 'Redact privileged content first', description: 'Sanitize SSNs, minor names, or financial account numbers per FRCP Rule 5.2 before numbering.' },
+      { title: 'Apply sequential Bates numbers', description: 'Open Bates Numbering PDF, enter your case prefix (e.g. DEF-000101), position, and stamp all exhibit pages.' },
+      { title: 'Flatten annotations and convert to PDF/A', description: 'Use Flatten PDF to lock signatures and form values, or PDF to PDF/A for long-term court archival.' },
+      { title: 'Compress under court MB caps', description: 'Shrink large scanned exhibits with Compress PDF or Split PDF by Size if a clerk rejects the upload.' },
+    ],
+    tips: [
+      'Always apply Bates numbering AFTER final page ordering and redactions so sequence numbers never have gaps.',
+      'Check whether your district court caps individual attachments at 10 MB, 20 MB, or 35 MB before uploading.',
+    ],
+    pitfalls: [
+      { problem: 'Interactive form fields disappear or print blank at court', solution: 'Always run Flatten PDF before submitting fillable court forms or signed affidavits to CM/ECF.' },
+      { problem: '50 MB scanned exhibit bundle rejected by filing clerk', solution: 'Split by size or compress scanned images to 200 DPI monochrome/clean grayscale while preserving seal legibility.' },
+    ],
+    faqs: [
+      { question: 'Can I customize the Bates numbering prefix and starting digit?', answer: 'Yes. Configure custom prefixes, zero-padded start indices (e.g., 000001), placement corner, and font styling in Bates Numbering PDF.' },
+      { question: 'Why do courts reject unflattened PDFs?', answer: 'Dynamic form layers and unembedded annotations can render differently across clerk viewers; flattening locks the exact visual appearance onto the page.' },
+    ],
+  },
 ];

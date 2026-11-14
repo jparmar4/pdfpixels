@@ -55,7 +55,7 @@ export const seoConfig = {
     'split pdf pages online free',
   ],
   targetLanguages: ['en', 'de', 'fr', 'es', 'pt', 'ja'],
-  targetCountries: ['US', 'GB', 'CA', 'AU', 'CH', 'NL', 'IT', 'IN', 'PH', 'NG', 'PK', 'BD', 'KE', 'AE', 'ZA', 'SG', 'IE', 'NZ', 'DE', 'FR', 'JP', 'ES', 'MX', 'BR', 'PT'],
+  targetCountries: ['US', 'GB', 'CA', 'AU', 'CH', 'NL', 'IT', 'SE', 'NO', 'DK', 'AT', 'BE', 'KR', 'IN', 'PH', 'NG', 'PK', 'BD', 'KE', 'AE', 'ZA', 'SG', 'IE', 'NZ', 'DE', 'FR', 'JP', 'ES', 'MX', 'BR', 'PT'],
   brandColor: '#4f46e5',
   credentials: {
     tools: toolCountLabel,
