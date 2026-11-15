@@ -24,6 +24,8 @@ function readSignals(file) {
   return {
     canonical: links.find((link) => link.rel === 'canonical')?.href,
     noindex: metas.some((meta) => /^(robots|googlebot)$/i.test(meta.name ?? '') && /\bnoindex\b/i.test(meta.content ?? '')),
+    maxImagePreviewLarge: metas.some((meta) => /^(robots|googlebot)$/i.test(meta.name ?? '') && /max-image-preview:large/i.test(meta.content ?? '')),
+    ogImage: metas.find((meta) => (meta.property ?? '').toLowerCase() === 'og:image')?.content,
     languages: links.filter((link) => link.rel === 'alternate' && link.hreflang),
   };
 }
@@ -47,7 +49,18 @@ for (const url of urls) {
   assert.ok(page, `Sitemap URL has no rendered page: ${url}`);
   assert.ok(!page.noindex, `Noindexed URL in sitemap: ${url}`);
   assert.equal(page.canonical, url, `Sitemap URL must be self-canonical: ${url}`);
+  assert.ok(page.maxImagePreviewLarge, `Sitemap URL missing max-image-preview:large (Google Discover): ${url}`);
+  assert.ok(page.ogImage, `Sitemap URL missing og:image: ${url}`);
 }
+
+const robotsBodyPath = path.join(app, 'robots.txt.body');
+assert.ok(existsSync(robotsBodyPath), 'robots.txt.body missing from build');
+const robotsTxt = readFileSync(robotsBodyPath, 'utf8');
+assert.ok(!robotsTxt.includes('Disallow: /_next/'), 'robots.txt must not block /_next/');
+
+const openApiBodyPath = path.join(app, 'openapi.json.body');
+assert.ok(existsSync(openApiBodyPath), 'openapi.json.body missing from build');
+assert.equal(JSON.parse(readFileSync(openApiBodyPath, 'utf8')).openapi, '3.1.0', 'Invalid openapi.json');
 
 let alternates = 0;
 for (const [route, page] of pages) {

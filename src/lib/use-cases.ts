@@ -130,7 +130,7 @@ export const useCasePages: UseCasePage[] = [
       { title: 'Export and verify', description: 'Download the result and compare against your embassy or passport office checklist.' },
     ],
     tips: [
-      'Do not wear hats or heavy filters unless your country"™s rules allow them.',
+      'Do not wear hats or heavy filters unless your country’s rules allow them.',
       'Print at the correct DPI (often 300 DPI) if you need a paper photo.',
     ],
     pitfalls: [
@@ -178,7 +178,7 @@ export const useCasePages: UseCasePage[] = [
     targetToolSlug: 'heic-to-jpg',
     intent: 'convert heic to jpg online',
     overview:
-      'The rejection usually arrives as "your photo won"™t open" or "unsupported format" — and the culprit is almost always HEIC, the space-saving format iPhones use by default. This guide covers the whole scenario, not just the conversion click: how to tell a file is HEIC, transfer traps (AirDrop set to "Automatic" already converts to JPG; WhatsApp and Instagram convert on send; email keeps the original HEIC), and when to convert copies instead of originals. Once you have the HEIC on your device, the fix itself takes seconds with PdfPixels HEIC to JPG — no app install, straight to a universal JPG you can submit anywhere.',
+      'The rejection usually arrives as "your photo won’t open" or "unsupported format" — and the culprit is almost always HEIC, the space-saving format iPhones use by default. This guide covers the whole scenario, not just the conversion click: how to tell a file is HEIC, transfer traps (AirDrop set to "Automatic" already converts to JPG; WhatsApp and Instagram convert on send; email keeps the original HEIC), and when to convert copies instead of originals. Once you have the HEIC on your device, the fix itself takes seconds with PdfPixels HEIC to JPG — no app install, straight to a universal JPG you can submit anywhere.',
     whoItsFor: [
       'iPhone users sharing photos with Windows users',
       'People uploading iPhone photos to websites that reject HEIC',
@@ -198,7 +198,7 @@ export const useCasePages: UseCasePage[] = [
     ],
     faqs: [
       { question: 'Is quality lost converting HEIC to JPG?', answer: 'JPG is lossy, but a high-quality export is usually indistinguishable for social and form use.' },
-      { question: 'Should I use this guide or go straight to the HEIC to JPG tool?', answer: 'If your photo was already rejected somewhere, read this guide first — the transfer and format checks above fix most "won"™t open" cases without converting. If you already hold the HEIC file and just need it converted, go straight to the HEIC to JPG tool.' },
+      { question: 'Should I use this guide or go straight to the HEIC to JPG tool?', answer: 'If your photo was already rejected somewhere, read this guide first — the transfer and format checks above fix most "won’t open" cases without converting. If you already hold the HEIC file and just need it converted, go straight to the HEIC to JPG tool.' },
     ],
   },
   {
@@ -404,7 +404,7 @@ export const useCasePages: UseCasePage[] = [
       { problem: 'Cannot reach 300KB', solution: 'Reduce page count first; compression alone cannot fix a 40-page photo scan.' },
     ],
     faqs: [
-      { question: 'Will 300KB be accepted everywhere?', answer: 'Only if that is your portal"™s rule. Always follow the specific limit shown on the form.' },
+      { question: 'Will 300KB be accepted everywhere?', answer: 'Only if that is your portal’s rule. Always follow the specific limit shown on the form.' },
       { question: 'How many pages fit in a 300KB PDF?', answer: 'One to three pages of digital text, or one optimized scan. Image-heavy pages consume the budget fastest, so drop photos you do not strictly need before compressing.' },
     ],
   },
@@ -454,7 +454,7 @@ export const useCasePages: UseCasePage[] = [
       { title: 'Download and use', description: 'Confirm the file size in your file explorer if the portal is strict.' },
     ],
     tips: [
-      'For full-width website heroes you may need more than 200KB — follow your site"™s performance budget.',
+      'For full-width website heroes you may need more than 200KB — follow your site’s performance budget.',
       'Resize very large originals down to display dimensions first, then apply the 200KB target — quality holds up noticeably better.',
     ],
     pitfalls: [
@@ -724,7 +724,7 @@ export const useCasePages: UseCasePage[] = [
     targetToolSlug: 'passport-size-photo',
     intent: 'create passport size photo free',
     overview:
-      'Studio passport photos are convenient but not always necessary for a first draft. With a clear selfie or portrait, a plain background, and correct crop ratios, you can produce a free passport-size photo at home for many applications. Rules differ by country and document: the classic US passport photo is 2×2 inches with the head between 1 and 1â…œ inches; India commonly uses 3.5×4.5 cm; many visa applications now specify pixel dimensions for digital uploads (the US diversity visa lottery, for example, wants a square image within a defined pixel range). Use PdfPixels to get dimensions right, then validate against the official checklist for your document type — acceptance depends on meeting the rules, not on who cropped the photo.',
+      'Studio passport photos are convenient but not always necessary for a first draft. With a clear selfie or portrait, a plain background, and correct crop ratios, you can produce a free passport-size photo at home for many applications. Rules differ by country and document: the classic US passport photo is 2×2 inches with the head between 1 and 1⅜ inches; India commonly uses 3.5×4.5 cm; many visa applications now specify pixel dimensions for digital uploads (the US diversity visa lottery, for example, wants a square image within a defined pixel range). Use PdfPixels to get dimensions right, then validate against the official checklist for your document type — acceptance depends on meeting the rules, not on who cropped the photo.',
     whoItsFor: [
       'Travelers drafting passport or visa photos',
       'Users renewing IDs with standard photo sizes',
@@ -743,7 +743,7 @@ export const useCasePages: UseCasePage[] = [
     ],
     faqs: [
       { question: 'Is a free online passport photo always accepted?', answer: 'Acceptance depends on meeting official rules, not on the tool brand. Always verify requirements.' },
-      { question: 'What size is a US passport photo?', answer: '2×2 inches (51×51 mm) with the head measuring 1 to 1â…œ inches from chin to crown. Requirements differ by country and visa type, so confirm against the official checklist for your application.' },
+      { question: 'What size is a US passport photo?', answer: '2×2 inches (51×51 mm) with the head measuring 1 to 1⅜ inches from chin to crown. Requirements differ by country and visa type, so confirm against the official checklist for your application.' },
     ],
   },
   {
@@ -821,13 +821,13 @@ export const useCasePages: UseCasePage[] = [
     overview:
       'Compression alone cannot always solve a size cap: a 60MB scan squeezed below 10MB turns to mush, and some portals cap uploads at 5MB or less no matter what the document contains. Splitting by size takes a different route — the document stays at full quality, but is divided into consecutive parts (pages 1–40, 41–78, and so on) that each fit the limit you choose. Recipients read part one, then part two; nothing is lost and nothing is degraded. It is the honest fix when quality matters more than a single attachment.',
     whoItsFor: [
-      'Anyone stuck under Gmail"™s 25MB or Outlook"™s 20MB cap',
+      'Anyone stuck under Gmail’s 25MB or Outlook’s 20MB cap',
       'Applicants whose single-file portal limits defeat compression',
       'Teams sharing long, high-quality scans internally',
     ],
     steps: [
       { title: 'Upload the large PDF', description: 'Drop in the file that is too big to send whole.' },
-      { title: 'Pick a size limit', description: 'Choose 25MB for Gmail, 20MB for Outlook, or the portal"™s stated cap.' },
+      { title: 'Pick a size limit', description: 'Choose 25MB for Gmail, 20MB for Outlook, or the portal’s stated cap.' },
       { title: 'Split', description: 'Parts are built in page order, each measured against the real saved file size.' },
       { title: 'Send the parts in order', description: 'Download the ZIP and attach part-1, part-2, … in sequence.' },
     ],
@@ -1083,7 +1083,7 @@ export const useCasePages: UseCasePage[] = [
     targetToolSlug: 'compress-pdf',
     intent: 'compress pdf to 1mb online free',
     overview:
-      'College application portals, HR recruitment systems, and government upload forms routinely cap rÃ©sumÃ©s and transcripts at 1MB. A scanned multi-page rÃ©sumÃ© or academic portfolio can easily reach 8–20MB, making submission impossible without compression. The challenge is getting under 1MB without blurring text or making scanned certificates unreadable. PdfPixels Compress PDF lets you choose a balanced or aggressive compression level to reliably land under that 1MB ceiling — processing entirely in your browser so your personal documents never touch an external server. Students submitting Common App essays, job seekers attaching rÃ©sumÃ©s to ATS platforms, and visa applicants uploading financial affidavits all face this exact constraint every day.',
+      'College application portals, HR recruitment systems, and government upload forms routinely cap résumés and transcripts at 1MB. A scanned multi-page résumé or academic portfolio can easily reach 8–20MB, making submission impossible without compression. The challenge is getting under 1MB without blurring text or making scanned certificates unreadable. PdfPixels Compress PDF lets you choose a balanced or aggressive compression level to reliably land under that 1MB ceiling — processing entirely in your browser so your personal documents never touch an external server. Students submitting Common App essays, job seekers attaching résumés to ATS platforms, and visa applicants uploading financial affidavits all face this exact constraint every day.',
     whoItsFor: [
       'Students submitting college applications or scholarship documents online',
       'Job seekers uploading CVs to HR and ATS portals with file-size limits',
@@ -1105,7 +1105,7 @@ export const useCasePages: UseCasePage[] = [
       { problem: 'Scanned text becomes blurry after compression', solution: 'Use Balanced instead of Extreme for text-heavy scans — Extreme is best reserved for photo-heavy portfolios.' },
     ],
     faqs: [
-      { question: 'Can I compress a 20MB scanned rÃ©sumÃ© to under 1MB?', answer: 'Yes. Scanned PDFs are essentially embedded images, and aggressive downsampling from 300 DPI to 72–96 DPI achieves 90–95% size reduction. Text remains readable for screen review at those settings.' },
+      { question: 'Can I compress a 20MB scanned résumé to under 1MB?', answer: 'Yes. Scanned PDFs are essentially embedded images, and aggressive downsampling from 300 DPI to 72–96 DPI achieves 90–95% size reduction. Text remains readable for screen review at those settings.' },
       { question: 'Does compressing a PDF damage the original file?', answer: 'No. PdfPixels works on a copy in your browser memory and downloads a new file. Your original PDF on disk is never modified.' },
     ],
   },
@@ -1116,9 +1116,9 @@ export const useCasePages: UseCasePage[] = [
     targetToolSlug: 'word-to-pdf',
     intent: 'convert word to pdf free online',
     overview:
-      'Sending a Word document to an employer, university, or client is risky: if they use a different version of Word or a different operating system, fonts shift, bullet points break, and page margins collapse. Converting to PDF locks your formatting in place so every recipient sees your document exactly as you designed it. Most free methods require either a Microsoft 365 subscription or uploading to a third-party cloud service that may retain your file. PdfPixels converts DOCX to PDF directly in your browser using WebAssembly — your rÃ©sumÃ©, cover letter, or proposal never leaves your device, and there is no subscription, watermark, or page limit. Students submitting assignments, job seekers converting CVs, and freelancers sending proposals all benefit from instant, private Word-to-PDF conversion.',
+      'Sending a Word document to an employer, university, or client is risky: if they use a different version of Word or a different operating system, fonts shift, bullet points break, and page margins collapse. Converting to PDF locks your formatting in place so every recipient sees your document exactly as you designed it. Most free methods require either a Microsoft 365 subscription or uploading to a third-party cloud service that may retain your file. PdfPixels converts DOCX to PDF directly in your browser using WebAssembly — your résumé, cover letter, or proposal never leaves your device, and there is no subscription, watermark, or page limit. Students submitting assignments, job seekers converting CVs, and freelancers sending proposals all benefit from instant, private Word-to-PDF conversion.',
     whoItsFor: [
-      'Job seekers converting rÃ©sumÃ©s and cover letters to PDF for employer submission',
+      'Job seekers converting résumés and cover letters to PDF for employer submission',
       'Students submitting DOCX assignments to learning management systems that require PDF',
       'Freelancers and consultants sending proposals or contracts in universally readable format',
     ],
@@ -1131,7 +1131,7 @@ export const useCasePages: UseCasePage[] = [
     tips: [
       'Embed fonts in your Word document before converting (File → Options → Save → Embed fonts) to guarantee custom typefaces render correctly.',
       'Use Print Layout view in Word to catch formatting issues before converting — what you see there is what the PDF will look like.',
-      'For rÃ©sumÃ©s specifically, convert and open in Google Docs viewer or Adobe Reader to check line breaks and column alignment on a fresh render.',
+      'For résumés specifically, convert and open in Google Docs viewer or Adobe Reader to check line breaks and column alignment on a fresh render.',
     ],
     pitfalls: [
       { problem: 'Bullet points or numbering appear shifted in the PDF', solution: 'Switch your list style to a standard Word built-in list theme rather than a manually indented custom format before converting.' },
@@ -1468,7 +1468,7 @@ export const useCasePages: UseCasePage[] = [
       { problem: 'Photo looks pixelated when printed at 2×2 inches', solution: 'Ensure the source photo has sufficient resolution — a 600×600px image should print clearly at exactly 2×2 inches at 300 DPI. If the original photo is very low resolution, the print will be pixelated. Use a modern smartphone camera in good lighting for best results.' },
     ],
     faqs: [
-      { question: 'What are the exact US passport photo requirements?', answer: 'US State Department requirements: 2×2 inches (51×51mm) at 300 DPI = 600×600 pixels. Head must be 1–1â…œ inches tall (50–69% of frame). Plain white or off-white background. Taken within the last 6 months. Color photo. No glasses, no headwear (except religious). Neutral expression, eyes open and looking at camera. See travel.state.gov for the complete official specification.' },
+      { question: 'What are the exact US passport photo requirements?', answer: 'US State Department requirements: 2×2 inches (51×51mm) at 300 DPI = 600×600 pixels. Head must be 1–1⅜ inches tall (50–69% of frame). Plain white or off-white background. Taken within the last 6 months. Color photo. No glasses, no headwear (except religious). Neutral expression, eyes open and looking at camera. See travel.state.gov for the complete official specification.' },
       { question: 'Can I use this photo for other US government IDs?', answer: 'The 2×2 inch (600×600px) format is also accepted for US visas, Global Entry, NEXUS, SENTRI, and most US government ID applications. For driver\'s licenses and state IDs, requirements vary by state — check your state DMV for specific dimensions.' },
     ],
   },
@@ -1909,6 +1909,102 @@ export const useCasePages: UseCasePage[] = [
     faqs: [
       { question: 'Can I customize the Bates numbering prefix and starting digit?', answer: 'Yes. Configure custom prefixes, zero-padded start indices (e.g., 000001), placement corner, and font styling in Bates Numbering PDF.' },
       { question: 'Why do courts reject unflattened PDFs?', answer: 'Dynamic form layers and unembedded annotations can render differently across clerk viewers; flattening locks the exact visual appearance onto the page.' },
+    ],
+  },
+  {
+    slug: 'convert-w2-1099-tax-pdf-to-excel-csv',
+    title: 'Convert W-2, 1099, K-1 & Tax Transcript PDFs to Excel & CSV Free',
+    description: 'Extract structured tax schedules, IRS Form 1099-B brokerage statements, W-2 wage summaries, UK P60/SA302, and CRA T4 slips from PDF into Excel (.xlsx) or CSV.',
+    targetToolSlug: 'pdf-to-excel',
+    intent: 'convert w2 1099 tax pdf to excel and csv',
+    overview:
+      'Tax season bottlenecks happen when CPAs, enrolled agents, and self-employed filers receive dozens of multi-page brokerage 1099-B consolidated PDFs, IRS tax transcripts, Schedule K-1s, UK HMRC SA302 summaries, or Canadian CRA T4 slips with no native spreadsheet export. Manually re-keying cost basis, proceeds, and withholding figures into Drake, UltraTax, ProConnect, Lacerte, TurboTax, or Excel risks costly transposition mistakes. PdfPixels PDF to Excel extracts tabular rows and numeric columns directly into a clean .xlsx or CSV workbook without uploading confidential taxpayer SSNs or EINs to a paid cloud subscription.',
+    whoItsFor: [
+      'CPAs, enrolled agents, and tax preparers reconciling client 1099-B brokerage tables and IRS transcripts',
+      'Freelancers, LLC owners, and S-Corp directors compiling 1099-NEC, 1099-K, and quarterly estimated tax workpapers',
+      'UK, Canadian, and Australian accountants extracting HMRC P60/SA302, CRA T4/T5, and ATO payment summaries into Excel',
+    ],
+    steps: [
+      { title: 'Flatten or OCR scanned tax forms first', description: 'If the tax form is a paper scan, run OCR PDF first so box numbers and dollar amounts are selectable.' },
+      { title: 'Upload to PDF to Excel', description: 'Open PdfPixels PDF to Excel and drop your consolidated 1099, W-2 summary, or tax transcript PDF.' },
+      { title: 'Verify tax boxes and dollar columns', description: 'Check that proceeds, cost basis, federal/state withholding, and dates align in separate spreadsheet columns.' },
+      { title: 'Export .xlsx or CSV for tax software', description: 'Download as Excel for tax workpapers or CSV to import trades into TurboTax, ProConnect, TaxAct, or Xero.' },
+    ],
+    tips: [
+      'Before sharing tax workpapers externally, redact the first 5 digits of SSNs/EINs using PdfPixels Redact PDF.',
+      'For multi-page brokerage 1099-B PDFs (Fidelity, Schwab, Vanguard, Robinhood, Interactive Brokers), split out the summary instruction pages first so only transaction tables are parsed.',
+    ],
+    pitfalls: [
+      { problem: 'Scanned paper W-2 or 1099 exports an empty sheet', solution: 'Paper scans are flat images; run OCR PDF first to add a machine-readable text layer before converting to Excel.' },
+      { problem: 'Negative wash-sale adjustments appear as text strings in Excel', solution: 'Use Excel Find & Replace to convert parenthetical negatives like (125.50) into -125.50 for SUM formulas.' },
+    ],
+    faqs: [
+      { question: 'Is it safe to convert tax PDFs with Social Security Numbers on PdfPixels?', answer: 'Yes. PdfPixels processes files with ephemeral, privacy-first pipelines and zero permanent retention, so taxpayer records are never stored or used for AI training.' },
+      { question: 'Can I import the exported CSV into TurboTax or QuickBooks Self-Employed?', answer: 'Yes. Exporting to CSV lets you map Date Acquired, Date Sold, Proceeds, and Cost Basis columns directly into major tax preparation platforms.' },
+    ],
+  },
+  {
+    slug: 'merge-compress-pdf-for-real-estate-closing-packet',
+    title: 'Merge, Sign & Compress Real Estate Closing Disclosure & Escrow PDF Packets',
+    description: 'Combine purchase agreements, Closing Disclosures (CD), title commitments, HOA bylaws, and wire instructions into one compressed, signed PDF packet free.',
+    targetToolSlug: 'merge-pdf',
+    intent: 'merge and compress real estate closing pdf packet',
+    overview:
+      'Real estate closings in the US, UK, Canada, and Australia generate sprawling document stacks: 40-page purchase contracts, TRID Closing Disclosures (CD), ALTA title commitments, home inspection reports with high-res photos, and HOA resale certificates. Title companies, escrow officers, mortgage underwriters, and SkySlope/Dotloop transaction coordinators frequently reject packets that arrive as 25 separate attachments or exceed 20 MB portal ceilings. PdfPixels lets agents, attorneys, and buyers merge the entire closing binder in exact order, add electronic signatures, flatten dynamic fields, and compress the final PDF below lender upload caps.',
+    whoItsFor: [
+      'Real estate agents, brokers, and transaction coordinators assembling SkySlope, Dotloop, or MLS compliance files',
+      'Title company escrow officers and real estate attorneys preparing buyer/seller closing binders',
+      'Homebuyers and commercial borrowers submitting signed disclosures and earnest-money receipts to mortgage lenders',
+    ],
+    steps: [
+      { title: 'Merge disclosures and addenda in order', description: 'Upload the Closing Disclosure, purchase contract, counteroffers, and title docs to Merge PDF and arrange them chronologically.' },
+      { title: 'Sign and flatten interactive fields', description: 'Use Sign PDF for missing initials or signatures, then run Flatten PDF so lender viewers cannot alter form fields.' },
+      { title: 'Compress inspection photo bloat', description: 'Run Compress PDF (Balanced mode) to shrink 50 MB home inspection photo pages down to 4–8 MB while keeping text razor-sharp.' },
+      { title: 'Encrypt wire and SSN pages if emailing', description: 'Use Protect PDF (AES-256) before emailing packets containing wire instructions or borrower Social Security numbers.' },
+    ],
+    tips: [
+      'Always verify wire transfer instructions by phone to prevent real estate wire fraud, and password-protect any PDF containing routing numbers.',
+      'Keep inspection reports with 100+ color photos as a separate compressed exhibit if your lender caps individual uploads at 10 MB.',
+    ],
+    pitfalls: [
+      { problem: 'Title portal rejects fillable PDF with dynamic signatures', solution: 'Run Flatten PDF after signing so AcroForm signature widgets are permanently baked into static pages.' },
+      { problem: 'Scanned wet-signature addendum is upside down', solution: 'Use Rotate PDF to fix page orientation before merging into the master closing binder.' },
+    ],
+    faqs: [
+      { question: 'Will compressing a real estate contract make fine print or notary stamps unreadable?', answer: 'No when using Balanced compression — vector contract text remains 100% sharp while only oversized embedded photos (like property inspection pictures) are downsampled.' },
+      { question: 'Can I remove a single incorrect page from a 60-page closing packet?', answer: 'Yes. Open Delete PDF Pages, click the unwanted page thumbnail, and export the corrected closing packet in seconds.' },
+    ],
+  },
+  {
+    slug: 'prepare-ediscovery-pdf-production-bundle',
+    title: 'Free eDiscovery PDF Production Workflow: OCR, Redact, Bates Stamp & PDF/A',
+    description: 'Run a complete browser-based legal eDiscovery production pipeline — make scans searchable with OCR, permanently redact PII/privilege, apply Bates numbering, and lock as PDF/A.',
+    targetToolSlug: 'bates-numbering-pdf',
+    intent: 'free ediscovery pdf production workflow bates stamp redact ocr',
+    overview:
+      'Enterprise eDiscovery platforms like Relativity, Everlaw, Logikcull, and Adobe Acrobat Pro charge hundreds to thousands of dollars per month — overkill when a boutique law firm, solo litigator, paralegal, or corporate compliance team simply needs to produce 50 to 500 pages of responsive PDFs under FRCP Rule 26, UK CPR Part 31, or subpoena deadlines. PdfPixels provides every required eDiscovery pre-production step in the browser at zero cost: convert image-only scans to searchable text via OCR, permanently destroy privileged or HIPAA/GDPR text via Redact PDF, stamp sequential Bates numbers across the bundle, and lock the final production in archival PDF/A.',
+    whoItsFor: [
+      'Solo attorneys, boutique litigation firms, and paralegals responding to civil discovery requests and subpoenas',
+      'In-house legal and HR compliance teams producing internal investigation records or FOIA/DSAR disclosures',
+      'Expert witnesses and forensic accountants organizing indexed exhibit binders for deposition and arbitration',
+    ],
+    steps: [
+      { title: 'Merge and normalize responsive documents', description: 'Combine responsive emails, contracts, and exhibits with Merge PDF and lock interactive forms with Flatten PDF.' },
+      { title: 'Add searchable text via OCR PDF', description: 'Run OCR PDF on image-only scans so opposing counsel and court clerks can search text per eDiscovery protocols.' },
+      { title: 'Permanently redact privileged & PII data', description: 'Black out attorney-client privileged passages, SSNs, and account numbers with Redact PDF, then strip hidden XMP tags with Sanitize PDF.' },
+      { title: 'Apply sequential Bates numbers & archive', description: 'Stamp prefix + 6-digit numbers (e.g., PROD-000001) in the footer margin using Bates Numbering PDF, then convert to PDF/A.' },
+    ],
+    tips: [
+      'Never Bates-stamp before redacting or deleting pages — any page removal after stamping breaks sequential Bates continuity.',
+      'Maintain a simple Excel privilege and production log listing each document title alongside its starting and ending Bates range.',
+    ],
+    pitfalls: [
+      { problem: 'Redacted text can still be copied underneath black rectangles', solution: 'Never use basic shape annotations for redaction; use PdfPixels Redact PDF + Sanitize PDF so underlying text streams are permanently destroyed.' },
+      { problem: 'Bates stamp collides with existing contract page numbers', solution: 'Place Bates numbers in the bottom-right or bottom-left outer margin and preview page 1 before downloading.' },
+    ],
+    faqs: [
+      { question: 'Why must Bates numbering come after redaction and page deletion?', answer: 'Bates numbers serve as the permanent courtroom citation index. Editing page counts after stamping creates missing number gaps that opposing counsel may challenge.' },
+      { question: 'Does this eDiscovery workflow keep confidential client files off third-party clouds?', answer: 'Yes. Client-side WebAssembly tools (Merge, Flatten, Redact, Bates Numbering, Sanitize) run locally in your browser memory with zero permanent storage.' },
     ],
   },
 ];

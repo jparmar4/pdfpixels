@@ -15,13 +15,14 @@ import {
   type LocaleCode,
 } from '@/lib/localized-tools';
 import { getToolBySlug } from '@/lib/tools-data';
-import { ADSENSE_REVIEW_MODE, absoluteUrl, organizationId, websiteId } from '@/lib/seo';
+import { ADSENSE_REVIEW_MODE, DEFAULT_OG_IMAGE_URL, absoluteUrl, getRobotsMetadata, organizationId, websiteId } from '@/lib/seo';
 
 export function localizedMetadata(locale: LocaleCode, slug: string): Metadata {
   const copy = getLocalizedTool(locale, slug);
   const languages = toolLanguageAlternates(slug);
   if (!copy) return {};
   const pack = getLocalePack(locale);
+  const canonicalUrl = absoluteUrl(`/${locale}/tools/${slug}`);
   return {
     title: copy.title,
     description: copy.description,
@@ -32,19 +33,25 @@ export function localizedMetadata(locale: LocaleCode, slug: string): Metadata {
     openGraph: {
       title: copy.title,
       description: copy.description,
-      url: `/${locale}/tools/${slug}`,
+      url: canonicalUrl,
       locale: pack.ogLocale,
       type: 'website',
+      images: [
+        {
+          url: DEFAULT_OG_IMAGE_URL,
+          width: 1200,
+          height: 630,
+          alt: copy.title,
+        },
+      ],
     },
-    robots: {
-      // AdSense-review freeze — see ADSENSE_REVIEW_MODE in src/lib/seo.ts.
-      index: !ADSENSE_REVIEW_MODE,
-      follow: true,
-      googleBot: {
-        index: !ADSENSE_REVIEW_MODE,
-        follow: true,
-      },
+    twitter: {
+      card: 'summary_large_image',
+      title: copy.title,
+      description: copy.description,
+      images: [DEFAULT_OG_IMAGE_URL],
     },
+    robots: getRobotsMetadata(!ADSENSE_REVIEW_MODE),
   };
 }
 

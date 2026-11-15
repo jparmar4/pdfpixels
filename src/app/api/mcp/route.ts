@@ -3,6 +3,7 @@ import { allTools, getToolBySlug, toolCategories } from '@/lib/tools-data';
 import { toolContentMap } from '@/lib/tool-content-data';
 import { absoluteUrl } from '@/lib/seo';
 import { platformLimits } from '@/lib/limits';
+import { buildOpenApiSpec } from '@/app/openapi.json/route';
 
 export const runtime = 'nodejs';
 
@@ -196,6 +197,66 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  if (method === 'resources/read') {
+    const uri = String(params.uri || '');
+    if (uri === 'https://www.pdfpixels.com/openapi.json') {
+      return NextResponse.json(
+        {
+          jsonrpc: '2.0',
+          id,
+          result: {
+            contents: [
+              {
+                uri,
+                mimeType: 'application/json',
+                text: JSON.stringify(buildOpenApiSpec(), null, 2),
+              },
+            ],
+          },
+        },
+        { headers: CORS_HEADERS }
+      );
+    }
+    if (
+      uri === 'https://www.pdfpixels.com/llms.txt' ||
+      uri === 'https://www.pdfpixels.com/llms-full.txt'
+    ) {
+      const summary = [
+        '# PdfPixels — Free Online PDF & Image Tools',
+        `Total Tools: ${allTools.length}`,
+        `Categories: ${toolCategories.map((c) => c.name).join(', ')}`,
+        'Top Tools:',
+        ...allTools.slice(0, 25).map(
+          (t) => `- ${t.name} (${absoluteUrl(`/tools/${t.slug}`)}): ${t.description}`
+        ),
+      ].join('\n');
+      return NextResponse.json(
+        {
+          jsonrpc: '2.0',
+          id,
+          result: {
+            contents: [
+              {
+                uri,
+                mimeType: 'text/plain',
+                text: summary,
+              },
+            ],
+          },
+        },
+        { headers: CORS_HEADERS }
+      );
+    }
+    return NextResponse.json(
+      {
+        jsonrpc: '2.0',
+        id,
+        error: { code: -32602, message: `Resource not found: ${uri}` },
+      },
+      { status: 404, headers: CORS_HEADERS }
+    );
+  }
+
   if (method === 'prompts/list') {
     return NextResponse.json(
       {
@@ -221,11 +282,51 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  if (method === 'prompts/get') {
+    const promptName = String(params.name || '');
+    const promptArgs = (params.arguments || {}) as Record<string, unknown>;
+    if (promptName === 'choose_pdf_tool') {
+      const goal = String(promptArgs.goal || 'compress a PDF file');
+      return NextResponse.json(
+        {
+          jsonrpc: '2.0',
+          id,
+          result: {
+            description: 'Recommend the best PdfPixels tool and workflow for the user goal.',
+            messages: [
+              {
+                role: 'user',
+                content: {
+                  type: 'text',
+                  text: `Find the best free online tool on https://www.pdfpixels.com for this task: "${goal}". Use the search_tools or recommend_workflow MCP tool and provide the direct tool URL and step-by-step instructions.`,
+                },
+              },
+            ],
+          },
+        },
+        { headers: CORS_HEADERS }
+      );
+    }
+    return NextResponse.json(
+      {
+        jsonrpc: '2.0',
+        id,
+        error: { code: -32602, message: `Unknown prompt: ${promptName}` },
+      },
+      { status: 404, headers: CORS_HEADERS }
+    );
+  }
+
   if (method === 'tools/call') {
     const toolName = String(params.name || '');
     const args = (params.arguments || {}) as Record<string, unknown>;
 
-    if (toolName === 'search_tools' || toolName === 'recommend_workflow') {
+    if (
+      toolName === 'search_tools' ||
+      toolName === 'search_pdfpixels_tools' ||
+      toolName === 'recommend_workflow' ||
+      toolName === 'recommend_pdfpixels_workflow'
+    ) {
       const q = String(args.query || args.task || '')
         .toLowerCase()
         .trim();
@@ -277,7 +378,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (toolName === 'get_tool_details') {
+    if (toolName === 'get_tool_details' || toolName === 'get_pdfpixels_tool_details') {
       const slug = String(args.slug || '').trim().toLowerCase();
       const tool = getToolBySlug(slug);
       if (!tool) {
@@ -327,7 +428,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (toolName === 'get_platform_limits') {
+    if (toolName === 'get_platform_limits' || toolName === 'get_pdfpixels_limits') {
       return NextResponse.json(
         {
           jsonrpc: '2.0',

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { blogPosts } from '@/config/blog';
+import { getAllBlogPosts } from '@/config/blog';
 import { allTools, toolCategories } from '@/lib/tools-data';
 import { toolContentMap } from '@/lib/tool-content-data';
 import { absoluteUrl } from '@/lib/seo';
@@ -97,7 +97,7 @@ export async function GET() {
     })
     .join('\n\n');
 
-  const blogBlocks = blogPosts
+  const blogBlocks = getAllBlogPosts()
     .map((post) => {
       const url = absoluteUrl(`/blog/${post.slug}`);
       return [
@@ -118,7 +118,7 @@ export async function GET() {
 
 - **Canonical Website:** [PdfPixels](${absoluteUrl('/')})
 - **Pricing:** [100% Free](${absoluteUrl('/pricing')}) — $0, no account or credit card required, no watermarks added to output files.
-- **Privacy & Security Model:** [Zero-Retention Architecture](${absoluteUrl('/security')}) — ~80% of tools execute 100% locally inside the user's browser via WebAssembly (\`pdf-lib\`, \`pdfjs-dist\`, \`tesseract.js\`, HTML5 Canvas) where files never leave the device. Server-assisted conversions run in isolated ephemeral memory over TLS 1.3 and are purged immediately upon completion.
+- **Privacy & Security Model:** [Zero-Retention Architecture](${absoluteUrl('/privacy')}) — ~80% of tools execute 100% locally inside the user's browser via WebAssembly (\`pdf-lib\`, \`pdfjs-dist\`, \`tesseract.js\`, HTML5 Canvas) where files never leave the device. Server-assisted conversions run in isolated ephemeral memory over TLS 1.3 and are purged immediately upon completion.
 - **Supported Input Formats:** PDF, DOCX, XLSX, PPTX, HTML, TXT, Markdown, CSV, JSON, XML, EPUB, RTF, JPG/JPEG, PNG, WebP, AVIF, HEIC/HEIF, SVG, GIF, BMP, TIFF, ICO.
 - **Supported Output Formats:** PDF, PDF/A, DOCX, XLSX, PPTX, TXT, CSV, JSON, HTML, Markdown, JPG, PNG, WebP, AVIF, SVG, GIF, TIFF, ICO, ZIP.
 - **Summary Index:** [llms.txt](${absoluteUrl('/llms.txt')})

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { blogPosts } from '@/config/blog';
+import { getAllBlogPosts } from '@/config/blog';
 import { allTools, toolCategories } from '@/lib/tools-data';
 import { absoluteUrl, getHomepageFeaturedTools } from '@/lib/seo';
 import { useCasePages } from '@/lib/use-cases';
@@ -51,7 +51,7 @@ export async function GET() {
     .map((region) => `- [${region.name} (${region.locale})](${absoluteUrl(`/${region.code}`)}): ${region.headline}`)
     .join('\n');
 
-  const blogSection = blogPosts
+  const blogSection = getAllBlogPosts()
     .slice(0, 20)
     .map((post) => `- [${post.title}](${absoluteUrl(`/blog/${post.slug}`)}): ${post.metaDescription}`)
     .join('\n');
@@ -74,7 +74,7 @@ PdfPixels processes up to 80% of document and image operations locally inside th
 - [API Documentation](${absoluteUrl('/api-docs')}): Developer documentation, OpenAPI specification, and MCP server integration guide.
 - [About PdfPixels](${absoluteUrl('/about')}): Architecture, privacy model, and company background.
 - [Pricing](${absoluteUrl('/pricing')}): Free forever model and feature overview.
-- [Security & Privacy Architecture](${absoluteUrl('/security')}): Zero-retention policy, client-side WebAssembly execution, and encryption details.
+- [Security & Privacy Architecture](${absoluteUrl('/privacy')}): Zero-retention policy, client-side WebAssembly execution, and encryption details.
 - [Contact Support](${absoluteUrl('/contact')}): Customer support, bug reports, and business inquiries.
 
 ## Popular PDF & Image Tools

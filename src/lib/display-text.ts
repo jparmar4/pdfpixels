@@ -3,5 +3,16 @@
     return "";
   }
 
-  return value.replace(/\s{2,}/g, " ").trim();
+  return value
+    .replace(/"™/g, "'")
+    .replace(/â€™/g, "'")
+    .replace(/â€œ/g, '"')
+    .replace(/â€/g, '"')
+    .replace(/â€“/g, "–")
+    .replace(/â€”/g, "—")
+    .replace(/â…œ/g, "⅜")
+    .replace(/Ã©/g, "é")
+    .replace(/\s{2,}/g, " ")
+    .trim();
 }
+

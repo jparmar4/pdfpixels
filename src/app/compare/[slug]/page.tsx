@@ -6,10 +6,11 @@ import { AnimatedMeshBg } from '@/components/ui/animated-mesh-bg';
 
 
 import { Button } from '@/components/ui/button';
-import { HeaderAd, InContentAd, FooterAd, NativeAd } from '@/components/ads/ad-banner';
+import { HeaderAd, InContentAd, FooterAd, NativeAd, SmartlinkButton } from '@/components/ads/ad-banner';
+import { ToolSidebarAd } from '@/components/ads/tool-sidebar-ad';
 import { comparisonPages } from '@/lib/comparisons';
 import { getToolBySlug } from '@/lib/tools-data';
-import { ADSENSE_REVIEW_MODE, DEFAULT_OG_IMAGE_URL, SITE_CONTENT_UPDATED, absoluteUrl } from '@/lib/seo';
+import { ADSENSE_REVIEW_MODE, DEFAULT_OG_IMAGE_URL, SITE_CONTENT_UPDATED, absoluteUrl, getRobotsMetadata } from '@/lib/seo';
 
 export function generateStaticParams() {
   return comparisonPages.map((comparison) => ({ slug: comparison.slug }));
@@ -45,15 +46,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       description: item.description,
       images: [DEFAULT_OG_IMAGE_URL],
     },
-    robots: {
-      // AdSense-review freeze — see ADSENSE_REVIEW_MODE in src/lib/seo.ts.
-      index: !ADSENSE_REVIEW_MODE,
-      follow: true,
-      googleBot: {
-        index: !ADSENSE_REVIEW_MODE,
-        follow: true,
-      },
-    },
+    robots: getRobotsMetadata(!ADSENSE_REVIEW_MODE),
   };
 }
 
@@ -128,7 +121,7 @@ export default async function ComparisonPage({ params }: { params: Promise<{ slu
       )}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
 
-      <main id="main-content" className="min-h-screen bg-background">
+      <main id="main-content" className="min-h-screen bg-background xl:pr-[196px]">
         <section className="relative overflow-hidden border-b border-border/40">
           <AnimatedMeshBg />
           <div className="container relative z-10 mx-auto px-4 py-20 lg:px-8 md:py-28">
@@ -281,7 +274,7 @@ export default async function ComparisonPage({ params }: { params: Promise<{ slu
             {/* Native Recommendation Ad */}
             <NativeAd className="my-8" />
 
-            <section className="flex flex-col items-center justify-center gap-4 pt-4 sm:flex-row">
+            <section className="flex flex-col flex-wrap items-center justify-center gap-4 pt-4 sm:flex-row">
               <Button asChild size="lg" className="btn-premium rounded-2xl px-8 shadow-xl shadow-primary/20 transition-all hover:-translate-y-1">
                 <Link href={`/tools/${tool.slug}`} className="inline-flex items-center gap-2">
                   Try {tool.name}
@@ -291,12 +284,14 @@ export default async function ComparisonPage({ params }: { params: Promise<{ slu
               <Button asChild variant="outline" size="lg" className="rounded-2xl px-8 transition-all hover:-translate-y-1">
                 <Link href="/compare">View all comparisons</Link>
               </Button>
+              <SmartlinkButton />
             </section>
           </div>
         </div>
 
         <FooterAd />
       </main>
+      <ToolSidebarAd />
     </>
   );
 }

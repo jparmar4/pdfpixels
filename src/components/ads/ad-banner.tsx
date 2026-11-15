@@ -115,7 +115,9 @@ export function GoogleAdSenseUnit({
 /**
  * Isolated iframe container for Adsterra banner scripts.
  * Isolates atOptions on the iframe's own window to avoid race conditions,
- * eliminates CLS with explicit dimensions, and supports refreshKey for multi-run tools.
+ * eliminates CLS with explicit dimensions, supports refreshKey for multi-run tools,
+ * and performs viewability-gated auto-refresh (every 55s while visible in viewport)
+ * to maximize Adsterra eCPM and impressions during long user sessions.
  */
 export function AdsterraIframe({
   adKey,
@@ -132,6 +134,36 @@ export function AdsterraIframe({
   loading?: 'lazy' | 'eager';
   refreshKey?: string | number;
 }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [inView, setInView] = useState(false);
+  const [autoTick, setAutoTick] = useState(0);
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el || typeof IntersectionObserver === 'undefined') return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (entry) {
+          setInView(entry.isIntersecting && entry.intersectionRatio >= 0.5);
+        }
+      },
+      { threshold: [0, 0.5, 1] }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!inView) return;
+    const timer = window.setInterval(() => {
+      if (typeof document !== 'undefined' && document.visibilityState === 'visible') {
+        setAutoTick((prev) => (prev < 6 ? prev + 1 : prev));
+      }
+    }, 55000);
+    return () => window.clearInterval(timer);
+  }, [inView]);
+
   if (!adsterraConfig.enabled || !adKey) return null;
 
   const scriptHost = adsterraConfig.scriptHost || 'https://bauval.org';
@@ -160,13 +192,16 @@ export function AdsterraIframe({
   </body>
 </html>`;
 
+  const compositeKey = `${adKey}-${refreshKey ?? 'init'}-${autoTick}`;
+
   return (
     <div
+      ref={containerRef}
       className={cn('flex items-center justify-center overflow-hidden', className)}
       style={{ width: '100%', minHeight: height }}
     >
       <iframe
-        key={refreshKey !== undefined ? `${adKey}-${refreshKey}` : adKey}
+        key={compositeKey}
         title={`adsterra-${adKey}`}
         width={width}
         height={height}

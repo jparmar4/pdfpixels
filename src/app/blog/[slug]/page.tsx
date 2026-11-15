@@ -75,6 +75,12 @@ export async function generateMetadata({
                     height: coverDims.height,
                     alt: post.imageAlt || post.title,
                 },
+                {
+                    url: `${siteConfig.url}/blog/${slug}/opengraph-image`,
+                    width: 1200,
+                    height: 630,
+                    alt: post.title,
+                },
             ],
         },
         twitter: {
@@ -130,12 +136,13 @@ export default async function BlogPostPage({
         (m) => m[1],
     ).filter((src, i, arr) => src !== post.coverImage && arr.indexOf(src) === i);
 
-    // Article Schema
+    // Article Schema (Google Discover + Search + Answer Engine optimized)
     const articleSchema = {
         "@context": "https://schema.org",
-        "@type": "BlogPosting",
+        "@type": ["BlogPosting", "Article"],
         headline: post.title,
         description: post.metaDescription,
+        isAccessibleForFree: true,
         author: {
             "@type": "Person",
             name: post.author,
@@ -166,8 +173,18 @@ export default async function BlogPostPage({
                 width: coverDims.width,
                 height: coverDims.height,
             },
+            {
+                "@type": "ImageObject",
+                url: `${siteConfig.url}/blog/${slug}/opengraph-image`,
+                width: 1200,
+                height: 630,
+            },
             ...inArticleImages.map((src) => `${siteConfig.url}${src}`),
         ] : undefined,
+        speakable: {
+            "@type": "SpeakableSpecification",
+            cssSelector: ["h1", "h2", "p"],
+        },
         keywords: post.keywords.join(", "),
         about: post.keywords.map(keyword => ({
             "@type": "Thing",

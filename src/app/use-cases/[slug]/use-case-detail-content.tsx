@@ -12,7 +12,8 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { getToolBySlug, allTools, toolCategories } from '@/lib/tools-data';
 import { useCasePages, type UseCasePage } from '@/lib/use-cases';
-import { HeaderAd, InContentAd, FooterAd, NativeAd } from '@/components/ads/ad-banner';
+import { HeaderAd, InContentAd, FooterAd, NativeAd, SmartlinkButton } from '@/components/ads/ad-banner';
+import { ToolSidebarAd } from '@/components/ads/tool-sidebar-ad';
 
 interface UseCaseDetailContentProps {
   entry: UseCasePage;
@@ -45,7 +46,7 @@ export function UseCaseDetailContent({
   const categoryName = category?.name || 'Tools';
 
   return (
-    <div className="premium-page-bg min-h-screen bg-background text-foreground">
+    <div className="premium-page-bg min-h-screen bg-background text-foreground xl:pr-[196px]">
       <main id="main-content" className="flex-1">
         <section className="relative overflow-hidden border-b border-border/40">
           <div className="hero-grid absolute inset-0 opacity-60" />
@@ -333,6 +334,7 @@ export function UseCaseDetailContent({
                 >
                   <Link href="/blog">Read guides</Link>
                 </Button>
+                <SmartlinkButton />
               </div>
             </div>
           </section>
@@ -340,6 +342,7 @@ export function UseCaseDetailContent({
       </main>
 
       <FooterAd />
+      <ToolSidebarAd />
     </div>
   );
 }

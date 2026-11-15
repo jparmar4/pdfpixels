@@ -1,9 +1,10 @@
 import type { Metadata } from 'next';
 import { collectionItemListJsonLd } from '@/app/jsonld-helpers';
-import { SITE_URL, absoluteUrl, DEFAULT_OG_IMAGE_URL } from '@/lib/seo';
+import { SITE_URL, absoluteUrl, DEFAULT_OG_IMAGE_URL, getRobotsMetadata } from '@/lib/seo';
 import { siteConfig } from '@/lib/seo-config';
 import { useCasePages } from '@/lib/use-cases';
 import { HeaderAd, NativeAd, FooterAd } from '@/components/ads/ad-banner';
+import { ToolSidebarAd } from '@/components/ads/tool-sidebar-ad';
 import { UseCasesClient } from './use-cases-client';
 
 export const metadata: Metadata = {
@@ -34,10 +35,7 @@ export const metadata: Metadata = {
     description: 'Find intent-driven guides and workflows for common PDF and image tasks.',
     images: [DEFAULT_OG_IMAGE_URL],
   },
-  robots: {
-    index: true,
-    follow: true,
-  },
+  robots: getRobotsMetadata(true),
 };
 
 export default function UseCasesIndexPage() {
@@ -60,12 +58,13 @@ export default function UseCasesIndexPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <main id="main-content" className="flex-1">
+      <main id="main-content" className="flex-1 xl:pr-[196px]">
         <HeaderAd className="my-4" />
         <UseCasesClient />
         <NativeAd className="my-10 max-w-5xl mx-auto px-4" />
         <FooterAd className="my-6" />
       </main>
+      <ToolSidebarAd />
     </div>
   );
 }

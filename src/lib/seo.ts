@@ -7,7 +7,21 @@ export const DEFAULT_OG_IMAGE_URL = `${SITE_URL}${DEFAULT_OG_IMAGE_PATH}`;
 /** Stable sitemap lastmod for evergreen pages — do not use `new Date()` per request.
  *  Bump this only when evergreen pages (home/tools/use-cases) actually change,
  *  so lastmod stays truthful for crawlers. */
-export const SITE_CONTENT_UPDATED = new Date('2026-11-14T00:00:00.000Z');
+export const SITE_CONTENT_UPDATED = new Date('2026-11-15T00:00:00.000Z');
+
+export function getRobotsMetadata(index = true) {
+  return {
+    index,
+    follow: true,
+    googleBot: {
+      index,
+      follow: true,
+      'max-video-preview': -1 as const,
+      'max-image-preview': 'large' as const,
+      'max-snippet': -1 as const,
+    },
+  };
+}
 
 /** AdSense-review content freeze (commit a17b403). While true, the localized
  *  tool pages, geo hubs, and comparison pages stay noindexed, out of the
@@ -35,6 +49,19 @@ export function getGeoLanguageAlternates(): Record<string, string> {
     languages[region.locale] = `/${region.code}`;
   }
   return languages;
+}
+
+/** Sitemap-ready absolute URL hreflang cluster for homepage and geo hubs. */
+export function getGeoSitemapAlternates(): { languages: Record<string, string> } | undefined {
+  if (ADSENSE_REVIEW_MODE) return undefined;
+  const languages: Record<string, string> = {
+    en: SITE_URL,
+    'x-default': SITE_URL,
+  };
+  for (const region of geoRegions) {
+    languages[region.locale] = `${SITE_URL}/${region.code}`;
+  }
+  return { languages };
 }
 
 const homepageFeaturedToolIds = [

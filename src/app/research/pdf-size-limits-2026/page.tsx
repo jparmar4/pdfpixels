@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { SitePageShell } from '@/components/layout/site-page-shell';
-import { absoluteUrl, SITE_CONTENT_UPDATED } from '@/lib/seo';
+import { absoluteUrl, DEFAULT_OG_IMAGE_URL, SITE_CONTENT_UPDATED, getRobotsMetadata } from '@/lib/seo';
 import { siteConfig } from '@/lib/seo-config';
 import { platformLimits } from '@/lib/limits';
 import { HeaderAd, InContentAd, NativeAd, FooterAd } from '@/components/ads/ad-banner';
@@ -20,7 +20,23 @@ export const metadata: Metadata = {
     url: absoluteUrl('/research/pdf-size-limits-2026'),
     type: 'article',
     siteName: siteConfig.name,
+    images: [
+      {
+        url: DEFAULT_OG_IMAGE_URL,
+        width: 1200,
+        height: 630,
+        alt: 'Email & Portal File Size Limits 2026',
+      },
+    ],
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Email & Portal File Size Limits 2026 (Gmail, Outlook, Forms)',
+    description:
+      'Citable reference: Gmail 25MB and Outlook 20MB attachment limits, typical portal caps from 10MB down to 100KB, and exactly how to shrink PDFs and photos to fit.',
+    images: [DEFAULT_OG_IMAGE_URL],
+  },
+  robots: getRobotsMetadata(true),
 };
 
 const faqs = [

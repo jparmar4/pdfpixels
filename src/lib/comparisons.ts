@@ -1776,5 +1776,103 @@ export const comparisonPages: ComparisonPage[] = [
       },
     ],
   },
+  {
+    slug: 'pdfpixels-vs-docusign-free-pdf-signer',
+    title: 'PdfPixels vs DocuSign: Free Local PDF Signing vs Paid eSignature Envelopes',
+    description: 'Compare PdfPixels Sign PDF (100% free, zero-login client-side signing) with DocuSign ($15–$45/mo per user) for signing contracts, leases, W-9s, and NDAs.',
+    primaryToolSlug: 'sign-pdf',
+    alternatives: ['DocuSign'],
+    bestFor: ['Instant self-signing without login', 'Confidential contracts & leases', 'Zero monthly envelope quotas'],
+    overview:
+      'DocuSign is the enterprise heavyweight for multi-party signature routing, CRM triggers, and audit-trail envelopes — priced at $15 to $45+ per seat per month with strict envelope quotas on entry tiers. Yet millions of professionals in the US, UK, Canada, and Australia simply receive a PDF contract, residential lease, IRS Form W-9, NDA, or offer letter by email and need to sign and return it themselves. PdfPixels Sign PDF executes the entire signature workflow locally inside your browser via WebAssembly: draw, type, or upload your signature, add dates or initials, and download the signed PDF in seconds with zero account creation and zero cloud storage of your private agreement.',
+    whenToChooseUs: [
+      'You received a PDF contract, lease, NDA, or W-9 and need to sign and return it immediately',
+      'You want 100% client-side privacy where your contract never leaves your device or touches a cloud vault',
+      'You refuse to pay $180–$480/year or hit a 3-document trial wall just to place your own signature on a PDF',
+    ],
+    whenToChooseAlt: [
+      'You are orchestrating multi-party sequential signing across external counterparties with automated email reminders',
+      'Your enterprise sales pipeline requires native Salesforce, HubSpot, or Workday eSignature triggers',
+      'Your legal department mandates a third-party hosted certificate of completion for regulated transactions',
+    ],
+    keyDifferences: [
+      {
+        topic: 'Pricing & Envelope Quotas',
+        pdfpixels: '100% free with unlimited documents — no envelope caps, no trial walls, no credit card',
+        alternative: 'Paid plans from $15–$45+/user/month with strict monthly envelope limits on Personal/Standard tiers',
+      },
+      {
+        topic: 'Account & Login Friction',
+        pdfpixels: 'Zero registration — open in any desktop or mobile browser, sign, and download immediately',
+        alternative: 'Requires account registration, email verification, and cloud workspace setup',
+      },
+      {
+        topic: 'Document Privacy Architecture',
+        pdfpixels: 'Processed 100% locally in browser memory via WebAssembly; your contract never uploads to a server',
+        alternative: 'Documents are uploaded, rendered, and stored inside DocuSign cloud servers',
+      },
+    ],
+    verdict:
+      'Choose PdfPixels Sign PDF whenever you need to sign and return a PDF yourself quickly, privately, and free without creating an account. Choose DocuSign when your organization needs automated multi-party envelope routing and CRM integrations.',
+    faqs: [
+      {
+        question: 'Is a PDF signed on PdfPixels legally binding like DocuSign?',
+        answer: 'Yes. Under the US ESIGN Act, UETA, UK Electronic Communications Act, Canadian PIPEDA, and EU eIDAS regulations, an electronic signature placed with intent to sign is legally valid for standard commercial contracts, leases, NDAs, and tax forms.',
+      },
+      {
+        question: 'Can I flatten the signature so nobody can move or delete it after signing?',
+        answer: 'Yes. PdfPixels bakes your signature directly into the PDF page content, and you can also run Flatten PDF or Protect PDF (AES-256) immediately afterward for tamper resistance.',
+      },
+    ],
+  },
+  {
+    slug: 'pdfpixels-vs-dext-autoentry-bank-statement-converter',
+    title: 'PdfPixels vs Dext & AutoEntry: Free Bank Statement PDF to Excel/CSV vs Paid Credits',
+    description: 'Compare PdfPixels Bank Statement to Excel (free, zero-signup QuickBooks/Xero CSV & XLSX export) against Dext Prepare, AutoEntry, and MoneyThumb.',
+    primaryToolSlug: 'bank-statement-to-excel',
+    alternatives: ['Dext / AutoEntry'],
+    bestFor: ['Free QuickBooks & Xero CSV exports', 'CPAs & bookkeepers with ad-hoc PDF statements', 'Zero per-page credit fees'],
+    overview:
+      'Accounting automation platforms like Dext Prepare, AutoEntry, and MoneyThumb are built for bookkeeping practices, charging $30 to $150+ per month or metered per-page extraction credits to convert client PDF bank statements into CSV or Excel. When a CPA, tax preparer, mortgage broker, or small business owner simply needs to convert 3 to 12 months of Chase, Bank of America, Wells Fargo, Barclays, HSBC, RBC, or CommBank PDF statements into a clean Excel (.xlsx) or QuickBooks/Xero CSV file, per-page credit walls and annual contracts are unnecessary overhead. PdfPixels Bank Statement to Excel extracts date, description, debit, credit, and balance columns in seconds for free.',
+    whenToChooseUs: [
+      'You want to convert bank or credit card PDF statements into Excel (.xlsx) or QuickBooks/Xero CSV immediately for free',
+      'You do not want to buy monthly extraction credits or onboard a client into a paid accounting portal for a one-off cleanup',
+      'You prefer ephemeral, zero-retention processing where client financial statements are never stored in a third-party cloud database',
+    ],
+    whenToChooseAlt: [
+      'Your accounting firm processes thousands of receipts and supplier bills daily with direct ledger publishing rules',
+      'You need automated client mobile-app receipt capture linked to a multi-staff practice dashboard',
+      'Your firm already pays for an enterprise Dext or AutoEntry practice-wide license',
+    ],
+    keyDifferences: [
+      {
+        topic: 'Cost & Per-Page Credits',
+        pdfpixels: '100% free with zero per-page credit deductions or monthly subscription minimums',
+        alternative: 'Subscription tiers ($30–$150+/mo) or metered per-page credit consumption for bank statements',
+      },
+      {
+        topic: 'Onboarding Time',
+        pdfpixels: 'Zero setup — drop the PDF statement, preview extracted transactions, and download XLSX or CSV in seconds',
+        alternative: 'Requires account creation, company workspace setup, and billing configuration before first export',
+      },
+      {
+        topic: 'Data Retention & Privacy',
+        pdfpixels: 'Ephemeral memory processing with immediate purge — no permanent storage of bank account numbers',
+        alternative: 'Stores uploaded financial documents inside cloud client folders for archival management',
+      },
+    ],
+    verdict:
+      'Use PdfPixels Bank Statement to Excel for fast, free, private conversion of PDF bank and credit card statements into reconciled Excel workbooks and QuickBooks/Xero CSVs. Use Dext or AutoEntry if your accounting firm needs full-scale receipt capture and practice management.',
+    faqs: [
+      {
+        question: 'Does PdfPixels export CSV files compatible with QuickBooks Online, Xero, and Sage?',
+        answer: 'Yes. PdfPixels exports clean Date, Description, Debit, Credit, and Balance columns in both CSV and formatted Excel (.xlsx) formats that map directly into QuickBooks Online, Xero, FreeAgent, Sage, and Wave.',
+      },
+      {
+        question: 'Which Tier-1 banks are supported by PdfPixels Bank Statement to Excel?',
+        answer: 'PdfPixels supports digital PDF statements from Chase, Bank of America, Wells Fargo, Citi, Capital One, US Bank, Barclays, HSBC, Lloyds, NatWest, RBC, TD, Scotiabank, CommBank, ANZ, Westpac, NAB, and hundreds of regional banks.',
+      },
+    ],
+  },
 ];
 

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { blogPosts, getBlogPostBySlug } from '@/config/blog';
+import { getAllBlogPosts, getBlogPostBySlug } from '@/config/blog';
 import { faqData, organizationData } from '@/lib/seo-config';
 import { allTools, getToolBySlug, toolCategories } from '@/lib/tools-data';
 import { toolContentMap } from '@/lib/tool-content-data';
@@ -89,7 +89,7 @@ ${faqLines}
 - [Tool Comparisons](${absoluteUrl('/compare')})
 - [Workflow Guides & Blog](${absoluteUrl('/blog')})
 - [2026 PDF Upload Size Limits Study](${absoluteUrl('/research/pdf-size-limits-2026')})
-- [Security & Privacy Architecture](${absoluteUrl('/security')})
+- [Security & Privacy Architecture](${absoluteUrl('/privacy')})
 - [About PdfPixels](${absoluteUrl('/about')})
 - [Contact Support](${absoluteUrl('/contact')})
 `;
@@ -165,7 +165,7 @@ function buildPathMarkdown(rawPath: string): { markdown: string; canonical: stri
 
   if (path === '/blog') {
     const canonical = absoluteUrl('/blog');
-    const list = blogPosts
+    const list = getAllBlogPosts()
       .map((p) => `- [${p.title}](${absoluteUrl(`/blog/${p.slug}`)}): ${p.metaDescription}`)
       .join('\n');
     return {

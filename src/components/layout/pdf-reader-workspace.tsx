@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { useActiveTool } from '@/hooks/use-active-tool';
 import { ToolPageHeader } from './tool-page-header';
 import { ToolLimitNotice } from './tool-limit-notice';
+import { ResultScreenAd, SmartlinkButton } from '@/components/ads/ad-banner';
 import { toast } from 'sonner';
 
 const PDFJS_VERSION = '5.4.624';
@@ -266,11 +267,14 @@ export function PDFReaderWorkspace() {
             />
           </div>
 
-          <div className="flex justify-center">
+          <div className="flex flex-wrap items-center justify-center gap-3">
             <Button size="sm" variant="ghost" onClick={handleReset} className="text-xs text-muted-foreground">
               <RotateCcw className="w-3.5 h-3.5 mr-1.5" /> Close document
             </Button>
+            <SmartlinkButton />
           </div>
+
+          <ResultScreenAd refreshKey={`${fileName || 'pdf'}-${pageNumber}`} />
         </div>
       )}
     </div>

@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { Check, ShieldCheck, Sparkles, Heart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { siteConfig } from '@/lib/seo-config';
-import { DEFAULT_OG_IMAGE_URL } from '@/lib/seo';
+import { DEFAULT_OG_IMAGE_URL, getRobotsMetadata } from '@/lib/seo';
 import { allTools } from '@/lib/tools-data';
 
 export const metadata: Metadata = {
@@ -33,10 +33,7 @@ export const metadata: Metadata = {
       'PdfPixels tools are free for everyday PDF and image tasks.',
     images: [DEFAULT_OG_IMAGE_URL],
   },
-  robots: {
-    index: true,
-    follow: true,
-  },
+  robots: getRobotsMetadata(true),
 };
 
 const freeIncludes = [

@@ -5,7 +5,7 @@ import { geoRegions, getRegionByCode } from '@/lib/geo-data';
 import { allPdfTools } from '@/lib/tools-data';
 import { INDIAN_EXAM_PRESETS } from '@/lib/indian-exams-data';
 import { siteConfig } from '@/lib/seo-config';
-import { absoluteUrl, websiteId, getGeoLanguageAlternates, DEFAULT_OG_IMAGE_URL, ADSENSE_REVIEW_MODE } from '@/lib/seo';
+import { absoluteUrl, websiteId, getGeoLanguageAlternates, getRobotsMetadata, DEFAULT_OG_IMAGE_URL, ADSENSE_REVIEW_MODE } from '@/lib/seo';
 import { ToolsSection } from '@/components/home/tools-section';
 import { StatsBanner } from '@/components/home/stats-banner';
 import { AnswerEngineSection } from '@/components/home/answer-engine-section';
@@ -18,6 +18,7 @@ import { TestimonialsSection } from '@/components/home/testimonials-section';
 import { FeaturesSection } from '@/components/home/features-section';
 import { CTASection } from '@/components/home/cta-section';
 import { HeaderAd, InContentAd, NativeAd, FooterAd } from '@/components/ads/ad-banner';
+import { ToolSidebarAd } from '@/components/ads/tool-sidebar-ad';
 
 // Restrict this dynamic route to strictly the configured geo regions.
 export const dynamicParams = false;
@@ -75,15 +76,7 @@ export async function generateMetadata({ params }: GeoPageProps): Promise<Metada
       description,
       images: [DEFAULT_OG_IMAGE_URL],
     },
-    robots: {
-      // AdSense-review freeze — see ADSENSE_REVIEW_MODE in src/lib/seo.ts.
-      index: !ADSENSE_REVIEW_MODE,
-      follow: true,
-      googleBot: {
-        index: !ADSENSE_REVIEW_MODE,
-        follow: true,
-      },
-    },
+    robots: getRobotsMetadata(!ADSENSE_REVIEW_MODE),
   };
 }
 
@@ -139,7 +132,7 @@ export default async function GeoHubPage({ params }: GeoPageProps) {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      <main id="main-content" className="flex-1">
+      <main id="main-content" className="flex-1 xl:pr-[196px]">
         {regionSchemas.map((schema, index) => (
           <script
             key={`region-schema-${index}`}
@@ -310,6 +303,7 @@ export default async function GeoHubPage({ params }: GeoPageProps) {
         <CTASection />
         <FooterAd className="my-6" />
       </main>
+      <ToolSidebarAd />
     </div>
   );
 }

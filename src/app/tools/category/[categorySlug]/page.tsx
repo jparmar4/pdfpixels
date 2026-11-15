@@ -16,9 +16,10 @@ import {
 } from 'lucide-react';
 import { toolCategories } from '@/lib/tools-data';
 import { normalizeDisplayText } from '@/lib/display-text';
-import { absoluteUrl, DEFAULT_OG_IMAGE_URL } from '@/lib/seo';
+import { absoluteUrl, DEFAULT_OG_IMAGE_URL, getRobotsMetadata } from '@/lib/seo';
 import { siteConfig } from '@/lib/seo-config';
 import { HeaderAd, FooterAd, InContentAd, NativeAd } from '@/components/ads/ad-banner';
+import { ToolSidebarAd } from '@/components/ads/tool-sidebar-ad';
 import { CategoryGridClient } from './category-grid-client';
 import { categoryContentData } from '@/lib/category-content-data';
 
@@ -70,10 +71,7 @@ export async function generateMetadata({ params }: { params: Promise<{ categoryS
       description,
       images: [DEFAULT_OG_IMAGE_URL],
     },
-    robots: {
-      index: true,
-      follow: true,
-    },
+    robots: getRobotsMetadata(true),
   };
 }
 
@@ -165,7 +163,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <div className="premium-page-bg min-h-screen bg-background pb-16">
+      <div className="premium-page-bg min-h-screen bg-background pb-16 xl:pr-[196px]">
         {/* Hero Section */}
         <section className="relative overflow-hidden border-b border-border/60 bg-gradient-to-b from-accent/60 to-background">
           <div className="absolute inset-0 hero-grid opacity-70" aria-hidden="true" />
@@ -419,6 +417,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
           <FooterAd />
         </div>
       </div>
+      <ToolSidebarAd />
     </>
   );
 }

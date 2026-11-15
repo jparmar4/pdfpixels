@@ -6,7 +6,7 @@ import { getRegionByCode } from '@/lib/geo-data';
 import { INDIAN_EXAM_PRESETS, getExamBySlug, type IndianExamPreset } from '@/lib/indian-exams-data';
 import { IndianExamBundleWorkspace } from '@/components/layout/indian-exam-bundle-workspace';
 import { siteConfig } from '@/lib/seo-config';
-import { absoluteUrl } from '@/lib/seo';
+import { absoluteUrl, DEFAULT_OG_IMAGE_URL, getRobotsMetadata } from '@/lib/seo';
 import { HeaderAd, InContentAd, NativeAd, FooterAd } from '@/components/ads/ad-banner';
 import { ToolSidebarAd } from '@/components/ads/tool-sidebar-ad';
 import { adsConfig, adsenseConfig } from '@/lib/ads-config';
@@ -48,12 +48,22 @@ export async function generateMetadata({ params }: IndianExamPageProps): Promise
       locale: 'en_IN',
       siteName: siteConfig.name,
       type: 'website',
+      images: [
+        {
+          url: DEFAULT_OG_IMAGE_URL,
+          width: 1200,
+          height: 630,
+          alt: title,
+        },
+      ],
     },
     twitter: {
       card: 'summary_large_image',
       title,
       description,
+      images: [DEFAULT_OG_IMAGE_URL],
     },
+    robots: getRobotsMetadata(true),
     keywords: [
       `${exam.shortName.toLowerCase()} photo resizer`,
       `${exam.shortName.toLowerCase()} signature resizer`,

@@ -35,6 +35,7 @@ export async function GET() {
     <title>PdfPixels - Blog and Product Guides</title>
     <link>${baseUrl}</link>
     <atom:link href="${baseUrl}/feed" rel="self" type="application/rss+xml"/>
+    <atom:link href="https://pubsubhubbub.appspot.com/" rel="hub"/>
     <description>Latest blog posts, tutorials, and workflow guides from PdfPixels.</description>
     <language>en-us</language>
     <copyright>Copyright ${new Date().getFullYear()} PdfPixels. All rights reserved.</copyright>
@@ -68,12 +69,12 @@ export async function GET() {
       <pubDate>${item.pubDate}</pubDate>
       <guid isPermaLink="true">${item.link}</guid>
       <dc:creator>${escapeXml(item.author)}</dc:creator>
-      <enclosure url="${baseUrl}${item.coverImage}" length="0" type="${item.mimeType}"/>
       <media:content url="${baseUrl}${item.coverImage}" medium="image" width="${item.width}" height="${item.height}" type="${item.mimeType}" />
+      <media:thumbnail url="${baseUrl}${item.coverImage}" width="${item.width}" height="${item.height}" />
       <content:encoded><![CDATA[
-        <img src="${baseUrl}${item.coverImage}" alt="${escapeXml(item.title)}" />
+        <figure><img src="${baseUrl}${item.coverImage}" alt="${escapeXml(item.title)}" width="${item.width}" height="${item.height}" /></figure>
         <p>${escapeXml(item.description)}</p>
-        <p><a href="${item.link}">Read the full article on PdfPixels</a></p>
+        <p><a href="${item.link}">Read the full guide on PdfPixels</a></p>
       ]]></content:encoded>
     </item>`
       )

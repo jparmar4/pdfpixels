@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { SitePageShell } from '@/components/layout/site-page-shell';
-import { absoluteUrl, SITE_CONTENT_UPDATED } from '@/lib/seo';
+import { absoluteUrl, DEFAULT_OG_IMAGE_URL, SITE_CONTENT_UPDATED, getRobotsMetadata } from '@/lib/seo';
 import { siteConfig } from '@/lib/seo-config';
 import { allTools } from '@/lib/tools-data';
 import { platformLimits, LIMITS_LAST_REVIEWED } from '@/lib/limits';
@@ -20,7 +20,23 @@ export const metadata: Metadata = {
     url: absoluteUrl('/brand'),
     type: 'website',
     siteName: siteConfig.name,
+    images: [
+      {
+        url: DEFAULT_OG_IMAGE_URL,
+        width: 1200,
+        height: 630,
+        alt: 'Brand & Press Kit | PdfPixels',
+      },
+    ],
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Brand & Press Kit | PdfPixels',
+    description:
+      'Official PdfPixels boilerplate, platform facts, logos, and citation guidelines for press, partners, and answer engines.',
+    images: [DEFAULT_OG_IMAGE_URL],
+  },
+  robots: getRobotsMetadata(true),
 };
 
 const BOILERPLATE =

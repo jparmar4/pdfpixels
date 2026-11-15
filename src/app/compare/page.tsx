@@ -4,9 +4,10 @@ import { AnimatedMeshBg } from '@/components/ui/animated-mesh-bg';
 import { comparisonPages } from '@/lib/comparisons';
 import { CompareClient } from './CompareClient';
 import { collectionItemListJsonLd } from '@/app/jsonld-helpers';
-import { ADSENSE_REVIEW_MODE, SITE_URL, absoluteUrl, DEFAULT_OG_IMAGE_URL } from '@/lib/seo';
+import { ADSENSE_REVIEW_MODE, SITE_URL, absoluteUrl, DEFAULT_OG_IMAGE_URL, getRobotsMetadata } from '@/lib/seo';
 import { siteConfig } from '@/lib/seo-config';
 import { HeaderAd, NativeAd, FooterAd } from '@/components/ads/ad-banner';
+import { ToolSidebarAd } from '@/components/ads/tool-sidebar-ad';
 
 export const metadata: Metadata = {
     title: 'Tool Comparisons & Guides',
@@ -34,11 +35,7 @@ export const metadata: Metadata = {
         description: 'Objective comparisons of PdfPixels with popular online tools for image and PDF workflows.',
         images: [DEFAULT_OG_IMAGE_URL],
     },
-    robots: {
-        // AdSense-review freeze — see ADSENSE_REVIEW_MODE in src/lib/seo.ts.
-        index: !ADSENSE_REVIEW_MODE,
-        follow: true,
-    },
+    robots: getRobotsMetadata(!ADSENSE_REVIEW_MODE),
 };
 
 export default function CompareIndexPage() {
@@ -62,7 +59,7 @@ export default function CompareIndexPage() {
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
             />
 
-            <main id="main-content" className="min-h-screen bg-background">
+            <main id="main-content" className="min-h-screen bg-background xl:pr-[196px]">
                 {/* Hero Section */}
                 <section className="relative overflow-hidden border-b border-border/40 min-h-[35vh] flex flex-col justify-center">
                     <AnimatedMeshBg />
@@ -106,6 +103,7 @@ export default function CompareIndexPage() {
                 <NativeAd className="my-10 max-w-5xl mx-auto px-4" />
                 <FooterAd className="my-6" />
             </main>
+            <ToolSidebarAd />
         </>
     );
 }

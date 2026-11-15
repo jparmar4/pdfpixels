@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next';
 import { getAllBlogPosts, consolidatedBlogSlugs } from '@/config/blog';
 import { comparisonPages } from '@/lib/comparisons';
-import { ADSENSE_REVIEW_MODE, SITE_CONTENT_UPDATED, absoluteUrl } from '@/lib/seo';
+import { ADSENSE_REVIEW_MODE, SITE_CONTENT_UPDATED, absoluteUrl, getGeoSitemapAlternates } from '@/lib/seo';
 import { allTools, toolCategories } from '@/lib/tools-data';
 import { useCasePages } from '@/lib/use-cases';
 import { geoRegions } from '@/lib/geo-data';
@@ -15,12 +15,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ? new Date(blogPosts[0].date)
     : evergreen;
 
+  const geoAlternates = getGeoSitemapAlternates();
+
   const corePages: MetadataRoute.Sitemap = [
     {
       url: absoluteUrl('/'),
       lastModified: evergreen,
       changeFrequency: 'daily',
       priority: 1,
+      alternates: geoAlternates,
     },
     {
       url: absoluteUrl('/tools'),
@@ -156,6 +159,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     lastModified: evergreen,
     changeFrequency: 'weekly' as const,
     priority: 0.8,
+    alternates: geoAlternates,
   }));
 
   const indianExamEntries: MetadataRoute.Sitemap = INDIAN_EXAM_PRESETS.map((exam) => ({

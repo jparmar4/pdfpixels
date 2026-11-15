@@ -215,6 +215,19 @@ const nextConfig: NextConfig = {
           },
         ],
       },
+      {
+        source: '/openapi.json',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=86400',
+          },
+          {
+            key: 'Access-Control-Allow-Origin',
+            value: '*',
+          },
+        ],
+      },
       // LLM.txt files for AI crawlers
       {
         source: '/llms.txt',
@@ -491,6 +504,7 @@ const nextConfig: NextConfig = {
       
       // Deleted root /api route (was removed in Phase 6, still indexed by Google)
       { source: '/api', destination: '/api-docs', permanent: true },
+      { source: '/security', destination: '/privacy', permanent: true },
       // Missing root redirect for full tool slug
       { source: '/add-page-numbers-to-pdf', destination: '/tools/add-page-numbers-to-pdf', permanent: true },
       // Common RSS/feed discovery paths
