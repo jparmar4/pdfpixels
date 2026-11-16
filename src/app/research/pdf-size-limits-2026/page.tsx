@@ -223,6 +223,7 @@ export default function ResearchPage() {
             <li><Link href="/blog/reduce-pdf-size-gmail-25mb-fix" className="font-semibold text-primary hover:underline">Reduce PDF size for Gmail’s 25MB limit</Link></li>
             <li><Link href="/blog/how-to-send-large-pdf-files-through-email" className="font-semibold text-primary hover:underline">How to send large PDFs through email</Link></li>
             <li><Link href="/blog/compress-pdf-under-1mb" className="font-semibold text-primary hover:underline">Compress PDF under 1MB</Link></li>
+            <li><Link href="/blog/resize-signature-6x2-cm-300-dpi" className="font-semibold text-primary hover:underline">Resize signature to 6×2 cm (300 DPI) for government &amp; bank portals</Link></li>
             <li><Link href="/use-cases/compress-pdf-for-email" className="font-semibold text-primary hover:underline">Use case: compress PDF for email</Link></li>
           </ul>
         </section>
