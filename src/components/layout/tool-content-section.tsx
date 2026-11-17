@@ -230,6 +230,8 @@ export function ToolContentSection({ toolSlug, toolName, isAI, processing }: {
             {' '}No registration, no watermarks, completely free.
           </p>
 
+          <InContentAd variant="responsive" className="my-8" />
+
           {/* Related articles even in fallback */}
           {relatedArticles.length > 0 && (
             <div className="mt-10">
@@ -351,6 +353,9 @@ export function ToolContentSection({ toolSlug, toolName, isAI, processing }: {
           </div>
         </div>
 
+        {/* Secondary Zero-CLS Responsive Banner between How to Use and FAQ */}
+        <InContentAd variant="responsive" className="my-2" />
+
         {/* Common Problems */}
         {content.commonProblems && content.commonProblems.length > 0 && (
           <div>
@@ -377,9 +382,6 @@ export function ToolContentSection({ toolSlug, toolName, isAI, processing }: {
             <FAQAccordion faqs={content.faqs} />
           </div>
         )}
-
-        {/* Mid-content ad after substantial editorial content (AdSense policy-friendly) */}
-        <InContentAd />
 
         {/* Trust Signals */}
         <div className="flex flex-wrap gap-3">

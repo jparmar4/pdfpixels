@@ -510,6 +510,17 @@ export function CompressPDFWorkspace({ targetPreset }: CompressPDFWorkspaceProps
               onDownload={handleDownload}
               downloadLabel="Download compressed PDF"
               primaryMeta={`${uploadedFile.name} · ${compressionLevels.find((level) => level.value === result.level)?.title} · ${formatSize(result.originalSize)} → ${formatSize(result.processedSize)}`}
+              originalSize={result.originalSize}
+              processedSize={result.processedSize}
+              savedPercent={result.savedPercent}
+              formatLabel="PDF"
+              resultUrl={result.pdfUrl}
+              resultFileName={(() => {
+                const baseName = uploadedFile.name.includes('.')
+                  ? uploadedFile.name.substring(0, uploadedFile.name.lastIndexOf('.'))
+                  : uploadedFile.name;
+                return `${baseName}-compressed.pdf`;
+              })()}
               nextActions={[
                 { label: 'Merge PDF', href: '/tools/merge-pdf' },
                 { label: 'Split PDF', href: '/tools/split-pdf' },

@@ -1,6 +1,7 @@
 'use client';
 
 import { isHeicFileName, isHeicMime } from '@/lib/heic-detect';
+import { apiFetch } from '@/lib/api-client';
 
 export function isHeicUpload(file: File): boolean {
   return isHeicFileName(file.name) || isHeicMime(file.type);
@@ -19,7 +20,7 @@ export async function normalizeHeicFile(file: File, signal?: AbortSignal): Promi
 
   let response: Response;
   try {
-    response = await fetch('/api/image/heic', {
+    response = await apiFetch('/api/image/heic', {
       method: 'POST',
       body: formData,
       signal: combinedSignal,

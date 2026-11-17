@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { useActiveTool } from '@/hooks/use-active-tool';
+import { useConsumeChainedFile } from '@/hooks/use-consume-chained-file';
 import { ToolPageHeader } from './tool-page-header';
 import { ToolLimitNotice } from './tool-limit-notice';
 import { ResultScreenAd, SmartlinkButton } from '@/components/ads/ad-banner';
@@ -41,6 +42,11 @@ export function PNGToIcoWorkspace() {
     });
   }, []);
 
+  useConsumeChainedFile(
+    handleSelect,
+    (chained) => Boolean(chained.type.startsWith('image/') || /\.(png|jpe?g|webp)$/i.test(chained.name)),
+  );
+
   const handleConvert = useCallback(async () => {
     if (!file || sizes.length === 0) return;
     setIsProcessing(true);
@@ -50,7 +56,8 @@ export function PNGToIcoWorkspace() {
       formData.append('file', file);
       formData.append('sizes', sizes.join(','));
       setProgress(45);
-      const res = await fetch('/api/image/ico', { method: 'POST', body: formData });
+      const { apiFetch } = await import('@/lib/api-client');
+      const res = await apiFetch('/api/image/ico', { method: 'POST', body: formData });
       setProgress(90);
       if (!res.ok) {
         const err = await res.json().catch(() => ({ error: 'Conversion failed' }));

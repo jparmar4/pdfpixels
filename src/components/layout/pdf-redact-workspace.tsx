@@ -2,20 +2,25 @@
 
 import { motion } from 'framer-motion';
 import {
-  Download, RotateCcw, EyeOff, Trash2, ArrowLeft, ArrowRight, Check, Plus, Shield
+  Download, RotateCcw, EyeOff, Trash2, ArrowLeft, ArrowRight, Check, Plus, Shield,
+  Sparkles, Lock
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Sparkles, AlertTriangle, Lock } from 'lucide-react';
 import { Slider } from '@/components/ui/slider';
 import { useAppStore } from '@/store/app-store';
+import { useConsumeChainedFile } from '@/hooks/use-consume-chained-file';
 import { FileUpload } from './file-upload';
 import { ToolPageHeader } from './tool-page-header';
 import { ToolLimitNotice } from './tool-limit-notice';
+import { PrivateModeBadge } from './private-mode-badge';
 import { ResultScreenAd, SmartlinkButton } from '@/components/ads/ad-banner';
 import { triggerDownloadWithSmartlink } from '@/lib/ads-config';
+import { redactPdfCanvasClient, scanPdfPiiClient } from '@/lib/client-pdf-redact';
+import type { PiiCategory, PiiSummary } from '@/lib/pii-patterns';
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
+import { PdfPagePreview } from './pdf-page-preview';
 
 interface RedactionItem {
   id: string;
@@ -26,8 +31,24 @@ interface RedactionItem {
   height: number;
 }
 
+const TIER1_SCAN_ACTIONS: Array<{ id: PiiCategory; label: string }> = [
+  { id: 'ssn', label: 'US SSN' },
+  { id: 'ein', label: 'EIN' },
+  { id: 'card', label: 'Credit Card' },
+  { id: 'phone', label: 'Phone' },
+  { id: 'email', label: 'Email' },
+  { id: 'iban', label: 'IBAN' },
+];
+
 export function PDFRedactWorkspace() {
-  const { uploadedFile, isProcessing, setIsProcessing, setProgress, reset } = useAppStore();
+  const { uploadedFile, setUploadedFile, isProcessing, setIsProcessing, setProgress, reset } = useAppStore();
+
+  useConsumeChainedFile(
+    (chained) => {
+      setUploadedFile(chained);
+    },
+    (chained) => Boolean(chained.type === 'application/pdf' || chained.name.toLowerCase().endsWith('.pdf')),
+  );
 
   const [totalPages, setTotalPages] = useState<number>(1);
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -37,9 +58,9 @@ export function PDFRedactWorkspace() {
   const [redactions, setRedactions] = useState<RedactionItem[]>([]);
   const [resultUrl, setResultUrl] = useState<string | null>(null);
   const [resultFileName, setResultFileName] = useState<string>('');
+  const [redactedSize, setRedactedSize] = useState<number>(0);
   const [isScanningPii, setIsScanningPii] = useState<boolean>(false);
-  const [piiStats, setPiiStats] = useState<{ ssn: number; aadhaar: number; pan: number; card: number; phone: number; email: number; total: number } | null>(null);
-  const [stripMetadata, setStripMetadata] = useState<boolean>(true);
+  const [piiStats, setPiiStats] = useState<PiiSummary | null>(null);
 
   const previewRef = useRef<HTMLDivElement>(null);
 
@@ -95,30 +116,21 @@ export function PDFRedactWorkspace() {
     }
     reset();
     setResultUrl(null);
+    setRedactedSize(0);
     setRedactions([]);
     setPiiStats(null);
     setCurrentPage(1);
   }, [reset, resultUrl]);
 
-  const handleAutoDetectPii = async () => {
+  const handleAutoDetectPii = async (categories?: PiiCategory[]) => {
     if (!uploadedFile) {
       toast.error('Please upload a PDF document first');
       return;
     }
     setIsScanningPii(true);
     try {
-      const formData = new FormData();
-      formData.append('file', uploadedFile);
-      const res = await fetch('/api/pdf/redact/detect-pii', {
-        method: 'POST',
-        body: formData,
-      });
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({ error: 'PII scanning failed' }));
-        throw new Error(err.error || 'Failed to detect PII');
-      }
-      const data = await res.json();
-      const detectedItems: RedactionItem[] = (data.detected || []).map((d: any) => ({
+      const scanResult = await scanPdfPiiClient(uploadedFile, categories);
+      const detectedItems: RedactionItem[] = scanResult.detected.map((d) => ({
         id: d.id,
         pageNumber: d.pageNumber,
         x: d.x,
@@ -128,32 +140,40 @@ export function PDFRedactWorkspace() {
       }));
 
       if (detectedItems.length === 0) {
-        toast.info('No obvious SSN, Aadhaar, PAN, card, email, or phone numbers detected. You can still add blackout boxes manually.');
-        setPiiStats({ ssn: 0, aadhaar: 0, pan: 0, card: 0, phone: 0, email: 0, total: 0 });
+        toast.info(
+          categories?.length === 1
+            ? `No ${categories[0].toUpperCase()} patterns detected. You can add manual blackout boxes anytime.`
+            : 'No SSN, EIN, Card, Phone, Email, or IBAN patterns detected.',
+        );
+        setPiiStats((prev) => prev ?? scanResult.summary);
       } else {
-        setRedactions(prev => {
-          const existingIds = new Set(prev.map(p => `${p.pageNumber}-${p.x}-${p.y}`));
-          const newUnique = detectedItems.filter(d => !existingIds.has(`${d.pageNumber}-${d.x}-${d.y}`));
+        setRedactions((prev) => {
+          const existingKeys = new Set(prev.map((p) => `${p.pageNumber}-${p.x}-${p.y}`));
+          const newUnique = detectedItems.filter((d) => !existingKeys.has(`${d.pageNumber}-${d.x}-${d.y}`));
           return [...prev, ...newUnique];
         });
-        setPiiStats(data.summary);
-        toast.success(`Found ${data.summary.total} sensitive items (${data.summary.ssn ? `${data.summary.ssn} SSNs, ` : ''}${data.summary.pan ? `${data.summary.pan} PAN, ` : ''}${data.summary.aadhaar ? `${data.summary.aadhaar} Aadhaar, ` : ''}${data.summary.email ? `${data.summary.email} Emails, ` : ''}${data.summary.phone ? `${data.summary.phone} Phones` : ''})! Blackout boxes applied.`);
+        setPiiStats(scanResult.summary);
+        toast.success(`Auto-boxed ${detectedItems.length} sensitive item(s) locally in browser memory!`);
       }
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to detect PII');
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Failed to scan PDF patterns');
     } finally {
       setIsScanningPii(false);
     }
   };
 
   const addRedactionBox = () => {
+    const width = Math.min(250, Math.max(80, Math.round(pageWidth * 0.42)));
+    const height = Math.min(40, Math.max(20, Math.round(pageHeight * 0.05)));
+    const x = Math.max(0, Math.min(pageWidth - width, Math.round((pageWidth - width) / 2)));
+    const y = Math.max(0, Math.min(pageHeight - height, Math.round(pageHeight * 0.25)));
     const newBox: RedactionItem = {
       id: Math.random().toString(36).substring(2, 9),
       pageNumber: currentPage,
-      x: 100,
-      y: 200,
-      width: 250,
-      height: 40,
+      x,
+      y,
+      width,
+      height,
     };
     setRedactions(prev => [...prev, newBox]);
     toast.success('Blackout box added. Drag and resize over sensitive content.');
@@ -167,6 +187,34 @@ export function PDFRedactWorkspace() {
     setRedactions(prev => prev.map(b => b.id === id ? { ...b, ...updates } : b));
   };
 
+  const startBoxDrag = (e: React.PointerEvent<HTMLDivElement>, box: RedactionItem) => {
+    if ((e.target as HTMLElement).closest('button')) return;
+    e.preventDefault();
+    e.stopPropagation();
+    const startX = e.clientX;
+    const startY = e.clientY;
+    const origX = box.x;
+    const origY = box.y;
+    const onMove = (ev: PointerEvent) => {
+      const container = previewRef.current;
+      if (!container) return;
+      const rect = container.getBoundingClientRect();
+      if (rect.width <= 0 || rect.height <= 0) return;
+      const dx = ((ev.clientX - startX) / rect.width) * pageWidth;
+      const dy = ((ev.clientY - startY) / rect.height) * pageHeight;
+      updateRedactionBox(box.id, {
+        x: Math.round(Math.max(0, Math.min(Math.max(0, pageWidth - box.width), origX + dx))),
+        y: Math.round(Math.max(0, Math.min(Math.max(0, pageHeight - box.height), origY + dy))),
+      });
+    };
+    const onUp = () => {
+      window.removeEventListener('pointermove', onMove);
+      window.removeEventListener('pointerup', onUp);
+    };
+    window.addEventListener('pointermove', onMove);
+    window.addEventListener('pointerup', onUp);
+  };
+
   const handleApplyRedactions = async () => {
     if (!uploadedFile) {
       toast.error('Please upload a PDF document');
@@ -178,31 +226,24 @@ export function PDFRedactWorkspace() {
     }
 
     setIsProcessing(true);
-    setProgress(0);
+    setProgress(25);
 
     try {
-      const formData = new FormData();
-      formData.append('file', uploadedFile);
-      formData.append('redactions', JSON.stringify(redactions));
-
-      const { fetchWithUploadProgress } = await import('@/lib/upload-with-progress');
-      const res = await fetchWithUploadProgress('/api/pdf/redact', formData, setProgress);
-
-      setProgress(90);
-
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({ error: 'Redaction failed' }));
-        throw new Error(err.error || 'Failed to redact PDF');
-      }
-
-      const blob = await res.blob();
-      const url = URL.createObjectURL(blob);
-      setResultUrl(url);
-      setResultFileName(uploadedFile.name.replace(/\.pdf$/i, '-redacted.pdf'));
+      const scrubbed = await redactPdfCanvasClient(uploadedFile, redactions);
       setProgress(100);
-      toast.success('PDF redacted and secured!');
-    } catch (err: any) {
-      toast.error(err.message || 'Redaction failed');
+      const copy = new Uint8Array(scrubbed.bytes.byteLength);
+      copy.set(scrubbed.bytes);
+      const blob = new Blob([copy.buffer], { type: 'application/pdf' });
+      const url = URL.createObjectURL(blob);
+      setResultUrl((prev) => {
+        if (prev?.startsWith('blob:')) URL.revokeObjectURL(prev);
+        return url;
+      });
+      setRedactedSize(blob.size);
+      setResultFileName(uploadedFile.name.replace(/\.pdf$/i, '-redacted.pdf'));
+      toast.success('PDF raster-scrubbed and metadata purged locally (Zero Server Upload)!');
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Redaction failed');
     } finally {
       setIsProcessing(false);
     }
@@ -210,15 +251,24 @@ export function PDFRedactWorkspace() {
 
   const handleDownload = () => {
     if (!resultUrl) return;
-    triggerDownloadWithSmartlink(() => {
-      const a = document.createElement('a');
-      a.href = resultUrl;
-      a.download = resultFileName || 'redacted-document.pdf';
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      toast.success('Download started');
-    });
+    triggerDownloadWithSmartlink(
+      () => {
+        const a = document.createElement('a');
+        a.href = resultUrl;
+        a.download = resultFileName || 'redacted-document.pdf';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        toast.success('Download started');
+      },
+      {
+        originalSize: uploadedFile?.size,
+        processedSize: redactedSize,
+        formatLabel: 'PDF',
+        dpiLabel: '150 DPI Raster',
+        fileName: resultFileName,
+      },
+    );
   };
 
   const currentPageRedactions = redactions.filter(r => r.pageNumber === currentPage);
@@ -226,17 +276,21 @@ export function PDFRedactWorkspace() {
   return (
     <div className="container mx-auto px-4 lg:px-8 py-8 max-w-6xl">
       <ToolPageHeader
-        title="Redact PDF Online (Permanent Blackout)"
-        description="Permanently black out sensitive text, SSNs, credit card numbers, confidential names, and HIPAA data. Securely burns redaction boxes into document pages."
+        title="Redact PDF Online (Permanent Blackout & Raster-Scrub)"
+        description="Permanently scrub US SSN, EIN, Credit Cards, Phones, Emails, IBANs, and sensitive clauses via 150 DPI canvas rasterization + full EXIF/XMP metadata removal."
         icon={<EyeOff className="h-7 w-7 text-white" />}
         onReset={handleReset}
       />
       <ToolLimitNotice
         limits={[
-          'PDF only · max 50 MB',
-          'Permanently obliterates text and underlying vector streams',
-          'Compliant with FOIA, HIPAA, and GDPR data privacy standards',
+          '1-click Regex Redaction: US SSN, EIN, Credit Card, Phone, Email & IBAN',
+          'True Canvas Raster-Scrubbing: rebuilds pages at 150 DPI with zero selectable text bytes',
+          'Compliant with FOIA, HIPAA, GDPR & SOC2 confidentiality standards',
         ]}
+      />
+      <PrivateModeBadge
+        className="mt-4"
+        description="PII pattern scanning and 150 DPI pixel redaction execute 100% inside your browser — unredacted files never touch a server."
       />
 
       {!uploadedFile ? (
@@ -280,64 +334,49 @@ export function PDFRedactWorkspace() {
               {/* PDF Preview Page with Interactive Blackout Boxes */}
               <div
                 ref={previewRef}
-                className="relative bg-white dark:bg-zinc-900 border-2 border-dashed rounded-2xl aspect-[1/1.414] shadow-sm overflow-hidden p-8 flex flex-col justify-between"
+                className="relative bg-white dark:bg-zinc-900 border-2 rounded-2xl shadow-sm overflow-hidden flex flex-col justify-between"
+                style={{ aspectRatio: `${pageWidth} / ${pageHeight}` }}
               >
-                {/* Mock Content Lines */}
-                <div className="space-y-4 opacity-30 select-none">
-                  <div className="h-5 bg-muted-foreground/30 rounded w-1/2" />
-                  <div className="h-3 bg-muted-foreground/20 rounded w-full" />
-                  <div className="h-3 bg-muted-foreground/20 rounded w-11/12" />
-                  <div className="h-3 bg-muted-foreground/20 rounded w-full" />
-                  <div className="h-3 bg-muted-foreground/20 rounded w-3/4" />
-                  <div className="h-3 bg-muted-foreground/20 rounded w-5/6" />
+                <div className="absolute inset-0">
+                  <PdfPagePreview
+                    file={uploadedFile}
+                    pageNumber={currentPage}
+                    onPageDimensions={({ width, height }) => {
+                      setPageWidth(width);
+                      setPageHeight(height);
+                    }}
+                  />
                 </div>
 
                 {/* Rendered Blackout Boxes for this page */}
                 {currentPageRedactions.map((box) => (
-                  <motion.div
+                  <div
                     key={box.id}
-                    drag
-                    dragConstraints={previewRef}
-                    className="absolute bg-black cursor-move border border-red-500/50 shadow-lg group select-none flex items-center justify-between px-2"
+                    role="presentation"
+                    onPointerDown={(e) => startBoxDrag(e, box)}
+                    className="absolute z-10 bg-black cursor-move touch-none border border-red-500/70 shadow-lg group select-none flex items-center justify-between px-1.5"
                     style={{
                       left: `${(box.x / pageWidth) * 100}%`,
                       top: `${(box.y / pageHeight) * 100}%`,
                       width: `${(box.width / pageWidth) * 100}%`,
                       height: `${(box.height / pageHeight) * 100}%`,
-                      minHeight: '20px',
-                      minWidth: '50px',
-                    }}
-                    onDragEnd={(_, info) => {
-                      if (previewRef.current) {
-                        const rect = previewRef.current.getBoundingClientRect();
-                        const deltaX = (info.offset.x / rect.width) * pageWidth;
-                        const deltaY = (info.offset.y / rect.height) * pageHeight;
-                        updateRedactionBox(box.id, {
-                          x: Math.max(0, Math.min(pageWidth - box.width, box.x + deltaX)),
-                          y: Math.max(0, Math.min(pageHeight - box.height, box.y + deltaY)),
-                        });
-                      }
+                      minHeight: '14px',
+                      minWidth: '28px',
                     }}
                   >
-                    <span className="text-[10px] text-white/70 font-mono">REDACTED</span>
+                    <span className="text-[9px] text-white/80 font-mono truncate">REDACTED</span>
                     <button
                       type="button"
                       onClick={(e) => {
                         e.stopPropagation();
                         removeRedactionBox(box.id);
                       }}
-                      className="opacity-0 group-hover:opacity-100 transition-opacity bg-red-600/80 hover:bg-red-600 text-white rounded p-0.5"
+                      className="opacity-0 group-hover:opacity-100 transition-opacity bg-red-600/80 hover:bg-red-600 text-white rounded p-0.5 shrink-0"
                     >
                       <Trash2 className="w-3 h-3" />
                     </button>
-                  </motion.div>
+                  </div>
                 ))}
-
-                <div className="space-y-4 opacity-30 select-none">
-                  <div className="h-3 bg-muted-foreground/20 rounded w-full" />
-                  <div className="h-3 bg-muted-foreground/20 rounded w-4/5" />
-                  <div className="h-3 bg-muted-foreground/20 rounded w-2/3" />
-                </div>
               </div>
 
               <div className="flex items-center justify-between">
@@ -372,37 +411,55 @@ export function PDFRedactWorkspace() {
                         <Sparkles className="w-3.5 h-3.5" />
                       </div>
                       <div>
-                        <h4 className="font-bold text-xs text-foreground">Smart PII Auto-Redactor</h4>
-                        <p className="text-[10px] text-muted-foreground">SSN, Aadhaar, PAN, Cards, Phones, Emails</p>
+                        <h4 className="font-bold text-xs text-foreground">1-Click Tier-1 Pattern Redactor</h4>
+                        <p className="text-[10px] text-muted-foreground">US SSN, EIN, Credit Card, Phone, Email &amp; IBAN</p>
                       </div>
                     </div>
                     <Badge variant="secondary" className="text-[10px] bg-violet-100 text-violet-800 dark:bg-violet-900/50 dark:text-violet-300 font-bold">
-                      Regex Scan
+                      Canvas Scrub
                     </Badge>
                   </div>
 
                   <Button
                     type="button"
-                    onClick={handleAutoDetectPii}
+                    onClick={() => void handleAutoDetectPii()}
                     disabled={isScanningPii}
                     className="w-full h-9 text-xs font-bold gap-2 bg-violet-600 hover:bg-violet-700 text-white shadow-sm"
                   >
                     <Sparkles className="w-3.5 h-3.5" />
-                    {isScanningPii ? 'Scanning Document...' : 'Auto-Detect Sensitive Data (PII)'}
+                    {isScanningPii ? 'Scanning Document Locally...' : 'Auto-Detect All Sensitive Data (PII)'}
                   </Button>
+
+                  <div className="grid grid-cols-3 gap-1.5">
+                    {TIER1_SCAN_ACTIONS.map((item) => (
+                      <Button
+                        key={item.id}
+                        type="button"
+                        size="sm"
+                        variant="outline"
+                        disabled={isScanningPii}
+                        onClick={() => void handleAutoDetectPii([item.id])}
+                        className="h-7 px-2 text-[10px] font-semibold justify-center hover:border-violet-500/50 hover:text-violet-600"
+                      >
+                        + {item.label}
+                      </Button>
+                    ))}
+                  </div>
 
                   {piiStats && (
                     <div className="rounded-lg border bg-card/80 p-2.5 space-y-1.5 text-xs">
                       <span className="font-semibold text-foreground block text-[10px]">
-                        Scan Results ({piiStats.total} detected):
+                        Detected Sensitive Entities ({piiStats.total}):
                       </span>
                       <div className="flex flex-wrap gap-1">
                         {piiStats.ssn > 0 && <Badge variant="outline" className="text-[10px]">SSN: {piiStats.ssn}</Badge>}
-                        {piiStats.aadhaar > 0 && <Badge variant="outline" className="text-[10px]">Aadhaar: {piiStats.aadhaar}</Badge>}
-                        {piiStats.pan > 0 && <Badge variant="outline" className="text-[10px]">PAN: {piiStats.pan}</Badge>}
+                        {piiStats.ein > 0 && <Badge variant="outline" className="text-[10px]">EIN: {piiStats.ein}</Badge>}
                         {piiStats.card > 0 && <Badge variant="outline" className="text-[10px]">Cards: {piiStats.card}</Badge>}
+                        {piiStats.iban > 0 && <Badge variant="outline" className="text-[10px]">IBAN: {piiStats.iban}</Badge>}
                         {piiStats.email > 0 && <Badge variant="outline" className="text-[10px]">Emails: {piiStats.email}</Badge>}
                         {piiStats.phone > 0 && <Badge variant="outline" className="text-[10px]">Phones: {piiStats.phone}</Badge>}
+                        {piiStats.aadhaar > 0 && <Badge variant="outline" className="text-[10px]">Aadhaar: {piiStats.aadhaar}</Badge>}
+                        {piiStats.pan > 0 && <Badge variant="outline" className="text-[10px]">PAN: {piiStats.pan}</Badge>}
                       </div>
                     </div>
                   )}
@@ -511,7 +568,14 @@ export function PDFRedactWorkspace() {
                     <Download className="w-4 h-4" /> Download Redacted PDF
                   </Button>
                   <SmartlinkButton className="w-full justify-center" />
-                  <ResultScreenAd refreshKey={resultUrl} />
+                  <ResultScreenAd
+                    refreshKey={resultUrl}
+                    originalSize={uploadedFile?.size}
+                    processedSize={redactedSize}
+                    formatLabel="PDF"
+                    dpiLabel="150 DPI Raster"
+                    fileName={resultFileName}
+                  />
                 </motion.div>
               )}
             </div>

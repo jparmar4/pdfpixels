@@ -221,7 +221,6 @@ export const organizationData = {
   description: 'Free online PDF and image processing platform with browser and server workflows.',
   foundingDate: '2025',
   email: 'support@pdfpixels.com',
-  telephone: '+91-79-2658-0100',
   sameAs: [
     'https://github.com/jparmar4/pdfpixels',
     'https://x.com/pdfpixels',
@@ -234,7 +233,6 @@ export const organizationData = {
     availableLanguage: ['English', 'German', 'French', 'Spanish', 'Portuguese', 'Japanese'],
     contactType: 'customer support',
     email: 'support@pdfpixels.com',
-    telephone: '+91-79-2658-0100',
     areaServed: 'Worldwide',
     url: absoluteUrl('/contact'),
   },

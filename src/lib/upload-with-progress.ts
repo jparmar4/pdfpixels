@@ -1,10 +1,12 @@
+import { ensureApiSession } from '@/lib/api-client';
+
 export type UploadResult = {
   status: number;
   headers: Headers;
   body: ArrayBuffer;
 };
 
-export function uploadForm(
+function sendUploadXhr(
   url: string,
   form: FormData,
   onProgress?: (percent: number) => void,
@@ -19,6 +21,7 @@ export function uploadForm(
     const abort = () => xhr.abort();
     signal?.addEventListener('abort', abort);
     xhr.open('POST', url);
+    xhr.withCredentials = true;
     xhr.responseType = 'arraybuffer';
     xhr.upload.onprogress = (event) => {
       if (!onProgress || !event.lengthComputable || event.total <= 0) return;
@@ -49,6 +52,30 @@ export function uploadForm(
     };
     xhr.send(form);
   });
+}
+
+export async function uploadForm(
+  url: string,
+  form: FormData,
+  onProgress?: (percent: number) => void,
+  signal?: AbortSignal,
+): Promise<UploadResult> {
+  if (url.startsWith('/api/')) {
+    await ensureApiSession(false);
+  }
+
+  const firstAttempt = await sendUploadXhr(url, form, onProgress, signal);
+  if (
+    url.startsWith('/api/') &&
+    firstAttempt.status === 403 &&
+    firstAttempt.headers.get('X-PdfPixels-Auth') === 'session-required'
+  ) {
+    const refreshed = await ensureApiSession(true);
+    if (refreshed) {
+      return sendUploadXhr(url, form, onProgress, signal);
+    }
+  }
+  return firstAttempt;
 }
 
 export function fetchWithUploadProgress(

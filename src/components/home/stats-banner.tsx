@@ -1,15 +1,12 @@
-'use client';
-
-import { DollarSign, Files, Server, Wrench } from 'lucide-react';
-import { allTools } from '@/lib/tools-data';
-import { AnimatedCounter } from './animated-counter';
+import { DollarSign, Files, ShieldCheck, Wrench } from 'lucide-react';
+import { platformStats } from '@/lib/tools-data';
 
 export function StatsBanner() {
   const stats = [
-    { value: allTools.length, suffix: '+', label: 'Free Tools', icon: Wrench, gradient: 'from-indigo-600 to-violet-600' },
-    { value: 14, suffix: '+', label: 'File Formats', icon: Files, gradient: 'from-violet-600 to-purple-600' },
-    { value: 0, suffix: '', label: 'Account required', display: 'None', icon: Server, gradient: 'from-emerald-600 to-teal-600' },
-    { value: 0, suffix: '', label: 'Cost', display: 'Free', icon: DollarSign, gradient: 'from-sky-600 to-blue-600' },
+    { display: platformStats.freeToolsLabel, label: 'Free Tools', icon: Wrench, gradient: 'from-indigo-600 to-violet-600' },
+    { display: platformStats.fileFormatsLabel, label: 'File Formats', icon: Files, gradient: 'from-violet-600 to-purple-600' },
+    { display: platformStats.freeWorkflowsLabel, label: 'Free Core Workflows', icon: DollarSign, gradient: 'from-emerald-600 to-teal-600' },
+    { display: platformStats.accountWallsLabel, label: 'Account Walls', icon: ShieldCheck, gradient: 'from-sky-600 to-blue-600' },
   ];
 
   return (
@@ -27,7 +24,7 @@ export function StatsBanner() {
                 <stat.icon className="w-5 h-5 text-white" />
               </div>
               <div className="text-3xl md:text-4xl font-extrabold text-foreground mb-1">
-                {stat.display ? stat.display : <AnimatedCounter end={stat.value} suffix={stat.suffix} />}
+                {stat.display}
               </div>
               <div className="text-sm text-muted-foreground font-medium">{stat.label}</div>
             </div>

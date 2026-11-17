@@ -3,25 +3,37 @@
 import { motion } from 'framer-motion';
 import {
   Download, RotateCcw, PenTool, Type, Trash2,
-  Sparkles, FileSignature, Calendar, ArrowLeft, ArrowRight, Check
+  Sparkles, FileSignature, Calendar, ArrowLeft, ArrowRight, Check, ShieldCheck
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Slider } from '@/components/ui/slider';
+import { Switch } from '@/components/ui/switch';
 import { useAppStore } from '@/store/app-store';
+import { useConsumeChainedFile } from '@/hooks/use-consume-chained-file';
 import { FileUpload } from './file-upload';
 import { ToolPageHeader } from './tool-page-header';
 import { ToolLimitNotice } from './tool-limit-notice';
+import { PrivateModeBadge } from './private-mode-badge';
 import { ResultScreenAd, SmartlinkButton } from '@/components/ads/ad-banner';
 import { triggerDownloadWithSmartlink } from '@/lib/ads-config';
+import { signPdfClient } from '@/lib/client-pdf-ops';
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { PdfPagePreview } from './pdf-page-preview';
 
 export function PDFSignWorkspace() {
-  const { uploadedFile, isProcessing, setIsProcessing, setProgress, reset } = useAppStore();
+  const { uploadedFile, setUploadedFile, isProcessing, setIsProcessing, setProgress, reset } = useAppStore();
+
+  useConsumeChainedFile(
+    (chained) => {
+      setUploadedFile(chained);
+    },
+    (chained) => Boolean(chained.type === 'application/pdf' || chained.name.toLowerCase().endsWith('.pdf')),
+  );
 
   const [totalPages, setTotalPages] = useState<number>(1);
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -44,15 +56,50 @@ export function PDFSignWorkspace() {
   const [sigH, setSigH] = useState<number>(60);
   const [includeDate, setIncludeDate] = useState<boolean>(true);
   const [dateText, setDateText] = useState<string>(new Date().toISOString().split('T')[0]);
+  const [includeAuditTrail, setIncludeAuditTrail] = useState<boolean>(true);
+  const [signerName, setSignerName] = useState<string>('');
+  const [signerEmail, setSignerEmail] = useState<string>('');
 
   // Result state
   const [resultUrl, setResultUrl] = useState<string | null>(null);
   const [resultFileName, setResultFileName] = useState<string>('');
+  const [signedSize, setSignedSize] = useState<number>(0);
+  const [auditMeta, setAuditMeta] = useState<{ certificateId?: string; sha256: string } | null>(null);
 
   const drawCanvasRef = useRef<HTMLCanvasElement>(null);
   const [isDrawing, setIsDrawing] = useState<boolean>(false);
   const lastPos = useRef<{ x: number; y: number } | null>(null);
   const previewContainerRef = useRef<HTMLDivElement>(null);
+  const sigDragRef = useRef<{ startX: number; startY: number; origX: number; origY: number } | null>(null);
+
+  const handleSigPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    sigDragRef.current = {
+      startX: e.clientX,
+      startY: e.clientY,
+      origX: sigX,
+      origY: sigY,
+    };
+    const onMove = (ev: PointerEvent) => {
+      const dragState = sigDragRef.current;
+      const container = previewContainerRef.current;
+      if (!dragState || !container) return;
+      const rect = container.getBoundingClientRect();
+      if (rect.width <= 0 || rect.height <= 0) return;
+      const dx = ((ev.clientX - dragState.startX) / rect.width) * pageWidth;
+      const dy = ((ev.clientY - dragState.startY) / rect.height) * pageHeight;
+      setSigX(Math.max(0, Math.min(Math.max(0, pageWidth - sigW), Math.round(dragState.origX + dx))));
+      setSigY(Math.max(0, Math.min(Math.max(0, pageHeight - sigH), Math.round(dragState.origY + dy))));
+    };
+    const onUp = () => {
+      sigDragRef.current = null;
+      window.removeEventListener('pointermove', onMove);
+      window.removeEventListener('pointerup', onUp);
+    };
+    window.addEventListener('pointermove', onMove);
+    window.addEventListener('pointerup', onUp);
+  };
 
   // Inspect PDF on file change
   useEffect(() => {
@@ -217,39 +264,41 @@ export function PDFSignWorkspace() {
     }
 
     setIsProcessing(true);
-    setProgress(0);
+    setProgress(25);
 
     try {
-      const formData = new FormData();
-      formData.append('file', uploadedFile);
-      formData.append('signatureImage', createdSigDataUrl);
-      formData.append('pageNumber', String(currentPage));
-      formData.append('x', String(Math.round(sigX)));
-      formData.append('y', String(Math.round(sigY)));
-      formData.append('width', String(Math.round(sigW)));
-      formData.append('height', String(Math.round(sigH)));
-      if (includeDate && dateText) {
-        formData.append('dateText', `Date: ${dateText}`);
-      }
+      const signed = await signPdfClient(uploadedFile, {
+        signatureDataUrl: createdSigDataUrl,
+        pageNumber: currentPage,
+        x: Math.round(sigX),
+        y: Math.round(sigY),
+        width: Math.round(sigW),
+        height: Math.round(sigH),
+        dateText: includeDate && dateText ? `Date: ${dateText}` : undefined,
+        includeAuditTrail,
+        signerName,
+        signerEmail,
+      });
 
-      const { fetchWithUploadProgress } = await import('@/lib/upload-with-progress');
-      const res = await fetchWithUploadProgress('/api/pdf/sign', formData, setProgress);
-
-      setProgress(90);
-
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({ error: 'Signing failed' }));
-        throw new Error(err.error || 'Failed to sign PDF');
-      }
-
-      const blob = await res.blob();
-      const url = URL.createObjectURL(blob);
-      setResultUrl(url);
-      setResultFileName(uploadedFile.name.replace(/\.pdf$/i, '-signed.pdf'));
       setProgress(100);
-      toast.success('PDF signed successfully!');
-    } catch (err: any) {
-      toast.error(err.message || 'Signing failed');
+      const copy = new Uint8Array(signed.bytes.byteLength);
+      copy.set(signed.bytes);
+      const blob = new Blob([copy.buffer], { type: 'application/pdf' });
+      const url = URL.createObjectURL(blob);
+      setResultUrl((prev) => {
+        if (prev?.startsWith('blob:')) URL.revokeObjectURL(prev);
+        return url;
+      });
+      setSignedSize(blob.size);
+      setAuditMeta({ certificateId: signed.certificateId, sha256: signed.sha256 });
+      setResultFileName(uploadedFile.name.replace(/\.pdf$/i, '-signed.pdf'));
+      toast.success(
+        signed.certificateId
+          ? 'PDF signed locally with SHA-256 Audit Trail Certificate (Zero Server Upload)!'
+          : 'PDF signed locally inside your browser (Zero Server Upload)!',
+      );
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Signing failed');
     } finally {
       setIsProcessing(false);
     }
@@ -257,15 +306,23 @@ export function PDFSignWorkspace() {
 
   const handleDownload = () => {
     if (!resultUrl) return;
-    triggerDownloadWithSmartlink(() => {
-      const a = document.createElement('a');
-      a.href = resultUrl;
-      a.download = resultFileName || 'signed-document.pdf';
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      toast.success('Download started');
-    });
+    triggerDownloadWithSmartlink(
+      () => {
+        const a = document.createElement('a');
+        a.href = resultUrl;
+        a.download = resultFileName || 'signed-document.pdf';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        toast.success('Download started');
+      },
+      {
+        originalSize: uploadedFile?.size,
+        processedSize: signedSize,
+        formatLabel: 'PDF',
+        fileName: resultFileName,
+      },
+    );
   };
 
   const handleReset = useCallback(() => {
@@ -274,6 +331,8 @@ export function PDFSignWorkspace() {
     }
     reset();
     setResultUrl(null);
+    setSignedSize(0);
+    setAuditMeta(null);
     setCreatedSigDataUrl(null);
     setSigPlaced(false);
     setCurrentPage(1);
@@ -283,16 +342,20 @@ export function PDFSignWorkspace() {
     <div className="container mx-auto px-4 lg:px-8 py-8 max-w-6xl">
       <ToolPageHeader
         title="Sign PDF Online Free"
-        description="Add legally valid electronic signatures to PDF contracts, lease agreements, tax forms, and NDAs. Draw, type, or upload your signature."
+        description="Add legally valid electronic signatures & optional SHA-256 Audit Trail Certificates to PDF contracts, tax forms, and NDAs — 100% client-side with zero server upload."
         icon={<FileSignature className="h-7 w-7 text-white" />}
         onReset={handleReset}
       />
       <ToolLimitNotice
         limits={[
-          'PDF only · max 50 MB',
-          'Draw, type, or upload transparent e-signatures',
-          'Legally compliant with US ESIGN Act and EU eIDAS regulation',
+          'PDF only · max 50 MB · 100% browser-native pdf-lib signing',
+          'Draw, type, or upload signatures + optional Audit Trail Certificate page',
+          'Records SHA-256 checksum & UTC timestamp under US ESIGN / EU eIDAS rules',
         ]}
+      />
+      <PrivateModeBadge
+        className="mt-4"
+        description="Your signature image, PDF content, SHA-256 hash, and verification certificate remain strictly in browser memory."
       />
 
       {!uploadedFile ? (
@@ -334,40 +397,46 @@ export function PDFSignWorkspace() {
                 </div>
               </div>
 
-              {/* Visual PDF Page Mockup with placed signature */}
+              {/* Visual PDF Page Preview with placed signature */}
               <div
                 ref={previewContainerRef}
-                className="relative bg-white dark:bg-zinc-900 border-2 border-dashed rounded-2xl aspect-[1/1.414] shadow-sm overflow-hidden flex flex-col justify-between p-8"
+                className="relative bg-white dark:bg-zinc-900 border-2 rounded-2xl shadow-sm overflow-hidden flex flex-col justify-between"
+                style={{ aspectRatio: `${pageWidth} / ${pageHeight}` }}
               >
-                {/* Header Mockup */}
-                <div className="space-y-3 opacity-30 select-none">
-                  <div className="h-4 bg-muted-foreground/30 rounded w-1/3" />
-                  <div className="h-2.5 bg-muted-foreground/20 rounded w-full" />
-                  <div className="h-2.5 bg-muted-foreground/20 rounded w-5/6" />
-                  <div className="h-2.5 bg-muted-foreground/20 rounded w-4/6" />
+                <div className="absolute inset-0">
+                  <PdfPagePreview
+                    file={uploadedFile}
+                    pageNumber={currentPage}
+                    onPageDimensions={({ width, height }) => {
+                      setPageWidth(width);
+                      setPageHeight(height);
+                      setSigX((prev) => Math.max(0, Math.min(Math.max(0, width - sigW), prev)));
+                      setSigY((prev) => Math.max(0, Math.min(Math.max(0, height - sigH), prev)));
+                    }}
+                  />
                 </div>
 
                 {/* Placed Signature Box Overlay */}
                 {sigPlaced && createdSigDataUrl && (
-                  <motion.div
-                    drag
-                    dragConstraints={previewContainerRef}
-                    className="absolute cursor-move border-2 border-primary bg-primary/5 rounded-lg p-2 shadow-md group select-none"
-                    style={{ left: `${(sigX / pageWidth) * 100}%`, top: `${(sigY / pageHeight) * 100}%` }}
-                    onDragEnd={(_, info) => {
-                      const container = previewContainerRef.current;
-                      if (!container) return;
-                      const rect = container.getBoundingClientRect();
-                      const xPercent = (info.point.x - rect.left) / rect.width;
-                      const yPercent = (info.point.y - rect.top) / rect.height;
-                      setSigX(Math.max(0, Math.min(pageWidth - sigW, Math.round(xPercent * pageWidth))));
-                      setSigY(Math.max(0, Math.min(pageHeight - sigH, Math.round(yPercent * pageHeight))));
+                  <div
+                    role="presentation"
+                    onPointerDown={handleSigPointerDown}
+                    className="absolute z-10 cursor-move touch-none border-2 border-primary bg-primary/5 rounded-lg p-1 shadow-md group select-none"
+                    style={{
+                      left: `${(sigX / pageWidth) * 100}%`,
+                      top: `${(sigY / pageHeight) * 100}%`,
+                      width: `${(sigW / pageWidth) * 100}%`,
                     }}
                   >
                     <div className="relative">
-                      <img src={createdSigDataUrl} alt="Created signature preview" style={{ width: `${sigW}px`, height: `${sigH}px` }} className="object-contain pointer-events-none" />
+                      <img
+                        src={createdSigDataUrl}
+                        alt="Created signature preview"
+                        className="w-full object-contain pointer-events-none"
+                        style={{ aspectRatio: `${sigW} / ${sigH}` }}
+                      />
                       {includeDate && (
-                        <p className="text-[10px] font-mono text-zinc-600 dark:text-zinc-300 mt-1 pointer-events-none">
+                        <p className="text-[10px] font-mono text-zinc-700 mt-0.5 pointer-events-none truncate">
                           Date: {dateText}
                         </p>
                       )}
@@ -375,18 +444,8 @@ export function PDFSignWorkspace() {
                         <Badge variant="default" className="text-[9px] px-1 py-0">Drag</Badge>
                       </div>
                     </div>
-                  </motion.div>
-                )}
-
-                {/* Footer Mockup */}
-                <div className="space-y-2 opacity-30 select-none">
-                  <div className="h-2 bg-muted-foreground/20 rounded w-full" />
-                  <div className="h-2 bg-muted-foreground/20 rounded w-2/3" />
-                  <div className="flex justify-between items-center pt-2">
-                    <span className="text-[10px] text-muted-foreground">Document Page {currentPage}</span>
-                    <span className="text-[10px] text-muted-foreground">PDFPixels Electronic Signature</span>
                   </div>
-                </div>
+                )}
               </div>
 
               {/* Placement Coordinate Sliders */}
@@ -548,6 +607,42 @@ export function PDFSignWorkspace() {
                   )}
                 </div>
 
+                {/* Audit Trail & Verification Certificate Generator */}
+                <div className="border-t pt-4 space-y-3">
+                  <div className="flex items-center justify-between gap-3">
+                    <div>
+                      <Label htmlFor="audit-trail-switch" className="text-xs font-semibold flex items-center gap-1.5 cursor-pointer">
+                        <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+                        Audit Trail &amp; Verification Certificate
+                      </Label>
+                      <p className="text-[11px] text-muted-foreground">
+                        Appends SHA-256 document hash &amp; UTC timestamp page.
+                      </p>
+                    </div>
+                    <Switch
+                      id="audit-trail-switch"
+                      checked={includeAuditTrail}
+                      onCheckedChange={setIncludeAuditTrail}
+                    />
+                  </div>
+                  {includeAuditTrail && (
+                    <div className="grid sm:grid-cols-2 gap-2">
+                      <Input
+                        placeholder="Signer Name (optional)"
+                        value={signerName}
+                        onChange={(e) => setSignerName(e.target.value)}
+                        className="text-xs h-8"
+                      />
+                      <Input
+                        placeholder="Signer Email / ID (optional)"
+                        value={signerEmail}
+                        onChange={(e) => setSignerEmail(e.target.value)}
+                        className="text-xs h-8"
+                      />
+                    </div>
+                  )}
+                </div>
+
                 {/* Actions */}
                 <div className="space-y-2 pt-2">
                   {!sigPlaced ? (
@@ -593,14 +688,27 @@ export function PDFSignWorkspace() {
                   <div>
                     <h4 className="font-semibold text-base">Your PDF is Signed!</h4>
                     <p className="text-xs text-muted-foreground mt-1">
-                      Downloaded file contains embedded digital signatures and timestamp.
+                      {auditMeta?.certificateId
+                        ? `Embedded signature + Audit Trail Certificate (${auditMeta.certificateId})`
+                        : 'Downloaded file contains your embedded electronic signature.'}
                     </p>
+                    {auditMeta?.sha256 && (
+                      <p className="text-[10px] font-mono text-muted-foreground mt-1 truncate">
+                        SHA-256: {auditMeta.sha256.slice(0, 24)}...
+                      </p>
+                    )}
                   </div>
                   <Button onClick={handleDownload} className="w-full font-semibold gap-2 rounded-xl">
                     <Download className="w-4 h-4" /> Download Signed PDF
                   </Button>
                   <SmartlinkButton className="w-full justify-center" />
-                  <ResultScreenAd refreshKey={resultUrl} />
+                  <ResultScreenAd
+                    refreshKey={resultUrl}
+                    originalSize={uploadedFile?.size}
+                    processedSize={signedSize}
+                    formatLabel="PDF"
+                    fileName={resultFileName}
+                  />
                 </motion.div>
               )}
             </div>

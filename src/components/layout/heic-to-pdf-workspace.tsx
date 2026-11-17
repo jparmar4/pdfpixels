@@ -7,6 +7,7 @@ import { ToolPageHeader } from './tool-page-header';
 import { ToolLimitNotice } from './tool-limit-notice';
 import { ResultScreenAd, SmartlinkButton } from '@/components/ads/ad-banner';
 import { triggerDownloadWithSmartlink } from '@/lib/ads-config';
+import { useConsumeChainedFile } from '@/hooks/use-consume-chained-file';
 import { toast } from 'sonner';
 
 export function HeicToPdfWorkspace() {
@@ -17,6 +18,14 @@ export function HeicToPdfWorkspace() {
   const [progress, setProgress] = useState<number>(0);
   const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
   const [pdfFileName, setPdfFileName] = useState<string>('');
+
+  useConsumeChainedFile(
+    (chained) => {
+      setFiles((prev) => [...prev, chained]);
+      setDownloadUrl(null);
+    },
+    (chained) => Boolean(/\.(heic|heif)$/i.test(chained.name) || chained.type.includes('heic') || chained.type.includes('heif')),
+  );
 
   useEffect(() => {
     return () => {

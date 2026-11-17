@@ -6,17 +6,50 @@ import { PDFDocument, degrees } from 'pdf-lib';
 export const maxDuration = 60;
 export const runtime = 'nodejs';
 
-// 4 x 6 inches in PDF points (72 points per inch)
-const THERMAL_4X6_WIDTH = 288;
-const THERMAL_4X6_HEIGHT = 432;
+// Thermal dimensions in PDF points (72 pt / inch)
+const THERMAL_SIZES: Record<string, { width: number; height: number }> = {
+  'rollo-4x6': { width: 288, height: 432 },
+  'zebra-4x6': { width: 288, height: 432 },
+  'munbyn-4x6': { width: 288, height: 432 },
+  'dymo-4xl': { width: 288, height: 432 },
+  'eu-100x150': { width: 283.46, height: 425.2 },
+};
 
-type MarketplacePreset = 'flipkart' | 'meesho' | 'amazon' | 'indiapost' | 'custom';
+interface CropFraction {
+  xFrac: number;
+  yFrac: number;
+  wFrac: number;
+  hFrac: number;
+  invoice?: { xFrac: number; yFrac: number; wFrac: number; hFrac: number };
+}
+
+// PDF coordinate origin is bottom-left. Most US 8.5x11" (or UK/EU A4) 2-up shipping sheets place
+// the carrier barcode label on the top half (or left half in landscape) and packing slip below.
+const CARRIER_PRESETS: Record<string, CropFraction> = {
+  usps: { xFrac: 0.04, yFrac: 0.48, wFrac: 0.92, hFrac: 0.5, invoice: { xFrac: 0, yFrac: 0, wFrac: 1, hFrac: 0.48 } },
+  ups: { xFrac: 0.04, yFrac: 0.47, wFrac: 0.92, hFrac: 0.51, invoice: { xFrac: 0, yFrac: 0, wFrac: 1, hFrac: 0.47 } },
+  fedex: { xFrac: 0.04, yFrac: 0.48, wFrac: 0.92, hFrac: 0.5, invoice: { xFrac: 0, yFrac: 0, wFrac: 1, hFrac: 0.48 } },
+  ebay: { xFrac: 0.03, yFrac: 0.48, wFrac: 0.94, hFrac: 0.5, invoice: { xFrac: 0, yFrac: 0, wFrac: 1, hFrac: 0.48 } },
+  etsy: { xFrac: 0.03, yFrac: 0.49, wFrac: 0.94, hFrac: 0.49, invoice: { xFrac: 0, yFrac: 0, wFrac: 1, hFrac: 0.49 } },
+  poshmark: { xFrac: 0.05, yFrac: 0.49, wFrac: 0.9, hFrac: 0.49, invoice: { xFrac: 0, yFrac: 0, wFrac: 1, hFrac: 0.49 } },
+  mercari: { xFrac: 0.04, yFrac: 0.48, wFrac: 0.92, hFrac: 0.5, invoice: { xFrac: 0, yFrac: 0, wFrac: 1, hFrac: 0.48 } },
+  shopify: { xFrac: 0.04, yFrac: 0.48, wFrac: 0.92, hFrac: 0.5, invoice: { xFrac: 0, yFrac: 0, wFrac: 1, hFrac: 0.48 } },
+  'amazon-fba': { xFrac: 0.02, yFrac: 0.48, wFrac: 0.96, hFrac: 0.5, invoice: { xFrac: 0, yFrac: 0, wFrac: 1, hFrac: 0.48 } },
+  'royal-mail': { xFrac: 0.04, yFrac: 0.49, wFrac: 0.92, hFrac: 0.49, invoice: { xFrac: 0, yFrac: 0, wFrac: 1, hFrac: 0.49 } },
+  dhl: { xFrac: 0.03, yFrac: 0.48, wFrac: 0.94, hFrac: 0.5, invoice: { xFrac: 0, yFrac: 0, wFrac: 1, hFrac: 0.48 } },
+  // India Marketplaces
+  flipkart: { xFrac: 0, yFrac: 0.48, wFrac: 1, hFrac: 0.52, invoice: { xFrac: 0, yFrac: 0, wFrac: 1, hFrac: 0.48 } },
+  meesho: { xFrac: 0, yFrac: 0.5, wFrac: 1, hFrac: 0.5, invoice: { xFrac: 0, yFrac: 0, wFrac: 1, hFrac: 0.5 } },
+  amazon: { xFrac: 0, yFrac: 0.46, wFrac: 1, hFrac: 0.54, invoice: { xFrac: 0, yFrac: 0, wFrac: 1, hFrac: 0.46 } },
+  indiapost: { xFrac: 0, yFrac: 0.5, wFrac: 1, hFrac: 0.5, invoice: { xFrac: 0, yFrac: 0, wFrac: 1, hFrac: 0.5 } },
+};
 
 export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
     const file = formData.get('file') as File | null;
-    const preset = (String(formData.get('preset') || 'flipkart').toLowerCase() as MarketplacePreset);
+    const preset = String(formData.get('preset') || 'usps').toLowerCase();
+    const printer = String(formData.get('printer') || 'rollo-4x6').toLowerCase();
     const keepInvoice = formData.get('keepInvoice') === 'true';
     const rotationDeg = parseInt(String(formData.get('rotation') || '0'), 10) || 0;
 
@@ -31,35 +64,17 @@ export async function POST(request: NextRequest) {
       return apiError('Please split batch PDFs over 100 pages before processing.', 422);
     }
 
+    const thermalSpec = THERMAL_SIZES[printer] ?? THERMAL_SIZES['rollo-4x6'];
     const outputPdf = await PDFDocument.create();
 
-    for (let i = 0; i < totalPages; i++) {
+    for (let i = 0; i < totalPages; i += 1) {
       const page = sourcePdf.getPage(i);
-      const { width: origW, height: origH, x: origX, y: origY } = page.getCropBox();
+      const { width: origW, height: origH } = page.getCropBox();
 
-      // Determine bounding box for shipping label based on preset
-      // (PDF coordinates measure Y from bottom to top)
-      let labelCrop = { x: 0, y: origH * 0.48, width: origW, height: origH * 0.52 };
-      let invoiceCrop = { x: 0, y: 0, width: origW, height: origH * 0.48 };
+      let labelCrop: { x: number; y: number; width: number; height: number };
+      let invoiceCrop: { x: number; y: number; width: number; height: number } | null = null;
 
-      if (preset === 'flipkart') {
-        // Flipkart: Top half contains 4x6 thermal shipping barcode
-        labelCrop = { x: 0, y: origH * 0.48, width: origW, height: origH * 0.52 };
-        invoiceCrop = { x: 0, y: 0, width: origW, height: origH * 0.48 };
-      } else if (preset === 'meesho') {
-        // Meesho: Top portion contains shipping label
-        labelCrop = { x: 0, y: origH * 0.50, width: origW, height: origH * 0.50 };
-        invoiceCrop = { x: 0, y: 0, width: origW, height: origH * 0.50 };
-      } else if (preset === 'amazon') {
-        // Amazon Easy Ship: Top half label
-        labelCrop = { x: 0, y: origH * 0.46, width: origW, height: origH * 0.54 };
-        invoiceCrop = { x: 0, y: 0, width: origW, height: origH * 0.46 };
-      } else if (preset === 'indiapost') {
-        // India Post: Top-half barcode section
-        labelCrop = { x: 0, y: origH * 0.50, width: origW, height: origH * 0.50 };
-        invoiceCrop = { x: 0, y: 0, width: origW, height: origH * 0.50 };
-      } else {
-        // Custom or direct 4x6 crop
+      if (preset === 'custom') {
         const customTop = parseFloat(String(formData.get('topMargin') || '0'));
         const customHeight = parseFloat(String(formData.get('cropHeight') || String(origH * 0.5)));
         labelCrop = {
@@ -74,20 +89,38 @@ export async function POST(request: NextRequest) {
           width: origW,
           height: Math.max(0, origH - customHeight),
         };
+      } else {
+        const spec = CARRIER_PRESETS[preset] ?? CARRIER_PRESETS.usps;
+        // Handle landscape 2-up carrier sheets (e.g. 11x8.5 USPS/UPS side-by-side layout)
+        if (origW > origH * 1.1) {
+          labelCrop = { x: 0, y: 0, width: origW * 0.5, height: origH };
+          invoiceCrop = { x: origW * 0.5, y: 0, width: origW * 0.5, height: origH };
+        } else {
+          labelCrop = {
+            x: origW * spec.xFrac,
+            y: origH * spec.yFrac,
+            width: origW * spec.wFrac,
+            height: origH * spec.hFrac,
+          };
+          if (spec.invoice) {
+            invoiceCrop = {
+              x: origW * spec.invoice.xFrac,
+              y: origH * spec.invoice.yFrac,
+              width: origW * spec.invoice.wFrac,
+              height: origH * spec.invoice.hFrac,
+            };
+          }
+        }
       }
 
-      // 1. Embed and scale shipping label onto 4x6 thermal page
       const [embeddedLabel] = await outputPdf.embedPdf(sourcePdf, [i]);
-      const labelPage = outputPdf.addPage([THERMAL_4X6_WIDTH, THERMAL_4X6_HEIGHT]);
+      const labelPage = outputPdf.addPage([thermalSpec.width, thermalSpec.height]);
 
-      const scale = Math.min(
-        THERMAL_4X6_WIDTH / labelCrop.width,
-        THERMAL_4X6_HEIGHT / labelCrop.height
-      );
+      const scale = Math.min(thermalSpec.width / labelCrop.width, thermalSpec.height / labelCrop.height);
 
       labelPage.drawPage(embeddedLabel, {
-        x: -labelCrop.x * scale + (THERMAL_4X6_WIDTH - labelCrop.width * scale) / 2,
-        y: -labelCrop.y * scale + (THERMAL_4X6_HEIGHT - labelCrop.height * scale) / 2,
+        x: -labelCrop.x * scale + (thermalSpec.width - labelCrop.width * scale) / 2,
+        y: -labelCrop.y * scale + (thermalSpec.height - labelCrop.height * scale) / 2,
         xScale: scale,
         yScale: scale,
       });
@@ -96,11 +129,10 @@ export async function POST(request: NextRequest) {
         labelPage.setRotation(degrees(rotationDeg));
       }
 
-      // 2. If keepInvoice is selected, add tax invoice on a separate sheet
-      if (keepInvoice && invoiceCrop.height > 20) {
-        const invoicePage = outputPdf.addPage([origW, invoiceCrop.height]);
+      if (keepInvoice && invoiceCrop && invoiceCrop.height > 20 && invoiceCrop.width > 20) {
+        const invoicePage = outputPdf.addPage([invoiceCrop.width, invoiceCrop.height]);
         invoicePage.drawPage(embeddedLabel, {
-          x: 0,
+          x: -invoiceCrop.x,
           y: -invoiceCrop.y,
           xScale: 1,
           yScale: 1,
@@ -110,10 +142,11 @@ export async function POST(request: NextRequest) {
 
     const outBytes = await outputPdf.save();
     const baseName = file?.name ? file.name.replace(/\.pdf$/i, '') : 'shipping-label';
-    const fileName = `${sanitizeDownloadFileName(baseName)}-4x6-thermal.pdf`;
+    const fileName = `${sanitizeDownloadFileName(baseName)}-${preset}-4x6-thermal.pdf`;
 
     return pdfBinaryResponse(outBytes, fileName, {
       'x-preset': preset,
+      'x-printer': printer,
       'x-labels-count': String(totalPages),
     });
   } catch (error) {

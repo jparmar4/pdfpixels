@@ -108,7 +108,8 @@ export function BlurBackgroundWorkspace() {
       );
 
       setProgress(25);
-      const response = await fetch('/api/ai', {
+      const { apiFetch } = await import('@/lib/api-client');
+      const response = await apiFetch('/api/ai', {
         method: 'POST',
         body: formData,
       });
@@ -312,6 +313,14 @@ export function BlurBackgroundWorkspace() {
                 onDownload={handleDownload}
                 downloadLabel="Download PNG"
                 primaryMeta={`Blur strength ${blurStrength}%${activePreset ? ` · ${activePreset.label}` : ''}`}
+                originalSize={uploadedFile?.size}
+                formatLabel="PNG"
+                resultUrl={processedImage}
+                resultFileName={
+                  uploadedFile?.name
+                    ? `${uploadedFile.name.replace(/\.[^.]+$/, '')}-blurred.png`
+                    : 'blurred-background.png'
+                }
                 nextActions={[
                   { label: 'Remove background', href: '/tools/remove-image-background' },
                   { label: 'Compress image', href: '/tools/compress-image' },

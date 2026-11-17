@@ -5,12 +5,12 @@ import { ChevronLeft, ChevronRight, Eye, Minus, Plus, RotateCcw, ZoomIn } from '
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useActiveTool } from '@/hooks/use-active-tool';
+import { useConsumeChainedFile } from '@/hooks/use-consume-chained-file';
 import { ToolPageHeader } from './tool-page-header';
 import { ToolLimitNotice } from './tool-limit-notice';
 import { ResultScreenAd, SmartlinkButton } from '@/components/ads/ad-banner';
 import { toast } from 'sonner';
 
-const PDFJS_VERSION = '5.4.624';
 const MIN_SCALE = 0.5;
 const MAX_SCALE = 4;
 
@@ -92,9 +92,9 @@ export function PDFReaderWorkspace() {
       const data = await file.arrayBuffer();
       const loaded = await pdfjs.getDocument({
         data: new Uint8Array(data),
-        cMapUrl: `https://unpkg.com/pdfjs-dist@${PDFJS_VERSION}/cmaps/`,
+        cMapUrl: '/pdfjs/cmaps/',
         cMapPacked: true,
-        standardFontDataUrl: `https://unpkg.com/pdfjs-dist@${PDFJS_VERSION}/standard_fonts/`,
+        standardFontDataUrl: '/pdfjs/standard_fonts/',
       }).promise;
 
       setDoc(loaded as unknown as { numPages: number; destroy: () => void });
@@ -108,6 +108,11 @@ export function PDFReaderWorkspace() {
       setRendering(false);
     }
   }, []);
+
+  useConsumeChainedFile(
+    loadFile,
+    (chained) => Boolean(chained.type === 'application/pdf' || chained.name.toLowerCase().endsWith('.pdf')),
+  );
 
   const goToPage = useCallback((target: number) => {
     if (!doc) return;

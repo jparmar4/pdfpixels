@@ -45,7 +45,7 @@ const FLIP_MODES: Array<{
   {
     id: 'horizontal',
     title: 'Horizontal',
-    description: 'Mirror left â†” right (like looking in a mirror)',
+    description: 'Mirror left ↔ right (like looking in a mirror)',
     flipH: true,
     flipV: false,
     icon: FlipHorizontal,
@@ -53,7 +53,7 @@ const FLIP_MODES: Array<{
   {
     id: 'vertical',
     title: 'Vertical',
-    description: 'Flip upside down (top â†” bottom)',
+    description: 'Flip upside down (top ↕ bottom)',
     flipH: false,
     flipV: true,
     icon: FlipVertical,

@@ -7,7 +7,6 @@ import {
   RotateCcw,
   FileSpreadsheet,
   FileText,
-  Table as TableIcon,
   Loader2,
   AlertCircle,
   ArrowDownRight,
@@ -16,20 +15,23 @@ import {
   Copy,
   Search,
   ArrowUpDown,
-  Trash2,
-  Sparkles,
   HelpCircle,
-  Zap,
+  Columns3,
+  ShieldCheck,
+  Sparkles,
 } from 'lucide-react';
+import { ReconciliationGrid, type ReconciliationRow } from './reconciliation-grid';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { useActiveTool } from '@/hooks/use-active-tool';
+import { useConsumeChainedFile } from '@/hooks/use-consume-chained-file';
 import { FileUpload } from './file-upload';
 import { ToolPageHeader } from './tool-page-header';
 import { ToolLimitNotice } from './tool-limit-notice';
 import { ResultScreenAd, SmartlinkButton } from '@/components/ads/ad-banner';
-import { triggerSmartlinkOncePerSession } from '@/lib/ads-config';
+import { triggerDownloadWithSmartlink } from '@/lib/ads-config';
+import { useAppStore } from '@/store/app-store';
 import { toast } from 'sonner';
 
 interface Transaction {
@@ -40,34 +42,51 @@ interface Transaction {
   balance: string;
 }
 
-interface StatementSummary {
-  totalDebits: number;
-  totalCredits: number;
-  netChange: number;
-  totalRows: number;
-  openingBalance?: number;
-  closingBalance?: number;
-}
+type ExportFormatId = 'xlsx' | 'quickbooks-3col' | 'quickbooks-4col' | 'xero' | 'wave' | 'csv';
+
+const EXPORT_PRESETS: Array<{ id: ExportFormatId; label: string; schema: string; badge?: string }> = [
+  { id: 'xlsx', label: 'Standard Excel (.xlsx)', schema: 'Date | Description | Debit | Credit | Balance + =SUM()', badge: 'Excel' },
+  { id: 'quickbooks-3col', label: 'QuickBooks Online (3-Col CSV)', schema: 'Date, Description, Amount (+/-)' },
+  { id: 'quickbooks-4col', label: 'QuickBooks Desktop/Online (4-Col CSV)', schema: 'Date, Description, Credit, Debit' },
+  { id: 'xero', label: 'Xero Accounting CSV', schema: '*Date, *Amount, Payee, Description' },
+  { id: 'wave', label: 'Wave Accounting CSV', schema: 'Date, Description, Amount' },
+  { id: 'csv', label: 'Universal 5-Column CSV', schema: 'Date, Description, Debit, Credit, Balance' },
+];
 
 export function BankStatementWorkspace() {
   const { activeTool, uploadedFile, isProcessing, setIsProcessing, setProgress, reset } = useActiveTool();
-  const [showDayPassModal, setShowDayPassModal] = useState<boolean>(false);
+  const setUploadedFile = useAppStore((s) => s.setUploadedFile);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [_summary, setSummary] = useState<StatementSummary | null>(null);
+  const [exportFormat, setExportFormat] = useState<ExportFormatId>('xlsx');
+  const [visibleCols, setVisibleCols] = useState({
+    date: true,
+    description: true,
+    debit: true,
+    credit: true,
+    balance: true,
+  });
   const [isExporting, setIsExporting] = useState<boolean>(false);
   const [errorState, setErrorState] = useState<{ message: string; isScanned?: boolean } | null>(null);
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [pageLimit, setPageLimit] = useState<number>(25);
   const [copied, setCopied] = useState<boolean>(false);
 
-  // When file is uploaded, auto-inspect financial rows
+  useConsumeChainedFile(
+    (chained) => {
+      setUploadedFile(chained);
+    },
+    (chained) => Boolean(chained.type === 'application/pdf' || chained.name.toLowerCase().endsWith('.pdf')),
+  );
+
+  // When file is uploaded, auto-inspect financial rows cleanly in client preview
   useEffect(() => {
     if (!uploadedFile) {
-      setTransactions([]);
-      setSummary(null);
-      setErrorState(null);
-      setSearchTerm('');
-      return;
+      const t = window.setTimeout(() => {
+        setTransactions([]);
+        setErrorState(null);
+        setSearchTerm('');
+      }, 0);
+      return () => window.clearTimeout(t);
     }
 
     let active = true;
@@ -97,10 +116,9 @@ export function BankStatementWorkspace() {
         if (active) {
           const rows: Transaction[] = data.transactions || [];
           setTransactions(rows);
-          setSummary(data.summary || null);
           setProgress(100);
           if (rows.length > 0) {
-            toast.success(`Extracted ${rows.length} transaction rows from statement!`);
+            toast.success(`Extracted ${rows.length} transaction rows ready for inspection!`);
           } else {
             setErrorState({
               message: 'No reliable transaction rows found in this document.',
@@ -108,11 +126,11 @@ export function BankStatementWorkspace() {
             });
           }
         }
-      } catch (err: any) {
+      } catch (err) {
         if (active) {
-          const msg = err?.message || 'Could not parse bank statement';
-          const isScanned = Boolean(err?.isScanned);
-          setErrorState({ message: msg, isScanned });
+          const typedErr = err as { message?: string; isScanned?: boolean };
+          const msg = typedErr?.message || 'Could not parse bank statement';
+          setErrorState({ message: msg, isScanned: Boolean(typedErr?.isScanned) });
           toast.error(msg);
         }
       } finally {
@@ -128,13 +146,11 @@ export function BankStatementWorkspace() {
   const handleReset = useCallback(() => {
     reset();
     setTransactions([]);
-    setSummary(null);
     setErrorState(null);
     setSearchTerm('');
     setPageLimit(25);
   }, [reset]);
 
-  // Live financial totals based on current transactions
   const liveTotals = useMemo(() => {
     let debits = 0;
     let credits = 0;
@@ -150,77 +166,67 @@ export function BankStatementWorkspace() {
     };
   }, [transactions]);
 
-  // Filtered transactions for search
   const filteredTransactions = useMemo(() => {
     if (!searchTerm.trim()) return transactions;
     const q = searchTerm.toLowerCase();
     return transactions.filter(
-      t =>
+      (t) =>
         (t.description && t.description.toLowerCase().includes(q)) ||
         (t.date && t.date.toLowerCase().includes(q)) ||
         (t.debit && t.debit.includes(q)) ||
         (t.credit && t.credit.includes(q)) ||
-        (t.balance && t.balance.includes(q))
+        (t.balance && t.balance.includes(q)),
     );
   }, [transactions, searchTerm]);
 
-  // Swap debit and credit for an individual row
   const handleSwapDebitCredit = (index: number) => {
-    setTransactions(prev =>
-      prev.map((row, i) =>
-        i === index ? { ...row, debit: row.credit, credit: row.debit } : row,
-      ),
+    setTransactions((prev) =>
+      prev.map((row, i) => (i === index ? { ...row, debit: row.credit, credit: row.debit } : row)),
     );
-    toast.success('Swapped Debit ↔ Credit for selected transaction');
+    toast.success('Swapped Debit <-> Credit for selected transaction');
   };
 
-  // Invert debit and credit for all rows
   const handleInvertAll = () => {
-    setTransactions(prev =>
-      prev.map(row => ({
+    setTransactions((prev) =>
+      prev.map((row) => ({
         ...row,
         debit: row.credit,
         credit: row.debit,
-      }))
+      })),
     );
-    toast.success('Swapped Debit ↔ Credit for all transactions');
+    toast.success('Swapped Debit <-> Credit across all transactions');
   };
 
-  // Delete an unwanted row (e.g., junk or subtotal)
   const handleDeleteRow = (index: number) => {
-    setTransactions(prev => prev.filter((_, i) => i !== index));
-    toast.info('Transaction removed from export');
+    setTransactions((prev) => prev.filter((_, i) => i !== index));
+    toast.info('Transaction removed from export preview');
   };
 
-  // Copy table to clipboard as Tab-Separated Values (TSV)
   const handleCopyTsv = async () => {
     if (transactions.length === 0) return;
     const header = 'Date\tDescription\tWithdrawal (Debit)\tDeposit (Credit)\tBalance\n';
     const body = transactions
-      .map(t => `${t.date}\t${t.description}\t${t.debit}\t${t.credit}\t${t.balance}`)
+      .map((t) => `${t.date}\t${t.description}\t${t.debit}\t${t.credit}\t${t.balance}`)
       .join('\n');
 
     try {
       await navigator.clipboard.writeText(header + body);
       setCopied(true);
       toast.success('Table copied to clipboard! Ready to paste into Excel or Google Sheets.');
-      setTimeout(() => setCopied(false), 2500);
+      window.setTimeout(() => setCopied(false), 2500);
     } catch {
       toast.error('Could not access clipboard');
     }
   };
 
-  // Download XLSX, CSV, QuickBooks, or Tally with current verified/edited state
-  const handleDownload = async (format: 'xlsx' | 'csv' | 'quickbooks' | 'tally') => {
+  const handleDownload = async (format: ExportFormatId = exportFormat) => {
     if (!uploadedFile || transactions.length === 0) return;
-    triggerSmartlinkOncePerSession();
     setIsExporting(true);
 
     try {
       const formData = new FormData();
       formData.append('file', uploadedFile);
       formData.append('format', format);
-      // Pass the reviewed/edited transactions so user changes are saved
       formData.append('transactions', JSON.stringify(transactions));
 
       const { fetchWithUploadProgress } = await import('@/lib/upload-with-progress');
@@ -230,69 +236,64 @@ export function BankStatementWorkspace() {
 
       const blob = await res.blob();
       const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
       const baseName = uploadedFile.name.replace(/\.pdf$/i, '');
       const ext = format === 'xlsx' ? 'xlsx' : 'csv';
-      const suffix = format === 'quickbooks' ? '-quickbooks' : format === 'tally' ? '-tally' : '';
-      a.download = `${baseName}${suffix}.${ext}`;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(url);
-      const formatLabel = format === 'quickbooks' ? 'QuickBooks CSV' : format === 'tally' ? 'Tally CSV' : format.toUpperCase();
-      toast.success(`Downloaded ${formatLabel} successfully!`);
-    } catch (err: any) {
-      toast.error(err.message || `Failed to download ${format.toUpperCase()}`);
+      const suffixMap: Record<ExportFormatId, string> = {
+        xlsx: '',
+        'quickbooks-3col': '-quickbooks-3col',
+        'quickbooks-4col': '-quickbooks-4col',
+        xero: '-xero',
+        wave: '-wave',
+        csv: '',
+      };
+      const fileName = `${baseName}${suffixMap[format]}.${ext}`;
+      const presetInfo = EXPORT_PRESETS.find((p) => p.id === format);
+
+      triggerDownloadWithSmartlink(
+        () => {
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = fileName;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+          toast.success(`Downloaded ${presetInfo?.label || format.toUpperCase()}!`);
+        },
+        {
+          originalSize: uploadedFile.size,
+          processedSize: blob.size,
+          formatLabel: format === 'xlsx' ? 'XLSX' : 'CSV',
+          fileName,
+        },
+      );
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : `Failed to download ${format.toUpperCase()}`);
     } finally {
       setIsExporting(false);
     }
   };
 
+  const activePreset = EXPORT_PRESETS.find((p) => p.id === exportFormat) ?? EXPORT_PRESETS[0];
+
   return (
     <div className="container mx-auto px-4 lg:px-8 py-8 max-w-5xl">
       <ToolPageHeader
-        title={activeTool?.name || "Bank Statement to Excel Converter"}
-        description={activeTool?.description || "Extract transaction dates, descriptions, debits, credits, and running balances from PDF bank statements into Microsoft Excel (.xlsx) and CSV."}
+        title={activeTool?.name || 'Bank Statement to Excel & QuickBooks Converter'}
+        description={
+          activeTool?.description ||
+          'Inspect extracted Date, Description, Debit, Credit, and Balance columns interactively before exporting clean Excel (.xlsx), QuickBooks 3-Col/4-Col CSV, Xero CSV, or Wave CSV.'
+        }
         icon={<FileSpreadsheet className="h-7 w-7 text-white" />}
         onReset={handleReset}
       />
       <ToolLimitNotice
         limits={[
-          'PDF bank statements · checking, savings, credit cards',
-          'Formatted Excel (.xlsx) with SUM formulas & universal CSV export',
-          '100% confidential · encrypted processing with immediate deletion',
+          'PDF bank statements · checking, savings, business & credit cards (Chase, BofA, Capital One, Amex, Barclays, RBC & more)',
+          'Interactive pre-download column preview + instant row edit/swap before export',
+          'Exports to Excel (.xlsx), QuickBooks Online 3-Col & 4-Col CSV, Xero CSV, and Wave CSV',
         ]}
       />
-
-      {/* Day Pass Hook Banner */}
-      <div className="mt-6 rounded-2xl border border-emerald-200 dark:border-emerald-900/60 bg-gradient-to-r from-emerald-50/70 via-teal-50/40 to-background dark:from-emerald-950/20 dark:via-teal-950/10 dark:to-background p-5 shadow-sm">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div className="flex items-start gap-3.5">
-            <div className="h-10 w-10 rounded-xl bg-emerald-600/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 mt-0.5">
-              <Zap className="h-5 w-5" />
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="font-bold text-sm text-foreground">B2B Accounting & Audit Day Pass</span>
-                <Badge variant="secondary" className="text-[10px] bg-emerald-100 text-emerald-900 dark:bg-emerald-900/50 dark:text-emerald-300 font-bold">
-                  Free up to 3 pages · ₹99 / $1.99 Day Pass
-                </Badge>
-              </div>
-              <p className="text-xs text-muted-foreground mt-0.5">
-                Merge and convert full 12-month statements (up to 60+ pages) into a consolidated clean workbook for Tally, QuickBooks, and Zoho Books.
-              </p>
-            </div>
-          </div>
-          <Button
-            size="sm"
-            onClick={() => setShowDayPassModal(true)}
-            className="shrink-0 text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm"
-          >
-            Get Day Pass (₹99 / $1.99)
-          </Button>
-        </div>
-      </div>
 
       {!uploadedFile ? (
         <div className="mt-8">
@@ -300,7 +301,6 @@ export function BankStatementWorkspace() {
         </div>
       ) : (
         <div className="mt-8 space-y-6">
-          {/* Error & Scanned PDF Notice Banner */}
           {errorState && (
             <div className="rounded-2xl border border-amber-200 dark:border-amber-900/60 bg-amber-50/50 dark:bg-amber-950/20 p-5">
               <div className="flex items-start gap-3.5">
@@ -313,15 +313,15 @@ export function BankStatementWorkspace() {
                   </h4>
                   <p className="text-xs text-muted-foreground leading-relaxed">
                     {errorState.isScanned
-                      ? 'This statement is an image or flattened scan. Standard text extraction cannot read pixel images. Convert this document with our OCR tool first to recognize characters, or upload an electronic digital PDF from your bank.'
+                      ? 'This statement is an image scan without embedded text. Run OCR PDF first to make rows selectable, or upload an electronic PDF downloaded from online banking.'
                       : errorState.message}
                   </p>
                   <div className="pt-2 flex flex-wrap items-center gap-3">
                     {errorState.isScanned && (
-                      <Link href="/tools/image-to-text">
+                      <Link href="/tools/ocr-pdf">
                         <Button size="sm" className="gap-2 bg-amber-600 hover:bg-amber-700 text-white text-xs shadow-sm">
                           <Sparkles className="w-3.5 h-3.5" />
-                          Open in OCR Tool
+                          Open in OCR PDF
                         </Button>
                       </Link>
                     )}
@@ -335,78 +335,75 @@ export function BankStatementWorkspace() {
             </div>
           )}
 
-          {/* Action Header Card */}
-          <div className="bg-card border rounded-2xl p-5 shadow-sm flex flex-wrap items-center justify-between gap-4">
-            <div>
-              <div className="flex items-center gap-3">
-                <span className="font-semibold text-base truncate max-w-[280px]">
-                  {uploadedFile.name}
-                </span>
-                <Badge variant="outline" className="font-mono text-xs">
-                  {transactions.length} Transactions
-                </Badge>
-                {transactions.length > 0 && (
-                  <Badge variant="secondary" className="text-xs text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/50 border-emerald-200">
-                    Ready to Export
+          {/* Export Preset Selector & Primary CTA */}
+          <div className="bg-card border rounded-2xl p-5 shadow-sm space-y-4">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <div className="flex flex-wrap items-center gap-2.5">
+                  <span className="font-semibold text-base truncate max-w-[280px]">
+                    {uploadedFile.name}
+                  </span>
+                  <Badge variant="outline" className="font-mono text-xs">
+                    {transactions.length} Rows
                   </Badge>
-                )}
+                  {transactions.length > 0 && (
+                    <Badge variant="secondary" className="text-xs text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/50 border-emerald-200">
+                      <ShieldCheck className="w-3 h-3 mr-1" />
+                      Ready to Export
+                    </Badge>
+                  )}
+                </div>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Choose your target accounting schema below, inspect detected columns, and download in 1 click.
+                </p>
               </div>
-              <p className="text-xs text-muted-foreground mt-1">
-                Parsed columns: Date, Payee / Description, Withdrawals (Debit), Deposits (Credit), Balance.
-              </p>
+
+              <div className="flex flex-wrap items-center gap-2.5">
+                <Button
+                  size="sm"
+                  onClick={() => void handleDownload(exportFormat)}
+                  disabled={isExporting || transactions.length === 0}
+                  className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm disabled:opacity-50"
+                >
+                  {isExporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
+                  Download {activePreset.label}
+                </Button>
+                <SmartlinkButton className="min-h-9 py-1.5 text-xs rounded-xl" />
+                <Button size="sm" variant="ghost" onClick={handleReset} className="text-xs text-muted-foreground">
+                  <RotateCcw className="w-4 h-4 mr-1" /> Start Over
+                </Button>
+              </div>
             </div>
 
-            <div className="flex flex-wrap items-center gap-3">
-              <Button
-                size="sm"
-                onClick={() => handleDownload('xlsx')}
-                disabled={isExporting || transactions.length === 0}
-                className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm disabled:opacity-50"
-              >
-                {isExporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
-                Download Excel (.XLSX)
-              </Button>
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() => handleDownload('csv')}
-                disabled={isExporting || transactions.length === 0}
-                className="gap-2 disabled:opacity-50"
-              >
-                <FileText className="w-4 h-4" />
-                CSV
-              </Button>
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() => handleDownload('quickbooks')}
-                disabled={isExporting || transactions.length === 0}
-                className="gap-2 disabled:opacity-50 text-xs"
-              >
-                QuickBooks CSV
-              </Button>
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() => handleDownload('tally')}
-                disabled={isExporting || transactions.length === 0}
-                className="gap-2 disabled:opacity-50 text-xs"
-              >
-                Tally Format
-              </Button>
-              <SmartlinkButton className="min-h-9 py-1.5 text-xs rounded-xl" />
-              <Button
-                size="sm"
-                variant="ghost"
-                onClick={handleReset}
-                className="text-xs text-muted-foreground"
-              >
-                <RotateCcw className="w-4 h-4 mr-1" /> Start Over
-              </Button>
-            </div>
+            {transactions.length > 0 && (
+              <div className="grid sm:grid-cols-3 lg:grid-cols-6 gap-2 pt-2 border-t border-border/50">
+                {EXPORT_PRESETS.map((preset) => (
+                  <button
+                    key={preset.id}
+                    type="button"
+                    onClick={() => setExportFormat(preset.id)}
+                    className={`rounded-xl border p-2.5 text-left transition-all ${
+                      exportFormat === preset.id
+                        ? 'border-primary bg-primary/8 ring-1 ring-primary'
+                        : 'border-border/60 bg-background/60 hover:border-border'
+                    }`}
+                  >
+                    <p className="text-xs font-bold text-foreground truncate">{preset.label}</p>
+                    <p className="text-[10px] text-muted-foreground truncate mt-0.5">{preset.schema}</p>
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
-          {transactions.length > 0 && <ResultScreenAd />}
+          {transactions.length > 0 && (
+            <ResultScreenAd
+              refreshKey={`${uploadedFile.name}-${transactions.length}`}
+              originalSize={uploadedFile.size}
+              formatLabel={exportFormat === 'xlsx' ? 'XLSX' : 'CSV'}
+              fileName={`${uploadedFile.name.replace(/\.pdf$/i, '')}.${exportFormat === 'xlsx' ? 'xlsx' : 'csv'}`}
+            />
+          )}
 
           {/* Financial Summary Cards */}
           {transactions.length > 0 && (
@@ -445,9 +442,7 @@ export function BankStatementWorkspace() {
                 <span className="text-xs font-medium text-muted-foreground">Net Activity</span>
                 <div
                   className={`text-lg font-bold font-mono mt-1 ${
-                    liveTotals.netChange >= 0
-                      ? 'text-emerald-600 dark:text-emerald-400'
-                      : 'text-rose-600 dark:text-rose-400'
+                    liveTotals.netChange >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'
                   }`}
                 >
                   {liveTotals.netChange >= 0 ? '+' : ''}
@@ -458,202 +453,92 @@ export function BankStatementWorkspace() {
             </div>
           )}
 
-          {/* Table Controls & Search */}
+          {/* Interactive Column Inspector & Search Controls */}
           {transactions.length > 0 && (
             <div className="flex flex-wrap items-center justify-between gap-3">
-              <div className="relative w-full sm:w-72">
-                <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-                <Input
-                  placeholder="Search payees, dates, amounts..."
-                  value={searchTerm}
-                  onChange={e => setSearchTerm(e.target.value)}
-                  className="pl-9 h-9 text-xs"
-                />
+              <div className="flex flex-wrap items-center gap-2">
+                <div className="relative w-full sm:w-64">
+                  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                  <Input
+                    placeholder="Search payees, dates, amounts..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-9 h-9 text-xs"
+                  />
+                </div>
+                <div className="flex flex-wrap items-center gap-1 rounded-xl border border-border/60 bg-card px-2 py-1 text-[11px]">
+                  <Columns3 className="w-3.5 h-3.5 text-muted-foreground mr-1" />
+                  {(['date', 'description', 'debit', 'credit', 'balance'] as const).map((colKey) => (
+                    <button
+                      key={colKey}
+                      type="button"
+                      onClick={() => setVisibleCols((prev) => ({ ...prev, [colKey]: !prev[colKey] }))}
+                      className={`px-2 py-0.5 rounded-md font-medium capitalize transition-colors ${
+                        visibleCols[colKey] ? 'bg-primary/12 text-primary' : 'text-muted-foreground line-through'
+                      }`}
+                    >
+                      {colKey}
+                    </button>
+                  ))}
+                </div>
               </div>
 
               <div className="flex items-center gap-2">
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={handleInvertAll}
-                  className="text-xs h-9 gap-1.5"
-                  title="Invert all debits and credits across the table"
-                >
+                <Button size="sm" variant="outline" onClick={handleInvertAll} className="text-xs h-9 gap-1.5">
                   <ArrowUpDown className="w-3.5 h-3.5" />
                   Invert Debits/Credits
                 </Button>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={handleCopyTsv}
-                  className="text-xs h-9 gap-1.5"
-                  title="Copy table to clipboard for Excel / Google Sheets"
-                >
+                <Button size="sm" variant="outline" onClick={handleCopyTsv} className="text-xs h-9 gap-1.5">
                   {copied ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
-                  {copied ? 'Copied!' : 'Copy to Clipboard'}
+                  {copied ? 'Copied!' : 'Copy TSV'}
                 </Button>
               </div>
             </div>
           )}
 
-          {/* Transactions Preview Table */}
-          <div className="border rounded-2xl bg-card shadow-sm overflow-hidden">
-            <div className="px-6 py-4 border-b bg-muted/30 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <TableIcon className="w-4 h-4 text-muted-foreground" />
-                <span className="font-medium text-sm">Extracted Transactions Preview</span>
-              </div>
-              {filteredTransactions.length > 0 && (
-                <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                  <span>Showing {Math.min(pageLimit, filteredTransactions.length)} of {filteredTransactions.length} rows</span>
-                  {filteredTransactions.length > 25 && (
-                    <button
-                      onClick={() => setPageLimit(prev => (prev === 25 ? filteredTransactions.length : 25))}
-                      className="text-primary hover:underline font-medium ml-1"
-                    >
-                      {pageLimit === 25 ? 'Show All' : 'Show 25'}
-                    </button>
-                  )}
-                </div>
-              )}
-            </div>
+          {/* Editable Reconciliation Grid & SVG Cash-Flow Summary */}
+          <ReconciliationGrid
+            transactions={transactions as ReconciliationRow[]}
+            onChangeTransactions={(next) => setTransactions(next)}
+            presetLabel={activePreset.label}
+            visibleCols={visibleCols}
+            searchTerm={searchTerm}
+            pageLimit={pageLimit}
+            onToggleLimit={() => setPageLimit((prev) => (prev === 25 ? filteredTransactions.length : 25))}
+            onSwapRow={handleSwapDebitCredit}
+            onDeleteRow={handleDeleteRow}
+            isLoading={isProcessing}
+            errorFallbackText={errorState ? 'Could not extract transactions. See alert above for suggestions.' : undefined}
+          />
 
-            <div className="overflow-x-auto max-h-[520px]">
-              <table className="w-full text-left text-xs border-collapse">
-                <thead className="bg-muted/50 sticky top-0 border-b z-10">
-                  <tr>
-                    <th className="p-3 font-semibold text-muted-foreground w-28">Date</th>
-                    <th className="p-3 font-semibold text-muted-foreground">Description / Payee</th>
-                    <th className="p-3 font-semibold text-muted-foreground text-right w-28">Withdrawal (-)</th>
-                    <th className="p-3 font-semibold text-muted-foreground text-right w-28">Deposit (+)</th>
-                    <th className="p-3 font-semibold text-muted-foreground text-right w-28">Balance</th>
-                    <th className="p-3 font-semibold text-muted-foreground text-center w-20">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y">
-                  {filteredTransactions.slice(0, pageLimit).map((row, idx) => (
-                    <tr key={idx} className="hover:bg-muted/20 transition-colors group">
-                      <td className="p-3 font-mono text-muted-foreground whitespace-nowrap">{row.date || '—'}</td>
-                      <td className="p-3 font-medium text-foreground max-w-sm break-words">{row.description || '—'}</td>
-                      <td className="p-3 text-right font-mono text-rose-600 dark:text-rose-400 whitespace-nowrap">
-                        {row.debit ? Number(row.debit).toLocaleString('en-US', { minimumFractionDigits: 2 }) : '—'}
-                      </td>
-                      <td className="p-3 text-right font-mono text-emerald-600 dark:text-emerald-400 whitespace-nowrap">
-                        {row.credit ? Number(row.credit).toLocaleString('en-US', { minimumFractionDigits: 2 }) : '—'}
-                      </td>
-                      <td className="p-3 text-right font-mono text-foreground font-semibold whitespace-nowrap">
-                        {row.balance ? Number(row.balance).toLocaleString('en-US', { minimumFractionDigits: 2 }) : '—'}
-                      </td>
-                      <td className="p-2 text-center whitespace-nowrap">
-                        <div className="inline-flex items-center gap-1 opacity-60 group-hover:opacity-100 transition-opacity">
-                          <button
-                            onClick={() => handleSwapDebitCredit(idx)}
-                            title="Swap Debit ↔ Credit"
-                            className="p-1 rounded hover:bg-muted text-muted-foreground hover:text-foreground"
-                          >
-                            <ArrowUpDown className="w-3.5 h-3.5" />
-                          </button>
-                          <button
-                            onClick={() => handleDeleteRow(idx)}
-                            title="Remove row"
-                            className="p-1 rounded hover:bg-muted text-muted-foreground hover:text-rose-600"
-                          >
-                            <Trash2 className="w-3.5 h-3.5" />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                  {transactions.length === 0 && (
-                    <tr>
-                      <td colSpan={6} className="p-10 text-center text-muted-foreground">
-                        {isProcessing ? (
-                          <div className="flex flex-col items-center gap-2">
-                            <Loader2 className="w-5 h-5 animate-spin text-primary" />
-                            <span>Analyzing and extracting statement transactions...</span>
-                          </div>
-                        ) : errorState ? (
-                          <span>Could not extract transactions. See alert above for suggestions.</span>
-                        ) : (
-                          <span>No transactions detected.</span>
-                        )}
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          <p className="text-xs text-muted-foreground flex items-center gap-1.5">
-            <HelpCircle className="w-3.5 h-3.5 shrink-0" />
-            Review every row against your original bank statement. You can search, swap debits and credits on any row, or invert all columns before downloading your formatted Excel file.
-          </p>
-        </div>
-      )}
-
-      {/* B2B Accounting Day Pass Modal */}
-      {showDayPassModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <div className="bg-card border rounded-3xl max-w-lg w-full p-6 space-y-6 shadow-2xl relative">
-            <div className="space-y-2">
-              <Badge className="bg-emerald-600 text-white text-xs font-bold">B2B Accounting & Audit Pass</Badge>
-              <h3 className="text-xl font-bold text-foreground">Multi-Page Statement Conversion</h3>
-              <p className="text-xs text-muted-foreground leading-relaxed">
-                Convert full 12-month statements (up to 60+ pages) into a single consolidated Excel workbook with automated balance reconciliation.
-              </p>
-            </div>
-
-            <div className="space-y-3">
-              <div className="p-3.5 rounded-2xl border border-emerald-300 dark:border-emerald-800 bg-emerald-50/50 dark:bg-emerald-950/20 flex items-center justify-between">
-                <div>
-                  <span className="font-bold text-sm text-foreground block">Accounting Day Pass</span>
-                  <span className="text-xs text-muted-foreground">Unlimited 60-page statements for 24 hours</span>
-                </div>
-                <Badge className="bg-emerald-600 text-white text-sm font-bold font-mono px-3 py-1">
-                  ₹99 / $1.99
-                </Badge>
-              </div>
-
-              <div className="p-3.5 rounded-2xl border bg-muted/30 flex items-center justify-between">
-                <div>
-                  <span className="font-bold text-sm text-foreground block">Monthly Auditor Pro</span>
-                  <span className="text-xs text-muted-foreground">Unlimited monthly client reconciliations, zero wait</span>
-                </div>
-                <Badge variant="outline" className="text-sm font-bold font-mono text-primary px-3 py-1">
-                  ₹499 / $9.99
-                </Badge>
+          {/* Quick Individual Format Strip */}
+          {transactions.length > 0 && (
+            <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-border/60 bg-muted/20 px-4 py-3 text-xs text-muted-foreground">
+              <span className="flex items-center gap-1.5">
+                <HelpCircle className="w-3.5 h-3.5 shrink-0" />
+                Inspect detected columns, toggle/swap Debit &amp; Credit rows above, or export a quick format:
+              </span>
+              <div className="flex flex-wrap gap-2">
+                <Button size="sm" variant="outline" className="h-7 text-[11px]" onClick={() => void handleDownload('xlsx')}>
+                  <FileSpreadsheet className="w-3 h-3 mr-1" /> Excel (.xlsx)
+                </Button>
+                <Button size="sm" variant="outline" className="h-7 text-[11px]" onClick={() => void handleDownload('quickbooks-3col')}>
+                  <FileText className="w-3 h-3 mr-1" /> QBO 3-Col
+                </Button>
+                <Button size="sm" variant="outline" className="h-7 text-[11px]" onClick={() => void handleDownload('quickbooks-4col')}>
+                  QBO 4-Col
+                </Button>
+                <Button size="sm" variant="outline" className="h-7 text-[11px]" onClick={() => void handleDownload('xero')}>
+                  Xero CSV
+                </Button>
+                <Button size="sm" variant="outline" className="h-7 text-[11px]" onClick={() => void handleDownload('wave')}>
+                  Wave CSV
+                </Button>
               </div>
             </div>
-
-            <ul className="text-xs text-muted-foreground space-y-2 pl-4 list-disc">
-              <li>Process full 60-page bank statements without page limits</li>
-              <li>Strips repeating headers and merges multi-line descriptions</li>
-              <li>Exports directly to Tally Prime, QuickBooks Online & Zoho Books</li>
-            </ul>
-
-            <div className="flex gap-3 pt-2">
-              <Button
-                onClick={() => {
-                  toast.success('B2B Accounting Day Pass activated! Unlimited 60-page conversions enabled.');
-                  setShowDayPassModal(false);
-                }}
-                className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs h-10"
-              >
-                Activate Day Pass (₹99 / $1.99)
-              </Button>
-              <Button
-                variant="ghost"
-                onClick={() => setShowDayPassModal(false)}
-                className="text-xs text-muted-foreground"
-              >
-                Close
-              </Button>
-            </div>
-          </div>
+          )}
         </div>
       )}
     </div>
   );
 }
-

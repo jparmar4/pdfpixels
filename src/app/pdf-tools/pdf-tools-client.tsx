@@ -387,7 +387,7 @@ export function PdfToolsClient() {
               <div>
                 <h4 className="text-sm font-bold text-foreground">No Subscriptions</h4>
                 <p className="mt-1 text-xs text-muted-foreground">
-                  Save hundreds per year over Adobe Acrobat Pro. All 52 core tools are completely free to use.
+                  Save hundreds per year over Adobe Acrobat Pro. All {allPdfTools.length} PDF tools are completely free to use.
                 </p>
               </div>
             </div>
@@ -630,7 +630,7 @@ export function PdfToolsClient() {
               </span>
             </summary>
             <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-              Yes. All 52 PDF tools are fully responsive and work seamlessly inside Safari on iOS/iPadOS, Chrome on Android, as well as desktop Edge, Chrome, Safari, and Firefox. You can sign contracts, convert photos to PDF, or compress scans directly from your mobile phone.
+              Yes. All {allPdfTools.length} PDF tools are fully responsive and work seamlessly inside Safari on iOS/iPadOS, Chrome on Android, as well as desktop Edge, Chrome, Safari, and Firefox. You can sign contracts, convert photos to PDF, or compress scans directly from your mobile phone.
             </p>
           </details>
 

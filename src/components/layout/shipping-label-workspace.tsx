@@ -1,26 +1,18 @@
 'use client';
 
 import { useState, useCallback, useEffect } from 'react';
-import Link from 'next/link';
 import {
   Download,
-  RotateCcw,
   Printer,
-  Package,
-  Layers,
-  Sparkles,
   CheckCircle2,
-  AlertCircle,
-  RotateCw,
-  FileText,
-  Sliders,
-  Zap,
   ShoppingBag,
+  Globe2,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ToolPageHeader } from './tool-page-header';
 import { ToolLimitNotice } from './tool-limit-notice';
@@ -28,26 +20,101 @@ import { FileUpload } from './file-upload';
 import { ResultScreenAd, SmartlinkButton } from '@/components/ads/ad-banner';
 import { triggerDownloadWithSmartlink } from '@/lib/ads-config';
 import { useAppStore } from '@/store/app-store';
+import { useConsumeChainedFile } from '@/hooks/use-consume-chained-file';
 import { toast } from 'sonner';
 
-type MarketplacePreset = 'flipkart' | 'meesho' | 'amazon' | 'indiapost' | 'custom';
+type CarrierPreset =
+  | 'usps'
+  | 'ups'
+  | 'fedex'
+  | 'ebay'
+  | 'etsy'
+  | 'poshmark'
+  | 'mercari'
+  | 'shopify'
+  | 'amazon-fba'
+  | 'royal-mail'
+  | 'dhl'
+  | 'flipkart'
+  | 'meesho'
+  | 'amazon'
+  | 'indiapost';
+
+interface PresetOption {
+  id: CarrierPreset;
+  name: string;
+  subtitle: string;
+  tag: string;
+  badgeColor: string;
+}
+
+const TIER1_PRESETS: PresetOption[] = [
+  { id: 'usps', name: 'USPS Click-N-Ship', subtitle: '8.5×11" Priority / Ground Advantage → 4×6"', tag: 'US', badgeColor: 'bg-blue-500/10 text-blue-600' },
+  { id: 'ups', name: 'UPS Shipping', subtitle: 'UPS.com & CampusShip half-sheet → 4×6"', tag: 'UP', badgeColor: 'bg-amber-600/10 text-amber-700' },
+  { id: 'fedex', name: 'FedEx Express / Ground', subtitle: 'FedEx Ship Manager PDF → 4×6"', tag: 'FX', badgeColor: 'bg-violet-500/10 text-violet-600' },
+  { id: 'ebay', name: 'eBay Seller Labels', subtitle: 'USPS / UPS / FedEx eBay order sheet trim', tag: 'EB', badgeColor: 'bg-emerald-500/10 text-emerald-600' },
+  { id: 'etsy', name: 'Etsy Shipping Labels', subtitle: '4×6 label + optional Etsy packing slip', tag: 'ET', badgeColor: 'bg-orange-500/10 text-orange-600' },
+  { id: 'poshmark', name: 'Poshmark Priority Mail', subtitle: 'Split 2-up Letter sheet for thermal rolls', tag: 'PM', badgeColor: 'bg-rose-500/10 text-rose-600' },
+  { id: 'mercari', name: 'Mercari Shipping', subtitle: 'Auto-crop QR / barcode label cleanly', tag: 'MC', badgeColor: 'bg-indigo-500/10 text-indigo-600' },
+  { id: 'shopify', name: 'Shopify Shipping', subtitle: 'Shopify admin multi-carrier label crop', tag: 'SH', badgeColor: 'bg-lime-600/10 text-lime-700' },
+  { id: 'amazon-fba', name: 'Amazon FBA Box / FNSKU', subtitle: 'FBA box ID & carrier barcode 4×6" split', tag: 'AZ', badgeColor: 'bg-amber-500/10 text-amber-600' },
+  { id: 'royal-mail', name: 'Royal Mail (UK)', subtitle: 'Click & Drop A4 label → 100×150mm / 4×6"', tag: 'RM', badgeColor: 'bg-red-500/10 text-red-600' },
+  { id: 'dhl', name: 'DHL Parcel (DE / EU)', subtitle: 'DHL Paketschein & Express A4 → 100×150mm', tag: 'DH', badgeColor: 'bg-yellow-500/15 text-yellow-700' },
+];
+
+const INDIA_PRESETS: PresetOption[] = [
+  { id: 'flipkart', name: 'Flipkart Seller Hub', subtitle: 'Top 4×6" shipping label + bottom GST invoice', tag: 'F', badgeColor: 'bg-yellow-500/10 text-yellow-600' },
+  { id: 'meesho', name: 'Meesho Supplier', subtitle: 'Top AWB shipping barcode + dispatch slip', tag: 'M', badgeColor: 'bg-pink-500/10 text-pink-600' },
+  { id: 'amazon', name: 'Amazon Easy Ship (IN)', subtitle: 'India Easy Ship 4×6" thermal trim', tag: 'A', badgeColor: 'bg-amber-500/10 text-amber-600' },
+  { id: 'indiapost', name: 'India Post Speed Post', subtitle: 'Parcel AWB barcode section extract', tag: 'P', badgeColor: 'bg-red-500/10 text-red-600' },
+];
+
+const PRINTER_PROFILES = [
+  { id: 'rollo-4x6', label: 'Rollo Thermal (4×6 in / 100×150mm)' },
+  { id: 'zebra-4x6', label: 'Zebra GK420d / ZP450 (4×6 in)' },
+  { id: 'munbyn-4x6', label: 'Munbyn ITPP941 / Wireless (4×6 in)' },
+  { id: 'dymo-4xl', label: 'DYMO LabelWriter 4XL (4×6 in)' },
+  { id: 'eu-100x150', label: 'UK / EU Standard (100×150 mm)' },
+];
 
 export function ShippingLabelCropWorkspace() {
-  const { uploadedFile, isProcessing, setIsProcessing, setProgress, reset } = useAppStore();
+  const { uploadedFile, setUploadedFile, isProcessing, setIsProcessing, setProgress, reset } = useAppStore();
 
-  const [preset, setPreset] = useState<MarketplacePreset>('flipkart');
-  const [keepInvoice, setKeepInvoice] = useState<boolean>(true);
+  const [regionTab, setRegionTab] = useState<'tier1' | 'india'>(() => {
+    if (typeof window !== 'undefined' && (window.location.pathname.startsWith('/in') || document.referrer.includes('/in'))) {
+      return 'india';
+    }
+    return 'tier1';
+  });
+  const [preset, setPreset] = useState<CarrierPreset>(() => {
+    if (typeof window !== 'undefined' && (window.location.pathname.startsWith('/in') || document.referrer.includes('/in'))) {
+      return 'flipkart';
+    }
+    return 'usps';
+  });
+  const [printer, setPrinter] = useState<string>('rollo-4x6');
+  const [keepInvoice, setKeepInvoice] = useState<boolean>(false);
   const [rotation, setRotation] = useState<number>(0);
   const [totalPages, setTotalPages] = useState<number>(1);
   const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
+  const [processedSize, setProcessedSize] = useState<number>(0);
   const [outputFileName, setOutputFileName] = useState<string>('');
-  const [showSellerPassModal, setShowSellerPassModal] = useState<boolean>(false);
+
+  useConsumeChainedFile(
+    (chained) => {
+      setUploadedFile(chained);
+      setDownloadUrl(null);
+    },
+    (chained) => Boolean(chained.type === 'application/pdf' || chained.name.toLowerCase().endsWith('.pdf')),
+  );
 
   useEffect(() => {
     if (!uploadedFile) {
-      setTotalPages(1);
-      setDownloadUrl(null);
-      return;
+      const t = window.setTimeout(() => {
+        setTotalPages(1);
+        setDownloadUrl(null);
+      }, 0);
+      return () => window.clearTimeout(t);
     }
 
     let active = true;
@@ -58,14 +125,16 @@ export function ShippingLabelCropWorkspace() {
         const pdf = await PDFDocument.load(buffer, { ignoreEncryption: true });
         if (active) {
           setTotalPages(pdf.getPageCount());
-          toast.success(`Loaded PDF with ${pdf.getPageCount()} invoice page${pdf.getPageCount() === 1 ? '' : 's'}.`);
+          toast.success(`Loaded PDF with ${pdf.getPageCount()} label page${pdf.getPageCount() === 1 ? '' : 's'}.`);
         }
       } catch {
         if (active) setTotalPages(1);
       }
     })();
 
-    return () => { active = false; };
+    return () => {
+      active = false;
+    };
   }, [uploadedFile]);
 
   const handleReset = useCallback(() => {
@@ -74,12 +143,13 @@ export function ShippingLabelCropWorkspace() {
     }
     reset();
     setDownloadUrl(null);
+    setProcessedSize(0);
     setOutputFileName('');
   }, [reset, downloadUrl]);
 
   const handleProcessLabels = async () => {
     if (!uploadedFile) {
-      toast.error('Please upload an invoice PDF first');
+      toast.error('Please upload a shipping label PDF first');
       return;
     }
 
@@ -90,6 +160,7 @@ export function ShippingLabelCropWorkspace() {
       const formData = new FormData();
       formData.append('file', uploadedFile);
       formData.append('preset', preset);
+      formData.append('printer', printer);
       formData.append('keepInvoice', String(keepInvoice));
       formData.append('rotation', String(rotation));
 
@@ -104,13 +175,18 @@ export function ShippingLabelCropWorkspace() {
 
       const blob = await res.blob();
       const url = URL.createObjectURL(blob);
-      setDownloadUrl(url);
+      setDownloadUrl((prev) => {
+        if (prev?.startsWith('blob:')) URL.revokeObjectURL(prev);
+        return url;
+      });
+      setProcessedSize(blob.size);
       const baseName = uploadedFile.name.replace(/\.pdf$/i, '');
-      setOutputFileName(`${baseName}-4x6-thermal.pdf`);
+      setOutputFileName(`${baseName}-${preset}-4x6-thermal.pdf`);
       setProgress(100);
-      toast.success('Successfully cropped to 4x6 thermal printer format!');
-    } catch (err: any) {
-      toast.error(err.message || 'Error processing shipping labels');
+      toast.success('Successfully formatted 4×6" thermal shipping labels!');
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Error processing shipping labels';
+      toast.error(msg);
     } finally {
       setIsProcessing(false);
     }
@@ -118,62 +194,71 @@ export function ShippingLabelCropWorkspace() {
 
   const handleDownload = () => {
     if (!downloadUrl) return;
-    triggerDownloadWithSmartlink(() => {
-      const a = document.createElement('a');
-      a.href = downloadUrl;
-      a.download = outputFileName || 'shipping-labels-4x6.pdf';
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      toast.success('Downloaded ready-to-print 4x6 labels!');
-    });
+    const activePrinter = PRINTER_PROFILES.find((p) => p.id === printer)?.label || '4×6" Thermal';
+    triggerDownloadWithSmartlink(
+      () => {
+        const a = document.createElement('a');
+        a.href = downloadUrl;
+        a.download = outputFileName || 'shipping-labels-4x6.pdf';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        toast.success('Downloaded ready-to-print thermal labels!');
+      },
+      {
+        originalSize: uploadedFile?.size,
+        processedSize,
+        formatLabel: 'PDF',
+        dpiLabel: activePrinter,
+        fileName: outputFileName,
+      },
+    );
   };
+
+  const activePresetInfo =
+    [...TIER1_PRESETS, ...INDIA_PRESETS].find((item) => item.id === preset) ?? TIER1_PRESETS[0];
+
+  const renderPresetGrid = (list: PresetOption[]) => (
+    <div className="grid sm:grid-cols-2 gap-2.5">
+      {list.map((item) => (
+        <button
+          key={item.id}
+          type="button"
+          onClick={() => setPreset(item.id)}
+          className={`p-3 rounded-xl border text-left transition-all flex items-start gap-3 ${
+            preset === item.id
+              ? 'border-primary bg-primary/5 ring-1 ring-primary'
+              : 'border-border/60 bg-muted/20 hover:border-border'
+          }`}
+        >
+          <div className={`h-8 w-8 rounded-lg ${item.badgeColor} flex items-center justify-center shrink-0 font-black text-xs`}>
+            {item.tag}
+          </div>
+          <div className="min-w-0">
+            <span className="font-bold text-xs text-foreground block truncate">{item.name}</span>
+            <span className="text-[11px] text-muted-foreground line-clamp-1">{item.subtitle}</span>
+          </div>
+        </button>
+      ))}
+    </div>
+  );
 
   return (
     <div className="container mx-auto px-4 lg:px-8 py-8 max-w-5xl">
       <ToolPageHeader
-        title="Shipping Label Cropper for Thermal Printers"
-        description="Crop A4 marketplace invoices into 4×6 inch thermal shipping labels for Flipkart, Meesho, Amazon, and India Post. Keep tax invoices on separate sheets in 1 click."
+        title="Shipping Label Cropper (USPS, UPS, FedEx, eBay & Thermal)"
+        description="Crop US Letter (8.5×11&quot;) and A4 carrier sheets into crisp 4×6 inch (100×150mm) thermal labels for USPS Click-N-Ship, UPS, FedEx, eBay, Etsy, Poshmark, Mercari, Shopify, Amazon FBA, Royal Mail, and DHL."
         icon={<Printer className="h-7 w-7 text-white" />}
         onReset={handleReset}
       />
 
       <ToolLimitNotice
         limits={[
-          'Flipkart, Meesho, Amazon, India Post A4 invoices',
-          'Standard 4×6 inch (100×150 mm) thermal printer roll formatting',
-          'Optional separation: Sheet 1 Label, Sheet 2 Tax Invoice & Packing Slip',
+          'USPS, UPS, FedEx, eBay, Etsy, Poshmark, Mercari, Shopify, Amazon FBA, Royal Mail & DHL',
+          'Exact 4×6 inch (100×150 mm) output calibrated for Rollo, Zebra, Munbyn & DYMO 4XL',
+          'Batch multi-page PDF cropping + optional separate packing slip page · 100% Free',
         ]}
       />
-
-      {/* Seller Pass Banner */}
-      <div className="mt-6 rounded-2xl border border-amber-200 dark:border-amber-900/60 bg-gradient-to-r from-amber-50/70 via-orange-50/40 to-background dark:from-amber-950/20 dark:via-orange-950/10 dark:to-background p-5 shadow-sm">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div className="flex items-start gap-3.5">
-            <div className="h-10 w-10 rounded-xl bg-amber-600/10 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0 mt-0.5">
-              <Zap className="h-5 w-5" />
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="font-bold text-sm text-foreground">E-Commerce Seller Bulk Pass</span>
-                <Badge variant="secondary" className="text-[10px] bg-amber-100 text-amber-900 dark:bg-amber-900/50 dark:text-amber-300 font-bold">
-                  ₹49 Day / ₹199 Month
-                </Badge>
-              </div>
-              <p className="text-xs text-muted-foreground mt-0.5">
-                Bulk crop 500+ daily orders from Flipkart & Meesho with zero ads, saved margins, and 1-click batch thermal PDF generation.
-              </p>
-            </div>
-          </div>
-          <Button
-            size="sm"
-            onClick={() => setShowSellerPassModal(true)}
-            className="shrink-0 text-xs font-semibold bg-amber-600 hover:bg-amber-700 text-white shadow-sm"
-          >
-            Seller Pass (₹49)
-          </Button>
-        </div>
-      </div>
 
       {!uploadedFile ? (
         <div className="mt-8">
@@ -182,105 +267,54 @@ export function ShippingLabelCropWorkspace() {
       ) : (
         <div className="mt-8 space-y-6">
           <div className="grid lg:grid-cols-12 gap-8">
-            {/* Left 7 cols: Preset Configuration */}
             <div className="lg:col-span-7 space-y-6">
               <div className="bg-card border rounded-2xl p-6 shadow-sm space-y-6">
                 <div className="flex items-center justify-between border-b pb-4">
                   <div className="flex items-center gap-2 font-semibold text-sm">
                     <ShoppingBag className="w-4 h-4 text-primary" />
-                    Marketplace & Thermal Settings
+                    Carrier &amp; Marketplace Presets
                   </div>
                   <Badge variant="outline" className="font-mono text-xs">
                     {totalPages} Page{totalPages === 1 ? '' : 's'}
                   </Badge>
                 </div>
 
-                {/* 1-Click Marketplace Presets */}
-                <div className="space-y-3">
-                  <Label className="text-xs font-semibold text-foreground">Select Marketplace Preset:</Label>
-                  <div className="grid sm:grid-cols-2 gap-2.5">
-                    <button
-                      type="button"
-                      onClick={() => setPreset('flipkart')}
-                      className={`p-3.5 rounded-xl border text-left transition-all flex items-start gap-3 ${
-                        preset === 'flipkart'
-                          ? 'border-primary bg-primary/5 ring-1 ring-primary'
-                          : 'border-border/60 bg-muted/20 hover:border-border'
-                      }`}
-                    >
-                      <div className="h-8 w-8 rounded-lg bg-yellow-500/10 text-yellow-600 flex items-center justify-center shrink-0 font-black text-sm">
-                        F
-                      </div>
-                      <div>
-                        <span className="font-bold text-xs text-foreground block">Flipkart Seller Hub</span>
-                        <span className="text-[11px] text-muted-foreground">Top 4x6 label + bottom tax invoice</span>
-                      </div>
-                    </button>
+                <Tabs
+                  value={regionTab}
+                  onValueChange={(v) => {
+                    const next = v === 'india' ? 'india' : 'tier1';
+                    setRegionTab(next);
+                    if (next === 'india' && !INDIA_PRESETS.some((p) => p.id === preset)) {
+                      setPreset('flipkart');
+                    } else if (next === 'tier1' && !TIER1_PRESETS.some((p) => p.id === preset)) {
+                      setPreset('usps');
+                    }
+                  }}
+                >
+                  <TabsList className="grid w-full grid-cols-2 rounded-xl">
+                    <TabsTrigger value="tier1" className="text-xs font-semibold gap-1.5">
+                      <Globe2 className="w-3.5 h-3.5" />
+                      US / UK / EU Carriers
+                    </TabsTrigger>
+                    <TabsTrigger value="india" className="text-xs font-semibold">
+                      India Marketplace Presets
+                    </TabsTrigger>
+                  </TabsList>
+                  <TabsContent value="tier1" className="mt-3">
+                    {renderPresetGrid(TIER1_PRESETS)}
+                  </TabsContent>
+                  <TabsContent value="india" className="mt-3">
+                    {renderPresetGrid(INDIA_PRESETS)}
+                  </TabsContent>
+                </Tabs>
 
-                    <button
-                      type="button"
-                      onClick={() => setPreset('meesho')}
-                      className={`p-3.5 rounded-xl border text-left transition-all flex items-start gap-3 ${
-                        preset === 'meesho'
-                          ? 'border-primary bg-primary/5 ring-1 ring-primary'
-                          : 'border-border/60 bg-muted/20 hover:border-border'
-                      }`}
-                    >
-                      <div className="h-8 w-8 rounded-lg bg-pink-500/10 text-pink-600 flex items-center justify-center shrink-0 font-black text-sm">
-                        M
-                      </div>
-                      <div>
-                        <span className="font-bold text-xs text-foreground block">Meesho Supplier</span>
-                        <span className="text-[11px] text-muted-foreground">Top shipping label + dispatch slip</span>
-                      </div>
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => setPreset('amazon')}
-                      className={`p-3.5 rounded-xl border text-left transition-all flex items-start gap-3 ${
-                        preset === 'amazon'
-                          ? 'border-primary bg-primary/5 ring-1 ring-primary'
-                          : 'border-border/60 bg-muted/20 hover:border-border'
-                      }`}
-                    >
-                      <div className="h-8 w-8 rounded-lg bg-amber-500/10 text-amber-600 flex items-center justify-center shrink-0 font-black text-sm">
-                        A
-                      </div>
-                      <div>
-                        <span className="font-bold text-xs text-foreground block">Amazon Easy Ship / FBA</span>
-                        <span className="text-[11px] text-muted-foreground">4x6 barcode label trim</span>
-                      </div>
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => setPreset('indiapost')}
-                      className={`p-3.5 rounded-xl border text-left transition-all flex items-start gap-3 ${
-                        preset === 'indiapost'
-                          ? 'border-primary bg-primary/5 ring-1 ring-primary'
-                          : 'border-border/60 bg-muted/20 hover:border-border'
-                      }`}
-                    >
-                      <div className="h-8 w-8 rounded-lg bg-red-500/10 text-red-600 flex items-center justify-center shrink-0 font-black text-sm">
-                        P
-                      </div>
-                      <div>
-                        <span className="font-bold text-xs text-foreground block">India Post Speed Post</span>
-                        <span className="text-[11px] text-muted-foreground">Parcel barcode label extract</span>
-                      </div>
-                    </button>
-                  </div>
-                </div>
-
-                {/* Invoice Separation Switch */}
-                <div className="rounded-xl border border-primary/20 bg-primary/5 p-4 flex items-center justify-between">
+                <div className="rounded-xl border border-primary/20 bg-primary/5 p-4 flex items-center justify-between gap-4">
                   <div className="space-y-0.5">
                     <Label htmlFor="keep-invoice" className="font-bold text-xs cursor-pointer text-foreground">
-                      Keep Tax Invoice on Separate Sheet
+                      Keep Packing Slip / Tax Invoice on Separate Sheet
                     </Label>
                     <p className="text-[11px] text-muted-foreground">
-                      Generates Sheet 1: 4×6 Thermal Label for package, Sheet 2: Customer Tax Invoice for inside box.
+                      Page 1 exports the 4×6&quot; thermal shipping label; Page 2 preserves the lower packing slip or tax invoice separately.
                     </p>
                   </div>
                   <Switch
@@ -290,10 +324,23 @@ export function ShippingLabelCropWorkspace() {
                   />
                 </div>
 
-                {/* Rotation for Thermal Printers */}
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div className="space-y-1.5">
-                    <Label className="text-xs font-semibold">Thermal Roll Orientation</Label>
+                    <Label className="text-xs font-semibold">Thermal Printer Profile</Label>
+                    <Select value={printer} onValueChange={setPrinter}>
+                      <SelectTrigger className="h-9 text-xs">
+                        <SelectValue placeholder="Printer Model" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {PRINTER_PROFILES.map((p) => (
+                          <SelectItem key={p.id} value={p.id}>{p.label}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <Label className="text-xs font-semibold">Roll Feed Rotation</Label>
                     <Select value={String(rotation)} onValueChange={(val) => setRotation(Number(val))}>
                       <SelectTrigger className="h-9 text-xs">
                         <SelectValue placeholder="Rotation" />
@@ -306,13 +353,6 @@ export function ShippingLabelCropWorkspace() {
                       </SelectContent>
                     </Select>
                   </div>
-
-                  <div className="space-y-1.5">
-                    <Label className="text-xs font-semibold">Printer Compatibility</Label>
-                    <div className="h-9 rounded-md border bg-muted/30 px-3 flex items-center text-xs text-muted-foreground">
-                      Rollo, Zebra, TVS, TSC, Bluetooth 4x6
-                    </div>
-                  </div>
                 </div>
 
                 <Button
@@ -321,43 +361,43 @@ export function ShippingLabelCropWorkspace() {
                   className="w-full h-11 text-xs font-bold gap-2 bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm"
                 >
                   <Printer className="w-4 h-4" />
-                  {isProcessing ? 'Cropping Labels...' : 'Crop & Format 4×6 Thermal Labels'}
+                  {isProcessing ? 'Cropping Thermal Labels...' : `Crop for ${activePresetInfo.name}`}
                 </Button>
               </div>
             </div>
 
-            {/* Right 5 cols: Output & Preview */}
             <div className="lg:col-span-5 space-y-6">
               <div className="bg-card border rounded-2xl p-6 shadow-sm space-y-5 sticky top-6">
                 <div className="flex items-center justify-between">
-                  <h3 className="font-bold text-sm text-foreground">Thermal Output Spec</h3>
+                  <h3 className="font-bold text-sm text-foreground">Thermal Spec Preview</h3>
                   <Badge variant="outline" className="text-xs font-mono">
-                    4×6 Inch (100×150 mm)
+                    {printer === 'eu-100x150' ? '100×150 mm' : '4×6 Inch · 288×432 pt'}
                   </Badge>
                 </div>
 
-                {/* Visual Label Illustration */}
-                <div className="aspect-[4/6] max-w-[240px] mx-auto rounded-xl border-2 border-dashed border-primary/40 bg-card p-4 flex flex-col justify-between shadow-inner relative overflow-hidden">
+                <div className="aspect-[4/6] max-w-[230px] mx-auto rounded-xl border-2 border-dashed border-primary/40 bg-card p-4 flex flex-col justify-between shadow-inner relative overflow-hidden">
                   <div className="space-y-2 border-b border-border/60 pb-3">
-                    <div className="h-3 w-1/3 bg-muted rounded" />
-                    <div className="h-6 w-full bg-slate-800 dark:bg-slate-200 rounded flex items-center justify-center text-[10px] text-white dark:text-black font-mono">
-                      |||||||||||||||||||||||||||||||
+                    <div className="flex items-center justify-between text-[10px] font-bold text-foreground">
+                      <span>{activePresetInfo.tag} PRIORITY</span>
+                      <span>ROLLO / ZEBRA</span>
                     </div>
-                    <div className="h-2 w-2/3 bg-muted rounded" />
+                    <div className="h-7 w-full bg-slate-800 dark:bg-slate-200 rounded flex items-center justify-center text-[10px] text-white dark:text-black font-mono tracking-widest">
+                      ||||||||||||||||||||
+                    </div>
                   </div>
 
                   <div className="space-y-1.5 py-3 text-[10px] text-muted-foreground">
                     <div className="flex justify-between">
-                      <span>SHIP TO: CUSTOMER</span>
-                      <span className="font-bold text-foreground">COD / PREPAID</span>
+                      <span className="font-semibold text-foreground">SHIP TO RECIPIENT</span>
+                      <span>TRACKED</span>
                     </div>
                     <div className="h-2 w-full bg-muted rounded" />
                     <div className="h-2 w-4/5 bg-muted rounded" />
                   </div>
 
                   <div className="border-t border-border/60 pt-2 flex items-center justify-between text-[10px]">
-                    <span className="font-bold text-primary uppercase">{preset} LABEL</span>
-                    <span className="font-mono text-muted-foreground">4×6 in</span>
+                    <span className="font-bold text-primary uppercase truncate">{activePresetInfo.name}</span>
+                    <span className="font-mono text-muted-foreground shrink-0">4×6 in</span>
                   </div>
                 </div>
 
@@ -365,7 +405,7 @@ export function ShippingLabelCropWorkspace() {
                   <div className="space-y-3 pt-2">
                     <div className="p-3 bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900 rounded-xl flex items-center gap-2.5 text-xs text-emerald-800 dark:text-emerald-300">
                       <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-600" />
-                      <span>Ready to print! Optimized for all thermal label rolls.</span>
+                      <span>Ready to print on Rollo, Zebra, Munbyn &amp; DYMO 4XL!</span>
                     </div>
 
                     <Button
@@ -376,72 +416,17 @@ export function ShippingLabelCropWorkspace() {
                       Download 4×6 Thermal PDF
                     </Button>
                     <SmartlinkButton className="w-full text-xs" />
-                    <ResultScreenAd refreshKey={downloadUrl} />
+                    <ResultScreenAd
+                      refreshKey={downloadUrl}
+                      originalSize={uploadedFile.size}
+                      processedSize={processedSize}
+                      formatLabel="PDF"
+                      dpiLabel="4×6 Thermal"
+                      fileName={outputFileName}
+                    />
                   </div>
                 )}
               </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Seller Pass Modal */}
-      {showSellerPassModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <div className="bg-card border rounded-3xl max-w-lg w-full p-6 space-y-6 shadow-2xl relative">
-            <div className="space-y-2">
-              <Badge className="bg-amber-600 text-white text-xs font-bold">E-Commerce Seller Pass</Badge>
-              <h3 className="text-xl font-bold text-foreground">High-Speed Marketplace Batch Cropping</h3>
-              <p className="text-xs text-muted-foreground leading-relaxed">
-                Designed for Flipkart, Meesho, Amazon, and Shopify sellers processing hundreds of shipping labels every day.
-              </p>
-            </div>
-
-            <div className="space-y-3">
-              <div className="p-3.5 rounded-2xl border bg-muted/30 flex items-center justify-between">
-                <div>
-                  <span className="font-bold text-sm text-foreground block">Seller Day Pass</span>
-                  <span className="text-xs text-muted-foreground">Unlimited 500+ label crops for 24 hours</span>
-                </div>
-                <Badge variant="outline" className="text-sm font-bold font-mono text-primary px-3 py-1">
-                  ₹49 / day
-                </Badge>
-              </div>
-
-              <div className="p-3.5 rounded-2xl border border-amber-300 dark:border-amber-800 bg-amber-50/50 dark:bg-amber-950/20 flex items-center justify-between">
-                <div>
-                  <span className="font-bold text-sm text-foreground block">Monthly Seller Pro</span>
-                  <span className="text-xs text-muted-foreground">Unlimited monthly batch processing, zero wait</span>
-                </div>
-                <Badge className="bg-amber-600 text-white text-sm font-bold font-mono px-3 py-1">
-                  ₹199 / mo
-                </Badge>
-              </div>
-            </div>
-
-            <ul className="text-xs text-muted-foreground space-y-2 pl-4 list-disc">
-              <li>Batch crop 500+ invoice pages into thermal labels in under 10 seconds</li>
-              <li>Auto-separate packing slips from shipping labels</li>
-              <li>Saved marketplace presets with zero advertisements</li>
-            </ul>
-
-            <div className="flex gap-3 pt-2">
-              <Button
-                onClick={() => {
-                  toast.success('Seller Pass activated! Enjoy high-speed batch thermal cropping.');
-                  setShowSellerPassModal(false);
-                }}
-                className="flex-1 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs h-10"
-              >
-                Activate Seller Pass
-              </Button>
-              <Button
-                variant="ghost"
-                onClick={() => setShowSellerPassModal(false)}
-                className="text-xs text-muted-foreground"
-              >
-                Close
-              </Button>
             </div>
           </div>
         </div>

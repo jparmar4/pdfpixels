@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { popularTools } from '@/lib/tools-data';
+import { allTools, popularTools } from '@/lib/tools-data';
 import { Sparkles, ArrowRight } from 'lucide-react';
 
 export default function BlogSidebar() {
@@ -45,7 +45,7 @@ export default function BlogSidebar() {
                 </div>
                 <div className="p-4 border-t border-border bg-muted/10 text-center">
                     <Link href="/" className="text-xs font-bold text-primary hover:text-primary/80 transition-colors uppercase tracking-wider">
-                        View All 40+ Tools
+                        View All {allTools.length}+ Tools
                     </Link>
                 </div>
             </div>

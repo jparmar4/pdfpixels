@@ -40,7 +40,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-local-*
+/local-*
 .claude
 .z-ai-config
 dev.log
@@ -70,3 +70,12 @@ server.log
 *.traineddata
 # Large ONNX segmentation models (>100MB exceeds GitHub limit; u2netp is 4.5MB and committed)
 /models/segmentation/rmbg-*.onnx
+
+# Internal logs and agent/runner scratch files
+*.log
+.codex-dev*
+.next-dev*
+build_output.log
+OPENCLAW_UPDATE_CHECK.txt
+.openclaw/
+.zscripts/

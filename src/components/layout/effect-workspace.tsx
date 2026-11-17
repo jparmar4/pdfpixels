@@ -37,7 +37,7 @@ type EffectMeta = {
 
 const EFFECT_CONFIG: Record<string, EffectMeta> = {
   'blur-image': {
-    emoji: 'ðŸŒ«ï¸',
+    emoji: '🌫️',
     hasIntensity: true,
     label: 'Blur intensity',
     applyLabel: 'Apply blur',
@@ -50,7 +50,7 @@ const EFFECT_CONFIG: Record<string, EffectMeta> = {
     ],
   },
   pixelate: {
-    emoji: '🔍²',
+    emoji: '🔲',
     hasIntensity: true,
     label: 'Pixel block size',
     applyLabel: 'Apply pixelate',
@@ -68,7 +68,7 @@ const EFFECT_CONFIG: Record<string, EffectMeta> = {
     ],
   },
   grayscale: {
-    emoji: 'ðŸ–¤',
+    emoji: '🖤',
     hasIntensity: true,
     label: 'Desaturation',
     applyLabel: 'Convert to grayscale',
@@ -83,7 +83,7 @@ const EFFECT_CONFIG: Record<string, EffectMeta> = {
     ],
   },
   'black-white': {
-    emoji: 'â¬›',
+    emoji: '⬛',
     hasIntensity: true,
     label: 'Contrast',
     applyLabel: 'Convert to B&W',
@@ -101,7 +101,7 @@ const EFFECT_CONFIG: Record<string, EffectMeta> = {
     ],
   },
   sepia: {
-    emoji: 'ðŸŸ¤',
+    emoji: '🟫',
     hasIntensity: true,
     label: 'Sepia strength',
     applyLabel: 'Apply sepia',
@@ -114,7 +114,7 @@ const EFFECT_CONFIG: Record<string, EffectMeta> = {
     ],
   },
   invert: {
-    emoji: '🔍„',
+    emoji: '🔄',
     hasIntensity: false,
     label: '',
     applyLabel: 'Invert colors',
@@ -122,7 +122,7 @@ const EFFECT_CONFIG: Record<string, EffectMeta> = {
     tips: ['Creates a negative-style color invert.'],
   },
   'motion-blur': {
-    emoji: 'ðŸ’¨',
+    emoji: '💨',
     hasIntensity: true,
     label: 'Motion amount',
     applyLabel: 'Apply motion blur',
@@ -135,7 +135,7 @@ const EFFECT_CONFIG: Record<string, EffectMeta> = {
     ],
   },
   'censor-photo': {
-    emoji: 'ðŸš«',
+    emoji: '🚫',
     hasIntensity: true,
     label: 'Censor strength',
     applyLabel: 'Apply censor',
@@ -143,7 +143,7 @@ const EFFECT_CONFIG: Record<string, EffectMeta> = {
     tips: ['Drag on the image to select the area to hide.'],
   },
   'pixel-art': {
-    emoji: 'ðŸŽ®',
+    emoji: '🎮',
     hasIntensity: true,
     label: 'Pixel block size',
     applyLabel: 'Apply pixel art',
@@ -179,7 +179,7 @@ export function EffectWorkspace() {
 
   const toolId = activeTool?.id || '';
   const config = EFFECT_CONFIG[toolId] || {
-    emoji: '✓¨',
+    emoji: '✨',
     hasIntensity: true,
     label: 'Intensity',
     applyLabel: 'Apply effect',
@@ -391,9 +391,34 @@ export function EffectWorkspace() {
         }
         ctx.putImageData(imageData, 0, 0);
       } else if (id === 'blur-image') {
-        ctx.filter = `blur(${Math.max(0.5, int / 8)}px)`;
-        ctx.drawImage(img, 0, 0);
-        ctx.filter = 'none';
+        const sigma = Math.max(0.5, int / 8);
+        const pad = Math.ceil(sigma * 2);
+        const padded = document.createElement('canvas');
+        padded.width = canvas.width + pad * 2;
+        padded.height = canvas.height + pad * 2;
+        const pctx = padded.getContext('2d');
+        if (pctx) {
+          // Draw center + clamp-stretched edges so Gaussian blur doesn't darken/fade outer borders
+          pctx.drawImage(img, 0, 0, canvas.width, 1, pad, 0, canvas.width, pad);
+          pctx.drawImage(img, 0, Math.max(0, canvas.height - 1), canvas.width, 1, pad, pad + canvas.height, canvas.width, pad);
+          pctx.drawImage(img, 0, 0, 1, canvas.height, 0, pad, pad, canvas.height);
+          pctx.drawImage(img, Math.max(0, canvas.width - 1), 0, 1, canvas.height, pad + canvas.width, pad, pad, canvas.height);
+          pctx.drawImage(img, pad, pad, canvas.width, canvas.height);
+
+          const blurred = document.createElement('canvas');
+          blurred.width = padded.width;
+          blurred.height = padded.height;
+          const bctx = blurred.getContext('2d');
+          if (bctx) {
+            bctx.filter = `blur(${sigma}px)`;
+            bctx.drawImage(padded, 0, 0);
+            ctx.drawImage(blurred, pad, pad, canvas.width, canvas.height, 0, 0, canvas.width, canvas.height);
+          }
+        } else {
+          ctx.filter = `blur(${sigma}px)`;
+          ctx.drawImage(img, 0, 0);
+          ctx.filter = 'none';
+        }
       } else if (id === 'pixelate' || id === 'pixel-art') {
         const pixelSize = pixelSizeFromIntensity(int, id);
         const tempCanvas = document.createElement('canvas');

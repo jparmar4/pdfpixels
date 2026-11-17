@@ -114,7 +114,8 @@ export function BlurFaceWorkspace() {
       }
 
       setProgress(28);
-      const response = await fetch('/api/ai', {
+      const { apiFetch } = await import('@/lib/api-client');
+      const response = await apiFetch('/api/ai', {
         method: 'POST',
         body: formData,
       });

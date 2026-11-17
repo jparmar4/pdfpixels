@@ -424,17 +424,42 @@ export async function POST(req: NextRequest) {
     if (
       targetKb &&
       engine === 'ghostscript' &&
-      activeLevel !== 'extreme' &&
       finalBytes.length > targetKb * 1024
     ) {
-      try {
-        const tighter = await compressWithGhostscript(inputPath, outputPath, compressionProfiles.extreme, gsTimeoutMs)
-        if (tighter.length < finalBytes.length) {
-          finalBytes = tighter.length < originalBuffer.length ? tighter : originalBuffer
-          activeLevel = 'extreme'
+      const targetFallbackProfiles: CompressionProfile[] = [
+        ...(activeLevel !== 'extreme' ? [compressionProfiles.extreme] : []),
+        {
+          pdfSettings: '/screen',
+          colorImageResolution: 85,
+          grayImageResolution: 85,
+          monoImageResolution: 200,
+          jpegQuality: 42,
+          colorDownsampleThreshold: 1.0,
+          grayDownsampleThreshold: 1.0,
+          minimumReduction: 0.06,
+        },
+        {
+          pdfSettings: '/screen',
+          colorImageResolution: 72,
+          grayImageResolution: 72,
+          monoImageResolution: 150,
+          jpegQuality: 28,
+          colorDownsampleThreshold: 1.0,
+          grayDownsampleThreshold: 1.0,
+          minimumReduction: 0.06,
+        },
+      ];
+      for (const targetProfile of targetFallbackProfiles) {
+        if (finalBytes.length <= targetKb * 1024) break;
+        try {
+          const tighter = await compressWithGhostscript(inputPath, outputPath, targetProfile, gsTimeoutMs)
+          if (tighter.length < finalBytes.length) {
+            finalBytes = tighter.length < originalBuffer.length ? tighter : originalBuffer
+            activeLevel = 'extreme'
+          }
+        } catch (retryError) {
+          console.error('Target-size recompress failed:', retryError)
         }
-      } catch (retryError) {
-        console.error('Target-size recompress failed:', retryError)
       }
     }
 

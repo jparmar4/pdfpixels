@@ -58,6 +58,7 @@ export function OCRWorkspace() {
 
         const sourceUrl = URL.createObjectURL(uploadedFile);
         let processUrl = sourceUrl;
+        let preprocessedBlobUrl: string | null = null;
 
         try {
             if (highAccuracy) {
@@ -71,16 +72,17 @@ export function OCRWorkspace() {
                 formData.append('sharpen', '1.0');  // Sharpen edges
                 formData.append('grayscale', 'true'); // Best for OCR
 
-                const processRes = await fetch('/api/image/process', {
-                    method: 'POST',
-                    body: formData
-                });
-
-                if (processRes.ok) {
-                    const data = await processRes.json();
-                    if (typeof data.imageUrl === 'string') {
+                try {
+                    const { requestProcessedImage } = await import('@/lib/image-process-client');
+                    const data = await requestProcessedImage(formData);
+                    if (data.imageUrl) {
                         processUrl = data.imageUrl;
+                        if (data.isBlobUrl) {
+                            preprocessedBlobUrl = data.imageUrl;
+                        }
                     }
+                } catch {
+                    // Fall back cleanly to original uploaded image for Tesseract OCR
                 }
             }
 
@@ -120,6 +122,9 @@ export function OCRWorkspace() {
             toast.error('OCR failed. Please try again with a clearer image.');
         } finally {
             URL.revokeObjectURL(sourceUrl);
+            if (preprocessedBlobUrl) {
+                URL.revokeObjectURL(preprocessedBlobUrl);
+            }
             setIsProcessing(false);
         }
     }, [uploadedFile, language, highAccuracy, setIsProcessing, setProgress]);

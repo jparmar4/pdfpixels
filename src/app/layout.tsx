@@ -10,7 +10,8 @@ import { DEFAULT_OG_IMAGE_URL } from '@/lib/seo';
 import { CookieConsentBanner } from '@/components/ads/cookie-consent';
 import { Analytics } from '@/components/ads/analytics';
 import { AdSenseScript } from '@/components/ads/adsense-script';
-import { adsenseConfig, adsterraConfig } from '@/lib/ads-config';
+import { DeferredSocialBar } from '@/components/ads/deferred-social-bar';
+import { adsenseConfig } from '@/lib/ads-config';
 import { Navigation } from '@/components/layout/navigation';
 import { Footer } from '@/components/layout/footer';
 import { ScrollToTop } from '@/components/home/scroll-to-top';
@@ -146,7 +147,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" suppressHydrationWarning className={`scroll-smooth ${fontInter.variable} ${fontSora.variable} ${fontMono.variable}`}>
+    <html lang="en" data-scroll-behavior="smooth" suppressHydrationWarning className={`scroll-smooth ${fontInter.variable} ${fontSora.variable} ${fontMono.variable}`}>
       <head>
         <link rel="preconnect" href="https://www.googletagmanager.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
@@ -178,15 +179,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             crossOrigin="anonymous"
           />
         )}
-        {/* Adsterra Social Bar (In-Page Push) — high CPM notification format */}
-        {adsterraConfig.enabled && adsterraConfig.slots.socialBar.scriptSrc && (
-          <script
-            type="text/javascript"
-            src={adsterraConfig.slots.socialBar.scriptSrc}
-            data-cfasync="false"
-            async
-          />
-        )}
       </head>
       <body className="bg-background text-foreground antialiased min-h-screen flex flex-col">
         <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-lg focus:text-sm focus:font-semibold focus:outline-none focus:ring-2 focus:ring-primary/50">
@@ -209,6 +201,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <SonnerToaster richColors closeButton position="top-center" offset={{ top: 84, bottom: 24 }} />
           <Analytics />
           <AdSenseScript />
+          <DeferredSocialBar />
           <CookieConsentBanner />
         </ThemeProvider>
       </body>

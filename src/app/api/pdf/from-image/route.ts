@@ -86,16 +86,24 @@ export async function POST(request: NextRequest) {
       } catch {
         return apiError(`Could not read "${file.name}". If it is HEIC, try converting it first.`, 400);
       }
-      const imageBytes = new Uint8Array(decoded.buffer);
-
-      // Get image metadata
+      let workingBuffer = decoded.buffer;
+      // Get image metadata and bake EXIF orientation so rotated phone photos embed upright
       let metadata;
       try {
-        const image = sharp(decoded.buffer, { failOn: 'none' });
-        metadata = await image.metadata();
+        const rawMeta = await sharp(workingBuffer, { failOn: 'none' }).metadata();
+        if (rawMeta.orientation && rawMeta.orientation > 1) {
+          workingBuffer = await sharp(workingBuffer, { failOn: 'none' })
+            .rotate()
+            .withMetadata({ density: rawMeta.density, orientation: 1 })
+            .toBuffer();
+          metadata = await sharp(workingBuffer, { failOn: 'none' }).metadata();
+        } else {
+          metadata = rawMeta;
+        }
       } catch {
         return apiError(`Could not read "${file.name}". The image may be corrupt.`, 400);
       }
+      const imageBytes = new Uint8Array(workingBuffer);
       if (!metadata.width || !metadata.height) {
         return apiError(`Could not read "${file.name}". The image may be corrupt.`, 400);
       }

@@ -34,6 +34,9 @@ const publicFiles = new Set(
 const dynamicRoutes = [
   /^\/api\//,
   /^\/feed$/,
+  /^\/markdown$/,
+  /^\/openapi\.json$/,
+  /^\/\.well-known\/api-catalog$/,
   /^\/tools\/[^/]+\/opengraph-image$/,
   /^\/blog\/[^/]+\/opengraph-image$/,
   /^\/opengraph-image/,

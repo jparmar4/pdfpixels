@@ -56,11 +56,14 @@ export async function POST(request: NextRequest) {
     const sharp = sharpModule.default;
     const params = parseParams(formData);
 
-    // Create sharp instance
-    let image = sharp(buffer, { failOn: 'none', limitInputPixels: 500_000_000 });
-
-    // Get metadata ONCE before any transformation
-    const metadata = await image.metadata();
+    // Get metadata ONCE before any transformation, accounting for EXIF orientation
+    const rawMetadata = await sharp(buffer, { failOn: 'none', limitInputPixels: 500_000_000 }).metadata();
+    const swapsAxes = rawMetadata.orientation !== undefined && rawMetadata.orientation >= 5 && rawMetadata.orientation <= 8;
+    const metadata = {
+      ...rawMetadata,
+      width: swapsAxes ? rawMetadata.height : rawMetadata.width,
+      height: swapsAxes ? rawMetadata.width : rawMetadata.height,
+    };
 
     // Respect requested output format; only fallback when missing/invalid
     const validFormats = new Set(['jpg', 'jpeg', 'png', 'webp', 'avif', 'gif', 'tiff']);
@@ -80,27 +83,7 @@ export async function POST(request: NextRequest) {
       return apiError('Image has too many pixels (50MP max). Resize it to a smaller resolution first.', 413);
     }
 
-    // ── Fix 1: Convert non-sRGB colorspaces to sRGB ───────────────────────────
-    // CMYK, Lab, XYZ etc. will produce severe color shifts without this.
-    if (metadata.space && !['srgb', 'rgb'].includes(metadata.space)) {
-      image = image.toColorspace('srgb');
-    }
-
-    // ── Preserve metadata (ICC profiles, EXIF, DPI) ───────────────────────────
-    if (params.density) {
-      image = image.withMetadata({ density: params.density });
-    } else {
-      image = image.withMetadata(); // keeps ICC + EXIF + orientation
-    }
-
-    // Apply geometric + color transformations
-    image = applyTransformations(image, params, metadata);
-
-    // ── Fix 2: Flatten alpha BEFORE any lossy output ──────────────────────────
-    // Transparent pixels become black/purple/yellow in JPEG without this.
-    if (LOSSY_FORMATS.has(params.format) && metadata.hasAlpha) {
-      image = image.flatten({ background: { r: 255, g: 255, b: 255 } });
-    }
+    const image = prepareSharpPipeline(sharp, buffer, params, metadata, params.format);
 
     // Process output
     const { outputBuffer, mimeType } = await processOutput(image, params, metadata);
@@ -112,26 +95,58 @@ export async function POST(request: NextRequest) {
       if (params.sizeMode === 'increase') {
         finalBuffer = await increaseToTargetSize(outputBuffer, mimeType, targetBytes);
       } else {
-        finalBuffer = await optimizeForTargetSize(buffer, params, targetBytes, params.format);
+        finalBuffer = await optimizeForTargetSize(sharp, buffer, params, metadata, targetBytes, params.format);
       }
+    }
+
+    const savedBytes = Math.max(0, buffer.length - finalBuffer.length);
+    const savedPercent = buffer.length > 0
+      ? Math.max(0, Math.round(((buffer.length - finalBuffer.length) / buffer.length) * 100))
+      : 0;
+    const processingTime = Math.round(performance.now() - startTime);
+
+    const responseType = String(formData.get('responseType') || '').trim().toLowerCase();
+    const acceptHeader = (request.headers.get('accept') || '').toLowerCase();
+    const wantsBinary =
+      responseType === 'binary' ||
+      acceptHeader.includes('application/octet-stream') ||
+      acceptHeader.includes('image/*') ||
+      /(?:^|[,\s;])image\/(?:png|jpe?g|webp|avif|gif|tiff)\b/.test(acceptHeader);
+
+    if (wantsBinary) {
+      return new NextResponse(new Uint8Array(finalBuffer), {
+        status: 200,
+        headers: {
+          ...CACHE_HEADERS,
+          'Content-Type': mimeType,
+          'Content-Length': String(finalBuffer.length),
+          'X-Original-Size': String(buffer.length),
+          'X-Processed-Size': String(finalBuffer.length),
+          'X-Saved-Bytes': String(savedBytes),
+          'X-Saved-Percent': String(savedPercent),
+          'X-Image-Format': String(params.format),
+          'X-Original-Width': String(metadata.width ?? 0),
+          'X-Original-Height': String(metadata.height ?? 0),
+          'X-Processing-Time': String(processingTime),
+        },
+      });
     }
 
     const base64 = finalBuffer.toString('base64');
     const dataUrl = `data:${mimeType};base64,${base64}`;
-    const savedBytes = buffer.length - finalBuffer.length;
 
     return NextResponse.json({
       success: true,
       imageUrl: dataUrl,
       originalSize: buffer.length,
       processedSize: finalBuffer.length,
-      savedBytes: Math.max(0, savedBytes),
-      savedPercent: Math.max(0, Math.round((savedBytes / buffer.length) * 100)),
+      savedBytes,
+      savedPercent,
       originalDimensions: { width: metadata.width, height: metadata.height },
       format: params.format,
       mimeType,
       quality: params.quality,
-      processingTime: Math.round(performance.now() - startTime),
+      processingTime,
     }, { headers: CACHE_HEADERS });
 
   } catch (error) {
@@ -220,7 +235,42 @@ type SharpInstance = any;
 type Metadata = any;
 type Params = ReturnType<typeof parseParams>;
 
-function applyTransformations(image: SharpInstance, params: Params, metadata: Metadata): SharpInstance {
+function prepareSharpPipeline(
+  sharp: any,
+  inputBuffer: Buffer,
+  params: Params,
+  metadata: Metadata,
+  targetFormat: string,
+  downscaleFactor = 1,
+): SharpInstance {
+  // Bake EXIF orientation first so subsequent crops/rotates match displayed pixels
+  let image = sharp(inputBuffer, { failOn: 'none', limitInputPixels: 500_000_000 }).rotate();
+
+  if (metadata.space && !['srgb', 'rgb'].includes(metadata.space)) {
+    image = image.toColorspace('srgb');
+  }
+
+  if (params.density) {
+    image = image.withMetadata({ density: params.density });
+  } else {
+    image = image.withMetadata();
+  }
+
+  image = applyTransformations(image, params, metadata, downscaleFactor);
+
+  if (LOSSY_FORMATS.has(targetFormat) && metadata.hasAlpha) {
+    image = image.flatten({ background: { r: 255, g: 255, b: 255 } });
+  }
+
+  return image;
+}
+
+function applyTransformations(
+  image: SharpInstance,
+  params: Params,
+  metadata: Metadata,
+  downscaleFactor = 1,
+): SharpInstance {
   // Rotation — fill exposed areas with white, not black
   if (params.rotate !== 0) {
     image = image.rotate(params.rotate, { background: { r: 255, g: 255, b: 255, alpha: 1 } });
@@ -229,24 +279,34 @@ function applyTransformations(image: SharpInstance, params: Params, metadata: Me
   if (params.flip) image = image.flip();
   if (params.flop) image = image.flop();
 
-  // Crop
+  // Crop (clamped against visual dimensions after EXIF auto-orient)
   if (params.cropWidth && params.cropHeight &&
     params.cropLeft !== undefined && params.cropTop !== undefined) {
+    const baseW = metadata.width ?? params.cropLeft + params.cropWidth;
+    const baseH = metadata.height ?? params.cropTop + params.cropHeight;
     image = image.extract({
-      left: params.cropLeft,
-      top: params.cropTop,
-      width: Math.min(params.cropWidth, (metadata.width ?? 0) - params.cropLeft),
-      height: Math.min(params.cropHeight, (metadata.height ?? 0) - params.cropTop),
+      left: Math.max(0, Math.min(params.cropLeft, baseW - 1)),
+      top: Math.max(0, Math.min(params.cropTop, baseH - 1)),
+      width: Math.max(1, Math.min(params.cropWidth, baseW - params.cropLeft)),
+      height: Math.max(1, Math.min(params.cropHeight, baseH - params.cropTop)),
     });
   }
 
-  // Resize — Lanczos3 for highest quality
+  // Resize — Lanczos3 for highest quality (plus optional downscale fallback for strict KB targets)
   if (params.width || params.height) {
-    image = image.resize(params.width, params.height, {
+    const scaledW = params.width ? Math.max(8, Math.round(params.width * downscaleFactor)) : undefined;
+    const scaledH = params.height ? Math.max(8, Math.round(params.height * downscaleFactor)) : undefined;
+    image = image.resize(scaledW, scaledH, {
       fit: params.fit as 'cover' | 'contain' | 'fill' | 'inside' | 'outside',
       withoutEnlargement: params.withoutEnlargement,
       kernel: 'lanczos3',
       fastShrinkOnLoad: false,
+    });
+  } else if (downscaleFactor < 1 && metadata.width) {
+    const baseW = params.cropWidth || metadata.width;
+    image = image.resize(Math.max(16, Math.round(baseW * downscaleFactor)), undefined, {
+      withoutEnlargement: true,
+      kernel: 'lanczos3',
     });
   }
 
@@ -434,59 +494,52 @@ async function increaseToTargetSize(
 
 // ─── Target size binary-search optimisation ───────────────────────────────────
 
+async function encodeWithQuality(img: SharpInstance, format: string, q: number): Promise<Buffer> {
+  switch (format) {
+    case 'png':
+      return img
+        .png({
+          compressionLevel: 9,
+          adaptiveFiltering: true,
+          palette: q < 95,
+          quality: q < 95 ? q : undefined,
+          colors: q < 95 ? Math.max(8, Math.round(256 * (q / 100))) : 256,
+        })
+        .toBuffer();
+    case 'webp':
+      return img.webp({ quality: q, smartSubsample: true }).toBuffer();
+    case 'avif':
+      return img.avif({ quality: q }).toBuffer();
+    case 'gif':
+      return img.gif({ effort: 7, dither: 1.0 }).toBuffer();
+    case 'tiff':
+      return img.tiff({ quality: q, compression: 'lzw' }).toBuffer();
+    default:
+      return img.jpeg({ quality: q, chromaSubsampling: '4:4:4', mozjpeg: false, optimizeCoding: true, force: true }).toBuffer();
+  }
+}
+
 async function optimizeForTargetSize(
+  sharp: any,
   originalBuffer: Buffer,
   params: Params,
+  metadata: Metadata,
   targetBytes: number,
   format: string
 ): Promise<Buffer> {
-  const sharpModule = await import('sharp');
-  const sharp = sharpModule.default;
-
   let minQ = 5;
   let maxQ = 99;
   let bestBuffer: Buffer | null = null;
+  let smallestBuffer: Buffer | null = null;
 
   for (let i = 0; i < 8; i++) {
     const q = Math.round((minQ + maxQ) / 2);
+    const img = prepareSharpPipeline(sharp, originalBuffer, params, metadata, format, 1);
+    const buf = await encodeWithQuality(img, format, q);
 
-    let img = sharp(originalBuffer, { failOn: 'none' });
-    const meta = await img.metadata();
-
-    if (LOSSY_FORMATS.has(format) && meta.hasAlpha) {
-      img = img.flatten({ background: { r: 255, g: 255, b: 255 } });
+    if (!smallestBuffer || buf.length < smallestBuffer.length) {
+      smallestBuffer = buf;
     }
-    if (params.width || params.height) {
-      img = img.resize(params.width, params.height, {
-        fit: (params.fit as 'cover' | 'contain' | 'fill' | 'inside' | 'outside') || 'inside',
-        withoutEnlargement: params.withoutEnlargement,
-        kernel: 'lanczos3',
-      });
-    }
-    if (params.density) {
-      img = img.withMetadata({ density: params.density });
-    }
-    if (params.rotate) img = img.rotate(params.rotate, { background: { r: 255, g: 255, b: 255 } });
-    if (params.flip) img = img.flip();
-    if (params.flop) img = img.flop();
-    if (params.grayscale) img = img.grayscale();
-    if (params.blur && params.blur > 0.3) img = img.blur(params.blur);
-
-    let buf: Buffer;
-    switch (format) {
-      case 'png':
-        buf = await img.png({ compressionLevel: 9 }).toBuffer();
-        break;
-      case 'webp':
-        buf = await img.webp({ quality: q, smartSubsample: true }).toBuffer();
-        break;
-      case 'avif':
-        buf = await img.avif({ quality: q }).toBuffer();
-        break;
-      default:
-        buf = await img.jpeg({ quality: q, chromaSubsampling: '4:4:4', mozjpeg: false, optimizeCoding: true, force: true }).toBuffer();
-    }
-
     if (buf.length <= targetBytes) {
       bestBuffer = buf;
       minQ = q + 1;
@@ -497,27 +550,22 @@ async function optimizeForTargetSize(
   }
 
   if (!bestBuffer) {
-    // Last resort: use very low quality
-    let img = sharp(originalBuffer, { failOn: 'none' });
-    const meta = await img.metadata();
-    if (LOSSY_FORMATS.has(format) && meta.hasAlpha) {
-      img = img.flatten({ background: { r: 255, g: 255, b: 255 } });
-    }
-
-    switch (format) {
-      case 'png':
-        bestBuffer = await img.png({ compressionLevel: 9, palette: true, colors: 32 }).toBuffer();
-        break;
-      case 'webp':
-        bestBuffer = await img.webp({ quality: 5 }).toBuffer();
-        break;
-      case 'avif':
-        bestBuffer = await img.avif({ quality: 5, chromaSubsampling: '4:2:0' }).toBuffer();
-        break;
-      default:
-        bestBuffer = await img.jpeg({ quality: 5, chromaSubsampling: '4:4:4', mozjpeg: false, force: true }).toBuffer();
+    // Downscale progressively for huge high-res photos when lowest quality alone still exceeds targetBytes
+    for (const scale of [0.85, 0.7, 0.55, 0.4, 0.25]) {
+      for (const q of [35, 10]) {
+        const img = prepareSharpPipeline(sharp, originalBuffer, params, metadata, format, scale);
+        const buf = await encodeWithQuality(img, format, q);
+        if (!smallestBuffer || buf.length < smallestBuffer.length) {
+          smallestBuffer = buf;
+        }
+        if (buf.length <= targetBytes) {
+          bestBuffer = buf;
+          break;
+        }
+      }
+      if (bestBuffer) break;
     }
   }
 
-  return bestBuffer;
+  return bestBuffer ?? smallestBuffer!;
 }

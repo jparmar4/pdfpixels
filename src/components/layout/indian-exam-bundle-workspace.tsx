@@ -190,23 +190,30 @@ export function IndianExamBundleWorkspace({ exam }: IndianExamBundleWorkspacePro
       ctx.fillText(`DOP: ${photoDate}`, targetW / 2, line2Y);
     }
 
-    // Binary search compression to hit target KB within min-max limits
-    let quality = 0.92;
-    let blob: Blob | null = null;
+    // Binary search JPEG quality to fit near target KB without exceeding limit
     const targetBytes = targetKb * 1024;
+    let low = 0.08;
+    let high = 0.98;
+    let bestUnder: Blob | null = null;
+    let bestClosest: Blob | null = null;
 
-    for (let i = 0; i < 7; i++) {
-      blob = await new Promise<Blob | null>(res => canvas.toBlob(res, 'image/jpeg', quality));
-      if (!blob) break;
-      if (Math.abs(blob.size - targetBytes) < targetBytes * 0.08 || quality < 0.2 || quality > 0.98) {
-        break;
+    for (let i = 0; i < 9; i++) {
+      const mid = i === 0 ? 0.92 : (low + high) / 2;
+      const attempt = await new Promise<Blob | null>(res => canvas.toBlob(res, 'image/jpeg', mid));
+      if (!attempt) break;
+      if (!bestClosest || Math.abs(attempt.size - targetBytes) < Math.abs(bestClosest.size - targetBytes)) {
+        bestClosest = attempt;
       }
-      if (blob.size > targetBytes) {
-        quality = Math.max(0.15, quality - 0.15 * (blob.size / targetBytes));
+      if (attempt.size <= targetBytes) {
+        bestUnder = attempt;
+        low = mid;
+        if (attempt.size >= targetBytes * 0.92) break;
       } else {
-        quality = Math.min(0.98, quality + 0.08);
+        high = mid;
       }
     }
+
+    const blob = bestUnder ?? bestClosest;
 
     if (blob) {
       setProcessedPhotoBlob(blob);

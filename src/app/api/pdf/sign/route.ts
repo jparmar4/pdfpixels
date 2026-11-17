@@ -1,3 +1,5 @@
+import { createHash, randomUUID } from 'node:crypto';
+import { appendAuditTrailCertificatePage } from '@/lib/audit-trail-pdf';
 import { apiError, apiInternalError } from '@/lib/api-response';
 import { openEditablePdf, pdfBinaryResponse, sanitizeDownloadFileName, toSafeWinAnsi } from '@/lib/pdf-api';
 import { NextRequest } from 'next/server';
@@ -25,7 +27,10 @@ export async function POST(request: NextRequest) {
 
     const opened = await openEditablePdf(file);
     if (!opened.ok) return opened.response;
-    const { pdf } = opened;
+    const { pdf, buffer } = opened;
+    const includeAuditTrail = formData.get('includeAuditTrail') === 'true';
+    const signerName = typeof formData.get('signerName') === 'string' ? String(formData.get('signerName')) : undefined;
+    const signerEmail = typeof formData.get('signerEmail') === 'string' ? String(formData.get('signerEmail')) : undefined;
 
     let items: SignatureItem[] = [];
     if (signaturesJson) {
@@ -129,6 +134,21 @@ export async function POST(request: NextRequest) {
           return apiError('Could not apply the signature image. Use PNG or JPEG.', 422);
         }
       }
+    }
+
+    if (includeAuditTrail) {
+      const originalSha256 = createHash('sha256').update(buffer).digest('hex');
+      const certId = `PP-CERT-${randomUUID().toUpperCase()}`;
+      await appendAuditTrailCertificatePage(pdf, {
+        certificateId: certId,
+        fileName: file?.name || 'document.pdf',
+        originalSha256,
+        signedAtUtc: new Date().toISOString(),
+        signedPageNumber: items[0]?.pageNumber || 1,
+        signerName,
+        signerEmail,
+        executionMode: 'PdfPixels Stateless Pipeline',
+      });
     }
 
     const outBytes = await pdf.save();

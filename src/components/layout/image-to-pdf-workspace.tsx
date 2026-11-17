@@ -5,6 +5,7 @@ import { Download, RotateCcw, FilePlus, Image as ImageIcon, FileText, Plus, X, C
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { useActiveTool } from '@/hooks/use-active-tool';
+import { useConsumeChainedFile } from '@/hooks/use-consume-chained-file';
 import { ToolPageHeader } from './tool-page-header';
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { toast } from 'sonner';
@@ -126,6 +127,11 @@ export function ImageToPDFWorkspace() {
       img.src = imgFile.preview;
     });
   }, []);
+
+  useConsumeChainedFile(
+    (chained) => addImages([chained]),
+    isImageUpload,
+  );
 
   const handleFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.length) {

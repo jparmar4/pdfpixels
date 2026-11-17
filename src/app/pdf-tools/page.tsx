@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     absolute: `All PDF Tools Online Free – Compress, Merge, Convert & Edit | ${siteConfig.name}`,
   },
   description:
-    'Free online suite of 53 PDF tools. Compress PDF to target KB, merge, split, convert to/from Word & Excel, sign, fill forms, and secure documents without software installation or signup.',
+    `Free online suite of ${allPdfTools.length} PDF tools. Compress PDF to target KB, merge, split, convert to/from Word & Excel, sign, fill forms, and secure documents without software installation or signup.`,
   keywords: [
     'online pdf tools',
     'free pdf tools',
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: `All PDF Tools Online Free – Compress, Merge, Convert & Edit | ${siteConfig.name}`,
     description:
-      'Free online suite of 53 PDF tools. Compress, merge, split, convert to Word/Excel, sign, and edit PDFs directly in your browser with zero registration.',
+      `Free online suite of ${allPdfTools.length} PDF tools. Compress, merge, split, convert to Word/Excel, sign, and edit PDFs directly in your browser with zero registration.`,
     url: `${SITE_URL}/pdf-tools`,
     siteName: siteConfig.name,
     type: 'website',
@@ -52,7 +52,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: `All PDF Tools Online Free – Compress, Merge, Convert & Edit | ${siteConfig.name}`,
     description:
-      'Free online suite of 53 PDF tools. Compress, merge, split, convert to Word/Excel, sign, and edit PDFs directly in your browser with zero registration.',
+      `Free online suite of ${allPdfTools.length} PDF tools. Compress, merge, split, convert to Word/Excel, sign, and edit PDFs directly in your browser with zero registration.`,
     images: [DEFAULT_OG_IMAGE_URL],
   },
 };
@@ -158,7 +158,7 @@ export default function PdfToolsPage() {
         name: 'Does PdfPixels work on iPhone, Android, and iPad?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Yes. All 52 PDF tools are fully responsive and work seamlessly inside Safari on iOS/iPadOS, Chrome on Android, as well as desktop Edge, Chrome, Safari, and Firefox. You can sign contracts, convert photos to PDF, or compress scans directly from your mobile phone.',
+          text: `Yes. All ${allPdfTools.length} PDF tools are fully responsive and work seamlessly inside Safari on iOS/iPadOS, Chrome on Android, as well as desktop Edge, Chrome, Safari, and Firefox. You can sign contracts, convert photos to PDF, or compress scans directly from your mobile phone.`,
         },
       },
       {

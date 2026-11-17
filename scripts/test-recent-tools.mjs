@@ -452,9 +452,224 @@ const { data: bRaw, info: bInfo } = await sharp(bData).ensureAlpha().raw().toBuf
 assert.ok(bRaw[3] < 60, `balanced mode corner alpha should be transparent, got ${bRaw[3]}`);
 assert.ok(bRaw[(45 * bInfo.width + 60) * 4 + 3] > 200, `balanced mode face must be preserved`);
 
-// Verify tool aliases, redirects, and intelligent search ranking
-const { allTools, getToolBySlug, getToolById, searchTools } = await import('../src/lib/tools-data.ts');
-assert.ok(allTools.length >= 108, 'at least 108 tools registered');
+// Regression suite for fixed tools: EXIF orientation, PPTX aspect, XLSX columns, AcroForm fill, center watermark, GS repair, target-KB PNG
+{
+  // 1. EXIF Orientation 6 (raw 120x60 stored landscape -> upright portrait 60x120)
+  const exifRaw = await sharp({
+    create: { width: 120, height: 60, channels: 3, background: { r: 20, g: 120, b: 220 } },
+  }).jpeg().withMetadata({ orientation: 6 }).toBuffer();
+
+  const imgProcExif = await callAny('image/process', exifRaw, 'portrait-exif.jpg', 'image/jpeg', {
+    cropLeft: '5', cropTop: '5', cropWidth: '50', cropHeight: '100', format: 'jpg',
+  });
+  assert.equal(imgProcExif.status, 200, 'image/process handles crop on EXIF-rotated upright portrait');
+  const exifProcJson = await imgProcExif.json();
+  assert.equal(exifProcJson.originalDimensions.width, 60, 'visual width accounts for EXIF rotation');
+  assert.equal(exifProcJson.originalDimensions.height, 120, 'visual height accounts for EXIF rotation');
+
+  // PNG target-size optimization actually compresses with palette inside bisection
+  const noisyPng = await sharp({
+    create: { width: 180, height: 180, channels: 4, noise: { type: 'gaussian', mean: 128, sigma: 40 } },
+  }).png().toBuffer();
+  const pngTargetResp = await callAny('image/process', noisyPng, 'noisy.png', 'image/png', {
+    format: 'png', targetSize: '12',
+  });
+  assert.equal(pngTargetResp.status, 200);
+  const pngTargetJson = await pngTargetResp.json();
+  assert.ok(pngTargetJson.processedSize <= 12 * 1024, `PNG target-KB <= 12KB, got ${pngTargetJson.processedSize}`);
+
+  // 2. EXIF portrait JPEG -> /api/pdf/from-image (fit / auto stays upright portrait)
+  const fromImgForm = new FormData();
+  fromImgForm.append('files', new File([exifRaw], 'exif.jpg', { type: 'image/jpeg' }));
+  fromImgForm.append('pageSize', 'fit');
+  fromImgForm.append('orientation', 'auto');
+  const { POST: fromImagePost } = await import('../src/app/api/pdf/from-image/route.ts');
+  const fromImgResp = await fromImagePost(new NextRequest('http://localhost/api/pdf/from-image', { method: 'POST', body: fromImgForm }));
+  assert.equal(fromImgResp.status, 200, 'from-image handles EXIF-rotated portrait JPEG');
+  const fromImgPdf = await PDFDocument.load(new Uint8Array(await fromImgResp.arrayBuffer()));
+  const fromImgSize = fromImgPdf.getPage(0).getSize();
+  assert.ok(fromImgSize.width < fromImgSize.height, `EXIF portrait stays portrait (${fromImgSize.width}x${fromImgSize.height})`);
+
+  // 3. Portrait PDF -> /api/pdf/to-pptx preserves aspect ratio (not stretched to 13.333x7.5)
+  const portraitPdfDoc = await PDFDocument.create();
+  portraitPdfDoc.addPage([400, 800]);
+  const portraitBytes = await portraitPdfDoc.save();
+  const pptxResp = await call('to-pptx', portraitBytes);
+  assert.equal(pptxResp.status, 200, 'to-pptx succeeds for portrait PDF');
+  const pptxZip = await JSZip.loadAsync(await pptxResp.arrayBuffer());
+  const slideXml = await pptxZip.file('ppt/slides/slide1.xml')?.async('string');
+  assert.ok(slideXml && slideXml.includes('<a:ext '), 'pptx contains slide image transform');
+  const extMatch = slideXml.match(/<p:pic>[\s\S]*?<a:xfrm>\s*<a:off x="(\d+)" y="(\d+)"\/>\s*<a:ext cx="(\d+)" cy="(\d+)"\/>/);
+  assert.ok(extMatch, 'pptx picture image extent present');
+  const cx = Number(extMatch[3]);
+  const cy = Number(extMatch[4]);
+  assert.ok(cx > 0 && cy > 0 && cx < cy, `portrait slide maintains portrait extent (cx=${cx}, cy=${cy})`);
+
+  // 4. Multi-column PDF -> /api/pdf/to-excel aligns columns (not all in Col A)
+  const multiColPdf = await columnFixture(
+    ['Date', 'Merchant', 'Amount'],
+    [50, 220, 520],
+    [['01/05/2026', 'Cloud Hosting', '199.00'], ['02/05/2026', 'Domain Renewal', '14.99']],
+  );
+  const excelResp = await call('to-excel', multiColPdf, { format: 'xlsx' });
+  assert.equal(excelResp.status, 200, 'to-excel handles multi-column PDF');
+  const excelZip = await JSZip.loadAsync(await excelResp.arrayBuffer());
+  const sheetXml = await excelZip.file('xl/worksheets/sheet1.xml')?.async('string');
+  assert.ok(sheetXml && sheetXml.includes('r="B') && sheetXml.includes('r="C'), 'to-excel populates columns B and C');
+
+  // 5. AcroForm CheckBox + Dropdown + RadioGroup + vector checkmark via /api/pdf/fill
+  const acroDoc = await PDFDocument.create();
+  const acroPage = acroDoc.addPage([500, 700]);
+  const acroForm = acroDoc.getForm();
+  const textF = acroForm.createTextField('applicant_name');
+  textF.addToPage(acroPage, { x: 40, y: 600, width: 150, height: 20 });
+  const checkF = acroForm.createCheckBox('agree_terms');
+  checkF.addToPage(acroPage, { x: 40, y: 560, width: 16, height: 16 });
+  const dropF = acroForm.createDropdown('country');
+  dropF.addOptions(['US', 'IN', 'UK']);
+  dropF.addToPage(acroPage, { x: 40, y: 510, width: 120, height: 24 });
+  const radioF = acroForm.createRadioGroup('plan');
+  radioF.addOptionToPage('pro', acroPage, { x: 40, y: 460, width: 16, height: 16 });
+  radioF.addOptionToPage('free', acroPage, { x: 80, y: 460, width: 16, height: 16 });
+  const acroBytes = await acroDoc.save();
+
+  const fillResp = await call('fill', acroBytes, {
+    fields: JSON.stringify({ applicant_name: 'Alice', agree_terms: true, country: 'IN', plan: 'pro' }),
+    textEntries: JSON.stringify([{ pageNumber: 1, x: 100, y: 120, text: '✓', fontSize: 16 }]),
+  });
+  assert.equal(fillResp.status, 200, `fill AcroForm all field types + checkmark: ${fillResp.status}`);
+  const filledDoc = await PDFDocument.load(new Uint8Array(await fillResp.arrayBuffer()));
+  assert.equal(filledDoc.getForm().getTextField('applicant_name').getText(), 'Alice');
+  assert.equal(filledDoc.getForm().getCheckBox('agree_terms').isChecked(), true);
+  assert.deepEqual(filledDoc.getForm().getDropdown('country').getSelected(), ['IN']);
+  assert.equal(filledDoc.getForm().getRadioGroup('plan').getSelected(), 'pro');
+
+  // 6. Rotated center watermark
+  await okPdf('watermark', source, { text: 'CONFIDENTIAL', position: 'center', rotation: '45' });
+
+  // 7. Repair truncated/corrupt-xref PDF
+  const truncatedSource = Buffer.from(source).subarray(0, source.length - 120);
+  await okPdf('repair', truncatedSource);
+
+  // 8. /api/image/process binary streaming mode + backward-compatible JSON
+  const { POST: imageProcessPost } = await import('../src/app/api/image/process/route.ts');
+  const binForm = new FormData();
+  binForm.append('image', new File([noisyPng], 'noisy.png', { type: 'image/png' }));
+  binForm.append('format', 'webp');
+  binForm.append('quality', '75');
+  binForm.append('responseType', 'binary');
+  const binResp = await imageProcessPost(
+    new NextRequest('http://localhost/api/image/process', { method: 'POST', body: binForm }),
+  );
+  assert.equal(binResp.status, 200, 'binary responseType returns 200');
+  assert.equal(binResp.headers.get('content-type'), 'image/webp');
+  assert.ok(Number(binResp.headers.get('x-original-size')) === noisyPng.length, 'X-Original-Size matches input');
+  const binBuf = Buffer.from(await binResp.arrayBuffer());
+  assert.ok(Number(binResp.headers.get('x-processed-size')) === binBuf.length, 'X-Processed-Size matches raw buffer');
+  assert.ok(binResp.headers.get('x-saved-bytes') !== null, 'X-Saved-Bytes header present');
+  assert.ok(binResp.headers.get('x-saved-percent') !== null, 'X-Saved-Percent header present');
+  const binMeta = await sharp(binBuf).metadata();
+  assert.equal(binMeta.format, 'webp', 'binary payload decodes directly as webp');
+
+  const acceptForm = new FormData();
+  acceptForm.append('image', new File([noisyPng], 'noisy.png', { type: 'image/png' }));
+  acceptForm.append('format', 'jpg');
+  const acceptResp = await imageProcessPost(
+    new NextRequest('http://localhost/api/image/process', {
+      method: 'POST',
+      headers: { Accept: 'image/*' },
+      body: acceptForm,
+    }),
+  );
+  assert.equal(acceptResp.status, 200);
+  assert.equal(acceptResp.headers.get('content-type'), 'image/jpeg', 'Accept: image/* returns raw binary jpeg');
+  const acceptMeta = await sharp(Buffer.from(await acceptResp.arrayBuffer())).metadata();
+  assert.equal(acceptMeta.format, 'jpeg');
+
+  // 9. Proxy same-origin + signed token verification on heavy API routes
+  const { default: proxy } = await import('../src/proxy.ts');
+  const directBotRes = proxy(new NextRequest('http://localhost/api/image/process', { method: 'POST' }));
+  assert.equal(directBotRes.status, 403, 'direct bot POST /api/image/process blocked with 403');
+  const spoofedOriginRes = proxy(
+    new NextRequest('http://localhost/api/pdf/compress', {
+      method: 'POST',
+      headers: { Origin: 'http://localhost', Referer: 'http://localhost/tools/compress-pdf' },
+    }),
+  );
+  assert.equal(spoofedOriginRes.status, 403, 'forged Origin without signed cookie blocked with 403');
+
+  const uiPageRes = proxy(new NextRequest('http://localhost/tools/compress-image', { method: 'GET' }));
+  const tokenCookie = uiPageRes.cookies.get('pp_api_token')?.value;
+  assert.ok(tokenCookie, 'GET UI route sets signed pp_api_token cookie');
+
+  const crossSiteRes = proxy(
+    new NextRequest('http://localhost/api/image/process', {
+      method: 'POST',
+      headers: {
+        Origin: 'https://evil.example',
+        'Sec-Fetch-Site': 'cross-site',
+        Cookie: `pp_api_token=${tokenCookie}`,
+      },
+    }),
+  );
+  assert.equal(crossSiteRes.status, 403, 'cross-site POST blocked even with cookie');
+
+  const validUiApiRes = proxy(
+    new NextRequest('http://localhost/api/image/process', {
+      method: 'POST',
+      headers: {
+        Origin: 'http://localhost',
+        Referer: 'http://localhost/tools/compress-image',
+        'Sec-Fetch-Site': 'same-origin',
+        Cookie: `pp_api_token=${tokenCookie}`,
+      },
+    }),
+  );
+  assert.notEqual(validUiApiRes.status, 403, 'same-origin POST with signed cookie passes proxy auth');
+}
+
+// Verify tool aliases, redirects, metrics, and intelligent search ranking
+const { allTools, allPdfTools, pdfToolGroups, platformStats, getToolBySlug, getToolById, searchTools } = await import('../src/lib/tools-data.ts');
+const { organizationData } = await import('../src/lib/seo-config.ts');
+assert.equal(platformStats.freeToolsLabel, '150+');
+assert.equal(platformStats.fileFormatsLabel, '30+');
+assert.equal(platformStats.freeWorkflowsLabel, '100%');
+assert.equal(platformStats.accountWallsLabel, '0');
+assert.equal('telephone' in organizationData, false, 'global organizationData omits Indian phone number');
+assert.equal('telephone' in organizationData.contactPoint, false, 'global contactPoint omits Indian phone number');
+assert.equal(allTools.length, 150, 'allTools count matches 150');
+assert.equal(allPdfTools.length, 93, 'allPdfTools count matches 93');
+for (const slug of [
+  'fill-sign-irs-w9-pdf',
+  'amazon-fba-thermal-label-converter',
+  'qbo-ofx-qfx-to-excel-csv',
+  'uscis-pdf-packet-merger',
+  'pdf-accessibility-checker',
+  'capital-one-statement-to-excel',
+  'amex-statement-to-excel',
+  'sparkasse-statement-to-excel',
+  'commbank-statement-to-excel',
+  'rbc-bank-statement-to-excel',
+  'local-folder-batch-processor',
+  'ecommerce-product-photo-pack',
+  'c2pa-ai-content-credentials-checker',
+  'private-ai-pdf-contract-auditor',
+]) {
+  assert.ok(getToolBySlug(slug), `Tier-1 tool exists: ${slug}`);
+}
+
+const { parseOfxQboQfx, formatOfxCsv, SAMPLE_QBO_STATEMENT } = await import('../src/lib/ofx-qbo-parser.ts');
+const parsedQbo = parseOfxQboQfx(SAMPLE_QBO_STATEMENT);
+assert.equal(parsedQbo.transactions.length, 4, 'Sample QBO parses 4 transactions');
+assert.equal(parsedQbo.currency, 'USD');
+assert.ok(formatOfxCsv(parsedQbo, 'xero').startsWith('*Date,*Amount,Payee'), 'Xero CSV header valid');
+assert.ok(formatOfxCsv(parsedQbo, 'quickbooks-3col').startsWith('Date,Description,Amount'), 'QBO CSV header valid');
+
+const { PII_PATTERN_SPECS } = await import('../src/lib/pii-patterns.ts');
+assert.ok(PII_PATTERN_SPECS.some((p) => p.type === 'ein' && new RegExp(p.regex.source).test('12-3456789')), 'EIN pattern matches');
+assert.ok(PII_PATTERN_SPECS.some((p) => p.type === 'iban' && new RegExp(p.regex.source).test('DE89 3704 0044 0532 0130 00')), 'IBAN pattern matches');
+const groupedPdfIds = new Set(pdfToolGroups.flatMap((g) => g.tools.map((t) => t.id)));
+assert.equal(groupedPdfIds.size, allPdfTools.length, 'pdfToolGroups includes all PDF tools');
 assert.ok(getToolBySlug('image-to-pdf'), 'image-to-pdf tool exists');
 assert.ok(getToolBySlug('pdf-to-csv'), 'pdf-to-csv tool exists');
 assert.equal(getToolById('pdf-merge')?.slug, 'merge-pdf');

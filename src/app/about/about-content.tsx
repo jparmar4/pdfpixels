@@ -1,12 +1,12 @@
 import Link from 'next/link';
 import {
   Globe, Shield, Users, Zap, ArrowRight, Rocket, TrendingUp, Code2,
-  CheckCircle2, Wrench, DollarSign, MonitorSmartphone
+  CheckCircle2, Wrench, DollarSign, Files, ShieldCheck
 } from 'lucide-react';
 import { SitePageShell } from '@/components/layout/site-page-shell';
 import { Button } from '@/components/ui/button';
 import { AnimatedCounter } from './about-counter';
-import { allTools } from '@/lib/tools-data';
+import { allTools, allPdfTools, allImageTools, platformStats } from '@/lib/tools-data';
 
 /* ─── Data ────────────────────────────────────────────────────────── */
 const values = [
@@ -28,7 +28,7 @@ const values = [
   {
     icon: Users,
     title: 'User-led evolution',
-    description: 'We improve the product around real workflows: upload limits, document constraints, visual QA, and faster completion paths.',
+    description: 'We improve the product around real workflows: upload limits, document constraints, visual QA, and faster end-to-end exports.',
   },
 ];
 
@@ -36,15 +36,15 @@ const timelineMilestones = [
   {
     year: '2025 - Started',
     title: 'Launch & Foundation',
-    description: 'Launched PdfPixels with an initial set of 20 carefully crafted image and PDF tools, focused on speed and usability.',
+    description: 'Launched PdfPixels with browser-first image compression, resizing, and essential PDF utilities engineered for instant speed and 0 account walls.',
     icon: Rocket,
     color: 'from-primary/20 to-sky-500/15',
     iconColor: 'text-primary',
   },
   {
     year: '2025 - Growth',
-    title: 'AI-Powered Expansion',
-    description: 'Added AI-powered tools like background removal, image enhancement, and upscale. Expanded to 40+ tools with broader format support.',
+    title: 'AI & Format Expansion',
+    description: `Added AI-powered tools like background removal, image enhancement, and face blur alongside ${platformStats.fileFormatsLabel} supported image, PDF, and Office formats.`,
     icon: TrendingUp,
     color: 'from-emerald-500/20 to-teal-500/15',
     iconColor: 'text-emerald-500',
@@ -52,7 +52,7 @@ const timelineMilestones = [
   {
     year: '2026 - Expansion',
     title: `${allTools.length}+ Tools & Content`,
-    description: `Reached ${allTools.length}+ tools, launched the blog with product guides, comparison pages, and use-case-driven entry points.`,
+    description: `Reached ${allTools.length}+ tools (${allPdfTools.length} PDF tools and ${allImageTools.length} image tools), launched workflow guides, comparison pages, and zero-wall core utilities.`,
     icon: Wrench,
     color: 'from-violet-500/20 to-fuchsia-500/15',
     iconColor: 'text-violet-500',
@@ -60,10 +60,10 @@ const timelineMilestones = [
 ];
 
 const statsData = [
-  { value: allTools.length, suffix: '+', label: 'Free Tools', icon: Wrench, gradient: 'from-indigo-500 to-violet-500' },
-  { value: 100, suffix: '%', label: 'Free Forever', icon: DollarSign, gradient: 'from-emerald-500 to-teal-500' },
-  { value: 0, suffix: '', label: 'No Signup Required', icon: Users, gradient: 'from-fuchsia-500 to-pink-500', display: 'Zero' },
-  { value: 0, suffix: '', label: 'Works Everywhere', icon: MonitorSmartphone, gradient: 'from-cyan-500 to-blue-500', display: 'All' },
+  { value: platformStats.freeToolsCount, suffix: '+', label: 'Free Tools', icon: Wrench, gradient: 'from-indigo-500 to-violet-500' },
+  { value: Math.floor(platformStats.fileFormatsCount / 10) * 10, suffix: '+', label: 'File Formats', icon: Files, gradient: 'from-fuchsia-500 to-pink-500' },
+  { value: platformStats.freeWorkflowsPercent, suffix: '%', label: 'Free Core Workflows', icon: DollarSign, gradient: 'from-emerald-500 to-teal-500' },
+  { value: platformStats.accountWallsCount, suffix: '', label: 'Account Walls', icon: ShieldCheck, gradient: 'from-cyan-500 to-blue-500', display: platformStats.accountWallsLabel },
 ];
 
 const techStack = [
@@ -85,10 +85,10 @@ export function AboutPageContent() {
       iconName="sparkles"
       align="center"
       stats={[
-        { label: 'Tools available', value: `${allTools.length}+` },
-        { label: 'Signup required', value: 'No' },
-        { label: 'Design goal', value: 'Premium UX' },
-        { label: 'Core principle', value: 'Fast output' },
+        { label: 'Free Tools', value: platformStats.freeToolsLabel },
+        { label: 'File Formats', value: platformStats.fileFormatsLabel },
+        { label: 'Free Core Workflows', value: platformStats.freeWorkflowsLabel },
+        { label: 'Account Walls', value: platformStats.accountWallsLabel },
       ]}
       actions={[
         { label: 'Explore all tools', href: '/' },

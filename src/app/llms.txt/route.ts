@@ -5,6 +5,7 @@ import { absoluteUrl, getHomepageFeaturedTools } from '@/lib/seo';
 import { useCasePages } from '@/lib/use-cases';
 import { comparisonPages } from '@/lib/comparisons';
 import { geoRegions } from '@/lib/geo-data';
+import { WORKFLOW_RECIPES } from '@/lib/workflow-recipes';
 
 export const dynamic = 'force-static';
 
@@ -56,6 +57,11 @@ export async function GET() {
     .map((post) => `- [${post.title}](${absoluteUrl(`/blog/${post.slug}`)}): ${post.metaDescription}`)
     .join('\n');
 
+  const workflowSection = WORKFLOW_RECIPES.map(
+    (recipe) =>
+      `- [${recipe.title}](${absoluteUrl(`/workflows/${recipe.slug}`)}): ${recipe.steps.map((s) => s.title).join(' -> ')} — ${recipe.description}`,
+  ).join('\n');
+
   const content = `# PdfPixels
 
 > PdfPixels is a free, privacy-first online PDF and image processing platform offering ${indexableTools.length}+ specialized utilities including PDF compression, merging, splitting, OCR, digital signing, format conversion, and image optimization without watermarks, signups, or permanent file storage.
@@ -67,11 +73,13 @@ PdfPixels processes up to 80% of document and image operations locally inside th
 - [PdfPixels Home](${absoluteUrl('/')}): Main workspace with instant access to all free online PDF and image tools.
 - [PDF Tools Hub](${absoluteUrl('/pdf-tools')}): Complete directory of PDF compression, merge, split, conversion, OCR, and security tools.
 - [All Tools Directory](${absoluteUrl('/tools')}): Searchable catalog of all ${indexableTools.length}+ PDF and image utilities.
+- [Multi-Step Workflow Recipes](${absoluteUrl('/workflows')}): Client-first 3-step and 4-step automated PDF and photo pipelines from a single upload.
 - [Workflow Guides & Blog](${absoluteUrl('/blog')}): Step-by-step tutorials, portal file-size limit tables, and PDF technical guides.
 - [Industry & Role Use Cases](${absoluteUrl('/use-cases')}): Curated PDF and image toolkits for legal, real estate, students, finance, and healthcare.
 - [Tool Comparisons](${absoluteUrl('/compare')}): Side-by-side benchmarks comparing PdfPixels with Adobe Acrobat, Smallpdf, iLovePDF, and DocuSign.
 - [2026 PDF Upload Size Limits Study](${absoluteUrl('/research/pdf-size-limits-2026')}): Empirical reference of file upload limits across 50+ government, court, and email portals.
 - [API Documentation](${absoluteUrl('/api-docs')}): Developer documentation, OpenAPI specification, and MCP server integration guide.
+- [MCP Integration Hub](${absoluteUrl('/mcp')}): Interactive MCP setup for Claude Desktop, Cursor, and Windsurf plus live JSON-RPC endpoint tester.
 - [About PdfPixels](${absoluteUrl('/about')}): Architecture, privacy model, and company background.
 - [Pricing](${absoluteUrl('/pricing')}): Free forever model and feature overview.
 - [Security & Privacy Architecture](${absoluteUrl('/privacy')}): Zero-retention policy, client-side WebAssembly execution, and encryption details.
@@ -93,6 +101,10 @@ ${allToolsByCategory}
 
 ${useCaseSection}
 
+## Multi-Step Workflow Recipes
+
+${workflowSection}
+
 ## High-Intent Software Comparisons
 
 ${comparisonSection}
@@ -109,6 +121,7 @@ ${blogSection}
 
 - [Full LLM Documentation (llms-full.txt)](${absoluteUrl('/llms-full.txt')}): Exhaustive Markdown reference covering every tool's input/output formats, processing mode, steps, and FAQs.
 - [Homepage Markdown Representation](${absoluteUrl('/markdown')}): Token-efficient Markdown version of the homepage (also served via \`Accept: text/markdown\`).
+- [Interactive MCP Hub](${absoluteUrl('/mcp')}): Copy-ready IDE configs and live JSON-RPC tester for AI agent integration.
 - [MCP Server Card](${absoluteUrl('/.well-known/mcp/server-card.json')}): Model Context Protocol (SEP-1649) server discovery metadata.
 - [MCP Streamable-HTTP Endpoint](${absoluteUrl('/api/mcp')}): JSON-RPC 2.0 MCP endpoint exposing tool discovery, recommendations, and platform limits.
 - [OpenAPI 3.1 Specification](${absoluteUrl('/openapi.json')}): Machine-readable REST API specification for PdfPixels endpoints.

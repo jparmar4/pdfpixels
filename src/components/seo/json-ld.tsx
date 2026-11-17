@@ -28,13 +28,11 @@ function KnowledgeGraphSchema() {
         description: organizationData.description,
         foundingDate: organizationData.foundingDate,
         email: organizationData.email,
-        telephone: organizationData.telephone,
         sameAs: organizationData.sameAs,
         contactPoint: {
           '@type': 'ContactPoint',
           contactType: organizationData.contactPoint.contactType,
           email: organizationData.contactPoint.email,
-          telephone: organizationData.contactPoint.telephone,
           areaServed: organizationData.contactPoint.areaServed,
           url: organizationData.contactPoint.url,
           availableLanguage: organizationData.contactPoint.availableLanguage,

@@ -1,7 +1,29 @@
 'use client';
 
 import { useState, useCallback } from 'react';
+import { usePathname } from 'next/navigation';
 import { Mail, ShieldCheck, Send } from 'lucide-react';
+
+export function FooterContactInfo() {
+  const pathname = usePathname() || '';
+  const isIndiaRoute = pathname === '/in' || pathname.startsWith('/in/');
+
+  return (
+    <p className="text-xs text-muted-foreground">
+      <a href="mailto:support@pdfpixels.com" className="hover:text-primary">
+        support@pdfpixels.com
+      </a>
+      {isIndiaRoute && (
+        <>
+          {' · '}
+          <a href="tel:+917926580100" className="hover:text-primary">
+            +91-79-2658-0100
+          </a>
+        </>
+      )}
+    </p>
+  );
+}
 
 export function FooterNewsletterForm() {
   const [email, setEmail] = useState('');

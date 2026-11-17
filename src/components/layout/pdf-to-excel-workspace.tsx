@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import {
-  RotateCcw, FileSpreadsheet, Check, Sparkles, Table
+  RotateCcw, FileSpreadsheet, Check, Sparkles, Table, Download
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
@@ -11,12 +11,78 @@ import { ToolResultBar } from './tool-result-bar';
 import { FileUpload } from './file-upload';
 import { ToolPageHeader } from './tool-page-header';
 import { ToolLimitNotice } from './tool-limit-notice';
+import { ReconciliationGrid, type ReconciliationRow } from './reconciliation-grid';
 import { useState, useCallback, useEffect } from 'react';
 import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue
 } from '@/components/ui/select';
+
+function parseCsvLine(line: string): string[] {
+  const cells: string[] = [];
+  let cur = '';
+  let inQuotes = false;
+  for (let i = 0; i < line.length; i += 1) {
+    const ch = line[i];
+    if (ch === '"') {
+      if (inQuotes && line[i + 1] === '"') {
+        cur += '"';
+        i += 1;
+      } else {
+        inQuotes = !inQuotes;
+      }
+    } else if (ch === ',' && !inQuotes) {
+      cells.push(cur.trim());
+      cur = '';
+    } else {
+      cur += ch;
+    }
+  }
+  cells.push(cur.trim());
+  return cells;
+}
+
+function csvTextToReconciliationRows(csvText: string): ReconciliationRow[] {
+  const lines = csvText
+    .split(/\r?\n/)
+    .map((l) => l.trim())
+    .filter(Boolean);
+  if (lines.length === 0) return [];
+  const firstCols = parseCsvLine(lines[0]).map((c) => c.toLowerCase());
+  const hasHeader =
+    firstCols.some((c) => /date|desc|debit|credit|balance|amount|item|particular/.test(c));
+  const dataLines = hasHeader ? lines.slice(1) : lines;
+  return dataLines.slice(0, 500).map((line) => {
+    const cols = parseCsvLine(line);
+    if (cols.length >= 5) {
+      return { date: cols[0], description: cols[1], debit: cols[2], credit: cols[3], balance: cols[4] };
+    }
+    if (cols.length === 4) {
+      return { date: cols[0], description: cols[1], debit: cols[2], credit: '', balance: cols[3] };
+    }
+    if (cols.length === 3) {
+      const n = Number.parseFloat(cols[2].replace(/[^0-9.-]/g, ''));
+      return {
+        date: cols[0],
+        description: cols[1],
+        debit: Number.isFinite(n) && n < 0 ? Math.abs(n).toFixed(2) : '',
+        credit: Number.isFinite(n) && n >= 0 ? n.toFixed(2) : '',
+        balance: '',
+      };
+    }
+    return { date: cols[0] || '', description: cols[1] || '', debit: '', credit: '', balance: '' };
+  });
+}
+
+function rowsToCsvBlob(rows: ReconciliationRow[]): Blob {
+  const esc = (v: string) => `"${(v || '').replace(/"/g, '""')}"`;
+  const lines = ['Date,Description,Debit,Credit,Balance'];
+  for (const r of rows) {
+    lines.push([esc(r.date), esc(r.description), esc(r.debit), esc(r.credit), esc(r.balance)].join(','));
+  }
+  return new Blob([lines.join('\n')], { type: 'text/csv;charset=utf-8' });
+}
 
 export function PDFToExcelWorkspace({ initialFormat = 'xlsx' }: { initialFormat?: 'xlsx' | 'csv' } = {}) {
   const { uploadedFile, isProcessing, progress, setIsProcessing, setProgress, reset } = useAppStore();
@@ -26,11 +92,14 @@ export function PDFToExcelWorkspace({ initialFormat = 'xlsx' }: { initialFormat?
   const [format, setFormat] = useState<'xlsx' | 'csv'>(initialFormat);
   const [resultUrl, setResultUrl] = useState<string | null>(null);
   const [resultFileName, setResultFileName] = useState<string>('');
+  const [reconRows, setReconRows] = useState<ReconciliationRow[]>([]);
+  const [pageLimit, setPageLimit] = useState<number>(25);
 
   useEffect(() => {
     if (!uploadedFile) {
       setTotalPages(1);
       setResultUrl(null);
+      setReconRows([]);
       return;
     }
 
@@ -50,12 +119,28 @@ export function PDFToExcelWorkspace({ initialFormat = 'xlsx' }: { initialFormat?
           toast.success('PDF document loaded');
         }
       }
+
+      if (format === 'csv') {
+        try {
+          const fd = new FormData();
+          fd.append('file', uploadedFile);
+          fd.append('format', 'json');
+          const { apiFetch } = await import('@/lib/api-client');
+          const res = await apiFetch('/api/pdf/bank-statement-to-excel', { method: 'POST', body: fd });
+          const data = await res.json().catch(() => null);
+          if (active && res.ok && Array.isArray(data?.transactions) && data.transactions.length > 0) {
+            setReconRows(data.transactions);
+          }
+        } catch {
+          // Will populate from CSV export on convert
+        }
+      }
     })();
 
     return () => {
       active = false;
     };
-  }, [uploadedFile]);
+  }, [uploadedFile, format]);
 
   const handleReset = useCallback(() => {
     if (resultUrl?.startsWith('blob:')) {
@@ -63,6 +148,7 @@ export function PDFToExcelWorkspace({ initialFormat = 'xlsx' }: { initialFormat?
     }
     reset();
     setResultUrl(null);
+    setReconRows([]);
   }, [reset, resultUrl]);
 
   const handleConvert = async () => {
@@ -91,8 +177,16 @@ export function PDFToExcelWorkspace({ initialFormat = 'xlsx' }: { initialFormat?
       }
 
       const blob = await res.blob();
+      if (format === 'csv' && reconRows.length === 0) {
+        const parsed = csvTextToReconciliationRows(await blob.text());
+        if (parsed.length > 0) setReconRows(parsed);
+      }
+
       const url = URL.createObjectURL(blob);
-      setResultUrl(url);
+      setResultUrl((prev) => {
+        if (prev?.startsWith('blob:')) URL.revokeObjectURL(prev);
+        return url;
+      });
       setResultFileName(uploadedFile.name.replace(/\.pdf$/i, `.${format}`));
       setProgress(100);
       toast.success(`PDF converted to ${format.toUpperCase()} spreadsheet successfully!`);
@@ -106,6 +200,19 @@ export function PDFToExcelWorkspace({ initialFormat = 'xlsx' }: { initialFormat?
   };
 
   const handleDownload = () => {
+    if (format === 'csv' && reconRows.length > 0) {
+      const editedBlob = rowsToCsvBlob(reconRows);
+      const editedUrl = URL.createObjectURL(editedBlob);
+      const a = document.createElement('a');
+      a.href = editedUrl;
+      a.download = resultFileName || 'reconciled-table.csv';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.setTimeout(() => URL.revokeObjectURL(editedUrl), 1000);
+      toast.success('Exported edited reconciliation CSV!');
+      return;
+    }
     if (!resultUrl) return;
     const a = document.createElement('a');
     a.href = resultUrl;
@@ -127,8 +234,8 @@ export function PDFToExcelWorkspace({ initialFormat = 'xlsx' }: { initialFormat?
       <ToolLimitNotice
         limits={[
           'PDF only · max 50 MB',
-          'Extracts tables into Microsoft Excel (.xlsx) or CSV format',
-          'Preserves numerical formatting, column alignments, and text values',
+          'Extracts tables into Microsoft Excel (.xlsx) or editable reconciliation CSV format',
+          'Preserves numerical formatting, column alignments, and running-balance validation',
         ]}
       />
 
@@ -171,7 +278,7 @@ export function PDFToExcelWorkspace({ initialFormat = 'xlsx' }: { initialFormat?
                     <Table className="w-4 h-4" /> Spreadsheet export
                   </div>
                   <p className="text-muted-foreground leading-relaxed">
-                    LibreOffice writes the workbook when it is installed. CSV and the fallback path split selectable text into cells. Scans are OCR’d when no text layer exists.
+                    LibreOffice writes the workbook when it is installed. CSV mode includes an inline editable Reconciliation Grid and SVG Cash-Flow Summary before download.
                   </p>
                 </div>
               </div>
@@ -229,17 +336,43 @@ export function PDFToExcelWorkspace({ initialFormat = 'xlsx' }: { initialFormat?
                     <Sparkles className="w-4 h-4 text-primary" /> Popular Workflows
                   </div>
                   <ul className="space-y-2 text-muted-foreground list-disc pl-4 leading-relaxed">
-                    <li><strong className="text-foreground">Bank & Credit Card Statements:</strong> Extract transaction tables for budgeting and accounting software.</li>
-                    <li><strong className="text-foreground">Invoices & Receipts:</strong> Pull line items, SKU codes, and amounts directly into spreadsheets.</li>
-                    <li><strong className="text-foreground">Statistical Reports:</strong> Move census, research, and financial reports from PDF into manipulable data tables.</li>
+                    <li><strong className="text-foreground">Bank &amp; Credit Card Statements:</strong> Extract transaction tables and reconcile balances in-browser.</li>
+                    <li><strong className="text-foreground">Invoices &amp; Receipts:</strong> Pull line items, SKU codes, and amounts directly into CSV/Excel.</li>
+                    <li><strong className="text-foreground">Statistical Reports:</strong> Move research and financial tables from PDF into manipulable data grids.</li>
                   </ul>
                 </div>
               )}
             </div>
           </div>
+
+          {format === 'csv' && reconRows.length > 0 && (
+            <div className="space-y-4">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <p className="text-xs text-muted-foreground">
+                  Edit any cell inline below to verify Opening + Credits − Debits = Closing Balance before CSV export:
+                </p>
+                <Button size="sm" onClick={handleDownload} className="gap-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white">
+                  <Download className="w-4 h-4" />
+                  Export Reconciled CSV
+                </Button>
+              </div>
+              <ReconciliationGrid
+                transactions={reconRows}
+                onChangeTransactions={setReconRows}
+                presetLabel="PDF to CSV Interactive Grid"
+                visibleCols={{ date: true, description: true, debit: true, credit: true, balance: true }}
+                searchTerm=""
+                pageLimit={pageLimit}
+                onToggleLimit={() => setPageLimit((p) => (p === 25 ? reconRows.length : 25))}
+                onSwapRow={(idx) =>
+                  setReconRows((prev) => prev.map((r, i) => (i === idx ? { ...r, debit: r.credit, credit: r.debit } : r)))
+                }
+                onDeleteRow={(idx) => setReconRows((prev) => prev.filter((_, i) => i !== idx))}
+              />
+            </div>
+          )}
         </div>
       )}
     </div>
   );
 }
-

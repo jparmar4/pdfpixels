@@ -298,7 +298,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (format === 'quickbooks') {
+    if (format === 'quickbooks' || format === 'quickbooks-3col' || format === 'wave') {
       const qbHeader = 'Date,Description,Amount\n';
       const qbBody = transactions
         .map(t => {
@@ -314,11 +314,61 @@ export async function POST(request: NextRequest) {
         })
         .join('\n');
 
+      const tag = format === 'wave' ? 'wave' : 'quickbooks-3col';
       return new NextResponse(qbHeader + qbBody, {
         status: 200,
         headers: {
           'Content-Type': 'text/csv; charset=utf-8',
-          'Content-Disposition': `attachment; filename="${sanitizeDownloadFileName(baseName)}-quickbooks.csv"`,
+          'Content-Disposition': `attachment; filename="${sanitizeDownloadFileName(baseName)}-${tag}.csv"`,
+          'Cache-Control': 'no-store, max-age=0',
+        },
+      });
+    }
+
+    if (format === 'quickbooks-4col') {
+      const qb4Header = 'Date,Description,Credit,Debit\n';
+      const qb4Body = transactions
+        .map(t => {
+          const dateStr = (t.date || '').replace(/"/g, '""');
+          const descStr = (t.description || '').replace(/"/g, '""');
+          const credit = t.credit && Number(t.credit) > 0 ? Number(t.credit).toFixed(2) : '';
+          const debit = t.debit && Number(t.debit) > 0 ? Number(t.debit).toFixed(2) : '';
+          return `"${dateStr}","${descStr}",${credit},${debit}`;
+        })
+        .join('\n');
+
+      return new NextResponse(qb4Header + qb4Body, {
+        status: 200,
+        headers: {
+          'Content-Type': 'text/csv; charset=utf-8',
+          'Content-Disposition': `attachment; filename="${sanitizeDownloadFileName(baseName)}-quickbooks-4col.csv"`,
+          'Cache-Control': 'no-store, max-age=0',
+        },
+      });
+    }
+
+    if (format === 'xero') {
+      const xeroHeader = '*Date,*Amount,Payee,Description\n';
+      const xeroBody = transactions
+        .map(t => {
+          const dateStr = (t.date || '').replace(/"/g, '""');
+          const descStr = (t.description || '').replace(/"/g, '""');
+          const payee = descStr.split(/\s{2,}|\s-\s/)[0]?.slice(0, 60) || descStr.slice(0, 60);
+          let amount = '0.00';
+          if (t.credit && Number(t.credit) > 0) {
+            amount = Number(t.credit).toFixed(2);
+          } else if (t.debit && Number(t.debit) > 0) {
+            amount = (-Math.abs(Number(t.debit))).toFixed(2);
+          }
+          return `"${dateStr}",${amount},"${payee}","${descStr}"`;
+        })
+        .join('\n');
+
+      return new NextResponse(xeroHeader + xeroBody, {
+        status: 200,
+        headers: {
+          'Content-Type': 'text/csv; charset=utf-8',
+          'Content-Disposition': `attachment; filename="${sanitizeDownloadFileName(baseName)}-xero.csv"`,
           'Cache-Control': 'no-store, max-age=0',
         },
       });

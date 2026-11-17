@@ -58,6 +58,16 @@ export function ToolWorkspace() {
   const [logoOpacity, setLogoOpacity] = useState(100);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const stageRef = useRef<HTMLDivElement>(null);
+  const processedBlobUrlRef = useRef<string | null>(null);
+
+  const revokeProcessedBlobUrl = useCallback(() => {
+    if (processedBlobUrlRef.current?.startsWith('blob:')) {
+      URL.revokeObjectURL(processedBlobUrlRef.current);
+      processedBlobUrlRef.current = null;
+    }
+  }, []);
+
+  useEffect(() => revokeProcessedBlobUrl, [revokeProcessedBlobUrl]);
   const toolId = activeTool?.id.toLowerCase() || '';
   const clientCanvasTools = ['watermark', 'add-text', 'add-logo', 'merge-images', 'split-image', 'color-picker', 'rotate', 'flip'];
   const usesClientCanvas = clientCanvasTools.includes(toolId);
@@ -352,23 +362,14 @@ export function ToolWorkspace() {
     formData.append('flop', flipH.toString());
 
     try {
-      const { fetchWithUploadProgress } = await import('@/lib/upload-with-progress');
-      const response = await fetchWithUploadProgress('/api/image/process', formData, setProgress);
+      const { requestProcessedImage } = await import('@/lib/image-process-client');
+      const data = await requestProcessedImage(formData, setProgress);
 
       setProgress(100);
-
-      if (!response.ok) {
-        let message = 'Processing failed';
-        try {
-          const errorJson = await response.json();
-          message = errorJson?.error || message;
-        } catch {
-          // keep default
-        }
-        throw new Error(message);
+      revokeProcessedBlobUrl();
+      if (data.isBlobUrl) {
+        processedBlobUrlRef.current = data.imageUrl;
       }
-
-      const data = await response.json();
       setProcessedImage(data.imageUrl);
       toast.success('Image processed successfully!');
     } catch (error) {
@@ -376,7 +377,7 @@ export function ToolWorkspace() {
     } finally {
       setIsProcessing(false);
     }
-  }, [handleClientCanvasProcess, uploadedFile, rotate, flipH, flipV, outputFormat, quality, setIsProcessing, setProcessedImage, setProgress, usesClientCanvas]);
+  }, [handleClientCanvasProcess, uploadedFile, rotate, flipH, flipV, outputFormat, quality, revokeProcessedBlobUrl, setIsProcessing, setProcessedImage, setProgress, usesClientCanvas]);
 
   const handleDownload = useCallback(() => {
     if (processedImage) {
@@ -395,6 +396,7 @@ export function ToolWorkspace() {
   }, [processedImage, outputFormat, toolId, uploadedFile]);
 
   const handleReset = useCallback(() => {
+    revokeProcessedBlobUrl();
     reset();
     window.history.pushState({}, '', window.location.pathname);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -411,7 +413,7 @@ export function ToolWorkspace() {
     setPlaceY(50);
     setPreviewUrl(null);
     setWatermarkStyle('diagonal');
-  }, [reset]);
+  }, [reset, revokeProcessedBlobUrl]);
 
   const handleStagePointer = useCallback((e: React.PointerEvent) => {
     if (!stageRef.current || (!needsPlacement && !isColorPicker)) return;
@@ -624,23 +626,52 @@ export function ToolWorkspace() {
           {splitTiles.length > 0 && (
             <div className="rounded-2xl border border-border bg-card p-4">
               <div className="mb-3 flex items-center justify-between gap-3">
-                <h3 className="font-semibold">Split tiles</h3>
+                <div>
+                  <h3 className="font-semibold">Split tiles ({splitTiles.length})</h3>
+                  <p className="text-xs text-muted-foreground">Download all tiles as one ZIP or click any tile below.</p>
+                </div>
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => splitTiles.forEach((tile, index) => {
-                    const link = document.createElement('a');
-                    link.href = tile;
-                    link.download = `tile-${index + 1}.${outputFormat === 'jpg' ? 'jpg' : outputFormat}`;
-                    link.click();
-                  })}
+                  onClick={async () => {
+                    try {
+                      const JSZip = (await import('jszip')).default;
+                      const zip = new JSZip();
+                      const ext = outputFormat === 'jpg' ? 'jpg' : outputFormat;
+                      splitTiles.forEach((tile, index) => {
+                        const base64 = tile.split(',')[1] || '';
+                        zip.file(`tile-${index + 1}.${ext}`, base64, { base64: true });
+                      });
+                      const blob = await zip.generateAsync({ type: 'blob' });
+                      const url = URL.createObjectURL(blob);
+                      const base = uploadedFile?.name?.replace(/\.[^.]+$/, '') || 'split-image';
+                      const link = document.createElement('a');
+                      link.href = url;
+                      link.download = `${base}-tiles.zip`;
+                      document.body.appendChild(link);
+                      link.click();
+                      link.remove();
+                      setTimeout(() => URL.revokeObjectURL(url), 1000);
+                      toast.success('Downloaded all split tiles (.zip)');
+                    } catch {
+                      toast.error('Failed to bundle tiles into ZIP');
+                    }
+                  }}
                 >
-                  Download tiles
+                  Download tiles (.zip)
                 </Button>
               </div>
               <div className="grid gap-2" style={{ gridTemplateColumns: `repeat(${splitColumns}, minmax(0, 1fr))` }}>
                 {splitTiles.map((tile, index) => (
-                  <img key={index} src={tile} alt={`Split tile ${index + 1}`} className="aspect-square rounded-lg border border-border object-cover" />
+                  <a
+                    key={index}
+                    href={tile}
+                    download={`tile-${index + 1}.${outputFormat === 'jpg' ? 'jpg' : outputFormat}`}
+                    title={`Download tile ${index + 1}`}
+                    className="group relative block overflow-hidden rounded-lg border border-border"
+                  >
+                    <img src={tile} alt={`Split tile ${index + 1}`} className="aspect-square w-full object-cover" />
+                  </a>
                 ))}
               </div>
             </div>

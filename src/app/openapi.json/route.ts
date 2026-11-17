@@ -12,7 +12,7 @@ export function buildOpenApiSpec() {
       title: 'PdfPixels API & Model Context Protocol (MCP) Service',
       version: '1.1.0',
       summary:
-        'Free online PDF & image processing platform with 75+ tools, exact-KB compression, OCR, financial table extraction, and MCP agent discovery.',
+        `Free online PDF & image processing platform with ${tools.length}+ tools, exact-KB compression, OCR, financial table extraction, and MCP agent discovery.`,
       description:
         'Public OpenAPI 3.1 specification for PdfPixels (https://www.pdfpixels.com). Includes Model Context Protocol (MCP) JSON-RPC 2.0 discovery, platform limits, health status, and PDF/image processing endpoints.',
       contact: {
@@ -403,10 +403,168 @@ export function buildOpenApiSpec() {
           },
           responses: {
             '200': {
-              description: 'Processed image result and compression telemetry',
+              description: 'Processed image result (base64 JSON metadata by default, or binary image bytes when responseType=binary)',
+              content: {
+                'application/json': { schema: { type: 'object' } },
+                'application/octet-stream': { schema: { type: 'string', format: 'binary' } },
+              },
+            },
+          },
+        },
+      },
+      '/api/pdf/bates-numbering': {
+        post: {
+          operationId: 'applyBatesNumbering',
+          summary: 'Stamp legal Bates numbering prefixes across PDF pages (e.g., PACER / discovery packets)',
+          tags: ['PDF Processing'],
+          requestBody: {
+            required: true,
+            content: {
+              'multipart/form-data': {
+                schema: {
+                  type: 'object',
+                  required: ['file'],
+                  properties: {
+                    file: { type: 'string', format: 'binary' },
+                    prefix: { type: 'string', default: 'DOC-' },
+                    startNumber: { type: 'integer', default: 1 },
+                    digits: { type: 'integer', default: 6 },
+                  },
+                },
+              },
+            },
+          },
+          responses: {
+            '200': {
+              description: 'Stamped PDF binary',
+              content: { 'application/pdf': { schema: { type: 'string', format: 'binary' } } },
+            },
+          },
+        },
+      },
+      '/api/pdf/crop-shipping-label': {
+        post: {
+          operationId: 'cropShippingLabel',
+          summary: 'Crop marketplace A4/Letter shipping PDFs into 4x6 thermal printer labels (USPS, UPS, FedEx, Amazon FBA, eBay)',
+          tags: ['PDF Processing'],
+          requestBody: {
+            required: true,
+            content: {
+              'multipart/form-data': {
+                schema: {
+                  type: 'object',
+                  required: ['file'],
+                  properties: {
+                    file: { type: 'string', format: 'binary' },
+                    preset: { type: 'string', default: 'usps' },
+                  },
+                },
+              },
+            },
+          },
+          responses: {
+            '200': {
+              description: 'Cropped 4x6 thermal PDF',
+              content: { 'application/pdf': { schema: { type: 'string', format: 'binary' } } },
+            },
+          },
+        },
+      },
+      '/api/pdf/protect': {
+        post: {
+          operationId: 'protectPdf',
+          summary: 'Encrypt a PDF with user/owner passwords and permission restrictions',
+          tags: ['PDF Processing'],
+          requestBody: {
+            required: true,
+            content: {
+              'multipart/form-data': {
+                schema: {
+                  type: 'object',
+                  required: ['file', 'password'],
+                  properties: {
+                    file: { type: 'string', format: 'binary' },
+                    password: { type: 'string' },
+                  },
+                },
+              },
+            },
+          },
+          responses: {
+            '200': {
+              description: 'Password-protected PDF binary',
+              content: { 'application/pdf': { schema: { type: 'string', format: 'binary' } } },
+            },
+          },
+        },
+      },
+      '/api/pdf/sanitize': {
+        post: {
+          operationId: 'sanitizePdf',
+          summary: 'Strip XMP metadata, embedded JavaScript, annotations, and hidden layers from PDFs',
+          tags: ['PDF Processing'],
+          requestBody: {
+            required: true,
+            content: {
+              'multipart/form-data': {
+                schema: {
+                  type: 'object',
+                  required: ['file'],
+                  properties: { file: { type: 'string', format: 'binary' } },
+                },
+              },
+            },
+          },
+          responses: {
+            '200': {
+              description: 'Sanitized PDF binary',
+              content: { 'application/pdf': { schema: { type: 'string', format: 'binary' } } },
+            },
+          },
+        },
+      },
+      '/api/pdf/compare': {
+        post: {
+          operationId: 'comparePdf',
+          summary: 'Compare two PDF documents for text and structural differences',
+          tags: ['PDF Processing'],
+          requestBody: {
+            required: true,
+            content: {
+              'multipart/form-data': {
+                schema: {
+                  type: 'object',
+                  required: ['fileA', 'fileB'],
+                  properties: {
+                    fileA: { type: 'string', format: 'binary' },
+                    fileB: { type: 'string', format: 'binary' },
+                  },
+                },
+              },
+            },
+          },
+          responses: {
+            '200': {
+              description: 'Comparison report JSON',
               content: { 'application/json': { schema: { type: 'object' } } },
             },
           },
+        },
+      },
+      '/workflows': {
+        get: {
+          operationId: 'getWorkflowRecipesHub',
+          summary: 'Multi-Step Workflow Recipes Hub (8 automated client-first PDF and image pipelines)',
+          tags: ['Agent & MCP Discovery'],
+          responses: { '200': { description: 'HTML Workflow Recipes Hub' } },
+        },
+      },
+      '/mcp': {
+        get: {
+          operationId: 'getMcpInteractiveHub',
+          summary: 'Interactive MCP Server Integration Hub with Claude, Cursor, Windsurf setup & live tester',
+          tags: ['Agent & MCP Discovery'],
+          responses: { '200': { description: 'HTML MCP Integration Hub' } },
         },
       },
     },

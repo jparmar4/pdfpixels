@@ -91,7 +91,7 @@ export default function ContactPage() {
       icon: Globe,
       title: 'Operations & Transparency',
       description: 'Engineered in Gujarat, India, delivering web-native document tools worldwide.',
-      value: '+91-79-2658-0100 • Ahmedabad, Gujarat, India',
+      value: 'Ahmedabad, Gujarat, India',
       href: '/about',
       gradient: 'from-amber-500 to-orange-600',
     },

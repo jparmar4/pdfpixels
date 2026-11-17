@@ -21,6 +21,7 @@ import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { isHeicFileName, isHeicMime, isImageFileName } from '@/lib/heic-detect';
 import { isHeicUpload, normalizeHeicFile } from '@/lib/heic-client';
+import { useConsumeChainedFile } from '@/hooks/use-consume-chained-file';
 
 interface FileUploadProps {
   accept?: string;
@@ -193,6 +194,11 @@ export function FileUpload({ accept = 'image/*', maxSizeMb }: FileUploadProps) {
 
     applySelectedFile(file);
   }, [accept, acceptedLabels, applySelectedFile, isImageAccept, matchesAccept, maxBytes, resolvedMaxMb]);
+
+  useConsumeChainedFile(
+    (chainedFile) => handleSelectedFile(chainedFile),
+    (chainedFile) => matchesAccept(chainedFile) && chainedFile.size > 0 && chainedFile.size <= maxBytes,
+  );
 
   const handleDragEnter = useCallback((event: React.DragEvent) => {
     event.preventDefault();

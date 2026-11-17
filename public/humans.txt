@@ -17,7 +17,7 @@
 	Last update: 2026/08
 	Language: English
 	Stack: Next.js App Router, React, TypeScript, Tailwind CSS
-	Tools: 50+ free PDF and image workflows
+	Tools: 124+ free PDF and image workflows
 	Signup: Not required for core tools
 	Processing: Browser canvas for many image edits; server-side Sharp / pdf-lib / Ghostscript for compression, conversion, and PDF jobs
 	Privacy: Files are processed for the current request; temporary server files are deleted on supported flows

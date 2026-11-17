@@ -1,5 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { rateLimit } from '@/lib/rate-limit';
+import {
+  API_AUTH_REASON_HEADER,
+  API_READY_COOKIE,
+  API_TOKEN_COOKIE,
+  API_TOKEN_HEADER,
+  API_TOKEN_REFRESH_THRESHOLD_MS,
+  attachApiSessionCookies,
+  getRequestHost,
+  isHeavyProcessingApiPath,
+  shouldIssueSessionCookieForPage,
+  verifySameOriginRequest,
+  verifySignedApiToken,
+} from '@/lib/api-auth';
 
 const PROCESSING_API_LIMIT = 20;
 const PROCESSING_API_WINDOW_MS = 60_000;
@@ -45,6 +58,24 @@ function prefersMarkdown(acceptHeader: string | null): boolean {
 
 export default function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
+  const requestHost = getRequestHost(request);
+
+  // Same-origin session bootstrap / refresh for web UI requests
+  if (pathname === '/api/session' && (request.method === 'GET' || request.method === 'HEAD')) {
+    if (!verifySameOriginRequest(request)) {
+      return NextResponse.json(
+        { success: false, error: 'Forbidden: same-origin web request required.', code: 'ORIGIN_MISMATCH' },
+        { status: 403, headers: { 'Cache-Control': 'no-store, max-age=0', [API_AUTH_REASON_HEADER]: 'origin-mismatch' } }
+      );
+    }
+
+    const response = NextResponse.json(
+      { ok: true },
+      { headers: { 'Cache-Control': 'no-store, private, max-age=0' } }
+    );
+    attachApiSessionCookies(response, request, requestHost);
+    return response;
+  }
 
   // Content negotiation: Serve Markdown when an agent requests Accept: text/markdown
   if (request.method === 'GET' || request.method === 'HEAD') {
@@ -77,16 +108,69 @@ export default function proxy(request: NextRequest) {
       return response;
     }
 
-    return NextResponse.next();
+    const response = NextResponse.next();
+    if (shouldIssueSessionCookieForPage(pathname)) {
+      const existingToken = request.cookies.get(API_TOKEN_COOKIE)?.value;
+      const hasReadyHint = Boolean(request.cookies.get(API_READY_COOKIE)?.value);
+      const tokenValid = verifySignedApiToken(
+        existingToken,
+        requestHost,
+        API_TOKEN_REFRESH_THRESHOLD_MS
+      );
+      if (!tokenValid || !hasReadyHint) {
+        attachApiSessionCookies(response, request, requestHost);
+      }
+    }
+    return response;
   }
 
   if (request.method === 'OPTIONS') {
     return NextResponse.next();
   }
 
-  // Only rate limit /api routes for POST/PUT/DELETE (except /api/mcp which has its own lightweight JSON-RPC handler)
+  // Only protect and rate limit /api routes for POST/PUT/DELETE
   if (!pathname.startsWith('/api/')) {
     return NextResponse.next();
+  }
+
+  const isHeavyProcessingRoute = isHeavyProcessingApiPath(pathname);
+  if (isHeavyProcessingRoute) {
+    if (!verifySameOriginRequest(request)) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Forbidden: cross-origin or direct API requests without web context are not allowed.',
+          code: 'API_ORIGIN_FORBIDDEN',
+        },
+        {
+          status: 403,
+          headers: {
+            'Cache-Control': 'no-store, max-age=0',
+            [API_AUTH_REASON_HEADER]: 'origin-mismatch',
+          },
+        }
+      );
+    }
+
+    const token =
+      request.cookies.get(API_TOKEN_COOKIE)?.value ||
+      request.headers.get(API_TOKEN_HEADER);
+    if (!verifySignedApiToken(token, requestHost)) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Forbidden: valid same-origin web session token required.',
+          code: 'API_SESSION_REQUIRED',
+        },
+        {
+          status: 403,
+          headers: {
+            'Cache-Control': 'no-store, max-age=0',
+            [API_AUTH_REASON_HEADER]: 'session-required',
+          },
+        }
+      );
+    }
   }
 
   const ip =

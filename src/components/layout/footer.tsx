@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { allTools, allPdfTools, toolCategories } from '@/lib/tools-data';
 import { geoRegions } from '@/lib/geo-data';
 import { ADSENSE_REVIEW_MODE } from '@/lib/seo';
-import { FooterNewsletterForm } from './footer-client';
+import { FooterContactInfo, FooterNewsletterForm } from './footer-client';
 
 const toolLinkIds = ['compress', 'resize', 'remove-background', 'image-to-pdf', 'pdf-merge', 'pdf-split'];
 
@@ -43,6 +43,7 @@ export function Footer() {
     { name: 'Disclaimer', href: '/disclaimer' },
     { name: 'DMCA Policy', href: '/dmca' },
     { name: 'API Docs', href: '/api-docs' },
+    { name: 'MCP Server Hub', href: '/mcp' },
   ];
 
   const categoryLinks = toolCategories.map((cat) => ({
@@ -58,6 +59,7 @@ export function Footer() {
       }));
 
   const guideLinks = [
+    { name: 'Workflow recipes', href: '/workflows' },
     ...(ADSENSE_REVIEW_MODE ? [] : [{ name: 'Compare tools', href: '/compare' }]),
     { name: 'Use-case guides', href: '/use-cases' },
     { name: 'PDF size limits research (2026)', href: '/research/pdf-size-limits-2026' },
@@ -72,7 +74,7 @@ export function Footer() {
           <div className="relative z-10 flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
             <div className="max-w-2xl space-y-3">
               <p className="inline-flex items-center gap-2 rounded-full border border-primary/15 bg-primary/8 px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] text-primary">
-                Premium web workflow
+                ISO 32000-2 Document Suite
               </p>
               <p className="text-2xl font-extrabold tracking-tight text-foreground md:text-3xl">
                 A faster front door for PDF and image workflows.
@@ -118,11 +120,7 @@ export function Footer() {
                 Modern PDF and image tooling for users who want dependable processing and a workflow that feels fast from upload to download.
               </p>
 
-              <p className="text-xs text-muted-foreground">
-                <a href="mailto:support@pdfpixels.com" className="hover:text-primary">support@pdfpixels.com</a>
-                {' · '}
-                <a href="tel:+917926580100" className="hover:text-primary">+91-79-2658-0100</a>
-              </p>
+              <FooterContactInfo />
             </div>
 
             <FooterColumn title="Popular tools" links={toolLinks} />
@@ -131,12 +129,25 @@ export function Footer() {
               <FooterColumn key={col.title} title={col.title} links={col.links} />
             ))}
 
-            {!ADSENSE_REVIEW_MODE && regionLinks.length > 0 && (
-              <FooterColumn title="Regions" links={regionLinks} />
-            )}
-
             <FooterColumn title="Company & Legal" links={legalLinks} />
           </div>
+
+          {!ADSENSE_REVIEW_MODE && regionLinks.length > 0 && (
+            <div className="mt-10 border-t border-border/30 pt-8">
+              <h3 className="mb-3 text-xs font-bold uppercase tracking-[0.16em] text-muted-foreground">
+                Regions
+              </h3>
+              <ul className="grid grid-cols-2 gap-x-4 gap-y-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-6">
+                {regionLinks.map((link) => (
+                  <li key={`Regions-${link.href}`}>
+                    <Link href={link.href} className="text-sm text-muted-foreground transition-colors hover:text-primary">
+                      {link.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
 
         {/* ── Category & Guide index ── */}

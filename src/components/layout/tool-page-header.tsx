@@ -1,9 +1,10 @@
 'use client';
 
 import React from 'react';
-import { Download, MonitorSmartphone, Server, ShieldCheck, Sparkles, Wand2, Zap } from 'lucide-react';
+import { Download, Keyboard, MonitorSmartphone, Server, ShieldCheck, Sparkles, Wand2, Wifi, WifiOff, Zap } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { type LucideIcon } from 'lucide-react';
+import { useLiveOnlineStatus } from '@/hooks/use-pro-tool-shortcuts';
 import { normalizeDisplayText } from '@/lib/display-text';
 import { getToolById } from '@/lib/tools-data';
 import { useActiveTool } from '@/hooks/use-active-tool';
@@ -27,6 +28,7 @@ export function ToolPageHeader({
   children,
 }: ToolPageHeaderProps) {
   const activeToolId = useActiveTool().activeTool?.id;
+  const isOnline = useLiveOnlineStatus();
   const isIconComponentType =
     typeof icon === 'function' ||
     (typeof icon === 'object' && icon !== null && '$$typeof' in (icon as { $$typeof?: unknown }));
@@ -122,6 +124,37 @@ export function ToolPageHeader({
                   <ProcessingIcon className={`h-3.5 w-3.5 ${processingMeta.tone}`} />
                   {processingMeta.label}
                 </span>
+                {tool?.processing === 'client' && (
+                  <span
+                    data-testid="header-offline-proof"
+                    className={`inline-flex items-center gap-2 rounded-full border px-3 py-1.5 ${
+                      isOnline
+                        ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300'
+                        : 'border-amber-500/40 bg-amber-500/15 text-amber-800 dark:text-amber-300'
+                    }`}
+                  >
+                    {isOnline ? <Wifi className="h-3.5 w-3.5" /> : <WifiOff className="h-3.5 w-3.5" />}
+                    {isOnline ? 'Works 100% offline — test by turning off Wi-Fi' : 'Offline Mode Active · Running Locally'}
+                  </span>
+                )}
+              </div>
+
+              <div className="flex flex-wrap items-center gap-2 text-[11px] text-muted-foreground pt-0.5">
+                <span className="inline-flex items-center gap-1 font-semibold text-foreground/80">
+                  <Keyboard className="h-3.5 w-3.5 text-primary" />
+                  Shortcuts:
+                </span>
+                <kbd className="rounded border border-border/70 bg-muted/60 px-1.5 py-0.5 font-mono text-[10px]">Ctrl/⌘+O</kbd>
+                <span>Open</span>
+                <span aria-hidden="true">·</span>
+                <kbd className="rounded border border-border/70 bg-muted/60 px-1.5 py-0.5 font-mono text-[10px]">Ctrl/⌘+S</kbd>
+                <span>Save</span>
+                <span aria-hidden="true">·</span>
+                <kbd className="rounded border border-border/70 bg-muted/60 px-1.5 py-0.5 font-mono text-[10px]">Space</kbd>
+                <span>Hold to compare</span>
+                <span aria-hidden="true">·</span>
+                <kbd className="rounded border border-border/70 bg-muted/60 px-1.5 py-0.5 font-mono text-[10px]">Esc</kbd>
+                <span>Reset</span>
               </div>
             </div>
           </div>

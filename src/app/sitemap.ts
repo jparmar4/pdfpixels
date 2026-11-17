@@ -7,6 +7,7 @@ import { useCasePages } from '@/lib/use-cases';
 import { geoRegions } from '@/lib/geo-data';
 import { localizedSitemapEntries, toolSitemapAlternates } from '@/lib/localized-tools';
 import { INDIAN_EXAM_PRESETS } from '@/lib/indian-exams-data';
+import { WORKFLOW_RECIPES } from '@/lib/workflow-recipes';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const evergreen = SITE_CONTENT_UPDATED;
@@ -66,6 +67,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: evergreen,
       changeFrequency: 'monthly',
       priority: 0.5,
+    },
+    {
+      url: absoluteUrl('/mcp'),
+      lastModified: evergreen,
+      changeFrequency: 'weekly',
+      priority: 0.85,
     },
     {
       url: absoluteUrl('/brand'),
@@ -169,6 +176,21 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.85,
   }));
 
+  const workflowEntries: MetadataRoute.Sitemap = [
+    {
+      url: absoluteUrl('/workflows'),
+      lastModified: evergreen,
+      changeFrequency: 'weekly' as const,
+      priority: 0.9,
+    },
+    ...WORKFLOW_RECIPES.map((recipe) => ({
+      url: absoluteUrl(`/workflows/${recipe.slug}`),
+      lastModified: evergreen,
+      changeFrequency: 'weekly' as const,
+      priority: 0.85,
+    })),
+  ];
+
   // AdSense-review freeze: while ADSENSE_REVIEW_MODE is true, geo hubs,
   // comparison pages, and localized packs stay noindexed and out of the
   // sitemap so Google's review crawlers evaluate only primary, high-density
@@ -176,6 +198,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   // alternates on the localized entries) without further edits.
   return [
     ...corePages,
+    ...workflowEntries,
     ...categoryEntries,
     ...toolPages,
     ...useCaseEntries,

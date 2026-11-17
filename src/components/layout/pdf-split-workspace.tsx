@@ -6,12 +6,16 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useActiveTool } from '@/hooks/use-active-tool';
+import { useConsumeChainedFile } from '@/hooks/use-consume-chained-file';
 import { ToolPageHeader } from './tool-page-header';
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { useReducedMotion } from 'framer-motion';
 import { toast } from 'sonner';
 import { ToolLimitNotice } from './tool-limit-notice';
+import { PrivateModeBadge } from './private-mode-badge';
 import { ResultCard } from './result-card';
+import { splitPdfClient } from '@/lib/client-pdf-ops';
+import { triggerDownloadWithSmartlink } from '@/lib/ads-config';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   Select,
@@ -104,6 +108,11 @@ export function PDFSplitWorkspace() {
     }
   }, []);
 
+  useConsumeChainedFile(
+    loadPdfMeta,
+    (chained) => Boolean(chained.type === 'application/pdf' || chained.name.toLowerCase().endsWith('.pdf')),
+  );
+
   const handleFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
     if (selectedFile && selectedFile.name.toLowerCase().endsWith('.pdf')) {
@@ -130,116 +139,60 @@ export function PDFSplitWorkspace() {
     }
 
     setIsProcessing(true);
-    setStatusLabel('Uploading');
-    setProgress(0);
-
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('mode', mode);
-
-    if (mode === 'range') {
-      formData.append('pageRange', pageRange);
-    } else if (mode === 'single') {
-      formData.append('singlePage', singlePage);
-    } else if (mode === 'size') {
-      formData.append('maxSizeMb', sizeLimitMb);
-    }
+    setStatusLabel('Processing');
+    setProgress(25);
 
     try {
-      const { fetchWithUploadProgress } = await import('@/lib/upload-with-progress');
-      const response = await fetchWithUploadProgress('/api/pdf/split', formData, (percent) => {
-        setStatusLabel(percent < 70 ? 'Uploading' : 'Processing');
-        setProgress(percent);
+      const splitOut = await splitPdfClient(file, {
+        mode,
+        pageRange,
+        singlePage,
+        maxSizeMb: sizeLimitMb,
       });
 
       setStatusLabel('Finalizing');
       setProgress(100);
 
-      if (!response.ok) {
-        let message = 'Processing failed';
-        try {
-          const err = await response.json();
-          message = err?.error || message;
-        } catch { /* ignore parse error */ }
-        throw new Error(message);
-      }
-
-      const contentType = response.headers.get('content-type') || '';
-
-      if (contentType.includes('application/json')) {
-        const data = await response.json();
-        setResult(data);
-
-        if (data.pages) {
-          toast.success(`Split into ${data.pages.length} files!`);
-          if (data.truncated) {
-            toast.info('Showing first 20 pages only for performance. Use range for larger PDFs.');
-          }
-        } else {
-          toast.success(`Extracted ${data.extractedPages?.length || 0} pages!`);
-        }
-      } else if (contentType.includes('application/zip')) {
-        const JSZip = (await import('jszip')).default;
-        const blob = await response.blob();
-        const zip = await JSZip.loadAsync(blob);
-        const pages: Array<{ pageNumber: number; pdfUrl: string; fileName: string }> = [];
-        let i = 1;
-        
-        for (const [relativePath, zipEntry] of Object.entries(zip.files)) {
-          if (!zipEntry.dir) {
-            const fileData = await zipEntry.async('blob');
-            const pdfUrl = URL.createObjectURL(fileData);
-            pages.push({
-              pageNumber: i++,
-              pdfUrl,
-              fileName: relativePath,
-            });
-          }
-        }
-        
-        const totalPages = Number(response.headers.get('x-total-pages') || 0);
-        const truncated = response.headers.get('x-truncated') === 'true';
-        const zipMode = response.headers.get('x-mode') === 'by-size' ? 'by-size' : 'split-all';
-        const parts = Number(response.headers.get('x-parts') || 0);
-
-        setResult((previous) => {
-          revokeResult(previous);
-          return {
-            mode: zipMode,
-            totalPages,
-            pages,
-            truncated,
-          };
-        });
-
-        toast.success(zipMode === 'by-size' ? `Split into ${parts || pages.length} parts under ${sizeLimitMb}MB!` : `Split into ${pages.length} files!`);
-        if (truncated) {
-          toast.info('Showing first 20 pages only for performance. Use range for larger PDFs.');
-        }
-      } else {
-        const blob = await response.blob();
+      if (splitOut.singlePdfBytes) {
+        const copy = new Uint8Array(splitOut.singlePdfBytes.byteLength);
+        copy.set(splitOut.singlePdfBytes);
+        const blob = new Blob([copy.buffer], { type: 'application/pdf' });
         const pdfUrl = URL.createObjectURL(blob);
-        const disposition = response.headers.get('content-disposition') || '';
-        const fileNameMatch = disposition.match(/filename="?([^";]+)"?/i);
-        const fileName = fileNameMatch?.[1] || `extracted-pages-${Date.now()}.pdf`;
-        const totalPages = Number(response.headers.get('x-total-pages') || 0);
-        const extractedPagesHeader = response.headers.get('x-extracted-pages') || '';
-        const extractedPages = extractedPagesHeader
-          ? extractedPagesHeader.split(',').map((n) => parseInt(n, 10)).filter((n) => !Number.isNaN(n))
-          : [];
 
         setResult((previous) => {
           revokeResult(previous);
           return {
             mode: 'extract',
-            totalPages,
-            extractedPages,
-            fileName,
+            totalPages: splitOut.totalPages,
+            extractedPages: splitOut.extractedPages || [],
+            fileName: splitOut.singleFileName || `extracted-${Date.now()}.pdf`,
             pdfUrl,
           };
         });
-        toast.success(`Extracted ${extractedPages.length || 1} pages!`);
+        toast.success(`Extracted ${splitOut.extractedPages?.length || 1} page(s) locally (Zero Server Upload)!`);
+      } else if (splitOut.partFiles) {
+        const pages = splitOut.partFiles.map((part) => ({
+          pageNumber: part.pageNumber,
+          pdfUrl: URL.createObjectURL(part.blob),
+          fileName: part.fileName,
+        }));
+        const resultMode = mode === 'size' ? 'by-size' : 'split-all';
+        setResult((previous) => {
+          revokeResult(previous);
+          return {
+            mode: resultMode,
+            totalPages: splitOut.totalPages,
+            pages,
+            truncated: mode === 'all' && splitOut.totalPages > 25,
+          };
+        });
+        toast.success(
+          resultMode === 'by-size'
+            ? `Split into ${pages.length} parts under ${sizeLimitMb}MB locally!`
+            : `Split into ${pages.length} PDF files locally (Zero Server Upload)!`,
+        );
       }
+
       requestAnimationFrame(() => {
         document.getElementById('split-result')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       });
@@ -255,13 +208,15 @@ export function PDFSplitWorkspace() {
     const url = pdfUrl || result?.pdfUrl;
     const name = fileName || result?.fileName;
     if (url && name) {
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = name;
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      toast.success('Download started');
+      triggerDownloadWithSmartlink(() => {
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = name;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        toast.success('Download started');
+      });
     }
   }, [result]);
 
@@ -336,6 +291,10 @@ export function PDFSplitWorkspace() {
       </ToolPageHeader>
 
       {/* Main Content */}
+      <PrivateModeBadge
+        className="mb-6"
+        description="PDF page splitting runs 100% locally in browser memory via pdf-lib — zero files leave your device."
+      />
       <div className="grid lg:grid-cols-3 gap-8">
         {/* Left Panel - Upload & Preview */}
         <div className="lg:col-span-2 space-y-6">
@@ -431,10 +390,14 @@ export function PDFSplitWorkspace() {
               >
                 <ResultCard
                   title="PDF extract ready"
-                  description="Selected pages were extracted successfully."
+                  description="Selected pages were extracted successfully in browser memory."
                   primaryMeta={result.extractedPages?.length ? `${result.extractedPages.length} extracted page(s)` : undefined}
                   onDownload={() => handleDownload()}
                   downloadLabel="Download extracted PDF"
+                  originalSize={file?.size}
+                  formatLabel="PDF"
+                  resultUrl={result.pdfUrl}
+                  resultFileName={result.fileName}
                   nextActions={[
                     { label: 'Compress PDF', href: '/tools/compress-pdf' },
                     { label: 'Merge PDF', href: '/tools/merge-pdf' },

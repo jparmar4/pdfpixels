@@ -40,7 +40,8 @@ export function PDFWordCounterWorkspace() {
       formData.append('file', file);
       formData.append('format', 'json');
 
-      const res = await fetch('/api/pdf/to-text', {
+      const { apiFetch } = await import('@/lib/api-client');
+      const res = await apiFetch('/api/pdf/to-text', {
         method: 'POST',
         body: formData,
       });

@@ -2,7 +2,7 @@ import { apiError } from '@/lib/api-response';
 import { openEditablePdf, pdfTextErrorMessage, pdfTextErrorStatus, sanitizeDownloadFileName } from '@/lib/pdf-api';
 import { NextRequest, NextResponse } from 'next/server';
 import JSZip from 'jszip';
-import { extractPdfLines } from '@/lib/pdf-text';
+import { extractPdfLines, extractPdfTextItems, itemsToTableRows } from '@/lib/pdf-text';
 
 function parseCellNumber(rawVal: string): string | null {
   const trimmed = rawVal.trim();
@@ -174,25 +174,26 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    const rawLines = await extractPdfLines(buffer);
+    const items = await extractPdfTextItems(buffer);
+    const tableRows: string[][] = itemsToTableRows(items);
 
-    // Parse lines into table rows & columns
-    const tableRows: string[][] = [];
-    for (const line of rawLines) {
-      let cols: string[] = [];
-      if (line.includes('\t')) {
-        cols = line.split('\t').map(c => c.trim());
-      } else if (line.includes('|')) {
-        cols = line.split('|').map(c => c.trim());
+    if (tableRows.length === 0) {
+      const rawLines = await extractPdfLines(buffer);
+      for (const line of rawLines) {
+        let cols: string[] = [];
+        if (line.includes('\t')) {
+          cols = line.split('\t').map(c => c.trim());
+        } else if (line.includes('|')) {
+          cols = line.split('|').map(c => c.trim());
+        } else if (/\s{2,}/.test(line)) {
+          cols = line.split(/\s{2,}/).map(c => c.trim());
+        } else {
+          cols = [line.trim()];
+        }
 
-      } else if (/\s{2,}/.test(line)) {
-        cols = line.split(/\s{2,}/).map(c => c.trim());
-      } else {
-        cols = [line.trim()];
-      }
-
-      if (cols.length > 0) {
-        tableRows.push(cols);
+        if (cols.length > 0) {
+          tableRows.push(cols);
+        }
       }
     }
 

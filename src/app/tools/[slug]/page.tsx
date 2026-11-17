@@ -6,7 +6,7 @@ import { ArrowRight, BookOpen, ChevronRight, GitCompareArrows, Layers3, LayoutTe
 import { ToolContentSection } from '@/components/layout/tool-content-section';
 import { ToolPageClient } from '@/components/layout/tool-page-client';
 import { ToolSidebarAd } from '@/components/ads/tool-sidebar-ad';
-import { HeaderAd, InContentAd, FooterAd, NativeAd } from '@/components/ads/ad-banner';
+import { HeaderAd, FooterAd, NativeAd } from '@/components/ads/ad-banner';
 import { adsConfig, adsenseConfig } from '@/lib/ads-config';
 import { ErrorBoundary } from '@/components/ui/error-boundary';
 import { comparisonPages } from '@/lib/comparisons';
@@ -136,7 +136,16 @@ const WORKSPACE_CONTAINER_CLASS: Record<string, string> = {
   'pdf-extract': 'container mx-auto px-4 lg:px-8 max-w-6xl',
   'pdf-fill': 'container mx-auto px-4 lg:px-8 max-w-6xl',
   'pdf-reader': 'container mx-auto px-4 lg:px-8 max-w-6xl',
+  'fill-sign-irs-w9-pdf': 'container mx-auto px-4 lg:px-8 max-w-6xl',
+  'uscis-pdf-packet-merger': 'container mx-auto px-4 lg:px-8 max-w-6xl',
+  'pdf-accessibility-checker': 'container mx-auto px-4 lg:px-8 max-w-6xl',
+  'local-folder-batch-processor': 'container mx-auto px-4 lg:px-8 max-w-6xl',
+  'ecommerce-product-photo-pack': 'container mx-auto px-4 lg:px-8 max-w-6xl',
+  'c2pa-ai-content-credentials-checker': 'container mx-auto px-4 lg:px-8 max-w-5xl',
+  'private-ai-pdf-contract-auditor': 'container mx-auto px-4 lg:px-8 max-w-5xl',
   // max-w-5xl workspaces
+  'amazon-fba-thermal-label-converter': 'container mx-auto px-4 lg:px-8 max-w-5xl',
+  'qbo-ofx-qfx-to-excel-csv': 'container mx-auto px-4 lg:px-8 max-w-5xl',
   'pdf-compress': 'container mx-auto px-4 lg:px-8 max-w-5xl',
   'compress-pdf-to-100kb': 'container mx-auto px-4 lg:px-8 max-w-5xl',
   'compress-pdf-to-200kb': 'container mx-auto px-4 lg:px-8 max-w-5xl',
@@ -495,21 +504,18 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
         <HeaderAd className="my-4" />
 
         <ErrorBoundary>
-          <Suspense fallback={<WorkspaceLoading tool={tool} containerClass={WORKSPACE_CONTAINER_CLASS[tool.id]} />}>
-            <ToolPageClient toolId={tool.id} toolName={cleanToolName} toolDescription={normalizeDisplayText(tool.description)} />
+          <Suspense fallback={<WorkspaceLoading tool={tool} containerClass={WORKSPACE_CONTAINER_CLASS[tool.id] || (tool.id.includes('statement-to-excel') ? 'container mx-auto px-4 lg:px-8 max-w-5xl' : undefined)} />}>
+            <ToolPageClient key={tool.id} toolId={tool.id} toolName={cleanToolName} toolDescription={normalizeDisplayText(tool.description)} />
           </Suspense>
         </ErrorBoundary>
 
-        {/* Below-Workspace In-Content Ad */}
-        <InContentAd className="my-6" />
+        {/* Primary high-viewability Native Banner directly below the active tool processing card (above long-form SEO guide) */}
+        <NativeAd className="my-6 max-w-5xl mx-auto px-4" />
 
         <ToolSidebarAd />
 
         {/* Editorial content (indexable) */}
         <ToolContentSection toolSlug={tool.slug} toolName={cleanToolName} isAI={tool.isAI} processing={tool.processing} />
-
-        {/* Native Recommendation Ad */}
-        <NativeAd className="my-10 max-w-5xl mx-auto px-4" />
 
         {(relatedTools.length > 0 || relatedUseCases.length > 0 || relatedComparisons.length > 0 || relatedPosts.length > 0) ? (
           <section className="container mx-auto px-4 pb-12 lg:px-8">

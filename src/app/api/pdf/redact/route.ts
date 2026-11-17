@@ -67,7 +67,11 @@ export async function POST(request: NextRequest) {
       const page = pdf.getPage(box.pageNumber - 1);
       const crop = page.getCropBox();
       if (page.getRotation().angle !== 0 || crop.x !== 0 || crop.y !== 0) return apiError('Normalize rotated or offset pages before redacting to ensure accurate placement.', 422);
-      if (box.x + box.width > crop.width || box.y + box.height > crop.height) return apiError('Redaction boxes must fit inside the page.', 400);
+      if (box.x >= crop.width || box.y >= crop.height || box.x + box.width > crop.width + 2 || box.y + box.height > crop.height + 2) {
+        return apiError('Redaction boxes must fit inside the page.', 400);
+      }
+      box.width = Math.min(box.width, Math.max(1, crop.width - box.x));
+      box.height = Math.min(box.height, Math.max(1, crop.height - box.y));
     }
     // Form appearances must be painted before covering the sensitive area.
     try { pdf.getForm().flatten(); } catch { return apiError('Could not safely flatten this form.', 422); }

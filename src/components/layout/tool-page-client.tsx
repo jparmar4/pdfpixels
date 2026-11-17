@@ -5,6 +5,7 @@ import { useAppStore } from '@/store/app-store';
 import { ToolContext } from '@/hooks/use-active-tool';
 import { useEffect, useRef } from 'react';
 import { ErrorBoundary } from '@/components/ui/error-boundary';
+import { useGlobalToolShortcuts } from '@/hooks/use-pro-tool-shortcuts';
 
 // Dynamically import workspace components
 const CompressWorkspace = dynamic(
@@ -129,6 +130,51 @@ const PDFToExcelWorkspace = dynamic(
 
 const ShippingLabelCropWorkspace = dynamic(
   () => import('@/components/layout/shipping-label-workspace').then(mod => ({ default: mod.ShippingLabelCropWorkspace })),
+  { loading: () => <WorkspaceLoading /> }
+);
+
+const IrsW9Workspace = dynamic(
+  () => import('@/components/layout/irs-w9-workspace').then(mod => ({ default: mod.IrsW9Workspace })),
+  { loading: () => <WorkspaceLoading /> }
+);
+
+const AmazonFbaLabelWorkspace = dynamic(
+  () => import('@/components/layout/amazon-fba-label-workspace').then(mod => ({ default: mod.AmazonFbaLabelWorkspace })),
+  { loading: () => <WorkspaceLoading /> }
+);
+
+const QboOfxWorkspace = dynamic(
+  () => import('@/components/layout/qbo-ofx-workspace').then(mod => ({ default: mod.QboOfxWorkspace })),
+  { loading: () => <WorkspaceLoading /> }
+);
+
+const UscisPacketWorkspace = dynamic(
+  () => import('@/components/layout/uscis-packet-workspace').then(mod => ({ default: mod.UscisPacketWorkspace })),
+  { loading: () => <WorkspaceLoading /> }
+);
+
+const PdfAccessibilityWorkspace = dynamic(
+  () => import('@/components/layout/pdf-accessibility-workspace').then(mod => ({ default: mod.PdfAccessibilityWorkspace })),
+  { loading: () => <WorkspaceLoading /> }
+);
+
+const LocalFolderBatchWorkspace = dynamic(
+  () => import('@/components/layout/local-folder-batch-workspace').then(mod => ({ default: mod.LocalFolderBatchWorkspace })),
+  { loading: () => <WorkspaceLoading /> }
+);
+
+const EcommercePhotoPackWorkspace = dynamic(
+  () => import('@/components/layout/ecommerce-photo-pack-workspace').then(mod => ({ default: mod.EcommercePhotoPackWorkspace })),
+  { loading: () => <WorkspaceLoading /> }
+);
+
+const C2paCheckerWorkspace = dynamic(
+  () => import('@/components/layout/c2pa-checker-workspace').then(mod => ({ default: mod.C2paCheckerWorkspace })),
+  { loading: () => <WorkspaceLoading /> }
+);
+
+const ContractAuditorWorkspace = dynamic(
+  () => import('@/components/layout/contract-auditor-workspace').then(mod => ({ default: mod.ContractAuditorWorkspace })),
   { loading: () => <WorkspaceLoading /> }
 );
 
@@ -306,7 +352,16 @@ function getWorkspaceComponent(toolId: string) {
   if (toolId === 'pdf-to-csv') return <PDFToExcelWorkspace initialFormat="csv" />;
   if (toolId === 'pdf-word-counter') return <PDFWordCounterWorkspace />;
   if (toolId.includes('bank-statement-to-excel') || toolId.includes('statement-to-excel')) return <BankStatementWorkspace />;
+  if (toolId === 'qbo-ofx-qfx-to-excel-csv') return <QboOfxWorkspace />;
   if (toolId === 'shipping-label-cropper') return <ShippingLabelCropWorkspace />;
+  if (toolId === 'amazon-fba-thermal-label-converter') return <AmazonFbaLabelWorkspace />;
+  if (toolId === 'uscis-pdf-packet-merger') return <UscisPacketWorkspace />;
+  if (toolId === 'fill-sign-irs-w9-pdf') return <IrsW9Workspace />;
+  if (toolId === 'local-folder-batch-processor') return <LocalFolderBatchWorkspace />;
+  if (toolId === 'private-ai-pdf-contract-auditor') return <ContractAuditorWorkspace />;
+  if (toolId === 'ecommerce-product-photo-pack') return <EcommercePhotoPackWorkspace />;
+  if (toolId === 'c2pa-ai-content-credentials-checker') return <C2paCheckerWorkspace />;
+  if (toolId === 'pdf-accessibility-checker') return <PdfAccessibilityWorkspace />;
   if (toolId === 'bates-numbering-pdf') return <BatesNumberingWorkspace />;
   if (toolId === 'sanitize-pdf') return <SanitizePdfWorkspace />;
   if (toolId === 'compare-pdf') return <ComparePdfWorkspace />;
@@ -390,6 +445,7 @@ function getWorkspaceComponent(toolId: string) {
 }
 
 export function ToolPageClient({ toolId, toolName, toolDescription }: ToolPageClientProps) {
+  useGlobalToolShortcuts();
   const setActiveTool = useAppStore((state) => state.setActiveTool);
   const reset = useAppStore((state) => state.reset);
   const prevToolId = useRef<string | null>(null);

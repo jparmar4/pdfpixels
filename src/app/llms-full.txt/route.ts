@@ -6,6 +6,7 @@ import { absoluteUrl } from '@/lib/seo';
 import { useCasePages } from '@/lib/use-cases';
 import { comparisonPages } from '@/lib/comparisons';
 import { geoRegions } from '@/lib/geo-data';
+import { WORKFLOW_RECIPES } from '@/lib/workflow-recipes';
 
 export const dynamic = 'force-static';
 
@@ -110,6 +111,18 @@ export async function GET() {
     })
     .join('\n\n');
 
+  const workflowBlocks = WORKFLOW_RECIPES.map((recipe) => {
+    const url = absoluteUrl(`/workflows/${recipe.slug}`);
+    const stepList = recipe.steps.map((s, idx) => `  ${idx + 1}. **${s.title}** (${s.execution}): ${s.subtitle}`).join('\n');
+    return [
+      `### [${recipe.title}](${url})`,
+      `- **URL:** [${url}](${url})`,
+      `- **Category:** ${recipe.category}`,
+      `- **Summary:** ${recipe.description}`,
+      `- **Pipeline Steps:**\n${stepList}`,
+    ].join('\n');
+  }).join('\n\n');
+
   const content = `# PdfPixels — Complete LLM & AI Agent Reference (llms-full.txt)
 
 > Comprehensive machine-readable reference for PdfPixels (${absoluteUrl('/')}), a free, zero-signup, watermark-free online PDF and image processing platform offering ${indexableTools.length}+ specialized tools across ${toolCategories.length} categories.
@@ -122,6 +135,7 @@ export async function GET() {
 - **Supported Input Formats:** PDF, DOCX, XLSX, PPTX, HTML, TXT, Markdown, CSV, JSON, XML, EPUB, RTF, JPG/JPEG, PNG, WebP, AVIF, HEIC/HEIF, SVG, GIF, BMP, TIFF, ICO.
 - **Supported Output Formats:** PDF, PDF/A, DOCX, XLSX, PPTX, TXT, CSV, JSON, HTML, Markdown, JPG, PNG, WebP, AVIF, SVG, GIF, TIFF, ICO, ZIP.
 - **Summary Index:** [llms.txt](${absoluteUrl('/llms.txt')})
+- **Interactive MCP Hub:** [MCP Integration Hub](${absoluteUrl('/mcp')})
 - **MCP Server Card:** [/.well-known/mcp/server-card.json](${absoluteUrl('/.well-known/mcp/server-card.json')})
 - **MCP Endpoint:** [/api/mcp](${absoluteUrl('/api/mcp')})
 - **OpenAPI Spec:** [/openapi.json](${absoluteUrl('/openapi.json')})
@@ -129,6 +143,12 @@ export async function GET() {
 ---
 
 ${categoryDetailBlocks}
+
+---
+
+## Multi-Step Workflow Recipes (${absoluteUrl('/workflows')})
+
+${workflowBlocks}
 
 ---
 

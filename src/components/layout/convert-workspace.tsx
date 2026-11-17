@@ -19,6 +19,7 @@ import { Slider } from '@/components/ui/slider';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useActiveTool } from '@/hooks/use-active-tool';
 import { FileUpload } from './file-upload';
+import { CompareHoldPreview } from './compare-hold-preview';
 import { ResultCard } from './result-card';
 import { ToolLimitNotice } from './tool-limit-notice';
 import { ToolPageHeader } from './tool-page-header';
@@ -232,35 +233,45 @@ export function ConvertWorkspace() {
     const controller = new AbortController();
     inFlightRef.current = controller;
     try {
-      const endpoint = isPdfToImage ? '/api/pdf/to-image' : '/api/image/process';
-      const { fetchWithUploadProgress } = await import('@/lib/upload-with-progress');
-      const response = await fetchWithUploadProgress(endpoint, formData, setProgress, controller.signal);
+      if (!isPdfToImage) {
+        const { requestProcessedImage } = await import('@/lib/image-process-client');
+        const data = await requestProcessedImage(formData, setProgress, controller.signal);
+        setProgress(100);
+        setProcessedImage(data.imageUrl);
+        setProcessingStats({
+          originalSize: data.originalSize,
+          processedSize: data.processedSize,
+          savedPercent: data.savedPercent,
+        });
+        toast.success(`Image converted to ${formatInfo[safeFormat].name}.`);
+      } else {
+        const { fetchWithUploadProgress } = await import('@/lib/upload-with-progress');
+        const response = await fetchWithUploadProgress('/api/pdf/to-image', formData, setProgress, controller.signal);
 
-      setProgress(100);
+        setProgress(100);
 
-      if (!response.ok) {
-        let message = 'Processing failed';
-        try {
-          const errorJson = await response.json();
-          message = errorJson?.error || message;
-        } catch {
-          // Keep default message.
+        if (!response.ok) {
+          let message = 'Processing failed';
+          try {
+            const errorJson = await response.json();
+            message = errorJson?.error || message;
+          } catch {
+            // Keep default message.
+          }
+          throw new Error(message);
         }
-        throw new Error(message);
-      }
 
-      if (isPdfToImage) {
         const contentType = response.headers.get('content-type') || '';
         if (contentType.includes('application/zip')) {
           const JSZip = (await import('jszip')).default;
           const blob = await response.blob();
           const zipUrl = URL.createObjectURL(blob);
           setDownloadUrl(zipUrl);
-          
+
           const zip = new JSZip();
           const unzipped = await zip.loadAsync(blob);
           const files = Object.values(unzipped.files).filter(f => !f.dir);
-          
+
           if (files.length > 0) {
             const firstFile = files[0];
             const firstBlob = await firstFile.async('blob');
@@ -300,15 +311,6 @@ export function ConvertWorkspace() {
             throw new Error('No pages could be converted from the PDF.');
           }
         }
-      } else {
-        const data = await response.json();
-        setProcessedImage(data.imageUrl);
-        setProcessingStats({
-          originalSize: data.originalSize,
-          processedSize: data.processedSize,
-          savedPercent: data.savedPercent,
-        });
-        toast.success(`Image converted to ${formatInfo[safeFormat].name}.`);
       }
     } catch (error) {
       if (error instanceof DOMException && error.name === 'AbortError') {
@@ -464,9 +466,12 @@ export function ConvertWorkspace() {
                   {viewMode === 'compare' && objectUrl && !isPdfToImage ? (
                     <ComparisonSlider before={objectUrl} after={processedImage} />
                   ) : (
-                    <div className="flex aspect-video items-center justify-center rounded-[1.35rem] bg-muted/25">
-                      <img src={processedImage} alt="Converted result preview" loading="lazy" decoding="async" className="max-h-full max-w-full object-contain" />
-                    </div>
+                    <CompareHoldPreview
+                      processedSrc={processedImage}
+                      originalSrc={!isPdfToImage ? objectUrl : null}
+                      alt="Converted result preview"
+                      containerClassName="aspect-video bg-muted/25"
+                    />
                   )}
                 </div>
                 {isPdfToImage && convertedPageCount > 1 ? (
@@ -496,6 +501,12 @@ export function ConvertWorkspace() {
                       ? `${formatBytes(processingStats.originalSize)} to ${formatBytes(processingStats.processedSize)}`
                       : formatInfo[outputFormat].name
                 }
+                originalSize={processingStats?.originalSize ?? uploadedFile?.size}
+                processedSize={processingStats?.processedSize}
+                savedPercent={processingStats?.savedPercent}
+                formatLabel={isPdfToImage && (downloadUrl || convertedPageCount > 1) ? `${formatInfo[outputFormat].name} ZIP` : formatInfo[outputFormat].name}
+                dpiLabel={isPdfToImage ? `${dpi} DPI` : undefined}
+                resultUrl={downloadUrl || processedImage}
                 nextActions={
                   isPdfToImage
                     ? [

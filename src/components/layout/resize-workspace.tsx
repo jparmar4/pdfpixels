@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import {
   ChevronRight,
@@ -21,6 +21,7 @@ import { Slider } from '@/components/ui/slider';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useActiveTool } from '@/hooks/use-active-tool';
 import { FileUpload } from './file-upload';
+import { CompareHoldPreview } from './compare-hold-preview';
 import { ResultCard } from './result-card';
 import { ToolLimitNotice } from './tool-limit-notice';
 import { ToolPageHeader } from './tool-page-header';
@@ -36,6 +37,9 @@ interface ResizeResult {
   imageUrl: string;
   originalDimensions: { width: number; height: number };
   newDimensions: { width: number; height: number };
+  originalSize?: number;
+  processedSize?: number;
+  savedPercent?: number;
   format?: string;
 }
 
@@ -62,11 +66,24 @@ export function ResizeWorkspace() {
   const [originalDimensions, setOriginalDimensions] = useState({ width: 0, height: 0 });
   const [activeTab, setActiveTab] = useState('dimensions');
   const [scalePercent, setScalePercent] = useState(100);
+  const [fitMode, setFitMode] = useState<'cover' | 'fill' | 'contain'>('cover');
+  const [preservePixels, setPreservePixels] = useState(false);
   const [result, setResult] = useState<ResizeResult | null>(null);
+  const resultBlobUrlRef = useRef<string | null>(null);
+
+  const revokeResultBlobUrl = useCallback(() => {
+    if (resultBlobUrlRef.current?.startsWith('blob:')) {
+      URL.revokeObjectURL(resultBlobUrlRef.current);
+      resultBlobUrlRef.current = null;
+    }
+  }, []);
 
   useEffect(() => {
+    revokeResultBlobUrl();
     setResult(null);
-  }, [uploadedFile]);
+  }, [revokeResultBlobUrl, uploadedFile]);
+
+  useEffect(() => revokeResultBlobUrl, [revokeResultBlobUrl]);
 
   const aspectRatio = originalDimensions.width / originalDimensions.height || 1;
   const isPassport = activeTool?.id === 'passport-photo';
@@ -81,10 +98,18 @@ export function ResizeWorkspace() {
       setWidth(3.5);
       setHeight(4.5);
       setMaintainRatio(false);
+      setFitMode('cover');
+      setPreservePixels(false);
     } else if (isDpiTool) {
       setActiveTab('dimensions');
       setUnit('inch');
       setDpi(300);
+      setMaintainRatio(true);
+      setFitMode('fill');
+      setPreservePixels(true);
+    } else {
+      setFitMode('cover');
+      setPreservePixels(false);
     }
   }, [isPassport, isDpiTool]);
 
@@ -160,6 +185,26 @@ export function ResizeWorkspace() {
     return { width, height };
   }, [dpi, height, unit, width]);
 
+  const effectiveDimensions = useMemo(() => {
+    if (isDpiTool && preservePixels && originalDimensions.width > 0) {
+      return originalDimensions;
+    }
+    return pixelDimensions;
+  }, [isDpiTool, originalDimensions, pixelDimensions, preservePixels]);
+
+  const handleDpiChange = useCallback((nextDpi: number) => {
+    setDpi(nextDpi);
+    if (isDpiTool && preservePixels && originalDimensions.width > 0 && nextDpi > 0) {
+      if (unit === 'cm') {
+        setWidth(Math.round(((originalDimensions.width / nextDpi) * 2.54) * 100) / 100);
+        setHeight(Math.round(((originalDimensions.height / nextDpi) * 2.54) * 100) / 100);
+      } else if (unit === 'inch') {
+        setWidth(Math.round((originalDimensions.width / nextDpi) * 100) / 100);
+        setHeight(Math.round((originalDimensions.height / nextDpi) * 100) / 100);
+      }
+    }
+  }, [isDpiTool, originalDimensions.height, originalDimensions.width, preservePixels, unit]);
+
   const handleProcess = useCallback(async () => {
     if (!uploadedFile) {
       toast.error('Please upload an image first');
@@ -171,40 +216,42 @@ export function ResizeWorkspace() {
 
     const formData = new FormData();
     formData.append('image', uploadedFile);
-    formData.append('width', pixelDimensions.width.toString());
-    formData.append('height', pixelDimensions.height.toString());
-    // Allow enlargement for resize / passport / DPI workflows
-    formData.append('withoutEnlargement', 'false');
-    formData.append('fit', 'fill');
+    if (!(isDpiTool && preservePixels && originalDimensions.width > 0)) {
+      formData.append('width', effectiveDimensions.width.toString());
+      formData.append('height', effectiveDimensions.height.toString());
+      // Allow enlargement for resize / passport / DPI workflows
+      formData.append('withoutEnlargement', 'false');
+      formData.append('fit', fitMode);
+    }
     // Persist print density for DPI converter and print-ready outputs
     formData.append('density', String(dpi));
 
     try {
-      const { fetchWithUploadProgress } = await import('@/lib/upload-with-progress');
-      const response = await fetchWithUploadProgress('/api/image/process', formData, setProgress);
+      const { requestProcessedImage } = await import('@/lib/image-process-client');
+      const data = await requestProcessedImage(formData, setProgress);
 
       setProgress(100);
-
-      if (!response.ok) {
-        let message = 'Processing failed';
-        try {
-          const errorJson = await response.json();
-          message = errorJson?.error || message;
-        } catch {
-          // Keep default message.
-        }
-        throw new Error(message);
+      revokeResultBlobUrl();
+      if (data.isBlobUrl) {
+        resultBlobUrlRef.current = data.imageUrl;
       }
 
-      const data = await response.json();
+      const resolvedOrigDims = data.originalDimensions.width > 0 ? data.originalDimensions : originalDimensions;
       setResult({
         imageUrl: data.imageUrl,
-        originalDimensions: data.originalDimensions,
-        newDimensions: { width: pixelDimensions.width, height: pixelDimensions.height },
+        originalDimensions: resolvedOrigDims,
+        newDimensions: { width: effectiveDimensions.width, height: effectiveDimensions.height },
+        originalSize: data.originalSize,
+        processedSize: data.processedSize,
+        savedPercent: data.savedPercent,
         format: data.format || data.mimeType?.split('/')[1],
       });
       setProcessedImage(data.imageUrl);
-      toast.success(`Image resized to ${pixelDimensions.width} x ${pixelDimensions.height} pixels.`);
+      toast.success(
+        isDpiTool && preservePixels
+          ? `Updated print density to ${dpi} DPI (${effectiveDimensions.width} x ${effectiveDimensions.height} px).`
+          : `Image resized to ${effectiveDimensions.width} x ${effectiveDimensions.height} pixels.`,
+      );
       requestAnimationFrame(() => {
         document.getElementById('resize-result')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       });
@@ -213,7 +260,7 @@ export function ResizeWorkspace() {
     } finally {
       setIsProcessing(false);
     }
-  }, [dpi, pixelDimensions.height, pixelDimensions.width, setIsProcessing, setProcessedImage, setProgress, uploadedFile]);
+  }, [dpi, effectiveDimensions.height, effectiveDimensions.width, fitMode, isDpiTool, originalDimensions, preservePixels, revokeResultBlobUrl, setIsProcessing, setProcessedImage, setProgress, uploadedFile]);
 
   const handleDownload = useCallback(() => {
     if (!processedImage) return;
@@ -221,19 +268,20 @@ export function ResizeWorkspace() {
     const link = document.createElement('a');
     link.href = processedImage;
     const extension = (result?.format || 'jpg').replace('jpeg', 'jpg');
-    link.download = `${base}-${pixelDimensions.width}x${pixelDimensions.height}.${extension}`;
+    link.download = isDpiTool && preservePixels ? `${base}-${dpi}dpi.${extension}` : `${base}-${effectiveDimensions.width}x${effectiveDimensions.height}.${extension}`;
     document.body.appendChild(link);
     link.click();
     link.remove();
     toast.success('Download started');
-  }, [pixelDimensions.height, pixelDimensions.width, processedImage, result?.format, uploadedFile]);
+  }, [dpi, effectiveDimensions.height, effectiveDimensions.width, isDpiTool, preservePixels, processedImage, result?.format, uploadedFile]);
 
   const handleReset = useCallback(() => {
+    revokeResultBlobUrl();
     reset();
     setResult(null);
     setScalePercent(100);
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [reset]);
+  }, [reset, revokeResultBlobUrl]);
 
   if (!activeTool) return null;
 
@@ -288,7 +336,7 @@ export function ResizeWorkspace() {
                   <span className="ml-1 text-sm font-normal text-primary/70">{unit}</span>
                 </p>
                 <p className="mt-2 text-xs uppercase tracking-[0.16em] text-primary/70">
-                  {pixelDimensions.width} x {pixelDimensions.height} px effective output
+                  {effectiveDimensions.width} x {effectiveDimensions.height} px effective output ({dpi} DPI)
                 </p>
               </div>
             </motion.div>
@@ -303,9 +351,12 @@ export function ResizeWorkspace() {
                     {result.newDimensions.width} x {result.newDimensions.height} px
                   </Badge>
                 </div>
-                <div className="flex aspect-video items-center justify-center bg-muted/30 p-4">
-                  <img src={processedImage} alt="Resized" className="max-h-full max-w-full object-contain" />
-                </div>
+                <CompareHoldPreview
+                  processedSrc={processedImage}
+                  originalFile={uploadedFile}
+                  alt="Resized"
+                  containerClassName="aspect-video bg-muted/30 p-4 rounded-none"
+                />
               </div>
 
               <ResultCard
@@ -314,6 +365,17 @@ export function ResizeWorkspace() {
                 onDownload={handleDownload}
                 downloadLabel="Download resized image"
                 primaryMeta={`${result.originalDimensions.width} x ${result.originalDimensions.height} px -> ${result.newDimensions.width} x ${result.newDimensions.height} px`}
+                originalSize={result.originalSize ?? uploadedFile?.size}
+                processedSize={result.processedSize}
+                savedPercent={result.savedPercent}
+                formatLabel={(result.format || 'jpg').toUpperCase()}
+                dpiLabel={`${dpi} DPI`}
+                resultUrl={processedImage}
+                resultFileName={
+                  uploadedFile?.name
+                    ? `${uploadedFile.name.replace(/\.[^.]+$/, '')}-${effectiveDimensions.width}x${effectiveDimensions.height}.${(result.format || 'jpg').replace('jpeg', 'jpg')}`
+                    : undefined
+                }
                 nextActions={[
                   { label: 'Compress image', href: '/tools/compress-image' },
                   { label: 'Convert format', href: '/tools/png-to-jpeg' },
@@ -360,7 +422,7 @@ export function ResizeWorkspace() {
                 {unit === 'cm' || unit === 'inch' ? (
                   <div className="space-y-2">
                     <Label id="toString">DPI</Label>
-                    <Select aria-labelledby="toString" value={dpi.toString()} onValueChange={(value) => setDpi(Number.parseInt(value, 10))}>
+                    <Select aria-labelledby="toString" value={dpi.toString()} onValueChange={(value) => handleDpiChange(Number.parseInt(value, 10))}>
                       <SelectTrigger>
                         <SelectValue />
                       </SelectTrigger>
@@ -370,6 +432,33 @@ export function ResizeWorkspace() {
                         <SelectItem value="150">150 DPI</SelectItem>
                         <SelectItem value="300">300 DPI (Print)</SelectItem>
                         <SelectItem value="600">600 DPI (High quality)</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    {isDpiTool ? (
+                      <Button
+                        type="button"
+                        variant={preservePixels ? 'default' : 'outline'}
+                        size="sm"
+                        className="w-full rounded-2xl text-xs"
+                        onClick={() => setPreservePixels((current) => !current)}
+                      >
+                        {preservePixels ? 'Keeping original pixel resolution (DPI only)' : 'Resampling pixels to physical size'}
+                      </Button>
+                    ) : null}
+                  </div>
+                ) : null}
+
+                {!(isDpiTool && preservePixels) ? (
+                  <div className="space-y-2">
+                    <Label id="fit-mode-label">Fit mode</Label>
+                    <Select aria-labelledby="fit-mode-label" value={fitMode} onValueChange={(value) => setFitMode(value as typeof fitMode)}>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="cover">Crop to fill (no distortion)</SelectItem>
+                        <SelectItem value="contain">Fit inside (pad edges)</SelectItem>
+                        <SelectItem value="fill">Stretch to exact size</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -404,6 +493,7 @@ export function ResizeWorkspace() {
                     key={preset.name}
                     type="button"
                     onClick={() => {
+                      setPreservePixels(false);
                       setWidth(preset.width);
                       setHeight(preset.height);
                       setUnit(preset.unit);

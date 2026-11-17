@@ -1,5 +1,6 @@
 // Advertising & Monetization Configuration (Adsterra Primary & AdSense Optional)
 // Supported Adsterra formats: 728x90, 468x60, 320x50, 300x250, 160x600, 160x300, Native Banner, Social Bar, and Smartlink.
+import { useWorkflowStore, type OutputTelemetry } from '@/store/workflow-store';
 
 export const ADSENSE_CLIENT_ID = 'ca-pub-3541576002060495';
 
@@ -89,11 +90,25 @@ export function hasConfiguredAdSlot(): boolean {
 }
 
 /**
+ * Marks a successful user download (`onDownloadSuccess`), unlocking high-CPM
+ * post-action formats (Social Bar) and revealing the 1-click workflow chain bar.
+ */
+export function recordDownloadSuccess(override?: Partial<OutputTelemetry>): void {
+  if (typeof window === 'undefined') return;
+  try {
+    useWorkflowStore.getState().markDownloadSuccess(override);
+  } catch {
+    // Keep downloads resilient even if store access fails
+  }
+}
+
+/**
  * Triggers the Adsterra Smartlink (Direct Link) in a new tab at most ONCE
  * per user browser session when a conversion download happens.
  * Ensures the user's file downloads reliably without interrupting repeat tasks.
  */
 export function triggerSmartlinkOncePerSession(): void {
+  recordDownloadSuccess();
   if (typeof window === 'undefined') return;
   if (!adsterraConfig.enabled || !adsterraConfig.smartlink) return;
   try {
@@ -109,9 +124,14 @@ export function triggerSmartlinkOncePerSession(): void {
 
 /**
  * Fires the session-capped Smartlink synchronously within the click gesture,
- * then runs the download callback after 80ms so the file download starts reliably.
+ * runs the download callback after 80ms so the file download starts reliably,
+ * and emits `onDownloadSuccess` state for post-download monetization & chaining.
  */
-export function triggerDownloadWithSmartlink(downloadFn: () => void): void {
+export function triggerDownloadWithSmartlink(
+  downloadFn: () => void,
+  outputOverride?: Partial<OutputTelemetry>,
+): void {
+  recordDownloadSuccess(outputOverride);
   triggerSmartlinkOncePerSession();
   setTimeout(downloadFn, 80);
 }

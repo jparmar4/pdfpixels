@@ -10,7 +10,10 @@ import { useReducedMotion } from 'framer-motion';
 import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
 import { ToolLimitNotice } from './tool-limit-notice';
+import { PrivateModeBadge } from './private-mode-badge';
 import { ResultCard } from './result-card';
+import { useConsumeChainedFile } from '@/hooks/use-consume-chained-file';
+import { mergePdfsClient } from '@/lib/client-pdf-ops';
 
 interface PDFFile {
   file: File;
@@ -32,7 +35,14 @@ export function PDFMergeWorkspace() {
   const { activeTool, isProcessing, progress, setIsProcessing, setProgress, reset } = useActiveTool();
 
   const [files, setFiles] = useState<PDFFile[]>([]);
-  const [result, setResult] = useState<{ pdfUrl: string; fileName: string; pageCount: number; warning?: string } | null>(null);
+  const [result, setResult] = useState<{
+    pdfUrl: string;
+    fileName: string;
+    pageCount: number;
+    originalSize?: number;
+    processedSize?: number;
+    warning?: string;
+  } | null>(null);
   const [statusLabel, setStatusLabel] = useState<'Idle' | 'Uploading' | 'Processing' | 'Finalizing'>('Idle');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const prefersReducedMotion = useReducedMotion();
@@ -134,6 +144,12 @@ export function PDFMergeWorkspace() {
     );
   }, [enrichPdfMeta]);
 
+  useConsumeChainedFile(
+    (chained) => addPdfFiles([chained]),
+    (chained) =>
+      Boolean(chained.name?.toLowerCase().endsWith('.pdf') || PDF_MIME_OK.has((chained.type || '').toLowerCase())),
+  );
+
   const handleFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.length) {
       void addPdfFiles(e.target.files);
@@ -175,78 +191,29 @@ export function PDFMergeWorkspace() {
     }
 
     setIsProcessing(true);
-    setStatusLabel('Uploading');
-    setProgress(0);
+    setStatusLabel('Processing');
+    setProgress(25);
 
-    const formData = new FormData();
-    files.forEach((f) => {
-      formData.append('files', f.file);
-    });
-
-    const controller = new AbortController();
-    inFlightRef.current = controller;
     try {
-      const { fetchWithUploadProgress } = await import('@/lib/upload-with-progress');
-      const response = await fetchWithUploadProgress('/api/pdf/merge', formData, (percent) => {
-        setStatusLabel(percent < 70 ? 'Uploading' : 'Processing');
-        setProgress(percent);
-      }, controller.signal);
+      const merged = await mergePdfsClient(files.map((f) => f.file));
+      setProgress(90);
 
-      setStatusLabel('Finalizing');
-      setProgress(100);
-
-      if (!response.ok) {
-        let message = 'Processing failed';
-        try {
-          const contentType = response.headers.get('content-type') || '';
-          if (contentType.includes('application/json')) {
-            const err = await response.json();
-            message = err?.error || message;
-            if (Array.isArray(err?.skipped) && err.skipped.length > 0) {
-              const names = err.skipped
-                .slice(0, 3)
-                .map((s: { name?: string; reason?: string }) =>
-                  s?.name ? `${s.name}${s.reason ? ` — ${s.reason}` : ''}` : s?.reason || 'unknown',
-                )
-                .join('; ');
-              message = `${message}${names ? ` (${names}${err.skipped.length > 3 ? '…' : ''})` : ''}`;
-            }
-          } else {
-            const text = (await response.text()).slice(0, 300);
-            if (text) message = text;
-          }
-        } catch { /* ignore parse error */ }
-        throw new Error(message);
-      }
-
-      const blob = await response.blob();
-      if (!blob.size || (blob.type && !blob.type.includes('pdf') && blob.type !== 'application/octet-stream')) {
-        // Defensive: server may return JSON error with 200 in some proxies.
-        try {
-          const text = await blob.text();
-          if (text.trim().startsWith('{')) {
-            const err = JSON.parse(text);
-            throw new Error(err?.error || 'Processing failed');
-          }
-        } catch (e) {
-          if (e instanceof Error && e.message !== 'Processing failed') throw e;
-        }
-      }
+      const copy = new Uint8Array(merged.bytes.byteLength);
+      copy.set(merged.bytes);
+      const blob = new Blob([copy.buffer], { type: 'application/pdf' });
       const pdfUrl = URL.createObjectURL(blob);
-      const disposition = response.headers.get('content-disposition') || '';
-      const fileNameMatch = disposition.match(/filename="?([^";]+)"?/i);
-      const fileName = fileNameMatch?.[1] || `merged-${Date.now()}.pdf`;
-
-      const pageCount = Number(response.headers.get('x-page-count') || 0);
-      const mergedFiles = Number(response.headers.get('x-merged-files') || files.length);
-      const skippedCount = Number(response.headers.get('x-skipped-count') || 0);
-      const skippedDetails = response.headers.get('x-skipped-details') || '';
-      const formsFlattened = response.headers.get('x-forms-flattened') === 'true';
-      const warning = skippedCount > 0
-        ? `${skippedCount} file(s) skipped${skippedDetails ? `: ${skippedDetails}` : '. Your valid PDFs were still merged.'}`
-        : formsFlattened
-          ? 'Note: fillable form fields were flattened into page content.'
+      const fileName = `merged-${Date.now()}.pdf`;
+      const mergedFiles = files.length - merged.skipped.length;
+      const skippedCount = merged.skipped.length;
+      const skippedDetails = merged.skipped.map((s) => `${s.name} (${s.reason})`).join('; ');
+      const warning =
+        skippedCount > 0
+          ? `${skippedCount} file(s) skipped${skippedDetails ? `: ${skippedDetails}` : '. Your valid PDFs were still merged.'}`
           : undefined;
+      const totalInputBytes = files.reduce((sum, item) => sum + item.size, 0);
+
+      setProgress(100);
+      setStatusLabel('Finalizing');
 
       setResult((previous) => {
         if (previous?.pdfUrl?.startsWith('blob:')) {
@@ -255,26 +222,21 @@ export function PDFMergeWorkspace() {
         return {
           pdfUrl,
           fileName,
-          pageCount,
+          pageCount: merged.pageCount,
+          originalSize: totalInputBytes,
+          processedSize: blob.size,
           warning,
         };
       });
       if (warning) {
-        toast.warning(`Merged ${mergedFiles} PDFs. ${warning}`);
+        toast.warning(`Merged ${mergedFiles} PDFs locally in browser. ${warning}`);
       } else {
-        toast.success(`Merged ${mergedFiles} PDFs into ${pageCount || 'multiple'} pages!`);
+        toast.success(`Merged ${mergedFiles} PDFs into ${merged.pageCount} pages locally (Zero Server Upload)!`);
       }
       requestAnimationFrame(() => {
         document.getElementById('merge-result')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       });
     } catch (error) {
-      if (
-        (error instanceof DOMException && error.name === 'AbortError') ||
-        (error instanceof Error && error.message === 'Upload aborted')
-      ) {
-        toast.info('Merge cancelled.');
-        return;
-      }
       toast.error(error instanceof Error ? error.message : 'Failed to merge PDFs. Please try again.');
     } finally {
       inFlightRef.current = null;
@@ -336,6 +298,10 @@ export function PDFMergeWorkspace() {
       </ToolPageHeader>
 
       {/* Main Content */}
+      <PrivateModeBadge
+        className="mb-6"
+        description="PDFs are combined directly in browser memory via pdf-lib — zero files are uploaded to any server."
+      />
       <div className="grid lg:grid-cols-3 gap-8">
         {/* Left Panel - Upload & File List */}
         <div className="lg:col-span-2 space-y-6">
@@ -469,6 +435,11 @@ export function PDFMergeWorkspace() {
                   primaryMeta={`${result.pageCount || 'Multiple'} page${result.pageCount === 1 ? '' : 's'} · ${result.fileName}`}
                   onDownload={handleDownload}
                   downloadLabel="Download merged PDF"
+                  originalSize={result.originalSize}
+                  processedSize={result.processedSize}
+                  formatLabel="PDF"
+                  resultUrl={result.pdfUrl}
+                  resultFileName={result.fileName}
                   nextActions={[
                     { label: 'Compress PDF', href: '/tools/compress-pdf' },
                     { label: 'Split PDF', href: '/tools/split-pdf' },

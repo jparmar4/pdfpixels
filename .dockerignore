@@ -9,3 +9,9 @@ README.md
 test
 *.log
 local-*
+.codex-dev*
+.next-dev*
+build_output.log
+OPENCLAW_UPDATE_CHECK.txt
+.openclaw/
+.zscripts/

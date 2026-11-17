@@ -14,7 +14,9 @@ import { useActiveTool } from '@/hooks/use-active-tool';
 import { FileUpload } from './file-upload';
 import { ToolPageHeader } from './tool-page-header';
 import { ToolLimitNotice } from './tool-limit-notice';
+import { PrivateModeBadge } from './private-mode-badge';
 import { ResultScreenAd, SmartlinkButton } from '@/components/ads/ad-banner';
+import { rotatePdfClient, watermarkPdfClient } from '@/lib/client-pdf-ops';
 import { triggerDownloadWithSmartlink } from '@/lib/ads-config';
 import { useState, useCallback, useEffect } from 'react';
 import { toast } from 'sonner';
@@ -257,13 +259,11 @@ function DeletePagesSettings({ pages, setPages, totalPages, resetKey }: {
     }, [resetKey, setPages]);
 
     const togglePage = (p: number) => {
-        setSelectedPages(prev => {
-            const next = new Set(prev);
-            if (next.has(p)) next.delete(p);
-            else next.add(p);
-            setPages(Array.from(next).sort((a, b) => a - b).join(','));
-            return next;
-        });
+        const next = new Set(selectedPages);
+        if (next.has(p)) next.delete(p);
+        else next.add(p);
+        setSelectedPages(next);
+        setPages(Array.from(next).sort((a, b) => a - b).join(','));
     };
 
     return (
@@ -602,6 +602,7 @@ export function PDFToolsWorkspace() {
 
     const [result, setResult] = useState<PDFResult | null>(null);
     const [totalPages, setTotalPages] = useState(0);
+    const [inspectState, setInspectState] = useState<'idle' | 'ready' | 'corrupt'>('idle');
 
     // Rotate
     const [angle, setAngle] = useState(90);
@@ -659,6 +660,7 @@ export function PDFToolsWorkspace() {
         // page count can't leak its reorder/delete state into the new file.
         setPageOrder([]);
         setDeletePages('');
+        setInspectState('idle');
         if (!uploadedFile || !uploadedFile.name.toLowerCase().endsWith('.pdf')) {
             setTotalPages(0);
             return;
@@ -680,10 +682,16 @@ export function PDFToolsWorkspace() {
                     toast.warning('This PDF is password-protected — unlock it first for full editing.');
                 }
                 setTotalPages(pdf.getPageCount());
+                setInspectState('ready');
             } catch {
                 if (!cancelled) {
-                    toast.warning('Could not preview this PDF — it may be corrupt. Processing may still fail.');
+                    if (activeTool?.id === 'repair-pdf') {
+                        toast.info('Damaged PDF structure detected — click Repair PDF to rebuild.');
+                    } else {
+                        toast.warning('Could not preview this PDF — it may be corrupt. Processing may still fail.');
+                    }
                     setTotalPages(0);
+                    setInspectState('corrupt');
                 }
             }
         })();
@@ -768,6 +776,71 @@ export function PDFToolsWorkspace() {
         };
 
         if (!uploadedFile) { toast.error('Please upload a PDF file'); return; }
+
+        const tid = activeTool?.id || '';
+        const isClientSideTool = tid === 'pdf-rotate' || tid === 'pdf-watermark';
+
+        if (isClientSideTool) {
+            if (tid === 'pdf-watermark' && !wmText.trim()) {
+                toast.error('Please enter watermark text');
+                return;
+            }
+            setIsProcessing(true);
+            setProgress(25);
+            setResult(null);
+            try {
+                const base = uploadedFile.name.replace(/\.pdf$/i, '') || 'document';
+                let outBytes: Uint8Array;
+                let pageCount: number;
+                let outFileName: string;
+
+                if (tid === 'pdf-rotate') {
+                    const rotated = await rotatePdfClient(uploadedFile, angle, rotatePages);
+                    outBytes = rotated.bytes;
+                    pageCount = rotated.pageCount;
+                    outFileName = `${base}-rotated.pdf`;
+                } else {
+                    const marked = await watermarkPdfClient(uploadedFile, {
+                        text: wmText,
+                        opacity: wmOpacity,
+                        color: wmColor,
+                        fontSize: wmFontSize,
+                        position: wmPosition,
+                        rotation: wmRotation,
+                    });
+                    outBytes = marked.bytes;
+                    pageCount = marked.pageCount;
+                    outFileName = `${base}-watermarked.pdf`;
+                }
+
+                setProgress(100);
+                const copy = new Uint8Array(outBytes.byteLength);
+                copy.set(outBytes);
+                const blob = new Blob([copy.buffer], { type: 'application/pdf' });
+                const pdfUrl = URL.createObjectURL(blob);
+
+                setResult((previous) => {
+                    if (previous?.pdfUrl?.startsWith('blob:')) {
+                        URL.revokeObjectURL(previous.pdfUrl);
+                    }
+                    return { pdfUrl, fileName: outFileName, pageCount };
+                });
+
+                toast.success(
+                    tid === 'pdf-rotate'
+                        ? 'PDF rotated locally in your browser (Zero Server Upload).'
+                        : 'Watermark applied locally in your browser (Zero Server Upload).',
+                );
+                requestAnimationFrame(() => {
+                    document.getElementById('pdf-tools-result')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                });
+            } catch (error) {
+                toast.error(error instanceof Error ? error.message : 'Failed to process PDF locally');
+            } finally {
+                setIsProcessing(false);
+            }
+            return;
+        }
 
         const formData = buildForm();
         if (!formData) return;
@@ -948,6 +1021,16 @@ return (
         </ToolPageHeader>
 
         {/* Main Content */}
+        {(activeTool.id === 'pdf-rotate' || activeTool.id === 'pdf-watermark') && (
+            <PrivateModeBadge
+                className="mb-6"
+                description={
+                    activeTool.id === 'pdf-rotate'
+                        ? 'Page rotation executes 100% inside browser memory via pdf-lib — zero files uploaded.'
+                        : 'Watermarks are stamped directly in browser memory via pdf-lib — zero files uploaded.'
+                }
+            />
+        )}
         <div className="grid lg:grid-cols-3 gap-8">
             {/* Left Panel */}
             <div className="lg:col-span-2 space-y-6">
@@ -983,13 +1066,25 @@ return (
                         <div className="min-w-0 flex-1">
                             <p className="text-sm font-medium truncate">{uploadedFile.name}</p>
                             <p className="text-sm text-muted-foreground">
-                                {totalPages > 0 ? `${totalPages} page${totalPages !== 1 ? 's' : ''}` : 'Reading PDF…'}
+                                {totalPages > 0
+                                    ? `${totalPages} page${totalPages !== 1 ? 's' : ''}`
+                                    : inspectState === 'corrupt'
+                                        ? activeTool.id === 'repair-pdf'
+                                            ? 'Corrupted structure · Ready for repair'
+                                            : 'Structure unreadable in preview'
+                                        : 'Reading PDF…'}
                                 {' · '}
                                 {(uploadedFile.size / (1024 * 1024)).toFixed(2)} MB
                             </p>
                         </div>
                         <Badge variant="secondary" className="ml-auto shrink-0">
-                            {totalPages > 0 ? 'Ready' : 'Loading'}
+                            {totalPages > 0
+                                ? 'Ready'
+                                : inspectState === 'corrupt'
+                                    ? activeTool.id === 'repair-pdf'
+                                        ? 'Ready to repair'
+                                        : 'Corrupt'
+                                    : 'Loading'}
                         </Badge>
                     </motion.div>
                 )}

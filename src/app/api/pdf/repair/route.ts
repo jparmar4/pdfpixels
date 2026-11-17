@@ -50,6 +50,36 @@ async function loadWithRecovery(buffer: Buffer): Promise<{ pdf: PDFDocument; str
   throw new Error('unrecoverable');
 }
 
+async function repairWithGhostscript(buffer: Buffer): Promise<PDFDocument | null> {
+  const [{ runGhostscriptWithFallback }, fs, os, path, crypto] = await Promise.all([
+    import('@/lib/ghostscript'),
+    import('node:fs/promises'),
+    import('node:os'),
+    import('node:path'),
+    import('node:crypto'),
+  ]);
+  const dir = path.join(os.tmpdir(), `pdf-repair-${crypto.randomBytes(8).toString('hex')}`);
+  await fs.mkdir(dir, { recursive: true });
+  const input = path.join(dir, 'damaged.pdf');
+  const output = path.join(dir, 'repaired.pdf');
+  try {
+    await fs.writeFile(input, buffer);
+    await runGhostscriptWithFallback([
+      '-dSAFER', '-dBATCH', '-dNOPAUSE', '-dQUIET',
+      '-sDEVICE=pdfwrite', '-dPDFSETTINGS=/default',
+      `-sOutputFile=${output}`, input,
+    ], { timeoutMs: 45_000 });
+    const repairedBytes = await fs.readFile(output);
+    if (!repairedBytes.length) return null;
+    const pdf = await PDFDocument.load(repairedBytes, { ignoreEncryption: true, updateMetadata: false });
+    return pdf.getPageCount() > 0 ? pdf : null;
+  } catch {
+    return null;
+  } finally {
+    await fs.rm(dir, { recursive: true, force: true }).catch(() => undefined);
+  }
+}
+
 export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
@@ -71,10 +101,14 @@ export async function POST(request: NextRequest) {
     try {
       result = await loadWithRecovery(buffer);
     } catch {
-      return apiError(
-        'This PDF could not be repaired. The damage destroyed the page data itself — try recovering an earlier copy.',
-        422,
-      );
+      const gsPdf = await repairWithGhostscript(buffer);
+      if (!gsPdf) {
+        return apiError(
+          'This PDF could not be repaired. The damage destroyed the page data itself — try recovering an earlier copy.',
+          422,
+        );
+      }
+      result = { pdf: gsPdf, strategy: 'ghostscript-rebuild' };
     }
 
     const { pdf, strategy } = result;

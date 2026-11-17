@@ -4,7 +4,7 @@
   "name": "pdfpixels-mcp-server",
   "title": "PdfPixels PDF & Image Tools MCP Server",
   "version": "1.0.0",
-  "description": "Model Context Protocol (MCP) server for PdfPixels — discover, search, and invoke 100+ free online PDF and image processing tools (compress, merge, split, convert, OCR, sign, redact, resize).",
+  "description": "Model Context Protocol (MCP) server for PdfPixels — discover, search, and invoke 124+ free online PDF and image processing tools (compress, merge, split, convert, OCR, sign, redact, resize).",
   "endpoint": "https://www.pdfpixels.com/api/mcp",
   "url": "https://www.pdfpixels.com/api/mcp",
   "homepage": "https://www.pdfpixels.com",

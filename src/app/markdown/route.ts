@@ -49,7 +49,7 @@ function buildHomepageMarkdown(): { markdown: string; canonical: string } {
 
 - **Canonical URL:** [${canonical}](${canonical})
 - **Pricing:** Free ($0, no account required, no watermarks)
-- **Organization:** ${organizationData.name} (${organizationData.email} | ${organizationData.telephone})
+- **Organization:** ${organizationData.name} (${organizationData.email})
 - **LLM Documentation:** [llms.txt](${absoluteUrl('/llms.txt')}) | [llms-full.txt](${absoluteUrl('/llms-full.txt')})
 - **MCP Server Card:** [/.well-known/mcp/server-card.json](${absoluteUrl('/.well-known/mcp/server-card.json')})
 - **MCP Endpoint:** [/api/mcp](${absoluteUrl('/api/mcp')})

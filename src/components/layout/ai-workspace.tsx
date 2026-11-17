@@ -22,6 +22,7 @@ import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { useActiveTool } from '@/hooks/use-active-tool';
 import { FileUpload } from './file-upload';
+import { CompareHoldPreview } from './compare-hold-preview';
 import { ToolPageHeader } from './tool-page-header';
 import { ResultCard } from './result-card';
 import { ToolLimitNotice } from './tool-limit-notice';
@@ -162,7 +163,8 @@ export function AIWorkspace() {
       formData.append('mode', mode);
 
       setProgress(35);
-      const response = await fetch('/api/ai', {
+      const { apiFetch } = await import('@/lib/api-client');
+      const response = await apiFetch('/api/ai', {
         method: 'POST',
         body: formData,
       });
@@ -309,9 +311,13 @@ export function AIWorkspace() {
                     </div>
                   </div>
                 ) : (
-                  <div className={`flex min-h-[320px] items-center justify-center p-4 ${isRemoveBg ? checker : 'bg-muted/25'}`}>
-                    <img src={processedImage} alt={`${toolConfig.label} result`} className="max-h-[520px] max-w-full rounded-2xl object-contain" />
-                  </div>
+                  <CompareHoldPreview
+                    processedSrc={processedImage}
+                    originalSrc={sourcePreview}
+                    alt={`${toolConfig.label} result`}
+                    containerClassName={`min-h-[320px] p-4 ${isRemoveBg ? checker : 'bg-muted/25'}`}
+                    imgClassName="max-h-[520px] rounded-2xl"
+                  />
                 )}
               </div>
 
@@ -321,6 +327,14 @@ export function AIWorkspace() {
                 onDownload={handleDownload}
                 downloadLabel="Download PNG"
                 primaryMeta={mode === 'high' ? 'Vivid / high profile' : 'Natural / balanced profile'}
+                originalSize={uploadedFile?.size}
+                formatLabel="PNG"
+                resultUrl={processedImage}
+                resultFileName={
+                  uploadedFile?.name
+                    ? `${uploadedFile.name.replace(/\.[^.]+$/, '')}-${toolId}.png`
+                    : `${toolId}.png`
+                }
                 nextActions={toolConfig.nextActions}
               />
             </motion.div>

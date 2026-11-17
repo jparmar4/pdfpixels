@@ -26,10 +26,10 @@ registerHooks({
   },
 });
 
-const { allTools } = await import('../src/lib/tools-data.ts');
+const { allTools, allPdfTools, pdfToolGroups } = await import('../src/lib/tools-data.ts');
 const src = readFileSync(path.join(root, 'src/components/layout/tool-page-client.tsx'), 'utf8');
 
-// Collect every literal id the dispatcher matches on.
+// Collect every literal id and dynamic matcher the dispatcher handles.
 const direct = new Set([...src.matchAll(/toolId === '([^']+)'/g)].map((m) => m[1]));
 const arrays = [...src.matchAll(/\[(.*?)\]\.includes\(toolId\)/gs)].flatMap((m) =>
   [...m[1].matchAll(/'([^']+)'/g)].map((x) => x[1]),
@@ -38,11 +38,23 @@ const effectTools = [...src.match(/const effectTools = \[(.*?)\]/s)?.[1].matchAl
 const editTools = [...src.match(/const editTools = \[(.*?)\]/s)?.[1].matchAll(/'([^']+)'/g)].map((m) => m[1]);
 const covered = new Set([...direct, ...arrays, ...effectTools, ...editTools]);
 
-const missing = allTools.filter((t) => !covered.has(t.id));
+const hasStatementMatcher = src.includes("toolId.includes('statement-to-excel')");
+const isCovered = (t) => covered.has(t.id) || (hasStatementMatcher && t.id.includes('statement-to-excel'));
+
+const missing = allTools.filter((t) => !isCovered(t));
 console.log(`Tools: ${allTools.length}, covered: ${allTools.length - missing.length}`);
 if (missing.length) {
   console.log('Missing workspace mapping (would hit ToolWorkspace fallback):');
   missing.forEach((t) => console.log(` - id=${t.id} slug=${t.slug}`));
   process.exit(1);
 }
-console.log('All tool ids resolve to a dedicated workspace.');
+
+const groupedPdfIds = new Set(pdfToolGroups.flatMap((g) => g.tools.map((t) => t.id)));
+const ungroupedPdf = allPdfTools.filter((t) => !groupedPdfIds.has(t.id));
+if (ungroupedPdf.length) {
+  console.log('PDF tools missing from pdfToolGroups:');
+  ungroupedPdf.forEach((t) => console.log(` - id=${t.id} slug=${t.slug}`));
+  process.exit(1);
+}
+
+console.log(`All ${allTools.length} tool ids resolve cleanly (${allPdfTools.length} PDF tools grouped).`);

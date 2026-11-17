@@ -55,15 +55,39 @@ export async function POST(request: NextRequest) {
       return apiError('Not every page could be converted. The document may be damaged — try Repair PDF first.', 422);
     }
 
+    const sharp = (await import('sharp')).default;
     const pptx = new PptxGenJS();
-    pptx.defineLayout({ name: 'WIDE', width: 13.333, height: 7.5 });
+    const slideW = 13.333;
+    const slideH = 7.5;
+    pptx.defineLayout({ name: 'WIDE', width: slideW, height: slideH });
     pptx.layout = 'WIDE';
     pptx.title = originalName.replace(/\.pdf$/i, '');
 
     for (const pageFile of files) {
       const png = await readFile(path.join(dir, pageFile));
+      const meta = await sharp(png).metadata();
+      const imgW = meta.width || slideW;
+      const imgH = meta.height || slideH;
+      const imgAspect = imgW / imgH;
+      const slideAspect = slideW / slideH;
+      let drawW = slideW;
+      let drawH = slideH;
+      if (imgAspect > slideAspect) {
+        drawH = slideW / imgAspect;
+      } else {
+        drawW = slideH * imgAspect;
+      }
+      const x = (slideW - drawW) / 2;
+      const y = (slideH - drawH) / 2;
+
       const slide = pptx.addSlide();
-      slide.addImage({ data: `image/png;base64,${png.toString('base64')}`, x: 0, y: 0, w: 13.333, h: 7.5 });
+      slide.addImage({
+        data: `image/png;base64,${png.toString('base64')}`,
+        x,
+        y,
+        w: drawW,
+        h: drawH,
+      });
     }
 
     const outBuffer = (await pptx.write({ outputType: 'nodebuffer' })) as Buffer;

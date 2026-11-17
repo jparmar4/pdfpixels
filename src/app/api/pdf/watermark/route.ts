@@ -82,7 +82,16 @@ export async function POST(request: NextRequest) {
                 let x = (width - textWidth) / 2;
                 let y = (height - textHeight) / 2;
 
-                if (position === 'top-left') { x = 50; y = height - 100; }
+                if (position === 'center') {
+                    // Compensate for pdf-lib rotating around the text baseline origin
+                    const rad = (rotation * Math.PI) / 180;
+                    const halfW = textWidth / 2;
+                    const halfH = fontSize * 0.35;
+                    const rotCenterX = halfW * Math.cos(rad) - halfH * Math.sin(rad);
+                    const rotCenterY = halfW * Math.sin(rad) + halfH * Math.cos(rad);
+                    x = width / 2 - rotCenterX;
+                    y = height / 2 - rotCenterY;
+                } else if (position === 'top-left') { x = 50; y = height - 100; }
                 else if (position === 'top-right') { x = width - textWidth - 50; y = height - 100; }
                 else if (position === 'bottom-left') { x = 50; y = 50; }
                 else if (position === 'bottom-right') { x = width - textWidth - 50; y = 50; }

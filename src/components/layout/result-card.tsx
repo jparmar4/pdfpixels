@@ -1,9 +1,15 @@
+'use client';
+
+import { useState } from 'react';
 import Link from 'next/link';
 import { ArrowRight, CheckCircle2, Download, ShieldCheck, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { normalizeDisplayText } from '@/lib/display-text';
-import { ResultScreenAd, SmartlinkButton } from '@/components/ads/ad-banner';
-import { triggerDownloadWithSmartlink } from '@/lib/ads-config';
+import { AdsterraNativeBanner, ResultScreenAd, SmartlinkButton } from '@/components/ads/ad-banner';
+import { adsterraConfig, triggerDownloadWithSmartlink } from '@/lib/ads-config';
+import { OptimizationVerificationSummary } from './optimization-verification-summary';
+import { WorkflowChainBar } from './workflow-chain-bar';
+import { useWorkflowStore } from '@/store/workflow-store';
 
 interface NextAction {
   label: string;
@@ -17,6 +23,14 @@ interface ResultCardProps {
   downloadLabel?: string;
   primaryMeta?: string;
   nextActions?: NextAction[];
+  originalSize?: number;
+  processedSize?: number;
+  savedPercent?: number;
+  formatLabel?: string;
+  dpiLabel?: string;
+  privacyStatus?: string;
+  resultUrl?: string | null;
+  resultFileName?: string;
 }
 
 export function ResultCard({
@@ -26,7 +40,37 @@ export function ResultCard({
   downloadLabel = 'Download',
   primaryMeta,
   nextActions = [],
+  originalSize,
+  processedSize,
+  savedPercent,
+  formatLabel,
+  dpiLabel,
+  privacyStatus,
+  resultUrl,
+  resultFileName,
 }: ResultCardProps) {
+  const latestOutput = useWorkflowStore((s) => s.latestOutput);
+  const effectiveUrl = resultUrl ?? latestOutput?.url ?? null;
+  const runKey = `${effectiveUrl || ''}|${primaryMeta || ''}|${processedSize ?? ''}`;
+  const [downloadedRunKey, setDownloadedRunKey] = useState<string | null>(null);
+  const hasDownloaded = downloadedRunKey === runKey;
+
+  const handleDownloadClick = () => {
+    setDownloadedRunKey(runKey);
+    triggerDownloadWithSmartlink(onDownload, {
+      url: effectiveUrl,
+      fileName: resultFileName,
+      originalSize,
+      processedSize,
+      savedPercent,
+      formatLabel,
+      dpiLabel,
+      privacyStatus,
+    });
+  };
+
+  const hasNative = adsterraConfig.enabled && Boolean(adsterraConfig.slots.nativeBanner.scriptSrc);
+
   return (
     <div className="relative overflow-hidden rounded-[1.75rem] border border-success/25 bg-success/[0.06] p-6 shadow-premium dark:bg-success/[0.12]">
       <div className="absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-success/50 to-transparent" />
@@ -60,9 +104,32 @@ export function ResultCard({
           </div>
         </div>
 
+        {/* Optimization & Verification Summary paired beside the primary Adsterra Native unit before/alongside Download */}
+        <div className="grid gap-4 lg:grid-cols-[minmax(0,1.25fr)_minmax(280px,1fr)] lg:items-start">
+          <OptimizationVerificationSummary
+            originalSize={originalSize}
+            processedSize={processedSize}
+            savedPercent={savedPercent}
+            formatLabel={formatLabel}
+            dpiLabel={dpiLabel}
+            privacyStatus={privacyStatus}
+            resultUrl={effectiveUrl}
+            fileName={resultFileName}
+          />
+          {hasNative ? (
+            <div className="min-w-0">
+              <AdsterraNativeBanner eager compact className="my-0" />
+            </div>
+          ) : (
+            <div className="min-w-0">
+              <ResultScreenAd suppressSummary suppressChainBar className="border-t-0 pt-0 mt-0" />
+            </div>
+          )}
+        </div>
+
         <div className="flex flex-col gap-3 sm:flex-row">
           <Button
-            onClick={() => triggerDownloadWithSmartlink(onDownload)}
+            onClick={handleDownloadClick}
             className="btn-premium h-12 flex-1 gap-2 rounded-2xl font-bold"
             size="lg"
           >
@@ -86,7 +153,16 @@ export function ResultCard({
           ) : null}
         </div>
 
-        <ResultScreenAd />
+        <WorkflowChainBar
+          visible={hasDownloaded}
+          outputOverride={{
+            url: effectiveUrl,
+            fileName: resultFileName,
+            originalSize,
+            processedSize,
+            savedPercent,
+          }}
+        />
       </div>
     </div>
   );

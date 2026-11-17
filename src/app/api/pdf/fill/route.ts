@@ -1,7 +1,15 @@
 import { apiError, apiInternalError } from '@/lib/api-response';
 import { openEditablePdf, pdfBinaryResponse, sanitizeDownloadFileName, toSafeWinAnsi } from '@/lib/pdf-api';
 import { NextRequest } from 'next/server';
-import { rgb, StandardFonts } from 'pdf-lib';
+import {
+  PDFCheckBox,
+  PDFDropdown,
+  PDFOptionList,
+  PDFRadioGroup,
+  PDFTextField,
+  rgb,
+  StandardFonts,
+} from 'pdf-lib';
 
 export const maxDuration = 60;
 export const runtime = 'nodejs';
@@ -43,17 +51,35 @@ export async function POST(request: NextRequest) {
         if (form) {
           for (const [name, val] of Object.entries(fields)) {
             try {
-              if (typeof val === 'boolean') {
-                const checkBox = form.getCheckBox(name);
-                if (checkBox) {
-                  if (val) checkBox.check();
-                  else checkBox.uncheck();
+              const field = form.getField(name);
+              if (field instanceof PDFCheckBox) {
+                const checked =
+                  typeof val === 'boolean'
+                    ? val
+                    : ['true', 'yes', '1', 'on', 'checked'].includes(String(val).trim().toLowerCase());
+                if (checked) field.check();
+                else field.uncheck();
+                filledCount++;
+              } else if (field instanceof PDFDropdown || field instanceof PDFOptionList) {
+                const selected = String(val).trim();
+                if (selected) {
+                  field.select(selected);
                   filledCount++;
                 }
-              } else if (typeof val === 'string') {
+              } else if (field instanceof PDFRadioGroup) {
+                const selected = String(val).trim();
+                if (selected) {
+                  field.select(selected);
+                  filledCount++;
+                }
+              } else if (field instanceof PDFTextField) {
+                field.setText(String(val ?? ''));
+                filledCount++;
+              } else {
+                // Fallback for unknown text-like field subclasses
                 const textField = form.getTextField(name);
                 if (textField) {
-                  textField.setText(val);
+                  textField.setText(String(val ?? ''));
                   filledCount++;
                 }
               }
@@ -87,14 +113,35 @@ export async function POST(request: NextRequest) {
           const yPos = pageHeight - entry.y - size;
           if (yPos < 0 || entry.x >= page.getWidth()) return apiError('Text entries must fit inside the page.', 400);
 
-          const safeText = toSafeWinAnsi(entry.text || '');
-          page.drawText(safeText, {
-            x: Math.max(0, entry.x),
-            y: Math.max(0, yPos),
-            size,
-            font,
-            color: rgb(colorObj.r, colorObj.g, colorObj.b),
-          });
+          const trimmed = entry.text.trim();
+          const drawColor = rgb(colorObj.r, colorObj.g, colorObj.b);
+          if (trimmed === '✓' || trimmed === '✔' || trimmed === '☑') {
+            // Draw crisp vector checkmark so StandardFonts WinAnsi doesn't downgrade ✓ to '?'
+            const baseX = Math.max(0, entry.x);
+            const baseY = Math.max(0, yPos);
+            const stroke = Math.max(1.2, size * 0.14);
+            page.drawLine({
+              start: { x: baseX + size * 0.12, y: baseY + size * 0.42 },
+              end: { x: baseX + size * 0.4, y: baseY + size * 0.14 },
+              thickness: stroke,
+              color: drawColor,
+            });
+            page.drawLine({
+              start: { x: baseX + size * 0.4, y: baseY + size * 0.14 },
+              end: { x: baseX + size * 0.92, y: baseY + size * 0.84 },
+              thickness: stroke,
+              color: drawColor,
+            });
+          } else {
+            const safeText = toSafeWinAnsi(entry.text || '');
+            page.drawText(safeText, {
+              x: Math.max(0, entry.x),
+              y: Math.max(0, yPos),
+              size,
+              font,
+              color: drawColor,
+            });
+          }
           filledCount++;
         }
       } catch (e) {

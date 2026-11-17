@@ -456,18 +456,22 @@ function clusterByY(pageItems: PdfTextItem[]): PdfTextItem[][] {
 }
 
 function mergeRowCells(rowItems: PdfTextItem[]): TableCell[] {
-  const sorted = [...rowItems].sort((a, b) => a.x - b.x);
+  // Ignore pure-whitespace spacer tokens emitted by pdfjs so they do not bridge distinct columns
+  const sorted = [...rowItems]
+    .filter((item) => item.str.trim().length > 0)
+    .sort((a, b) => a.x - b.x);
   const cells: TableCell[] = [];
   for (const item of sorted) {
+    const token = item.str.trim();
     const prev = cells[cells.length - 1];
     const gap = prev ? item.x - (prev.x + prev.width) : 0;
     // Allow natural word gaps to merge within the same column cell, but avoid merging large column gaps
     if (prev && gap <= Math.max(14, item.height * 1.5) && gap < 26) {
-      const space = gap > 1.2 && !/\s$/.test(prev.text) && !/^\s/.test(item.str) ? ' ' : '';
-      prev.text += space + item.str;
+      const space = gap > 1.2 && !/\s$/.test(prev.text) ? ' ' : '';
+      prev.text += space + token;
       prev.width = Math.max(prev.width, item.x + item.width - prev.x);
     } else {
-      cells.push({ text: item.str.trim(), x: item.x, width: item.width });
+      cells.push({ text: token, x: item.x, width: item.width });
     }
   }
   return cells.filter(cell => cell.text);

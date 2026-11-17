@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { ArrowDown, ArrowUp } from 'lucide-react';
 
@@ -27,8 +27,20 @@ export function ScrollToTop() {
     };
   }, []);
 
-  // On every route change, land at the top (skip hash deep-links)
-  useEffect(() => {
+function forceInstantScrollTop() {
+  const html = document.documentElement;
+  const previousScrollBehavior = html.style.scrollBehavior;
+  html.style.scrollBehavior = 'auto';
+  window.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior });
+  html.scrollTop = 0;
+  if (document.body) {
+    document.body.scrollTop = 0;
+  }
+  html.style.scrollBehavior = previousScrollBehavior;
+}
+
+  // On every route change, land at the top synchronously before paint (skip hash deep-links)
+  useLayoutEffect(() => {
     if (typeof window === 'undefined') return;
 
     const hasHash = Boolean(window.location.hash);
@@ -44,21 +56,27 @@ export function ScrollToTop() {
       return;
     }
 
-    // Instant jump so tool pages don't flash mid/bottom content
-    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
-    // Re-assert after paint (dynamic tool workspaces can shift layout)
+    // Synchronously jump to y = 0 bypassing CSS scroll-behavior: smooth
+    forceInstantScrollTop();
+    // Re-assert across RAF & dynamic chunk hydration in case layout shifts restore offset
+    const rafId = window.requestAnimationFrame(() => {
+      if (!window.location.hash && window.scrollY > 0) {
+        forceInstantScrollTop();
+      }
+    });
     const t1 = window.setTimeout(() => {
-      if (!window.location.hash) {
-        window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+      if (!window.location.hash && window.scrollY > 0) {
+        forceInstantScrollTop();
       }
     }, 0);
     const t2 = window.setTimeout(() => {
-      if (!window.location.hash && window.scrollY > 8) {
-        window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+      if (!window.location.hash && window.scrollY > 0) {
+        forceInstantScrollTop();
       }
     }, 120);
 
     return () => {
+      window.cancelAnimationFrame(rafId);
       window.clearTimeout(t1);
       window.clearTimeout(t2);
     };

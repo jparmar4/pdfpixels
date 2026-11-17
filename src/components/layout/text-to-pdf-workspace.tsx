@@ -42,7 +42,8 @@ export function TextToPDFWorkspace() {
       formData.append('fontSize', fontSize);
       setProgress(60);
 
-      const res = await fetch('/api/pdf/from-text', { method: 'POST', body: formData });
+      const { apiFetch } = await import('@/lib/api-client');
+      const res = await apiFetch('/api/pdf/from-text', { method: 'POST', body: formData });
       setProgress(90);
       if (!res.ok) {
         const err = await res.json().catch(() => ({ error: 'PDF generation failed' }));

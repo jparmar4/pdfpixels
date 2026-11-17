@@ -70,6 +70,7 @@ export async function convertWithLibreOffice(
   const inputPath = path.join(workDir, `input.${safeExt}`);
   await fs.promises.writeFile(inputPath, input);
   const args = [
+    ...(safeExt === 'pdf' && target === 'docx' ? ['--infilter=writer_pdf_import'] : []),
     '--headless',
     '--norestore',
     '--nologo',

@@ -17,6 +17,15 @@ import { triggerDownloadWithSmartlink } from '@/lib/ads-config';
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
+import { Checkbox } from '@/components/ui/checkbox';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { PdfPagePreview } from './pdf-page-preview';
 
 interface FormEntry {
   id: string;
@@ -25,6 +34,13 @@ interface FormEntry {
   y: number;
   text: string;
   fontSize: number;
+}
+
+interface DetectedAcroField {
+  name: string;
+  type: string;
+  kind: 'checkbox' | 'select' | 'text';
+  options?: string[];
 }
 
 export function PDFFillWorkspace() {
@@ -36,7 +52,7 @@ export function PDFFillWorkspace() {
   const [pageHeight, setPageHeight] = useState<number>(842);
 
   // AcroForm detected fields
-  const [detectedFields, setDetectedFields] = useState<Array<{ name: string; type: string }>>([]);
+  const [detectedFields, setDetectedFields] = useState<DetectedAcroField[]>([]);
   const [fieldValues, setFieldValues] = useState<Record<string, string | boolean>>({});
 
   // Freeform text annotations on pages
@@ -82,12 +98,35 @@ export function PDFFillWorkspace() {
           try {
             const form = pdf.getForm();
             if (form) {
+              const { PDFCheckBox, PDFDropdown, PDFOptionList, PDFRadioGroup } = await import('pdf-lib');
               const fields = form.getFields();
-              const list = fields.map(f => ({
-                name: f.getName(),
-                type: f.constructor.name || 'TextField',
-              }));
+              const initial: Record<string, string | boolean> = {};
+              const list: DetectedAcroField[] = fields.map((f) => {
+                const name = f.getName();
+                if (f instanceof PDFCheckBox) {
+                  initial[name] = f.isChecked();
+                  return { name, type: 'CheckBox', kind: 'checkbox' as const };
+                }
+                if (f instanceof PDFDropdown || f instanceof PDFOptionList || f instanceof PDFRadioGroup) {
+                  const options = f.getOptions();
+                  const selected = f.getSelected();
+                  const first = Array.isArray(selected) ? selected[0] : selected;
+                  if (first) initial[name] = first;
+                  return {
+                    name,
+                    type: f.constructor.name || 'Select',
+                    kind: 'select' as const,
+                    options,
+                  };
+                }
+                const txt = (f as { getText?: () => string | undefined }).getText?.();
+                if (txt) initial[name] = txt;
+                return { name, type: f.constructor.name || 'TextField', kind: 'text' as const };
+              });
               setDetectedFields(list);
+              if (Object.keys(initial).length > 0) {
+                setFieldValues(initial);
+              }
               if (list.length > 0) {
                 toast.success(`Detected ${list.length} interactive form fields.`);
               } else {
@@ -146,6 +185,35 @@ export function PDFFillWorkspace() {
 
   const updateEntry = (id: string, updates: Partial<FormEntry>) => {
     setEntries(prev => prev.map(e => e.id === id ? { ...e, ...updates } : e));
+  };
+
+  const startEntryDrag = (e: React.PointerEvent<HTMLDivElement>, entry: FormEntry) => {
+    const tag = (e.target as HTMLElement).tagName;
+    if (tag === 'INPUT' || (e.target as HTMLElement).closest('button')) return;
+    e.preventDefault();
+    e.stopPropagation();
+    const startX = e.clientX;
+    const startY = e.clientY;
+    const origX = entry.x;
+    const origY = entry.y;
+    const onMove = (ev: PointerEvent) => {
+      const container = previewRef.current;
+      if (!container) return;
+      const rect = container.getBoundingClientRect();
+      if (rect.width <= 0 || rect.height <= 0) return;
+      const dx = ((ev.clientX - startX) / rect.width) * pageWidth;
+      const dy = ((ev.clientY - startY) / rect.height) * pageHeight;
+      updateEntry(entry.id, {
+        x: Math.round(Math.max(0, Math.min(Math.max(0, pageWidth - 60), origX + dx))),
+        y: Math.round(Math.max(0, Math.min(Math.max(0, pageHeight - 24), origY + dy))),
+      });
+    };
+    const onUp = () => {
+      window.removeEventListener('pointermove', onMove);
+      window.removeEventListener('pointerup', onUp);
+    };
+    window.addEventListener('pointermove', onMove);
+    window.addEventListener('pointerup', onUp);
   };
 
   const handleFillPdf = async () => {
@@ -262,37 +330,30 @@ export function PDFFillWorkspace() {
               {/* PDF Preview Page with Interactive Text Elements */}
               <div
                 ref={previewRef}
-                className="relative bg-white dark:bg-zinc-900 border-2 rounded-2xl aspect-[1/1.414] shadow-sm overflow-hidden p-8 flex flex-col justify-between"
+                className="relative bg-white dark:bg-zinc-900 border-2 rounded-2xl shadow-sm overflow-hidden flex flex-col justify-between"
+                style={{ aspectRatio: `${pageWidth} / ${pageHeight}` }}
               >
-                {/* Mock Form Header Lines */}
-                <div className="space-y-4 opacity-30 select-none">
-                  <div className="h-5 bg-muted-foreground/30 rounded w-1/3" />
-                  <div className="h-3 bg-muted-foreground/20 rounded w-full" />
-                  <div className="h-3 bg-muted-foreground/20 rounded w-5/6" />
-                  <div className="h-3 bg-muted-foreground/20 rounded w-full" />
+                <div className="absolute inset-0">
+                  <PdfPagePreview
+                    file={uploadedFile}
+                    pageNumber={currentPage}
+                    onPageDimensions={({ width, height }) => {
+                      setPageWidth(width);
+                      setPageHeight(height);
+                    }}
+                  />
                 </div>
 
                 {/* Freeform Placed Entries for Current Page */}
                 {currentPageEntries.map((entry) => (
-                  <motion.div
+                  <div
                     key={entry.id}
-                    drag
-                    dragConstraints={previewRef}
-                    className="absolute bg-blue-50/90 dark:bg-blue-950/90 border border-blue-400/80 rounded px-2 py-1 shadow-sm group cursor-move select-none"
+                    role="presentation"
+                    onPointerDown={(e) => startEntryDrag(e, entry)}
+                    className="absolute z-10 bg-blue-50/95 dark:bg-blue-950/95 border border-blue-500/80 rounded px-2 py-1 shadow-sm group cursor-move touch-none select-none"
                     style={{
                       left: `${(entry.x / pageWidth) * 100}%`,
                       top: `${(entry.y / pageHeight) * 100}%`,
-                    }}
-                    onDragEnd={(_, info) => {
-                      const container = previewRef.current;
-                      if (!container) return;
-                      const rect = container.getBoundingClientRect();
-                      const xPercent = (info.point.x - rect.left) / rect.width;
-                      const yPercent = (info.point.y - rect.top) / rect.height;
-                      updateEntry(entry.id, {
-                        x: Math.max(0, Math.min(pageWidth - 80, Math.round(xPercent * pageWidth))),
-                        y: Math.max(0, Math.min(pageHeight - 30, Math.round(yPercent * pageHeight))),
-                      });
                     }}
                   >
                     <div className="flex items-center gap-1.5">
@@ -300,28 +361,19 @@ export function PDFFillWorkspace() {
                         type="text"
                         value={entry.text}
                         onChange={(e) => updateEntry(entry.id, { text: e.target.value })}
-                        className="bg-transparent text-foreground text-xs font-medium border-b border-transparent focus:border-primary outline-none min-w-[60px]"
+                        className="bg-transparent text-foreground text-xs font-medium border-b border-transparent focus:border-primary outline-none min-w-[48px]"
                         style={{ fontSize: `${entry.fontSize}px` }}
                       />
                       <button
                         type="button"
                         onClick={() => removeEntry(entry.id)}
-                        className="text-muted-foreground hover:text-red-500 opacity-60"
+                        className="text-muted-foreground hover:text-red-500 opacity-70"
                       >
                         <Trash2 className="w-3 h-3" />
                       </button>
                     </div>
-                  </motion.div>
-                ))}
-
-                <div className="space-y-3 opacity-30 select-none">
-                  <div className="h-3 bg-muted-foreground/20 rounded w-full" />
-                  <div className="h-3 bg-muted-foreground/20 rounded w-2/3" />
-                  <div className="flex justify-between items-center pt-3 border-t">
-                    <span className="text-[10px] text-muted-foreground">APPLICATION FORM</span>
-                    <span className="text-[10px] text-muted-foreground">Page {currentPage}</span>
                   </div>
-                </div>
+                ))}
               </div>
             </div>
 
@@ -371,19 +423,65 @@ export function PDFFillWorkspace() {
 
                 {/* Detected AcroForm Fields if available */}
                 {detectedFields.length > 0 && (
-                  <div className="space-y-3 border-t pt-4 max-h-60 overflow-y-auto">
-                    <Label htmlFor="detected-acroform-fields" className="text-xs font-semibold">Detected AcroForm Fields:</Label>
-                    {detectedFields.slice(0, 10).map((field) => (
-                      <div key={field.name} className="space-y-1">
-                        <span className="text-[11px] text-muted-foreground font-mono">{field.name}</span>
-                        <Input id="detected-acroform-fields"
-                          placeholder={`Enter ${field.name}...`}
-                          value={String(fieldValues[field.name] || '')}
-                          onChange={(e) => setFieldValues(prev => ({ ...prev, [field.name]: e.target.value }))}
-                          className="h-8 text-xs font-medium"
-                        />
-                      </div>
-                    ))}
+                  <div className="space-y-3 border-t pt-4 max-h-72 overflow-y-auto pr-1">
+                    <Label className="text-xs font-semibold">Detected AcroForm Fields ({detectedFields.length}):</Label>
+                    {detectedFields.slice(0, 25).map((field, idx) => {
+                      const fieldDomId = `acroform-field-${idx}`;
+                      if (field.kind === 'checkbox') {
+                        return (
+                          <div key={field.name} className="flex items-center justify-between gap-2 rounded-lg border border-border/60 px-3 py-2">
+                            <Label htmlFor={fieldDomId} className="text-[11px] font-mono text-muted-foreground cursor-pointer">
+                              {field.name}
+                            </Label>
+                            <Checkbox
+                              id={fieldDomId}
+                              checked={Boolean(fieldValues[field.name])}
+                              onCheckedChange={(checked) =>
+                                setFieldValues((prev) => ({ ...prev, [field.name]: Boolean(checked) }))
+                              }
+                            />
+                          </div>
+                        );
+                      }
+                      if (field.kind === 'select' && field.options && field.options.length > 0) {
+                        return (
+                          <div key={field.name} className="space-y-1">
+                            <Label htmlFor={fieldDomId} className="text-[11px] text-muted-foreground font-mono">
+                              {field.name}
+                            </Label>
+                            <Select
+                              value={String(fieldValues[field.name] || '')}
+                              onValueChange={(value) => setFieldValues((prev) => ({ ...prev, [field.name]: value }))}
+                            >
+                              <SelectTrigger id={fieldDomId} className="h-8 text-xs font-medium">
+                                <SelectValue placeholder={`Select ${field.name}...`} />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {field.options.map((opt) => (
+                                  <SelectItem key={opt} value={opt}>
+                                    {opt}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        );
+                      }
+                      return (
+                        <div key={field.name} className="space-y-1">
+                          <Label htmlFor={fieldDomId} className="text-[11px] text-muted-foreground font-mono">
+                            {field.name}
+                          </Label>
+                          <Input
+                            id={fieldDomId}
+                            placeholder={`Enter ${field.name}...`}
+                            value={String(fieldValues[field.name] || '')}
+                            onChange={(e) => setFieldValues(prev => ({ ...prev, [field.name]: e.target.value }))}
+                            className="h-8 text-xs font-medium"
+                          />
+                        </div>
+                      );
+                    })}
                   </div>
                 )}
 

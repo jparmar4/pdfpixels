@@ -16,11 +16,13 @@ import {
   Sparkles,
   Sun,
   Upload,
+  Workflow,
   X,
   Zap,
   Image as ImageIcon,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { WORKFLOW_RECIPES } from '@/lib/workflow-recipes';
 import {
   allTools,
   toolCategories,
@@ -108,12 +110,13 @@ export function Navigation() {
     }
 
     const matched = searchTools(query);
+    const pdfIds = new Set(allPdfTools.map((t) => t.id));
     const filtered = filter === 'all'
       ? matched
       : filter === 'pdf'
-        ? matched.filter((t) => t.category.startsWith('pdf') || t.id.includes('pdf'))
+        ? matched.filter((t) => pdfIds.has(t.id))
         : filter === 'image'
-          ? matched.filter((t) => !t.category.startsWith('pdf'))
+          ? matched.filter((t) => !pdfIds.has(t.id))
           : matched.filter((t) => t.popular);
     setSearchResults(filtered.slice(0, 20));
   };
@@ -165,7 +168,6 @@ export function Navigation() {
       name: normalizeDisplayText(tool.name),
       description: normalizeDisplayText(tool.description),
     });
-    router.push(`/tools/${tool.slug}`);
     closeSearch();
     setMobileMenuOpen(false);
     setActiveMegaCategory(null);
@@ -321,16 +323,41 @@ export function Navigation() {
                 );
               })}
 
+              <div
+                className="relative group py-1.5"
+                onMouseEnter={() => openMega('workflows')}
+                onMouseLeave={closeMega}
+                onFocus={() => openMega('workflows')}
+                onBlur={closeMega}
+              >
+                <Link
+                  href="/workflows"
+                  onClick={dismissMega}
+                  aria-haspopup="true"
+                  aria-expanded={activeMegaCategory === 'workflows'}
+                  className={`relative z-10 inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-sm font-medium whitespace-nowrap transition-all duration-200 ${
+                    activeMegaCategory === 'workflows' ? 'text-primary' : 'text-foreground hover:text-primary'
+                  }`}
+                >
+                  <Workflow className="h-3.5 w-3.5 text-primary" />
+                  Workflows
+                  <span className="rounded-full bg-primary/10 px-1.5 py-0.2 text-[10px] font-black text-primary">{WORKFLOW_RECIPES.length}</span>
+                </Link>
+                {activeMegaCategory === 'workflows' && (
+                  <span className="absolute inset-0 z-0 rounded-full bg-secondary shadow-sm ring-1 ring-border/20" />
+                )}
+              </div>
+
               <Link
                 href="/tools"
-                className="relative inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-sm font-medium text-muted-foreground transition-all duration-200 hover:text-foreground"
+                className="relative inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-sm font-medium whitespace-nowrap text-muted-foreground transition-all duration-200 hover:text-foreground"
               >
                 All Tools
               </Link>
               
               <Link
                 href="/pricing"
-                className="relative inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-sm font-medium text-muted-foreground transition-all duration-200 hover:bg-amber-500/10 hover:text-amber-600 dark:hover:text-amber-500"
+                className="relative hidden xl:inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-sm font-medium whitespace-nowrap text-muted-foreground transition-all duration-200 hover:bg-amber-500/10 hover:text-amber-600 dark:hover:text-amber-500"
               >
                 <Sparkles className="h-3 w-3 text-amber-500" />
                 Pricing
@@ -401,7 +428,46 @@ export function Navigation() {
             {/* Tool pages render their breadcrumb server-side (see app/tools/[slug]/page.tsx)
                 so it is present in the HTML without JS and mirrors the JSON-LD. */}
 
-            {activeMegaCategory === 'pdf-tools' ? (
+            {activeMegaCategory === 'workflows' ? (
+              <div
+                id="mega-menu-workflows"
+                role="group"
+                aria-label="Multi-step workflow recipes"
+                onMouseEnter={() => openMega('workflows')}
+                onMouseLeave={closeMega}
+                className="hidden lg:block pb-4 animate-in fade-in slide-in-from-top-2 duration-200"
+              >
+                <div className="rounded-[1.75rem] border border-border/50 bg-card/95 p-6 shadow-premium">
+                  <div className="mb-4 flex items-center justify-between border-b border-border/40 pb-3">
+                    <div>
+                      <h3 className="text-base font-extrabold text-foreground">Multi-Step Workflow Recipes</h3>
+                      <p className="text-xs text-muted-foreground">Upload once to execute chained legal, tax, USCIS, e-commerce, and privacy pipelines.</p>
+                    </div>
+                    <Link
+                      href="/workflows"
+                      onClick={dismissMega}
+                      className="rounded-xl bg-primary px-4 py-2 text-xs font-bold text-white shadow-sm hover:opacity-95"
+                    >
+                      All {WORKFLOW_RECIPES.length} Workflows →
+                    </Link>
+                  </div>
+                  <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+                    {WORKFLOW_RECIPES.map((recipe) => (
+                      <Link
+                        key={recipe.slug}
+                        href={`/workflows/${recipe.slug}`}
+                        onClick={dismissMega}
+                        className="group rounded-[1.25rem] border border-border/50 bg-background/75 p-3.5 transition-all hover:border-primary/40 hover:bg-background"
+                      >
+                        <p className="text-[10px] font-bold uppercase tracking-wider text-primary">{recipe.category}</p>
+                        <p className="text-sm font-semibold text-foreground group-hover:text-primary mt-1 line-clamp-1">{recipe.shortTitle}</p>
+                        <p className="text-[11px] text-muted-foreground mt-1 line-clamp-2">{recipe.steps.map((s) => s.title).join(' → ')}</p>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ) : activeMegaCategory === 'pdf-tools' ? (
               <div
                 id="mega-menu-pdf-tools"
                 role="group"
@@ -538,11 +604,17 @@ export function Navigation() {
                 className="overflow-hidden border-t border-border/30 lg:hidden animate-in fade-in slide-in-from-top-2 duration-200"
               >
                 <div className="space-y-5 py-4">
-                  <div className="grid gap-2 sm:grid-cols-3">
+                  <div className="grid gap-2 sm:grid-cols-4">
                     <Button asChild className="btn-premium h-11 rounded-2xl shadow-primary/20">
                       <Link href="/pdf-tools" onClick={() => setMobileMenuOpen(false)}>
                         <FileText className="mr-2 h-4 w-4" />
                         All PDF Tools ({allPdfTools.length})
+                      </Link>
+                    </Button>
+                    <Button asChild variant="outline" className="h-11 rounded-2xl">
+                      <Link href="/workflows" onClick={() => setMobileMenuOpen(false)}>
+                        <Workflow className="mr-2 h-4 w-4 text-primary" />
+                        Workflows ({WORKFLOW_RECIPES.length})
                       </Link>
                     </Button>
                     <Button asChild variant="outline" className="h-11 rounded-2xl">

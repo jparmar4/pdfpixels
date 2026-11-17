@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowRight, Minimize2, RefreshCw, Sparkles, Zap } from 'lucide-react';
 import { toast } from 'sonner';
@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useActiveTool } from '@/hooks/use-active-tool';
 import { FileUpload } from './file-upload';
+import { CompareHoldPreview } from './compare-hold-preview';
 import { ResultCard } from './result-card';
 import { ToolLimitNotice } from './tool-limit-notice';
 import { ToolPageHeader } from './tool-page-header';
@@ -39,10 +40,21 @@ export function CompressWorkspace() {
   const { activeTool, uploadedFile, processedImage, isProcessing, reset, setIsProcessing, setProcessedImage, setProgress } = useActiveTool();
   const [targetSize, setTargetSize] = useState('100');
   const [result, setResult] = useState<CompressionResult | null>(null);
+  const resultBlobUrlRef = useRef<string | null>(null);
+
+  const revokeResultBlobUrl = useCallback(() => {
+    if (resultBlobUrlRef.current?.startsWith('blob:')) {
+      URL.revokeObjectURL(resultBlobUrlRef.current);
+      resultBlobUrlRef.current = null;
+    }
+  }, []);
 
   useEffect(() => {
+    revokeResultBlobUrl();
     setResult(null);
-  }, [uploadedFile]);
+  }, [revokeResultBlobUrl, uploadedFile]);
+
+  useEffect(() => revokeResultBlobUrl, [revokeResultBlobUrl]);
 
   useEffect(() => {
     const toolId = activeTool?.id || '';
@@ -75,23 +87,15 @@ export function CompressWorkspace() {
     }
 
     try {
-      const { fetchWithUploadProgress } = await import('@/lib/upload-with-progress');
-      const response = await fetchWithUploadProgress('/api/image/process', formData, setProgress);
+      const { requestProcessedImage } = await import('@/lib/image-process-client');
+      const data = await requestProcessedImage(formData, setProgress);
 
       setProgress(100);
-
-      if (!response.ok) {
-        let message = 'Processing failed';
-        try {
-          const errorJson = await response.json();
-          message = errorJson?.error || message;
-        } catch {
-          // Keep default message.
-        }
-        throw new Error(message);
+      revokeResultBlobUrl();
+      if (data.isBlobUrl) {
+        resultBlobUrlRef.current = data.imageUrl;
       }
 
-      const data = await response.json();
       const deltaPercent = Math.round(((data.processedSize - data.originalSize) / Math.max(1, data.originalSize)) * 100);
       const savedPercent = Math.max(0, Math.round((1 - data.processedSize / data.originalSize) * 100));
       const nextResult: CompressionResult = {
@@ -121,7 +125,7 @@ export function CompressWorkspace() {
     } finally {
       setIsProcessing(false);
     }
-  }, [activeTool?.id, setIsProcessing, setProcessedImage, setProgress, targetSize, uploadedFile]);
+  }, [activeTool?.id, revokeResultBlobUrl, setIsProcessing, setProcessedImage, setProgress, targetSize, uploadedFile]);
 
   const handleDownload = useCallback(() => {
     if (!processedImage || !uploadedFile || !result) return;
@@ -140,10 +144,11 @@ export function CompressWorkspace() {
   }, [activeTool?.id, processedImage, result, uploadedFile]);
 
   const handleReset = useCallback(() => {
+    revokeResultBlobUrl();
     reset();
     setResult(null);
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [reset]);
+  }, [reset, revokeResultBlobUrl]);
 
   if (!activeTool) return null;
 
@@ -265,6 +270,16 @@ export function CompressWorkspace() {
                 </Badge>
               </div>
 
+              <div className="overflow-hidden rounded-[1.75rem] border border-border/60 bg-card/75 p-4 shadow-premium">
+                <CompareHoldPreview
+                  processedSrc={processedImage}
+                  originalFile={uploadedFile}
+                  alt="Compressed image result preview"
+                  containerClassName="min-h-[220px] max-h-[380px] bg-muted/25 p-3"
+                  imgClassName="max-h-[340px]"
+                />
+              </div>
+
               <ResultCard
                 title={isIncrease ? 'Image size increased' : 'Image compression complete'}
                 description={
@@ -275,6 +290,15 @@ export function CompressWorkspace() {
                 onDownload={handleDownload}
                 downloadLabel={isIncrease ? 'Download increased image' : 'Download compressed image'}
                 primaryMeta={`${uploadedFile.name} - ${formatSize(result.originalSize)} to ${formatSize(result.processedSize)}`}
+                originalSize={result.originalSize}
+                processedSize={result.processedSize}
+                savedPercent={isIncrease ? undefined : result.savedPercent}
+                formatLabel={(result.format || 'jpg').toUpperCase()}
+                resultUrl={processedImage}
+                resultFileName={(() => {
+                  const base = uploadedFile.name.includes('.') ? uploadedFile.name.substring(0, uploadedFile.name.lastIndexOf('.')) : uploadedFile.name;
+                  return `${base}-${isIncrease ? 'increased' : 'compressed'}.${result.format || 'jpg'}`;
+                })()}
                 nextActions={[
                   { label: 'Resize image', href: '/tools/resize-image' },
                   { label: 'Convert format', href: '/tools/png-to-jpeg' },

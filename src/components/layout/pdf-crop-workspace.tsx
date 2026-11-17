@@ -16,6 +16,7 @@ import { triggerDownloadWithSmartlink } from '@/lib/ads-config';
 import { useState, useCallback, useEffect } from 'react';
 import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
+import { PdfPagePreview } from './pdf-page-preview';
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue
 } from '@/components/ui/select';
@@ -211,29 +212,42 @@ export function PDFCropWorkspace() {
                 </div>
               </div>
 
-              {/* Page Mockup with Shaded Crop Margins */}
-              <div className="relative bg-white dark:bg-zinc-900 border-2 rounded-2xl aspect-[1/1.414] shadow-sm overflow-hidden p-8 flex flex-col justify-between">
+              {/* Page Preview with Shaded Crop Margins */}
+              <div
+                className="relative bg-white dark:bg-zinc-900 border-2 rounded-2xl shadow-sm overflow-hidden flex flex-col justify-between"
+                style={{ aspectRatio: `${pageWidth} / ${pageHeight}` }}
+              >
+                <div className="absolute inset-0">
+                  <PdfPagePreview
+                    file={uploadedFile}
+                    pageNumber={currentPage}
+                    onPageDimensions={({ width, height }) => {
+                      setPageWidth(width);
+                      setPageHeight(height);
+                    }}
+                  />
+                </div>
                 {/* Shaded Cropped Margin Overlays */}
                 <div
-                  className="absolute top-0 left-0 right-0 bg-red-500/15 border-b border-red-500/40 pointer-events-none"
+                  className="absolute top-0 left-0 right-0 bg-red-500/20 border-b border-red-500/50 pointer-events-none z-10"
                   style={{ height: `${topPercent}%` }}
                 />
                 <div
-                  className="absolute bottom-0 left-0 right-0 bg-red-500/15 border-t border-red-500/40 pointer-events-none"
+                  className="absolute bottom-0 left-0 right-0 bg-red-500/20 border-t border-red-500/50 pointer-events-none z-10"
                   style={{ height: `${bottomPercent}%` }}
                 />
                 <div
-                  className="absolute top-0 bottom-0 left-0 bg-red-500/15 border-r border-red-500/40 pointer-events-none"
+                  className="absolute top-0 bottom-0 left-0 bg-red-500/20 border-r border-red-500/50 pointer-events-none z-10"
                   style={{ width: `${leftPercent}%` }}
                 />
                 <div
-                  className="absolute top-0 bottom-0 right-0 bg-red-500/15 border-l border-red-500/40 pointer-events-none"
+                  className="absolute top-0 bottom-0 right-0 bg-red-500/20 border-l border-red-500/50 pointer-events-none z-10"
                   style={{ width: `${rightPercent}%` }}
                 />
 
                 {/* Safe Keep Area Bounding Box */}
                 <div
-                  className="absolute border-2 border-dashed border-emerald-500 bg-emerald-500/5 pointer-events-none flex items-center justify-center"
+                  className="absolute border-2 border-dashed border-emerald-500 bg-emerald-500/5 pointer-events-none z-10 flex items-center justify-center"
                   style={{
                     top: `${topPercent}%`,
                     bottom: `${bottomPercent}%`,
@@ -241,22 +255,9 @@ export function PDFCropWorkspace() {
                     right: `${rightPercent}%`,
                   }}
                 >
-                  <span className="text-[11px] font-mono text-emerald-600 dark:text-emerald-400 font-semibold px-2 py-1 bg-white/80 dark:bg-zinc-950/80 rounded border shadow-xs">
+                  <span className="text-[11px] font-mono text-emerald-700 dark:text-emerald-300 font-semibold px-2 py-1 bg-white/85 dark:bg-zinc-950/85 rounded border shadow-xs">
                     Preserved Crop Area
                   </span>
-                </div>
-
-                {/* Background Document Mock Lines */}
-                <div className="space-y-4 opacity-25 select-none">
-                  <div className="h-5 bg-muted-foreground/30 rounded w-1/3" />
-                  <div className="h-3 bg-muted-foreground/20 rounded w-full" />
-                  <div className="h-3 bg-muted-foreground/20 rounded w-5/6" />
-                  <div className="h-3 bg-muted-foreground/20 rounded w-full" />
-                </div>
-                <div className="space-y-3 opacity-25 select-none">
-                  <div className="h-3 bg-muted-foreground/20 rounded w-full" />
-                  <div className="h-3 bg-muted-foreground/20 rounded w-3/4" />
-                  <div className="h-3 bg-muted-foreground/20 rounded w-full" />
                 </div>
               </div>
             </div>
