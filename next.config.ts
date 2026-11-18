@@ -74,6 +74,8 @@ const nextConfig: NextConfig = {
 
   // Experimental features for performance
   experimental: {
+    // Multiple root layouts (en, es, fr, de, pt, jp) route unmatched URLs through app/global-not-found.tsx.
+    globalNotFound: true,
     // Limit parallel worker threads during build/static-generation.
     // CI/cloud hosts often have 64 vCPUs with tight RAM limits, where spawning 63 workers causes OOM / SIGABRT.
     cpus: 4,

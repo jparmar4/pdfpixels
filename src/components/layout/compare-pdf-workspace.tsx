@@ -22,6 +22,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ToolPageHeader } from './tool-page-header';
 import { ToolLimitNotice } from './tool-limit-notice';
 import { ResultScreenAd, SmartlinkButton } from '@/components/ads/ad-banner';
+import { useActiveTool } from '@/hooks/use-active-tool';
 import { PrivateModeBadge } from './private-mode-badge';
 import { toast } from 'sonner';
 
@@ -38,6 +39,7 @@ interface CompareStats {
 }
 
 export function ComparePdfWorkspace() {
+  const { activeTool } = useActiveTool();
   const [fileA, setFileA] = useState<File | null>(null);
   const [fileB, setFileB] = useState<File | null>(null);
   const [diffItems, setDiffItems] = useState<DiffItem[]>([]);
@@ -257,8 +259,8 @@ export function ComparePdfWorkspace() {
   return (
     <div className="container mx-auto px-4 lg:px-8 py-8 max-w-5xl">
       <ToolPageHeader
-        title="Compare PDF Documents Online"
-        description="Compare two versions of a contract or PDF side-by-side to highlight text differences, clause additions, and deletions with redline diff."
+        title={activeTool?.name || 'Compare PDF Documents Online'}
+        description={activeTool?.description || 'Compare two versions of a contract or PDF side-by-side to highlight text differences, clause additions, and deletions with redline diff.'}
         icon={<ArrowLeftRight className="h-7 w-7 text-white" />}
         onReset={handleReset}
       />

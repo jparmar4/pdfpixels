@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Switch } from '@/components/ui/switch';
 import { ResultScreenAd, SmartlinkButton } from '@/components/ads/ad-banner';
 import { triggerDownloadWithSmartlink } from '@/lib/ads-config';
-import { useAppStore } from '@/store/app-store';
+import { useActiveTool } from '@/hooks/use-active-tool';
 import { useConsumeChainedFile } from '@/hooks/use-consume-chained-file';
 import { FileUpload } from './file-upload';
 import { PrivateModeBadge } from './private-mode-badge';
@@ -38,7 +38,7 @@ const FNSKU_ROLL_PRESETS: ThermalStickerSpec[] = [
 ];
 
 export function AmazonFbaLabelWorkspace() {
-  const { uploadedFile, setUploadedFile, isProcessing, setIsProcessing, setProgress, reset } = useAppStore();
+  const { activeTool, uploadedFile, setUploadedFile, isProcessing, setIsProcessing, setProgress, reset } = useActiveTool();
 
   const [mode, setMode] = useState<FbaMode>('fnsku-30up');
   const [stickerSpec, setStickerSpec] = useState<string>('dymo-30334');
@@ -270,8 +270,8 @@ export function AmazonFbaLabelWorkspace() {
   return (
     <div className="container mx-auto px-4 lg:px-8 py-8 max-w-5xl">
       <ToolPageHeader
-        title="Amazon FBA FNSKU & Box Label Thermal Converter"
-        description="Split Seller Central 30-up Avery 5160 FNSKU sheets and 8.5×11&quot; box shipment PDFs into crisp individual Dymo, Rollo, Munbyn, and Zebra thermal labels — 100% browser-native."
+        title={activeTool?.name || 'Amazon FBA FNSKU & Box Label Thermal Converter'}
+        description={activeTool?.description || 'Split Seller Central 30-up Avery 5160 FNSKU sheets and 8.5×11" box shipment PDFs into crisp individual Dymo, Rollo, Munbyn, and Zebra thermal labels — 100% browser-native.'}
         icon={<Package className="h-7 w-7 text-white" />}
         onReset={handleReset}
       />

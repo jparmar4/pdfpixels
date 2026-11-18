@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useAppStore } from '@/store/app-store';
+import { useActiveTool } from '@/hooks/use-active-tool';
 import { FileUpload } from './file-upload';
 import { ToolPageHeader } from './tool-page-header';
 import { ToolLimitNotice } from './tool-limit-notice';
@@ -17,7 +17,7 @@ import { toast } from 'sonner';
 type Position = 'top-left' | 'top-center' | 'top-right' | 'bottom-left' | 'bottom-center' | 'bottom-right';
 
 export function BatesNumberingWorkspace() {
-  const { uploadedFile, isProcessing, setIsProcessing, setProgress, reset } = useAppStore();
+  const { activeTool, uploadedFile, isProcessing, setIsProcessing, setProgress, reset } = useActiveTool();
 
   const [prefix, setPrefix] = useState<string>('PLAINTIFF-');
   const [suffix, setSuffix] = useState<string>('');
@@ -97,8 +97,8 @@ export function BatesNumberingWorkspace() {
   return (
     <div className="container mx-auto px-4 lg:px-8 py-8 max-w-5xl">
       <ToolPageHeader
-        title="Bates Numbering PDF Online"
-        description="Add sequential legal Bates stamps, custom case prefixes, and confidentiality notices to PDF pages for discovery and litigation."
+        title={activeTool?.name || 'Bates Numbering PDF Online'}
+        description={activeTool?.description || 'Add sequential legal Bates stamps, custom case prefixes, and confidentiality notices to PDF pages for discovery and litigation.'}
         icon={<Hash className="h-7 w-7 text-white" />}
         onReset={handleReset}
       />

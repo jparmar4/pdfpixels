@@ -6,7 +6,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import { useAppStore } from '@/store/app-store';
+import { useActiveTool } from '@/hooks/use-active-tool';
 import { ToolResultBar } from './tool-result-bar';
 import { FileUpload } from './file-upload';
 import { ToolPageHeader } from './tool-page-header';
@@ -85,7 +85,7 @@ function rowsToCsvBlob(rows: ReconciliationRow[]): Blob {
 }
 
 export function PDFToExcelWorkspace({ initialFormat = 'xlsx' }: { initialFormat?: 'xlsx' | 'csv' } = {}) {
-  const { uploadedFile, isProcessing, progress, setIsProcessing, setProgress, reset } = useAppStore();
+  const { activeTool, uploadedFile, isProcessing, progress, setIsProcessing, setProgress, reset } = useActiveTool();
   const [convertError, setConvertError] = useState<string | null>(null);
 
   const [totalPages, setTotalPages] = useState<number>(1);
@@ -226,8 +226,8 @@ export function PDFToExcelWorkspace({ initialFormat = 'xlsx' }: { initialFormat?
   return (
     <div className="container mx-auto px-4 lg:px-8 py-8 max-w-5xl">
       <ToolPageHeader
-        title="PDF to Excel Converter Online Free"
-        description="Extract tables, rows, columns, and financial data from PDF invoices, bank statements, and spreadsheets into Microsoft Excel (.xlsx) or CSV."
+        title={activeTool?.name || 'PDF to Excel Converter Online Free'}
+        description={activeTool?.description || 'Extract tables, rows, columns, and financial data from PDF invoices, bank statements, and spreadsheets into Microsoft Excel (.xlsx) or CSV.'}
         icon={<FileSpreadsheet className="h-7 w-7 text-white" />}
         onReset={handleReset}
       />

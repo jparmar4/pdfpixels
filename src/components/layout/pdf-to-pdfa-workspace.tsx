@@ -6,7 +6,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import { useAppStore } from '@/store/app-store';
+import { useActiveTool } from '@/hooks/use-active-tool';
 import { FileUpload } from './file-upload';
 import { ToolPageHeader } from './tool-page-header';
 import { ToolLimitNotice } from './tool-limit-notice';
@@ -20,7 +20,7 @@ import {
 } from '@/components/ui/select';
 
 export function PDFToPDFAWorkspace() {
-  const { uploadedFile, isProcessing, setIsProcessing, setProgress, reset } = useAppStore();
+  const { activeTool, uploadedFile, isProcessing, setIsProcessing, setProgress, reset } = useActiveTool();
 
   const [totalPages, setTotalPages] = useState<number>(1);
   const [conformance, setConformance] = useState<'2b' | '1b'>('2b');
@@ -118,8 +118,8 @@ export function PDFToPDFAWorkspace() {
   return (
     <div className="container mx-auto px-4 lg:px-8 py-8 max-w-5xl">
       <ToolPageHeader
-        title="PDF to PDF/A Converter (ISO Archival Standard)"
-        description="Convert standard PDF files into ISO 19005 compliant PDF/A-1b and PDF/A-2b format for long-term document archiving, European e-Justice, and legal compliance."
+        title={activeTool?.name || 'PDF to PDF/A Converter (ISO Archival Standard)'}
+        description={activeTool?.description || 'Convert standard PDF files into ISO 19005 compliant PDF/A-1b and PDF/A-2b format for long-term document archiving, European e-Justice, and legal compliance.'}
         icon={<Archive className="h-7 w-7 text-white" />}
         onReset={handleReset}
       />

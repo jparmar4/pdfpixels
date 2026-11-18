@@ -13,7 +13,7 @@ import { useState, useCallback, useEffect } from 'react';
 import { toast } from 'sonner';
 
 export function PDFToPptxWorkspace() {
-  const { uploadedFile, isProcessing, progress, setIsProcessing, setProgress, reset } = useActiveTool();
+  const { activeTool, uploadedFile, isProcessing, progress, setIsProcessing, setProgress, reset } = useActiveTool();
   const [result, setResult] = useState<{ url: string; name: string } | null>(null);
 
   useEffect(() => {
@@ -90,8 +90,8 @@ export function PDFToPptxWorkspace() {
   return (
     <div className="container mx-auto px-4 lg:px-8 py-8 max-w-5xl">
       <ToolPageHeader
-        title="PDF to PowerPoint Converter"
-        description="Convert every PDF page into a high-resolution slide in a .pptx presentation that opens in PowerPoint, Google Slides, and Keynote."
+        title={activeTool?.name || 'PDF to PowerPoint Converter'}
+        description={activeTool?.description || 'Convert every PDF page into a high-resolution slide in a .pptx presentation that opens in PowerPoint, Google Slides, and Keynote.'}
         icon={<Presentation className="h-7 w-7 text-white" />}
         onReset={handleReset}
       />

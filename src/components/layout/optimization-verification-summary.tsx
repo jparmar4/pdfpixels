@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { getToolById } from '@/lib/tools-data';
 import { useActiveTool } from '@/hooks/use-active-tool';
+import { getUiDictionary } from '@/lib/locale-ui';
 import { useWorkflowStore } from '@/store/workflow-store';
 import { cn } from '@/lib/utils';
 
@@ -72,6 +73,7 @@ export function OptimizationVerificationSummary({
   className,
 }: OptimizationVerificationProps) {
   const { activeTool, uploadedFile } = useActiveTool();
+  const ui = getUiDictionary(activeTool?.locale);
   const latestOutput = useWorkflowStore((s) => s.latestOutput);
   const resolvedUrl = resultUrl ?? latestOutput?.url ?? null;
   const [measured, setMeasured] = useState<{ url: string; size: number }>({ url: '', size: 0 });
@@ -179,11 +181,11 @@ export function OptimizationVerificationSummary({
     latestOutput?.privacyStatus ||
     (isClientTool
       ? isVerified
-        ? 'Local browser memory only · Zero server upload'
-        : 'Auditing local browser execution buffer...'
+        ? ui.result.localMemoryOnly
+        : ui.result.auditingLocalBuffer
       : isVerified
-        ? 'Ephemeral buffer purged · Zero server retention'
-        : 'Scrubbing temporary server buffer...');
+        ? ui.result.serverPurged
+        : ui.result.scrubbingServerBuffer);
 
   return (
     <div
@@ -205,12 +207,12 @@ export function OptimizationVerificationSummary({
           </div>
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.14em] text-foreground">
-              Optimization &amp; Verification Summary
+              {ui.result.summaryTitle}
             </p>
             <p className="text-[11px] text-muted-foreground" aria-live="polite">
               {isVerified
-                ? 'Output checksum & quality audit complete'
-                : `Verifying output integrity & privacy purge (${secondsLeft}s)...`}
+                ? ui.result.auditComplete
+                : ui.result.verifyingProgress(secondsLeft)}
             </p>
           </div>
         </div>
@@ -227,12 +229,12 @@ export function OptimizationVerificationSummary({
           {isVerified ? (
             <span className="inline-flex items-center gap-1">
               <CheckCircle2 className="h-3 w-3" />
-              Verified · {resolvedFormat}
+              {ui.result.verifiedBadge(resolvedFormat)}
             </span>
           ) : (
             <span className="inline-flex items-center gap-1">
               <Sparkles className="h-3 w-3" />
-              Checking {progressValue}%
+              {ui.result.checkingBadge(progressValue)}
             </span>
           )}
         </Badge>
@@ -246,28 +248,28 @@ export function OptimizationVerificationSummary({
 
       <div className="mt-3 grid grid-cols-2 gap-2.5 sm:grid-cols-4">
         <div className="rounded-xl border border-border/50 bg-card/70 px-3 py-2">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">Original Size</p>
+          <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">{ui.result.originalSize}</p>
           <p className="mt-0.5 font-mono text-sm font-bold tabular-nums text-foreground">
             {formatBytes(effectiveOriginalSize)}
           </p>
         </div>
 
         <div className="rounded-xl border border-border/50 bg-card/70 px-3 py-2">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">Output Size</p>
+          <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">{ui.result.outputSize}</p>
           <p className="mt-0.5 font-mono text-sm font-bold tabular-nums text-foreground">
             {formatBytes(effectiveProcessedSize)}
           </p>
         </div>
 
         <div className="rounded-xl border border-border/50 bg-card/70 px-3 py-2">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">% Saved</p>
+          <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">{ui.result.percentSaved}</p>
           <p className="mt-0.5 font-mono text-sm font-bold tabular-nums text-success">
-            {computedSavedPercent > 0 ? `${computedSavedPercent}% saved` : '0% (Optimized)'}
+            {computedSavedPercent > 0 ? ui.result.savedValue(computedSavedPercent) : ui.result.optimizedZero}
           </p>
         </div>
 
         <div className="rounded-xl border border-border/50 bg-card/70 px-3 py-2">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">Format / DPI</p>
+          <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">{ui.result.formatDpi}</p>
           <p className="mt-0.5 inline-flex items-center gap-1 font-mono text-xs font-bold text-foreground">
             <FileCheck2 className="h-3.5 w-3.5 text-primary shrink-0" />
             <span>{resolvedFormat} · {resolvedDpi}</span>
@@ -278,10 +280,10 @@ export function OptimizationVerificationSummary({
       <div className="mt-2.5 flex flex-wrap items-center justify-between gap-2 rounded-xl border border-success/20 bg-success/[0.06] px-3 py-2 text-xs">
         <span className="inline-flex items-center gap-1.5 font-medium text-foreground">
           <ShieldCheck className="h-3.5 w-3.5 text-success shrink-0" />
-          Privacy Purge: <span className="text-muted-foreground font-normal">{resolvedPrivacy}</span>
+          {ui.result.privacyPurge} <span className="text-muted-foreground font-normal">{resolvedPrivacy}</span>
         </span>
         <span className="font-mono text-[11px] font-semibold text-success">
-          {isVerified ? '100% Clean' : 'In Progress'}
+          {isVerified ? ui.result.cleanStatus : ui.result.inProgressStatus}
         </span>
       </div>
     </div>

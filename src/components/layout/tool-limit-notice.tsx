@@ -1,12 +1,19 @@
+'use client';
+
 import { Info, ShieldCheck } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { useActiveTool } from '@/hooks/use-active-tool';
+import { getUiDictionary } from '@/lib/locale-ui';
 
 interface ToolLimitNoticeProps {
   title?: string;
   limits: string[];
 }
 
-export function ToolLimitNotice({ title = 'Tool limits', limits }: ToolLimitNoticeProps) {
+export function ToolLimitNotice({ title, limits }: ToolLimitNoticeProps) {
+  const { activeTool } = useActiveTool();
+  const ui = getUiDictionary(activeTool?.locale);
+  const resolvedTitle = title ?? ui.limits.title;
   if (limits.length === 0) return null;
 
   return (
@@ -17,13 +24,13 @@ export function ToolLimitNotice({ title = 'Tool limits', limits }: ToolLimitNoti
             <Info className="h-4 w-4" />
           </div>
           <div>
-            <p className="text-sm font-semibold text-foreground">{title}</p>
-            <p className="text-xs text-muted-foreground">Keep the workflow predictable across devices.</p>
+            <p className="text-sm font-semibold text-foreground">{resolvedTitle}</p>
+            <p className="text-xs text-muted-foreground">{ui.limits.subtitle}</p>
           </div>
         </div>
         <div className="hidden items-center gap-2 rounded-full border border-success/15 bg-success/[0.06] px-3 py-1 text-xs font-semibold text-success sm:inline-flex">
           <ShieldCheck className="h-3.5 w-3.5" />
-          Stable output
+          {ui.limits.stableOutput}
         </div>
       </div>
       <div className="flex flex-wrap gap-2 p-4">

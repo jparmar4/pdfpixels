@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
-import { useAppStore } from '@/store/app-store';
+import { useActiveTool } from '@/hooks/use-active-tool';
 import { useConsumeChainedFile } from '@/hooks/use-consume-chained-file';
 import { FileUpload } from './file-upload';
 import { ToolPageHeader } from './tool-page-header';
@@ -41,7 +41,7 @@ const TIER1_SCAN_ACTIONS: Array<{ id: PiiCategory; label: string }> = [
 ];
 
 export function PDFRedactWorkspace() {
-  const { uploadedFile, setUploadedFile, isProcessing, setIsProcessing, setProgress, reset } = useAppStore();
+  const { activeTool, uploadedFile, setUploadedFile, isProcessing, setIsProcessing, setProgress, reset } = useActiveTool();
 
   useConsumeChainedFile(
     (chained) => {
@@ -276,8 +276,8 @@ export function PDFRedactWorkspace() {
   return (
     <div className="container mx-auto px-4 lg:px-8 py-8 max-w-6xl">
       <ToolPageHeader
-        title="Redact PDF Online (Permanent Blackout & Raster-Scrub)"
-        description="Permanently scrub US SSN, EIN, Credit Cards, Phones, Emails, IBANs, and sensitive clauses via 150 DPI canvas rasterization + full EXIF/XMP metadata removal."
+        title={activeTool?.name || 'Redact PDF Online (Permanent Blackout & Raster-Scrub)'}
+        description={activeTool?.description || 'Permanently scrub US SSN, EIN, Credit Cards, Phones, Emails, IBANs, and sensitive clauses via 150 DPI canvas rasterization + full EXIF/XMP metadata removal.'}
         icon={<EyeOff className="h-7 w-7 text-white" />}
         onReset={handleReset}
       />

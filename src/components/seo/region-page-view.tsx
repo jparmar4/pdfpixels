@@ -1,18 +1,22 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { Metadata } from 'next';
+import type { Metadata } from 'next';
 import { geoRegions, getRegionByCode } from '@/lib/geo-data';
 import { allPdfTools } from '@/lib/tools-data';
 import { INDIAN_EXAM_PRESETS } from '@/lib/indian-exams-data';
 import { siteConfig } from '@/lib/seo-config';
-import { absoluteUrl, websiteId, getGeoLanguageAlternates, getRobotsMetadata, DEFAULT_OG_IMAGE_URL, ADSENSE_REVIEW_MODE } from '@/lib/seo';
+import {
+  absoluteUrl,
+  websiteId,
+  getGeoLanguageAlternates,
+  getRobotsMetadata,
+  DEFAULT_OG_IMAGE_URL,
+  ADSENSE_REVIEW_MODE,
+} from '@/lib/seo';
 import { ToolsSection } from '@/components/home/tools-section';
 import { StatsBanner } from '@/components/home/stats-banner';
 import { AnswerEngineSection } from '@/components/home/answer-engine-section';
-// Static import: FAQ is now a server component using native <details>, so its
-// Q&A text is present in served HTML for answer engines (AEO).
 import { FAQSection } from '@/components/home/faq-section';
-
 import { HowItWorks } from '@/components/home/how-it-works';
 import { TestimonialsSection } from '@/components/home/testimonials-section';
 import { FeaturesSection } from '@/components/home/features-section';
@@ -20,29 +24,11 @@ import { CTASection } from '@/components/home/cta-section';
 import { HeaderAd, InContentAd, NativeAd, FooterAd } from '@/components/ads/ad-banner';
 import { ToolSidebarAd } from '@/components/ads/tool-sidebar-ad';
 
-// Restrict this dynamic route to strictly the configured geo regions.
-export const dynamicParams = false;
-
-export function generateStaticParams() {
-  return geoRegions.map((region) => ({
-    region: region.code,
-  }));
-}
-
-interface GeoPageProps {
-  params: Promise<{ region: string }>;
-}
-
-export async function generateMetadata({ params }: GeoPageProps): Promise<Metadata> {
-  const resolvedParams = await params;
-  const region = getRegionByCode(resolvedParams.region);
-  
-  if (!region) {
-    return {};
-  }
+export function regionMetadata(regionCode: string): Metadata {
+  const region = getRegionByCode(regionCode);
+  if (!region) return {};
 
   const url = `/${region.code}`;
-  // Root layout appends `| PdfPixels` via the title template.
   const title = region.headline;
   const description = region.intro.slice(0, 160);
 
@@ -51,8 +37,6 @@ export async function generateMetadata({ params }: GeoPageProps): Promise<Metada
     description,
     alternates: {
       canonical: url,
-      // Full locale cluster so each geo hub reinforces the others + the
-      // global homepage (x-default) via bidirectional hreflang.
       languages: getGeoLanguageAlternates(),
     },
     openGraph: {
@@ -80,10 +64,8 @@ export async function generateMetadata({ params }: GeoPageProps): Promise<Metada
   };
 }
 
-export default async function GeoHubPage({ params }: GeoPageProps) {
-  const resolvedParams = await params;
-  const region = getRegionByCode(resolvedParams.region);
-
+export function RegionPageView({ regionCode }: { regionCode: string }) {
+  const region = getRegionByCode(regionCode);
   if (!region) {
     notFound();
   }
@@ -143,7 +125,6 @@ export default async function GeoHubPage({ params }: GeoPageProps) {
 
         <HeaderAd className="my-4" />
 
-        {/* Unique regional editorial — not a homepage clone */}
         <section className="border-b border-border/50 bg-background">
           <div className="container mx-auto max-w-6xl px-4 py-12 lg:px-8 md:py-16">
             <p className="text-xs font-bold uppercase tracking-[0.2em] text-primary">
@@ -178,7 +159,6 @@ export default async function GeoHubPage({ params }: GeoPageProps) {
               ))}
             </div>
 
-            {/* Direct PDF Tools Suite Gateway */}
             <div className="mt-6 rounded-2xl border border-primary/20 bg-gradient-to-r from-primary/10 via-primary/5 to-card/60 p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-5 shadow-soft">
               <div className="space-y-1">
                 <div className="flex items-center gap-2">

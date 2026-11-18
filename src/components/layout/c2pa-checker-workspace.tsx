@@ -19,11 +19,14 @@ import { PrivateModeBadge } from './private-mode-badge';
 import { FileUpload } from './file-upload';
 import { ToolLimitNotice } from './tool-limit-notice';
 import { ToolPageHeader } from './tool-page-header';
+import { ResultScreenAd } from '@/components/ads/ad-banner';
+import { WorkflowChainBar } from './workflow-chain-bar';
 import { useActiveTool } from '@/hooks/use-active-tool';
 
 export function C2paCheckerWorkspace() {
-  const { uploadedFile, reset } = useActiveTool();
+  const { activeTool, uploadedFile, reset } = useActiveTool();
   const [report, setReport] = useState<C2paReport | null>(null);
+  const [exportedReportUrl, setExportedReportUrl] = useState<string | null>(null);
   const [isScanning, setIsScanning] = useState(false);
   const lastScannedFileRef = useRef<File | null>(null);
 
@@ -54,6 +57,10 @@ export function C2paCheckerWorkspace() {
 
   const handleReset = () => {
     lastScannedFileRef.current = null;
+    if (exportedReportUrl?.startsWith('blob:')) {
+      URL.revokeObjectURL(exportedReportUrl);
+    }
+    setExportedReportUrl(null);
     setReport(null);
     reset();
   };
@@ -62,18 +69,21 @@ export function C2paCheckerWorkspace() {
     if (!report) return;
     const blob = new Blob([JSON.stringify(report, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
+    setExportedReportUrl(url);
     const a = document.createElement('a');
     a.href = url;
     a.download = `${report.fileName.replace(/\.[^.]+$/, '')}-c2pa-report.json`;
     a.click();
-    window.setTimeout(() => URL.revokeObjectURL(url), 1000);
   };
 
   return (
     <div className="container mx-auto px-4 lg:px-8 py-8 max-w-5xl space-y-6">
       <ToolPageHeader
-        title="C2PA & AI Content Credentials Checker"
-        description="Inspect JUMBF C2PA Content Credentials manifests, IPTC Digital Source Type AI flags, and SynthID / Adobe Firefly / Midjourney / DALL-E origin metadata 100% locally in your browser."
+        title={activeTool?.name || 'C2PA & AI Content Credentials Checker'}
+        description={
+          activeTool?.description ||
+          'Inspect JUMBF C2PA Content Credentials manifests, IPTC Digital Source Type AI flags, and SynthID / Adobe Firefly / Midjourney / DALL-E origin metadata 100% locally in your browser.'
+        }
         icon={<Fingerprint className="h-7 w-7 text-white" />}
         onReset={handleReset}
       />
@@ -206,6 +216,16 @@ export function C2paCheckerWorkspace() {
               </div>
             )}
           </div>
+
+          <ResultScreenAd
+            suppressChainBar
+            originalSize={report.fileSize}
+            processedSize={report.fileSize}
+            fileName={report.fileName}
+            formatLabel={report.container.toUpperCase()}
+          />
+
+          <WorkflowChainBar visible={Boolean(report)} />
         </div>
       )}
     </div>

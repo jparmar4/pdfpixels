@@ -7,6 +7,8 @@ import { AdsterraNativeBanner, ResultScreenAd, SmartlinkButton } from '@/compone
 import { adsterraConfig, recordDownloadSuccess, triggerDownloadWithSmartlink, triggerSmartlinkOncePerSession } from '@/lib/ads-config';
 import { OptimizationVerificationSummary } from './optimization-verification-summary';
 import { WorkflowChainBar } from './workflow-chain-bar';
+import { useActiveTool } from '@/hooks/use-active-tool';
+import { getUiDictionary } from '@/lib/locale-ui';
 
 export function ToolResultBar({
   error,
@@ -14,13 +16,19 @@ export function ToolResultBar({
   downloadName,
   summary,
   onDownload,
+  originalSize,
+  processedSize,
 }: {
   error?: string | null;
   downloadUrl?: string | null;
   downloadName?: string;
   summary?: string | null;
   onDownload?: () => void;
+  originalSize?: number;
+  processedSize?: number;
 }) {
+  const { activeTool } = useActiveTool();
+  const ui = getUiDictionary(activeTool?.locale);
   const [downloadedUrl, setDownloadedUrl] = useState<string | null>(null);
   const hasDownloaded = Boolean(downloadUrl && downloadedUrl === downloadUrl);
 
@@ -39,7 +47,12 @@ export function ToolResultBar({
       {downloadUrl ? (
         <div className="space-y-4">
           <div className="grid gap-4 lg:grid-cols-[minmax(0,1.25fr)_minmax(280px,1fr)] lg:items-start">
-            <OptimizationVerificationSummary resultUrl={downloadUrl} fileName={downloadName} />
+            <OptimizationVerificationSummary
+              resultUrl={downloadUrl}
+              fileName={downloadName}
+              originalSize={originalSize}
+              processedSize={processedSize}
+            />
             {hasNative ? (
               <div className="min-w-0">
                 <AdsterraNativeBanner eager compact className="my-0" />
@@ -69,7 +82,7 @@ export function ToolResultBar({
                 }}
               >
                 <Download className="mr-2 h-4 w-4" />
-                Download
+                {ui.result.download}
               </a>
             </Button>
             <SmartlinkButton />

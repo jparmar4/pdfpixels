@@ -5,7 +5,8 @@ import {
   RotateCcw, FileText, Check, Sparkles, FileEdit
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useAppStore } from '@/store/app-store';
+import { useActiveTool } from '@/hooks/use-active-tool';
+import { getUiDictionary } from '@/lib/locale-ui';
 import { ToolResultBar } from './tool-result-bar';
 import { FileUpload } from './file-upload';
 import { ToolPageHeader } from './tool-page-header';
@@ -15,17 +16,20 @@ import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
 
 export function PDFToWordWorkspace() {
-  const { uploadedFile, isProcessing, progress, setIsProcessing, setProgress, reset } = useAppStore();
+  const { activeTool, uploadedFile, isProcessing, progress, setIsProcessing, setProgress, reset } = useActiveTool();
+  const ui = getUiDictionary(activeTool?.locale);
   const [convertError, setConvertError] = useState<string | null>(null);
 
   const [totalPages, setTotalPages] = useState<number>(1);
   const [resultUrl, setResultUrl] = useState<string | null>(null);
   const [resultFileName, setResultFileName] = useState<string>('');
+  const [resultSize, setResultSize] = useState<number>(0);
 
   useEffect(() => {
     if (!uploadedFile) {
       setTotalPages(1);
       setResultUrl(null);
+      setResultSize(0);
       return;
     }
 
@@ -86,7 +90,11 @@ export function PDFToWordWorkspace() {
 
       const blob = await res.blob();
       const url = URL.createObjectURL(blob);
-      setResultUrl(url);
+      setResultUrl((prev) => {
+        if (prev?.startsWith('blob:')) URL.revokeObjectURL(prev);
+        return url;
+      });
+      setResultSize(blob.size);
       setResultFileName(uploadedFile.name.replace(/\.pdf$/i, '.docx'));
       setProgress(100);
       toast.success('PDF converted to editable Word document successfully!');
@@ -113,18 +121,15 @@ export function PDFToWordWorkspace() {
   return (
     <div className="container mx-auto px-4 lg:px-8 py-8 max-w-5xl">
       <ToolPageHeader
-        title="PDF to Word Converter Online Free"
-        description="Convert PDF files into editable Microsoft Word documents (.docx). Extract text paragraphs, headings, and formatting for effortless editing in Word or Google Docs."
+        title={activeTool?.name || 'PDF to Word Converter Online Free'}
+        description={
+          activeTool?.description ||
+          'Convert PDF files into editable Microsoft Word documents (.docx). Extract text paragraphs, headings, and formatting for effortless editing in Word or Google Docs.'
+        }
         icon={<FileText className="h-7 w-7 text-white" />}
         onReset={handleReset}
       />
-      <ToolLimitNotice
-        limits={[
-          'PDF only · max 50 MB',
-          'Converts PDF text streams into editable Microsoft Word (.docx) format',
-          'Maintains paragraph divisions and text formatting',
-        ]}
-      />
+      <ToolLimitNotice limits={ui.office.pdfToWordLimits} />
 
       {!uploadedFile ? (
         <div className="mt-8">
@@ -149,10 +154,10 @@ export function PDFToWordWorkspace() {
               <div className="space-y-3 text-xs">
                 <div className="p-4 rounded-xl bg-muted/40 border space-y-2">
                   <div className="flex items-center gap-2 font-semibold text-primary">
-                    <FileEdit className="w-4 h-4" /> Editable Word document
+                    <FileEdit className="w-4 h-4" /> {ui.office.pdfToWordCardTitle}
                   </div>
                   <p className="text-muted-foreground leading-relaxed">
-                    LibreOffice keeps layout when it is installed. Otherwise the file is rebuilt from selectable text, and scans are OCR’d first. Opens in Word, Google Docs, and LibreOffice Writer.
+                    {ui.office.pdfToWordCardDesc}
                   </p>
                 </div>
               </div>
@@ -166,7 +171,8 @@ export function PDFToWordWorkspace() {
                   className="w-full rounded-xl font-semibold gap-2"
                   onClick={handleConvert}
                 >
-                  <FileText className="w-5 h-5" /> {isProcessing ? `Converting… ${Math.round(progress)}%` : 'Convert to Word (.docx)'}
+                  <FileText className="w-5 h-5" />{' '}
+                  {isProcessing ? ui.office.convertingPercent(Math.round(progress)) : ui.office.convertToWord}
                 </Button>
                 <Button
                   type="button"
@@ -175,7 +181,7 @@ export function PDFToWordWorkspace() {
                   className="w-full text-xs text-muted-foreground"
                   onClick={handleReset}
                 >
-                  <RotateCcw className="w-3.5 h-3.5 mr-1.5" /> Upload Different PDF
+                  <RotateCcw className="w-3.5 h-3.5 mr-1.5" /> {ui.office.pdfToWordUploadAnother}
                 </Button>
               </div>
             </div>
@@ -191,27 +197,29 @@ export function PDFToWordWorkspace() {
                     <Check className="w-6 h-6" />
                   </div>
                   <div>
-                    <h4 className="font-semibold text-base">Conversion Completed!</h4>
+                    <h4 className="font-semibold text-base">{ui.office.conversionCompleted}</h4>
                     <p className="text-xs text-muted-foreground mt-1">
-                      Your editable Word document (.docx) is ready to download.
+                      {ui.office.pdfToWordReadySummary}
                     </p>
                   </div>
                   <ToolResultBar
                     downloadUrl={resultUrl}
                     downloadName={resultFileName || 'converted-document.docx'}
-                    summary="Your editable Word document (.docx) is ready."
+                    summary={ui.office.pdfToWordReadySummary}
+                    originalSize={uploadedFile.size}
+                    processedSize={resultSize}
                     onDownload={handleDownload}
                   />
                 </motion.div>
               ) : (
                 <div className="bg-card border rounded-2xl p-6 shadow-sm space-y-4 text-xs">
                   <div className="flex items-center gap-2 font-semibold text-sm">
-                    <Sparkles className="w-4 h-4 text-primary" /> Key Benefits
+                    <Sparkles className="w-4 h-4 text-primary" /> {ui.office.benefitsTitle}
                   </div>
                   <ul className="space-y-2 text-muted-foreground list-disc pl-4 leading-relaxed">
-                    <li><strong className="text-foreground">Full Text Editability:</strong> Fix typos, change wording, and add paragraphs to locked PDF documents.</li>
-                    <li><strong className="text-foreground">No Software Required:</strong> Convert instantly online without needing Adobe Acrobat Pro subscriptions.</li>
-                    <li><strong className="text-foreground">Total Privacy:</strong> Secure, fast processing with instant automated file purging.</li>
+                    {ui.office.pdfToWordBenefits.map((b) => (
+                      <li key={b.label}><strong className="text-foreground">{b.label}</strong> {b.detail}</li>
+                    ))}
                   </ul>
                 </div>
               )}

@@ -8,9 +8,11 @@ import { ToolLimitNotice } from './tool-limit-notice';
 import { ResultScreenAd, SmartlinkButton } from '@/components/ads/ad-banner';
 import { triggerDownloadWithSmartlink } from '@/lib/ads-config';
 import { useConsumeChainedFile } from '@/hooks/use-consume-chained-file';
+import { useActiveTool } from '@/hooks/use-active-tool';
 import { toast } from 'sonner';
 
 export function HeicToPdfWorkspace() {
+  const { activeTool } = useActiveTool();
   const [files, setFiles] = useState<File[]>([]);
   const [orientation, setOrientation] = useState<'auto' | 'portrait' | 'landscape'>('auto');
   const [margin, setMargin] = useState<number>(20);
@@ -96,8 +98,8 @@ export function HeicToPdfWorkspace() {
   return (
     <div className="container mx-auto px-4 lg:px-8 py-8 max-w-4xl">
       <ToolPageHeader
-        title="HEIC to PDF Converter Online"
-        description="Convert Apple iPhone HEIC and HEIF photos into high-resolution standard PDF documents with custom page orientation."
+        title={activeTool?.name || 'HEIC to PDF Converter Online'}
+        description={activeTool?.description || 'Convert Apple iPhone HEIC and HEIF photos into high-resolution standard PDF documents with custom page orientation.'}
         icon={<FileImage className="h-7 w-7 text-white" />}
         onReset={handleReset}
       />

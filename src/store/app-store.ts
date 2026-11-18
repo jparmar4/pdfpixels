@@ -4,6 +4,7 @@ export type ActiveTool = {
   id: string;
   name: string;
   description: string;
+  locale?: string;
 };
 
 type AppState = {

@@ -8,7 +8,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useAppStore } from '@/store/app-store';
+import { useActiveTool } from '@/hooks/use-active-tool';
 import { FileUpload } from './file-upload';
 import { ToolPageHeader } from './tool-page-header';
 import { ToolLimitNotice } from './tool-limit-notice';
@@ -44,7 +44,7 @@ interface DetectedAcroField {
 }
 
 export function PDFFillWorkspace() {
-  const { uploadedFile, isProcessing, setIsProcessing, setProgress, reset } = useAppStore();
+  const { activeTool, uploadedFile, isProcessing, setIsProcessing, setProgress, reset } = useActiveTool();
 
   const [totalPages, setTotalPages] = useState<number>(1);
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -276,8 +276,8 @@ export function PDFFillWorkspace() {
   return (
     <div className="container mx-auto px-4 lg:px-8 py-8 max-w-6xl">
       <ToolPageHeader
-        title="Fill PDF Forms Online Free"
-        description="Complete and edit PDF forms without printing. Fill in standard AcroForm fields or click anywhere to type text, check checkboxes, and insert dates."
+        title={activeTool?.name || 'Fill PDF Forms Online Free'}
+        description={activeTool?.description || 'Complete and edit PDF forms without printing. Fill in standard AcroForm fields or click anywhere to type text, check checkboxes, and insert dates.'}
         icon={<Pencil className="h-7 w-7 text-white" />}
         onReset={handleReset}
       />

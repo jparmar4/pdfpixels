@@ -4,7 +4,7 @@ import { useState, useCallback, useEffect } from 'react';
 import { Download, RotateCcw, Shield, ShieldCheck, Trash2, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { useAppStore } from '@/store/app-store';
+import { useActiveTool } from '@/hooks/use-active-tool';
 import { FileUpload } from './file-upload';
 import { ToolPageHeader } from './tool-page-header';
 import { ToolLimitNotice } from './tool-limit-notice';
@@ -25,7 +25,7 @@ interface MetadataInfo {
 }
 
 export function SanitizePdfWorkspace() {
-  const { uploadedFile, isProcessing, setIsProcessing, setProgress, reset } = useAppStore();
+  const { activeTool, uploadedFile, isProcessing, setIsProcessing, setProgress, reset } = useActiveTool();
 
   const [metadata, setMetadata] = useState<MetadataInfo | null>(null);
   const [hasAnyMetadata, setHasAnyMetadata] = useState<boolean>(false);
@@ -139,8 +139,8 @@ export function SanitizePdfWorkspace() {
   return (
     <div className="container mx-auto px-4 lg:px-8 py-8 max-w-4xl">
       <ToolPageHeader
-        title="Sanitize PDF — Remove Hidden Metadata"
-        description="Permanently delete author details, creation dates, software fingerprints, and XMP tracking streams from confidential documents."
+        title={activeTool?.name || 'Sanitize PDF — Remove Hidden Metadata'}
+        description={activeTool?.description || 'Permanently delete author details, creation dates, software fingerprints, and XMP tracking streams from confidential documents.'}
         icon={<Shield className="h-7 w-7 text-white" />}
         onReset={handleReset}
       />

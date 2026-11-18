@@ -26,7 +26,7 @@ type OcrResult = {
 };
 
 export function PDFOcrWorkspace() {
-  const { uploadedFile, isProcessing, setIsProcessing, setProgress, reset } = useActiveTool();
+  const { activeTool, uploadedFile, isProcessing, setIsProcessing, setProgress, reset } = useActiveTool();
 
   const [result, setResult] = useState<OcrResult | null>(null);
   const [copied, setCopied] = useState<boolean>(false);
@@ -119,8 +119,8 @@ export function PDFOcrWorkspace() {
   return (
     <div className="container mx-auto px-4 lg:px-8 py-8 max-w-5xl">
       <ToolPageHeader
-        title="OCR PDF — Scanned Pages to Text"
-        description="Recognize text in scanned, image-only PDFs. Each page is rendered at high resolution and read by our OCR engine, then returned as clean, copyable text."
+        title={activeTool?.name || 'OCR PDF — Scanned Pages to Text'}
+        description={activeTool?.description || 'Recognize text in scanned, image-only PDFs. Each page is rendered at high resolution and read by our OCR engine, then returned as clean, copyable text.'}
         icon={<ScanText className="h-7 w-7 text-white" />}
         onReset={handleReset}
       />

@@ -4,7 +4,7 @@ import {
   Download, RotateCcw, FileText, Check, Copy
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useAppStore } from '@/store/app-store';
+import { useActiveTool } from '@/hooks/use-active-tool';
 import { FileUpload } from './file-upload';
 import { ToolPageHeader } from './tool-page-header';
 import { ToolLimitNotice } from './tool-limit-notice';
@@ -15,7 +15,7 @@ import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
 
 export function PDFToTextWorkspace() {
-  const { uploadedFile, isProcessing, setIsProcessing, setProgress, reset } = useAppStore();
+  const { activeTool, uploadedFile, isProcessing, setIsProcessing, setProgress, reset } = useActiveTool();
 
   const [extractedText, setExtractedText] = useState<string>('');
   const [charCount, setCharCount] = useState<number>(0);
@@ -110,8 +110,8 @@ export function PDFToTextWorkspace() {
   return (
     <div className="container mx-auto px-4 lg:px-8 py-8 max-w-5xl">
       <ToolPageHeader
-        title="PDF to Text Converter Online"
-        description="Extract selectable text from PDF documents instantly. Copy to clipboard or download as a clean plain text (.txt) file."
+        title={activeTool?.name || 'PDF to Text Converter Online'}
+        description={activeTool?.description || 'Extract selectable text from PDF documents instantly. Copy to clipboard or download as a clean plain text (.txt) file.'}
         icon={<FileText className="h-7 w-7 text-white" />}
         onReset={handleReset}
       />

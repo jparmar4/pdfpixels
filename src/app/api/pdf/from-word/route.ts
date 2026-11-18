@@ -1,5 +1,5 @@
 import { apiError, apiInternalError } from '@/lib/api-response';
-import { pdfBinaryResponse, sanitizeDownloadFileName } from '@/lib/pdf-api';
+import { pdfBinaryResponse, sanitizeDownloadFileName, toSafeWinAnsi } from '@/lib/pdf-api';
 import { NextRequest } from 'next/server';
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 import JSZip from 'jszip';
@@ -90,10 +90,7 @@ async function parseDocxContent(buffer: Buffer): Promise<ParagraphItem[]> {
  * Word wraps text to fit within a given maxWidth at a given font & fontSize.
  */
 function toWinAnsi(text: string): string {
-  // StandardFonts use WinAnsiEncoding: printable ASCII plus the Latin-1
-  // supplement (é, ü, ñ, …) all survive. Only characters outside U+00FF
-  // (emoji, CJK, Arabic, …) cannot be encoded and become '?'.
-  return text.replace(/[^\x20-\xFF]/g, '?');
+  return toSafeWinAnsi(text);
 }
 
 /** Probe whether pdf-lib can encode this line; degrade leftovers if not. */

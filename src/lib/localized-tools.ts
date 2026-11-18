@@ -36,6 +36,11 @@ export type LocaleCode = 'de' | 'fr' | 'jp' | 'es' | 'pt';
 
 export const LOCALIZED_LOCALES: LocaleCode[] = ['de', 'fr', 'jp', 'es', 'pt'];
 
+export type LocalizedFaq = {
+  question: string;
+  answer: string;
+};
+
 export type LocalizedToolCopy = {
   name: string;
   title: string;
@@ -43,14 +48,26 @@ export type LocalizedToolCopy = {
   howTitle: string;
   intro: string;
   steps: string[];
+  faqs?: LocalizedFaq[];
 };
 
-type LocalePack = {
+export type LocalePack = {
   htmlLang: string;
   ogLocale: string;
   hreflang: string;
+  homeLabel: string;
+  hubLabel: string;
+  stepPrefix: string;
   limitNote: string;
   englishLabel: string;
+  featuresTitle: string;
+  featureCards: Array<{ title: string; detail: string }>;
+  specsTitle: string;
+  specsRows: Array<{ label: string; value: string }>;
+  faqTitle: string;
+  languagesHeading: string;
+  relatedHeading: string;
+  buildFaqs: (copy: LocalizedToolCopy) => LocalizedFaq[];
   tools: Record<LocalizedToolSlug, LocalizedToolCopy>;
 };
 
@@ -312,11 +329,25 @@ const deTools: Record<LocalizedToolSlug, LocalizedToolCopy> = {
     title: 'Word in PDF umwandeln – kostenlos, ohne Anmeldung',
     description: 'Microsoft Word-Dokumente (.docx) in schreibgeschützte PDF-Dateien konvertieren, Formatierung bleibt erhalten.',
     howTitle: 'Word-Dokumente als PDF speichern',
-    intro: 'Wandeln Sie Word-Dateien serverseitig in standardkonforme PDFs um. Layout, Schriftarten, Tabellen und Bilder bleiben originalgetreu erhalten. Bis zu 50 MB pro Datei.',
+    intro: 'Wandeln Sie Word-Dateien (.docx) schnell und kostenlos in standardkonforme PDF-Dokumente um. Überschriften, Absätze, Tabellen und Seitenumbrüche bleiben für Bewerbungen, Verträge und Rechnungen zuverlässig erhalten – ohne Wasserzeichen und bis 50 MB.',
     steps: [
       'Word-Datei (.docx) hochladen (höchstens 50 MB).',
-      'Die Umwandlung in PDF starten.',
-      'Fertige PDF-Datei herunterladen.',
+      'Die Umwandlung in PDF starten und Seite 1 in der Vorschau prüfen.',
+      'Fertige PDF-Datei herunterladen oder direkt weiter komprimieren.',
+    ],
+    faqs: [
+      {
+        question: 'Bleibt die Formatierung meines Word-Dokuments im PDF erhalten?',
+        answer: 'Ja. Überschriften, Absätze, Fettdruck und Seitenumbrüche werden in ein standardisiertes PDF (ISO 32000) übertragen, sodass Ihr Dokument auf Mac, Windows und Smartphones identisch aussieht.',
+      },
+      {
+        question: 'Ist die Umwandlung von Word in PDF wirklich kostenlos und ohne Wasserzeichen?',
+        answer: 'Ja, PdfPixels wandelt Ihre .docx-Dateien kostenlos, ohne Anmeldung, ohne Seitenlimit und ohne Wasserzeichen in PDFs um.',
+      },
+      {
+        question: 'Was passiert mit meinen hochgeladenen Word-Dateien nach dem Download?',
+        answer: 'Alle Daten werden verschlüsselt (TLS 1.3) übertragen und nach Abschluss automatisch innerhalb von 60 Minuten endgültig gelöscht.',
+      },
     ],
   },
   'rotate-pdf': {
@@ -648,14 +679,32 @@ const esTools: Record<LocalizedToolSlug, LocalizedToolCopy> = {
   },
   'word-to-pdf': {
     name: 'Word a PDF',
-    title: 'Convertir Word a PDF – gratis, sin registro',
-    description: 'Convierte documentos Word (.docx) a archivos PDF manteniendo formato, tipografías e imágenes intactos.',
-    howTitle: 'Convertir documentos Word en PDF',
-    intro: 'Convierte documentos .docx a PDF en el servidor con total fidelidad. Se preservan tablas, márgenes, encabezados e imágenes. Archivos de hasta 50 MB.',
+    title: 'Convertir Word a PDF gratis online – Sin registro ni marcas',
+    description: 'Convierte documentos Microsoft Word (.docx) a PDF profesional gratis y sin marcas de agua. Conserva estructura, títulos, tipografía y diseño en segundos.',
+    howTitle: 'Cómo convertir documentos Word (.docx) a PDF paso a paso',
+    intro: 'Transforma currículums, contratos, facturas, memorias o trabajos académicos en Word (.docx) a un PDF universal listo para enviar por correo, WhatsApp o subir a sedes electrónicas (SEPE, Seguridad Social, Agencia Tributaria y universidades). Proceso gratuito de hasta 50 MB, sin marcas de agua y con vista previa instantánea antes de continuar.',
     steps: [
-      'Sube tu archivo Word (.docx, máximo 50 MB).',
-      'Inicia la conversión a PDF.',
-      'Descarga tu documento PDF listo para compartir.',
+      'Selecciona o arrastra tu documento Microsoft Word (.docx, hasta 50 MB).',
+      'Pulsa «Convertir a PDF» y revisa la vista previa de la primera página generada.',
+      'Descarga tu PDF al instante o encadénalo en un clic con Comprimir PDF, Unir PDF o Proteger PDF.',
+    ],
+    faqs: [
+      {
+        question: '¿Se conserva el formato del documento al pasar de Word a PDF?',
+        answer: 'Sí. Conservamos encabezados, saltos de párrafo, énfasis en negrita y estructura de página en un PDF estándar compatible con cualquier navegador, Mac, Windows, Android o iPhone.',
+      },
+      {
+        question: '¿Tiene límite de uso o añade marca de agua al PDF convertido?',
+        answer: 'No. Convertir Word a PDF en PdfPixels es 100 % gratuito, no exige crear cuenta ni añade logotipos ni marcas de agua en tus documentos.',
+      },
+      {
+        question: '¿Mis archivos Word están seguros al convertirlos en línea?',
+        answer: 'Sí. La transferencia viaja cifrada por HTTPS (TLS 1.3) y los documentos temporales se purgan automáticamente tras el procesamiento sin conservar copias permanentes (cumplimiento RGPD).',
+      },
+      {
+        question: '¿Qué hago si mi PDF convertido pesa demasiado para una sede electrónica?',
+        answer: 'Justo después de descargar tu PDF puedes pulsar «Comprimir PDF» en la barra inferior sin volver a subir el archivo para reducir su peso por debajo de 2 MB o 5 MB.',
+      },
     ],
   },
   'rotate-pdf': {
@@ -987,14 +1036,28 @@ const ptTools: Record<LocalizedToolSlug, LocalizedToolCopy> = {
   },
   'word-to-pdf': {
     name: 'Word em PDF',
-    title: 'Converter Word em PDF – grátis, sem cadastro',
-    description: 'Converta documentos Word (.docx) em arquivos PDF preservando fontes, tabelas e formatação original.',
-    howTitle: 'Transformar arquivos Word em PDF',
-    intro: 'Transforme seus arquivos .docx em PDFs seguros e compatíveis com qualquer dispositivo. Formatação, imagens e quebras de página preservadas. Até 50 MB por arquivo.',
+    title: 'Converter Word em PDF grátis – Sem cadastro e sem marca d’água',
+    description: 'Converta documentos Word (.docx) para PDF profissional gratuitamente preservando títulos, parágrafos e formatação em qualquer dispositivo.',
+    howTitle: 'Como converter Word (.docx) em PDF gratuitamente',
+    intro: 'Transforme currículos, contratos, propostas comerciais e trabalhos acadêmicos (.docx) em um arquivo PDF universal compatível com Gov.br, PJe, WhatsApp e e-mail. Suporta até 50 MB com prévia instantânea e sem marca d’água.',
     steps: [
-      'Envie o documento Word (.docx, máximo de 50 MB).',
-      'Inicie a conversão rápida.',
-      'Baixe o PDF finalizado.',
+      'Envie o documento Word (.docx, até 50 MB).',
+      'Clique em converter e confira a pré-visualização da primeira página.',
+      'Baixe seu PDF ou continue em 1 clique para comprimir ou juntar arquivos.',
+    ],
+    faqs: [
+      {
+        question: 'O conversor mantém o texto e a formatação originais?',
+        answer: 'Sim. Títulos, parágrafos e estrutura de página são gravados em formato PDF padrão (ISO 32000) para exibição fiel no celular ou computador.',
+      },
+      {
+        question: 'Existe algum custo ou marca d’água nos arquivos?',
+        answer: 'Não. A ferramenta é gratuita, dispensa cadastro e entrega um PDF limpo sem marcas d’água.',
+      },
+      {
+        question: 'É seguro enviar contratos e documentos pessoais?',
+        answer: 'Sim. O tráfego usa criptografia TLS 1.3 e os arquivos temporários são excluídos automaticamente após o processamento.',
+      },
     ],
   },
   'rotate-pdf': {
@@ -1326,14 +1389,28 @@ const frTools: Record<LocalizedToolSlug, LocalizedToolCopy> = {
   },
   'word-to-pdf': {
     name: 'Word en PDF',
-    title: 'Convertir Word en PDF – gratuit, sans inscription',
-    description: 'Convertir des documents Word (.docx) en fichiers PDF en conservant la mise en page, les polices et les images.',
-    howTitle: 'Enregistrer un document Word au format PDF',
-    intro: 'Convertissez vos fichiers .docx en documents PDF professionnels côté serveur. Les marges, tableaux, styles et images sont fidèlement reproduits. Jusqu’à 50 Mo par fichier.',
+    title: 'Convertir Word en PDF gratuit – Sans inscription ni filigrane',
+    description: 'Convertissez vos documents Microsoft Word (.docx) en fichiers PDF professionnels en conservant titres, paragraphes et mise en page.',
+    howTitle: 'Comment enregistrer un document Word en PDF',
+    intro: 'Transformez vos CV, contrats, factures et mémoires (.docx) en fichiers PDF universels prêts à envoyer sur les plateformes administratives ou par e-mail. Jusqu’à 50 Mo sans inscription ni filigrane, avec aperçu immédiat avant téléchargement.',
     steps: [
-      'Déposez votre document Word (.docx, 50 Mo maximum).',
-      'Lancez la conversion en PDF.',
-      'Téléchargez votre document PDF prêt à l’emploi.',
+      'Importez votre document Word (.docx, jusqu’à 50 Mo).',
+      'Lancez la conversion puis vérifiez l’aperçu de la première page.',
+      'Téléchargez le PDF final ou enchaînez en 1 clic vers la compression.',
+    ],
+    faqs: [
+      {
+        question: 'La mise en page Word reste-t-elle fidèle après conversion en PDF ?',
+        answer: 'Oui. Les titres, paragraphes, styles gras et sauts de page sont enregistrés dans un fichier PDF conforme ISO 32000 lisible sur Mac, PC et mobile.',
+      },
+      {
+        question: 'Le service ajoute-t-il un filigrane ou exige-t-il un compte ?',
+        answer: 'Non. La conversion Word en PDF est entièrement gratuite, sans inscription et sans aucun filigrane.',
+      },
+      {
+        question: 'Mes fichiers sont-ils protégés selon le RGPD ?',
+        answer: 'Oui. Les transferts sont chiffrés via HTTPS (TLS 1.3) et les fichiers temporaires sont automatiquement purgés dans les 60 minutes.',
+      },
     ],
   },
   'rotate-pdf': {
@@ -1665,14 +1742,24 @@ const jpTools: Record<LocalizedToolSlug, LocalizedToolCopy> = {
   },
   'word-to-pdf': {
     name: 'WordをPDFに',
-    title: 'WordをPDFに変換 – 無料、登録不要',
-    description: 'Word文書（.docx）をレイアウトやフォントを保持したままPDFに変換します。',
-    howTitle: 'WordファイルをPDFとして保存',
-    intro: 'Word（.docx）ファイルをサーバーで高品質なPDFに変換します。文字配置、表、画像、ページ番号を忠実に再現。1ファイル50MBまで対応。',
+    title: 'WordをPDFに変換 – 無料・登録不要・透かしなし',
+    description: 'Word文書（.docx）を文字配置やフォントを崩さず標準PDFに変換。履歴書・請求書・契約書の共有に最適です。',
+    howTitle: 'WordファイルをPDFとして保存する方法',
+    intro: '履歴書や職務経歴書、請求書、契約書などのWord（.docx）をスマホでもPCでもレイアウトが崩れないPDFへ無料変換します。最大50MB対応・登録不要・透かしなしで、変換後にそのままプレビュー確認できます。',
     steps: [
-      'Wordファイル（.docx、最大50MB）をアップロード。',
-      'PDFへの変換を開始。',
-      '作成されたPDFをダウンロード。',
+      'Wordファイル（.docx、最大50MB）を選択またはドロップします。',
+      '「PDFに変換」をクリックし、1ページ目のプレビューを確認します。',
+      '完成したPDFをダウンロード、または続けて圧縮・結合を実行します。',
+    ],
+    faqs: [
+      {
+        question: '変換後のPDFに透かし（ウォーターマーク）や回数制限はありますか？',
+        answer: 'いいえ。完全無料でアカウント登録も不要、透かしやページ数制限なしでご利用いただけます。',
+      },
+      {
+        question: 'アップロードしたWordファイルのセキュリティは安全ですか？',
+        answer: '通信はTLS 1.3で暗号化され、変換後の一時ファイルは最大60分以内にサーバーから自動消去されます。',
+      },
     ],
   },
   'rotate-pdf': {
@@ -1754,40 +1841,210 @@ const packs: Record<LocaleCode, LocalePack> = {
     htmlLang: 'de',
     ogLocale: 'de_DE',
     hreflang: 'de',
+    homeLabel: 'Startseite',
+    hubLabel: 'Deutsch',
+    stepPrefix: 'Schritt',
     limitNote: 'Passwortgeschützte PDFs müssen zuerst entsperrt werden. Die Dateien werden nur zur Verarbeitung gehalten und innerhalb von 60 Minuten gelöscht.',
     englishLabel: 'English',
+    featuresTitle: 'Warum PdfPixels wählen?',
+    featureCards: [
+      { title: '100% kostenlos & ohne Anmeldung', detail: 'Sofort starten ohne Konto, Abo oder Kreditkarte.' },
+      { title: 'DSGVO-orientierter Datenschutz', detail: 'Browser-Verarbeitung oder automatische Löschung innerhalb von 60 Minuten.' },
+      { title: 'Keine Wasserzeichen', detail: 'Saubere, druckfertige Dokumente für Bewerbungen, Verträge und Ämter.' },
+      { title: 'Direkte Weiterverarbeitung', detail: 'Ergebnisse mit 1 Klick komprimieren, zusammenfügen oder schützen.' },
+    ],
+    specsTitle: 'Technische Spezifikationen',
+    specsRows: [
+      { label: 'Verschlüsselung', value: 'TLS 1.3 (HTTPS) / lokale Browser-Ausführung' },
+      { label: 'Dateispeicherung', value: 'Keine dauerhafte Speicherung (max. 60 Min. Löschung)' },
+      { label: 'Kompatibilität', value: 'Windows, macOS, Linux, iOS, Android' },
+      { label: 'Standard', value: 'ISO 32000 PDF-kompatible Ausgabe' },
+    ],
+    faqTitle: 'Häufig gestellte Fragen (FAQ)',
+    languagesHeading: 'Dieses Tool in anderen Sprachen:',
+    relatedHeading: 'Weitere beliebte PDF- & Bild-Tools:',
+    buildFaqs: (copy) => [
+      {
+        question: `Wie funktioniert „${copy.name}“ bei PdfPixels?`,
+        answer: `${copy.intro} Laden Sie einfach Ihre Datei hoch, starten Sie den Vorgang und laden Sie das fertige Ergebnis ohne Registrierung herunter.`,
+      },
+      {
+        question: `Ist ${copy.name} komplett kostenlos und ohne Wasserzeichen?`,
+        answer: 'Ja. Alle Kernfunktionen sind kostenlos nutzbar und fügen Ihren Dokumenten keinerlei Wasserzeichen hinzu.',
+      },
+      {
+        question: 'Wie werden meine Dateien nach der Verarbeitung geschützt?',
+        answer: 'Browser-basierte Schritte verlassen Ihr Gerät überhaupt nicht; servergestützte Konvertierungen werden verschlüsselt übertragen und automatisch innerhalb von 60 Minuten gelöscht.',
+      },
+    ],
     tools: deTools,
   },
   fr: {
     htmlLang: 'fr',
     ogLocale: 'fr_FR',
     hreflang: 'fr',
+    homeLabel: 'Accueil',
+    hubLabel: 'Français',
+    stepPrefix: 'Étape',
     limitNote: 'Un PDF protégé par mot de passe doit d’abord être déverrouillé. Les fichiers ne sont gardés que le temps du traitement et sont effacés dans les 60 minutes.',
     englishLabel: 'English',
+    featuresTitle: 'Pourquoi utiliser PdfPixels ?',
+    featureCards: [
+      { title: '100% gratuit sans inscription', detail: 'Utilisez chaque outil immédiatement sans compte ni carte bancaire.' },
+      { title: 'Confidentialité conforme RGPD', detail: 'Traitement local dans le navigateur ou suppression automatique sous 60 minutes.' },
+      { title: 'Aucun filigrane', detail: 'Des documents propres pour vos dossiers administratifs, CV et contrats.' },
+      { title: 'Enchaînement en 1 clic', detail: 'Compressez, fusionnez ou protégez le résultat sans réimporter le fichier.' },
+    ],
+    specsTitle: 'Spécifications techniques',
+    specsRows: [
+      { label: 'Sécurité transfert', value: 'TLS 1.3 (HTTPS) / traitement local navigateur' },
+      { label: 'Rétention fichiers', value: 'Zéro stockage permanent (purge sous 60 min)' },
+      { label: 'Appareils compatibles', value: 'Windows, Mac, Linux, iPhone, Android' },
+      { label: 'Norme', value: 'Sortie conforme ISO 32000' },
+    ],
+    faqTitle: 'Questions fréquentes (FAQ)',
+    languagesHeading: 'Cet outil dans d’autres langues :',
+    relatedHeading: 'Autres outils PDF et image recommandés :',
+    buildFaqs: (copy) => [
+      {
+        question: `Comment utiliser « ${copy.name} » gratuitement ?`,
+        answer: `${copy.intro} Importez votre document, cliquez pour lancer le traitement puis récupérez votre fichier prêt à l’emploi en quelques secondes.`,
+      },
+      {
+        question: `Y a-t-il une limite de fichiers ou un filigrane sur ${copy.name} ?`,
+        answer: 'Non. Vous pouvez utiliser cet outil librement sans création de compte et sans aucun filigrane ajouté.',
+      },
+      {
+        question: 'Comment la confidentialité de mes documents est-elle assurée ?',
+        answer: 'Les transferts utilisent le chiffrement TLS 1.3 et les fichiers temporaires sont automatiquement effacés dans un délai maximum de 60 minutes.',
+      },
+    ],
     tools: frTools,
   },
   jp: {
     htmlLang: 'ja',
     ogLocale: 'ja_JP',
     hreflang: 'ja',
+    homeLabel: 'ホーム',
+    hubLabel: '日本語',
+    stepPrefix: 'ステップ',
     limitNote: 'パスワード付きPDFは、先にロック解除が必要です。ファイルは処理中だけ保持し、60分以内に削除します。',
     englishLabel: 'English',
+    featuresTitle: 'PdfPixelsが選ばれる理由',
+    featureCards: [
+      { title: '完全無料・登録不要', detail: 'アカウント作成やソフトウェアのインストールなしですぐ使えます。' },
+      { title: 'プライバシー最優先', detail: 'ブラウザ完結処理、またはサーバー一時ファイルは60分以内に自動削除。' },
+      { title: '透かしなし・高品質', detail: '提出書類やビジネス文書も透かしを入れずきれいに仕上げます。' },
+      { title: '1クリック連続処理', detail: '変換後に再アップロード不要で圧縮・結合・保護へすぐ進めます。' },
+    ],
+    specsTitle: '技術仕様・セキュリティ',
+    specsRows: [
+      { label: '通信・処理方式', value: 'TLS 1.3暗号化 / ブラウザローカル実行対応' },
+      { label: 'データ保持', value: '恒久保存なし（最大60分以内に自動消去）' },
+      { label: '対応端末', value: 'Windows, Mac, iPhone, Android, iPad' },
+      { label: '出力仕様', value: 'ISO 32000準拠PDF出力' },
+    ],
+    faqTitle: 'よくある質問（FAQ）',
+    languagesHeading: '他の言語で開く:',
+    relatedHeading: '関連するPDF・画像ツール:',
+    buildFaqs: (copy) => [
+      {
+        question: `「${copy.name}」の使い方を教えてください。`,
+        answer: `${copy.intro} ファイルをアップロードして実行ボタンを押すだけで、すぐに結果を取得できます。`,
+      },
+      {
+        question: `${copy.name}は無料で透かしも入りませんか？`,
+        answer: 'はい。基本ワークフローはすべて無料で、出力ファイルに透かしやロゴは一切入りません。',
+      },
+      {
+        question: 'アップロードしたファイルの安全性は大丈夫ですか？',
+        answer: 'はい。暗号化通信（TLS 1.3）を使用し、処理後は最大60分以内にファイルが自動消去されます。',
+      },
+    ],
     tools: jpTools,
   },
   es: {
     htmlLang: 'es',
     ogLocale: 'es_ES',
     hreflang: 'es',
+    homeLabel: 'Inicio',
+    hubLabel: 'Español',
+    stepPrefix: 'Paso',
     limitNote: 'Los PDF protegidos con contraseña deben desbloquearse primero. Los archivos se conservan solo durante el procesamiento y se eliminan en un plazo de 60 minutos.',
     englishLabel: 'English',
+    featuresTitle: '¿Por qué elegir PdfPixels?',
+    featureCards: [
+      { title: '100 % gratis y sin registro', detail: 'Sin cuentas obligatorias, suscripciones ni tarjetas para usar las herramientas.' },
+      { title: 'Privacidad y cumplimiento RGPD', detail: 'Proceso local en tu navegador o borrado automático del servidor en menos de 60 minutos.' },
+      { title: 'Sin marcas de agua', detail: 'Resultados limpios para trámites oficiales, currículums, contratos e informes.' },
+      { title: 'Flujo encadenado en 1 clic', detail: 'Pasa el archivo terminado a Comprimir, Unir o Firmar sin volver a subirlo.' },
+    ],
+    specsTitle: 'Especificaciones técnicas y seguridad',
+    specsRows: [
+      { label: 'Cifrado y ejecución', value: 'HTTPS TLS 1.3 o procesamiento 100 % local en navegador' },
+      { label: 'Retención de archivos', value: 'Cero almacenamiento permanente (purga automática en 60 min)' },
+      { label: 'Dispositivos compatibles', value: 'Windows, Mac, Linux, iPhone, iPad y Android' },
+      { label: 'Estándar documental', value: 'PDF compatible con ISO 32000-2' },
+    ],
+    faqTitle: 'Preguntas frecuentes (FAQ)',
+    languagesHeading: 'Esta herramienta en otros idiomas:',
+    relatedHeading: 'Otras herramientas PDF e imagen en español:',
+    buildFaqs: (copy) => [
+      {
+        question: `¿Cómo funciona «${copy.name}» en PdfPixels?`,
+        answer: `${copy.intro} Solo tienes que subir tu archivo, ajustar si hace falta y descargar el resultado al instante sin registrarte.`,
+      },
+      {
+        question: `¿${copy.name} es gratis y sin marcas de agua?`,
+        answer: 'Sí. Todas las funciones principales son gratuitas y tus archivos se descargan limpios, sin marcas de agua ni límites escondidos.',
+      },
+      {
+        question: '¿Cómo se protegen mis documentos privados?',
+        answer: 'Las herramientas locales procesan el archivo dentro de la memoria de tu propio navegador; las conversiones de servidor usan HTTPS TLS 1.3 y se eliminan automáticamente en menos de 60 minutos.',
+      },
+    ],
     tools: esTools,
   },
   pt: {
     htmlLang: 'pt',
     ogLocale: 'pt_BR',
     hreflang: 'pt',
+    homeLabel: 'Início',
+    hubLabel: 'Português',
+    stepPrefix: 'Passo',
     limitNote: 'PDFs protegidos por senha precisam ser desbloqueados primeiro. Os arquivos ficam retidos apenas durante o processamento e são excluídos em até 60 minutos.',
     englishLabel: 'English',
+    featuresTitle: 'Por que escolher o PdfPixels?',
+    featureCards: [
+      { title: '100% grátis e sem cadastro', detail: 'Use imediatamente sem criar conta ou instalar programas pesados.' },
+      { title: 'Privacidade e exclusão automática', detail: 'Processamento no navegador ou remoção automática no servidor em até 60 minutos.' },
+      { title: 'Sem marca d’água', detail: 'Documentos prontos para Gov.br, tribunais (PJe), concursos e trabalho.' },
+      { title: 'Próxima etapa em 1 clique', detail: 'Comprima, junte ou proteja o resultado sem reenviar o arquivo.' },
+    ],
+    specsTitle: 'Especificações técnicas',
+    specsRows: [
+      { label: 'Segurança de dados', value: 'Criptografia TLS 1.3 / execução local no navegador' },
+      { label: 'Retenção', value: 'Sem armazenamento permanente (exclusão em 60 min)' },
+      { label: 'Plataformas', value: 'Windows, Mac, Linux, iPhone e Android' },
+      { label: 'Padrão', value: 'PDF compatível com ISO 32000' },
+    ],
+    faqTitle: 'Perguntas frequentes (FAQ)',
+    languagesHeading: 'Esta ferramenta em outros idiomas:',
+    relatedHeading: 'Outras ferramentas de PDF e imagem em português:',
+    buildFaqs: (copy) => [
+      {
+        question: `Como usar "${copy.name}" gratuitamente?`,
+        answer: `${copy.intro} Envie seu arquivo, clique para processar e faça o download imediatamente sem cadastro.`,
+      },
+      {
+        question: `A ferramenta ${copy.name} coloca marca d’água?`,
+        answer: 'Não. Os arquivos convertidos ou editados saem limpos, gratuitos e sem qualquer marca d’água.',
+      },
+      {
+        question: 'Meus arquivos ficam salvos no servidor?',
+        answer: 'Não mantemos cópias permanentes. As ferramentas locais não enviam nada e os arquivos processados no servidor são excluídos em até 60 minutos.',
+      },
+    ],
     tools: ptTools,
   },
 };

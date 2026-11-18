@@ -5,11 +5,13 @@ import {
   RotateCcw, FileSpreadsheet, Check, Sparkles, FileCheck, AlertTriangle
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useAppStore } from '@/store/app-store';
+import { useActiveTool } from '@/hooks/use-active-tool';
+import { getUiDictionary } from '@/lib/locale-ui';
 import { ToolResultBar } from './tool-result-bar';
 import { FileUpload } from './file-upload';
 import { ToolPageHeader } from './tool-page-header';
 import { ToolLimitNotice } from './tool-limit-notice';
+import { PdfPagePreview } from './pdf-page-preview';
 import { useState, useCallback, useEffect } from 'react';
 import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
@@ -25,16 +27,21 @@ function spreadsheetKind(name: string): 'xlsx' | 'xls' | 'csv' | null {
 }
 
 export function ExcelToPDFWorkspace() {
-  const { uploadedFile, isProcessing, progress, setIsProcessing, setProgress, reset } = useAppStore();
+  const { activeTool, uploadedFile, isProcessing, progress, setIsProcessing, setProgress, reset } = useActiveTool();
+  const ui = getUiDictionary(activeTool?.locale);
 
   const [resultUrl, setResultUrl] = useState<string | null>(null);
+  const [resultFile, setResultFile] = useState<File | null>(null);
   const [resultFileName, setResultFileName] = useState<string>('');
+  const [resultSize, setResultSize] = useState<number>(0);
   const [convertError, setConvertError] = useState<string | null>(null);
   const [engineNote, setEngineNote] = useState<string | null>(null);
 
   useEffect(() => {
     if (!uploadedFile) {
       setResultUrl(null);
+      setResultFile(null);
+      setResultSize(0);
       return;
     }
     if (!spreadsheetKind(uploadedFile.name)) {
@@ -51,6 +58,8 @@ export function ExcelToPDFWorkspace() {
     }
     reset();
     setResultUrl(null);
+    setResultFile(null);
+    setResultSize(0);
   }, [reset, resultUrl]);
 
   const handleConvert = async () => {
@@ -87,9 +96,15 @@ export function ExcelToPDFWorkspace() {
       }
 
       const blob = await res.blob();
+      const outName = uploadedFile.name.replace(/\.(xlsx|xls|csv)$/i, '') + '.pdf';
       const url = URL.createObjectURL(blob);
-      setResultUrl(url);
-      setResultFileName(uploadedFile.name.replace(/\.(xlsx|xls|csv)$/i, '') + '.pdf');
+      setResultUrl((prev) => {
+        if (prev?.startsWith('blob:')) URL.revokeObjectURL(prev);
+        return url;
+      });
+      setResultFile(new File([blob], outName, { type: 'application/pdf' }));
+      setResultSize(blob.size);
+      setResultFileName(outName);
       setProgress(100);
       toast.success(convertEngine === 'libreoffice'
         ? 'Spreadsheet converted with layout preservation!'
@@ -111,24 +126,21 @@ export function ExcelToPDFWorkspace() {
     document.body.appendChild(a);
     a.click();
     a.remove();
-    toast.success('Download started');
+    toast.success(ui.office.downloadStarted);
   };
 
   return (
     <div className="container mx-auto px-4 lg:px-8 py-8 max-w-5xl">
       <ToolPageHeader
-        title="Excel to PDF Converter Online Free"
-        description="Convert Excel spreadsheets (.xlsx, .xls) and CSV files into clean, print-ready PDF documents with the table layout preserved."
+        title={activeTool?.name || 'Excel to PDF Converter Online Free'}
+        description={
+          activeTool?.description ||
+          'Convert Excel spreadsheets (.xlsx, .xls) and CSV files into clean, print-ready PDF documents with the table layout preserved.'
+        }
         icon={<FileSpreadsheet className="h-7 w-7 text-white" />}
         onReset={handleReset}
       />
-      <ToolLimitNotice
-        limits={[
-          'Excel (.xlsx, .xls) and CSV · max 25 MB',
-          'Column layout, number formats, and print areas are preserved by the conversion engine',
-          'Files are deleted after processing — nothing is stored',
-        ]}
-      />
+      <ToolLimitNotice limits={ui.office.excelLimits} />
 
       {!uploadedFile ? (
         <div className="mt-8">
@@ -142,21 +154,21 @@ export function ExcelToPDFWorkspace() {
                 <div>
                   <h3 className="font-semibold text-lg">{uploadedFile.name}</h3>
                   <p className="text-xs text-muted-foreground mt-0.5">
-                    {(uploadedFile.size / 1024).toFixed(1)} KB · Spreadsheet
+                    {(uploadedFile.size / 1024).toFixed(1)} KB · {ui.office.excelSubtitle}
                   </p>
                 </div>
                 <Badge variant="default" className="font-mono text-xs">
-                  Ready to Convert
+                  {ui.office.readyToConvert}
                 </Badge>
               </div>
 
               <div className="space-y-3 text-xs">
                 <div className="p-4 rounded-xl bg-muted/40 border space-y-2">
                   <div className="flex items-center gap-2 font-semibold text-primary">
-                    <FileCheck className="w-4 h-4" /> Print-Ready PDF Output
+                    <FileCheck className="w-4 h-4" /> {ui.office.excelCardTitle}
                   </div>
                   <p className="text-muted-foreground leading-relaxed">
-                    Renders the printable sheet layout into standard vector PDF pages — ideal for sharing budgets, inventories, and reports that must not be edited.
+                    {ui.office.excelCardDesc}
                   </p>
                 </div>
               </div>
@@ -170,7 +182,8 @@ export function ExcelToPDFWorkspace() {
                   className="w-full rounded-xl font-semibold gap-2"
                   onClick={handleConvert}
                 >
-                  <FileSpreadsheet className="w-5 h-5" /> {isProcessing ? `Converting… ${Math.round(progress)}%` : 'Convert to PDF'}
+                  <FileSpreadsheet className="w-5 h-5" />{' '}
+                  {isProcessing ? ui.office.convertingPercent(Math.round(progress)) : ui.office.convertToPdf}
                 </Button>
                 <Button
                   type="button"
@@ -179,7 +192,7 @@ export function ExcelToPDFWorkspace() {
                   className="w-full text-xs text-muted-foreground"
                   onClick={handleReset}
                 >
-                  <RotateCcw className="w-3.5 h-3.5 mr-1.5" /> Upload Different Spreadsheet
+                  <RotateCcw className="w-3.5 h-3.5 mr-1.5" /> {ui.office.excelUploadAnother}
                 </Button>
               </div>
             </div>
@@ -195,11 +208,21 @@ export function ExcelToPDFWorkspace() {
                     <Check className="w-6 h-6" />
                   </div>
                   <div>
-                    <h4 className="font-semibold text-base">Conversion Completed!</h4>
+                    <h4 className="font-semibold text-base">{ui.office.conversionCompleted}</h4>
                     <p className="text-xs text-muted-foreground mt-1">
-                      Your spreadsheet is now a print-ready PDF.
+                      {ui.office.excelReadySummary}
                     </p>
                   </div>
+                  {resultFile && (
+                    <div className="space-y-1.5 text-left">
+                      <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                        {ui.office.previewLabel}
+                      </p>
+                      <div className="overflow-hidden rounded-xl border border-border/60 bg-white p-2 shadow-inner">
+                        <PdfPagePreview file={resultFile} pageNumber={1} className="max-h-56 mx-auto object-contain" />
+                      </div>
+                    </div>
+                  )}
                   {engineNote ? (
                     <p className="flex items-start gap-2 rounded-xl border border-amber-500/25 bg-amber-500/10 p-3 text-left text-xs leading-5 text-amber-900 dark:text-amber-100">
                       <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
@@ -209,7 +232,9 @@ export function ExcelToPDFWorkspace() {
                   <ToolResultBar
                     downloadUrl={resultUrl}
                     downloadName={resultFileName || 'converted-spreadsheet.pdf'}
-                    summary="Your PDF document is ready."
+                    summary={ui.office.excelReadySummary}
+                    originalSize={uploadedFile.size}
+                    processedSize={resultSize}
                     onDownload={handleDownload}
                   />
                 </motion.div>

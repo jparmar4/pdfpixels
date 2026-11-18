@@ -22,6 +22,8 @@ import { Badge } from '@/components/ui/badge';
 import { isHeicFileName, isHeicMime, isImageFileName } from '@/lib/heic-detect';
 import { isHeicUpload, normalizeHeicFile } from '@/lib/heic-client';
 import { useConsumeChainedFile } from '@/hooks/use-consume-chained-file';
+import { useActiveTool } from '@/hooks/use-active-tool';
+import { getUiDictionary } from '@/lib/locale-ui';
 
 interface FileUploadProps {
   accept?: string;
@@ -51,6 +53,8 @@ function getFileCategory(file: File): 'pdf' | 'image' | 'unknown' {
 
 export function FileUpload({ accept = 'image/*', maxSizeMb }: FileUploadProps) {
     const { uploadedFile, setUploadedFile, isProcessing, progress } = useAppStore();
+    const { activeTool } = useActiveTool();
+    const ui = getUiDictionary(activeTool?.locale);
     // PDF uploads allow 50 MB; images stay at the 25 MB platform default.
     const acceptTokensForDefault = (accept || '').split(',').map((t) => t.trim().toLowerCase());
     const defaultMaxMb = acceptTokensForDefault.some((t) => t.includes('pdf') || t === '.pdf')
@@ -255,8 +259,8 @@ export function FileUpload({ accept = 'image/*', maxSizeMb }: FileUploadProps) {
     }
   }, [setUploadedFile]);
 
-  const uploadLabel = isPDFAccept && !isImageAccept ? 'Upload PDF' : 'Upload file';
-  const uploadHeading = isPDFAccept && !isImageAccept ? 'Drop your PDF here' : 'Drop your file here';
+  const uploadLabel = isPDFAccept && !isImageAccept ? ui.upload.uploadPdf : ui.upload.uploadFile;
+  const uploadHeading = isPDFAccept && !isImageAccept ? ui.upload.dropPdf : ui.upload.dropFile;
 
   /** Icon to show in the drop zone based on accepted file types */
   const dropZoneIcon = (() => {
@@ -394,7 +398,7 @@ export function FileUpload({ accept = 'image/*', maxSizeMb }: FileUploadProps) {
                   {dragOver ? uploadHeading : uploadLabel}
                 </h2>
                 <p className="max-w-2xl text-sm font-medium leading-6 text-muted-foreground md:text-base">
-                  Drag and drop from your device or click anywhere in this panel. The workflow is optimized for fast uploads, clean previews, and reliable output.
+                  {ui.upload.dragDropDesc}
                 </p>
               </div>
 
@@ -406,10 +410,10 @@ export function FileUpload({ accept = 'image/*', maxSizeMb }: FileUploadProps) {
                   </Badge>
                 ))}
                 <Badge variant="secondary" className="rounded-full border border-border/60 bg-background/80 px-3 py-1 font-medium tabular-nums">
-                  Max {resolvedMaxMb} MB
+                  {ui.upload.maxLimit(resolvedMaxMb)}
                 </Badge>
                 <Badge variant="secondary" className="rounded-full border border-border/60 bg-background/80 px-3 py-1 font-medium">
-                  Single file
+                  {ui.upload.singleFile}
                 </Badge>
               </div>
 
@@ -417,15 +421,15 @@ export function FileUpload({ accept = 'image/*', maxSizeMb }: FileUploadProps) {
               <div className="mt-6 grid gap-3 text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground sm:grid-cols-3">
                 <span className="inline-flex items-center justify-center gap-2 rounded-full border border-border/60 bg-background/75 px-3 py-1.5">
                   <ShieldCheck className="h-3.5 w-3.5 text-success" />
-                  HTTPS upload / local canvas
+                  {ui.upload.trustHttps}
                 </span>
                 <span className="inline-flex items-center justify-center gap-2 rounded-full border border-border/60 bg-background/75 px-3 py-1.5">
                   <Sparkles className="h-3.5 w-3.5 text-primary" />
-                  No signup required
+                  {ui.upload.trustNoSignup}
                 </span>
                 <span className="inline-flex items-center justify-center gap-2 rounded-full border border-border/60 bg-background/75 px-3 py-1.5">
                   <CheckCircle2 className="h-3.5 w-3.5 text-info" />
-                  Preview before export
+                  {ui.upload.trustPreview}
                 </span>
               </div>
 
@@ -490,8 +494,8 @@ export function FileUpload({ accept = 'image/*', maxSizeMb }: FileUploadProps) {
               {/* "Recently used" / file type support hint */}
               <p className="mt-4 text-xs text-muted-foreground/70">
                 {isPDFAccept && !isImageAccept
-                  ? 'PDF files up to the size limit'
-                  : 'Supports JPG, PNG, WebP, HEIC, AVIF and more'}
+                  ? ui.upload.supportedPdfHint
+                  : ui.upload.supportedImgHint}
               </p>
               {isNormalizing ? (
                 <p className="mt-2 text-xs font-medium text-primary">Converting HEIC photo…</p>
@@ -528,7 +532,7 @@ export function FileUpload({ accept = 'image/*', maxSizeMb }: FileUploadProps) {
                     </motion.div>
                     <div>
                       <p className="max-w-xs truncate text-base font-semibold text-foreground">{uploadedFile.name}</p>
-                      <p className="text-sm text-muted-foreground">PDF ready for processing</p>
+                      <p className="text-sm text-muted-foreground">{ui.upload.pdfReady}</p>
                     </div>
                   </div>
                 ) : previewUrl && !previewFailed ? (
@@ -542,7 +546,7 @@ export function FileUpload({ accept = 'image/*', maxSizeMb }: FileUploadProps) {
                 ) : (
                   <div className="flex flex-col items-center gap-2 text-muted-foreground">
                     <ImageIcon className="h-10 w-10" />
-                    <p className="text-sm font-medium">Preview unavailable</p>
+                    <p className="text-sm font-medium">{ui.upload.previewUnavailable}</p>
                   </div>
                 )}
 
@@ -559,10 +563,10 @@ export function FileUpload({ accept = 'image/*', maxSizeMb }: FileUploadProps) {
                     />
                     <div className="space-y-1 text-center">
                       <p className="text-sm font-semibold text-foreground">
-                        {isNormalizing ? 'Converting HEIC' : 'Processing file'}
+                        {isNormalizing ? ui.upload.convertingHeic : ui.upload.processingFile}
                       </p>
                       <p className="text-xs text-muted-foreground">
-                        {isNormalizing ? 'Decoding iPhone photo for preview' : 'Preparing a high-quality result'}
+                        {isNormalizing ? ui.upload.decodingHeic : ui.upload.preparingResult}
                       </p>
                     </div>
                     <Progress value={progress} className="h-1.5 w-40" />
@@ -583,7 +587,7 @@ export function FileUpload({ accept = 'image/*', maxSizeMb }: FileUploadProps) {
                       {uploadedFileIcon}
                     </motion.div>
                     <div>
-                      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Selected file</p>
+                      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">{ui.upload.selectedFile}</p>
                       <p className="mt-1 line-clamp-2 text-sm font-semibold text-foreground">{uploadedFile.name}</p>
                     </div>
                   </div>
@@ -592,21 +596,21 @@ export function FileUpload({ accept = 'image/*', maxSizeMb }: FileUploadProps) {
 
                 <div className="grid gap-3 rounded-2xl border border-border/50 bg-card/75 p-3 text-sm text-muted-foreground">
                   <div className="flex items-center justify-between gap-3">
-                    <span>Size</span>
+                    <span>{ui.upload.sizeLabel}</span>
                     <span className="font-mono font-semibold tabular-nums text-foreground">{formatFileSize(uploadedFile.size)}</span>
                   </div>
                   <div className="flex items-center justify-between gap-3">
-                    <span>Limit</span>
+                    <span>{ui.upload.limitLabel}</span>
                     <span className="font-mono font-semibold tabular-nums text-foreground">{resolvedMaxMb} MB</span>
                   </div>
                   {imageInfo ? (
                     <>
                       <div className="flex items-center justify-between gap-3">
-                        <span>Width</span>
+                        <span>{ui.upload.widthLabel}</span>
                         <span className="font-mono font-semibold tabular-nums text-foreground">{imageInfo.width}px</span>
                       </div>
                       <div className="flex items-center justify-between gap-3">
-                        <span>Height</span>
+                        <span>{ui.upload.heightLabel}</span>
                         <span className="font-mono font-semibold tabular-nums text-foreground">{imageInfo.height}px</span>
                       </div>
                     </>
@@ -616,10 +620,10 @@ export function FileUpload({ accept = 'image/*', maxSizeMb }: FileUploadProps) {
                 <div className="space-y-2 rounded-2xl border border-success/15 bg-success/[0.06] p-3">
                   <div className="flex items-center gap-2 text-sm font-semibold text-foreground">
                     <CheckCircle2 className="h-4 w-4 text-success" />
-                    Ready for processing
+                    {ui.upload.readyForProcessing}
                   </div>
                   <p className="text-xs leading-5 text-muted-foreground">
-                    You can replace this file, keep editing settings, or start processing immediately.
+                    {ui.upload.readyDesc}
                   </p>
                 </div>
 
@@ -632,7 +636,7 @@ export function FileUpload({ accept = 'image/*', maxSizeMb }: FileUploadProps) {
                     className="h-11 flex-1 rounded-2xl"
                   >
                     <Upload className="h-4 w-4" />
-                    Replace file
+                    {ui.upload.replaceFile}
                   </Button>
                   <Button
                     type="button"
@@ -642,7 +646,7 @@ export function FileUpload({ accept = 'image/*', maxSizeMb }: FileUploadProps) {
                     className="h-11 flex-1 rounded-2xl text-muted-foreground hover:text-destructive"
                   >
                     <X className="h-4 w-4" />
-                    Remove
+                    {ui.upload.removeFile}
                   </Button>
                 </div>
               </div>

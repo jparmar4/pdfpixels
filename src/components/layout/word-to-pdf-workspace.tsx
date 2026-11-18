@@ -5,7 +5,9 @@ import {
   RotateCcw, FileText, Check, Sparkles, FileCheck, AlertTriangle
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useAppStore } from '@/store/app-store';
+import { useActiveTool } from '@/hooks/use-active-tool';
+import { getUiDictionary } from '@/lib/locale-ui';
+import { PdfPagePreview } from './pdf-page-preview';
 import { ToolResultBar } from './tool-result-bar';
 import { FileUpload } from './file-upload';
 import { ToolPageHeader } from './tool-page-header';
@@ -15,7 +17,10 @@ import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
 
 export function WordToPDFWorkspace() {
-  const { uploadedFile, isProcessing, progress, setIsProcessing, setProgress, reset } = useAppStore();
+  const { activeTool, uploadedFile, isProcessing, progress, setIsProcessing, setProgress, reset } = useActiveTool();
+  const ui = getUiDictionary(activeTool?.locale);
+  const [resultFile, setResultFile] = useState<File | null>(null);
+  const [resultSize, setResultSize] = useState<number>(0);
 
   const [resultUrl, setResultUrl] = useState<string | null>(null);
   const [resultFileName, setResultFileName] = useState<string>('');
@@ -25,6 +30,8 @@ export function WordToPDFWorkspace() {
   useEffect(() => {
     if (!uploadedFile) {
       setResultUrl(null);
+      setResultFile(null);
+      setResultSize(0);
       return;
     }
     if (!uploadedFile.name.toLowerCase().endsWith('.docx')) {
@@ -77,9 +84,15 @@ export function WordToPDFWorkspace() {
       }
 
       const blob = await res.blob();
+      const outName = uploadedFile.name.replace(/\.docx$/i, '.pdf');
       const url = URL.createObjectURL(blob);
-      setResultUrl(url);
-      setResultFileName(uploadedFile.name.replace(/\.docx$/i, '.pdf'));
+      setResultUrl((prev) => {
+        if (prev?.startsWith('blob:')) URL.revokeObjectURL(prev);
+        return url;
+      });
+      setResultFile(new File([blob], outName, { type: 'application/pdf' }));
+      setResultSize(blob.size);
+      setResultFileName(outName);
       setProgress(100);
       if (convertEngine === 'libreoffice') {
         toast.success('Word document converted with full layout preservation!');
@@ -109,18 +122,12 @@ export function WordToPDFWorkspace() {
   return (
     <div className="container mx-auto px-4 lg:px-8 py-8 max-w-5xl">
       <ToolPageHeader
-        title="Word to PDF Converter Online Free"
-        description="Convert Microsoft Word documents (.docx) into standard, clean, read-only PDF files. Preserves headings, paragraph spacing, and text typography."
+        title={activeTool?.name || 'Word to PDF Converter Online Free'}
+        description={activeTool?.description || 'Convert Microsoft Word documents (.docx) into standard, clean, read-only PDF files. Preserves headings, paragraph spacing, and text typography.'}
         icon={<FileText className="h-7 w-7 text-white" />}
         onReset={handleReset}
       />
-      <ToolLimitNotice
-        limits={[
-          'Microsoft Word (.docx) · max 50 MB',
-          'Text conversion: headings and paragraphs; images and complex layouts are not retained',
-          'Instant client-safe conversion and automatic file cleanup',
-        ]}
-      />
+      <ToolLimitNotice limits={ui.office.wordLimits} />
 
       {!uploadedFile ? (
         <div className="mt-8">
@@ -137,21 +144,21 @@ export function WordToPDFWorkspace() {
                 <div>
                   <h3 className="font-semibold text-lg">{uploadedFile.name}</h3>
                   <p className="text-xs text-muted-foreground mt-0.5">
-                    {(uploadedFile.size / 1024).toFixed(1)} KB · Microsoft Word (.docx)
+                    {(uploadedFile.size / 1024).toFixed(1)} KB · {ui.office.wordSubtitle}
                   </p>
                 </div>
                 <Badge variant="default" className="font-mono text-xs">
-                  Ready to Convert
+                  {ui.office.readyToConvert}
                 </Badge>
               </div>
 
               <div className="space-y-3 text-xs">
                 <div className="p-4 rounded-xl bg-muted/40 border space-y-2">
                   <div className="flex items-center gap-2 font-semibold text-primary">
-                    <FileCheck className="w-4 h-4" /> Professional PDF Output
+                    <FileCheck className="w-4 h-4" /> {ui.office.wordCardTitle}
                   </div>
                   <p className="text-muted-foreground leading-relaxed">
-                    Converts DOCX headings, body paragraphs, and bold typography into standard vector PDF pages. The resulting PDF locks document formatting across mobile devices, Macs, and PCs.
+                    {ui.office.wordCardDesc}
                   </p>
                 </div>
               </div>
@@ -165,7 +172,7 @@ export function WordToPDFWorkspace() {
                   className="w-full rounded-xl font-semibold gap-2"
                   onClick={handleConvert}
                 >
-                  <FileText className="w-5 h-5" /> {isProcessing ? `Converting… ${Math.round(progress)}%` : 'Convert to PDF'}
+                  <FileText className="w-5 h-5" /> {isProcessing ? ui.office.convertingPercent(Math.round(progress)) : ui.office.convertToPdf}
                 </Button>
                 <Button
                   type="button"
@@ -174,7 +181,7 @@ export function WordToPDFWorkspace() {
                   className="w-full text-xs text-muted-foreground"
                   onClick={handleReset}
                 >
-                  <RotateCcw className="w-3.5 h-3.5 mr-1.5" /> Upload Different Word File
+                  <RotateCcw className="w-3.5 h-3.5 mr-1.5" /> {ui.office.wordUploadAnother}
                 </Button>
               </div>
             </div>
@@ -190,11 +197,22 @@ export function WordToPDFWorkspace() {
                     <Check className="w-6 h-6" />
                   </div>
                   <div>
-                    <h4 className="font-semibold text-base">Conversion Completed!</h4>
+                    <h4 className="font-semibold text-base">{ui.office.conversionCompleted}</h4>
                     <p className="text-xs text-muted-foreground mt-1">
-                      Your Word document is now a standard PDF file.
+                      {ui.office.wordReadySummary}
                     </p>
                   </div>
+                  {resultFile && (
+                    <div className="space-y-1.5 text-left">
+                      <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                        {ui.office.previewLabel}
+                      </p>
+                      <div className="overflow-hidden rounded-xl border border-border/60 bg-white p-2 shadow-inner">
+                        <PdfPagePreview file={resultFile} pageNumber={1} className="max-h-56 mx-auto object-contain" />
+                      </div>
+                    </div>
+                  )}
+                  <div className="hidden" />
                   {engineNote ? (
                     <p className="flex items-start gap-2 rounded-xl border border-amber-500/25 bg-amber-500/10 p-3 text-left text-xs leading-5 text-amber-900 dark:text-amber-100">
                       <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
@@ -204,19 +222,21 @@ export function WordToPDFWorkspace() {
                   <ToolResultBar
                     downloadUrl={resultUrl}
                     downloadName={resultFileName || 'converted-document.pdf'}
-                    summary="Your PDF document is ready."
+                    summary={ui.office.wordReadySummary}
+                    originalSize={uploadedFile.size}
+                    processedSize={resultSize}
                     onDownload={handleDownload}
                   />
                 </motion.div>
               ) : (
                 <div className="bg-card border rounded-2xl p-6 shadow-sm space-y-4 text-xs">
                   <div className="flex items-center gap-2 font-semibold text-sm">
-                    <Sparkles className="w-4 h-4 text-primary" /> Why Convert to PDF?
+                    <Sparkles className="w-4 h-4 text-primary" /> {ui.office.whyTitle}
                   </div>
                   <ul className="space-y-2 text-muted-foreground list-disc pl-4 leading-relaxed">
-                    <li><strong className="text-foreground">Universal Compatibility:</strong> Anyone can open and view a PDF without needing Microsoft Office installed.</li>
-                    <li><strong className="text-foreground">Preserved Formatting:</strong> Uses a standard font and a new page layout. Export from Word when exact layout, tables, images, or multilingual fonts must be preserved.</li>
-                    <li><strong className="text-foreground">Read-Only Security:</strong> Perfect for sending resumes, contracts, and proposals that should not be edited.</li>
+                    {ui.office.wordBenefits.map((b) => (
+                      <li key={b.label}><strong className="text-foreground">{b.label}</strong> {b.detail}</li>
+                    ))}
                   </ul>
                 </div>
               )}

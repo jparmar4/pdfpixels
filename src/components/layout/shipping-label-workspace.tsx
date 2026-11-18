@@ -19,7 +19,7 @@ import { ToolLimitNotice } from './tool-limit-notice';
 import { FileUpload } from './file-upload';
 import { ResultScreenAd, SmartlinkButton } from '@/components/ads/ad-banner';
 import { triggerDownloadWithSmartlink } from '@/lib/ads-config';
-import { useAppStore } from '@/store/app-store';
+import { useActiveTool } from '@/hooks/use-active-tool';
 import { useConsumeChainedFile } from '@/hooks/use-consume-chained-file';
 import { toast } from 'sonner';
 
@@ -78,7 +78,7 @@ const PRINTER_PROFILES = [
 ];
 
 export function ShippingLabelCropWorkspace() {
-  const { uploadedFile, setUploadedFile, isProcessing, setIsProcessing, setProgress, reset } = useAppStore();
+  const { activeTool, uploadedFile, setUploadedFile, isProcessing, setIsProcessing, setProgress, reset } = useActiveTool();
 
   const [regionTab, setRegionTab] = useState<'tier1' | 'india'>(() => {
     if (typeof window !== 'undefined' && (window.location.pathname.startsWith('/in') || document.referrer.includes('/in'))) {
@@ -246,8 +246,8 @@ export function ShippingLabelCropWorkspace() {
   return (
     <div className="container mx-auto px-4 lg:px-8 py-8 max-w-5xl">
       <ToolPageHeader
-        title="Shipping Label Cropper (USPS, UPS, FedEx, eBay & Thermal)"
-        description="Crop US Letter (8.5×11&quot;) and A4 carrier sheets into crisp 4×6 inch (100×150mm) thermal labels for USPS Click-N-Ship, UPS, FedEx, eBay, Etsy, Poshmark, Mercari, Shopify, Amazon FBA, Royal Mail, and DHL."
+        title={activeTool?.name || 'Shipping Label Cropper (USPS, UPS, FedEx, eBay & Thermal)'}
+        description={activeTool?.description || 'Crop US Letter (8.5×11") and A4 carrier sheets into crisp 4×6 inch (100×150mm) thermal labels for USPS Click-N-Ship, UPS, FedEx, eBay, Etsy, Poshmark, Mercari, Shopify, Amazon FBA, Royal Mail, and DHL.'}
         icon={<Printer className="h-7 w-7 text-white" />}
         onReset={handleReset}
       />

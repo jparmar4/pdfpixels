@@ -113,7 +113,7 @@ async function isolateProductCutout(file: File): Promise<{ blob: Blob; engine: s
 }
 
 export function EcommercePhotoPackWorkspace() {
-  const { uploadedFile, isProcessing, setIsProcessing, setProgress, reset } = useActiveTool();
+  const { activeTool, uploadedFile, isProcessing, setIsProcessing, setProgress, reset } = useActiveTool();
   const [sourceFile, setSourceFile] = useState<File | null>(null);
   const [assets, setAssets] = useState<GeneratedAsset[]>([]);
   const [zipUrl, setZipUrl] = useState<string | null>(null);
@@ -303,8 +303,8 @@ export function EcommercePhotoPackWorkspace() {
   return (
     <div className="container mx-auto px-4 lg:px-8 py-8 max-w-6xl space-y-6">
       <ToolPageHeader
-        title="E-Commerce 6-Marketplace Product Photo Pack"
-        description="Chain AI/ONNX background removal into a 1-click ZIP generator formatted for Amazon (2000×2000 #FFFFFF), Shopify (2048×2048 WebP), Etsy (2700×2025), eBay (1600×1600), Poshmark (1080×1350), and Walmart (2200×2200)."
+        title={activeTool?.name || 'E-Commerce 6-Marketplace Product Photo Pack'}
+        description={activeTool?.description || 'Chain AI/ONNX background removal into a 1-click ZIP generator formatted for Amazon (2000×2000 #FFFFFF), Shopify (2048×2048 WebP), Etsy (2700×2025), eBay (1600×1600), Poshmark (1080×1350), and Walmart (2200×2200).'}
         icon={<Package className="h-7 w-7 text-white" />}
         isAI
         onReset={handleReset}

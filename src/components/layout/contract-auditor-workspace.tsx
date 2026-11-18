@@ -30,7 +30,7 @@ import { ToolPageHeader } from './tool-page-header';
 import { useActiveTool } from '@/hooks/use-active-tool';
 
 export function ContractAuditorWorkspace() {
-  const { uploadedFile, reset } = useActiveTool();
+  const { activeTool, uploadedFile, reset } = useActiveTool();
   const [report, setReport] = useState<ContractAuditReport | null>(null);
   const [filter, setFilter] = useState<'all' | 'risk' | 'payment' | 'date'>('all');
   const [isScanning, setIsScanning] = useState(false);
@@ -112,8 +112,8 @@ export function ContractAuditorWorkspace() {
   return (
     <div className="container mx-auto px-4 lg:px-8 py-8 max-w-5xl space-y-6">
       <ToolPageHeader
-        title="Private Local PDF Contract Auditor"
-        description="Extract key contract dates, Net payment terms, and high-risk legal clauses (unlimited liability, auto-renewal, non-compete, IP assignment) 100% locally inside browser memory."
+        title={activeTool?.name || 'Private Local PDF Contract Auditor'}
+        description={activeTool?.description || 'Extract key contract dates, Net payment terms, and high-risk legal clauses (unlimited liability, auto-renewal, non-compete, IP assignment) 100% locally inside browser memory.'}
         icon={<FileSearch className="h-7 w-7 text-white" />}
         onReset={handleReset}
       />

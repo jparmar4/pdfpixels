@@ -7,7 +7,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useAppStore } from '@/store/app-store';
+import { useActiveTool } from '@/hooks/use-active-tool';
 import { FileUpload } from './file-upload';
 import { ToolPageHeader } from './tool-page-header';
 import { ToolLimitNotice } from './tool-limit-notice';
@@ -18,7 +18,7 @@ import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
 
 export function PDFExtractWorkspace() {
-  const { uploadedFile, isProcessing, setIsProcessing, setProgress, reset } = useAppStore();
+  const { activeTool, uploadedFile, isProcessing, setIsProcessing, setProgress, reset } = useActiveTool();
 
   const [totalPages, setTotalPages] = useState<number>(1);
   const [selectedPages, setSelectedPages] = useState<Set<number>>(new Set([1]));
@@ -181,8 +181,8 @@ export function PDFExtractWorkspace() {
   return (
     <div className="container mx-auto px-4 lg:px-8 py-8 max-w-6xl">
       <ToolPageHeader
-        title="Extract PDF Pages Online"
-        description="Select and extract individual pages or custom page ranges from any PDF into a brand new document. Fast, free, and completely private."
+        title={activeTool?.name || 'Extract PDF Pages Online'}
+        description={activeTool?.description || 'Select and extract individual pages or custom page ranges from any PDF into a brand new document. Fast, free, and completely private.'}
         icon={<Scissors className="h-7 w-7 text-white" />}
         onReset={handleReset}
       />

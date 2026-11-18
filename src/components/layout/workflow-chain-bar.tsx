@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation';
 import { ArrowRight, CheckCircle2, Layers, Sparkles } from 'lucide-react';
 import { useActiveTool } from '@/hooks/use-active-tool';
 import { getChainedNextTools } from '@/lib/workflow-chain';
+import { getUiDictionary, normalizeUiLocale } from '@/lib/locale-ui';
+import { isLocalizedToolSlug, getLocalizedTool } from '@/lib/localized-tools';
 import { resolveFileForWorkflowChain, useWorkflowStore, type OutputTelemetry } from '@/store/workflow-store';
 import { cn } from '@/lib/utils';
 
@@ -22,6 +24,8 @@ export interface WorkflowChainBarProps {
 export function WorkflowChainBar({ visible, outputOverride, className }: WorkflowChainBarProps) {
   const router = useRouter();
   const { activeTool } = useActiveTool();
+  const locale = normalizeUiLocale(activeTool?.locale);
+  const ui = getUiDictionary(locale);
   const queueChainedFile = useWorkflowStore((s) => s.queueChainedFile);
   const [navigatingSlug, setNavigatingSlug] = useState<string | null>(null);
 
@@ -30,6 +34,13 @@ export function WorkflowChainBar({ visible, outputOverride, className }: Workflo
   const nextTools = getChainedNextTools(activeTool.id);
   if (nextTools.length === 0) return null;
 
+  const buildNextHref = (nextSlug: string, chained: boolean) => {
+    const base = locale !== 'en' && isLocalizedToolSlug(nextSlug)
+      ? `/${locale}/tools/${nextSlug}`
+      : `/tools/${nextSlug}`;
+    return chained ? `${base}?chained=1` : base;
+  };
+
   const handleChainClick = async (nextSlug: string) => {
     setNavigatingSlug(nextSlug);
     try {
@@ -37,9 +48,9 @@ export function WorkflowChainBar({ visible, outputOverride, className }: Workflo
       if (file) {
         queueChainedFile(file, activeTool.id, activeTool.name);
       }
-      router.push(`/tools/${nextSlug}?chained=1`);
+      router.push(buildNextHref(nextSlug, true));
     } catch {
-      router.push(`/tools/${nextSlug}`);
+      router.push(buildNextHref(nextSlug, false));
     }
   };
 
@@ -58,16 +69,16 @@ export function WorkflowChainBar({ visible, outputOverride, className }: Workflo
           </div>
           <div>
             <p className="text-sm font-bold text-foreground">
-              Continue With This File (No Re-Upload Needed)
+              {ui.result.chainTitle}
             </p>
             <p className="text-xs text-muted-foreground">
-              Your processed file stays ready in memory — open the next tool in 1 click.
+              {ui.result.chainSubtitle}
             </p>
           </div>
         </div>
         <span className="inline-flex items-center gap-1 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 text-[11px] font-semibold text-emerald-700 dark:text-emerald-300">
           <CheckCircle2 className="h-3 w-3" />
-          Download Complete
+          {ui.result.downloadComplete}
         </span>
       </div>
 
@@ -75,6 +86,9 @@ export function WorkflowChainBar({ visible, outputOverride, className }: Workflo
         {nextTools.map((tool) => {
           const Icon = tool.icon;
           const isLoading = navigatingSlug === tool.slug;
+          const displayName = locale !== 'en'
+            ? (getLocalizedTool(locale, tool.slug)?.name ?? tool.name)
+            : tool.name;
           return (
             <button
               key={tool.id}
@@ -89,10 +103,10 @@ export function WorkflowChainBar({ visible, outputOverride, className }: Workflo
                 </div>
                 <div className="min-w-0">
                   <p className="truncate text-xs font-bold text-foreground group-hover:text-primary">
-                    {tool.name}
+                    {displayName}
                   </p>
                   <p className="truncate text-[11px] text-muted-foreground">
-                    {isLoading ? 'Loading file...' : '1-click carry-over'}
+                    {isLoading ? ui.result.loadingFile : ui.result.clickCarryOver}
                   </p>
                 </div>
               </div>

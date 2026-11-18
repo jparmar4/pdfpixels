@@ -423,6 +423,161 @@ await check('ai blur-face synthetic (200|422)', async () => {
   return `status=${res.status}`;
 });
 
+// ---------- office, text, legal, business & remaining PDF routes ----------
+async function buildDocxFixture() {
+  const zip = new JSZip();
+  zip.file('[Content_Types].xml', '<?xml version="1.0" encoding="UTF-8"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/></Types>');
+  zip.file('_rels/.rels', '<?xml version="1.0" encoding="UTF-8"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>');
+  zip.file('word/document.xml', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body><w:p><w:pPr><w:pStyle w:val="Heading1"/></w:pPr><w:r><w:t>Factura \u201C2026\u201D \u2014 €250 \u2192 Pagado</w:t></w:r></w:p><w:tbl><w:tr><w:tc><w:p><w:r><w:t>Servicio Mensual</w:t></w:r></w:p></w:tc><w:tc><w:p><w:r><w:t>\u2022 €125.00</w:t></w:r></w:p></w:tc></w:tr></w:tbl></w:body></w:document>');
+  return zip.generateAsync({ type: 'nodebuffer' });
+}
+async function buildXlsxFixture() {
+  const zip = new JSZip();
+  zip.file('[Content_Types].xml', '<?xml version="1.0" encoding="UTF-8"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/sharedStrings.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/></Types>');
+  zip.file('_rels/.rels', '<?xml version="1.0" encoding="UTF-8"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>');
+  zip.file('xl/_rels/workbook.xml.rels', '<?xml version="1.0" encoding="UTF-8"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/sharedStrings" Target="sharedStrings.xml"/></Relationships>');
+  zip.file('xl/workbook.xml', '<?xml version="1.0" encoding="UTF-8"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="Sheet1" sheetId="1" r:id="rId1"/></sheets></workbook>');
+  zip.file('xl/sharedStrings.xml', '<?xml version="1.0" encoding="UTF-8"?><sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="2" uniqueCount="2"><si><t>Product</t></si><si><t>Revenue Q4 €500</t></si></sst>');
+  zip.file('xl/worksheets/sheet1.xml', '<?xml version="1.0" encoding="UTF-8"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetData><row r="1"><c r="A1" t="s"><v>0</v></c><c r="B1" t="s"><v>1</v></c></row><row r="2"><c r="A2" t="inlineStr"><is><t>PdfPixels Pro \u2014 Extended Suite</t></is></c><c r="B2"><v>500</v></c></row></sheetData></worksheet>');
+  return zip.generateAsync({ type: 'nodebuffer' });
+}
+async function buildPptxFixture() {
+  const zip = new JSZip();
+  zip.file('[Content_Types].xml', '<?xml version="1.0" encoding="UTF-8"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="xml" ContentType="application/xml"/><Override PartName="/ppt/slides/slide1.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slide+xml"/><Override PartName="/ppt/slides/slide2.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slide+xml"/></Types>');
+  zip.file('ppt/slides/slide1.xml', '<p:sld xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"><p:cSld><p:spTree><p:sp><p:txBody><a:p><a:r><a:t>Overview Slide \u2014 2026</a:t></a:r></a:p><a:p><a:r><a:t>Key metric €1.2M ARR</a:t></a:r></a:p></p:txBody></p:sp></p:spTree></p:cSld></p:sld>');
+  zip.file('ppt/slides/slide2.xml', '<p:sld xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"><p:cSld><p:spTree><p:sp><p:txBody><a:p><a:r><a:t>Slide Two</a:t></a:r></a:p><a:p><a:r><a:t>Zero cloud lock-in</a:t></a:r></a:p></p:txBody></p:sp></p:spTree></p:cSld></p:sld>');
+  return zip.generateAsync({ type: 'nodebuffer' });
+}
+
+await check('from-word docx happy (quotes/euro/table)', async () => {
+  const docx = await buildDocxFixture();
+  const res = await callPdf('from-word', {
+    file: new File([docx], 'factura.docx', { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' }),
+  });
+  const bytes = await expectPdfBytes(res, 'from-word');
+  const { extractPdfLines } = await import('../src/lib/pdf-text.ts');
+  const txt = (await extractPdfLines(bytes)).join(' ');
+  assert.match(txt, /Factura/);
+  assert.doesNotMatch(txt, /\?250/, 'WinAnsi corrupted Euro sign into ?');
+  return `engine=${res.headers.get('x-convert-engine')}`;
+});
+
+await check('from-excel long CSV row (no WinAnsi ellipsis crash)', async () => {
+  const csv = 'Item,Notes,Amount\nWidget,"A very long product description exceeding single column width for quarterly revenue reporting in EMEA €999",999.00\n';
+  const res = await callPdf('from-excel', { file: new File([csv], 'report.csv', { type: 'text/csv' }) });
+  await expectPdfBytes(res, 'from-excel csv');
+});
+
+await check('from-excel xlsx happy (LO or JS fallback)', async () => {
+  const xlsx = await buildXlsxFixture();
+  const res = await callPdf('from-excel', {
+    file: new File([xlsx], 'budget.xlsx', { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }),
+  });
+  await expectPdfBytes(res, 'from-excel xlsx');
+  return `engine=${res.headers.get('x-convert-engine')}`;
+});
+
+await check('from-powerpoint pptx happy (LO or JS fallback)', async () => {
+  const pptx = await buildPptxFixture();
+  const res = await callPdf('from-powerpoint', {
+    file: new File([pptx], 'deck.pptx', { type: 'application/vnd.openxmlformats-officedocument.presentationml.presentation' }),
+  });
+  const bytes = await expectPdfBytes(res, 'from-powerpoint pptx');
+  assert.ok((await PDFDocument.load(bytes)).getPageCount() >= 2);
+  return `engine=${res.headers.get('x-convert-engine')}`;
+});
+
+await check('to-word pdf → docx happy', async () => {
+  const res = await callPdf('to-word', { file: pdfFile(A) });
+  assert.equal(res.status, 200, `to-word got ${res.status}`);
+  const zip = await JSZip.loadAsync(await res.arrayBuffer());
+  assert.ok(zip.file('word/document.xml'), 'missing word/document.xml');
+});
+
+await check('to-excel xlsx + csv happy', async () => {
+  const rx = await callPdf('to-excel', { file: pdfFile(C), format: 'xlsx' });
+  assert.equal(rx.status, 200, `to-excel xlsx got ${rx.status}`);
+  const zip = await JSZip.loadAsync(await rx.arrayBuffer());
+  assert.ok(zip.file('xl/worksheets/sheet1.xml'));
+  const rc = await callPdf('to-excel', { file: pdfFile(C), format: 'csv' });
+  assert.equal(rc.status, 200, `to-excel csv got ${rc.status}`);
+  assert.match(await rc.text(), /Gamma/);
+});
+
+await check('from-text → to-text roundtrip', async () => {
+  const res = await callPdf('from-text', { text: 'Contrato mercantil PdfPixels 2026\nSegunda linea clara.', pageSize: 'a4' });
+  const bytes = await expectPdfBytes(res, 'from-text');
+  const txtRes = await callPdf('to-text', { file: new File([bytes], 'out.pdf', { type: 'application/pdf' }), format: 'txt' });
+  assert.equal(txtRes.status, 200);
+  assert.match(await txtRes.text(), /Contrato mercantil/);
+});
+
+await check('bates-numbering happy', async () => {
+  const res = await callPdf('bates-numbering', { file: pdfFile(A), prefix: 'ABC-', startNumber: '1', padding: '5' });
+  const bytes = await expectPdfBytes(res, 'bates-numbering');
+  const { extractPdfLines } = await import('../src/lib/pdf-text.ts');
+  assert.match((await extractPdfLines(bytes)).join(' '), /ABC-00001/);
+});
+
+await check('crop-shipping-label usps happy', async () => {
+  const res = await callPdf('crop-shipping-label', { file: pdfFile(A), preset: 'usps', printer: 'rollo-4x6' });
+  await expectPdfBytes(res, 'crop-shipping-label');
+});
+
+await check('bank-statement-to-excel quickbooks csv + json', async () => {
+  const stmt = await pdfFixture([
+    '01/15/2026 AMAZON MARKETPLACE -45.00 955.00',
+    '01/16/2026 PAYROLL DEPOSIT 2000.00 2955.00',
+  ], 1);
+  const res = await callPdf('bank-statement-to-excel', { file: pdfFile(stmt, 'statement.pdf'), format: 'quickbooks-3col' });
+  assert.equal(res.status, 200, `bank-statement got ${res.status}: ${(await res.clone().text()).slice(0, 200)}`);
+  assert.match(await res.text(), /Date,Description,Amount/);
+});
+
+await check('compare two pdfs happy', async () => {
+  const res = await callPdf('compare', { fileA: pdfFile(A), fileB: pdfFile(C) });
+  assert.equal(res.status, 200, `compare got ${res.status}`);
+  const json = await res.json();
+  assert.ok(Array.isArray(json.diff) && json.diff.length > 0);
+});
+
+await check('compress recommended happy', async () => {
+  const res = await callPdf('compress', { file: pdfFile(A), level: 'recommended' });
+  await expectPdfBytes(res, 'compress');
+});
+
+await check('fill textEntries happy', async () => {
+  const res = await callPdf('fill', {
+    file: pdfFile(A),
+    textEntries: JSON.stringify([{ pageNumber: 1, x: 50, y: 500, text: 'Signed Online', fontSize: 12 }]),
+  });
+  await expectPdfBytes(res, 'fill');
+});
+
+await check('flatten + metadata + n-up + repair + resize + sanitize + crop happy', async () => {
+  await expectPdfBytes(await callPdf('flatten', { file: pdfFile(A) }), 'flatten');
+  const metaBytes = await expectPdfBytes(await callPdf('metadata', { file: pdfFile(A), title: 'Audit 2026', author: 'PdfPixels' }), 'metadata');
+  assert.equal((await PDFDocument.load(metaBytes)).getTitle(), 'Audit 2026');
+  const nupBytes = await expectPdfBytes(await callPdf('n-up', { file: pdfFile(C), layout: '2', sheet: 'a4' }), 'n-up');
+  assert.equal((await PDFDocument.load(nupBytes)).getPageCount(), 2);
+  await expectPdfBytes(await callPdf('repair', { file: pdfFile(A) }), 'repair');
+  await expectPdfBytes(await callPdf('resize', { file: pdfFile(A), sheet: 'letter' }), 'resize');
+  await expectPdfBytes(await callPdf('sanitize', { file: pdfFile(A), action: 'sanitize' }), 'sanitize');
+  await expectPdfBytes(await callPdf('crop', { file: pdfFile(A), top: '10', bottom: '10', left: '10', right: '10' }), 'crop');
+});
+
+await check('extract-images happy on embedded PNG PDF', async () => {
+  const doc = await PDFDocument.create();
+  const pg = doc.addPage([400, 400]);
+  const img = await doc.embedPng(PNG);
+  pg.drawImage(img, { x: 50, y: 100, width: 200, height: 120 });
+  const pdfWithImg = Buffer.from(await doc.save());
+  const res = await callPdf('extract-images', { file: pdfFile(pdfWithImg, 'with-img.pdf') });
+  assert.equal(res.status, 200, `extract-images got ${res.status}`);
+  const zip = await JSZip.loadAsync(await res.arrayBuffer());
+  assert.ok(Object.values(zip.files).filter((f) => !f.dir).length >= 1);
+});
+
 // ---------- contact / newsletter (validation only; happy path needs DB+SMTP env) ----------
 async function callJson(api, body) {
   const { POST } = await import(`../src/app/api/${api}/route.ts`);

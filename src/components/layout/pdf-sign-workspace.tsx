@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Slider } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';
-import { useAppStore } from '@/store/app-store';
+import { useActiveTool } from '@/hooks/use-active-tool';
 import { useConsumeChainedFile } from '@/hooks/use-consume-chained-file';
 import { FileUpload } from './file-upload';
 import { ToolPageHeader } from './tool-page-header';
@@ -26,7 +26,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { PdfPagePreview } from './pdf-page-preview';
 
 export function PDFSignWorkspace() {
-  const { uploadedFile, setUploadedFile, isProcessing, setIsProcessing, setProgress, reset } = useAppStore();
+  const { activeTool, uploadedFile, setUploadedFile, isProcessing, setIsProcessing, setProgress, reset } = useActiveTool();
 
   useConsumeChainedFile(
     (chained) => {
@@ -341,8 +341,8 @@ export function PDFSignWorkspace() {
   return (
     <div className="container mx-auto px-4 lg:px-8 py-8 max-w-6xl">
       <ToolPageHeader
-        title="Sign PDF Online Free"
-        description="Add legally valid electronic signatures & optional SHA-256 Audit Trail Certificates to PDF contracts, tax forms, and NDAs — 100% client-side with zero server upload."
+        title={activeTool?.name || 'Sign PDF Online Free'}
+        description={activeTool?.description || 'Add legally valid electronic signatures & optional SHA-256 Audit Trail Certificates to PDF contracts, tax forms, and NDAs — 100% client-side with zero server upload.'}
         icon={<FileSignature className="h-7 w-7 text-white" />}
         onReset={handleReset}
       />

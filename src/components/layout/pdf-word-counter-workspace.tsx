@@ -27,7 +27,7 @@ interface TextStats {
 }
 
 export function PDFWordCounterWorkspace() {
-  const { uploadedFile, isProcessing, setIsProcessing, reset } = useActiveTool();
+  const { activeTool, uploadedFile, isProcessing, setIsProcessing, reset } = useActiveTool();
   const [stats, setStats] = useState<TextStats | null>(null);
   const [copied, setCopied] = useState(false);
 
@@ -123,8 +123,8 @@ export function PDFWordCounterWorkspace() {
   return (
     <div className="container mx-auto px-4 lg:px-8 max-w-5xl py-8">
       <ToolPageHeader
-        title="PDF Word Counter"
-        description="Count words, characters, pages, reading time, and speaking time in any PDF document with instant statistics."
+        title={activeTool?.name || 'PDF Word Counter'}
+        description={activeTool?.description || 'Count words, characters, pages, reading time, and speaking time in any PDF document with instant statistics.'}
         icon={<FileText className="h-7 w-7 text-white" />}
         onReset={handleReset}
       />

@@ -8,6 +8,7 @@ import { useLiveOnlineStatus } from '@/hooks/use-pro-tool-shortcuts';
 import { normalizeDisplayText } from '@/lib/display-text';
 import { getToolById } from '@/lib/tools-data';
 import { useActiveTool } from '@/hooks/use-active-tool';
+import { getUiDictionary } from '@/lib/locale-ui';
 
 interface ToolPageHeaderProps {
   title: string;
@@ -27,41 +28,44 @@ export function ToolPageHeader({
   emoji,
   children,
 }: ToolPageHeaderProps) {
-  const activeToolId = useActiveTool().activeTool?.id;
+  const activeTool = useActiveTool().activeTool;
+  const activeToolId = activeTool?.id;
+  const ui = getUiDictionary(activeTool?.locale);
+  const isLocalized = Boolean(activeTool?.locale && activeTool.locale !== 'en');
   const isOnline = useLiveOnlineStatus();
   const isIconComponentType =
     typeof icon === 'function' ||
     (typeof icon === 'object' && icon !== null && '$$typeof' in (icon as { $$typeof?: unknown }));
 
-  const safeTitle = normalizeDisplayText(title);
-  const safeDescription = normalizeDisplayText(description);
+  const safeTitle = normalizeDisplayText(isLocalized && activeTool?.name ? activeTool.name : title);
+  const safeDescription = normalizeDisplayText(isLocalized && activeTool?.description ? activeTool.description : description);
   const tool = activeToolId ? getToolById(activeToolId) : undefined;
-  const lowerText = `${tool?.id || ''} ${safeTitle} ${safeDescription}`.toLowerCase();
+  const lowerText = `${tool?.id || ''} ${safeTitle} ${safeDescription} ${title}`.toLowerCase();
   const processingMeta = tool?.processing === 'client'
-    ? { label: 'Browser-native', icon: MonitorSmartphone, tone: 'text-success' }
+    ? { label: ui.header.browserNative, icon: MonitorSmartphone, tone: 'text-success' }
     : tool?.processing === 'ai' || isAI
-      ? { label: 'AI-enhanced', icon: Wand2, tone: 'text-violet-600 dark:text-violet-300' }
-      : { label: 'Server-optimized', icon: Server, tone: 'text-info' };
+      ? { label: ui.header.aiEnhanced, icon: Wand2, tone: 'text-violet-600 dark:text-violet-300' }
+      : { label: ui.header.serverOptimized, icon: Server, tone: 'text-info' };
   const workflowMeta = [
     {
-      label: 'Input',
+      label: ui.header.inputLabel,
       value: lowerText.includes('pdf') && !lowerText.includes('image to pdf')
-        ? 'PDF files'
+        ? ui.header.pdfFiles
         : lowerText.includes('signature')
-          ? 'Image or signature'
-          : 'Image files',
+          ? ui.header.signatureOrImage
+          : ui.header.imageFiles,
     },
     {
-      label: 'Engine',
+      label: ui.header.engineLabel,
       value: processingMeta.label,
     },
     {
-      label: 'Output',
+      label: ui.header.outputLabel,
       value: lowerText.includes('ocr') || lowerText.includes('text')
-        ? 'Extracted text'
+        ? ui.header.extractedText
         : lowerText.includes('pdf')
-          ? 'Export-ready PDF'
-          : 'Optimized image',
+          ? ui.header.exportReadyPdf
+          : ui.header.optimizedImage,
     },
   ];
   const ProcessingIcon = processingMeta.icon;
@@ -97,7 +101,7 @@ export function ToolPageHeader({
                 </h1>
                 {isAI ? (
                   <Badge className="rounded-full border border-violet-500/20 bg-violet-500/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-violet-600 dark:text-violet-300">
-                    AI powered
+                    {ui.header.aiPowered}
                   </Badge>
                 ) : null}
                 {tool?.badge ? (
@@ -114,11 +118,11 @@ export function ToolPageHeader({
               <div className="flex flex-wrap gap-2.5 text-xs font-medium text-muted-foreground">
                 <span className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-background/75 px-3 py-1.5">
                   <Zap className="h-3.5 w-3.5 text-info" />
-                  Fast workflow
+                  {ui.header.fastWorkflow}
                 </span>
                 <span className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-background/75 px-3 py-1.5">
                   <ShieldCheck className="h-3.5 w-3.5 text-success" />
-                  Private processing
+                  {ui.header.privateProcessing}
                 </span>
                 <span className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-background/75 px-3 py-1.5">
                   <ProcessingIcon className={`h-3.5 w-3.5 ${processingMeta.tone}`} />
@@ -134,7 +138,7 @@ export function ToolPageHeader({
                     }`}
                   >
                     {isOnline ? <Wifi className="h-3.5 w-3.5" /> : <WifiOff className="h-3.5 w-3.5" />}
-                    {isOnline ? 'Works 100% offline — test by turning off Wi-Fi' : 'Offline Mode Active · Running Locally'}
+                    {isOnline ? ui.header.offlineProofOnline : ui.header.offlineProofActive}
                   </span>
                 )}
               </div>
@@ -142,19 +146,19 @@ export function ToolPageHeader({
               <div className="flex flex-wrap items-center gap-2 text-[11px] text-muted-foreground pt-0.5">
                 <span className="inline-flex items-center gap-1 font-semibold text-foreground/80">
                   <Keyboard className="h-3.5 w-3.5 text-primary" />
-                  Shortcuts:
+                  {ui.header.shortcuts}
                 </span>
                 <kbd className="rounded border border-border/70 bg-muted/60 px-1.5 py-0.5 font-mono text-[10px]">Ctrl/⌘+O</kbd>
-                <span>Open</span>
+                <span>{ui.header.openLabel}</span>
                 <span aria-hidden="true">·</span>
                 <kbd className="rounded border border-border/70 bg-muted/60 px-1.5 py-0.5 font-mono text-[10px]">Ctrl/⌘+S</kbd>
-                <span>Save</span>
+                <span>{ui.header.saveLabel}</span>
                 <span aria-hidden="true">·</span>
                 <kbd className="rounded border border-border/70 bg-muted/60 px-1.5 py-0.5 font-mono text-[10px]">Space</kbd>
-                <span>Hold to compare</span>
+                <span>{ui.header.compareLabel}</span>
                 <span aria-hidden="true">·</span>
                 <kbd className="rounded border border-border/70 bg-muted/60 px-1.5 py-0.5 font-mono text-[10px]">Esc</kbd>
-                <span>Reset</span>
+                <span>{ui.header.resetLabel}</span>
               </div>
             </div>
           </div>
@@ -170,18 +174,18 @@ export function ToolPageHeader({
         </div>
 
         <div className="relative z-10 w-full max-w-sm rounded-[1.5rem] border border-border/60 bg-background/75 p-4 shadow-soft xl:w-auto">
-          <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-primary">Recommended flow</p>
+          <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-primary">{ui.header.recommendedFlow}</p>
           <div className="mt-3 space-y-3 text-sm text-muted-foreground">
             <div className="flex items-center justify-between gap-3 rounded-2xl border border-border/50 bg-card/70 px-3 py-2">
-              <span>1. Upload your file</span>
+              <span>{ui.header.step1}</span>
               <ShieldCheck className="h-4 w-4 text-success" />
             </div>
             <div className="flex items-center justify-between gap-3 rounded-2xl border border-border/50 bg-card/70 px-3 py-2">
-              <span>2. Tune output settings</span>
+              <span>{ui.header.step2}</span>
               <Sparkles className="h-4 w-4 text-primary" />
             </div>
             <div className="flex items-center justify-between gap-3 rounded-2xl border border-border/50 bg-card/70 px-3 py-2">
-              <span>3. Download polished result</span>
+              <span>{ui.header.step3}</span>
               <Download className="h-4 w-4 text-info" />
             </div>
           </div>

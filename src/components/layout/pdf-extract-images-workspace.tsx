@@ -14,7 +14,7 @@ import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
 
 export function PDFExtractImagesWorkspace() {
-  const { uploadedFile, isProcessing, progress, setIsProcessing, setProgress, reset } = useActiveTool();
+  const { activeTool, uploadedFile, isProcessing, progress, setIsProcessing, setProgress, reset } = useActiveTool();
   const [result, setResult] = useState<{ url: string; name: string; images: number; skipped: number } | null>(null);
 
   useEffect(() => {
@@ -91,8 +91,8 @@ export function PDFExtractImagesWorkspace() {
   return (
     <div className="container mx-auto px-4 lg:px-8 py-8 max-w-5xl">
       <ToolPageHeader
-        title="Extract Images from PDF"
-        description="Pull the original embedded images out of any PDF at full stored quality — returned as one ZIP, not page screenshots."
+        title={activeTool?.name || 'Extract Images from PDF'}
+        description={activeTool?.description || 'Pull the original embedded images out of any PDF at full stored quality — returned as one ZIP, not page screenshots.'}
         icon={<Images className="h-7 w-7 text-white" />}
         onReset={handleReset}
       />

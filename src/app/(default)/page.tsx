@@ -11,7 +11,7 @@ import { HeaderAd, InContentAd, FooterAd, NativeAd } from '@/components/ads/ad-b
 
 import { Metadata } from 'next';
 import { siteConfig, seoConfig } from '@/lib/seo-config';
-import { getGeoLanguageAlternates } from '@/lib/seo';
+import { getGeoLanguageAlternates, DEFAULT_OG_IMAGE_URL } from '@/lib/seo';
 
 export const metadata: Metadata = {
   title: { absolute: `${siteConfig.name} - Free Online PDF & Image Tools` },
@@ -26,11 +26,20 @@ export const metadata: Metadata = {
     url: siteConfig.url,
     type: 'website',
     siteName: siteConfig.name,
+    images: [
+      {
+        url: DEFAULT_OG_IMAGE_URL,
+        width: 1200,
+        height: 630,
+        alt: 'PdfPixels - Free online PDF and image tools',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
     title: `${siteConfig.name} - Free Online PDF & Image Tools`,
     description: seoConfig.description,
+    images: [DEFAULT_OG_IMAGE_URL],
   },
 };
 

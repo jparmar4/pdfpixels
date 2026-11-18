@@ -35,9 +35,21 @@ export async function POST(request: NextRequest) {
     } catch (error) {
       const { isLibreOfficeMissingError } = await import('@/lib/libreoffice');
       if (isLibreOfficeMissingError(error)) {
+        if (name.endsWith('.pptx')) {
+          try {
+            const { pptxBufferToPdf } = await import('@/lib/office-pdf-fallback');
+            const pdfBytes = await pptxBufferToPdf(buffer, baseName);
+            return pdfBinaryResponse(new Uint8Array(pdfBytes), sanitizeDownloadFileName(`${baseName}.pdf`), {
+              'x-convert-engine': 'js-pptx-fallback',
+            });
+          } catch (fallbackError) {
+            console.error('PPTX fallback conversion failed:', fallbackError);
+            return apiError('This PowerPoint (.pptx) file could not be parsed. Try exporting to PDF from PowerPoint.', 400);
+          }
+        }
         return apiError(
-          'The conversion engine is temporarily unavailable. Please try again in a few minutes.',
-          503,
+          'Legacy binary .ppt files require the desktop conversion engine. Please save your presentation as .pptx and upload again.',
+          400,
         );
       }
       console.error('LibreOffice PowerPoint to PDF failed:', error);

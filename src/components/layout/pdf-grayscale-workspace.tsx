@@ -5,7 +5,7 @@ import {
   Download, RotateCcw, Contrast, Check, Printer, FileDown, Sparkles
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useAppStore } from '@/store/app-store';
+import { useActiveTool } from '@/hooks/use-active-tool';
 import { FileUpload } from './file-upload';
 import { ToolPageHeader } from './tool-page-header';
 import { ToolLimitNotice } from './tool-limit-notice';
@@ -16,7 +16,7 @@ import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
 
 export function PDFGrayscaleWorkspace() {
-  const { uploadedFile, isProcessing, setIsProcessing, setProgress, reset } = useAppStore();
+  const { activeTool, uploadedFile, isProcessing, setIsProcessing, setProgress, reset } = useActiveTool();
 
   const [totalPages, setTotalPages] = useState<number>(1);
   const [resultUrl, setResultUrl] = useState<string | null>(null);
@@ -112,8 +112,8 @@ export function PDFGrayscaleWorkspace() {
   return (
     <div className="container mx-auto px-4 lg:px-8 py-8 max-w-5xl">
       <ToolPageHeader
-        title="Grayscale PDF Converter (Black & White)"
-        description="Convert color PDF files into monochrome grayscale documents. Save printer ink costs, meet court filing standards, and reduce file size."
+        title={activeTool?.name || 'Grayscale PDF Converter (Black & White)'}
+        description={activeTool?.description || 'Convert color PDF files into monochrome grayscale documents. Save printer ink costs, meet court filing standards, and reduce file size.'}
         icon={<Contrast className="h-7 w-7 text-white" />}
         onReset={handleReset}
       />

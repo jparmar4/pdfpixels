@@ -21,7 +21,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Switch } from '@/components/ui/switch';
 import { ResultScreenAd, SmartlinkButton } from '@/components/ads/ad-banner';
 import { triggerDownloadWithSmartlink } from '@/lib/ads-config';
-import { useAppStore } from '@/store/app-store';
+import { useActiveTool } from '@/hooks/use-active-tool';
 import { useConsumeChainedFile } from '@/hooks/use-consume-chained-file';
 import { FileUpload } from './file-upload';
 import { PrivateModeBadge } from './private-mode-badge';
@@ -58,7 +58,7 @@ const LANG_OPTIONS = [
 ];
 
 export function PdfAccessibilityWorkspace() {
-  const { uploadedFile, setUploadedFile, isProcessing, setIsProcessing, setProgress, reset } = useAppStore();
+  const { activeTool, uploadedFile, setUploadedFile, isProcessing, setIsProcessing, setProgress, reset } = useActiveTool();
   const [audit, setAudit] = useState<AuditReport | null>(null);
 
   // Auto-Fixer controls
@@ -339,8 +339,8 @@ export function PdfAccessibilityWorkspace() {
   return (
     <div className="container mx-auto px-4 lg:px-8 py-8 max-w-6xl">
       <ToolPageHeader
-        title="PDF Accessibility Checker & Auto-Fixer (PDF/UA & ADA 508)"
-        description="Audit PDFs against WCAG 2.1, ADA Section 508, and PDF/UA rules (Document Title, DisplayDocTitle, /Lang, MarkInfo, /Tabs /S, and text layer), and auto-fix missing compliance flags 100% locally."
+        title={activeTool?.name || 'PDF Accessibility Checker & Auto-Fixer (PDF/UA & ADA 508)'}
+        description={activeTool?.description || 'Audit PDFs against WCAG 2.1, ADA Section 508, and PDF/UA rules (Document Title, DisplayDocTitle, /Lang, MarkInfo, /Tabs /S, and text layer), and auto-fix missing compliance flags 100% locally.'}
         icon={Accessibility}
         onReset={handleReset}
       />

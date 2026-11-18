@@ -325,6 +325,7 @@ type ToolPageClientProps = {
   toolId: string;
   toolName: string;
   toolDescription: string;
+  locale?: string;
 };
 
 // Map tool IDs to workspace components
@@ -444,7 +445,7 @@ function getWorkspaceComponent(toolId: string) {
   return <ToolWorkspace />;
 }
 
-export function ToolPageClient({ toolId, toolName, toolDescription }: ToolPageClientProps) {
+export function ToolPageClient({ toolId, toolName, toolDescription, locale }: ToolPageClientProps) {
   useGlobalToolShortcuts();
   const setActiveTool = useAppStore((state) => state.setActiveTool);
   const reset = useAppStore((state) => state.reset);
@@ -460,8 +461,12 @@ export function ToolPageClient({ toolId, toolName, toolDescription }: ToolPageCl
       id: toolId,
       name: toolName,
       description: toolDescription,
+      locale,
     });
-  }, [toolId, toolName, toolDescription, setActiveTool, reset]);
+
+  }, [toolId, toolName, toolDescription, locale, setActiveTool, reset]);
+
+
 
   useEffect(() => {
     return () => {
@@ -472,7 +477,7 @@ export function ToolPageClient({ toolId, toolName, toolDescription }: ToolPageCl
   // Per-request initial tool: workspaces SSR their full UI from this context
   // (prerender-safe, no global-store writes during render). The useLayoutEffect
   // above then hydrates the global store for selector-based consumers post-mount.
-  const initialTool = { id: toolId, name: toolName, description: toolDescription };
+  const initialTool = { id: toolId, name: toolName, description: toolDescription, locale };
 
   return (
     <ErrorBoundary>

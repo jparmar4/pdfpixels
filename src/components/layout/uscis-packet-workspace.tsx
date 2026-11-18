@@ -49,7 +49,7 @@ function sanitizeText(str: string): string {
 }
 
 export function UscisPacketWorkspace() {
-  const { isProcessing, setIsProcessing, setProgress, reset } = useActiveTool();
+  const { activeTool, isProcessing, setIsProcessing, setProgress, reset } = useActiveTool();
   const [exhibits, setExhibits] = useState<ExhibitItem[]>([]);
   const [formCategory, setFormCategory] = useState('Form I-130 / I-485 Adjustment Packet');
   const [applicantName, setApplicantName] = useState('');
@@ -398,8 +398,8 @@ export function UscisPacketWorkspace() {
   return (
     <div className="container mx-auto px-4 lg:px-8 py-8 max-w-6xl">
       <ToolPageHeader
-        title="USCIS & Visa Evidence Packet Merger"
-        description="Assemble USCIS Form I-130, I-485, I-140, H-1B, and N-400 evidence packets with automatic Table of Contents, Exhibit A/B/C stamping, US Letter normalization, and <24MB portal splitting."
+        title={activeTool?.name || 'USCIS & Visa Evidence Packet Merger'}
+        description={activeTool?.description || 'Assemble USCIS Form I-130, I-485, I-140, H-1B, and N-400 evidence packets with automatic Table of Contents, Exhibit A/B/C stamping, US Letter normalization, and <24MB portal splitting.'}
         icon={FolderKanban}
         onReset={handleReset}
       />

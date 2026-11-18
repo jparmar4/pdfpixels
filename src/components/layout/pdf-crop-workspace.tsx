@@ -7,7 +7,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Slider } from '@/components/ui/slider';
-import { useAppStore } from '@/store/app-store';
+import { useActiveTool } from '@/hooks/use-active-tool';
 import { FileUpload } from './file-upload';
 import { ToolPageHeader } from './tool-page-header';
 import { ToolLimitNotice } from './tool-limit-notice';
@@ -22,7 +22,7 @@ import {
 } from '@/components/ui/select';
 
 export function PDFCropWorkspace() {
-  const { uploadedFile, isProcessing, setIsProcessing, setProgress, reset } = useAppStore();
+  const { activeTool, uploadedFile, isProcessing, setIsProcessing, setProgress, reset } = useActiveTool();
 
   const [totalPages, setTotalPages] = useState<number>(1);
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -161,8 +161,8 @@ export function PDFCropWorkspace() {
   return (
     <div className="container mx-auto px-4 lg:px-8 py-8 max-w-6xl">
       <ToolPageHeader
-        title="Crop PDF Pages Online"
-        description="Trim unwanted white margins, crop headers and footers, or adjust PDF dimensions for printing and mobile e-readers."
+        title={activeTool?.name || 'Crop PDF Pages Online'}
+        description={activeTool?.description || 'Trim unwanted white margins, crop headers and footers, or adjust PDF dimensions for printing and mobile e-readers.'}
         icon={<Crop className="h-7 w-7 text-white" />}
         onReset={handleReset}
       />

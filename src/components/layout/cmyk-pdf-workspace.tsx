@@ -4,7 +4,7 @@ import { useState, useCallback, useEffect } from 'react';
 import { Download, RotateCcw, Palette, Printer, CheckCircle2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { useAppStore } from '@/store/app-store';
+import { useActiveTool } from '@/hooks/use-active-tool';
 import { FileUpload } from './file-upload';
 import { ToolPageHeader } from './tool-page-header';
 import { ToolLimitNotice } from './tool-limit-notice';
@@ -13,7 +13,7 @@ import { triggerDownloadWithSmartlink } from '@/lib/ads-config';
 import { toast } from 'sonner';
 
 export function CmykPdfWorkspace() {
-  const { uploadedFile, isProcessing, setIsProcessing, setProgress, reset } = useAppStore();
+  const { activeTool, uploadedFile, isProcessing, setIsProcessing, setProgress, reset } = useActiveTool();
   const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
   const [cmykFileName, setCmykFileName] = useState<string>('');
 
@@ -79,8 +79,8 @@ export function CmykPdfWorkspace() {
   return (
     <div className="container mx-auto px-4 lg:px-8 py-8 max-w-4xl">
       <ToolPageHeader
-        title="CMYK PDF Converter for Print"
-        description="Convert RGB PDF documents to calibrated 4-color DeviceCMYK for commercial offset printing, Amazon KDP, and prepress compliance."
+        title={activeTool?.name || 'CMYK PDF Converter for Print'}
+        description={activeTool?.description || 'Convert RGB PDF documents to calibrated 4-color DeviceCMYK for commercial offset printing, Amazon KDP, and prepress compliance.'}
         icon={<Palette className="h-7 w-7 text-white" />}
         onReset={handleReset}
       />

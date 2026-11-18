@@ -1,5 +1,6 @@
 import { apiError, apiInternalError } from '@/lib/api-response';
-import { pdfBinaryResponse, sanitizeDownloadFileName } from '@/lib/pdf-api';
+import { pdfBinaryResponse, sanitizeDownloadFileName, toSafeWinAnsi } from '@/lib/pdf-api';
+import { xlsxBufferToCsvText } from '@/lib/office-pdf-fallback';
 import { NextRequest } from 'next/server';
 import { PDFDocument, StandardFonts } from 'pdf-lib';
 
@@ -50,7 +51,7 @@ function parseCsvRows(text: string): string[][] {
 }
 
 function toWinAnsi(text: string): string {
-  return text.replace(/[^\x20-\xFF]/g, '?');
+  return toSafeWinAnsi(text);
 }
 
 /**
@@ -82,10 +83,14 @@ async function renderCsvPdf(rows: string[][]): Promise<Uint8Array> {
     for (let c = 0; c < maxCells; c++) {
       const value = toWinAnsi((cells[c] ?? '').trim());
       if (!value) continue;
-      // Truncate to fit the column.
+      // Truncate to fit the column using pure ASCII '...' so WinAnsi never throws.
       let text = value;
-      while (text.length > 1 && font.widthOfTextAtSize(text, fontSize) > colWidth - 8) {
-        text = text.slice(0, -2) + '…';
+      if (font.widthOfTextAtSize(text, fontSize) > colWidth - 8) {
+        let trimmed = text;
+        while (trimmed.length > 1 && font.widthOfTextAtSize(`${trimmed}...`, fontSize) > colWidth - 8) {
+          trimmed = trimmed.slice(0, -1);
+        }
+        text = `${trimmed}...`;
       }
       page.drawText(text, {
         x: margin + c * colWidth + 4,
@@ -121,6 +126,7 @@ export async function POST(request: NextRequest) {
     const buffer = Buffer.from(await file.arrayBuffer());
     const baseName = file.name.replace(/\.(xlsx|xls|csv)$/i, '');
 
+    let csvText = '';
     try {
       const { convertWithLibreOffice } = await import('@/lib/libreoffice');
       const pdfBytes = await convertWithLibreOffice(buffer, isCsv ? 'csv' : isXlsx ? 'xlsx' : 'xls', 'pdf');
@@ -131,30 +137,37 @@ export async function POST(request: NextRequest) {
       const { isLibreOfficeMissingError } = await import('@/lib/libreoffice');
       if (isCsv) {
         console.error('LibreOffice Excel to PDF failed, using CSV fallback:', error);
+        csvText = buffer.toString('utf8');
+      } else if (isXlsx && isLibreOfficeMissingError(error)) {
+        try {
+          csvText = await xlsxBufferToCsvText(buffer);
+        } catch (fallbackError) {
+          console.error('XLSX native fallback failed:', fallbackError);
+          return apiError('This .xlsx workbook could not be parsed. Try re-saving it or exporting to CSV.', 400);
+        }
       } else if (!isLibreOfficeMissingError(error)) {
         console.error('LibreOffice Excel to PDF failed:', error);
         return apiError('This spreadsheet could not be converted. It may be corrupt — try re-saving it from Excel.', 400);
       } else {
         return apiError(
-          'The conversion engine is temporarily unavailable. Please try again in a few minutes.',
-          503,
+          'Legacy binary .xls spreadsheets require the desktop conversion engine. Please save as .xlsx or .csv and upload again.',
+          400,
         );
       }
     }
 
-    // CSV-only native fallback.
-    const csvText = buffer.toString('utf8');
+    // Native table PDF fallback (.csv or pure-JS .xlsx parser).
     const parsed = parseCsvRows(csvText);
     if (parsed.length === 0) {
-      return apiError('The CSV file is empty or could not be parsed', 400);
+      return apiError('The spreadsheet is empty or contains no readable cells.', 400);
     }
     if (parsed.length > 5000) {
-      return apiError('This CSV file has too many rows (5000 row max). Split it into smaller files.', 413);
+      return apiError('This spreadsheet has too many rows (5000 row max). Split it into smaller files.', 413);
     }
     const outBytes = await renderCsvPdf(parsed);
     return pdfBinaryResponse(outBytes, sanitizeDownloadFileName(`${baseName}.pdf`), {
-      'x-convert-engine': 'csv-native',
-      'x-convert-note': 'LibreOffice was unavailable. Rendered as a plain table without Excel formatting.',
+      'x-convert-engine': isXlsx ? 'js-xlsx-fallback' : 'csv-native',
+      'x-convert-note': 'Rendered via pure-JS table fallback.',
     });
   } catch (error) {
     return apiInternalError(error, 'Failed to convert spreadsheet to PDF', 'Excel to PDF error');
