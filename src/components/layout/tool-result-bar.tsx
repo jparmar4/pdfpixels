@@ -34,6 +34,7 @@ export function ToolResultBar({
 
   if (!error && !downloadUrl && !summary) return null;
 
+  const has300x250 = adsterraConfig.enabled && Boolean(adsterraConfig.slots.banner300x250.key);
   const hasNative = adsterraConfig.enabled && Boolean(adsterraConfig.slots.nativeBanner.scriptSrc);
 
   return (
@@ -46,14 +47,18 @@ export function ToolResultBar({
       {summary ? <p className="text-sm font-medium text-foreground">{summary}</p> : null}
       {downloadUrl ? (
         <div className="space-y-4">
-          <div className="grid gap-4 lg:grid-cols-[minmax(0,1.25fr)_minmax(280px,1fr)] lg:items-start">
+          <div className="grid gap-4 lg:grid-cols-[minmax(0,1.25fr)_minmax(300px,1fr)] lg:items-start">
             <OptimizationVerificationSummary
               resultUrl={downloadUrl}
               fileName={downloadName}
               originalSize={originalSize}
               processedSize={processedSize}
             />
-            {hasNative ? (
+            {has300x250 ? (
+              <div className="min-w-0">
+                <ResultScreenAd suppressSummary suppressChainBar refreshKey={downloadUrl} className="border-t-0 pt-0 mt-0" />
+              </div>
+            ) : hasNative ? (
               <div className="min-w-0">
                 <AdsterraNativeBanner eager compact className="my-0" />
               </div>

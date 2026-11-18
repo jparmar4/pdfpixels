@@ -197,7 +197,7 @@ export default function WorkflowsHubPage() {
             </p>
           </div>
 
-          <InContentAd variant="responsive" className="my-8" />
+          <InContentAd variant="dual-rectangle" instanceId="workflows-hub-mid" className="my-8" />
 
           <div className="section-panel rounded-[2rem] border border-border/50 bg-card/75 p-6 md:p-8 space-y-4">
             <h2 className="text-2xl font-bold text-foreground">Frequently Asked Questions</h2>

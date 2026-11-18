@@ -230,7 +230,7 @@ export function ToolContentSection({ toolSlug, toolName, isAI, processing }: {
             {' '}No registration, no watermarks, completely free.
           </p>
 
-          <InContentAd variant="responsive" className="my-8" />
+          <InContentAd variant="dual-rectangle" instanceId="guide-fallback" className="my-8" />
 
           {/* Related articles even in fallback */}
           {relatedArticles.length > 0 && (
@@ -353,8 +353,8 @@ export function ToolContentSection({ toolSlug, toolName, isAI, processing }: {
           </div>
         </div>
 
-        {/* Secondary Zero-CLS Responsive Banner between How to Use and FAQ */}
-        <InContentAd variant="responsive" className="my-2" />
+        {/* High-performing Adsterra 300x250 (ID 31811019) between How to Use and FAQ */}
+        <InContentAd variant="dual-rectangle" instanceId="guide-mid" className="my-4" />
 
         {/* Common Problems */}
         {content.commonProblems && content.commonProblems.length > 0 && (
@@ -400,6 +400,9 @@ export function ToolContentSection({ toolSlug, toolName, isAI, processing }: {
             </div>
           )}
         </div>
+
+        {/* Adsterra 300x250 (ID 31811019) before Related Tools */}
+        <InContentAd variant="rectangle" instanceId="guide-pre-related" className="my-4" />
 
         {/* Related Tools */}
         {relatedTools.length > 0 && (

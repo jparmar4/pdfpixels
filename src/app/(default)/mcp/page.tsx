@@ -142,7 +142,7 @@ export default function McpHubPage() {
             </div>
           </div>
 
-          <InContentAd variant="responsive" className="my-6" />
+          <InContentAd variant="dual-rectangle" instanceId="mcp-hub-mid" className="my-6" />
         </section>
 
         <FooterAd className="my-6" />

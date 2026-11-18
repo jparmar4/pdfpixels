@@ -40,6 +40,7 @@ export const adsterraConfig = {
       height: 60,
     },
     banner300x250: {
+      unitId: '31811019',
       key: process.env.NEXT_PUBLIC_ADSTERRA_300X250 || '60e2f20431171a62210e7189380ed0f4',
       width: 300,
       height: 250,
@@ -63,6 +64,7 @@ export const adsterraConfig = {
         'container-a71ba0b513f2755b9f56ff45b5814958',
     },
     socialBar: {
+      unitId: '31836252',
       scriptSrc:
         process.env.NEXT_PUBLIC_ADSTERRA_SOCIAL_BAR_SRC ||
         'https://bauval.org/14/4cb2c6ce7427559857aecec157fd016f',

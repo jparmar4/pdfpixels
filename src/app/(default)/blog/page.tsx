@@ -221,7 +221,7 @@ export default function BlogPage() {
                 {/* In-content ad at the natural break between featured and grid */}
                 {otherPosts.length > 0 && (
                     <div className="container mx-auto px-4 lg:px-8 max-w-5xl py-10">
-                        <InContentAd />
+                        <InContentAd variant="dual-rectangle" instanceId="blog-index-mid" />
                     </div>
                 )}
 

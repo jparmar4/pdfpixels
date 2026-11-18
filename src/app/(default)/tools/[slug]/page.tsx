@@ -6,7 +6,7 @@ import { ArrowRight, BookOpen, ChevronRight, GitCompareArrows, Layers3, LayoutTe
 import { ToolContentSection } from '@/components/layout/tool-content-section';
 import { ToolPageClient } from '@/components/layout/tool-page-client';
 import { ToolSidebarAd } from '@/components/ads/tool-sidebar-ad';
-import { HeaderAd, FooterAd, NativeAd } from '@/components/ads/ad-banner';
+import { HeaderAd, InContentAd, FooterAd, NativeAd } from '@/components/ads/ad-banner';
 import { adsConfig, adsenseConfig } from '@/lib/ads-config';
 import { ErrorBoundary } from '@/components/ui/error-boundary';
 import { comparisonPages } from '@/lib/comparisons';
@@ -509,7 +509,10 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
           </Suspense>
         </ErrorBoundary>
 
-        {/* Primary high-viewability Native Banner directly below the active tool processing card (above long-form SEO guide) */}
+        {/* High-performing Adsterra 300x250 (ID 31811019) directly below the active tool card */}
+        <InContentAd variant="dual-rectangle" eager instanceId="tool-workspace" className="my-6" />
+
+        {/* Primary high-viewability Native Banner below the 300x250 slot (above long-form SEO guide) */}
         <NativeAd className="my-6 max-w-5xl mx-auto px-4" />
 
         <ToolSidebarAd />
@@ -593,6 +596,9 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
             </div>
           </section>
         ) : null}
+
+        {/* High-performing 300x250 (ID 31811019) above footer */}
+        <InContentAd variant="rectangle" instanceId="tool-bottom" className="my-6" />
 
         {/* Footer leaderboard ad */}
         <FooterAd className="my-6" />

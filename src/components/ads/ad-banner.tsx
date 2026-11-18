@@ -157,6 +157,8 @@ export function AdsterraIframe({
   className,
   loading = 'lazy',
   refreshKey,
+  unitId,
+  instanceId,
 }: {
   adKey: string;
   width: number;
@@ -164,6 +166,8 @@ export function AdsterraIframe({
   className?: string;
   loading?: 'lazy' | 'eager';
   refreshKey?: string | number;
+  unitId?: string;
+  instanceId?: string;
 }) {
   const pathname = usePathname() || '/';
   const containerRef = useRef<HTMLDivElement>(null);
@@ -195,9 +199,9 @@ export function AdsterraIframe({
     if (!inView) return;
     const timer = window.setInterval(() => {
       if (typeof document !== 'undefined' && document.visibilityState === 'visible') {
-        setAutoTick((prev) => (prev < 6 ? prev + 1 : prev));
+        setAutoTick((prev) => (prev < 8 ? prev + 1 : prev));
       }
-    }, 55000);
+    }, 45000);
     return () => window.clearInterval(timer);
   }, [inView]);
 
@@ -229,11 +233,12 @@ export function AdsterraIframe({
   </body>
 </html>`;
 
-  const compositeKey = `${pathname}-${adKey}-${refreshKey ?? 'init'}-${autoTick}`;
+  const compositeKey = `${pathname}-${adKey}-${instanceId ?? 'slot'}-${refreshKey ?? 'init'}-${autoTick}`;
 
   return (
     <div
       ref={containerRef}
+      data-adsterra-unit-id={unitId}
       className={cn(
         'flex items-center justify-center overflow-hidden rounded-xl border border-border/25 bg-muted/15',
         className
@@ -243,7 +248,7 @@ export function AdsterraIframe({
       {shouldMount ? (
         <iframe
           key={compositeKey}
-          title={`adsterra-${adKey}`}
+          title={unitId ? `adsterra-${unitId}-${adKey}` : `adsterra-${adKey}`}
           width={width}
           height={height}
           loading={loading}
@@ -443,6 +448,7 @@ export function AdBanner({
           {labeled && <AdLabel />}
           <AdsterraIframe
             adKey={adsterraConfig.slots.banner300x250.key}
+            unitId={adsterraConfig.slots.banner300x250.unitId}
             width={adsterraConfig.slots.banner300x250.width}
             height={adsterraConfig.slots.banner300x250.height}
           />
@@ -584,14 +590,10 @@ export function ResultScreenAd({
       );
     }
 
-    if (adsterraConfig.enabled && adsterraConfig.slots.nativeBanner.scriptSrc && !suppressSummary) {
-      return <AdsterraNativeBanner eager compact className="my-0" />;
-    }
-
     if (adsterraConfig.enabled && (adsterraConfig.slots.banner300x250.key || adsterraConfig.slots.banner320x50.key)) {
-      const showRect = resultTier === 'rect' && Boolean(adsterraConfig.slots.banner300x250.key);
+      const showRect = resultTier !== 'mobile' && Boolean(adsterraConfig.slots.banner300x250.key);
       const showMobile =
-        (resultTier === 'mobile' || (resultTier === 'rect' && !adsterraConfig.slots.banner300x250.key)) &&
+        (resultTier === 'mobile' || !adsterraConfig.slots.banner300x250.key) &&
         Boolean(adsterraConfig.slots.banner320x50.key);
 
       return (
@@ -599,12 +601,15 @@ export function ResultScreenAd({
           className="w-full flex flex-col items-center justify-center"
           aria-label="Advertisement"
           role="complementary"
+          data-adsterra-unit-id={adsterraConfig.slots.banner300x250.unitId}
         >
           <AdLabel />
           <div className="flex w-full max-w-[320px] items-center justify-center min-h-[50px] min-[360px]:min-h-[250px] rounded-xl border border-border/25 bg-muted/15 overflow-hidden">
             {showRect && (
               <AdsterraIframe
                 adKey={adsterraConfig.slots.banner300x250.key}
+                unitId={adsterraConfig.slots.banner300x250.unitId}
+                instanceId="result-300x250"
                 width={300}
                 height={250}
                 loading="eager"
@@ -615,6 +620,7 @@ export function ResultScreenAd({
             {showMobile && (
               <AdsterraIframe
                 adKey={adsterraConfig.slots.banner320x50.key}
+                instanceId="result-320x50"
                 width={320}
                 height={50}
                 loading="eager"
@@ -625,6 +631,10 @@ export function ResultScreenAd({
           </div>
         </div>
       );
+    }
+
+    if (adsterraConfig.enabled && adsterraConfig.slots.nativeBanner.scriptSrc && !suppressSummary) {
+      return <AdsterraNativeBanner eager compact className="my-0" />;
     }
 
     return null;
@@ -735,18 +745,78 @@ export function SidebarAd({ className }: { className?: string } = {}) {
 }
 
 /**
- * High-performing In-Content Ad Unit (supports 300x250 Medium Rectangle or
+ * High-RPM Dual 300x250 Medium Rectangle Unit (Adsterra Unit ID 31811019).
+ * Renders two side-by-side 300x250 units on desktop (md+) and one centered
+ * 300x250 unit on mobile, with explicit Zero-CLS min-height reservation.
+ */
+export function DualRectangleAd({
+  className,
+  eager = false,
+  instanceId = 'dual',
+}: {
+  className?: string;
+  eager?: boolean;
+  instanceId?: string;
+} = {}) {
+  const isDesktop = useMediaQueryMatch('(min-width: 768px)');
+  if (!adsterraConfig.enabled || !adsterraConfig.slots.banner300x250.key) return null;
+
+  const { key, unitId } = adsterraConfig.slots.banner300x250;
+  const loadingMode = eager ? 'eager' : 'lazy';
+
+  return (
+    <div
+      className={cn('my-8 w-full min-h-[270px] flex flex-col items-center justify-center px-2', className)}
+      aria-label="Advertisement"
+      role="complementary"
+      data-adsterra-unit-id={unitId}
+    >
+      <AdLabel />
+      <div className="flex w-full max-w-[640px] flex-col items-center justify-center gap-4 md:flex-row">
+        <AdsterraIframe
+          adKey={key}
+          unitId={unitId}
+          instanceId={`${instanceId}-a`}
+          width={300}
+          height={250}
+          loading={loadingMode}
+        />
+        <div className="hidden md:flex w-[300px] min-h-[250px] items-center justify-center">
+          {isDesktop ? (
+            <AdsterraIframe
+              adKey={key}
+              unitId={unitId}
+              instanceId={`${instanceId}-b`}
+              width={300}
+              height={250}
+              loading={loadingMode}
+            />
+          ) : null}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * High-performing In-Content Ad Unit (supports single 300x250 Medium Rectangle,
+ * dual desktop 300x250 Medium Rectangle pair [Adsterra ID 31811019], or
  * Zero-CLS responsive horizontal banner 728x90 / 468x60 / 320x50).
  */
 export function InContentAd({
   className,
   variant = 'rectangle',
+  eager = false,
+  instanceId = 'incontent',
 }: {
   className?: string;
-  variant?: 'rectangle' | 'responsive';
+  variant?: 'rectangle' | 'dual-rectangle' | 'responsive';
+  eager?: boolean;
+  instanceId?: string;
 } = {}) {
   const slot = adsenseConfig.slots.inContent;
   const isResponsive = variant === 'responsive';
+  const isDual = variant === 'dual-rectangle';
 
   if (adsenseConfig.enabled && (slot || adsConfig.testMode)) {
     return (
@@ -771,6 +841,10 @@ export function InContentAd({
     );
   }
 
+  if (isDual) {
+    return <DualRectangleAd className={className} eager={eager} instanceId={instanceId} />;
+  }
+
   if (isResponsive) {
     if (
       adsterraConfig.enabled &&
@@ -788,7 +862,7 @@ export function InContentAd({
           role="complementary"
         >
           <AdLabel />
-          <ResponsiveHorizontalAdsterra loading="lazy" />
+          <ResponsiveHorizontalAdsterra loading={eager ? 'eager' : 'lazy'} />
         </div>
       );
     }
@@ -802,13 +876,16 @@ export function InContentAd({
         className={cn('my-8 w-full min-h-[270px] flex flex-col items-center justify-center', className)}
         aria-label="Advertisement"
         role="complementary"
+        data-adsterra-unit-id={adsterraConfig.slots.banner300x250.unitId}
       >
         <AdLabel />
         <AdsterraIframe
           adKey={adsterraConfig.slots.banner300x250.key}
+          unitId={adsterraConfig.slots.banner300x250.unitId}
+          instanceId={instanceId}
           width={300}
           height={250}
-          loading="lazy"
+          loading={eager ? 'eager' : 'lazy'}
         />
       </div>
     );

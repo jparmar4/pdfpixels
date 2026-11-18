@@ -229,7 +229,7 @@ export function Navigation() {
 
       <header className={`sticky top-0 z-50 w-full pointer-events-none transition-all duration-500 ${scrolled ? 'pt-3 lg:pt-5' : 'pt-0'}`}>
         <div className={`mx-auto w-full transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] pointer-events-auto ${scrolled ? 'px-3 sm:px-6 lg:px-8 max-w-[85rem]' : 'px-0 max-w-full'}`}>
-          <div className={`mx-auto flex w-full items-center justify-between gap-4 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] pointer-events-auto ${scrolled ? 'rounded-[2.5rem] border border-border/40 bg-card/75 backdrop-blur-md shadow-[0_8px_30px_rgb(0,0,0,0.06)] dark:shadow-[0_8px_30px_rgb(255,255,255,0.02)] px-3 py-2 sm:px-5 lg:w-[98%]' : 'border-b border-border/20 bg-background/70 backdrop-blur-sm px-4 py-3 sm:px-6 lg:px-8'}`}>
+          <div className={`mx-auto flex w-full items-center justify-between gap-2 xl:gap-3 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] pointer-events-auto ${scrolled ? 'rounded-[2.5rem] border border-border/40 bg-card/75 backdrop-blur-md shadow-[0_8px_30px_rgb(0,0,0,0.06)] dark:shadow-[0_8px_30px_rgb(255,255,255,0.02)] px-3 py-2 sm:px-5 lg:w-[98%]' : 'border-b border-border/20 bg-background/70 backdrop-blur-sm px-4 py-3 sm:px-6 lg:px-6'}`}>
             <Link
               href="/"
               className="group flex flex-shrink-0 items-center gap-3"
@@ -357,7 +357,7 @@ export function Navigation() {
               
               <Link
                 href="/pricing"
-                className="relative hidden xl:inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-sm font-medium whitespace-nowrap text-muted-foreground transition-all duration-200 hover:bg-amber-500/10 hover:text-amber-600 dark:hover:text-amber-500"
+                className="relative hidden 2xl:inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-sm font-medium whitespace-nowrap text-muted-foreground transition-all duration-200 hover:bg-amber-500/10 hover:text-amber-600 dark:hover:text-amber-500"
               >
                 <Sparkles className="h-3 w-3 text-amber-500" />
                 Pricing
@@ -365,16 +365,16 @@ export function Navigation() {
             </div>
 
             {/* Right Actions */}
-            <div className="flex flex-shrink-0 items-center gap-2 xl:gap-3">
-              <Link href="/about" className="hidden xl:inline-flex text-sm font-medium text-muted-foreground hover:text-foreground transition-colors px-2.5 py-2">
+            <div className="flex flex-shrink-0 items-center gap-1.5 xl:gap-2">
+              <Link href="/about" className="hidden 2xl:inline-flex text-sm font-medium text-muted-foreground hover:text-foreground transition-colors px-2.5 py-2">
                 About
               </Link>
 
-              <Link href="/blog" className="hidden lg:inline-flex text-sm font-medium text-muted-foreground hover:text-foreground transition-colors px-3 py-2">
+              <Link href="/blog" className="hidden lg:inline-flex text-sm font-medium text-muted-foreground hover:text-foreground transition-colors px-2.5 py-2">
                 Blog
               </Link>
 
-              <div className="hidden lg:block h-4 w-px bg-border/60 mx-1" />
+              <div className="hidden lg:block h-4 w-px bg-border/60 mx-0.5" />
 
               <Button
                 variant="outline"
@@ -386,9 +386,9 @@ export function Navigation() {
                   setTimeout(() => searchRef.current?.focus(), 50);
                 }}
               >
-                <Search className="mr-2 h-3.5 w-3.5" />
+                <Search className="mr-1.5 h-3.5 w-3.5" />
                 Search...
-                <kbd className="ml-3 hidden md:inline-flex h-5 select-none items-center gap-1 rounded bg-muted/80 px-1.5 font-mono text-[10px] font-bold text-muted-foreground">
+                <kbd className="ml-2 hidden 2xl:inline-flex h-5 select-none items-center gap-1 rounded bg-muted/80 px-1.5 font-mono text-[10px] font-bold text-muted-foreground">
                   ⌘K
                 </kbd>
               </Button>
@@ -406,7 +406,7 @@ export function Navigation() {
                 <Search className="h-5 w-5" />
               </Button>
 
-              <Button asChild size="sm" className="hidden lg:inline-flex h-9 rounded-full px-5 text-sm font-bold shadow-lg shadow-primary/20 transition-all hover:scale-105 btn-premium">
+              <Button asChild size="sm" className="hidden lg:inline-flex h-9 rounded-full px-4 text-sm font-bold shadow-lg shadow-primary/20 transition-all hover:scale-105 btn-premium">
                 <Link href="/tools/compress-pdf">Get Started</Link>
               </Button>
 

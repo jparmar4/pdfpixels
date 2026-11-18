@@ -3,7 +3,7 @@ import { allTools } from '@/lib/tools-data';
 import { collectionItemListJsonLd } from '@/app/jsonld-helpers';
 import { SITE_URL } from '@/lib/seo';
 import { ToolsClient } from './tools-client';
-import { HeaderAd, FooterAd, NativeAd } from '@/components/ads/ad-banner';
+import { HeaderAd, InContentAd, FooterAd, NativeAd } from '@/components/ads/ad-banner';
 import { ToolSidebarAd } from '@/components/ads/tool-sidebar-ad';
 
 export default function ToolsPage() {
@@ -31,6 +31,7 @@ export default function ToolsPage() {
         <Suspense fallback={<div className="h-72 animate-pulse rounded-2xl bg-muted/20" />}>
           <ToolsClient />
         </Suspense>
+        <InContentAd variant="dual-rectangle" instanceId="tools-hub-mid" className="my-8" />
         <NativeAd className="my-12 max-w-5xl mx-auto px-4" />
         <FooterAd className="my-6" />
       </main>

@@ -204,7 +204,7 @@ export function LocalizedToolPage({ locale, slug }: { locale: LocaleCode; slug: 
 
       <HeaderAd className="my-4" />
       <ToolPageClient toolId={tool.id} toolName={copy.name} toolDescription={copy.description} locale={locale} />
-      <InContentAd className="my-8" />
+      <InContentAd variant="dual-rectangle" eager instanceId="loc-top" className="my-8" />
       <ToolSidebarAd />
 
       <article className="container mx-auto max-w-5xl px-4 lg:px-8 py-10 space-y-12">
@@ -237,6 +237,8 @@ export function LocalizedToolPage({ locale, slug }: { locale: LocaleCode; slug: 
             ))}
           </div>
         </section>
+
+        <InContentAd variant="rectangle" instanceId="loc-mid" className="my-4" />
 
         <section className="grid gap-8 lg:grid-cols-12 items-start">
           <div className="lg:col-span-5 rounded-2xl border border-border/60 bg-card/75 p-6 shadow-soft space-y-4">

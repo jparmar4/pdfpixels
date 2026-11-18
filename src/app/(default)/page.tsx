@@ -51,12 +51,13 @@ export default function Home() {
         <ToolsSection />
         <HeaderAd className="my-4" />
         <StatsBanner />
-        <InContentAd className="my-8" />
+        <InContentAd variant="dual-rectangle" instanceId="home-mid" className="my-8" />
         <HowItWorks />
         <FeaturesSection />
         <GuidesSection />
         <NativeAd className="my-10 max-w-5xl mx-auto px-4" />
         <AnswerEngineSection />
+        <InContentAd variant="rectangle" instanceId="home-pre-faq" className="my-8" />
         <FAQSection />
         <AIContentSection />
         <FooterAd className="my-8" />

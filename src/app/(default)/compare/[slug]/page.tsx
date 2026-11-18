@@ -172,7 +172,7 @@ export default async function ComparisonPage({ params }: { params: Promise<{ slu
               <p className="mt-4 text-sm leading-7 text-muted-foreground md:text-base">{item.overview}</p>
             </section>
 
-            <InContentAd />
+            <InContentAd variant="dual-rectangle" instanceId="compare-mid" />
 
             <section className="overflow-hidden rounded-[2rem] border border-border bg-card shadow-sm">
               <div className="border-b border-border bg-muted/30 p-6 md:p-8">
@@ -253,6 +253,8 @@ export default async function ComparisonPage({ params }: { params: Promise<{ slu
                 </div>
               </div>
             </section>
+
+            <InContentAd variant="rectangle" instanceId="compare-pre-faq" />
 
             {item.faqs.length > 0 && (
               <section className="rounded-[2rem] border border-border bg-card p-6 shadow-sm md:p-8">

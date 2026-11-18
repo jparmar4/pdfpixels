@@ -273,12 +273,13 @@ export function RegionPageView({ regionCode }: { regionCode: string }) {
 
         <ToolsSection region={region} />
         <StatsBanner />
-        <InContentAd className="my-8" />
+        <InContentAd variant="dual-rectangle" instanceId="region-mid" className="my-8" />
         <HowItWorks />
         <AnswerEngineSection />
         <NativeAd className="my-10 max-w-5xl mx-auto px-4" />
         <TestimonialsSection />
         <FeaturesSection />
+        <InContentAd variant="rectangle" instanceId="region-pre-faq" className="my-8" />
         <FAQSection />
         <CTASection />
         <FooterAd className="my-6" />

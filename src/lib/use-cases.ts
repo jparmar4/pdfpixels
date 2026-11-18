@@ -2007,4 +2007,164 @@ export const useCasePages: UseCasePage[] = [
       { question: 'Does this eDiscovery workflow keep confidential client files off third-party clouds?', answer: 'Yes. Client-side WebAssembly tools (Merge, Flatten, Redact, Bates Numbering, Sanitize) run locally in your browser memory with zero permanent storage.' },
     ],
   },
+  {
+    slug: 'crop-usps-ups-fedex-shipping-labels-4x6-thermal',
+    title: 'Crop USPS, UPS, FedEx, eBay & Etsy Shipping Labels to 4x6 Thermal PDF',
+    description: 'Convert 8.5x11 US Letter and A4 carrier label sheets into crisp 4x6 inch (100x150mm) PDFs for Rollo, Zebra, Munbyn, and Dymo 4XL thermal printers.',
+    targetToolSlug: 'shipping-label-cropper',
+    intent: 'crop usps ups fedex ebay shipping labels to 4x6 thermal printer',
+    overview:
+      'USPS Click-N-Ship, UPS.com, FedEx, eBay, Etsy, Poshmark, Mercari, Royal Mail, and DHL frequently export shipping labels placed on half of an 8.5x11 inch US Letter or A4 page alongside unneeded instructions or receipts. Printing an uncropped sheet onto a 4x6 thermal printer shrinks the barcode and causes carrier scanner rejections. PdfPixels crops carrier PDFs to exact 4x6 inch (100x150mm) thermal dimensions directly in your browser with carrier presets for Rollo, Zebra ZP450/GX420d, Munbyn, and Dymo 4XL.',
+    whoItsFor: [
+      'US, UK, Canadian, and Australian eBay, Etsy, Poshmark, Mercari, and Shopify sellers',
+      'Small e-commerce warehouses and 3PL fulfillment desks batch-printing daily USPS, UPS, FedEx, Royal Mail, and DHL orders',
+      'Resellers printing high-contrast shipping barcodes on Rollo, Zebra, Munbyn, Nelko, and Brother thermal printers',
+    ],
+    steps: [
+      { title: 'Upload your carrier label PDF', description: 'Drop one or more 8.5x11 Letter or A4 shipping label PDFs into the Shipping Label Cropper.' },
+      { title: 'Select your Tier-1 carrier preset', description: 'Choose USPS Click-N-Ship, UPS, FedEx, eBay, Etsy, Poshmark, Shopify, Amazon FBA, Royal Mail, or DHL.' },
+      { title: 'Pick your 4x6 thermal printer output', description: 'Select 4x6 inch (100x150mm) thermal output for Rollo, Zebra, Munbyn, or Dymo 4XL and check the live crop box.' },
+      { title: 'Download and print at 100% scale', description: 'Save the cropped PDF and print with "Actual Size / 100%" enabled so barcodes remain crisp and scannable.' },
+    ],
+    tips: [
+      'Always disable "Fit to Page" in your OS print dialog after cropping to 4x6 so thermal DPI stays sharp.',
+      'Combine multiple marketplace PDFs with Merge PDF first, then crop the entire daily batch in one pass.',
+    ],
+    pitfalls: [
+      { problem: 'Thermal barcode prints blurry or clipped on one edge', solution: 'Use the carrier preset + fine margin slider rather than scaling down an 8.5x11 page in the print driver.' },
+      { problem: 'Label prints sideways on 4x6 roll', solution: 'Toggle 90-degree rotation inside the cropper before downloading so orientation matches your Rollo or Zebra feed.' },
+    ],
+    faqs: [
+      { question: 'Does the shipping label cropper work with Rollo, Zebra, and Munbyn 4x6 printers?', answer: 'Yes. The tool outputs standard 4x6 inch (288x432 pt / 100x150mm) PDF pages natively compatible with Rollo, Zebra, Munbyn, Dymo 4XL, and Brother QL thermal printers.' },
+      { question: 'Are customer addresses and tracking numbers stored on a server?', answer: 'No. Shipping label cropping runs securely without permanent file retention, keeping buyer PII private.' },
+    ],
+  },
+  {
+    slug: 'split-amazon-fba-fnsku-30-up-labels-to-thermal',
+    title: 'Convert Amazon FBA 30-Up Avery 5160 FNSKU Sheets to Single Thermal Labels',
+    description: 'Split Amazon Seller Central 30-up FNSKU barcode PDFs and 8.5x11 FBA box labels into individual Dymo, Rollo, Munbyn, and Zebra thermal labels locally.',
+    targetToolSlug: 'amazon-fba-thermal-label-converter',
+    intent: 'convert amazon fba 30-up fnsku pdf to thermal printer labels',
+    overview:
+      'Amazon Seller Central defaults to outputting FNSKU product barcodes in 30-up Avery 5160 sheets designed for laser printers — frustrating sellers who use high-speed thermal printers like Rollo, Munbyn, Zebra, or Dymo LabelWriter 450/550. Paid utilities charge monthly fees just to slice those 30 barcodes into individual thermal pages. PdfPixels splits 30-up FNSKU sheets and 8.5x11 FBA shipment box labels into crisp, scannable individual thermal labels 100% locally in browser memory at zero cost.',
+    whoItsFor: [
+      'Amazon FBA private-label brands, wholesale distributors, and online arbitrage sellers',
+      'FBA prep centers labeling hundreds of SKUs daily on Dymo 30334 (2.25x1.25"), Rollo, and Zebra printers',
+      'Sellers converting Seller Central 2-up FBA box shipment + UPS Partnered Carrier sheets to 4x6 thermal rolls',
+    ],
+    steps: [
+      { title: 'Download your 30-up FNSKU PDF from Seller Central', description: 'Export the standard 30-up US Letter FNSKU sheet or FBA box label PDF from Amazon Seller Central.' },
+      { title: 'Select label size preset', description: 'Choose 2.25x1.25" (Dymo 30334 / Rollo), 2x1", 3x1", or 4x6" FBA Box + Carrier split mode.' },
+      { title: 'Verify crisp vector barcodes', description: 'Preview extracted individual label pages to confirm zero blank pages and sharp barcode bars.' },
+      { title: 'Download thermal-ready PDF', description: 'Export one multi-page thermal PDF where every page equals one exact FNSKU or box label.' },
+    ],
+    tips: [
+      'Keep print darkness at medium on thermal printers so narrow FNSKU bars never bleed together.',
+      'Blank grid cells at the end of a partial 30-up sheet are automatically skipped so you do not waste thermal labels.',
+    ],
+    pitfalls: [
+      { problem: 'Amazon FBA receiving rejects blurry FNSKU barcodes', solution: 'Never screenshot FNSKU sheets into PNG; use vector PDF slicing so barcodes stay sharp at native thermal DPI.' },
+      { problem: 'Blank labels feed out after the last FNSKU', solution: 'Enable empty-cell skipping so only populated barcode slots are exported.' },
+    ],
+    faqs: [
+      { question: 'Is the Amazon FBA thermal label converter completely free?', answer: 'Yes. You can split unlimited 30-up FNSKU sheets and FBA box labels locally in your browser with no monthly subscription.' },
+      { question: 'Does it work offline in a warehouse prep center?', answer: 'Yes. Because slicing runs 100% client-side in your browser, your SKU labels never upload to any external server.' },
+    ],
+  },
+  {
+    slug: 'fill-and-sign-irs-w9-w8ben-pdf-offline',
+    title: 'Fill, Sign & Flatten IRS Form W-9 and W-8BEN PDF 100% Locally (Zero Upload)',
+    description: 'Complete IRS Form W-9 or W-8BEN tax PDFs, add your electronic signature, and flatten SSN/EIN fields into read-only graphics inside browser memory.',
+    targetToolSlug: 'fill-sign-irs-w9-pdf',
+    intent: 'fill sign and flatten irs form w9 w8ben pdf privately without uploading',
+    overview:
+      'Freelancers, independent contractors, LLCs, CPAs, and international vendors serving US clients are routinely asked to return a signed IRS Form W-9 (with Social Security Number or EIN) or Form W-8BEN before receiving 1099 payments. Uploading a tax form containing your SSN or EIN to a random cloud PDF editor creates avoidable identity-theft risk. PdfPixels fills, signs, dates, and permanently flattens Form W-9 and W-8BEN 100% locally in your browser RAM so sensitive taxpayer identifiers never touch any server.',
+    whoItsFor: [
+      'US freelancers, 1099 independent contractors, single-member LLCs, and agencies onboarding new clients',
+      'International contractors in the UK, Canada, Australia, Germany, and Europe submitting Form W-8BEN to US companies',
+      'CPAs, bookkeepers, and accounts payable teams collecting flattened, tamper-resistant vendor tax forms',
+    ],
+    steps: [
+      { title: 'Load your official IRS W-9 or W-8BEN PDF', description: 'Open your downloaded official IRS PDF directly inside local browser memory (works even in Airplane Mode).' },
+      { title: 'Fill taxpayer name, business entity, and TIN/EIN', description: 'Enter legal name, federal tax classification, address, and SSN/EIN cleanly in standard fields.' },
+      { title: 'Apply electronic signature and UTC date', description: 'Draw or type your signature on the Part II Certification line with automatic date stamping.' },
+      { title: 'Flatten to read-only PDF and download', description: 'Flatten all interactive form fields into locked page content before emailing to your client.' },
+    ],
+    tips: [
+      'Always flatten your completed W-9 before emailing so recipients on macOS Preview or mobile do not see blank form fields.',
+      'For extra security when emailing a W-9 with an SSN, chain the finished PDF directly into Protect PDF to add a password.',
+    ],
+    pitfalls: [
+      { problem: 'Client opens W-9 in Apple Preview and sees empty boxes', solution: 'Unflattened AcroForm data often fails to render in certain PDF viewers; flattening locks every typed value permanently.' },
+      { problem: 'Accidentally exposing SSN to cloud storage servers', solution: 'Use PdfPixels 100% client-side local mode — verify zero network uploads by testing offline.' },
+    ],
+    faqs: [
+      { question: 'Does my SSN or EIN ever get uploaded when filling Form W-9 on PdfPixels?', answer: 'No. Filling, signing, and flattening execute 100% locally inside your browser tab memory with zero server upload.' },
+      { question: 'Why should I flatten a signed W-9 or W-8BEN PDF?', answer: 'Flattening converts editable fields and signatures into permanent page graphics so the form cannot be altered accidentally and displays consistently in every PDF reader.' },
+    ],
+  },
+  {
+    slug: 'assemble-uscis-i130-i485-evidence-packet-under-24mb',
+    title: 'Build a USCIS I-130, I-485 & H-1B Evidence Packet PDF Under 24 MB',
+    description: 'Merge photos, scans, and supporting documents into a USCIS-ready US Letter PDF packet with automatic Table of Contents, Exhibit tabs, and <24 MB splitting.',
+    targetToolSlug: 'uscis-pdf-packet-merger',
+    intent: 'assemble uscis i130 i485 evidence packet pdf with exhibit tabs under 24mb',
+    overview:
+      'USCIS online filing portals enforce strict upload size caps (typically 6 MB to 12 MB per individual file and 24 MB packet budgets) and expect organized, legible US Letter evidence bundles for Forms I-130, I-485, I-140, N-400, and H-1B RFEs. Combining iPhone HEIC photos, scanned birth certificates, tax transcripts, and joint lease PDFs manually takes hours. PdfPixels assembles your entire USCIS evidence packet in the browser: converts images, normalizes pages to US Letter, stamps Exhibit A/B/C headers, generates a Table of Contents, and splits oversized packets cleanly under portal limits.',
+    whoItsFor: [
+      'Immigration attorneys, paralegals, and law clinics assembling I-130, I-485, I-140, EB-1/EB-2 NIW, and RFE packets',
+      'Self-filing applicants preparing marriage bona fides, naturalization (N-400), and visa supporting evidence',
+      'HR mobility teams organizing H-1B, L-1, and O-1 corporate sponsorship exhibit binders',
+    ],
+    steps: [
+      { title: 'Add supporting PDFs and evidence photos', description: 'Drop birth certificates, tax transcripts, leases, and JPG/PNG evidence photos into the USCIS Packet Builder.' },
+      { title: 'Label exhibits and reorder sections', description: 'Drag files into petition order and assign automatic Exhibit A, B, C labels with a generated Table of Contents.' },
+      { title: 'Normalize to US Letter and set size cap', description: 'Standardize mixed page dimensions to 8.5x11 US Letter and select your target portal size ceiling (e.g., 12 MB or 24 MB).' },
+      { title: 'Download your organized USCIS packet', description: 'Export a single upload-ready PDF (or cleanly numbered Part 1 / Part 2 files if splitting is required).' },
+    ],
+    tips: [
+      'Never password-protect PDFs uploaded to USCIS — encrypted files are automatically rejected by the USCIS intake system.',
+      'Keep scanned tax transcripts and civil records at 150-200 DPI grayscale to stay well below portal MB limits while preserving crisp stamps.',
+    ],
+    pitfalls: [
+      { problem: 'USCIS online portal rejects upload for exceeding file size', solution: 'Use the built-in portal size cap or chain your output into Compress PDF to stay safely under 6 MB / 12 MB / 24 MB limits.' },
+      { problem: 'Mixed portrait photos and A4 scans create messy exhibit binders', solution: 'Enable US Letter normalization so every exhibit page aligns cleanly for officer review.' },
+    ],
+    faqs: [
+      { question: 'Are my private immigration documents uploaded to cloud storage?', answer: 'Packet assembly, US Letter normalization, Exhibit stamping, and Table of Contents generation run client-side in your browser for maximum privacy.' },
+      { question: 'Can I include both PDFs and phone photos in one USCIS packet?', answer: 'Yes. Mix PDF documents with JPG and PNG images and the builder automatically places each exhibit on standardized US Letter pages.' },
+    ],
+  },
+  {
+    slug: 'convert-qbo-ofx-qfx-bank-files-to-excel-xero-csv',
+    title: 'Convert QBO, QFX & OFX Bank Files to Excel (.xlsx), QuickBooks & Xero CSV',
+    description: 'Parse QuickBooks Web Connect (.qbo), Quicken (.qfx), and Open Financial Exchange (.ofx) bank files into clean Excel spreadsheets or accounting CSVs locally.',
+    targetToolSlug: 'qbo-ofx-qfx-to-excel-csv',
+    intent: 'convert qbo qfx ofx bank file to excel xlsx quickbooks xero csv',
+    overview:
+      'US, UK, Canadian, and Australian banks let business owners export raw .QBO (QuickBooks Web Connect), .QFX (Quicken), and .OFX (Open Financial Exchange) feeds — but Excel cannot open SGML/XML bank feeds cleanly, and switching between QuickBooks Online, Xero, and Wave often fails on proprietary bank IDs (INTU.BID). PdfPixels parses .qbo, .qfx, and .ofx transaction ledgers 100% locally in your browser, displays a live reconciliation table, and exports clean Excel (.xlsx), QuickBooks 3-Col/4-Col CSV, Xero CSV, or Wave CSV.',
+    whoItsFor: [
+      'Bookkeepers, CPAs, and fractional CFOs migrating client bank histories between QuickBooks, Xero, and Wave',
+      'Small business owners auditing .qbo/.ofx downloads from Chase, Bank of America, Wells Fargo, Barclays, RBC, and CommBank',
+      'Tax preparers converting raw OFX/QFX credit card feeds into pivot-ready Excel workbooks',
+    ],
+    steps: [
+      { title: 'Drop your .QBO, .QFX, or .OFX file', description: 'Load any bank export directly in your browser — financial transaction data never leaves your computer.' },
+      { title: 'Inspect parsed transactions and running balance', description: 'Review posting dates, payee descriptions, debits, credits, and check totals in the interactive preview grid.' },
+      { title: 'Choose your accounting export format', description: 'Select Standard Excel (.xlsx), QuickBooks Online 3-Column CSV, QuickBooks 4-Column CSV, Xero CSV, or Wave CSV.' },
+      { title: 'Download and import immediately', description: 'Save the formatted workbook or CSV and upload straight into your accounting ledger.' },
+    ],
+    tips: [
+      'Use QuickBooks 3-Column CSV (Date, Description, Amount) when importing credit card statements with mixed charges and payments.',
+      'Check date formats (MM/DD/YYYY vs DD/MM/YYYY) before importing into US vs UK/AU Xero organizations.',
+    ],
+    pitfalls: [
+      { problem: 'QuickBooks rejects .QBO file with OL-222 or unsupported bank error', solution: 'Convert the .QBO file to QuickBooks Online 3-Column CSV so it imports cleanly without bank ID restrictions.' },
+      { problem: 'Opening .OFX in Excel shows raw SGML tags instead of columns', solution: 'Use the dedicated QBO/OFX parser to decode <STMTTRN> tags into structured Date, Payee, Memo, and Amount columns.' },
+    ],
+    faqs: [
+      { question: 'Is my banking data uploaded to a remote server during QBO/OFX conversion?', answer: 'No. Parsing and CSV/XLSX generation happen 100% locally inside your browser tab so sensitive financial records stay private.' },
+      { question: 'Does it support both XML OFX 2.x and legacy SGML OFX 1.x files?', answer: 'Yes. The parser handles both classic SGML .qbo/.qfx/.ofx files and modern XML-formatted OFX bank exports.' },
+    ],
+  },
 ];

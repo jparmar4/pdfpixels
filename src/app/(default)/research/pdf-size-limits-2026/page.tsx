@@ -203,7 +203,7 @@ export default function ResearchPage() {
           </ul>
         </section>
 
-        <InContentAd className="my-8" />
+        <InContentAd variant="dual-rectangle" instanceId="research-mid" className="my-8" />
 
         <section className="mt-8 section-panel rounded-[2rem] p-6 md:p-8">
           <h2 className="text-2xl font-bold text-foreground">Frequently asked questions</h2>

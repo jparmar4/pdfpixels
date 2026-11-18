@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { ArrowRight, ChevronRight, Layers3, ShieldCheck, Workflow } from 'lucide-react';
 import { FooterAd, HeaderAd, InContentAd, NativeAd } from '@/components/ads/ad-banner';
+import { ToolSidebarAd } from '@/components/ads/tool-sidebar-ad';
 import { Badge } from '@/components/ui/badge';
 import { WorkflowPipelineRunner } from '@/components/workflows/workflow-pipeline-runner';
 import { DEFAULT_OG_IMAGE_URL, SITE_CONTENT_UPDATED, absoluteUrl, getRobotsMetadata } from '@/lib/seo';
@@ -131,7 +132,7 @@ export default async function WorkflowDetailPage({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
         />
       ))}
-      <main id="main-content" className="min-h-screen bg-background text-foreground pb-14">
+      <main id="main-content" className="min-h-screen bg-background text-foreground pb-14 xl:pr-[196px]">
         {/* Breadcrumb */}
         <nav aria-label="Breadcrumb" className="container mx-auto px-4 lg:px-8 pt-6">
           <ol className="flex flex-wrap items-center gap-1.5 text-xs text-muted-foreground">
@@ -162,6 +163,8 @@ export default async function WorkflowDetailPage({
         <section className="container mx-auto px-4 lg:px-8 py-4">
           <WorkflowPipelineRunner slug={recipe.slug} />
         </section>
+
+        <InContentAd variant="dual-rectangle" eager instanceId="workflow-top" className="my-6" />
 
         <NativeAd className="my-8 max-w-5xl mx-auto px-4" />
 
@@ -211,7 +214,7 @@ export default async function WorkflowDetailPage({
             </div>
           </div>
 
-          <InContentAd variant="responsive" className="my-4" />
+          <InContentAd variant="rectangle" instanceId="workflow-mid" className="my-4" />
 
           {recipe.faqs.length > 0 && (
             <div className="section-panel rounded-[2rem] border border-border/50 bg-card/75 p-6 md:p-8 space-y-4">
@@ -254,6 +257,7 @@ export default async function WorkflowDetailPage({
 
         <FooterAd className="my-6" />
       </main>
+      <ToolSidebarAd />
     </>
   );
 }

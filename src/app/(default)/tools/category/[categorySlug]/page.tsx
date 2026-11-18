@@ -235,7 +235,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
             </Link>
           </div>
           <CategoryGridClient categorySlug={category.id} />
-          <InContentAd className="my-8" />
+          <InContentAd variant="dual-rectangle" instanceId="category-mid" className="my-8" />
         </section>
 
         {/* Rich Editorial & Guides Section */}

@@ -3,7 +3,7 @@ import { collectionItemListJsonLd } from '@/app/jsonld-helpers';
 import { SITE_URL, absoluteUrl, DEFAULT_OG_IMAGE_URL, getRobotsMetadata } from '@/lib/seo';
 import { siteConfig } from '@/lib/seo-config';
 import { useCasePages } from '@/lib/use-cases';
-import { HeaderAd, NativeAd, FooterAd } from '@/components/ads/ad-banner';
+import { HeaderAd, InContentAd, NativeAd, FooterAd } from '@/components/ads/ad-banner';
 import { ToolSidebarAd } from '@/components/ads/tool-sidebar-ad';
 import { UseCasesClient } from './use-cases-client';
 
@@ -61,6 +61,7 @@ export default function UseCasesIndexPage() {
       <main id="main-content" className="flex-1 xl:pr-[196px]">
         <HeaderAd className="my-4" />
         <UseCasesClient />
+        <InContentAd variant="dual-rectangle" instanceId="usecases-hub-mid" className="my-8" />
         <NativeAd className="my-10 max-w-5xl mx-auto px-4" />
         <FooterAd className="my-6" />
       </main>

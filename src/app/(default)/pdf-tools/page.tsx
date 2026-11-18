@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import { allPdfTools } from '@/lib/tools-data';
 import { SITE_URL, absoluteUrl, websiteId, DEFAULT_OG_IMAGE_URL } from '@/lib/seo';
 import { siteConfig } from '@/lib/seo-config';
-import { HeaderAd, NativeAd, FooterAd } from '@/components/ads/ad-banner';
+import { HeaderAd, InContentAd, NativeAd, FooterAd } from '@/components/ads/ad-banner';
 import { ToolSidebarAd } from '@/components/ads/tool-sidebar-ad';
 import { PdfToolsClient } from './pdf-tools-client';
 
@@ -229,6 +229,7 @@ export default function PdfToolsPage() {
         <Suspense fallback={<div className="h-96 animate-pulse rounded-3xl bg-muted/20" />}>
           <PdfToolsClient />
         </Suspense>
+        <InContentAd variant="dual-rectangle" instanceId="pdf-tools-hub-mid" className="my-8" />
         <NativeAd className="my-10 max-w-5xl mx-auto px-4" />
         <FooterAd className="my-6" />
       </main>

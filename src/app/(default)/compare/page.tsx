@@ -6,7 +6,7 @@ import { CompareClient } from './CompareClient';
 import { collectionItemListJsonLd } from '@/app/jsonld-helpers';
 import { ADSENSE_REVIEW_MODE, SITE_URL, absoluteUrl, DEFAULT_OG_IMAGE_URL, getRobotsMetadata } from '@/lib/seo';
 import { siteConfig } from '@/lib/seo-config';
-import { HeaderAd, NativeAd, FooterAd } from '@/components/ads/ad-banner';
+import { HeaderAd, InContentAd, NativeAd, FooterAd } from '@/components/ads/ad-banner';
 import { ToolSidebarAd } from '@/components/ads/tool-sidebar-ad';
 
 export const metadata: Metadata = {
@@ -100,6 +100,7 @@ export default function CompareIndexPage() {
                     </div>
                 </section>
 
+                <InContentAd variant="dual-rectangle" instanceId="compare-hub-mid" className="my-8" />
                 <NativeAd className="my-10 max-w-5xl mx-auto px-4" />
                 <FooterAd className="my-6" />
             </main>

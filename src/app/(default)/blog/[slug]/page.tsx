@@ -408,9 +408,9 @@ export default async function BlogPostPage({
                                 {processContent(post.content)}
                             </div>
 
-                            {/* Post-article ad (content-to-ad ratio kept high) */}
+                            {/* High-performing Adsterra 300x250 (ID 31811019) post-article slot */}
                             <div className="my-12">
-                                <InContentAd />
+                                <InContentAd variant="dual-rectangle" instanceId="blog-post-mid" />
                             </div>
 
                             {/* Tags */}
@@ -456,6 +456,11 @@ export default async function BlogPostPage({
                                         </Link>
                                     </div>
                                 </div>
+                            </div>
+
+                            {/* Adsterra 300x250 (ID 31811019) before FAQ */}
+                            <div className="my-10">
+                                <InContentAd variant="rectangle" instanceId="blog-pre-faq" />
                             </div>
 
                             {/* FAQ Section */}

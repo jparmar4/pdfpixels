@@ -134,7 +134,7 @@ export function UseCaseDetailContent({
             </ul>
           </section>
 
-          <InContentAd />
+          <InContentAd variant="dual-rectangle" instanceId="usecase-mid" />
 
           <section className="mt-6">
             <div className="section-panel rounded-[2rem] p-6 md:p-8">
@@ -310,6 +310,7 @@ export function UseCaseDetailContent({
             </section>
           )}
 
+          <InContentAd variant="rectangle" instanceId="usecase-pre-cta" />
           <section className="aurora-bg mt-6 overflow-hidden rounded-[2rem]">
             <div className="relative z-10 px-6 py-12 text-center md:px-10 md:py-14">
               <h2 className="text-2xl font-extrabold text-foreground md:text-3xl">
