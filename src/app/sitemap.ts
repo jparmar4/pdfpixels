@@ -1,5 +1,7 @@
 import { MetadataRoute } from 'next';
-import { getAllBlogPosts, consolidatedBlogSlugs } from '@/config/blog';
+import { getAllBlogPosts, getAllBlogCategories, consolidatedBlogSlugs } from '@/config/blog';
+import { templates } from '@/lib/templates';
+import { glossaryTerms } from '@/lib/glossary';
 import { comparisonPages } from '@/lib/comparisons';
 import { ADSENSE_REVIEW_MODE, SITE_CONTENT_UPDATED, absoluteUrl, getGeoSitemapAlternates } from '@/lib/seo';
 import { allTools, toolCategories } from '@/lib/tools-data';
@@ -138,6 +140,33 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.78,
     }));
 
+  // Topic index pages — crawl depth for the blog's category architecture
+  const blogCategoryEntries: MetadataRoute.Sitemap = getAllBlogCategories().map((cat) => ({
+    url: absoluteUrl(`/blog/category/${cat.slug}`),
+    lastModified: evergreen,
+    changeFrequency: 'weekly' as const,
+    priority: 0.6,
+  }));
+
+  // Downloadable template pages + glossary knowledge hub
+  const templateEntries: MetadataRoute.Sitemap = [
+    { url: absoluteUrl('/templates'), priority: 0.75 },
+    ...templates.map((t) => ({ url: absoluteUrl(`/templates/${t.slug}`), priority: 0.65 })),
+  ].map((e) => ({
+    ...e,
+    lastModified: evergreen,
+    changeFrequency: 'monthly' as const,
+  }));
+
+  const glossaryEntries: MetadataRoute.Sitemap = [
+    { url: absoluteUrl('/glossary'), priority: 0.7 },
+    ...glossaryTerms.map((t) => ({ url: absoluteUrl(`/glossary/${t.slug}`), priority: 0.55 })),
+  ].map((e) => ({
+    ...e,
+    lastModified: evergreen,
+    changeFrequency: 'monthly' as const,
+  }));
+
   const useCaseEntries: MetadataRoute.Sitemap = useCasePages.map((useCase) => ({
     url: absoluteUrl(`/use-cases/${useCase.slug}`),
     lastModified: evergreen,
@@ -203,6 +232,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...toolPages,
     ...useCaseEntries,
     ...blogPages,
+    ...blogCategoryEntries,
+    ...templateEntries,
+    ...glossaryEntries,
     ...legalPages,
     ...indianExamEntries,
     ...(ADSENSE_REVIEW_MODE

@@ -25,6 +25,416 @@ export interface BlogPost {
 
 export const blogPosts: BlogPost[] = [
     {
+        slug: "fill-sign-irs-tax-forms-online-free",
+        title: "No Printer? How I Fill and Sign W-9, W-4, I-9 and Other Tax PDFs Online Free (2026)",
+        seoTitle: "How to Fill & Sign W-9, W-4 and I-9 PDFs Online Free (2026)",
+        excerpt: "January brings a flood of W-9s from clients, W-4s from new hires, and I-9s for onboarding — none of which you can edit by default. Here is the exact browser-only workflow I use to type, sign, flatten, and compress IRS and HR forms in under two minutes, with no printer and no Adobe subscription.",
+        date: "Nov 19, 2026",
+        dateModified: "Nov 19, 2026",
+        category: "PDF Tools",
+        author: "Yuvi Parmar",
+        authorRole: "Founder & Lead Engineer",
+        readTime: "10 min read",
+        metaDescription: "Fill and sign W-9, W-4, I-9 and other tax PDF forms online free — no printer, no Adobe. Type fields, add your signature, flatten, and compress to portal limits in minutes.",
+        keywords: [
+            "how to fill out a w9 form online",
+            "fill and sign w9 pdf free",
+            "w4 form 2026 how to fill out",
+            "fill i-9 form online free",
+            "sign irs form electronically",
+            "free pdf form filler no watermark",
+            "irs w-9 fillable form download",
+            "tax form pdf filler online"
+        ],
+        coverImage: "/images/blog/tax-forms-fill-sign-online-hero.jpg",
+        imageAlt: "Illustration of a fillable IRS tax form being completed and signed inside a browser-based PDF editor",
+        content: `
+Sometime in the next few weeks it will happen again: a new client emails a blank **W-9** and needs it "by end of day", HR sends a **W-4** with your onboarding packet, or a landlord wants a signed **W-9 PDF** before releasing a deposit. None of these forms are editable by default — they are designed for pen and paper, and the standard advice is still "print it, sign it, scan it back."
+
+I do not own a working printer, and if you are reading this in January or February, you probably do not want to pay $22/month for an Adobe Acrobat subscription just to type into a one-page government form. Here is the exact workflow I use with [PdfPixels Fill & Sign IRS W-9](/tools/fill-sign-irs-w9-pdf) and the free [PDF form filler](/tools/fill-pdf) to complete any US tax or HR form in about two minutes, entirely in the browser.
+
+---
+
+## Quick Answer: What Is the Fastest Way to Fill and Sign a Tax PDF Online?
+
+> **Short answer:** Open the form in [PdfPixels Fill PDF](/tools/fill-pdf) (or the dedicated [W-9 tool](/tools/fill-sign-irs-w9-pdf) for pre-mapped IRS fields), type directly onto the document, place your signature with the [signature generator](/tools/generate-signature), download the flattened PDF, and compress it under the portal's size limit with [Compress PDF](/tools/compress-pdf) if the upload form rejects it. No sign-up, no watermark, and the file never has to be printed or scanned.
+
+---
+
+## Why "Print, Sign, Scan" Fails for Tax Forms
+
+The print-and-scan ritual is not just annoying — it actively degrades the document you send back:
+
+1. **Scanned forms lose quality and gain size.** A 60 KB digital W-9 becomes a 1.5 MB scanned image with washed-out text, and some portals reject anything over a size ceiling. Filling the original digital PDF keeps it crisp and tiny.
+2. **Flat scans cannot be typed over again.** HR departments increasingly ask for a *typed* W-4 every time your withholding changes. A scan is a dead end; a filled PDF can be corrected in seconds.
+3. **Pen signatures on tax forms are no longer required.** The IRS explicitly accepts electronic signatures on most individual forms, and the **ESIGN Act** (15 U.S.C. ch. 96) makes typed or drawn signatures legally binding on federal paperwork just like ink.
+
+---
+
+## Step-by-Step: Fill and Sign W-9, W-4, or I-9 Online
+
+### Step 1: Download the Official Blank Form
+Always start from the authoritative source — [irs.gov](https://www.irs.gov) for federal forms or your HR portal for company-specific versions. Third-party "fillable" copies floating around search results are frequently last year's revision, and submitting an outdated form is the #1 reason accountants send them back.
+
+### Step 2: Open It in the Form Filler
+Drag the PDF into [Fill PDF Forms Online](/tools/fill-pdf). If it is a W-9, use the dedicated [Fill & Sign IRS W-9](/tools/fill-sign-irs-w9-pdf) preset — it maps the exact IRS field boxes (name, business name, tax classification, TIN) so you can tab through them in order instead of clicking each line.
+
+For the I-9, remember that **only the employee completes Section 1** — never sign the employer certification area, or the form must be redone.
+
+### Step 3: Add Your Signature
+Place your signature anywhere the form asks for it: type your name in a handwriting font, draw it with a mouse or finger, or upload a photo of your ink signature and make the background transparent. The [signature generator](/tools/generate-signature) handles all three, and placing it takes one drag.
+
+### Step 4: Flatten and Verify
+Download the completed PDF. A proper form filler flattens the field values into the page so nothing shifts when opened in another viewer — then open it once and zoom to 150% to verify your TIN digits. A transposed EIN is the fastest way to get a **B-notice** from the IRS six months later.
+
+### Step 5: Compress If the Portal Rejects It
+Government and vendor portals often enforce odd limits (some procurement systems cap uploads at 1 MB or 2 MB). If your filled form is too large, run it through [Compress PDF](/tools/compress-pdf) — a one-page form compresses to well under 100 KB with zero visible quality loss. For multi-document packets (W-9 + W-4 + ID copy), combine them first with [Merge PDF](/tools/merge-pdf), then compress once.
+
+---
+
+## Field-by-Field Notes for the Three Most Common Forms
+
+| Form | Who signs it | The lines people get wrong | Keep it safe |
+| :--- | :--- | :--- | :--- |
+| **W-9** (Rev. March 2024) | You (vendor/contractor) | Line 3 tax classification (LLC must also write D/S/C after the checkbox); Line 5–6 address must match IRS records if you receive 1099s by mail | Your SSN/EIN — see privacy notes below |
+| **W-4** (2026) | Employee | Step 2 multiple-jobs worksheet (skipping it under-withholds for two-income households); Step 4(b) deductions | Employer keeps it — no portal upload, but keep a personal copy |
+| **I-9** | Employee Section 1 only | Expiration dates on identity documents in List B/C; missing "alien registration number" field for work-authorized non-citizens | Contains ID document numbers — never email it unencrypted |
+
+---
+
+## Your SSN Is on This Form — Handle It Accordingly
+
+A completed W-9 contains your Taxpayer Identification Number, legal name, and address: everything an identity thief needs. Two habits keep it safe:
+
+1. **Prefer tools that process files locally in your browser.** PdfPixels form-filling runs client-side with WebAssembly — the PDF with your SSN never leaves your device. Server-assisted conversions run in ephemeral memory and are purged immediately after processing ([our privacy architecture](/privacy)).
+2. **Flatten before sending, and password-protect if emailing.** If a W-9 must travel by email, lock it first with [Protect PDF](/tools/protect-pdf) and share the password over a different channel (a text or phone call). That single step defeats most mailbox-compromise scenarios.
+
+---
+
+## Do This Once, Reuse Forever
+
+The real time-saver is saving your *filled* W-9 as a template: keep the version with every field except the signature and date, and next January you only add two elements before sending. Freelancers who invoice 10+ clients send the same W-9 a dozen times a season — two minutes each adds up to a full working hour saved.
+
+---
+
+## Frequently Asked Questions About Filling Tax Forms Online
+`,
+        faq: [
+            {
+                question: "Is it legal to sign IRS forms electronically?",
+                answer: "Yes. The IRS accepts electronic signatures on most individual tax forms, and the federal ESIGN Act gives typed or drawn signatures the same legal standing as ink. Some employer filings and third-party authorizations (like Form 2848 power of attorney) have stricter requirements — check the form instructions for the signature method they specify."
+            },
+            {
+                question: "How do I fill out a W-9 online without printing it?",
+                answer: "Download the blank W-9 from irs.gov, open it in a browser-based PDF form filler like PdfPixels Fill & Sign IRS W-9, type into each mapped field, place your signature, and download the flattened PDF. The whole process takes about two minutes and works on Windows, Mac, and phones."
+            },
+            {
+                question: "Can I fill out an I-9 form online free?",
+                answer: "Yes for the employee portion. Section 1 of Form I-9 must be completed and signed by the employee — you can type and sign it in a free online PDF filler — but the employer review and verification sections are completed by your employer, often in an HR system like E-Verify."
+            },
+            {
+                question: "Why is my filled tax form PDF being rejected by the upload portal?",
+                answer: "Most rejections are size limits or unflattened form fields. Compress the PDF under the portal's stated cap (Compress PDF can bring a one-page form under 100 KB) and make sure the fields are flattened into the page so the portal's viewer renders your answers."
+            },
+            {
+                question: "Is it safe to enter my SSN into an online PDF filler?",
+                answer: "It is safe when the tool processes the file locally in your browser — the document with your SSN never reaches a server. Avoid uploading completed W-9s to anonymous converters that store files indefinitely, and password-protect the PDF if you need to email it."
+            },
+            {
+                question: "Which W-9 revision should I use in 2026?",
+                answer: "Use the March 2024 revision (the current version published on irs.gov). Older revisions are still technically accepted by the IRS, but many accounting systems auto-reject non-current forms, so starting from the official latest version avoids rework."
+            }
+        ],
+    },
+    {
+        slug: "convert-scanned-pdf-to-word-ocr",
+        title: "How to Convert a Scanned PDF Into an Editable Word Document (Free OCR Workflow)",
+        seoTitle: "Convert Scanned PDF to Editable Word — Free OCR Workflow",
+        excerpt: "A scanned PDF is just photographs of paper — there is no text inside for a converter to grab. Here is the free two-step OCR workflow that turns those pixels into a genuinely editable Word document, plus what OCR accuracy you should realistically expect.",
+        date: "Nov 19, 2026",
+        dateModified: "Nov 19, 2026",
+        category: "PDF Conversion",
+        author: "Yuvi Parmar",
+        authorRole: "Founder & Lead Engineer",
+        readTime: "9 min read",
+        metaDescription: "Turn a scanned PDF into an editable Word document free. Two-step OCR workflow: recognize the text first, convert to DOCX second — plus realistic accuracy expectations and mobile tips.",
+        keywords: [
+            "scanned pdf to word converter",
+            "convert scanned pdf to editable word",
+            "ocr pdf to word free",
+            "scanned document to text",
+            "pdf ocr online free",
+            "edit a scanned document",
+            "scanned pdf to docx",
+            "convert photo of document to word"
+        ],
+        coverImage: "/images/blog/convert-scanned-pdf-to-word-hero.jpg",
+        imageAlt: "A scanned paper document being processed by OCR into selectable text inside an editable Word document",
+        content: `
+The email says "attached is the contract" — and the attachment is a scan. Somebody printed it, signed it, fed it through an office scanner from 2014, and now you are looking at what is technically a PDF but structurally a stack of photographs. You try to select a sentence. Nothing highlights. There is no text here. There never was.
+
+This is the moment where most people give up and start retyping nine pages into Word. You do not need to. A scanned PDF becomes a fully editable Word document in two steps: **OCR first, convert second**. This guide walks through both steps, shows what accuracy to expect, and flags the handful of situations where OCR genuinely is not worth the effort.
+
+> [!TIP]
+> **TL;DR:** Run the scan through the free [OCR PDF tool](/tools/ocr-pdf) to recognize the text, download the result, then convert it with the [PDF to Word converter](/tools/pdf-to-word). Both run in your browser — no account, no watermark.
+
+---
+
+## Quick Answer: How Do I Convert a Scanned PDF to Word?
+
+1. Open your scan in a PDF viewer and try to select text. Nothing highlights? It is an image-only scan.
+2. Upload it to [OCR PDF](/tools/ocr-pdf) — the tool embeds a searchable text layer onto each page (up to 10 pages per run).
+3. Download the OCR'd PDF and run it through the [PDF to Word converter](/tools/pdf-to-word).
+4. Open the .docx and proofread: OCR is very good with printed pages and imperfect with handwriting, stamps, and skewed scans.
+
+That is the entire workflow. Everything below explains why the order matters and where accuracy comes from.
+
+---
+
+## Why You Cannot Convert a Scan Directly
+
+A text-based PDF stores **characters** — "T", "h", "e" — plus coordinates and font instructions. A converter reads those characters and rebuilds them as paragraphs in a .docx.
+
+A scanned PDF stores **pixels**. When you run it through a plain converter, one of two things happens: the converter hands you back the same photographs inside a .docx wrapper (technically a Word file, practically a picture gallery), or it runs its own hidden OCR with uneven quality. Neither gives you what you actually want: selectable, correctable text.
+
+OCR — Optical Character Recognition — is the bridge. It looks at the shape of each cluster of pixels, matches it against character models, and writes recognized text back onto the page. Once characters exist, conversion to Word becomes trivial.
+
+---
+
+## The Two-Step Workflow in Detail
+
+### Step 1: OCR the Scan
+Drag the scanned PDF into [OCR PDF](/tools/ocr-pdf). Recognition runs locally in your browser using the Tesseract engine — the file never leaves your device, which matters for confidential contracts, medical records, and ID documents. Processing takes a few seconds per page; the output is a new PDF that looks identical but now has invisible, selectable text behind the image.
+
+### Step 2: Convert the OCR Result to Word
+Feed that output into the [PDF to Word converter](/tools/pdf-to-word) and download the .docx. Because the text layer now exists, the converter rebuilds real paragraphs and tables instead of shipping images.
+
+### Step 3: The Proofread Pass Nobody Skips
+OCR confidence is not 100%. Budget a few minutes with the original scan open beside the .docx and check the classic suspects:
+
+- **Similar-shaped characters**: rn read as m, l/1/I confusion, O versus 0 in reference numbers
+- **Anything not machine-printed**: handwriting, signatures, rubber stamps, margin notes
+- **Skewed or warped pages**: phone-photo scans with curved pages misrecognize line ends more often
+- **Numbers in tables**: a transposed digit in a total is far more expensive than a missed letter in a sentence
+
+For a typical clean, straight, printed scan, a proofread pass is enough. For handwriting, see the expectations table below.
+
+---
+
+## What OCR Accuracy Should You Expect?
+
+| Source material | Realistic OCR quality | Effort after conversion |
+| :--- | :--- | :--- |
+| Laser-printed text, straight scan | Excellent — near-perfect on clean pages | Spot-check names and numbers |
+| Inkjet print, slight skew | Very good | Fix the occasional word |
+| Old fax or low-DPI photocopy | Fair — frequent character substitutions | Line-by-line comparison against original |
+| Neat handwriting (forms, block capitals) | Patchy — structure helps, cursive hurts | Correct by hand; block letters fare best |
+| Cursive handwriting, signatures | Poor to unusable | Retype those sections; OCR only the printed parts |
+| Receipts, thermal paper, stamps | Poor — faint ink and odd fonts | Manual entry for amounts |
+
+The pattern: machine print converts, human writing mostly does not. If half your document is handwritten, OCR the printed half and type the rest — you still save the bulk of the retyping.
+
+---
+
+## When OCR Is Not Worth It
+
+Some jobs are better served by skipping the whole detour:
+
+- **You only need to add text to a form** → [Fill PDF](/tools/fill-pdf) types onto the scan directly. No recognition needed — the image stays, your answers land on top.
+- **You only need a signature** → [Sign PDF](/tools/sign-pdf) places your signature on the scan in one drag.
+- **You need one figure from a table** → read it yourself; OCR plus proofreading costs more time than retyping one number.
+- **The scan is a photo ID or certificate you must preserve as-is** → leave it flat. Converting an image you are not going to edit adds risk for zero benefit.
+
+OCR earns its keep when there is *real prose to edit* — multi-page contracts, letters, reports, meeting notes typed on paper years ago.
+
+---
+
+## Scanning Better Improves Everything
+
+If you control the scanning step, you control the accuracy:
+
+1. **300 DPI is the sweet spot.** Lower and characters blur; higher and files balloon without recognition gains.
+2. **Straight pages, dark text, white background.** Curve correction has limits — a page photographed at an angle loses accuracy at the line ends.
+3. **Use your phone's document mode** (iPhone Notes scan, Google Drive scan, or any scanner app) rather than a raw photo — these auto-crop, deskew, and boost contrast before you ever reach the OCR step. The full pipeline is covered in the [phone-to-PDF scanning guide](/blog/scan-documents-with-phone-to-pdf).
+
+---
+
+## Privacy Note for Sensitive Documents
+
+Scans worth OCRing are often scans worth protecting: signed contracts, medical results, financial records. Browser-based OCR keeps those pixels on your device — recognition runs locally, nothing uploads. For server-assisted steps in the pipeline (Word conversion), files are processed ephemerally and purged after the job. If the finished document needs to travel by email, [compress it](/tools/compress-pdf) for the attachment limit and consider [password-protecting](/tools/protect-pdf) it first.
+
+---
+
+## Frequently Asked Questions About Scanned PDFs to Word
+`,
+        faq: [
+            {
+                question: "Can you convert a scanned PDF to an editable Word document for free?",
+                answer: "Yes. Run the scan through a free OCR tool to create a text layer, then convert that output to DOCX with a free PDF-to-Word converter. On PdfPixels both steps are browser-based with no signup or watermark — the whole pipeline takes a couple of minutes for a typical document."
+            },
+            {
+                question: "Why does my converted Word file just contain images of the pages?",
+                answer: "The source was an image-only scan with no text characters inside, so the converter had nothing to rebuild and passed the photographs through. Add an OCR step before converting so real text exists to convert."
+            },
+            {
+                question: "How accurate is OCR on scanned documents?",
+                answer: "Machine-printed text on straight, clean scans converts near-perfectly. Low-quality photocopies and faxes need a proofread pass. Handwriting is unreliable — block capitals fare best, cursive usually needs retyping."
+            },
+            {
+                question: "Does OCR work on handwritten documents?",
+                answer: "Poorly for cursive, moderately for neat block-letter writing. The practical approach is to OCR the printed portions and type the handwritten sections manually — you still avoid retyping the whole document."
+            },
+            {
+                question: "How many pages can I OCR at once?",
+                answer: "PdfPixels OCR processes up to 10 pages per run. For a longer document, split it with the PDF splitter, OCR the parts, then merge the results back together before converting to Word."
+            },
+            {
+                question: "Is it safe to OCR confidential documents online?",
+                answer: "With PdfPixels, OCR recognition runs entirely in your browser using WebAssembly — the scanned file never leaves your device. The later conversion step uses ephemeral server processing that purges files after completion."
+            },
+        ],
+    },
+    {
+        slug: "pdf-to-word-conversion-problems-fix",
+        title: "PDF to Word Not Working? 7 Conversion Problems and How to Fix Each One",
+        seoTitle: "PDF to Word Problems: Fix Tables, Formatting, Blank Output",
+        excerpt: "Converted a PDF to Word and got broken tables, substituted fonts, scattered text boxes, or a file that will not open at all? Every one of these has a known cause and a five-minute fix — here are the seven most common, diagnosed.",
+        date: "Nov 19, 2026",
+        dateModified: "Nov 19, 2026",
+        category: "PDF Conversion",
+        author: "Yuvi Parmar",
+        authorRole: "Founder & Lead Engineer",
+        readTime: "9 min read",
+        metaDescription: "PDF to Word conversion broken? Fix tables that collapse, fonts that change, scattered text boxes, blank pages, and files Word won't open — 7 diagnosed problems with fast fixes.",
+        keywords: [
+            "pdf to word not working",
+            "pdf to word conversion problems",
+            "pdf to word table broken",
+            "pdf to word formatting messed up",
+            "converted pdf opens blank in word",
+            "pdf to word font changes",
+            "word file corrupted after pdf conversion",
+            "pdf to word layout shifted"
+        ],
+        coverImage: "/images/blog/pdf-to-word-problems-fix-hero.jpg",
+        imageAlt: "A broken PDF to Word conversion being repaired — misaligned table columns and shifted fonts fixed in an editor",
+        content: `
+Converting a PDF to Word is usually a one-minute job. Then occasionally you open the .docx and find wreckage: a table with merged columns, paragraphs floating in text boxes, fonts nobody chose, or — best of all — a file Word refuses to open at all.
+
+The good news: PDF-to-Word output is not random. Each failure mode has a specific cause, and once you diagnose which one you have, the fix takes minutes. Here are the seven problems that account for nearly every support request, in the order you should check them.
+
+> [!TIP]
+> **Before debugging anything**, redo the ten-second check: can you select text in the original PDF? If not, stop — you have a scan, and no converter will produce text from it without OCR first. That is [problem 1](#1-the-docx-contains-only-pictures-of-pages) below.
+
+---
+
+## Quick Answer: Why Did My PDF to Word Conversion Go Wrong?
+
+> **Most conversions fail for one of five reasons:** the source was a scan (output is images), the PDF's table used visual tricks a converter guesses wrong, the fonts were embedded and substituted, the document was a designed layout (text boxes everywhere), or the file was encrypted and converted blindly. Match your symptom to the numbered fixes below — each has a five-minute repair.
+
+---
+
+## 1. The DOCX Contains Only Pictures of Pages
+
+**Symptom:** Word opens the file, but every "paragraph" is actually an image. Selecting text does nothing.
+
+**Cause:** The source PDF was a scan — pixels, not characters.
+
+**Fix:** Convert the file with [OCR PDF](/tools/ocr-pdf) first so a text layer exists, then convert *that* output to Word. Full walkthrough: [scanned PDF to editable Word](/blog/convert-scanned-pdf-to-word-ocr). Do not re-run the same conversion hoping for different output — pixels stay pixels until recognition runs.
+
+## 2. Tables Arrive Collapsed, Merged, or Split
+
+**Symptom:** Columns overlap, cells contain two lines of unrelated data, or one long table became three broken ones.
+
+**Cause:** PDF has no real table structure — it stores text at coordinates and draws lines. The converter infers the grid, and merged cells, wrapped cell text, and multi-page tables are where the inference breaks.
+
+**Fix:** Drag the column width right first (edits inside a broken-width table inherit the breakage). If the table holds *data you need to keep using* — transactions, line items — stop fighting Word and export the source to [PDF to Excel](/tools/pdf-to-excel) instead; spreadsheet grids survive conversion far better. For bank statements specifically, use [statement-aware conversion](/tools/bank-statement-to-excel).
+
+## 3. Fonts Changed and the Layout Shifted
+
+**Symptom:** The document reads fine but looks subtly wrong — different typeface, wider spacing, paragraphs breaking at different points than the PDF.
+
+**Cause:** The PDF embedded fonts that are not installed on your machine. Word substitutes the closest available font (Helvetica → Arial, Times → Calibri territory), and metrics differ slightly.
+
+**Fix:** Two honest options: install the missing font (the .docx names it in Home → font dropdown) or accept the substitute and re-check pagination. There is no third option — a .docx cannot carry font files with it. If the recipient needs pixel-faithful appearance rather than editability, send the PDF.
+
+## 4. Everything Is Scattered in Text Boxes
+
+**Symptom:** The document opens, but each paragraph sits inside a floating box you have to click individually. Moving text is a nightmare.
+
+**Cause:** The source was a *designed* PDF — brochure, flyer, certificate — where layout was drawn rather than flowed. Converters faithfully rebuild the drawing as positioned objects.
+
+**Fix:** Select all (Ctrl+A) → cut → Paste Special → Unformatted Text into a clean document. You lose the design but keep every word, which is usually the point. If you actually need to *change the design*, rebuilding it properly in Word from the extracted text beats fighting positioned boxes.
+
+## 5. Header and Footer Strays on Page One
+
+**Symptom:** The running header ("CONFIDENTIAL — PAGE 3") appears as loose text at the top of page one instead of repeating properly.
+
+**Cause:** The converter placed header/footer runs inline where they happened to sit on the first page rather than recognizing them as repeating elements.
+
+**Fix:** Delete the strays, then recreate the header/footer with Word's real feature (Insert → Header). Twenty seconds, and it then behaves on every page including prints and exports.
+
+## 6. Word Refuses to Open the File ("Corrupted")
+
+**Symptom:** "The file is corrupt and cannot be opened," or Word opens a blank document.
+
+**Cause:** Almost always an interrupted download or a file that was [repaired](/tools/repair-pdf) from damaged source. Occasionally: the source PDF was encrypted and the conversion produced a technically-valid but locked file.
+
+**Fix:** Re-download the .docx first — half of "corrupt" files are truncated downloads. If it still fails, check the source PDF opens; if the source itself is broken, repair it before converting. If the source was password-protected, [unlock it](/tools/unlock-pdf) (you must know the password) and convert again.
+
+## 7. Blank Pages or Missing Sections
+
+**Symptom:** The .docx has fewer pages than the PDF, or pages 4–6 are mysteriously empty.
+
+**Cause:** The PDF page range was cropped or the conversion hit a size/complexity limit — most commonly with 100+ page documents containing heavy graphics.
+
+**Fix:** [Split the PDF](/tools/split-pdf) into 20–30 page chunks, convert each, and concatenate in Word (Insert → Object → Text from File). Slower than one shot, but it completes where the single pass failed, and the join points are invisible in the final document.
+
+---
+
+## The 60-Second Prevention Checklist
+
+Before converting anything important:
+
+1. **Select-test the PDF.** Text highlights → proceed; it doesn't → OCR first.
+2. **Open the PDF in a viewer** — encrypted or damaged sources convert into garbage.
+3. **Convert, then skim against the original** side by side, checking table numbers character by character.
+4. **Save the DOCX immediately** under a new name so the pristine converted copy survives your edits.
+
+---
+
+## When the Document Refuses All Fixes
+
+Occasionally a PDF is genuinely hostile: scanned twice at low DPI, assembled from mixed orientations, or built by a printer driver that drew every glyph as a vector path. When an hour of fixes produces a worse document than twenty minutes of retyping would, retype. That is not failure — it is triage. But for the everyday contract-report-invoice cases, one of the seven fixes above will land, and the whole job ends up faster than opening Word from scratch.
+`,
+        faq: [
+            {
+                question: "Why is my PDF to Word conversion coming out blank?",
+                answer: "Blank output almost always means the source PDF is encrypted or damaged. Test the original in a PDF viewer first; if it needs a password, unlock it before converting, and if the source itself is broken, repair it — then convert again."
+            },
+            {
+                question: "How do I fix a table that converted badly from PDF to Word?",
+                answer: "Widen the collapsed column first (edits inside a broken table inherit the breakage), then rebuild merged cells by hand. If the table is data you will keep using, convert the source to Excel instead — spreadsheet grids survive conversion far better than Word tables."
+            },
+            {
+                question: "Why did the fonts change after converting PDF to Word?",
+                answer: "The PDF used fonts not installed on your computer, so Word substituted the closest match and line breaks shifted. Install the missing font if you have it, or accept the substitute and re-check pagination — a DOCX cannot carry the original font files."
+            },
+            {
+                question: "Why is everything in my converted document inside text boxes?",
+                answer: "The source was a designed PDF (brochure, flyer) where layout was drawn, not flowed. Select all, cut, and paste as unformatted text into a clean document to recover the words without the boxes."
+            },
+            {
+                question: "Can I batch fix multiple PDFs that convert badly?",
+                answer: "Fix the cause rather than the symptom: scans need OCR before conversion, and oversized documents convert more reliably when split into 20–30 page chunks. The batch processor applies these pre-steps to whole folders."
+            },
+            {
+                question: "What should I do if Word says the converted file is corrupted?",
+                answer: "Re-download the file first — truncated downloads cause half of all corruption errors. If it still fails, verify the source PDF opens cleanly, repair it if needed, and convert again."
+            },
+        ],
+    },
+    {
         slug: "resize-signature-6x2-cm-300-dpi",
         title: "I Audited 40+ Government & Bank Signature Rules — Here's the 6×2 cm (300 DPI) Fix That Stops Form Rejections",
         seoTitle: "Resize Signature to 6×2 cm (300 DPI) for Online Forms",
@@ -1492,7 +1902,7 @@ Next time you receive a protected bank statement or multi-page invoice without a
         excerpt: "We deployed 6 enterprise eSignature and PDF security platforms across real corporate contracts. From $10 envelope overages to zero-knowledge client-side encryption, here is what our 30-day benchmark uncovered.",
         date: "Oct 19, 2026",
         dateModified: "Oct 19, 2026",
-        category: "Business/Enterprise",
+        category: "Business & Enterprise",
         author: "Yuvi Parmar",
         authorRole: "Founder & Lead Engineer",
         readTime: "16 min read",
@@ -8700,11 +9110,11 @@ WebP is why the web loads faster, and JPG is why your files open everywhere. The
         title: "PDF to Word: How to Convert PDF Into an Editable Document (2026)",
         excerpt: "Stuck with a PDF you need to edit? Here is how to convert PDF to Word (.docx) free — what converts cleanly, why scanned PDFs misbehave, how tables survive the trip, and the exact workflow that keeps formatting intact.",
         date: "Sep 29, 2026",
-        dateModified: "Sep 29, 2026",
+        dateModified: "Nov 19, 2026",
         category: "PDF Tools",
         author: "Yuvi Parmar",
         authorRole: "Founder & Lead Engineer",
-        readTime: "8 min read",
+        readTime: "12 min read",
         metaDescription: "Free PDF to Word converter guide for 2026. Convert PDF to editable DOCX online free — text, tables, scanned PDFs, formatting fixes, and when to use OCR or Excel export instead.",
         keywords: [
             "pdf to word converter",
@@ -8802,6 +9212,55 @@ Conversion happens on a server, which means your file leaves your device for the
 - **You need to present, not edit** → [PDF to PowerPoint](/tools/pdf-to-pptx) turns pages into slides.
 - **You need plain text for quoting or analysis** → [PDF to Text](/tools/pdf-to-text) is faster and cleaner than stripping a DOCX.
 - **The PDF is a form to fill in, not rewrite** → [Fill PDF Forms](/tools/fill-pdf) lets you type onto it directly without converting at all.
+
+---
+
+## Which PDF-to-Word Method Fits Your Task?
+
+Not every conversion job needs the same path. Match your situation to the fastest route:
+
+| Your situation | Best method | Why |
+| :--- | :--- | :--- |
+| Text PDF, minor edits (fix a date, swap a name) | [PDF to Word converter](/tools/pdf-to-word) | One step, editable result, formatting mostly preserved |
+| Scanned document, need editable text | [OCR PDF](/tools/ocr-pdf) → convert | Pixels need recognition before they become characters — see the [full scanned-PDF workflow](/blog/convert-scanned-pdf-to-word-ocr) |
+| Extract a table full of numbers | [PDF to Excel](/tools/pdf-to-excel) | Spreadsheet grid survives better than a Word table |
+| Dozens of files at once | Batch processor | Queue a whole folder instead of uploading one by one |
+| Only need to sign or fill a form | [Fill PDF](/tools/fill-pdf) / [Sign PDF](/tools/sign-pdf) | Converting a form to Word breaks its field structure |
+| Need to add text, highlight, or whiteout directly | [PDF Editor](/tools/edit-pdf) | Edits the PDF itself — no conversion, original text stays intact |
+| Conversion output looks broken | Diagnose first | Most breakage has a known cause — see [PDF-to-Word conversion problems and fixes](/blog/pdf-to-word-conversion-problems-fix) |
+
+---
+
+## PDF to Word on iPhone and Android
+
+Mobile is where most "quick contract fix" requests actually happen, and it works fine — with two caveats.
+
+1. **Use the browser, not an app store converter.** The [PDF to Word converter](/tools/pdf-to-word) runs in Safari and Chrome on mobile with the same 50 MB limit as desktop. Avoid installing a random "PDF to Word" app that demands your contacts, shows full-screen ads between steps, or stamps watermarks on the output.
+2. **Files land in your Downloads folder.** On iOS, the .docx arrives in the Files app (Downloads); on Android, in Downloads. Word, Google Docs, WPS Office, and LibreOffice all open it from there.
+3. **Editing on the phone is the bottleneck, not conversion.** Typing a paragraph revision on a 6-inch screen is painful. The realistic mobile workflow is: convert → review → make the small edit (a date, a name) → send. For anything longer, AirDrop or email the .docx to a desktop and finish there.
+
+A nice bonus of the mobile flow: if the PDF started as a photo of a paper document, you are already holding the phone that took it — run it through [OCR PDF](/tools/ocr-pdf) in the same browser session before converting.
+
+---
+
+## Converting Multiple PDFs to Word at Once
+
+Receiving 15 contracts as 15 separate PDFs is a special kind of Monday. Converting them one by one works, but the faster paths are:
+
+- **[Local folder batch processing](/tools/local-folder-batch-processor)** — point it at a folder of PDFs and let it run the entire queue through conversion in your browser, saving each .docx with the original filename. Nothing gets uploaded by hand one at a time.
+- **Convert, then merge the Word files** — if the goal is one continuous document (say, 12 monthly reports combined), convert each PDF first, then concatenate in Word itself (Insert → Object → Text from File). Merging the PDFs *before* conversion with [Merge PDF](/tools/merge-pdf) is faster still — one conversion instead of twelve — as long as hard section breaks between the documents don't matter.
+
+---
+
+## Word or Google Docs: Where Should You Edit After Converting?
+
+Both open the converted .docx; they behave differently at the edges:
+
+- **Microsoft Word** is the safest target for converted files with tables, headers/footers, and tracked-changes needs. The converter outputs a .docx structured for Word, so what you see in Word is the closest match to the original PDF's formatting.
+- **Google Docs** opens the same file fine and is unbeatable for collaboration. Two quirks: complex tables sometimes reflow when Docs imports the file, and per-section headers/footers can flatten. If the converted document is mostly paragraphs, Docs is perfect; if it is table-heavy, export it back out of Docs as .docx before sharing with anyone on Word.
+- **LibreOffice / WPS Office** handle converted files well for everyday editing and cost nothing — a reasonable final check if the recipient does not use Word.
+
+The practical rule: convert → open in whatever the *recipient* uses → fix pagination there. A document that looks right in the target application is done; "looks right in my app" is not a standard anyone accepts.
 `,
         faq: [
             {
@@ -8827,6 +9286,14 @@ Conversion happens on a server, which means your file leaves your device for the
             {
                 question: "Should I convert a bank statement to Word or Excel?",
                 answer: "Excel. Word tables mangle financial rows; spreadsheet export preserves the row-and-column structure, and statement-aware conversion handles transactions far more reliably."
+            },
+            {
+                question: "Can I convert a PDF to Word on my phone?",
+                answer: "Yes. The browser-based converter works in Safari and Chrome on iPhone and Android with the same 50 MB limit as desktop. The .docx lands in your Downloads/Files folder, where Word, Google Docs, or WPS Office can open it."
+            },
+            {
+                question: "How do I convert multiple PDF files to Word at once?",
+                answer: "Use the local folder batch processor to queue an entire folder of PDFs in one run, or merge the PDFs into a single file first and convert once. Converting each file individually also works — it just costs you one upload per document."
             },
         ],
     },
@@ -9372,11 +9839,16 @@ export function getRelatedPosts(currentSlug: string, limit: number = 3): BlogPos
     const currentPost = getBlogPostBySlug(currentSlug);
     if (!currentPost) return [];
 
-    return blogPosts
+    const pool = blogPosts
         .filter(post => !consolidatedBlogSlugs.has(post.slug))
-        .filter(post => post.slug !== currentSlug)
-        .filter(post => post.category === currentPost.category)
-        .slice(0, limit);
+        .filter(post => post.slug !== currentSlug);
+    const sameCategory = pool.filter(post => post.category === currentPost.category);
+    // Fall back to recent posts so niche-category articles still get a full
+    // related-posts panel (empty panels = dead interlinking real estate).
+    const fallback = pool
+        .filter(post => post.category !== currentPost.category)
+        .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    return [...sameCategory, ...fallback].slice(0, limit);
 }
 
 export function getAllBlogPosts(): BlogPost[] {
@@ -9489,10 +9961,11 @@ const toolSlugToPostSlugs: Record<string, string[]> = {
     'image-to-pdf': ['convert-jpg-to-pdf-online-no-software', 'scan-documents-with-phone-to-pdf', 'combine-screenshots-into-one'],
     'join-images-online': ['combine-screenshots-into-one'],
     'heic-to-jpg': ['heic-to-jpg-convert-iphone-photos', 'how-to-convert-heic-to-jpg-windows', 'heic-to-jpg-converter-guide-iphone'],
-    'fill-pdf': ['fill-pdf-form-online-free', 'how-to-edit-pdf-online-free-adobe-alternative'],
-    'sign-pdf': ['pdf-automation-batch-workflow-business', 'document-management-software-small-business', 'enterprise-esignature-pdf-security-compared', 'sign-pdf-on-phone', 'how-to-edit-pdf-online-free-adobe-alternative', 'how-to-sign-pdf-online-free'],
+    'fill-pdf': ['fill-sign-irs-tax-forms-online-free', 'fill-pdf-form-online-free', 'how-to-edit-pdf-online-free-adobe-alternative'],
+    'fill-sign-irs-w9-pdf': ['fill-sign-irs-tax-forms-online-free'],
+    'sign-pdf': ['pdf-automation-batch-workflow-business', 'document-management-software-small-business', 'enterprise-esignature-pdf-security-compared', 'sign-pdf-on-phone', 'how-to-edit-pdf-online-free-adobe-alternative', 'how-to-sign-pdf-online-free', 'fill-sign-irs-tax-forms-online-free'],
     'protect-pdf': ['document-management-software-small-business', 'enterprise-esignature-pdf-security-compared', 'password-protect-pdf-online-free'],
-    'repair-pdf': ['fix-pdf-not-opening'],
+    'repair-pdf': ['pdf-to-word-conversion-problems-fix', 'fix-pdf-not-opening'],
     'pdf-reader': ['fix-pdf-not-opening'],
     'linearize-pdf': ['fix-pdf-not-opening'],
     'resize-image': ['resize-signature-6x2-cm-300-dpi', 'resize-photo-600x600-dv-lottery-visa', 'image-dpi-for-print-vs-web-explained'],
@@ -9505,7 +9978,12 @@ const toolSlugToPostSlugs: Record<string, string[]> = {
     'increase-image-size-in-kb': ['resize-signature-6x2-cm-300-dpi', 'reduce-photo-file-size'],
     'add-watermark-pdf': ['add-confidential-watermark-to-pdf'],
     'add-page-numbers-to-pdf': ['add-page-numbers-to-pdf-online'],
-    'pdf-to-word': ['pdf-to-word-converter-guide', 'how-to-edit-pdf-online-free-adobe-alternative'],
+    'pdf-to-word': ['pdf-to-word-converter-guide', 'convert-scanned-pdf-to-word-ocr', 'pdf-to-word-conversion-problems-fix', 'how-to-edit-pdf-online-free-adobe-alternative'],
+    'invoice-generator': ['pdf-automation-batch-workflow-business', 'document-management-software-small-business', 'convert-bank-statement-pdf-to-excel-quickbooks-xero'],
+    'pdf-editor': ['free-pdf-editor-alternative-to-adobe', 'how-to-edit-pdf-online-free-adobe-alternative', 'fill-sign-irs-tax-forms-online-free'],
+    'scan-to-pdf': ['scan-documents-with-phone-to-pdf', 'pdf-automation-batch-workflow-business'],
+    'resume-builder': ['pdf-automation-batch-workflow-business', 'document-management-software-small-business', 'enterprise-esignature-pdf-security-compared'],
+    'csv-to-pdf': ['convert-bank-statement-pdf-to-excel-quickbooks-xero', 'pdf-to-csv-converter-online-free', 'pdf-automation-batch-workflow-business'],
     'increase-image-quality': ['ai-image-enhancer-fix-blurry-photos'],
     'remove-image-background': ['ai-background-remover-free-tools-guide', 'best-free-background-remover-online-comparison'],
     'photo-collage': ['make-a-photo-collage', 'combine-screenshots-into-one'],
@@ -9526,7 +10004,7 @@ const toolSlugToPostSlugs: Record<string, string[]> = {
     'redact-pdf': ['how-to-properly-redact-a-pdf-without-leaking-hidden-text', 'pdf-automation-batch-workflow-business', 'document-management-software-small-business'],
     'pdf-metadata': ['how-to-properly-redact-a-pdf-without-leaking-hidden-text'],
     'sanitize-pdf': ['how-to-properly-redact-a-pdf-without-leaking-hidden-text'],
-    'ocr-pdf': ['pdf-automation-batch-workflow-business', 'document-management-software-small-business'],
+    'ocr-pdf': ['convert-scanned-pdf-to-word-ocr', 'pdf-automation-batch-workflow-business', 'document-management-software-small-business'],
 };
 
 export function getPostsForTool(toolSlug: string): BlogPost[] {
@@ -9536,4 +10014,43 @@ export function getPostsForTool(toolSlug: string): BlogPost[] {
         .map((postSlug) => blogPosts.find((post) => post.slug === postSlug))
         .filter((post): post is BlogPost =>
             Boolean(post) && !consolidatedBlogSlugs.has(post!.slug));
+}
+
+// ---------------------------------------------------------------------------
+// Category architecture (/blog/category/[slug]) — crawlable topic indexes.
+// Only categories with 2+ posts get a dedicated page; single-post categories
+// stay display-only badges to avoid thin index pages.
+// ---------------------------------------------------------------------------
+
+export function getBlogCategorySlug(category: string): string {
+    return category
+        .toLowerCase()
+        .replace(/&/g, 'and')
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+}
+
+export interface BlogCategory {
+    name: string;
+    slug: string;
+    postCount: number;
+}
+
+const MIN_POSTS_FOR_CATEGORY_PAGE = 2;
+
+export function getAllBlogCategories(): BlogCategory[] {
+    const counts = new Map<string, number>();
+    for (const post of getAllBlogPosts()) {
+        counts.set(post.category, (counts.get(post.category) ?? 0) + 1);
+    }
+    return [...counts.entries()]
+        .map(([name, postCount]) => ({ name, slug: getBlogCategorySlug(name), postCount }))
+        .filter((cat) => cat.postCount >= MIN_POSTS_FOR_CATEGORY_PAGE)
+        .sort((a, b) => b.postCount - a.postCount);
+}
+
+export function getBlogPostsByCategory(categorySlug: string): BlogPost[] {
+    const category = getAllBlogCategories().find((cat) => cat.slug === categorySlug);
+    if (!category) return [];
+    return getAllBlogPosts().filter((post) => post.category === category.name);
 }

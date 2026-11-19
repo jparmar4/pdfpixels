@@ -183,6 +183,31 @@ const BankStatementWorkspace = dynamic(
   { loading: () => <WorkspaceLoading /> }
 );
 
+const InvoiceGeneratorWorkspace = dynamic(
+  () => import('@/components/layout/invoice-generator-workspace').then(mod => ({ default: mod.InvoiceGeneratorWorkspace })),
+  { loading: () => <WorkspaceLoading /> }
+);
+
+const PdfEditorWorkspace = dynamic(
+  () => import('@/components/layout/pdf-editor-workspace').then(mod => ({ default: mod.PdfEditorWorkspace })),
+  { loading: () => <WorkspaceLoading /> }
+);
+
+const ScanToPdfWorkspace = dynamic(
+  () => import('@/components/layout/scan-to-pdf-workspace').then(mod => ({ default: mod.ScanToPdfWorkspace })),
+  { loading: () => <WorkspaceLoading /> }
+);
+
+const ResumeBuilderWorkspace = dynamic(
+  () => import('@/components/layout/resume-builder-workspace').then(mod => ({ default: mod.ResumeBuilderWorkspace })),
+  { loading: () => <WorkspaceLoading /> }
+);
+
+const CsvToPdfWorkspace = dynamic(
+  () => import('@/components/layout/csv-to-pdf-workspace').then(mod => ({ default: mod.CsvToPdfWorkspace })),
+  { loading: () => <WorkspaceLoading /> }
+);
+
 const BatesNumberingWorkspace = dynamic(
   () => import('@/components/layout/bates-numbering-workspace').then(mod => ({ default: mod.BatesNumberingWorkspace })),
   { loading: () => <WorkspaceLoading /> }
@@ -353,6 +378,11 @@ function getWorkspaceComponent(toolId: string) {
   if (toolId === 'pdf-to-csv') return <PDFToExcelWorkspace initialFormat="csv" />;
   if (toolId === 'pdf-word-counter') return <PDFWordCounterWorkspace />;
   if (toolId.includes('bank-statement-to-excel') || toolId.includes('statement-to-excel')) return <BankStatementWorkspace />;
+  if (toolId === 'invoice-generator') return <InvoiceGeneratorWorkspace />;
+  if (toolId === 'pdf-editor') return <PdfEditorWorkspace />;
+  if (toolId === 'scan-to-pdf') return <ScanToPdfWorkspace />;
+  if (toolId === 'resume-builder') return <ResumeBuilderWorkspace />;
+  if (toolId === 'csv-to-pdf') return <CsvToPdfWorkspace />;
   if (toolId === 'qbo-ofx-qfx-to-excel-csv') return <QboOfxWorkspace />;
   if (toolId === 'shipping-label-cropper') return <ShippingLabelCropWorkspace />;
   if (toolId === 'amazon-fba-thermal-label-converter') return <AmazonFbaLabelWorkspace />;

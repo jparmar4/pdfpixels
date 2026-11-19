@@ -89,6 +89,18 @@ const run = () => {
     process.exit(ensure.status || 1);
   }
 
+  // SEO audit after every build — visible in deploy logs, non-blocking so a
+  // new assertion never breaks a deploy. Run `npm run test:seo` to gate manually.
+  console.log('\nRunning SEO/AEO build audit (non-blocking)...');
+  const seo = spawnSync(process.execPath, [path.join('scripts', 'check-seo-build.mjs')], {
+    cwd: process.cwd(),
+    stdio: 'inherit',
+    encoding: 'utf8',
+  });
+  if (seo.status !== 0) {
+    console.warn('⚠ SEO build audit reported issues — fix before the next release (run `npm run test:seo`).');
+  }
+
   console.log('Post-build static file mapping completed successfully.');
 };
 

@@ -7,7 +7,7 @@ import { FeaturesSection } from '@/components/home/features-section';
 import { GuidesSection } from '@/components/home/guides-section';
 import { AnswerEngineSection } from '@/components/home/answer-engine-section';
 import { AIContentSection } from '@/components/seo/ai-content';
-import { HeaderAd, InContentAd, FooterAd, NativeAd } from '@/components/ads/ad-banner';
+import { InContentAd, FooterAd, NativeAd } from '@/components/ads/ad-banner';
 
 import { Metadata } from 'next';
 import { siteConfig, seoConfig } from '@/lib/seo-config';
@@ -49,7 +49,6 @@ export default function Home() {
       <main id="main-content" className="flex-1">
         <HomePageSchemas />
         <ToolsSection />
-        <HeaderAd className="my-4" />
         <StatsBanner />
         <InContentAd variant="dual-rectangle" instanceId="home-mid" className="my-8" />
         <HowItWorks />

@@ -63,6 +63,8 @@ import {
   Accessibility,
   FileCheck2,
   FolderKanban,
+  ReceiptText,
+  Camera,
 } from 'lucide-react';
 
 export type Tool = {
@@ -128,6 +130,7 @@ export const toolCategories: ToolCategory[] = [
       {
         id: 'remove-background',
         slug: 'remove-image-background',
+        seoTitle: "Remove Image Background Free - AI Background Eraser",
         name: 'Remove Background',
         description: 'AI-powered background removal. Get transparent PNG instantly.',
         icon: Eraser,
@@ -141,6 +144,7 @@ export const toolCategories: ToolCategory[] = [
       {
         id: 'passport-photo',
         slug: 'passport-size-photo',
+        seoTitle: "Passport Photo Maker Online Free - US, EU and IN Sizes",
         name: 'Passport Photo Maker',
         description: 'Create passport & ID photos for any country. Auto-crop to official sizes.',
         icon: IdCard,
@@ -153,6 +157,7 @@ export const toolCategories: ToolCategory[] = [
       {
         id: 'image-to-pdf',
         slug: 'image-to-pdf',
+        seoTitle: "JPG to PDF Converter Free - Images to PDF Online",
         name: 'Image to PDF',
         description: 'Convert one or multiple images to a single PDF document.',
         icon: FilePlus,
@@ -160,6 +165,42 @@ export const toolCategories: ToolCategory[] = [
         keywords: ['image to pdf', 'jpg to pdf', 'png to pdf', 'photo to pdf', 'convert image to pdf', 'picture to pdf'],
         popular: true,
         processing: 'server',
+      },
+      {
+        id: 'scan-to-pdf',
+        slug: 'scan-to-pdf',
+        seoTitle: 'Scan to PDF Online Free - Phone Document Scanner',
+        name: 'Scan to PDF',
+        description: 'Turn your phone camera into a document scanner — capture pages, enhance readability (gray, boosted, B&W), and export a clean multi-page PDF. 100% in-browser.',
+        icon: Camera,
+        category: 'most-used',
+        keywords: ['scan to pdf', 'scan documents to pdf', 'phone document scanner', 'camscanner alternative', 'scan paper to pdf online', 'document scanner free', 'camera to pdf'],
+        badge: 'New',
+        processing: 'client',
+      },
+      {
+        id: 'resume-builder',
+        slug: 'resume-builder',
+        seoTitle: 'Free Resume Builder - ATS-Friendly PDF Resumes Online',
+        name: 'Resume Builder',
+        description: 'Build a clean, ATS-friendly resume PDF free — experience, education, skills, and summary laid out professionally. Renders in your browser; nothing uploads.',
+        icon: FileText,
+        category: 'most-used',
+        keywords: ['resume builder', 'free resume builder', 'cv maker', 'resume template pdf', 'ats friendly resume', 'resume generator online', 'professional resume builder'],
+        badge: 'New',
+        processing: 'client',
+      },
+      {
+        id: 'csv-to-pdf',
+        slug: 'csv-to-pdf',
+        seoTitle: 'CSV to PDF Converter Free - Tables to Clean PDF Reports',
+        name: 'CSV to PDF',
+        description: 'Convert CSV files into clean, paginated PDF tables — styled headers, auto-fit columns, repeated header rows, and smart text wrapping. 100% in-browser.',
+        icon: FileSpreadsheet,
+        category: 'most-used',
+        keywords: ['csv to pdf', 'csv to pdf converter', 'convert csv to pdf free', 'excel csv to pdf', 'csv table to pdf', 'csv report pdf', 'spreadsheet to pdf'],
+        badge: 'New',
+        processing: 'client',
       },
       {
         id: 'increase-image-size',
@@ -206,6 +247,7 @@ export const toolCategories: ToolCategory[] = [
       {
         id: 'pdf-merge',
         slug: 'merge-pdf',
+        seoTitle: "Merge PDF Files Free - Combine PDFs in One Click",
         name: 'Merge PDF',
         description: 'Combine multiple PDF files in 100% Client-Side Private Mode (zero server upload). Drag, reorder, and merge free with no signup.',
         icon: Merge,
@@ -218,6 +260,7 @@ export const toolCategories: ToolCategory[] = [
       {
         id: 'pdf-split',
         slug: 'split-pdf',
+        seoTitle: "Split PDF Free - Extract PDF Pages or Divide Files",
         name: 'Split PDF',
         description: 'Extract pages or split PDFs 100% locally in your browser with zero server upload required.',
         icon: Split,
@@ -359,6 +402,7 @@ export const toolCategories: ToolCategory[] = [
       {
         id: 'pdf-reader',
         slug: 'pdf-reader',
+        seoTitle: "Free PDF Reader Online - Open and Read PDF Files",
         name: 'PDF Reader',
         description: 'Read PDF files online free. Open, scroll, and zoom PDF documents in your browser — nothing is uploaded to a server.',
         icon: Eye,
@@ -417,6 +461,7 @@ export const toolCategories: ToolCategory[] = [
       {
         id: 'pdf-compress',
         slug: 'compress-pdf',
+        seoTitle: "Compress PDF File Size Free - Shrink PDFs up to 90%",
         name: 'Compress PDF',
         description: 'Reduce PDF file size quickly without losing document quality. Fast, free, and secure PDF compression.',
         icon: FileMinus,
@@ -603,6 +648,7 @@ export const toolCategories: ToolCategory[] = [
       {
         id: 'pdf-to-image',
         slug: 'pdf-to-jpg',
+        seoTitle: "PDF to JPG Converter Free - High-Quality Image Export",
         name: 'PDF to JPG',
         description: 'Convert PDF pages to high-quality JPG or PNG images.',
         icon: Image,
@@ -624,6 +670,7 @@ export const toolCategories: ToolCategory[] = [
       {
         id: 'pdf-to-word',
         slug: 'pdf-to-word',
+        seoTitle: "PDF to Word Converter Free - Accurate DOCX Conversion",
         name: 'PDF to Word',
         description: 'Convert PDF files into editable Microsoft Word documents (.docx) with structured paragraphs and layout formatting.',
         icon: FileText,
@@ -636,6 +683,7 @@ export const toolCategories: ToolCategory[] = [
       {
         id: 'pdf-to-excel',
         slug: 'pdf-to-excel',
+        seoTitle: "PDF to Excel Converter Free - XLSX Table Export",
         name: 'PDF to Excel',
         description: 'Extract tables, rows, and financial data from PDF invoices and statements into Microsoft Excel (.xlsx) spreadsheets.',
         icon: FileSpreadsheet,
@@ -648,6 +696,7 @@ export const toolCategories: ToolCategory[] = [
       {
         id: 'pdf-to-csv',
         slug: 'pdf-to-csv',
+        seoTitle: "PDF to CSV Converter Free - Extract Tables and Invoices",
         name: 'PDF to CSV',
         description: 'Extract tables, rows, and structured data from PDF files into standard CSV format for Excel, Google Sheets, databases, and Python.',
         icon: FileSpreadsheet,
@@ -670,6 +719,7 @@ export const toolCategories: ToolCategory[] = [
       {
         id: 'pdf-ocr',
         slug: 'ocr-pdf',
+        seoTitle: "PDF OCR Online Free - Searchable Scanned PDFs",
         name: 'OCR PDF',
         description: 'Recognize text in scanned PDFs with OCR. Turn image-only pages into selectable, copyable, downloadable text.',
         icon: ScanText,
@@ -702,6 +752,7 @@ export const toolCategories: ToolCategory[] = [
       {
         id: 'word-to-pdf',
         slug: 'word-to-pdf',
+        seoTitle: "Word to PDF Converter Free - DOCX to PDF Online",
         name: 'Word to PDF',
         description: 'Convert Microsoft Word documents (.docx) into professional, read-only PDF files with preserved formatting.',
         icon: FileText,
@@ -761,6 +812,7 @@ export const toolCategories: ToolCategory[] = [
       {
         id: 'bank-statement-to-excel',
         slug: 'bank-statement-to-excel',
+        seoTitle: "Bank Statement to Excel - Free PDF to XLSX Converter",
         name: 'Bank Statement to Excel',
         description: 'Preview extracted Date, Description, Debit, Credit, and Balance columns interactively, then export Excel (.xlsx), QuickBooks 3-Col/4-Col CSV, Xero CSV, or Wave CSV.',
         icon: FileSpreadsheet,
@@ -773,6 +825,7 @@ export const toolCategories: ToolCategory[] = [
       {
         id: 'qbo-ofx-qfx-to-excel-csv',
         slug: 'qbo-ofx-qfx-to-excel-csv',
+        seoTitle: "QBO, QFX and OFX to Excel/CSV Converter - Free and Secure",
         name: 'QBO / QFX / OFX to Excel & CSV Converter',
         description: 'Convert QuickBooks (.qbo), Quicken (.qfx), and Open Financial Exchange (.ofx) bank files into Excel (.xlsx), QuickBooks 3-Col CSV, Xero CSV, or Wave CSV 100% locally.',
         icon: FileSpreadsheet,
@@ -1002,6 +1055,7 @@ export const toolCategories: ToolCategory[] = [
       {
         id: 'pdf-sign',
         slug: 'sign-pdf',
+        seoTitle: "Sign PDF Online Free - Add eSignature in Seconds",
         name: 'Sign PDF',
         description: 'Sign PDFs 100% locally in browser memory with ESIGN/eIDAS SHA-256 Audit Trail Verification Certificates (Zero Server Upload).',
         icon: FileSignature,
@@ -1014,6 +1068,7 @@ export const toolCategories: ToolCategory[] = [
       {
         id: 'fill-sign-irs-w9-pdf',
         slug: 'fill-sign-irs-w9-pdf',
+        seoTitle: "Fill and Sign IRS W-9 PDF Online Free - 2026 Form",
         name: 'Fill & Sign IRS Form W-9 & W-8BEN PDF',
         description: 'Fill, sign, flatten, and download IRS Form W-9 & W-8BEN tax PDFs 100% locally in your browser — SSNs and EINs never leave your device.',
         icon: FileCheck2,
@@ -1026,6 +1081,7 @@ export const toolCategories: ToolCategory[] = [
       {
         id: 'pdf-fill',
         slug: 'fill-pdf',
+        seoTitle: "Fill PDF Forms Online Free - Type and Save Form Fields",
         name: 'Fill PDF Forms',
         description: 'Fill out PDF forms online. Type text, add checkmarks, insert date stamps, and complete contracts without printing.',
         icon: Pencil,
@@ -1101,6 +1157,31 @@ export const toolCategories: ToolCategory[] = [
         keywords: ['private pdf contract auditor', 'client side nda review tool', 'extract payment terms pdf contract', 'offline legal risk clause scanner', 'pdf contract analyzer zero upload'],
         popular: true,
         badge: 'Zero Upload',
+        processing: 'client',
+      },
+      {
+        id: 'invoice-generator',
+        slug: 'invoice-generator',
+        seoTitle: 'Free Invoice Generator - Professional PDF Invoices in Minutes',
+        name: 'Invoice Generator',
+        description: 'Create professional PDF invoices free — line items, tax, discounts, notes, and your logo-ready header. Generates 100% in your browser; nothing uploads.',
+        icon: ReceiptText,
+        category: 'pdf-edit',
+        keywords: ['invoice generator', 'free invoice generator', 'invoice template pdf', 'create invoice online', 'pdf invoice maker', 'business invoice generator', 'freelancer invoice template'],
+        badge: 'New',
+        processing: 'client',
+      },
+      {
+        id: 'pdf-editor',
+        slug: 'edit-pdf',
+        seoTitle: 'Free PDF Editor - Add Text, Highlight & Whiteout Online',
+        name: 'PDF Editor',
+        description: 'Edit PDFs online: add text, highlight passages, whiteout mistakes, and draw annotations — exported as a vector PDF in your browser. No watermark.',
+        icon: Pencil,
+        category: 'pdf-edit',
+        keywords: ['pdf editor', 'edit pdf online free', 'add text to pdf', 'highlight pdf online', 'whiteout pdf', 'write on pdf', 'annotate pdf online', 'pdf text editor'],
+        popular: true,
+        badge: 'Popular',
         processing: 'client',
       },
     ],
@@ -1813,6 +1894,8 @@ export const pdfToolGroups: PdfToolGroup[] = [
       getToolBySlug('excel-to-pdf'),
       getToolBySlug('powerpoint-to-pdf'),
       getToolBySlug('image-to-pdf'),
+      getToolBySlug('scan-to-pdf'),
+      getToolBySlug('csv-to-pdf'),
       getToolBySlug('text-to-pdf'),
       getToolBySlug('tiff-to-pdf'),
       getToolBySlug('heic-to-pdf'),

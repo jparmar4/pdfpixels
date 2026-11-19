@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getAllBlogPosts } from '@/config/blog';
 import { allTools } from '@/lib/tools-data';
-import { absoluteUrl } from '@/lib/seo';
+import { absoluteUrl, SITE_CONTENT_UPDATED } from '@/lib/seo';
 
 export async function GET() {
   const blogPosts = getAllBlogPosts();
@@ -50,12 +50,29 @@ export async function GET() {
   const allImages = [...images, ...toolImages];
 
   // One <url> per page with all of its <image:image> children (sitemap spec
-  // expects unique <loc> values).
+  // expects unique <loc> values). lastmod reflects per-page content freshness:
+  // blog pages use their dateModified, tool/home pages the shared content date.
   const byPage = new Map<string, typeof allImages>();
+  const lastMods = new Map<string, string>();
   for (const img of allImages) {
     const list = byPage.get(img.pageUrl);
     if (list) list.push(img);
     else byPage.set(img.pageUrl, [img]);
+  }
+  const blogLastModByPage = new Map(blogPosts.map((post) => [
+    absoluteUrl(`/blog/${post.slug}`),
+    post.dateModified ?? post.date,
+  ]));
+  for (const pageUrl of byPage.keys()) {
+    const blogDate = blogLastModByPage.get(pageUrl);
+    if (blogDate) {
+      const parsed = Date.parse(blogDate);
+      lastMods.set(pageUrl, Number.isNaN(parsed)
+        ? SITE_CONTENT_UPDATED.toISOString()
+        : new Date(parsed).toISOString());
+    } else {
+      lastMods.set(pageUrl, SITE_CONTENT_UPDATED.toISOString());
+    }
   }
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
@@ -63,6 +80,7 @@ export async function GET() {
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
 ${[...byPage.entries()].map(([pageUrl, imgs]) => `  <url>
     <loc>${escapeXml(pageUrl)}</loc>
+    <lastmod>${lastMods.get(pageUrl)}</lastmod>
 ${imgs.map((img) => `    <image:image>
       <image:loc>${escapeXml(img.imageUrl)}</image:loc>
       <image:caption>${escapeXml(img.caption)}</image:caption>

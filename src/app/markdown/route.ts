@@ -7,6 +7,11 @@ import { absoluteUrl, getHomepageFeaturedTools } from '@/lib/seo';
 import { useCasePages } from '@/lib/use-cases';
 import { comparisonPages } from '@/lib/comparisons';
 import { geoRegions, getRegionByCode } from '@/lib/geo-data';
+import { WORKFLOW_RECIPES } from '@/lib/workflow-recipes';
+import { INDIAN_EXAM_PRESETS } from '@/lib/indian-exams-data';
+import { getAllBlogCategories, getBlogPostsByCategory } from '@/config/blog';
+import { templates, getTemplateBySlug } from '@/lib/templates';
+import { glossaryTerms, getGlossaryTerm } from '@/lib/glossary';
 
 export const runtime = 'nodejs';
 
@@ -152,6 +157,70 @@ function buildPathMarkdown(rawPath: string): { markdown: string; canonical: stri
     };
   }
 
+  // Free templates (/templates and /templates/[slug])
+  if (path === '/templates') {
+    const canonical = absoluteUrl('/templates');
+    const list = templates
+      .map((t) => `- [${t.name}](${absoluteUrl(`/templates/${t.slug}`)}): ${t.description} — PDF: ${absoluteUrl(t.pdfPath)}`)
+      .join('\n');
+    return {
+      canonical,
+      markdown: `# Free PDF Templates\n\n> Downloadable invoice and resume templates — free, no signup, no watermark.\n\nCanonical URL: ${canonical}\n\n## Templates\n\n${list}\n`,
+    };
+  }
+
+  if (path.startsWith('/templates/')) {
+    const slug = path.replace('/templates/', '');
+    const t = getTemplateBySlug(slug);
+    if (!t) return null;
+    const canonical = absoluteUrl(`/templates/${t.slug}`);
+    const faqs = t.faqs.map((f) => `### ${f.question}\n\n${f.answer}`).join('\n\n');
+    const steps = t.howToUse.map((s, i) => `${i + 1}. ${s}`).join('\n');
+    return {
+      canonical,
+      markdown: `# ${t.name} — Free PDF Download\n\n> ${t.description}\n\n- **Canonical URL:** [${canonical}](${canonical})\n- **Download:** [${t.pdfPath}](${absoluteUrl(t.pdfPath)})\n\n## What's Inside\n\n${t.whatInside.map((w) => `- ${w}`).join('\n')}\n\n## How to Use\n\n${steps}\n\n## Frequently Asked Questions\n\n${faqs}\n`,
+    };
+  }
+
+  // Glossary (/glossary and /glossary/[slug])
+  if (path === '/glossary') {
+    const canonical = absoluteUrl('/glossary');
+    const list = glossaryTerms
+      .map((t) => `- [${t.term}](${absoluteUrl(`/glossary/${t.slug}`)}): ${t.shortDef}`)
+      .join('\n');
+    return {
+      canonical,
+      markdown: `# PDF & Image Glossary\n\n> Plain-English definitions for PDF and image-processing terminology.\n\nCanonical URL: ${canonical}\n\n## Terms\n\n${list}\n`,
+    };
+  }
+
+  if (path.startsWith('/glossary/')) {
+    const slug = path.replace('/glossary/', '');
+    const t = getGlossaryTerm(slug);
+    if (!t) return null;
+    const canonical = absoluteUrl(`/glossary/${t.slug}`);
+    return {
+      canonical,
+      markdown: `# What Is ${t.term}?\n\n> ${t.shortDef}\n\nCanonical URL: ${canonical}\n\n${t.body.map((p) => `${p}\n`).join('\n')}\n- **Related tools:** ${t.relatedTools.join(', ')}\n- **Related terms:** ${t.relatedTerms.join(', ')}\n`,
+    };
+  }
+
+  // Blog topic indexes (/blog/category/[slug]) — must be matched before the
+  // generic /blog/ branch, which would otherwise treat 'category/x' as a slug.
+  if (path.startsWith('/blog/category/')) {
+    const catSlug = path.replace('/blog/category/', '');
+    const cat = getAllBlogCategories().find((c) => c.slug === catSlug);
+    if (!cat) return null;
+    const canonical = absoluteUrl(`/blog/category/${cat.slug}`);
+    const list = getBlogPostsByCategory(cat.slug)
+      .map((p) => `- [${p.title}](${absoluteUrl(`/blog/${p.slug}`)}): ${p.metaDescription}`)
+      .join('\n');
+    return {
+      canonical,
+      markdown: `# ${cat.name} Guides & Tutorials — PdfPixels Blog\n\n> Every ${cat.name.toLowerCase()} guide published on PdfPixels, with tested workflows and free tools.\n\nCanonical URL: ${canonical}\n\n## Guides\n\n${list}\n`,
+    };
+  }
+
   if (path.startsWith('/blog/')) {
     const slug = path.replace('/blog/', '').replace(/\/markdown$/, '');
     const post = getBlogPostBySlug(slug);
@@ -215,6 +284,71 @@ function buildPathMarkdown(rawPath: string): { markdown: string; canonical: stri
     return {
       canonical,
       markdown: `# PdfPixels Tool Comparisons\n\nCanonical URL: ${canonical}\n\n${list}\n`,
+    };
+  }
+
+  // Workflow pipelines (multi-tool chains run from a single upload)
+  if (path === '/workflows') {
+    const canonical = absoluteUrl('/workflows');
+    const list = WORKFLOW_RECIPES
+      .map((w) => `- [${w.title}](${absoluteUrl(`/workflows/${w.slug}`)}): ${w.description}`)
+      .join('\n');
+    return {
+      canonical,
+      markdown: `# PdfPixels Workflow Pipelines\n\n> One upload, chained tools: automated document pipelines that run multiple PdfPixels tools in sequence.\n\nCanonical URL: ${canonical}\n\n## Available Pipelines\n\n${list}\n`,
+    };
+  }
+
+  if (path.startsWith('/workflows/')) {
+    const slug = path.replace('/workflows/', '');
+    const wf = WORKFLOW_RECIPES.find((w) => w.slug === slug);
+    if (!wf) return null;
+    const canonical = absoluteUrl(`/workflows/${wf.slug}`);
+    const steps = wf.steps
+      .map((s, i) => `${i + 1}. **${s.toolSlug}**: ${s.title}`)
+      .join('\n');
+    const highlights = wf.highlights.map((h) => `- ${h}`).join('\n');
+    const faqs = wf.faqs.map((f) => `### ${f.question}\n\n${f.answer}`).join('\n\n');
+    return {
+      canonical,
+      markdown: `# ${wf.title} — PdfPixels Workflow\n\n> ${wf.heroSummary}\n\n- **Canonical URL:** [${canonical}](${canonical})\n- **Accepts:** ${wf.accept}${wf.multiple ? ` (up to ${wf.maxFiles} files)` : ''}\n- **Output:** ${wf.outputLabel}\n\n## Pipeline Steps\n\n${steps}\n\n## Highlights\n\n${highlights}\n\n## Frequently Asked Questions\n\n${faqs}\n`,
+    };
+  }
+
+  // Indian exam upload-spec pages (/in/[slug])
+  if (path === '/in') {
+    const canonical = absoluteUrl('/in');
+    const list = INDIAN_EXAM_PRESETS
+      .slice(0, 20)
+      .map((e) => `- [${e.name} photo & signature size rules](${absoluteUrl(`/in/${e.slug}`)}): ${e.photoSpec.widthMm}×${e.photoSpec.heightMm} mm, ${e.photoSpec.minKb}–${e.photoSpec.maxKb} KB`)
+      .join('\n');
+    return {
+      canonical,
+      markdown: `# Indian Exam Photo & Signature Size Presets — PdfPixels\n\n> Exact photo and signature upload specifications for Indian government and competitive exams, with ready-to-use resize presets.\n\nCanonical URL: ${canonical}\n\n## Exams\n\n${list}\n`,
+    };
+  }
+
+  if (path.startsWith('/in/')) {
+    const slug = path.replace('/in/', '');
+    const exam = INDIAN_EXAM_PRESETS.find((e) => e.slug === slug);
+    if (!exam) return null;
+    const canonical = absoluteUrl(`/in/${exam.slug}`);
+    const p = exam.photoSpec;
+    const photoSpec = `- **Photo size:** ${p.widthMm}×${p.heightMm} mm${p.widthPx && p.heightPx ? ` (${p.widthPx}×${p.heightPx} px)` : ''}\n- **File size:** ${p.minKb}–${p.maxKb} KB (recommended ${p.recommendedKb} KB)\n- **Resolution:** ${p.dpi} DPI\n- **Background:** ${p.background}${p.requiresNameAndDate ? '\n- **Name & date required:** yes' : ''}`;
+    const rules = exam.rulesSummary.map((r) => `- ${r}`).join('\n');
+    const faqs = exam.faqs.map((f) => `### ${f.question}\n\n${f.answer}`).join('\n\n');
+    return {
+      canonical,
+      markdown: `# ${exam.name} — Photo & Signature Size Rules (${new Date().getFullYear()})\n\n> Exact photo and signature upload specifications for the ${exam.name}, conducted by ${exam.authority}.\n\n- **Canonical URL:** [${canonical}](${canonical})\n\n## Photo Specifications\n\n${photoSpec}\n\n## Key Rules\n\n${rules}\n\n## Frequently Asked Questions\n\n${faqs}\n`,
+    };
+  }
+
+  // Research studies
+  if (path === '/research/compression-benchmark-2026') {
+    const canonical = absoluteUrl('/research/compression-benchmark-2026');
+    return {
+      canonical,
+      markdown: `# JPEG Quality Benchmark 2026\n\n> 40 real web images re-compressed at JPEG qualities 95–50 and WebP 65–85 with the mozjpeg engine — exact byte counts and visual deltas.\n\nCanonical URL: ${canonical}\n\n## Key Data (average bytes per image)\n\n- JPEG 95: 170,654 bytes (master)\n- JPEG 90: 125,298 bytes (26.6% smaller)\n- JPEG 85: 99,830 bytes (41.5% smaller)\n- JPEG 80: 85,128 bytes (50.1% smaller)\n- JPEG 70: 64,413 bytes (62.2% smaller)\n- JPEG 60: 54,050 bytes (68.3% smaller)\n- JPEG 50: 46,906 bytes (72.5% smaller)\n- WebP 85: 71,283 bytes | WebP 75: 47,421 bytes | WebP 65: 42,266 bytes\n\n## Findings\n\n1. Quality 85 is the best single trade: 41.5% smaller with invisible pixel delta (<2/255).\n2. Quality 95→90 costs 26.6% of size for a 0.4 delta — pure waste.\n3. WebP 85 beats JPEG 80 by 16%; WebP 75 undercuts JPEG 70 by 26%.\n4. Below quality 70, degradation accelerates faster than savings.\n5. Target-size compression (iterate per image) beats guessing a fixed quality.\n\nMethodology: sharp 0.35 with mozjpeg over 40 real 1280px images; reproducible script in the repository.\n`,
     };
   }
 

@@ -4,7 +4,6 @@ import { SITE_URL } from '@/lib/seo';
 
 export async function GET() {
   const baseUrl = SITE_URL;
-  const currentDate = new Date().toUTCString();
   const blogPosts = getAllBlogPosts();
 
   const blogItems = blogPosts.map((post) => {
@@ -15,6 +14,7 @@ export async function GET() {
       description: post.metaDescription || post.excerpt,
       link: `${baseUrl}/blog/${post.slug}`,
       pubDate: new Date(post.date).toUTCString(),
+      modifiedDate: post.dateModified ? new Date(post.dateModified).toUTCString() : null,
       category: post.category,
       author: post.author,
       coverImage: post.coverImage,
@@ -23,6 +23,13 @@ export async function GET() {
       mimeType,
     };
   });
+
+  // Channel dates reflect actual content freshness (newest post publish/update),
+  // not request time — stale-looking feeds hurt feed-reader and crawler trust.
+  const newestDate = blogItems.reduce((latest, item) => {
+    const candidate = item.modifiedDate ?? item.pubDate;
+    return new Date(candidate) > new Date(latest) ? candidate : latest;
+  }, blogItems[0]?.pubDate ?? new Date().toUTCString());
 
   const rssFeed = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0"
@@ -39,11 +46,11 @@ export async function GET() {
     <description>Latest blog posts, tutorials, and workflow guides from PdfPixels.</description>
     <language>en-us</language>
     <copyright>Copyright ${new Date().getFullYear()} PdfPixels. All rights reserved.</copyright>
-    <lastBuildDate>${currentDate}</lastBuildDate>
-    <pubDate>${currentDate}</pubDate>
+    <lastBuildDate>${newestDate}</lastBuildDate>
+    <pubDate>${newestDate}</pubDate>
     <generator>PdfPixels RSS Generator</generator>
     <webMaster>support@pdfpixels.com</webMaster>
-    <managingEditor>support@pdfpixels.com</managingEditor>
+    <managingEditor>Yuvi Parmar &lt;support@pdfpixels.com&gt;</managingEditor>
     <category>Image Processing</category>
     <category>PDF Tools</category>
     <category>Tutorials</category>
@@ -51,11 +58,11 @@ export async function GET() {
     <sy:updatePeriod>daily</sy:updatePeriod>
     <sy:updateFrequency>1</sy:updateFrequency>
     <image>
-      <url>${baseUrl}/icon-192.png</url>
+      <url>${baseUrl}/icon-512.png</url>
       <title>PdfPixels</title>
       <link>${baseUrl}</link>
-      <width>192</width>
-      <height>192</height>
+      <width>512</width>
+      <height>512</height>
     </image>
 
     ${blogItems

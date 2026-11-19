@@ -13,7 +13,7 @@ import { ArticleNavigation } from "@/components/blog/ArticleNavigation";
 import { HeaderAd, InContentAd, FooterAd, NativeAd } from "@/components/ads/ad-banner";
 import { ToolSidebarAd } from "@/components/ads/tool-sidebar-ad";
 import { adsConfig, adsenseConfig } from "@/lib/ads-config";
-import { ArrowLeft, Clock, Calendar, ArrowRight, User } from "lucide-react";
+import { ArrowLeft, Clock, Calendar, CalendarClock, ArrowRight, User } from "lucide-react";
 
 // Generate static params
 export function generateStaticParams() {
@@ -345,6 +345,14 @@ export default async function BlogPostPage({
                                             <Calendar className="w-4 h-4 text-primary" />
                                             <time dateTime={isoDate} className="font-medium">{post.date}</time>
                                         </span>
+                                        {isoModifiedDate !== isoDate && (
+                                            <span className="flex items-center gap-1.5">
+                                                <CalendarClock className="w-4 h-4 text-primary" />
+                                                <span>
+                                                    Updated <time dateTime={isoModifiedDate} className="font-medium">{post.dateModified}</time>
+                                                </span>
+                                            </span>
+                                        )}
                                         <span className="flex items-center gap-1.5">
                                             <Clock className="w-4 h-4 text-primary" />
                                             <span className="font-medium">{post.readTime}</span>

@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import NextImage from "next/image";
-import { getBlogPostsForListing } from "@/config/blog";
+import { getBlogPostsForListing, getAllBlogCategories } from "@/config/blog";
 import { siteConfig } from "@/lib/seo-config";
 import { allTools } from "@/lib/tools-data";
 import { Clock, ArrowRight, BookOpen, Sparkles, CalendarDays } from "lucide-react";
@@ -62,6 +62,7 @@ export const metadata: Metadata = {
 
 export default function BlogPage() {
     const blogPosts = getBlogPostsForListing();
+    const blogCategories = getAllBlogCategories();
     const featuredPost = blogPosts[0];
     const otherPosts = blogPosts.slice(1);
 
@@ -129,6 +130,23 @@ export default function BlogPage() {
                         </p>
                     </div>
                 </section>
+
+                {/* Category navigation chips — crawlable topic indexes */}
+                {blogCategories.length > 0 && (
+                    <div className="container mx-auto px-4 lg:px-8 -mt-4 mb-8 relative z-10">
+                        <div className="flex flex-wrap items-center justify-center gap-2">
+                            {blogCategories.map((cat) => (
+                                <Link
+                                    key={cat.slug}
+                                    href={`/blog/category/${cat.slug}`}
+                                    className="px-3.5 py-1.5 rounded-full text-xs font-semibold bg-muted/60 text-muted-foreground border border-border/60 hover:border-primary/40 hover:text-primary hover:bg-primary/5 transition-colors"
+                                >
+                                    {cat.name} ({cat.postCount})
+                                </Link>
+                            ))}
+                        </div>
+                    </div>
+                )}
 
                 {/* Top Leaderboard Ad */}
                 <HeaderAd className="my-8" />

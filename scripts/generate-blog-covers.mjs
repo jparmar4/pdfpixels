@@ -175,6 +175,24 @@ const ICONS = {
 
 const COVERS = [
   {
+    file: 'convert-scanned-pdf-to-word-hero.jpg',
+    headline: 'Scanned PDF to Editable Word — Free OCR Workflow',
+    kicker: 'OCR · TWO STEPS · FREE',
+    icon: ICONS.scan,
+  },
+  {
+    file: 'pdf-to-word-problems-fix-hero.jpg',
+    headline: 'PDF to Word Not Working? 7 Fixes',
+    kicker: 'TROUBLESHOOTING GUIDE',
+    icon: ICONS.repair,
+  },
+  {
+    file: 'tax-forms-fill-sign-online-hero.jpg',
+    headline: 'Fill & Sign IRS Tax Forms Online Free',
+    kicker: 'W-9 · W-4 · I-9 GUIDE',
+    icon: ICONS.form,
+  },
+  {
     file: 'resize-photo-600x600-dv-lottery-hero.jpg',
     headline: '600 × 600 Photo for DV Lottery & Visa Forms',
     kicker: 'STEP-BY-STEP GUIDE',

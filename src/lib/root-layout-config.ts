@@ -108,3 +108,30 @@ export const rootViewport: Viewport = {
   viewportFit: 'cover',
   colorScheme: 'light dark',
 };
+
+/**
+ * Locale route groups ((de)/(es)/(fr)/(jp)/(pt)) reuse the English root layout
+ * shell — but their fallback metadata must not ship English OG tags on a
+ * `lang="de"` document. Per-page metadata (regionMetadata/localizedMetadata)
+ * still overrides everything; this is the group-level safety net.
+ */
+const LOCALE_OG: Record<string, { locale: string; fallbacks?: string[] }> = {
+  de: { locale: 'de_DE' },
+  es: { locale: 'es_ES' },
+  fr: { locale: 'fr_FR' },
+  jp: { locale: 'ja_JP' },
+  pt: { locale: 'pt_BR' },
+};
+
+export function localeRootMetadata(lang: string): Metadata {
+  const og = LOCALE_OG[lang];
+  if (!og) return rootMetadata;
+  return {
+    ...rootMetadata,
+    openGraph: {
+      ...rootMetadata.openGraph,
+      locale: og.locale,
+      alternateLocale: ['en_US'],
+    },
+  };
+}

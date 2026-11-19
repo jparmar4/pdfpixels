@@ -95,6 +95,12 @@ const deTools: Record<LocalizedToolSlug, LocalizedToolCopy> = {
       'Die Reihenfolge per Ziehen festlegen.',
       'Eine PDF herunterladen.',
     ],
+    faqs: [
+      { question: 'Wie viele PDF-Dateien kann ich gleichzeitig zusammenführen?', answer: 'Bis zu 20 Dateien in einem Durchlauf — jede maximal 50 MB, zusammen höchstens 100 MB und 1000 Seiten. Für größere Stapel führen Sie die Dateien in mehreren Runden zusammen.' },
+      { question: 'Bleibt die Qualität von Text und Bildern beim Zusammenführen erhalten?', answer: 'Ja. Die Seiten werden 1:1 übernommen, ohne Neu-Komprimierung oder Rasterung — Text bleibt scharf und selektierbar, Bilder behalten ihre Originalqualität.' },
+      { question: 'Kann ich die Reihenfolge der Dateien ändern?', answer: 'Ja. Ziehen Sie die Dateikarten vor dem Zusammenführen in die gewünschte Reihenfolge — die Seitenreihenfolge im fertigen PDF entspricht genau dieser Anordnung.' },
+      { question: 'Werden die hochgeladenen Dateien gespeichert?', answer: 'Nein. Die Verarbeitung läuft verschlüsselt über TLS, und alle hochgeladenen Dateien werden spätestens 60 Minuten nach der Zusammenführung automatisch gelöscht.' },
+    ],
   },
   'split-pdf': {
     name: 'PDF teilen',
@@ -106,6 +112,12 @@ const deTools: Record<LocalizedToolSlug, LocalizedToolCopy> = {
       'PDF hochladen (höchstens 50 MB).',
       'Seiten oder einen Bereich angeben. Ein Extrakt umfasst höchstens 50 Seiten.',
       'PDF oder ZIP herunterladen.',
+    ],
+    faqs: [
+      { question: 'Wie gebe ich bestimmte Seiten zum Heraustrennen an?', answer: 'Geben Sie einzelne Seiten (z. B. 3) oder Bereiche (z. B. 5-12) an — auch Kombinationen sind möglich. Der Extrakt wird als eigenständige PDF gespeichert.' },
+      { question: 'Kann ich alle Seiten in einzelne Dateien aufteilen?', answer: 'Ja. Der Modus „Alle Seiten teilen“ liefert ein ZIP-Archiv mit einer PDF pro Seite und funktioniert bis zu 20 Seiten pro Durchlauf.' },
+      { question: 'Bleiben Text und Formatierung im getrennten Dokument erhalten?', answer: 'Ja. Die Seiten werden als Original-PDF-Objekte übernommen — Text bleibt selektierbar, Bilder und Vektoren bleiben scharf.' },
+      { question: 'Ist das Teilen passwortgeschützter PDFs möglich?', answer: 'Nicht direkt. Entfernen Sie das Passwort zuerst mit dem kostenlosen Tool „PDF entsperren“ (Sie benötigen das bekannte Passwort), danach können Sie die Datei teilen.' },
     ],
   },
   'pdf-to-jpg': {
@@ -131,6 +143,12 @@ const deTools: Record<LocalizedToolSlug, LocalizedToolCopy> = {
       'Seitengröße und Passform wählen.',
       'Die PDF herunterladen.',
     ],
+    faqs: [
+      { question: 'Welche Bildformate werden unterstützt?', answer: 'JPG, PNG, WebP und HEIC (iPhone-Fotos) — bis zu 30 Bilder pro PDF, je 15 MB und zusammen höchstens 120 MB.' },
+      { question: 'Welche Seitengröße sollte ich wählen?', answer: 'Passbild (Bild füllt die Seite komplett) für Foto-Serien, A4 für Druck und Abgabe, Letter für den US-Raum. Ausrichtung und Ränder stellen Sie vor dem Erzeugen ein.' },
+      { question: 'Bleibt die Bildqualität erhalten?', answer: 'Ja — die Bilder werden in ihrer Originalauflösung eingebettet, nicht neu skaliert oder komprimiert.' },
+      { question: 'Kann ich die Reihenfolge der Bilder ändern?', answer: 'Ja, per Ziehen vor dem Erzeugen — die Seitenreihenfolge in der PDF entspricht dieser Anordnung.' },
+    ],
   },
   'heic-to-jpg': {
     name: 'HEIC in JPG',
@@ -154,6 +172,12 @@ const deTools: Record<LocalizedToolSlug, LocalizedToolCopy> = {
       'Gescanntes PDF hochladen (höchstens 50 MB).',
       'Die Texterkennung starten.',
       'Text kopieren oder als TXT herunterladen.',
+    ],
+    faqs: [
+      { question: 'Wie genau ist die Texterkennung?', answer: 'Bei sauberen, geraden Scans von Laserdrucker-Seiten ist die Erkennung nahezu perfekt. Fax, Fotokopien und schiefe Seiten brauchen eine Nachkontrolle; Handschrift wird nur in Blockbuchstaben zuverlässig erkannt.' },
+      { question: 'Wie viele Seiten kann ich pro Durchlauf erkennen?', answer: 'Bis zu 10 Seiten pro Durchlauf. Bei längeren Dokumenten teilen Sie die PDF zuerst (kostenloses Tool „PDF teilen“) und erkennen die Teile nacheinander.' },
+      { question: 'Läuft die Texterkennung auf meinem Gerät oder auf dem Server?', answer: 'Die OCR-Engine (Tesseract) läuft direkt in Ihrem Browser via WebAssembly — die gescannten Seiten verlassen Ihr Gerät bei der Erkennung nicht.' },
+      { question: 'Kann ich den erkannten Text weiterverwenden?', answer: 'Ja — als durchsuchbaren Text kopieren oder als TXT speichern. Für ein editierbares Word-Dokument konvertieren Sie das OCR-Ergebnis anschließend mit „PDF in Word“.' },
     ],
   },
   'split-pdf-by-size': {
@@ -215,6 +239,12 @@ const deTools: Record<LocalizedToolSlug, LocalizedToolCopy> = {
       'Die Umwandlung starten.',
       'Word-Datei herunterladen und prüfen.',
     ],
+    faqs: [
+      { question: 'Warum sieht mein Word-Dokument anders aus als die PDF?', answer: 'PDF speichert Text an exakten Positionen ohne Absatz-Logik. Absätze, Listen und einfache Tabellen überträgt der Konverter sauber; mehrspaltige Layouts und Design-PDFs brauchen anschließend kleine Korrekturen in Word.' },
+      { question: 'Funktioniert die Umwandlung auch bei Scans?', answer: 'Nur eingeschränkt — ein Scan besteht aus Bildern ohne echten Text. Erkennen Sie den Text zuerst mit dem kostenlosen PDF-OCR-Tool, dann konvertieren Sie das OCR-Ergebnis nach Word.' },
+      { question: 'Kann ich die Word-Datei auch in Google Docs öffnen?', answer: 'Ja. Die .docx-Datei öffnet sich in Microsoft Word, Google Docs, LibreOffice und Pages. Bei tabellenlastigen Dokumenten exportieren Sie aus Google Docs erneut als .docx.' },
+      { question: 'Was passiert mit meinen Daten bei der Konvertierung?', answer: 'Die Datei wird verschlüsselt übertragen, ephemeral verarbeitet und spätestens 60 Minuten nach der Konvertierung automatisch gelöscht — keine dauerhafte Speicherung, kein Konto nötig.' },
+    ],
   },
   'remove-image-background': {
     name: 'Hintergrund entfernen',
@@ -251,6 +281,12 @@ const deTools: Record<LocalizedToolSlug, LocalizedToolCopy> = {
       'Die Tabellen-Erkennung starten.',
       'Excel- oder CSV-Datei herunterladen.',
     ],
+    faqs: [
+      { question: 'Werden Tabellenzeilen und -spalten korrekt übernommen?', answer: 'Ja — die Tabellen-Erkennung arbeitet mit den exakten Textkoordinaten der PDF und behält Zeilen- und Spaltenstruktur bei, auch bei mehrseitigen Rechnungen und Kontoauszügen.' },
+      { question: 'Soll ich XLSX oder CSV exportieren?', answer: 'XLSX, wenn Sie die Tabelle zuerst prüfen oder Formeln nutzen möchten. CSV für den Direktimport in Buchhaltungsprogramme wie DATEV, Lexoffice oder sevDesk.' },
+      { question: 'Kann ich Kontoauszüge von meiner Bank umwandeln?', answer: 'Ja — für häufige Banken gibt es das spezialisierte Tool „Kontoauszug in Excel“ mit abstimmsicherer Spaltentrennung für Debit/Habit.' },
+      { question: 'Wie wird meine Datei behandelt?', answer: 'Verschlüsselte Übertragung, temporäre Verarbeitung, automatische Löschung spätestens 60 Minuten nach der Konvertierung — ohne dauerhafte Speicherung.' },
+    ],
   },
   'sign-pdf': {
     name: 'PDF signieren',
@@ -262,6 +298,12 @@ const deTools: Record<LocalizedToolSlug, LocalizedToolCopy> = {
       'PDF hochladen (höchstens 50 MB).',
       'Unterschrift erstellen und platzieren.',
       'Signiertes PDF herunterladen.',
+    ],
+    faqs: [
+      { question: 'Ist eine elektronische Unterschrift rechtlich gültig?', answer: 'Ja — nach der eIDAS-Verordnung (EU) und dem US-ESIGN-Gesetz sind gezeichnete oder getippte Signaturen für die allermeisten Verträge rechtsverbindlich.' },
+      { question: 'Wie erstelle ich meine Unterschrift?', answer: 'Drei Wege: mit Maus oder Finger zeichnen, den Namen tippen, oder ein Foto der handschriftlichen Unterschrift hochladen. Die Signatur platzieren Sie per Klick auf der Seite.' },
+      { question: 'Wird meine Unterschrift oder mein Dokument hochgeladen?', answer: 'Nein — das Signieren läuft vollständig lokal im Browser. Unterschrift und Dokument verlassen Ihr Gerät nicht.' },
+      { question: 'Kann ich Datum und weitere Felder ergänzen?', answer: 'Ja, Datumstempel und Textfelder lassen sich zusätzlich platzieren — nützlich für Verträge und Formulare.' },
     ],
   },
   'unlock-pdf': {
@@ -286,6 +328,12 @@ const deTools: Record<LocalizedToolSlug, LocalizedToolCopy> = {
       'PDF hochladen (höchstens 50 MB).',
       'Sicheres Passwort vergeben.',
       'Geschütztes PDF herunterladen.',
+    ],
+    faqs: [
+      { question: 'Wie sicher ist der Passwortschutz?', answer: 'Das Dokument wird per AES-Verschlüsselung geschützt — dem Industriestandard, den auch Banken und Behörden nutzen. Ohne Passwort ist der Inhalt nicht lesbar.' },
+      { question: 'Öffnet die geschützte PDF auch in Adobe Reader und auf dem Handy?', answer: 'Ja. Die Verschlüsselung entspricht dem PDF-Standard und funktioniert in allen gängigen Viewern — Adobe Reader, Vorschau (macOS), Chrome und mobile Apps.' },
+      { question: 'Was passiert, wenn ich das Passwort vergesse?', answer: 'Es gibt keine Wiederherstellung — speichern Sie das Passwort sicher ab (Passwort-Manager). Aus diesem Grund können wir geschützte PDFs nur mit dem bekannten Passwort entsperren.' },
+      { question: 'Kann ich mehrere PDFs mit demselben Passwort schützen?', answer: 'Ja — schützen Sie jede Datei einzeln mit demselben Passwort, oder führen Sie die Dateien zuerst zusammen und schützen das gemeinsame Dokument einmal.' },
     ],
   },
   'pdf-to-png': {

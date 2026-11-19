@@ -93,6 +93,26 @@ export const comparisonPages: ComparisonPage[] = [
         pdfpixels: 'Strong crossover with image KB targets and HEIC/JPG jobs',
         alternative: 'Deep PDF-centric product lineup',
       },
+      {
+        topic: 'Size targets',
+        pdfpixels: 'Exact-KB presets (50/100/200/300/500 KB, under 1 MB) for portal and email limits',
+        alternative: 'General compression levels without fixed KB targets',
+      },
+      {
+        topic: 'Sign-up friction',
+        pdfpixels: 'No account needed for any compression run',
+        alternative: 'Free usage is metered; heavier use nudges toward a paid plan',
+      },
+      {
+        topic: 'File handling',
+        pdfpixels: 'Browser-native engine for most compression; server-assisted jobs are ephemeral and purged',
+        alternative: 'Cloud processing tied to your account history',
+      },
+      {
+        topic: 'Related formats',
+        pdfpixels: 'Same site handles image compression, HEIC, WebP, and Office conversions',
+        alternative: 'PDF-first focus with fewer image-side utilities',
+      },
     ],
     verdict:
       'For occasional “make this PDF emailable” tasks, PdfPixels is a solid free path. If you live in Smallpdf’s paid ecosystem, staying there reduces tool switching.',
@@ -100,6 +120,22 @@ export const comparisonPages: ComparisonPage[] = [
       {
         question: 'Will either tool keep scanned text perfectly sharp at tiny sizes?',
         answer: 'Aggressive compression softens scan quality. Start moderate and only go harder if the size limit demands it.',
+      },
+      {
+        question: 'Do I need an account to compress a PDF?',
+        answer: 'Not on PdfPixels — compression runs without any sign-up. Metered free tiers on established platforms typically require an account and cap daily tasks before prompting you to upgrade.',
+      },
+      {
+        question: 'Can I compress a PDF to an exact size like 200 KB?',
+        answer: 'Yes. PdfPixels ships dedicated KB-target tools (compress-pdf-to-200kb and similar presets) that iterate compression until the file lands under the target — useful for government portals and email attachments with hard limits.',
+      },
+      {
+        question: 'Does compressing a PDF damage the text?',
+        answer: 'No. Text in PDFs is vector data — it recompresses without any quality loss. Compression only resamples images and scans, which is why photo-heavy pages soften first. Always preview a compressed scan before sending it.',
+      },
+      {
+        question: 'Which is better for compressing dozens of files?',
+        answer: 'Both handle single files quickly. For folder-sized jobs, PdfPixels offers local batch processing in the browser so files never upload one by one.',
       },
     ],
   },
@@ -246,6 +282,21 @@ export const comparisonPages: ComparisonPage[] = [
         pdfpixels: 'Free-tool oriented for common tasks',
         alternative: 'Freemium/paid professional ecosystem',
       },
+      {
+        topic: 'Sign-up friction',
+        pdfpixels: 'No account required — upload and download immediately',
+        alternative: 'Some Acrobat online tasks are gated behind Adobe sign-in',
+      },
+      {
+        topic: 'Page range control',
+        pdfpixels: 'Pick specific pages or export every page in one run',
+        alternative: 'Conversion follows the open document’s full page set',
+      },
+      {
+        topic: 'Related jobs',
+        pdfpixels: 'Same site converts the images onward: WebP, PNG, resize, compress-to-KB',
+        alternative: 'Deep PDF-side features (OCR, standards, redaction) around it',
+      },
     ],
     verdict:
       'Choose PdfPixels for quick PDF page images. Choose Adobe when PDF is core professional infrastructure for your work.',
@@ -253,6 +304,18 @@ export const comparisonPages: ComparisonPage[] = [
       {
         question: 'Does conversion preserve fonts as text?',
         answer: 'JPG is a picture of the page. Text becomes pixels — fine for viewing, not for text editing.',
+      },
+      {
+        question: 'What resolution are the JPG pages?',
+        answer: 'PdfPixels renders pages at a sharp default suited for sharing and printing, and the adjacent resize tool can produce exact pixel dimensions for portals that specify them.',
+      },
+      {
+        question: 'Can I convert just one page of a long PDF?',
+        answer: 'Yes — select the page range before converting rather than exporting all pages and deleting the rest.',
+      },
+      {
+        question: 'Which is better for confidential documents?',
+        answer: 'PdfPixels renders PDF pages in your browser, so page images never leave your device. Cloud converters upload the full document to their servers before rendering — acceptable for everyday files, a consideration for contracts and records.',
       },
     ],
   },
@@ -525,6 +588,16 @@ export const comparisonPages: ComparisonPage[] = [
         pdfpixels: 'Out of scope — filling and flattening only',
         alternative: 'Deep support for form authoring and validation',
       },
+      {
+        topic: 'Signature placement',
+        pdfpixels: 'Paired with a free signature tool — draw, type, or upload once',
+        alternative: 'Integrated but entangled with Adobe Sign account features',
+      },
+      {
+        topic: 'Device reach',
+        pdfpixels: 'Same browser workflow on phone, tablet, and desktop',
+        alternative: 'Best experience on desktop with the installed reader',
+      },
     ],
     verdict:
       'For the everyday fill-and-return task, PdfPixels does it free in a browser — including scanned forms. Stay on Acrobat when organizational form workflows and authoring justify the subscription.',
@@ -536,6 +609,18 @@ export const comparisonPages: ComparisonPage[] = [
       {
         question: 'Why do some portals reject my filled form?',
         answer: 'Many systems require flattened PDFs — answers baked in and fields removed. Run the completed file through Flatten PDF and upload again; this applies regardless of which tool filled the form.',
+      },
+      {
+        question: 'Can I fill an IRS W-9 or W-4 with either tool?',
+        answer: 'Yes. PdfPixels even ships a dedicated W-9 preset with the IRS field boxes pre-mapped, so you can tab through name, classification, and TIN in order instead of clicking each line.',
+      },
+      {
+        question: 'Is it safe to type my SSN into an online form filler?',
+        answer: 'On PdfPixels, filling runs locally in your browser via WebAssembly — the document with your SSN never leaves your device. That is the main privacy edge over cloud fillers for tax and ID forms.',
+      },
+      {
+        question: 'Does filling work on scanned paper forms?',
+        answer: 'Yes — that is one of the main use cases. The tool types your answers directly onto the scanned page image, no interactive form fields required.',
       },
     ],
   },
@@ -623,6 +708,16 @@ export const comparisonPages: ComparisonPage[] = [
         pdfpixels: 'Lightweight HTML5 touch canvas optimized for smartphones, tablets, and desktops',
         alternative: 'Complex interface with heavier browser memory footprint',
       },
+      {
+        topic: 'Processing location',
+        pdfpixels: 'Signing executes locally in the browser — the document never uploads',
+        alternative: 'Documents round-trip through Adobe cloud storage',
+      },
+      {
+        topic: 'Reusable signature',
+        pdfpixels: 'Generate a clean signature image once and reuse it across documents',
+        alternative: 'Signature profiles tied to your Adobe ID profile',
+      },
     ],
     verdict:
       'Choose PdfPixels Sign PDF when you need to sign a document yourself quickly and download it with zero barriers. Choose Adobe Acrobat when your legal department requires formal multi-party audit trails and cryptographic digital signatures.',
@@ -634,6 +729,14 @@ export const comparisonPages: ComparisonPage[] = [
       {
         question: 'Is my signature stored on your server?',
         answer: 'No. PdfPixels executes document signing directly in your browser using local canvas and WebAssembly technologies. Your signature and document are never retained on our servers.',
+      },
+      {
+        question: 'Can I sign a PDF on my phone?',
+        answer: 'Yes — the signing canvas is touch-first, so drawing with a finger or stylus on a phone or tablet works exactly like on desktop. A common mobile flow is covered in the sign-PDF-on-phone guide.',
+      },
+      {
+        question: 'When do I actually need Adobe Acrobat Sign?',
+        answer: 'When you need certificate-based digital signatures, sequential multi-party routing with automatic reminders, or court/enterprise workflows that mandate an audit trail service. Simple self-signing does not require any of that.',
       },
     ],
   },
@@ -672,6 +775,16 @@ export const comparisonPages: ComparisonPage[] = [
         pdfpixels: 'Streamlined binary assembly avoiding heavy third-party tracker overhead',
         alternative: 'Heavier client application with upsell modals and subscription prompts',
       },
+      {
+        topic: 'Post-merge pipeline',
+        pdfpixels: 'Chain straight into compress, split, page numbers, or Bates stamping on the same site',
+        alternative: 'Strong suite too — merging is one step inside a larger catalog',
+      },
+      {
+        topic: 'Storage integration',
+        pdfpixels: 'Local-first: files come from and return to your device',
+        alternative: 'Convenient Drive/Dropbox connectors for cloud-centered workflows',
+      },
     ],
     verdict:
       'PdfPixels Merge PDF is the superior choice for everyday users, freelancers, and students who need unrestricted document merging without artificial daily limits. Smallpdf suits enterprise teams already committed to their paid suite.',
@@ -683,6 +796,14 @@ export const comparisonPages: ComparisonPage[] = [
       {
         question: 'Will merging reduce the quality of embedded photos or text?',
         answer: 'No. PdfPixels combines PDF object trees directly without rasterizing pages or re-compressing images, ensuring 100% preservation of original vector typography and sharp images.',
+      },
+      {
+        question: 'How many files can I merge in one go?',
+        answer: 'There is no artificial cap — practical limits are browser memory for very large combined documents. For huge sets, merge in groups and then combine the groups.',
+      },
+      {
+        question: 'Does merging work the same on mobile?',
+        answer: 'Yes. The drag-and-drop assembly works with touch on phones and tablets, and the downloaded file lands in your device’s downloads folder.',
       },
     ],
   },
@@ -721,6 +842,16 @@ export const comparisonPages: ComparisonPage[] = [
         pdfpixels: '100% compliant OpenXML (.docx) opening natively in Word, Docs, and Pages',
         alternative: 'Standard DOCX output with occasional formatting shifts on complex layouts',
       },
+      {
+        topic: 'Scanned-document path',
+        pdfpixels: 'Paired free OCR tool adds a text layer before conversion — see the scanned-PDF-to-Word workflow',
+        alternative: 'OCR conversion gated behind the premium plan',
+      },
+      {
+        topic: 'Usage limits',
+        pdfpixels: 'No daily task counter, no file-count quotas',
+        alternative: 'Free tier task caps with upgrade prompts at the moment you need the result',
+      },
     ],
     verdict:
       'PdfPixels PDF to Word delivers clean, editable DOCX documents without holding essential text extraction features behind a subscription paywall. iLovePDF is suitable for enterprise users with existing bulk API pipelines.',
@@ -731,7 +862,15 @@ export const comparisonPages: ComparisonPage[] = [
       },
       {
         question: 'Does the conversion work for scanned documents?',
-        answer: 'Yes. PdfPixels extracts embedded text and layout structures, allowing you to edit text, update tables, and adjust formatting immediately.',
+        answer: 'For image-only scans, add the OCR step first — no converter can produce text from pixels directly. The full free workflow is documented in the scanned-PDF-to-Word guide.',
+      },
+      {
+        question: 'What is the maximum file size I can convert?',
+        answer: 'PdfPixels accepts PDFs up to 50 MB, which covers the vast majority of contracts, reports, and academic papers. Larger scanned bundles should be split or compressed first.',
+      },
+      {
+        question: 'Will my tables and bullet lists survive conversion?',
+        answer: 'Simple tables convert into native editable Word tables and bullet lists stay as lists. Designer layouts with merged cells and floating text boxes may need minor cleanup — the conversion-problems guide covers the common fixes.',
       },
     ],
   },

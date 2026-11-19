@@ -141,6 +141,11 @@ const WORKSPACE_CONTAINER_CLASS: Record<string, string> = {
   'pdf-accessibility-checker': 'container mx-auto px-4 lg:px-8 max-w-6xl',
   'local-folder-batch-processor': 'container mx-auto px-4 lg:px-8 max-w-6xl',
   'ecommerce-product-photo-pack': 'container mx-auto px-4 lg:px-8 max-w-6xl',
+  'invoice-generator': 'container mx-auto px-4 lg:px-8 max-w-6xl',
+  'pdf-editor': 'container mx-auto px-4 lg:px-8 max-w-6xl',
+  'scan-to-pdf': 'container mx-auto px-4 lg:px-8 max-w-6xl',
+  'resume-builder': 'container mx-auto px-4 lg:px-8 max-w-6xl',
+  'csv-to-pdf': 'container mx-auto px-4 lg:px-8 max-w-6xl',
   'c2pa-ai-content-credentials-checker': 'container mx-auto px-4 lg:px-8 max-w-5xl',
   'private-ai-pdf-contract-auditor': 'container mx-auto px-4 lg:px-8 max-w-5xl',
   // max-w-5xl workspaces
