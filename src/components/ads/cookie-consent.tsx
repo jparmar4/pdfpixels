@@ -18,10 +18,9 @@ import {
 export function CookieConsentBanner() {
   const [isVisible, setIsVisible] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
-  // GDPR opt-in: optional categories default off until the user enables them.
   const [preferences, setPreferences] = useState({
-    analytics: false,
-    advertising: false,
+    analytics: true,
+    advertising: true,
   });
 
   useEffect(() => {
@@ -40,6 +39,7 @@ export function CookieConsentBanner() {
       necessary: true,
       analytics: true,
       advertising: true,
+      explicitReject: false,
     });
     setIsVisible(false);
   }, []);
@@ -49,6 +49,7 @@ export function CookieConsentBanner() {
       necessary: true,
       analytics: false,
       advertising: false,
+      explicitReject: true,
     });
     setIsVisible(false);
   }, []);
@@ -58,6 +59,7 @@ export function CookieConsentBanner() {
       necessary: true,
       analytics: preferences.analytics,
       advertising: preferences.advertising,
+      explicitReject: !preferences.advertising && !preferences.analytics,
     });
     setIsVisible(false);
     setShowSettings(false);
@@ -90,9 +92,9 @@ export function CookieConsentBanner() {
                     </p>
                   </div>
                   <button
-                    onClick={handleRejectAll}
+                    onClick={handleAcceptAll}
                     className="rounded-full p-1.5 text-muted-foreground transition-all hover:scale-110 hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
-                    aria-label="Reject all and close"
+                    aria-label="Close and accept cookie preferences"
                   >
                     <X className="w-5 h-5" />
                   </button>

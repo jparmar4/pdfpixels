@@ -20,6 +20,8 @@ export const adsenseConfig = {
 export const adsterraConfig = {
   enabled: process.env.NEXT_PUBLIC_ADSTERRA_ENABLED !== 'false',
   scriptHost: process.env.NEXT_PUBLIC_ADSTERRA_HOST || 'https://bauval.org',
+  fallbackScriptHost:
+    process.env.NEXT_PUBLIC_ADSTERRA_FALLBACK_HOST || 'https://www.highperformanceformat.com',
   smartlink:
     process.env.NEXT_PUBLIC_ADSTERRA_SMARTLINK ||
     'https://araplhn.org/4/e2520ac9b4a8217fc6f4ca143b25a1a2',
@@ -175,8 +177,8 @@ export const adsConfig = {
 
 // Cookie consent configuration
 export const cookieConfig = {
-  // Cookie name for storing consent
-  cookieName: 'cookie-consent',
+  // Cookie name for storing consent (v2 avoids stale accidental false values from prior banner close)
+  cookieName: 'pp-cookie-consent-v2',
 
   // Cookie expiration in days
   cookieExpiration: 365,
@@ -206,21 +208,26 @@ export type CookieConsent = {
   necessary: boolean;
   analytics: boolean;
   advertising: boolean;
+  explicitReject?: boolean;
   timestamp: number;
 };
 
-// Check if advertising consent is given
+// Check if advertising consent is given (allowed by default unless explicitly opted out)
 export function hasAdvertisingConsent(): boolean {
   if (typeof window === 'undefined') return false;
   const consent = getConsent();
-  return consent?.advertising ?? false;
+  if (!consent) return true;
+  if (consent.explicitReject === false && consent.advertising === false) return true;
+  return consent.advertising !== false;
 }
 
-// Check if analytics consent is given
+// Check if analytics consent is given (allowed by default unless explicitly opted out)
 export function hasAnalyticsConsent(): boolean {
   if (typeof window === 'undefined') return false;
   const consent = getConsent();
-  return consent?.analytics ?? false;
+  if (!consent) return true;
+  if (consent.explicitReject === false && consent.analytics === false) return true;
+  return consent.analytics !== false;
 }
 
 // Save consent settings
@@ -263,6 +270,7 @@ export function clearConsent(): void {
   if (typeof window === 'undefined') return;
   try {
     localStorage.removeItem(cookieConfig.cookieName);
+    localStorage.removeItem('cookie-consent');
   } catch {
     // ignore storage failures
   }
@@ -270,6 +278,8 @@ export function clearConsent(): void {
     const secureAttr = window.location.protocol === 'https:' ? '; Secure' : '';
     document.cookie = `${cookieConfig.cookieName}=; path=/; max-age=0; SameSite=Lax${secureAttr}`;
     document.cookie = `${cookieConfig.cookieName}-prefs=; path=/; max-age=0; SameSite=Lax${secureAttr}`;
+    document.cookie = `cookie-consent=; path=/; max-age=0; SameSite=Lax${secureAttr}`;
+    document.cookie = `cookie-consent-prefs=; path=/; max-age=0; SameSite=Lax${secureAttr}`;
   } catch {
     // ignore cookie failures
   }

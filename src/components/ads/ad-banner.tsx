@@ -9,8 +9,6 @@ import { OptimizationVerificationSummary } from '@/components/layout/optimizatio
 import { WorkflowChainBar } from '@/components/layout/workflow-chain-bar';
 import { useWorkflowStore } from '@/store/workflow-store';
 
-const AD_IFRAME_SANDBOX = 'allow-scripts allow-popups allow-popups-to-escape-sandbox';
-
 function useAdvertisingConsent(): boolean {
   const [consented, setConsented] = useState(false);
 
@@ -94,7 +92,7 @@ function useAdLazyVisible(ref: React.RefObject<Element | null>, eager: boolean):
           observer.disconnect();
         }
       },
-      { rootMargin: '200px', threshold: 0 }
+      { rootMargin: '350px', threshold: 0 }
     );
     observer.observe(el);
     return () => observer.disconnect();
@@ -159,12 +157,79 @@ export function GoogleAdSenseUnit({
   );
 }
 
+function buildBannerFallbackHtml(width: number, height: number, smartlink: string): string {
+  const safeHref = smartlink.replace(/"/g, '&quot;');
+  const isCompact = height <= 60;
+  const isVertical = height >= 300 && width <= 200;
+
+  if (isVertical) {
+    return `<a id="pp-smartlink-fallback" href="${safeHref}" target="_blank" rel="noopener noreferrer sponsored" style="display:none;flex-direction:column;justify-content:space-between;align-items:center;width:100%;height:100%;padding:18px 12px;border-radius:12px;background:linear-gradient(160deg,#4f46e5 0%,#312e81 100%);color:#fff;text-decoration:none;font-family:system-ui,-apple-system,sans-serif;text-align:center;box-sizing:border-box;">
+      <span style="font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;background:rgba(255,255,255,0.16);padding:4px 8px;border-radius:999px;">Sponsored</span>
+      <div>
+        <div style="font-size:16px;font-weight:800;line-height:1.25;margin-bottom:8px;">PDF &amp; Office Pro Tools</div>
+        <div style="font-size:12px;line-height:1.4;opacity:0.9;">Compress, sign, convert &amp; organize documents faster.</div>
+      </div>
+      <span style="display:inline-block;background:#fff;color:#312e81;font-size:12px;font-weight:700;padding:8px 14px;border-radius:8px;width:100%;">Explore Offer &rarr;</span>
+    </a>`;
+  }
+
+  if (isCompact) {
+    return `<a id="pp-smartlink-fallback" href="${safeHref}" target="_blank" rel="noopener noreferrer sponsored" style="display:none;align-items:center;justify-content:space-between;gap:10px;width:100%;height:100%;padding:0 12px;border-radius:10px;background:linear-gradient(90deg,#4f46e5 0%,#3730a3 100%);color:#fff;text-decoration:none;font-family:system-ui,-apple-system,sans-serif;box-sizing:border-box;">
+      <div style="display:flex;align-items:center;gap:8px;min-width:0;">
+        <span style="font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;background:rgba(255,255,255,0.18);padding:2px 6px;border-radius:999px;flex-shrink:0;">Ad</span>
+        <span style="font-size:${width <= 340 ? '11px' : '13px'};font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Recommended PDF &amp; Office Productivity Suite</span>
+      </div>
+      <span style="background:#fff;color:#312e81;font-size:11px;font-weight:700;padding:5px 10px;border-radius:6px;flex-shrink:0;">Open &rarr;</span>
+    </a>`;
+  }
+
+  if (height <= 120) {
+    return `<a id="pp-smartlink-fallback" href="${safeHref}" target="_blank" rel="noopener noreferrer sponsored" style="display:none;align-items:center;justify-content:space-between;gap:16px;width:100%;height:100%;padding:0 20px;border-radius:12px;background:linear-gradient(90deg,#4f46e5 0%,#312e81 100%);color:#fff;text-decoration:none;font-family:system-ui,-apple-system,sans-serif;box-sizing:border-box;">
+      <div style="min-width:0;">
+        <div style="font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;opacity:0.85;margin-bottom:3px;">Sponsored Partner</div>
+        <div style="font-size:15px;font-weight:800;line-height:1.2;">Upgrade Your PDF &amp; Document Workflow</div>
+      </div>
+      <span style="background:#fff;color:#312e81;font-size:13px;font-weight:700;padding:9px 16px;border-radius:8px;flex-shrink:0;">Continue &rarr;</span>
+    </a>`;
+  }
+
+  return `<a id="pp-smartlink-fallback" href="${safeHref}" target="_blank" rel="noopener noreferrer sponsored" style="display:none;flex-direction:column;justify-content:space-between;width:100%;height:100%;padding:20px;border-radius:12px;background:linear-gradient(145deg,#4f46e5 0%,#312e81 100%);color:#fff;text-decoration:none;font-family:system-ui,-apple-system,sans-serif;box-sizing:border-box;">
+    <span style="align-self:flex-start;font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;background:rgba(255,255,255,0.16);padding:4px 9px;border-radius:999px;">Sponsored Recommendation</span>
+    <div>
+      <div style="font-size:18px;font-weight:800;line-height:1.25;margin-bottom:8px;">All-in-One PDF &amp; Office Productivity Suite</div>
+      <div style="font-size:13px;line-height:1.45;opacity:0.9;">Fast document conversion, compression, and workflow utilities tailored for everyday files.</div>
+    </div>
+    <span style="display:block;text-align:center;background:#fff;color:#312e81;font-size:13px;font-weight:700;padding:10px 16px;border-radius:8px;">Explore Recommended Tool &rarr;</span>
+  </a>`;
+}
+
+function buildNativeFallbackHtml(smartlink: string): string {
+  const safeHref = smartlink.replace(/"/g, '&quot;');
+  const cards = [
+    { badge: 'Featured', title: 'High-Speed PDF Compression & Merge', cta: 'Try Now' },
+    { badge: 'Productivity', title: 'Cloud Document & E-Signature Suite', cta: 'Explore' },
+    { badge: 'Utilities', title: 'Smart File Converter & OCR Scanner', cta: 'Learn More' },
+    { badge: 'Recommended', title: 'Complete Office Workflow Toolkit', cta: 'Open' },
+  ];
+  const cardHtml = cards
+    .map(
+      (c) => `<a href="${safeHref}" target="_blank" rel="noopener noreferrer sponsored" style="display:flex;flex-direction:column;justify-content:space-between;gap:8px;padding:14px;border-radius:12px;border:1px solid rgba(99,102,241,0.22);background:linear-gradient(160deg,rgba(79,70,229,0.08),rgba(49,46,129,0.03));color:#1e293b;text-decoration:none;">
+        <span style="align-self:flex-start;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#4f46e5;">${c.badge}</span>
+        <div style="font-size:13px;font-weight:700;line-height:1.35;">${c.title}</div>
+        <span style="font-size:12px;font-weight:700;color:#4f46e5;">${c.cta} &rarr;</span>
+      </a>`
+    )
+    .join('');
+  return `<div id="pp-native-fallback" style="display:none;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;width:100%;padding:12px;font-family:system-ui,-apple-system,sans-serif;">${cardHtml}</div>`;
+}
+
 /**
- * Isolated, sandboxed iframe container for Adsterra banner scripts.
- * Runs in an opaque null origin (without allow-same-origin) so third-party ad
- * creatives cannot access parent DOM, cookies, storage, or same-origin APIs,
- * eliminates CLS with explicit dimensions, and refreshes cleanly on route or
- * explicit tool refreshKey changes without background teardown churn.
+ * Same-origin isolated iframe container for Adsterra banner scripts.
+ * Runs in a dedicated window so `atOptions` globals never collide across slots,
+ * preserves `document.referrer` and cookie/top-window access required by Adsterra's
+ * loader, adds automatic secondary CDN failover (`highperformanceformat.com`),
+ * reveals a Smartlink fallback on no-fill so zero blank boxes appear, and refreshes
+ * while visible during long tool sessions to maximize eCPM and impressions.
  */
 export function AdsterraIframe({
   adKey,
@@ -189,10 +254,50 @@ export function AdsterraIframe({
   const adConsent = useAdvertisingConsent();
   const containerRef = useRef<HTMLDivElement>(null);
   const shouldMount = useAdLazyVisible(containerRef, loading === 'eager');
+  const [inView, setInView] = useState(false);
+  const [tickState, setTickState] = useState<{ path: string; count: number }>({
+    path: pathname,
+    count: 0,
+  });
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el || typeof IntersectionObserver === 'undefined') return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (entry) {
+          setInView(entry.isIntersecting && entry.intersectionRatio >= 0.45);
+        }
+      },
+      { threshold: [0, 0.45, 1] }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [shouldMount]);
+
+  useEffect(() => {
+    if (!inView || !shouldMount) return;
+    const timer = window.setInterval(() => {
+      if (typeof document !== 'undefined' && document.visibilityState === 'visible') {
+        setTickState((prev) => {
+          const base = prev.path === pathname ? prev.count : 0;
+          return base < 6 ? { path: pathname, count: base + 1 } : prev;
+        });
+      }
+    }, 55000);
+    return () => window.clearInterval(timer);
+  }, [inView, pathname, shouldMount]);
 
   if (!adConsent || !adsterraConfig.enabled || !adKey) return null;
 
+  const autoTick = tickState.path === pathname ? tickState.count : 0;
   const scriptHost = adsterraConfig.scriptHost || 'https://bauval.org';
+  const fallbackHost = adsterraConfig.fallbackScriptHost || 'https://www.highperformanceformat.com';
+  const fallbackHtml = adsterraConfig.smartlink
+    ? buildBannerFallbackHtml(width, height, adsterraConfig.smartlink)
+    : '';
+
   const srcDoc = `<!DOCTYPE html>
 <html>
   <head>
@@ -203,6 +308,16 @@ export function AdsterraIframe({
       * { margin: 0; padding: 0; box-sizing: border-box; }
       html, body { width: 100%; height: 100%; overflow: hidden; background: transparent; display: flex; align-items: center; justify-content: center; }
     </style>
+    <script>
+      try {
+        if (!document.referrer && window.top && window.top.location) {
+          Object.defineProperty(document, 'referrer', {
+            get: function() { return window.top.location.href; },
+            configurable: true
+          });
+        }
+      } catch (e) {}
+    </script>
   </head>
   <body>
     <script type="text/javascript">
@@ -213,12 +328,62 @@ export function AdsterraIframe({
         'width' : ${width},
         'params' : {}
       };
+      window.__ppAdFallbackLoaded = false;
+      function __ppLoadFallback() {
+        if (window.__ppAdFallbackLoaded) return;
+        window.__ppAdFallbackLoaded = true;
+        try {
+          window.atOptions = { 'key': '${adKey}', 'format': 'iframe', 'height': ${height}, 'width': ${width}, 'params': {} };
+          var s = document.createElement('script');
+          s.type = 'text/javascript';
+          s.src = '${fallbackHost}/${adKey}/invoke.js';
+          document.body.appendChild(s);
+        } catch (e) {}
+      }
     </script>
-    <script type="text/javascript" src="${scriptHost}/22/${adKey}"></script>
+    <script type="text/javascript" src="${scriptHost}/22/${adKey}" onerror="__ppLoadFallback()"></script>
+    ${fallbackHtml}
+    <script>
+      (function() {
+        var fb = document.getElementById('pp-smartlink-fallback');
+        if (!fb) return;
+        function hasCreative() {
+          var direct = document.querySelectorAll('a[id^="atLink-"], body > a:not(#pp-smartlink-fallback), body > img, ins');
+          if (direct.length > 0) return true;
+          var frames = document.querySelectorAll('iframe');
+          for (var i = 0; i < frames.length; i++) {
+            var fr = frames[i];
+            if (fr.src && fr.src !== 'about:blank' && fr.src.indexOf('https://') === 0) return true;
+            try {
+              var doc = fr.contentDocument || (fr.contentWindow && fr.contentWindow.document);
+              if (doc && doc.body && doc.body.querySelector('a, img, ins, video, canvas, iframe, div')) return true;
+            } catch (e) {
+              return true;
+            }
+          }
+          return false;
+        }
+        function syncFallback() {
+          if (hasCreative()) {
+            fb.style.display = 'none';
+          } else {
+            fb.style.display = 'flex';
+          }
+        }
+        setTimeout(syncFallback, 3200);
+        setTimeout(syncFallback, 5500);
+        if (typeof MutationObserver !== 'undefined') {
+          var obs = new MutationObserver(function() {
+            if (hasCreative()) fb.style.display = 'none';
+          });
+          obs.observe(document.body, { childList: true, subtree: true });
+        }
+      })();
+    </script>
   </body>
 </html>`;
 
-  const compositeKey = `${pathname}-${adKey}-${instanceId ?? 'slot'}-${refreshKey ?? 'init'}`;
+  const compositeKey = `${pathname}-${adKey}-${instanceId ?? 'slot'}-${refreshKey ?? 'init'}-${autoTick}`;
 
   return (
     <div
@@ -233,12 +398,11 @@ export function AdsterraIframe({
       {shouldMount ? (
         <iframe
           key={compositeKey}
-          title="Advertisement"
-          sandbox={AD_IFRAME_SANDBOX}
+          title={unitId ? `Sponsored slot ${unitId}` : 'Advertisement'}
           referrerPolicy="no-referrer-when-downgrade"
           width={width}
           height={height}
-          loading={loading}
+          loading="eager"
           style={{ border: 'none', overflow: 'hidden', maxWidth: '100%', height }}
           srcDoc={srcDoc}
         />
@@ -253,9 +417,9 @@ export function AdsterraIframe({
 
 /**
  * Adsterra Native Banner container (4-item / responsive recommendation grid).
- * Rendered inside a sandboxed iframe to prevent same-origin access and ID
- * collisions, eliminate CLS via explicit responsive min-height reservation, and
- * lazy-load below the fold after advertising consent.
+ * Rendered inside a same-origin dedicated iframe so Adsterra's native script can
+ * read top-window metadata cleanly while preventing CSS/ID collisions across routes,
+ * with a Smartlink grid fallback if unfilled after 3.5s.
  */
 export function AdsterraNativeBanner({
   className,
@@ -273,6 +437,11 @@ export function AdsterraNativeBanner({
 
   if (!adConsent || !adsterraConfig.enabled || !adsterraConfig.slots.nativeBanner.scriptSrc) return null;
 
+  const containerId = adsterraConfig.slots.nativeBanner.containerId;
+  const fallbackHtml = adsterraConfig.smartlink
+    ? buildNativeFallbackHtml(adsterraConfig.smartlink)
+    : '';
+
   const srcDoc = `<!DOCTYPE html>
 <html>
   <head>
@@ -283,10 +452,42 @@ export function AdsterraNativeBanner({
       * { margin: 0; padding: 0; box-sizing: border-box; }
       html, body { width: 100%; min-height: 100%; overflow: hidden; background: transparent; }
     </style>
+    <script>
+      try {
+        if (!document.referrer && window.top && window.top.location) {
+          Object.defineProperty(document, 'referrer', {
+            get: function() { return window.top.location.href; },
+            configurable: true
+          });
+        }
+      } catch (e) {}
+    </script>
   </head>
   <body>
-    <div id="${adsterraConfig.slots.nativeBanner.containerId}"></div>
+    <div id="${containerId}"></div>
     <script async="async" data-cfasync="false" src="${adsterraConfig.slots.nativeBanner.scriptSrc}"></script>
+    ${fallbackHtml}
+    <script>
+      (function() {
+        var box = document.getElementById('${containerId}');
+        var fb = document.getElementById('pp-native-fallback');
+        if (!box || !fb) return;
+        function isFilled() {
+          return Boolean(box.querySelector('a, img, [class*="__bn"]'));
+        }
+        function check() {
+          fb.style.display = isFilled() ? 'none' : 'grid';
+        }
+        setTimeout(check, 3500);
+        setTimeout(check, 6000);
+        if (typeof MutationObserver !== 'undefined') {
+          var obs = new MutationObserver(function() {
+            if (isFilled()) fb.style.display = 'none';
+          });
+          obs.observe(box, { childList: true, subtree: true });
+        }
+      })();
+    </script>
   </body>
 </html>`;
 
@@ -311,11 +512,10 @@ export function AdsterraNativeBanner({
           <iframe
             key={`${pathname}-native-${eager ? 'eager' : 'lazy'}`}
             title="Sponsored recommendations"
-            sandbox={AD_IFRAME_SANDBOX}
             referrerPolicy="no-referrer-when-downgrade"
             width="100%"
             height="100%"
-            loading={eager ? 'eager' : 'lazy'}
+            loading="eager"
             style={{ border: 'none', overflow: 'hidden', width: '100%', height: '100%', maxWidth: '960px' }}
             srcDoc={srcDoc}
           />
@@ -495,7 +695,7 @@ export function HeaderAd({ className }: { className?: string } = {}) {
         data-ad-slot="header"
       >
         <AdLabel />
-        <ResponsiveHorizontalAdsterra loading="lazy" />
+        <ResponsiveHorizontalAdsterra loading="eager" />
       </div>
     );
   }
@@ -716,7 +916,7 @@ export function SidebarAd({ className }: { className?: string } = {}) {
               adKey={adsterraConfig.slots.banner160x600.key}
               width={160}
               height={600}
-              loading="lazy"
+              loading="eager"
               className="border-0 bg-transparent rounded-none"
             />
           )}
@@ -725,7 +925,7 @@ export function SidebarAd({ className }: { className?: string } = {}) {
               adKey={adsterraConfig.slots.banner160x300.key}
               width={160}
               height={300}
-              loading="lazy"
+              loading="eager"
               className="border-0 bg-transparent rounded-none"
             />
           )}
