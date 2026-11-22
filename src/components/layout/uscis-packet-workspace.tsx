@@ -431,6 +431,7 @@ export function UscisPacketWorkspace() {
               type="file"
               accept=".pdf,application/pdf"
               multiple
+              aria-label="Upload PDF documents for USCIS packet"
               className="hidden"
               onChange={(e) => {
                 if (e.target.files?.length) void addPdfFiles(e.target.files);

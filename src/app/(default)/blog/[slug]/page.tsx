@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import NextImage from "next/image";
 import Link from "next/link";
-import { getBlogPostBySlug, getRelatedPosts, getAllBlogPosts, getAdjacentPosts, getCoverDimensions } from "@/config/blog";
+import { getBlogPostBySlug, getRelatedPosts, getAllBlogPosts, getAdjacentPosts, getCoverDimensions, consolidatedBlogSlugs } from "@/config/blog";
 import { siteConfig, organizationData } from "@/lib/seo-config";
 import { organizationId } from "@/lib/seo";
 import { processContent } from "@/lib/content-processor";
@@ -15,9 +15,9 @@ import { ToolSidebarAd } from "@/components/ads/tool-sidebar-ad";
 import { adsConfig, adsenseConfig } from "@/lib/ads-config";
 import { ArrowLeft, Clock, Calendar, CalendarClock, ArrowRight, User } from "lucide-react";
 
-// Generate static params
+// Generate static params (exclude consolidated/redirected slugs handled by next.config.ts 301s)
 export function generateStaticParams() {
-    const posts = getAllBlogPosts();
+    const posts = getAllBlogPosts().filter((post) => !consolidatedBlogSlugs.has(post.slug));
     return posts.map((post) => ({ slug: post.slug }));
 }
 
@@ -151,16 +151,7 @@ export default async function BlogPostPage({
             ...(isFounder ? { sameAs: founder.sameAs } : {}),
         },
         publisher: {
-            "@type": "Organization",
             "@id": organizationId(),
-            name: "PdfPixels",
-            url: siteConfig.url,
-            logo: {
-                "@type": "ImageObject",
-                url: `${siteConfig.url}/icon-512.png`,
-                width: 512,
-                height: 512,
-            },
         },
         datePublished: isoDate,
         dateModified: isoModifiedDate,
@@ -183,7 +174,7 @@ export default async function BlogPostPage({
         ] : undefined,
         speakable: {
             "@type": "SpeakableSpecification",
-            cssSelector: ["h1", "h2", "p"],
+            cssSelector: ["h1", ".summary"],
         },
         keywords: post.keywords.join(", "),
         about: post.keywords.map(keyword => ({
@@ -220,17 +211,6 @@ export default async function BlogPostPage({
         })),
     } : null;
 
-    // Speakable Schema for voice search
-    const speakableSchema = {
-        "@context": "https://schema.org",
-        "@type": "WebPage",
-        speakable: {
-            "@type": "SpeakableSpecification",
-            cssSelector: ["h1", ".summary"],
-        },
-        url: `${siteConfig.url}/blog/${slug}`,
-    };
-
     return (
         <>
             
@@ -251,23 +231,18 @@ export default async function BlogPostPage({
             <script
                 id="article-schema"
                 type="application/ld+json"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema).replace(/</g, '\\u003c') }}
             />
             <script
                 id="breadcrumb-schema"
                 type="application/ld+json"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
-            />
-            <script
-                id="speakable-schema"
-                type="application/ld+json"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(speakableSchema) }}
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema).replace(/</g, '\\u003c') }}
             />
             {faqSchema && (
                 <script
                     id="faq-schema"
                     type="application/ld+json"
-                    dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+                    dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema).replace(/</g, '\\u003c') }}
                 />
             )}
 
@@ -302,9 +277,7 @@ export default async function BlogPostPage({
                         <div className="max-w-4xl mx-auto">
                             {/* Category Badge with Gradient */}
                             <div className="mb-6 flex justify-center">
-                                <span className="inline-block px-5 py-2 text-xs font-bold text-primary rounded-full tracking-widest uppercase border border-primary/20 shadow-sm"
-                                    style={{ background: 'linear-gradient(135deg, rgba(var(--color-primary-rgb), 0.08), rgba(139, 92, 246, 0.08))' }}
-                                >
+                                <span className="inline-block px-5 py-2 text-xs font-bold text-primary rounded-full tracking-widest uppercase border border-primary/20 bg-gradient-to-br from-primary/10 to-violet-500/10 shadow-sm">
                                     {post.category}
                                 </span>
                             </div>
@@ -379,6 +352,7 @@ export default async function BlogPostPage({
                                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 1024px"
                                     className="object-cover"
                                     priority
+                                    fetchPriority="high"
                                 />
                                 {/* Gradient overlay at bottom */}
                                 <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-background/20 to-transparent" />
@@ -518,6 +492,7 @@ export default async function BlogPostPage({
                                                                 src={relatedPost.coverImage}
                                                                 alt={relatedPost.imageAlt || relatedPost.title}
                                                                 fill
+                                                                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                                                                 className="object-cover group-hover:scale-105 transition-transform duration-500"
                                                             />
                                                             <div className="absolute top-3 left-3">

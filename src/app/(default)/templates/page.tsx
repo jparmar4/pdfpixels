@@ -106,8 +106,8 @@ export default function TemplatesHubPage() {
 
   return (
     <>
-      <script id="templates-jsonld" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <main id="main-content" className="min-h-screen bg-background">
+      <script id="templates-jsonld" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }} />
+      <div className="min-h-screen bg-background">
         <SitePageShell
           eyebrow="Free downloads"
           title="Invoice & Resume Templates"
@@ -161,7 +161,7 @@ export default function TemplatesHubPage() {
         </section>
 
         <FooterAd />
-      </main>
+      </div>
     </>
   );
 }

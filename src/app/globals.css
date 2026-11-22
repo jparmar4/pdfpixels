@@ -763,18 +763,10 @@ h6 {
   }
 }
 
-/* ========== REDUCE MOTION ========== */
-
-@media (prefers-reduced-motion: reduce) {
-
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
+/* Defer off-screen rendering for long below-the-fold editorial/SEO sections */
+.below-fold-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 600px;
 }
 
 @media (max-width: 1024px) {
@@ -1958,4 +1950,25 @@ h6 {
   [data-sonner-toast][data-styled='true'] [data-close-button] {
     transition: none;
   }
+}
+
+/* Google A2UI v1.0 Basic Catalog responsive layout helpers */
+.pdfpixels-a2ui-host a2ui-basic-row {
+  flex-wrap: wrap;
+}
+
+.pdfpixels-a2ui-host .a2ui-tab-bar {
+  flex-wrap: wrap;
+}
+
+.pdfpixels-a2ui-host .a2ui-button {
+  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  font-size: 0.8125rem;
+  transition: background-color var(--duration-fast) ease, opacity var(--duration-fast) ease;
+}
+
+.pdfpixels-a2ui-host .a2ui-button:focus-visible,
+.pdfpixels-a2ui-host .a2ui-tab-button:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
 }

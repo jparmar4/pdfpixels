@@ -212,6 +212,7 @@ export function PhotoCollageWorkspace() {
                 type="file"
                 accept="image/*"
                 multiple
+                aria-label="Select photos for collage"
                 className="sr-only"
                 onChange={(e) => {
                   if (e.target.files?.length) void addFiles(e.target.files);
@@ -237,6 +238,7 @@ export function PhotoCollageWorkspace() {
                     type="file"
                     accept="image/*"
                     multiple
+                    aria-label="Add more photos to collage"
                     className="sr-only"
                     onChange={(e) => {
                       if (e.target.files?.length) void addFiles(e.target.files);

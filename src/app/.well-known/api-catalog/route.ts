@@ -35,6 +35,35 @@ export async function GET() {
         ],
       },
       {
+        anchor: 'https://www.pdfpixels.com/api/a2ui',
+        'service-desc': [
+          {
+            href: 'https://www.pdfpixels.com/.well-known/agent.json',
+            type: 'application/json',
+          },
+          {
+            href: 'https://www.pdfpixels.com/openapi.json',
+            type: 'application/openapi+json',
+          },
+        ],
+        'service-doc': [
+          {
+            href: 'https://www.pdfpixels.com/mcp',
+            type: 'text/html',
+          },
+          {
+            href: 'https://www.pdfpixels.com/llms.txt',
+            type: 'text/plain',
+          },
+        ],
+        status: [
+          {
+            href: 'https://www.pdfpixels.com/api/health',
+            type: 'application/json',
+          },
+        ],
+      },
+      {
         anchor: 'https://www.pdfpixels.com/api',
         'service-desc': [
           {

@@ -256,7 +256,7 @@ export function Navigation() {
             </Link>
 
             {/* Center Desktop Navigation */}
-            <div className="hidden lg:flex flex-1 items-center justify-center gap-1 xl:gap-2">
+            <nav aria-label="Primary navigation" className="hidden lg:flex flex-1 items-center justify-center gap-1 xl:gap-2">
               {/* Prominent PDF Tools Mega Dropdown */}
               <div
                 className="relative group py-1.5"
@@ -362,7 +362,7 @@ export function Navigation() {
                 <Sparkles className="h-3 w-3 text-amber-500" />
                 Pricing
               </Link>
-            </div>
+            </nav>
 
             {/* Right Actions */}
             <div className="flex flex-shrink-0 items-center gap-1.5 xl:gap-2">
@@ -396,14 +396,15 @@ export function Navigation() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-10 w-10 text-muted-foreground hover:text-foreground lg:hidden"
+                aria-label="Search tools"
+                className="h-11 w-11 text-muted-foreground hover:text-foreground lg:hidden"
                 onClick={() => {
                   setSearchOpen(true);
                   setSearchFocused(true);
                   setTimeout(() => searchRef.current?.focus(), 50);
                 }}
               >
-                <Search className="h-5 w-5" />
+                <Search className="h-5 w-5" aria-hidden="true" />
               </Button>
 
               <Button asChild size="sm" className="hidden lg:inline-flex h-9 rounded-full px-4 text-sm font-bold shadow-lg shadow-primary/20 transition-all hover:scale-105 btn-premium">
@@ -413,7 +414,7 @@ export function Navigation() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-10 w-10 rounded-full lg:hidden text-foreground"
+                className="h-11 w-11 rounded-full lg:hidden text-foreground"
                 onClick={() => setMobileMenuOpen((current) => !current)}
                 aria-label="Toggle menu"
                 aria-expanded={mobileMenuOpen}

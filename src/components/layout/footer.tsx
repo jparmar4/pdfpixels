@@ -44,6 +44,8 @@ export function Footer() {
     { name: 'DMCA Policy', href: '/dmca' },
     { name: 'API Docs', href: '/api-docs' },
     { name: 'MCP Server Hub', href: '/mcp' },
+    { name: 'llms.txt (AI Index)', href: '/llms.txt' },
+    { name: 'OpenAPI 3.1 Spec', href: '/openapi.json' },
   ];
 
   const categoryLinks = toolCategories.map((cat) => ({
@@ -60,9 +62,12 @@ export function Footer() {
 
   const guideLinks = [
     { name: 'Workflow recipes', href: '/workflows' },
+    { name: 'Free PDF templates', href: '/templates' },
+    { name: 'PDF & image glossary', href: '/glossary' },
     ...(ADSENSE_REVIEW_MODE ? [] : [{ name: 'Compare tools', href: '/compare' }]),
     { name: 'Use-case guides', href: '/use-cases' },
     { name: 'PDF size limits research (2026)', href: '/research/pdf-size-limits-2026' },
+    { name: 'JPEG quality benchmark (2026)', href: '/research/compression-benchmark-2026' },
     { name: 'Blog & tutorials', href: '/blog' },
   ];
 

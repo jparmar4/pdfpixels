@@ -1,9 +1,9 @@
 {
   "name": "PdfPixels Document & Image Agent",
-  "description": "Free online PDF and image processing platform offering 124+ tools for compression, merging, splitting, conversion, OCR, digital signing, and redaction.",
+  "description": "Free online PDF and image processing platform offering 155+ tools for compression, merging, splitting, conversion, OCR, digital signing, and redaction, with native Google A2UI v1.0 interactive surface generation and Streamable HTTP MCP discovery.",
   "url": "https://www.pdfpixels.com",
-  "version": "1.0.0",
-  "documentationUrl": "https://www.pdfpixels.com/api-docs",
+  "version": "1.1.0",
+  "documentationUrl": "https://www.pdfpixels.com/mcp",
   "provider": {
     "organization": "PdfPixels",
     "url": "https://www.pdfpixels.com"
@@ -11,13 +11,25 @@
   "capabilities": {
     "streaming": false,
     "pushNotifications": false,
-    "stateTransitionHistory": false
+    "stateTransitionHistory": false,
+    "extensions": [
+      {
+        "uri": "https://a2ui.org/a2a-extension/a2ui/v1.0",
+        "description": "Emits Google A2UI v1.0 Basic Catalog interactive surfaces for PDF/image tool search, workflow recommendations, tool specifications, and verified platform limits.",
+        "required": false,
+        "params": {
+          "supportedCatalogIds": [
+            "https://a2ui.org/specification/v1_0/catalogs/basic/catalog.json"
+          ]
+        }
+      }
+    ]
   },
   "authentication": {
     "schemes": ["none"]
   },
-  "defaultInputModes": ["text/plain", "application/json"],
-  "defaultOutputModes": ["text/markdown", "application/json"],
+  "defaultInputModes": ["text/plain", "application/json", "application/a2ui+json"],
+  "defaultOutputModes": ["text/markdown", "application/json", "application/a2ui+json"],
   "skills": [
     {
       "id": "pdf-tools-discovery",
@@ -29,8 +41,27 @@
         "Merge multiple PDF bank statements in the browser",
         "Convert HEIC photos to JPG"
       ]
+    },
+    {
+      "id": "a2ui-interactive-surfaces",
+      "name": "Interactive A2UI v1.0 Tool & Workflow Surfaces",
+      "description": "Generate declarative Google A2UI v1.0 Basic Catalog cards, workflow pipelines, and tabbed platform limits with round-trip ActionMessage handling.",
+      "tags": ["a2ui", "a2ui-v1.0", "generative-ui", "workflow", "mcp"],
+      "examples": [
+        "Render interactive A2UI v1.0 cards for USCIS PDF compression tools",
+        "Show a tabbed A2UI v1.0 view of PdfPixels upload limits and zero-retention privacy"
+      ]
     }
   ],
+  "a2ui": {
+    "protocolVersion": "1.0",
+    "extensionUri": "https://a2ui.org/a2a-extension/a2ui/v1.0",
+    "mimeType": "application/a2ui+json",
+    "endpoint": "https://www.pdfpixels.com/api/a2ui",
+    "supportedCatalogIds": [
+      "https://a2ui.org/specification/v1_0/catalogs/basic/catalog.json"
+    ]
+  },
   "mcp": {
     "serverCardUrl": "https://www.pdfpixels.com/.well-known/mcp/server-card.json",
     "endpoint": "https://www.pdfpixels.com/api/mcp"

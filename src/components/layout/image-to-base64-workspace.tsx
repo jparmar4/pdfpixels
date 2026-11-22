@@ -121,6 +121,7 @@ export function ImageToBase64Workspace() {
               ref={inputRef}
               type="file"
               accept="image/*"
+              aria-label="Upload image to encode as Base64"
               className="sr-only"
               onChange={(e) => {
                 const file = e.target.files?.[0];

@@ -1584,9 +1584,9 @@ export const comparisonPages: ComparisonPage[] = [
     alternatives: ['Adobe Acrobat'],
     bestFor: ['Free PDF merging with no account', 'Unlimited files per merge', 'No monthly subscription'],
     overview:
-      'Combining multiple PDFs into one is a common need for reports, contracts, and presentations. Adobe Acrobat Online offers a polished merge experience but limits free users to 2 merges per day and requires a sign-in. Full drag-and-drop page editing and higher file limits require an Adobe Acrobat Pro subscription at \$19.99/month. PdfPixels offers unlimited merges, unlimited files per session, and no account required — making it the practical choice for users who need to merge PDFs without a subscription commitment.',
+      'Combining multiple PDFs into one is a common need for reports, contracts, and presentations. Adobe Acrobat Online offers a polished merge experience but limits free users to 2 merges per day and requires a sign-in. Full drag-and-drop page editing and higher file limits require an Adobe Acrobat Pro subscription at $19.99/month. PdfPixels offers unlimited merges, unlimited files per session, and no account required — making it the practical choice for users who need to merge PDFs without a subscription commitment.',
     whenToChooseUs: [
-      'You need to merge PDFs without paying \$19.99/month for Adobe Acrobat Pro',
+      'You need to merge PDFs without paying $19.99/month for Adobe Acrobat Pro',
       'You want to combine more than 2 PDFs per day without hitting a daily limit',
       'You prefer to work without creating an Adobe account',
     ],
@@ -1633,7 +1633,7 @@ export const comparisonPages: ComparisonPage[] = [
     alternatives: ['Canva'],
     bestFor: ['Free transparent PNG download without Canva Pro', 'Standalone background removal', 'Product photos and profile pictures'],
     overview:
-      'Background removal is essential for product photos on Amazon and Shopify, profile pictures, and presentation slides. Canva\'s background remover is integrated into its design canvas and requires a Canva Pro subscription (\$12.99/month) — you can\'t export a standalone transparent PNG without it. PdfPixels removes the background and gives you a transparent PNG to download immediately, free and without an account. If all you need is a clean cutout, PdfPixels removes the friction of building a full design in Canva.',
+      'Background removal is essential for product photos on Amazon and Shopify, profile pictures, and presentation slides. Canva\'s background remover is integrated into its design canvas and requires a Canva Pro subscription ($12.99/month) — you can\'t export a standalone transparent PNG without it. PdfPixels removes the background and gives you a transparent PNG to download immediately, free and without an account. If all you need is a clean cutout, PdfPixels removes the friction of building a full design in Canva.',
     whenToChooseUs: [
       'You need a standalone transparent PNG download without a Canva Pro subscription',
       'You are processing product photos, headshots, or profile pictures where only the cutout matters',

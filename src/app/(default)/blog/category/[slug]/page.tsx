@@ -111,12 +111,12 @@ export default async function BlogCategoryPage({ params }: CategoryPageProps) {
             <script
                 id="category-collection-schema"
                 type="application/ld+json"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionSchema) }}
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionSchema).replace(/</g, '\\u003c') }}
             />
             <script
                 id="category-breadcrumb-schema"
                 type="application/ld+json"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema).replace(/</g, '\\u003c') }}
             />
 
             <main id="main-content" className="min-h-screen bg-background">

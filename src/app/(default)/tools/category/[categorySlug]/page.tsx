@@ -161,9 +161,9 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
       />
-      <div className="premium-page-bg min-h-screen bg-background pb-16 xl:pr-[196px]">
+      <main id="main-content" className="premium-page-bg min-h-screen bg-background pb-16 xl:pr-[196px]">
         {/* Hero Section */}
         <section className="relative overflow-hidden border-b border-border/60 bg-gradient-to-b from-accent/60 to-background">
           <div className="absolute inset-0 hero-grid opacity-70" aria-hidden="true" />
@@ -416,7 +416,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
         <div className="container mx-auto px-4 py-6 lg:px-8">
           <FooterAd />
         </div>
-      </div>
+      </main>
       <ToolSidebarAd />
     </>
   );

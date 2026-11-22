@@ -90,6 +90,7 @@ async function runQpdfEncrypt(inputPath: string, outputPath: string, password: s
  */
 async function runGhostscriptProtect(inputPath: string, outputPath: string, password: string) {
   const baseArgs = [
+    '-dSAFER',
     '-sDEVICE=pdfwrite',
     '-dNOPAUSE',
     '-dBATCH',
@@ -102,12 +103,12 @@ async function runGhostscriptProtect(inputPath: string, outputPath: string, pass
   try {
     await runGhostscriptWithFallback([
       '-dCompatibilityLevel=1.7',
-      ...baseArgs.slice(0, 3),
-      ...baseArgs.slice(3, 6),
+      ...baseArgs.slice(0, 5),
+      ...baseArgs.slice(5, 7),
       '-dEncryptionR=6',
       '-dKeyLength=256',
       '-dPermissions=-1',
-      ...baseArgs.slice(6),
+      ...baseArgs.slice(7),
     ], { timeoutMs: 45_000, timeoutMessage: 'PDF security operation timed out.' });
     return;
   } catch (aesError) {
@@ -116,11 +117,11 @@ async function runGhostscriptProtect(inputPath: string, outputPath: string, pass
   }
   await runGhostscriptWithFallback([
     '-dCompatibilityLevel=1.4',
-    ...baseArgs.slice(0, 3),
-    ...baseArgs.slice(3, 6),
+    ...baseArgs.slice(0, 5),
+    ...baseArgs.slice(5, 7),
     '-dEncryptionR=3',
     '-dKeyLength=128',
-    ...baseArgs.slice(6),
+    ...baseArgs.slice(7),
   ], { timeoutMs: 45_000, timeoutMessage: 'PDF security operation timed out.' });
 }
 
@@ -128,7 +129,8 @@ async function runGhostscriptProtect(inputPath: string, outputPath: string, pass
 async function runGhostscriptUnlock(inputPath: string, outputPath: string, password: string) {
   // gs cannot decrypt without the password; callers guarantee password is set
   // for encrypted inputs (see the PASSWORD_REQUIRED pre-check below).
-  const args = password ? [`-sPDFPassword=${password}`] : [];
+  const args = ['-dSAFER'];
+  if (password) args.push(`-sPDFPassword=${password}`);
   args.push(
     '-sDEVICE=pdfwrite',
     '-dEncryptionR=0',

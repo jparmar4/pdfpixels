@@ -129,7 +129,7 @@ export default async function WorkflowDetailPage({
           key={idx}
           type="application/ld+json"
           data-updated={SITE_CONTENT_UPDATED.toISOString()}
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema).replace(/</g, '\\u003c') }}
         />
       ))}
       <main id="main-content" className="min-h-screen bg-background text-foreground pb-14 xl:pr-[196px]">

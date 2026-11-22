@@ -77,6 +77,7 @@ export async function POST(request: NextRequest) {
         console.warn('qpdf unavailable, falling back to Ghostscript fast web view');
         try {
           await runGhostscriptWithFallback([
+            '-dSAFER',
             '-sDEVICE=pdfwrite',
             '-dFastWebView=true',
             '-dNOPAUSE',

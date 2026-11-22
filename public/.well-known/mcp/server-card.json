@@ -3,8 +3,8 @@
   "protocolVersion": "2025-06-18",
   "name": "pdfpixels-mcp-server",
   "title": "PdfPixels PDF & Image Tools MCP Server",
-  "version": "1.0.0",
-  "description": "Model Context Protocol (MCP) server for PdfPixels — discover, search, and invoke 150+ free online PDF and image processing tools (compress, merge, split, convert, OCR, sign, redact, resize).",
+  "version": "1.1.0",
+  "description": "Model Context Protocol (MCP) server for PdfPixels — discover, search, and render interactive Google A2UI v1.0 surfaces for 155+ free online PDF and image processing tools (compress, merge, split, convert, OCR, sign, redact, resize).",
   "endpoint": "https://www.pdfpixels.com/api/mcp",
   "url": "https://www.pdfpixels.com/api/mcp",
   "homepage": "https://www.pdfpixels.com",
@@ -13,7 +13,7 @@
   "serverInfo": {
     "name": "pdfpixels-mcp-server",
     "title": "PdfPixels PDF & Image Tools MCP Server",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "websiteUrl": "https://www.pdfpixels.com"
   },
   "provider": {
@@ -43,10 +43,19 @@
       "listChanged": false
     }
   },
+  "a2ui": {
+    "protocolVersion": "1.0",
+    "extensionUri": "https://a2ui.org/a2a-extension/a2ui/v1.0",
+    "mimeType": "application/a2ui+json",
+    "endpoint": "https://www.pdfpixels.com/api/a2ui",
+    "supportedCatalogIds": [
+      "https://a2ui.org/specification/v1_0/catalogs/basic/catalog.json"
+    ]
+  },
   "tools": [
     {
       "name": "search_tools",
-      "description": "Search PdfPixels PDF and image tools by keyword, file format, or category.",
+      "description": "Search PdfPixels PDF and image tools by keyword, file format, or category. Pass includeA2ui: true to also receive an interactive Google A2UI v1.0 surface.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -57,6 +66,10 @@
           "category": {
             "type": "string",
             "description": "Optional category filter (e.g. pdf-organize, pdf-convert, image-compress)"
+          },
+          "includeA2ui": {
+            "type": "boolean",
+            "description": "When true, appends an embedded application/a2ui+json v1.0 UI surface."
           }
         },
         "required": ["query"]
@@ -71,6 +84,10 @@
           "slug": {
             "type": "string",
             "description": "Tool slug (e.g. compress-pdf, merge-pdf, pdf-to-word, ocr-pdf)"
+          },
+          "includeA2ui": {
+            "type": "boolean",
+            "description": "When true, appends an embedded application/a2ui+json v1.0 detail card."
           }
         },
         "required": ["slug"]
@@ -85,6 +102,10 @@
           "task": {
             "type": "string",
             "description": "Description of the user's goal (e.g. 'compress a scanned PDF under 2MB for USCIS')"
+          },
+          "includeA2ui": {
+            "type": "boolean",
+            "description": "When true, appends an embedded application/a2ui+json v1.0 workflow surface."
           }
         },
         "required": ["task"]
@@ -95,7 +116,43 @@
       "description": "Return official PdfPixels file size limits, rate limits, and zero-retention privacy guarantees.",
       "inputSchema": {
         "type": "object",
-        "properties": {}
+        "properties": {
+          "includeA2ui": {
+            "type": "boolean",
+            "description": "When true, appends an embedded application/a2ui+json v1.0 tabbed limits surface."
+          }
+        }
+      }
+    },
+    {
+      "name": "render_a2ui_surface",
+      "description": "Generate a spec-compliant Google A2UI v1.0 Basic Catalog interactive surface for PdfPixels tool discovery, workflow recommendations, tool details, or platform limits.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "intent": {
+            "type": "string",
+            "enum": ["search_tools", "recommend_workflow", "get_tool_details", "get_platform_limits"],
+            "description": "Which interactive A2UI v1.0 surface to generate."
+          },
+          "query": {
+            "type": "string",
+            "description": "Search query when intent is search_tools."
+          },
+          "task": {
+            "type": "string",
+            "description": "Task description when intent is recommend_workflow."
+          },
+          "slug": {
+            "type": "string",
+            "description": "Tool slug when intent is get_tool_details."
+          },
+          "surfaceId": {
+            "type": "string",
+            "description": "Optional caller-supplied unique A2UI surfaceId."
+          }
+        },
+        "required": ["intent"]
       }
     }
   ],
@@ -117,6 +174,18 @@
       "name": "PdfPixels OpenAPI 3.1 Specification",
       "description": "OpenAPI schema for PdfPixels HTTP endpoints.",
       "mimeType": "application/json"
+    },
+    {
+      "uri": "a2ui://pdfpixels/tool-directory",
+      "name": "PdfPixels Interactive Tool Directory (A2UI v1.0)",
+      "description": "Declarative Google A2UI v1.0 Basic Catalog surface featuring popular PdfPixels tools.",
+      "mimeType": "application/a2ui+json"
+    },
+    {
+      "uri": "a2ui://pdfpixels/platform-limits",
+      "name": "PdfPixels Limits & Privacy Architecture (A2UI v1.0)",
+      "description": "Declarative Google A2UI v1.0 tabbed surface presenting verified platform limits and zero-retention privacy.",
+      "mimeType": "application/a2ui+json"
     }
   ]
 }

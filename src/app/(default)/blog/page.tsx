@@ -99,14 +99,14 @@ export default function BlogPage() {
                 id="collection-schema"
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{
-                    __html: JSON.stringify(collectionSchema),
+                    __html: JSON.stringify(collectionSchema).replace(/</g, '\\u003c'),
                 }}
             />
             <script
                 id="breadcrumb-schema"
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{
-                    __html: JSON.stringify(breadcrumbSchema),
+                    __html: JSON.stringify(breadcrumbSchema).replace(/</g, '\\u003c'),
                 }}
             />
 

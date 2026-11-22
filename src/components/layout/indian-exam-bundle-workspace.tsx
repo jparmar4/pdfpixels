@@ -1,25 +1,16 @@
 'use client';
 
-import { useState, useRef, useEffect, useCallback } from 'react';
-import Link from 'next/link';
+import { useState, useEffect, useCallback } from 'react';
 import {
   Download,
-  RotateCcw,
   Camera,
   PenTool,
-  Fingerprint,
-  FileText,
-  Sparkles,
   CheckCircle2,
-  AlertCircle,
-  HelpCircle,
   Info,
   Calendar,
   User,
   Sliders,
   Package,
-  Layers,
-  ShieldCheck,
   Zap,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -36,6 +27,13 @@ import { triggerDownloadWithSmartlink, triggerSmartlinkOncePerSession } from '@/
 import { toast } from 'sonner';
 import type { IndianExamPreset } from '@/lib/indian-exams-data';
 
+function toWinAnsiSafe(value: string): string {
+  return value
+    .replace(/[\u2013\u2014]/g, '-')
+    .replace(/[\u00B7\u2022]/g, '-')
+    .replace(/[^\x20-\x7E\xA0-\xFF]/g, '');
+}
+
 interface IndianExamBundleWorkspaceProps {
   exam: IndianExamPreset;
 }
@@ -46,8 +44,6 @@ export function IndianExamBundleWorkspace({ exam }: IndianExamBundleWorkspacePro
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [signatureFile, setSignatureFile] = useState<File | null>(null);
   const [signaturePreview, setSignaturePreview] = useState<string | null>(null);
-  const [thumbFile, setThumbFile] = useState<File | null>(null);
-  const [thumbPreview, setThumbPreview] = useState<string | null>(null);
 
   // Name & Date overlay state
   const [enableNameDate, setEnableNameDate] = useState<boolean>(exam.photoSpec.requiresNameAndDate);
@@ -62,16 +58,25 @@ export function IndianExamBundleWorkspace({ exam }: IndianExamBundleWorkspacePro
 
   // Target KB overrides
   const [targetKb, setTargetKb] = useState<number>(exam.photoSpec.recommendedKb);
-  const [signatureTargetKb, setSignatureTargetKb] = useState<number>(exam.signatureSpec ? exam.signatureSpec.maxKb : 20);
+  const signatureTargetKb = exam.signatureSpec ? exam.signatureSpec.maxKb : 20;
 
   // Canvas processing & output
   const [processedPhotoBlob, setProcessedPhotoBlob] = useState<Blob | null>(null);
   const [processedPhotoSizeKb, setProcessedPhotoSizeKb] = useState<number>(0);
-  const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [isPackaging, setIsPackaging] = useState<boolean>(false);
-  const [showCyberCafeModal, setShowCyberCafeModal] = useState<boolean>(false);
 
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  // Revoke object URLs whenever previews change or workspace unmounts
+  useEffect(() => {
+    return () => {
+      if (photoPreview) URL.revokeObjectURL(photoPreview);
+    };
+  }, [photoPreview]);
+
+  useEffect(() => {
+    return () => {
+      if (signaturePreview) URL.revokeObjectURL(signaturePreview);
+    };
+  }, [signaturePreview]);
 
   // Handle Photo selection
   const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -99,16 +104,6 @@ export function IndianExamBundleWorkspace({ exam }: IndianExamBundleWorkspacePro
     const url = URL.createObjectURL(file);
     setSignaturePreview(url);
     toast.success('Signature loaded!');
-  };
-
-  // Handle Thumb selection
-  const handleThumbUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setThumbFile(file);
-    const url = URL.createObjectURL(file);
-    setThumbPreview(url);
-    toast.success('Thumb impression loaded!');
   };
 
   // Render canvas with photo + name & date overlay
@@ -231,8 +226,6 @@ export function IndianExamBundleWorkspace({ exam }: IndianExamBundleWorkspacePro
     setPhotoPreview(null);
     setSignatureFile(null);
     setSignaturePreview(null);
-    setThumbFile(null);
-    setThumbPreview(null);
     setProcessedPhotoBlob(null);
     setProcessedPhotoSizeKb(0);
     toast.success('Workspace reset.');
@@ -325,7 +318,7 @@ export function IndianExamBundleWorkspace({ exam }: IndianExamBundleWorkspacePro
         color: rgb(0.08, 0.2, 0.4),
       });
 
-      page.drawText(`${exam.name.toUpperCase()}`, {
+      page.drawText(toWinAnsiSafe(exam.name.toUpperCase()), {
         x: 55,
         y: 782,
         size: 14,
@@ -333,7 +326,7 @@ export function IndianExamBundleWorkspace({ exam }: IndianExamBundleWorkspacePro
         color: rgb(1, 1, 1),
       });
 
-      page.drawText(`Official Online Application Document Dossier · ${exam.authority}`, {
+      page.drawText(toWinAnsiSafe(`Official Online Application Document Dossier - ${exam.authority}`), {
         x: 55,
         y: 764,
         size: 9,
@@ -352,7 +345,7 @@ export function IndianExamBundleWorkspace({ exam }: IndianExamBundleWorkspacePro
         borderWidth: 1,
       });
 
-      page.drawText(`Candidate Name: ${candidateName.toUpperCase()}`, {
+      page.drawText(toWinAnsiSafe(`Candidate Name: ${candidateName.toUpperCase()}`), {
         x: 55,
         y: 712,
         size: 11,
@@ -360,7 +353,7 @@ export function IndianExamBundleWorkspace({ exam }: IndianExamBundleWorkspacePro
         color: rgb(0.1, 0.1, 0.1),
       });
 
-      page.drawText(`Photograph Date (DOP): ${photoDate}`, {
+      page.drawText(toWinAnsiSafe(`Photograph Date (DOP): ${photoDate}`), {
         x: 55,
         y: 694,
         size: 10,
@@ -368,7 +361,7 @@ export function IndianExamBundleWorkspace({ exam }: IndianExamBundleWorkspacePro
         color: rgb(0.3, 0.3, 0.3),
       });
 
-      page.drawText(`Target Portal: ${exam.authority} · Dimensions: ${exam.photoSpec.widthMm}x${exam.photoSpec.heightMm}mm (${processedPhotoSizeKb} KB)`, {
+      page.drawText(toWinAnsiSafe(`Target Portal: ${exam.authority} - Dimensions: ${exam.photoSpec.widthMm}x${exam.photoSpec.heightMm}mm (${processedPhotoSizeKb} KB)`), {
         x: 55,
         y: 676,
         size: 9,
@@ -453,14 +446,16 @@ export function IndianExamBundleWorkspace({ exam }: IndianExamBundleWorkspacePro
       });
 
       const checkItems = [
-        `✓ Photo dimension calibrated to exact ${exam.photoSpec.widthMm}mm x ${exam.photoSpec.heightMm}mm standard.`,
-        `✓ File size strictly verified at ${processedPhotoSizeKb} KB (Allowed: ${exam.photoSpec.minKb}-${exam.photoSpec.maxKb} KB).`,
-        `✓ Candidate Name and Date of Photograph stamped cleanly at base.`,
-        `✓ Pure white background with high-contrast facial exposure for automatic scanner validation.`,
+        `[OK] Photo dimension calibrated to exact ${exam.photoSpec.widthMm}mm x ${exam.photoSpec.heightMm}mm standard.`,
+        `[OK] File size verified at ${processedPhotoSizeKb} KB (Allowed: ${exam.photoSpec.minKb}-${exam.photoSpec.maxKb} KB).`,
+        enableNameDate
+          ? '[OK] Candidate Name and Date of Photograph stamped cleanly at base.'
+          : '[OK] Clean borderless passport crop without text banner.',
+        '[OK] White background canvas prepared for portal upload validation.',
       ];
 
       checkItems.forEach((item, idx) => {
-        page.drawText(item, {
+        page.drawText(toWinAnsiSafe(item), {
           x: 55,
           y: 215 - idx * 20,
           size: 8.5,
@@ -484,8 +479,8 @@ export function IndianExamBundleWorkspace({ exam }: IndianExamBundleWorkspacePro
       // Also trigger photo download
       handleDownloadPhoto();
       toast.success('Exam Pack Dossier PDF + Compliant Photo generated!');
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to generate Exam Pack');
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : 'Failed to generate Exam Pack');
     } finally {
       setIsPackaging(false);
     }
@@ -508,7 +503,7 @@ export function IndianExamBundleWorkspace({ exam }: IndianExamBundleWorkspacePro
         ]}
       />
 
-      {/* Cyber Cafe Pass Banner */}
+      {/* Cyber Cafe & CSC Free Bulk Workflow Banner */}
       <div className="mt-6 rounded-2xl border border-sky-200 dark:border-sky-900/60 bg-gradient-to-r from-sky-50/70 via-indigo-50/40 to-background dark:from-sky-950/20 dark:via-indigo-950/10 dark:to-background p-5 shadow-sm">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex items-start gap-3.5">
@@ -517,22 +512,23 @@ export function IndianExamBundleWorkspace({ exam }: IndianExamBundleWorkspacePro
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-bold text-sm text-foreground">Cyber Cafe & CSC Bulk Mode</span>
-                <Badge variant="secondary" className="text-[10px] bg-sky-100 text-sky-800 dark:bg-sky-900/50 dark:text-sky-300 font-bold">
-                  ₹49 Day / ₹199 Month
+                <span className="font-bold text-sm text-foreground">Cyber Cafe &amp; CSC Ready — 100% Free</span>
+                <Badge variant="secondary" className="text-[10px] bg-emerald-100 text-emerald-800 dark:bg-emerald-900/50 dark:text-emerald-300 font-bold">
+                  Unlimited · $0 · No Login
                 </Badge>
               </div>
               <p className="text-xs text-muted-foreground mt-0.5">
-                Process 50+ student application forms in seconds with saved dimension presets, ad-free speed, and 1-click photo+signature bundling.
+                Process student application photos, signatures, and A4 compliance dossiers locally in your browser with instant reset between candidates — no paid pass required.
               </p>
             </div>
           </div>
           <Button
             size="sm"
-            onClick={() => setShowCyberCafeModal(true)}
-            className="shrink-0 text-xs font-semibold bg-sky-600 hover:bg-sky-700 text-white shadow-sm"
+            variant="outline"
+            onClick={handleReset}
+            className="shrink-0 text-xs font-semibold"
           >
-            Cyber Cafe Pass (₹49)
+            Next Candidate (Reset)
           </Button>
         </div>
       </div>
@@ -570,6 +566,7 @@ export function IndianExamBundleWorkspace({ exam }: IndianExamBundleWorkspacePro
                   <input
                     type="file"
                     accept="image/*"
+                    aria-label="Upload applicant photograph"
                     onChange={handlePhotoUpload}
                     className="absolute inset-0 opacity-0 cursor-pointer"
                   />
@@ -683,6 +680,7 @@ export function IndianExamBundleWorkspace({ exam }: IndianExamBundleWorkspacePro
                   <input
                     type="file"
                     accept="image/*"
+                    aria-label="Upload candidate signature image"
                     onChange={handleSignatureUpload}
                     className="absolute inset-0 opacity-0 cursor-pointer"
                   />
@@ -760,10 +758,10 @@ export function IndianExamBundleWorkspace({ exam }: IndianExamBundleWorkspacePro
 
           {/* Official Exam Rules Card */}
           <div className="rounded-2xl border bg-card/60 p-5 space-y-3">
-            <h4 className="font-bold text-xs uppercase tracking-wider text-muted-foreground flex items-center gap-2">
+            <h2 className="font-bold text-xs uppercase tracking-wider text-muted-foreground flex items-center gap-2">
               <Info className="w-3.5 h-3.5 text-primary" />
               Official {exam.shortName} Specifications
-            </h4>
+            </h2>
             <div className="grid sm:grid-cols-2 gap-2 text-xs">
               <div className="p-2.5 rounded-lg bg-muted/40">
                 <span className="text-muted-foreground block text-[11px]">Photo Dimensions:</span>
@@ -851,7 +849,7 @@ export function IndianExamBundleWorkspace({ exam }: IndianExamBundleWorkspacePro
             <div className="space-y-2.5">
               <Button
                 onClick={handleDownloadPhoto}
-                disabled={!processedPhotoBlob || isProcessing}
+                disabled={!processedPhotoBlob}
                 className="w-full h-11 text-xs font-bold gap-2 bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm disabled:opacity-50"
               >
                 <Download className="w-4 h-4" />
@@ -878,68 +876,6 @@ export function IndianExamBundleWorkspace({ exam }: IndianExamBundleWorkspacePro
           </div>
         </div>
       </div>
-
-      {/* Cyber Cafe Modal */}
-      {showCyberCafeModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <div className="bg-card border rounded-3xl max-w-lg w-full p-6 space-y-6 shadow-2xl relative">
-            <div className="space-y-2">
-              <Badge className="bg-sky-600 text-white text-xs font-bold">Cyber Cafe & CSC Bulk Mode</Badge>
-              <h3 className="text-xl font-bold text-foreground">Fast, Ad-Free Bulk Student Form Filling</h3>
-              <p className="text-xs text-muted-foreground leading-relaxed">
-                Designed for internet cafes, Jan Seva Kendras, and CSC centers processing dozens of student exam applications every day.
-              </p>
-            </div>
-
-            <div className="space-y-3">
-              <div className="p-3.5 rounded-2xl border bg-muted/30 flex items-center justify-between">
-                <div>
-                  <span className="font-bold text-sm text-foreground block">Daily Cyber Cafe Pass</span>
-                  <span className="text-xs text-muted-foreground">Unlimited student application packs for 24 hours</span>
-                </div>
-                <Badge variant="outline" className="text-sm font-bold font-mono text-primary px-3 py-1">
-                  ₹49 / day
-                </Badge>
-              </div>
-
-              <div className="p-3.5 rounded-2xl border border-sky-300 dark:border-sky-800 bg-sky-50/50 dark:bg-sky-950/20 flex items-center justify-between">
-                <div>
-                  <span className="font-bold text-sm text-foreground block">Monthly CSC Bulk Pass</span>
-                  <span className="text-xs text-muted-foreground">Process 500+ student applications, zero ads, priority</span>
-                </div>
-                <Badge className="bg-sky-600 text-white text-sm font-bold font-mono px-3 py-1">
-                  ₹199 / mo
-                </Badge>
-              </div>
-            </div>
-
-            <ul className="text-xs text-muted-foreground space-y-2 pl-4 list-disc">
-              <li>Batch process 50+ applicant forms consecutively with zero ads</li>
-              <li>Auto-saved candidate name, DOP, and signature presets</li>
-              <li>Priority browser GPU acceleration for instant downloads</li>
-            </ul>
-
-            <div className="flex gap-3 pt-2">
-              <Button
-                onClick={() => {
-                  toast.success('Cyber Cafe Bulk Mode activated! Enjoy high-speed ad-free processing.');
-                  setShowCyberCafeModal(false);
-                }}
-                className="flex-1 bg-sky-600 hover:bg-sky-700 text-white font-bold text-xs h-10"
-              >
-                Activate Cyber Cafe Mode
-              </Button>
-              <Button
-                variant="ghost"
-                onClick={() => setShowCyberCafeModal(false)}
-                className="text-xs text-muted-foreground"
-              >
-                Close
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

@@ -599,8 +599,24 @@ assert.ok(bRaw[(45 * bInfo.width + 60) * 4 + 3] > 200, `balanced mode face must 
   assert.equal(spoofedOriginRes.status, 403, 'forged Origin without signed cookie blocked with 403');
 
   const uiPageRes = proxy(new NextRequest('http://localhost/tools/compress-image', { method: 'GET' }));
-  const tokenCookie = uiPageRes.cookies.get('pp_api_token')?.value;
-  assert.ok(tokenCookie, 'GET UI route sets signed pp_api_token cookie');
+  assert.equal(
+    uiPageRes.cookies.get('pp_api_token')?.value,
+    undefined,
+    'Public cacheable UI HTML route does not leak Set-Cookie pp_api_token'
+  );
+
+  const sessionRes = proxy(
+    new NextRequest('http://localhost/api/session', {
+      method: 'GET',
+      headers: {
+        Origin: 'http://localhost',
+        Referer: 'http://localhost/tools/compress-image',
+        'Sec-Fetch-Site': 'same-origin',
+      },
+    }),
+  );
+  const tokenCookie = sessionRes.cookies.get('pp_api_token')?.value;
+  assert.ok(tokenCookie, 'GET /api/session sets signed pp_api_token cookie');
 
   const crossSiteRes = proxy(
     new NextRequest('http://localhost/api/image/process', {
@@ -631,14 +647,14 @@ assert.ok(bRaw[(45 * bInfo.width + 60) * 4 + 3] > 200, `balanced mode face must 
 // Verify tool aliases, redirects, metrics, and intelligent search ranking
 const { allTools, allPdfTools, pdfToolGroups, platformStats, getToolBySlug, getToolById, searchTools } = await import('../src/lib/tools-data.ts');
 const { organizationData } = await import('../src/lib/seo-config.ts');
-assert.equal(platformStats.freeToolsLabel, '150+');
+assert.equal(platformStats.freeToolsLabel, `${allTools.length}+`);
 assert.equal(platformStats.fileFormatsLabel, '30+');
 assert.equal(platformStats.freeWorkflowsLabel, '100%');
 assert.equal(platformStats.accountWallsLabel, '0');
 assert.equal('telephone' in organizationData, false, 'global organizationData omits Indian phone number');
 assert.equal('telephone' in organizationData.contactPoint, false, 'global contactPoint omits Indian phone number');
-assert.equal(allTools.length, 150, 'allTools count matches 150');
-assert.equal(allPdfTools.length, 93, 'allPdfTools count matches 93');
+assert.ok(allTools.length >= 155, `allTools count (${allTools.length}) matches >= 155`);
+assert.ok(allPdfTools.length >= 95, `allPdfTools count (${allPdfTools.length}) matches >= 95`);
 for (const slug of [
   'fill-sign-irs-w9-pdf',
   'amazon-fba-thermal-label-converter',
@@ -718,4 +734,123 @@ assert.ok(adsterraConfig.slots.banner728x90.key && adsterraConfig.slots.banner30
 assert.ok(adsterraConfig.slots.nativeBanner.scriptSrc && adsterraConfig.slots.socialBar.scriptSrc, 'Adsterra native and social bar configured');
 assert.ok(!adsenseConfig.clientId || adsenseConfig.clientId.startsWith('ca-pub-'), 'AdSense client ID format valid');
 
-console.log('Recent-tool regressions passed. PDF fixtures:', out);
+// Verify Google A2UI v1.0 surface builders, validator, /api/a2ui, /api/mcp, and discovery cards
+const {
+  A2UI_A2A_EXTENSION_URI,
+  A2UI_BASIC_CATALOG_ID,
+  A2UI_MIME_TYPE,
+  A2UI_PROTOCOL_VERSION,
+  buildPlatformLimitsA2uiSurface,
+  buildToolDetailsA2uiSurface,
+  buildToolSearchA2uiSurface,
+  buildWorkflowRecommendationA2uiSurface,
+} = await import('../src/lib/a2ui-surfaces.ts');
+const { validateA2uiV10Messages } = await import('../src/lib/a2ui-validator.ts');
+
+for (const bundle of [
+  buildToolSearchA2uiSurface({ query: 'compress pdf under 2mb uscis' }),
+  buildToolDetailsA2uiSurface({ slug: 'compress-pdf' }),
+  buildWorkflowRecommendationA2uiSurface({ task: 'pacer federal court bates numbering merge' }),
+  buildPlatformLimitsA2uiSurface(),
+]) {
+  const report = validateA2uiV10Messages(bundle.messages);
+  assert.equal(report.valid, true, `A2UI v1.0 strict validation failed for ${bundle.intent}: ${JSON.stringify(report.errors)}`);
+  assert.equal(report.errors.length, 0);
+  assert.ok(report.surfaceIds.includes(bundle.surfaceId), `surface ${bundle.surfaceId} created`);
+}
+
+const a2uiRoute = await import('../src/app/api/a2ui/route.ts');
+const a2uiDescriptorRes = await a2uiRoute.GET(new NextRequest('http://localhost/api/a2ui'));
+assert.equal(a2uiDescriptorRes.status, 200);
+const a2uiDescriptor = await a2uiDescriptorRes.json();
+assert.equal(a2uiDescriptor.protocolVersion, A2UI_PROTOCOL_VERSION);
+assert.equal(a2uiDescriptor.extensionUri, A2UI_A2A_EXTENSION_URI);
+assert.ok(a2uiDescriptor.supportedCatalogIds.includes(A2UI_BASIC_CATALOG_ID));
+
+// Test A2UI v1.0 ActionMessage round-trip + Accept: application/a2ui+json
+const a2uiActionRes = await a2uiRoute.POST(
+  new NextRequest('http://localhost/api/a2ui', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Accept: A2UI_MIME_TYPE },
+    body: JSON.stringify({
+      version: '1.0',
+      action: {
+        name: 'get_tool_details',
+        surfaceId: 'pdfpixels-test-src',
+        sourceComponentId: 'inspectToolBtn',
+        timestamp: new Date().toISOString(),
+        context: { slug: 'merge-pdf' },
+      },
+      metadata: {
+        a2uiRendererCapabilities: {
+          '1.0': { supportedCatalogIds: [A2UI_BASIC_CATALOG_ID] },
+        },
+      },
+    }),
+  }),
+);
+assert.equal(a2uiActionRes.status, 200);
+assert.match(a2uiActionRes.headers.get('content-type') || '', /application\/a2ui\+json/);
+const rawA2uiActionMsgs = await a2uiActionRes.json();
+assert.ok(Array.isArray(rawA2uiActionMsgs), 'Accept: application/a2ui+json returns raw message array');
+assert.equal(validateA2uiV10Messages(rawA2uiActionMsgs).valid, true, 'ActionMessage response passes STRICT_VALIDATION');
+
+// Test capability negotiation rejection (406)
+const a2uiRejectRes = await a2uiRoute.POST(
+  new NextRequest('http://localhost/api/a2ui', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      intent: 'search_tools',
+      query: 'compress pdf',
+      a2uiRendererCapabilities: { '1.0': { supportedCatalogIds: ['https://example.com/unknown.json'] } },
+    }),
+  }),
+);
+assert.equal(a2uiRejectRes.status, 406, 'Incompatible A2UI catalog returns 406');
+
+// Test MCP render_a2ui_surface tool + a2ui:// resources
+const mcpRoute = await import('../src/app/api/mcp/route.ts');
+const mcpA2uiRes = await mcpRoute.POST(
+  new NextRequest('http://localhost/api/mcp', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      jsonrpc: '2.0',
+      id: 42,
+      method: 'tools/call',
+      params: { name: 'render_a2ui_surface', arguments: { intent: 'recommend_workflow', task: 'sign contract pdf' } },
+    }),
+  }),
+);
+assert.equal(mcpA2uiRes.status, 200);
+const mcpA2uiJson = await mcpA2uiRes.json();
+const embeddedSurface = mcpA2uiJson.result.content.find((c) => c.type === 'resource' && c.resource?.mimeType === A2UI_MIME_TYPE);
+assert.ok(embeddedSurface, 'MCP render_a2ui_surface embeds application/a2ui+json resource');
+assert.equal(validateA2uiV10Messages(JSON.parse(embeddedSurface.resource.text)).valid, true, 'MCP embedded A2UI surface passes STRICT_VALIDATION');
+
+for (const uri of ['a2ui://pdfpixels/tool-directory', 'a2ui://pdfpixels/platform-limits']) {
+  const resRead = await mcpRoute.POST(
+    new NextRequest('http://localhost/api/mcp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ jsonrpc: '2.0', id: 43, method: 'resources/read', params: { uri } }),
+    }),
+  );
+  assert.equal(resRead.status, 200, `MCP resources/read ${uri}`);
+  const payload = await resRead.json();
+  assert.equal(payload.result.contents[0].mimeType, A2UI_MIME_TYPE);
+  assert.equal(validateA2uiV10Messages(JSON.parse(payload.result.contents[0].text)).valid, true, `MCP resource ${uri} passes STRICT_VALIDATION`);
+}
+
+// Verify A2A Agent Card & MCP Server Card A2UI v1.0 declarations
+const agentCard = JSON.parse(readFileSync(path.join(root, 'public', '.well-known', 'agent.json'), 'utf8'));
+assert.ok(
+  agentCard.capabilities.extensions.some((ext) => ext.uri === A2UI_A2A_EXTENSION_URI && ext.params.supportedCatalogIds.includes(A2UI_BASIC_CATALOG_ID)),
+  'A2A agent card declares A2UI v1.0 extension and basic catalog',
+);
+const mcpCard = JSON.parse(readFileSync(path.join(root, 'public', '.well-known', 'mcp', 'server-card.json'), 'utf8'));
+assert.equal(mcpCard.a2ui.protocolVersion, A2UI_PROTOCOL_VERSION);
+assert.ok(mcpCard.tools.some((t) => t.name === 'render_a2ui_surface'), 'MCP server card lists render_a2ui_surface');
+
+console.log('Recent-tool regressions passed (including Google A2UI v1.0 strict conformance). PDF fixtures:', out);

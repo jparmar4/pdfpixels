@@ -56,18 +56,9 @@ export function RootDocumentShell({
     >
       {/* eslint-disable-next-line @next/next/no-head-element -- RootDocumentShell is imported directly by each locale RootLayout */}
       <head>
-        <link rel="preconnect" href="https://www.googletagmanager.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
-        <link rel="preconnect" href="https://www.google-analytics.com" crossOrigin="anonymous" />
-        <link rel="dns-prefetch" href="https://www.google-analytics.com" />
-        <link rel="preconnect" href="https://bauval.org" crossOrigin="anonymous" />
-        <link rel="dns-prefetch" href="https://bauval.org" />
-        <link rel="preconnect" href="https://araplhn.org" crossOrigin="anonymous" />
-        <link rel="dns-prefetch" href="https://araplhn.org" />
-        <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
-        <link rel="preconnect" href="https://googleads.g.doubleclick.net" crossOrigin="anonymous" />
-        <link rel="dns-prefetch" href="https://googleads.g.doubleclick.net" />
+        <link rel="dns-prefetch" href="https://bauval.org" />
         {adsenseConfig.clientId && (
           <meta name="google-adsense-account" content={adsenseConfig.clientId} />
         )}
@@ -78,13 +69,6 @@ export function RootDocumentShell({
         <link rel="alternate" type="text/markdown" title="PdfPixels Markdown for Agents" href="/markdown" />
         <link rel="mcp-server" type="application/json" href="/.well-known/mcp/server-card.json" />
         <link rel="api-catalog" type="application/linkset+json" href="/.well-known/api-catalog" />
-        {adsenseConfig.enabled && adsenseConfig.clientId && (
-          <script
-            async
-            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseConfig.clientId}`}
-            crossOrigin="anonymous"
-          />
-        )}
       </head>
       <body className="bg-background text-foreground antialiased min-h-screen flex flex-col">
         <a
@@ -93,7 +77,7 @@ export function RootDocumentShell({
         >
           {skipLabel}
         </a>
-        <JsonLdSchemas />
+        <JsonLdSchemas lang={lang} />
         <WebMCPRegistration />
         <ChunkReloadHandler />
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>

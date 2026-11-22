@@ -4,9 +4,20 @@ import { absoluteUrl, DEFAULT_OG_IMAGE_URL, getHomepageFeaturedTools, getSiteSea
 
 const featuredTools = getHomepageFeaturedTools();
 
-function KnowledgeGraphSchema() {
+const LOCALE_LANGUAGE_MAP: Record<string, string> = {
+  en: 'en-US',
+  de: 'de-DE',
+  es: 'es-ES',
+  fr: 'fr-FR',
+  pt: 'pt-BR',
+  ja: 'ja-JP',
+  jp: 'ja-JP',
+};
+
+function KnowledgeGraphSchema({ lang = 'en' }: { lang?: string }) {
   // Stable dateModified so HTML + sitemap cache stays valid across requests.
   const today = SITE_CONTENT_UPDATED.toISOString();
+  const inLanguage = LOCALE_LANGUAGE_MAP[lang] ?? 'en-US';
 
   const schema = {
     '@context': 'https://schema.org',
@@ -97,7 +108,7 @@ function KnowledgeGraphSchema() {
           },
           'query-input': 'required name=search_term_string',
         },
-        inLanguage: 'en-US',
+        inLanguage,
       },
       {
         '@type': 'WebApplication',
@@ -125,7 +136,12 @@ function KnowledgeGraphSchema() {
     ],
   };
 
-  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />;
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema).replace(/</g, '\\u003c') }}
+    />
+  );
 }
 
 export function HomePageSchemas() {
@@ -240,10 +256,15 @@ export function APISchema() {
     },
   };
 
-  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />;
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema).replace(/</g, '\\u003c') }}
+    />
+  );
 }
 
-export function JsonLdSchemas() {
-  return <KnowledgeGraphSchema />;
+export function JsonLdSchemas({ lang = 'en' }: { lang?: string } = {}) {
+  return <KnowledgeGraphSchema lang={lang} />;
 }
 

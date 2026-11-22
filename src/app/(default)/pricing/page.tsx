@@ -46,7 +46,7 @@ const freeIncludes = [
 
 export default function PricingPage() {
   return (
-    <div className="relative overflow-hidden bg-background pt-24 pb-32">
+    <main id="main-content" className="relative overflow-hidden bg-background pt-24 pb-32">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(99,102,241,0.08),transparent_25%),radial-gradient(circle_at_bottom_right,rgba(168,85,247,0.06),transparent_25%)]" />
 
       <div className="container relative z-10 mx-auto max-w-6xl px-4 lg:px-8">
@@ -119,6 +119,6 @@ export default function PricingPage() {
           </div>
         </div>
       </div>
-    </div>
+    </main>
   );
 }

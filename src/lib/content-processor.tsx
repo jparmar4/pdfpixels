@@ -113,9 +113,9 @@ export function processContent(content: string): React.ReactNode[] {
 
                 elements.push(
                     <div key={key} className={`p-6 my-8 rounded-xl border ${styles} shadow-sm`}>
-                        <h4 className="font-bold text-sm uppercase tracking-wider opacity-90 mb-3 select-none">
+                        <p className="font-bold text-sm uppercase tracking-wider opacity-90 mb-3 select-none">
                             {title}
-                        </h4>
+                        </p>
                         <div className="text-base">
                             {blockContent}
                         </div>

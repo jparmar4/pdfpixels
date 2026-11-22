@@ -447,6 +447,7 @@ export function IrsW9Workspace() {
                   ref={fileInputRef}
                   type="file"
                   accept=".pdf,application/pdf"
+                  aria-label="Upload existing W-9 PDF"
                   className="hidden"
                   onChange={(e) => {
                     const f = e.target.files?.[0];

@@ -166,7 +166,7 @@ export function LocalizedToolPage({ locale, slug }: { locale: LocaleCode; slug: 
         <script
           key={`loc-schema-${index}`}
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema).replace(/</g, '\\u003c') }}
         />
       ))}
       <div className="container mx-auto max-w-5xl px-4 pt-5 lg:px-8 flex flex-wrap items-center justify-between gap-3 text-xs text-muted-foreground">

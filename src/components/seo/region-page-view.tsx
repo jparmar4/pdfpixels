@@ -119,7 +119,7 @@ export function RegionPageView({ regionCode }: { regionCode: string }) {
           <script
             key={`region-schema-${index}`}
             type="application/ld+json"
-            dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(schema).replace(/</g, '\\u003c') }}
           />
         ))}
 
@@ -169,9 +169,9 @@ export function RegionPageView({ regionCode }: { regionCode: string }) {
                     All-in-One Hub
                   </span>
                 </div>
-                <h3 className="text-lg font-bold text-foreground">
+                <h2 className="text-lg font-bold text-foreground">
                   Need all {allPdfTools.length} PDF Tools in {region.name}?
-                </h3>
+                </h2>
                 <p className="text-sm text-muted-foreground max-w-2xl">
                   Instantly access our full PDF workstation: merge, compress, split, convert to/from Office, sign documents, and OCR with client-side privacy protection.
                 </p>
@@ -189,23 +189,23 @@ export function RegionPageView({ regionCode }: { regionCode: string }) {
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 border-t border-border/50 pt-8">
                   <div>
                     <span className="text-xs font-bold uppercase tracking-widest text-primary">
-                      One-Click Sarkari Exam Bundles
+                      One-Click Sarkari Exam Bundles ({INDIAN_EXAM_PRESETS.length} Portals)
                     </span>
                     <h2 className="text-2xl font-bold tracking-tight text-foreground mt-1">
-                      Indian Exam Photo, Signature & Document Resizer
+                      Indian Exam Photo, Signature &amp; Document Resizer
                     </h2>
                     <p className="text-sm text-muted-foreground mt-1">
-                      Exact pixel and KB dimensions for SSC, UPSC, NSDL PAN, NTA (NEET/JEE), Banking, and Railways. Includes candidate name & date stamp.
+                      Exact pixel and KB dimensions for SSC, UPSC, NSDL PAN, NTA (NEET/JEE), Banking, Railways, Defence, and State PSC portals. Includes optional candidate name &amp; date stamp.
                     </p>
                   </div>
-                  <div className="p-3 rounded-xl border border-sky-200 dark:border-sky-900/60 bg-sky-50/50 dark:bg-sky-950/20 text-xs text-sky-900 dark:text-sky-300 shrink-0">
-                    <span className="font-bold block">Cyber Cafe Bulk Pass: ₹49/day</span>
-                    <span>Zero ads, saved presets for application centers</span>
+                  <div className="p-3 rounded-xl border border-emerald-200 dark:border-emerald-900/60 bg-emerald-50/50 dark:bg-emerald-950/20 text-xs text-emerald-900 dark:text-emerald-300 shrink-0">
+                    <span className="font-bold block">100% Free for Students &amp; CSC Centers</span>
+                    <span>Unlimited client-side exports · Zero login required</span>
                   </div>
                 </div>
 
                 <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
-                  {INDIAN_EXAM_PRESETS.slice(0, 15).map((exam) => (
+                  {INDIAN_EXAM_PRESETS.map((exam) => (
                     <Link
                       key={exam.slug}
                       href={`/in/${exam.slug}`}
@@ -223,7 +223,7 @@ export function RegionPageView({ regionCode }: { regionCode: string }) {
                         {exam.name}
                       </h3>
                       <p className="text-xs text-muted-foreground line-clamp-2">
-                        {exam.photoSpec.widthMm}x{exam.photoSpec.heightMm}mm · {exam.photoSpec.requiresNameAndDate ? 'Print Name & Date' : 'Pre-calibrated crop'} · 300 DPI
+                        {exam.photoSpec.widthMm}x{exam.photoSpec.heightMm}mm · {exam.photoSpec.requiresNameAndDate ? 'Print Name & Date' : 'Pre-calibrated crop'} · {exam.photoSpec.dpi} DPI
                       </p>
                     </Link>
                   ))}

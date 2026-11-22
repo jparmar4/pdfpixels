@@ -1,9 +1,7 @@
 'use client';
 
-import { Suspense, useEffect, useState, useMemo } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useEffect, useState, useMemo } from 'react';
 import Link from 'next/link';
-import { motion, AnimatePresence } from 'framer-motion';
 import {
   ArrowRight,
   Cpu,
@@ -97,36 +95,23 @@ function getProcessingMeta(tool: (typeof allTools)[0]) {
   };
 }
 
-/**
- * Applies a ?q= deep link after hydration. Kept in its own Suspense subtree
- * with a null fallback so useSearchParams never suspends the page prerender —
- * the hero H1 and all tool cards must be present in served HTML.
- */
-function InitialQuerySync({
-  onQuery,
-  onCategory,
-}: {
-  onQuery: (q: string) => void;
-  onCategory: (c: string) => void;
-}) {
-  const searchParams = useSearchParams();
-  const q = searchParams.get('q') || searchParams.get('search') || '';
-  const cat = searchParams.get('category') || searchParams.get('tab') || '';
-  useEffect(() => {
-    if (q) onQuery(q);
-    if (cat) {
-      if (cat === 'pdf' || cat === 'pdf-tools') onCategory('pdf-tools');
-      else if (cat === 'image' || cat === 'image-tools') onCategory('image-tools');
-      else onCategory(cat);
-    }
-  }, [q, cat, onQuery, onCategory]);
-  return null;
-}
-
 export function ToolsClient() {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('all');
   const setActiveTool = useAppStore((state) => state.setActiveTool);
+
+  // Sync deep-link ?q= / ?category= client-side without triggering SSR Suspense bailout
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const q = params.get('q') || params.get('search') || '';
+    const cat = params.get('category') || params.get('tab') || '';
+    if (q) setSearchQuery(q);
+    if (cat) {
+      if (cat === 'pdf' || cat === 'pdf-tools') setActiveCategory('pdf-tools');
+      else if (cat === 'image' || cat === 'image-tools') setActiveCategory('image-tools');
+      else setActiveCategory(cat);
+    }
+  }, []);
 
   const filteredTools = useMemo(() => {
     let tools: (typeof allTools)[0][];
@@ -158,21 +143,13 @@ export function ToolsClient() {
 
   return (
     <>
-      <Suspense fallback={null}>
-        <InitialQuerySync onQuery={setSearchQuery} onCategory={setActiveCategory} />
-      </Suspense>
-      {/* â”€â”€â”€ Hero Section â”€â”€â”€ */}
+      {/* Hero Section */}
       <section className="relative overflow-hidden">
         <AnimatedMeshBg />
         <div className="hero-grid absolute inset-0 opacity-60" />
 
         <div className="container relative z-10 mx-auto px-4 pb-12 pt-24 text-center lg:px-8 md:pb-16 md:pt-32">
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-            className="mx-auto max-w-3xl"
-          >
+          <div className="mx-auto max-w-3xl">
             <span className="mb-6 inline-flex items-center gap-2 rounded-full border border-primary/15 bg-primary/8 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.22em] text-primary">
               <LayoutGrid className="h-3.5 w-3.5" />
               All Tools
@@ -218,7 +195,7 @@ export function ToolsClient() {
               </span>
             </div>
           </div>
-        </motion.div>
+        </div>
       </div>
 
       {/* Bottom fade */}
@@ -226,12 +203,7 @@ export function ToolsClient() {
     </section>
 
       <section className="container mx-auto px-4 pb-10 lg:px-8">
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.5 }}
-          className="mx-auto max-w-4xl"
-        >
+        <div className="mx-auto max-w-4xl">
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
             {stats.map((stat) => (
               <div
@@ -250,16 +222,11 @@ export function ToolsClient() {
               </div>
             ))}
           </div>
-        </motion.div>
+        </div>
       </section>
 
       <section className="container mx-auto px-4 pb-8 lg:px-8">
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 0.4 }}
-          className="mx-auto max-w-5xl"
-        >
+        <div className="mx-auto max-w-5xl">
           <div className="scroll-carousel -mx-1 px-1">
             <button
               onClick={() => setActiveCategory('all')}
@@ -322,65 +289,53 @@ export function ToolsClient() {
               </Link>
             </div>
           )}
-        </motion.div>
+        </div>
       </section>
 
       <section className="container mx-auto px-4 pb-16 lg:px-8">
         <div className="mx-auto max-w-7xl">
-          <AnimatePresence mode="wait">
-            {filteredTools.length > 0 ? (
-              <motion.div
-                key={`${activeCategory}-${searchQuery}`}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.3 }}
-                className="grid gap-4 sm:grid-cols-2 md:gap-5 lg:grid-cols-3 xl:grid-cols-4"
+          <h2 className="sr-only">Browse PDF &amp; Image Tools</h2>
+          {filteredTools.length > 0 ? (
+            <div
+              key={`${activeCategory}-${searchQuery}`}
+              className="grid gap-4 sm:grid-cols-2 md:gap-5 lg:grid-cols-3 xl:grid-cols-4"
+            >
+              {filteredTools.map((tool) => (
+                <ToolListingCard
+                  key={tool.id}
+                  tool={tool}
+                  onCardClick={() =>
+                    setActiveTool({
+                      id: tool.id,
+                      name: normalizeDisplayText(tool.name),
+                      description: normalizeDisplayText(tool.description),
+                    })
+                  }
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center py-24 text-center">
+              <div className="flex h-20 w-20 items-center justify-center rounded-full bg-muted">
+                <Search className="h-8 w-8 text-muted-foreground" />
+              </div>
+              <h3 className="mt-6 text-xl font-bold text-foreground">No tools found</h3>
+              <p className="mt-2 max-w-md text-sm text-muted-foreground">
+                We could not find any tools matching &quot;{searchQuery}&quot;.
+                Try a different search term or browse by category.
+              </p>
+              <button
+                onClick={() => {
+                  setSearchQuery('');
+                  setActiveCategory('all');
+                }}
+                className="btn-premium mt-6 inline-flex h-11 items-center gap-2 rounded-xl px-5 text-sm font-semibold"
               >
-                {filteredTools.map((tool, index) => (
-                  <ToolListingCard
-                    key={tool.id}
-                    tool={tool}
-                    index={index}
-                    onCardClick={() =>
-                      setActiveTool({
-                        id: tool.id,
-                        name: normalizeDisplayText(tool.name),
-                        description: normalizeDisplayText(tool.description),
-                      })
-                    }
-                  />
-                ))}
-              </motion.div>
-            ) : (
-              <motion.div
-                key="empty"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0 }}
-                className="flex flex-col items-center justify-center py-24 text-center"
-              >
-                <div className="flex h-20 w-20 items-center justify-center rounded-full bg-muted">
-                  <Search className="h-8 w-8 text-muted-foreground" />
-                </div>
-                <h3 className="mt-6 text-xl font-bold text-foreground">No tools found</h3>
-                <p className="mt-2 max-w-md text-sm text-muted-foreground">
-                  We could not find any tools matching "{searchQuery}".
-                  Try a different search term or browse by category.
-                </p>
-                <button
-                  onClick={() => {
-                    setSearchQuery('');
-                    setActiveCategory('all');
-                  }}
-                  className="btn-premium mt-6 inline-flex h-11 items-center gap-2 rounded-xl px-5 text-sm font-semibold"
-                >
-                  <ArrowRight className="h-4 w-4" />
-                  View all tools
-                </button>
-              </motion.div>
-            )}
-          </AnimatePresence>
+                <ArrowRight className="h-4 w-4" />
+                View all tools
+              </button>
+            </div>
+          )}
         </div>
       </section>
     </>
@@ -389,11 +344,9 @@ export function ToolsClient() {
 
 function ToolListingCard({
   tool,
-  index,
   onCardClick,
 }: {
   tool: (typeof allTools)[0];
-  index: number;
   onCardClick: () => void;
 }) {
   const Icon = tool.icon;
@@ -403,17 +356,7 @@ function ToolListingCard({
   const categoryName = toolCategories.find((c) => c.id === tool.category)?.name ?? '';
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{
-        duration: 0.4,
-        delay: index * 0.025,
-        ease: [0.16, 1, 0.3, 1],
-      }}
-      whileHover={{ y: -4 }}
-      className="h-full"
-    >
+    <div className="h-full transition-transform duration-200 hover:-translate-y-1">
       <TiltCard wrapperClassName="h-full" max={5}>
         <Link
           href={`/tools/${tool.slug}`}
@@ -460,6 +403,6 @@ function ToolListingCard({
         </div>
       </Link>
       </TiltCard>
-    </motion.div>
+    </div>
   );
 }

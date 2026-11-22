@@ -2,14 +2,11 @@ import { NextRequest, NextResponse } from 'next/server';
 import { rateLimit } from '@/lib/rate-limit';
 import {
   API_AUTH_REASON_HEADER,
-  API_READY_COOKIE,
   API_TOKEN_COOKIE,
   API_TOKEN_HEADER,
-  API_TOKEN_REFRESH_THRESHOLD_MS,
   attachApiSessionCookies,
   getRequestHost,
   isHeavyProcessingApiPath,
-  shouldIssueSessionCookieForPage,
   verifySameOriginRequest,
   verifySignedApiToken,
 } from '@/lib/api-auth';
@@ -108,20 +105,11 @@ export default function proxy(request: NextRequest) {
       return response;
     }
 
-    const response = NextResponse.next();
-    if (shouldIssueSessionCookieForPage(pathname)) {
-      const existingToken = request.cookies.get(API_TOKEN_COOKIE)?.value;
-      const hasReadyHint = Boolean(request.cookies.get(API_READY_COOKIE)?.value);
-      const tokenValid = verifySignedApiToken(
-        existingToken,
-        requestHost,
-        API_TOKEN_REFRESH_THRESHOLD_MS
-      );
-      if (!tokenValid || !hasReadyHint) {
-        attachApiSessionCookies(response, request, requestHost);
-      }
-    }
-    return response;
+    // Keep public HTML responses cookie-free so CDN/edge caches respect
+    // `Cache-Control: public, s-maxage=3600` without leaking or bypassing cookies.
+    // Client-side `apiFetch()` automatically bootstraps `pp_api_token` via
+    // `GET /api/session` (`Cache-Control: no-store, private, max-age=0`).
+    return NextResponse.next();
   }
 
   if (request.method === 'OPTIONS') {

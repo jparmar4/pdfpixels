@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 
 const BASE_URL = 'https://www.pdfpixels.com';
 
-const AI_AND_SEARCH_BOTS = [
+const SEARCH_AND_AI_RETRIEVAL_BOTS = [
   // Search Engine & Google Discover Crawlers
   'Googlebot',
   'Googlebot-Image',
@@ -17,6 +17,7 @@ const AI_AND_SEARCH_BOTS = [
   'Storebot-Google',
   'AdsBot-Google',
   'AdsBot-Google-Mobile',
+  'GoogleOther',
   'Bingbot',
   'BingPreview',
   'Slurp',
@@ -32,33 +33,39 @@ const AI_AND_SEARCH_BOTS = [
   'SeznamBot',
   'facebot',
   'ia_archiver',
-  // AI & Answer Engine Crawlers (AEO / GEO)
-  'GPTBot',
-  'ChatGPT-User',
+  'Applebot',
+  'Amazonbot',
+  // AI Search & Live User-Fetch Crawlers (AEO / GEO retrieval — allowed)
   'OAI-SearchBot',
-  'Google-Extended',
-  'GoogleOther',
-  'ClaudeBot',
+  'ChatGPT-User',
+  'Claude-SearchBot',
+  'Claude-User',
   'Claude-Web',
-  'anthropic-ai',
   'PerplexityBot',
   'Perplexity-User',
-  'Applebot',
-  'Applebot-Extended',
-  'Amazonbot',
-  'YouBot',
-  'CCBot',
-  'Meta-ExternalAgent',
+  'meta-webindexer',
   'Meta-ExternalFetcher',
   'FacebookBot',
-  'cohere-ai',
+  'YouBot',
   'MistralAI-User',
   'GrokBot',
   'xAI-Bot',
   'DeepSeekBot',
-  'Bytespider',
-  'Diffbot',
   'PhindBot',
+];
+
+// Dedicated model-training crawlers — disallowed to align with Content-Signal: ai-train=no
+const AI_TRAINING_BOTS = [
+  'GPTBot',
+  'ClaudeBot',
+  'anthropic-ai',
+  'Google-Extended',
+  'Applebot-Extended',
+  'Meta-ExternalAgent',
+  'CCBot',
+  'Bytespider',
+  'cohere-ai',
+  'Diffbot',
 ];
 
 export const dynamic = 'force-static';
@@ -85,8 +92,10 @@ export async function GET() {
     'Allow: /_next/image',
     'Allow: /llms.txt',
     'Allow: /llms-full.txt',
+    'Allow: /pricing.md',
     'Allow: /feed',
     'Allow: /api/mcp',
+    'Allow: /api/a2ui',
     'Allow: /api/health',
     'Allow: /api/limits',
     'Allow: /.well-known/mcp/server-card.json',
@@ -100,7 +109,7 @@ export async function GET() {
     '',
   ];
 
-  for (const bot of AI_AND_SEARCH_BOTS) {
+  for (const bot of SEARCH_AND_AI_RETRIEVAL_BOTS) {
     lines.push(
       `User-Agent: ${bot}`,
       'Content-Signal: search=yes, ai-input=yes, ai-train=no',
@@ -109,13 +118,24 @@ export async function GET() {
       'Allow: /_next/image',
       'Allow: /llms.txt',
       'Allow: /llms-full.txt',
+      'Allow: /pricing.md',
       'Allow: /feed',
       'Allow: /api/mcp',
+      'Allow: /api/a2ui',
       'Allow: /api/health',
       'Allow: /api/limits',
       'Allow: /openapi.json',
       'Disallow: /api/',
       'Disallow: /private/',
+      ''
+    );
+  }
+
+  for (const bot of AI_TRAINING_BOTS) {
+    lines.push(
+      `User-Agent: ${bot}`,
+      'Content-Signal: search=no, ai-input=no, ai-train=no',
+      'Disallow: /',
       ''
     );
   }

@@ -1,13 +1,12 @@
 'use client';
 
-import { useEffect } from 'react';
-import { adsterraConfig } from '@/lib/ads-config';
+import { useEffect, useState } from 'react';
+import { adsterraConfig, hasAdvertisingConsent } from '@/lib/ads-config';
 import { useWorkflowStore } from '@/store/workflow-store';
 
 /**
  * Loads the high-CPM Adsterra Social Bar (Unit ID 31836252) after initial paint
- * so Core Web Vitals (LCP/FCP/CLS) stay clean while monetizing engaged sessions
- * across all routes (tools, workflows, blog guides, comparisons, use-cases, and hubs):
+ * AND only after the visitor grants advertising cookie consent:
  *  - Injects immediately once a download occurs (`hasDownloadedOnce`), OR
  *  - On first user interaction (`pointerdown`, `scroll`, `keydown`) after 1.2s, OR
  *  - Automatically after 3.5s on active pages.
@@ -15,15 +14,24 @@ import { useWorkflowStore } from '@/store/workflow-store';
 export function DeferredSocialBar() {
   const hasDownloadedOnce = useWorkflowStore((s) => s.hasDownloadedOnce);
   const hydrateFromSession = useWorkflowStore((s) => s.hydrateFromSession);
+  const [adConsent, setAdConsent] = useState(false);
 
   useEffect(() => {
     hydrateFromSession();
   }, [hydrateFromSession]);
 
   useEffect(() => {
-    if (!adsterraConfig.enabled || !adsterraConfig.slots.socialBar.scriptSrc) return;
+    const syncConsent = () => setAdConsent(hasAdvertisingConsent());
+    syncConsent();
+    window.addEventListener('cookie-consent-updated', syncConsent);
+    return () => window.removeEventListener('cookie-consent-updated', syncConsent);
+  }, []);
+
+  useEffect(() => {
+    if (!adConsent || !adsterraConfig.enabled || !adsterraConfig.slots.socialBar.scriptSrc) return;
 
     const injectSocialBar = () => {
+      if (!hasAdvertisingConsent()) return;
       if (document.getElementById('pp-adsterra-social-bar')) return;
       const script = document.createElement('script');
       script.id = 'pp-adsterra-social-bar';
@@ -70,7 +78,7 @@ export function DeferredSocialBar() {
       window.clearTimeout(fallbackTimer);
       if (interactionTimer !== null) window.clearTimeout(interactionTimer);
     };
-  }, [hasDownloadedOnce]);
+  }, [adConsent, hasDownloadedOnce]);
 
   return null;
 }

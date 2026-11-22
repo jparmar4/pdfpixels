@@ -11,12 +11,17 @@ export const API_TOKEN_REFRESH_THRESHOLD_MS = 3 * 60 * 60 * 1000;
 
 declare global {
   var __pdfpixelsApiSigningKey: Buffer | undefined;
+  var __pdfpixelsApiSecretWarned: boolean | undefined;
 }
 
 function getSigningKey(): Buffer {
   const configured = process.env.API_SIGNING_SECRET?.trim();
   if (configured) {
     return createHash('sha256').update(configured).digest();
+  }
+  if (process.env.NODE_ENV === 'production' && !globalThis.__pdfpixelsApiSecretWarned) {
+    globalThis.__pdfpixelsApiSecretWarned = true;
+    console.warn('[api-auth] API_SIGNING_SECRET is not configured; falling back to ephemeral per-process key.');
   }
   if (!globalThis.__pdfpixelsApiSigningKey) {
     globalThis.__pdfpixelsApiSigningKey = randomBytes(32);

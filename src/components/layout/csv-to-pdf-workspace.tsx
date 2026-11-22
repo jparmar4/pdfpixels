@@ -130,9 +130,14 @@ export function CsvToPdfWorkspace() {
   const [resultName, setResultName] = useState('table.pdf');
   const resultUrlRef = useRef<string | null>(null);
 
-  const rows = useMemo(() => (csvText.trim() ? parseCsv(csvText) : []), [csvText]);
-  const header = rows[0] ?? [];
-  const dataRows = rows.slice(1);
+  const { rows, header, dataRows } = useMemo(() => {
+    const parsed = csvText.trim() ? parseCsv(csvText) : [];
+    return {
+      rows: parsed,
+      header: parsed[0] ?? [],
+      dataRows: parsed.slice(1),
+    };
+  }, [csvText]);
 
   const revokeResult = useCallback(() => {
     if (resultUrlRef.current?.startsWith('blob:')) {

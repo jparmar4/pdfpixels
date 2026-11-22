@@ -1,13 +1,19 @@
 import { apiError } from '@/lib/api-response';
+import { verifySameOriginRequest } from '@/lib/api-auth';
 import { NextRequest, NextResponse } from 'next/server';
 import { rateLimit } from '@/lib/rate-limit';
 import { db } from '@/lib/db';
 import { sendEmail } from '@/lib/email';
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const MAX_EMAIL_LEN = 254;
 
 export async function POST(request: NextRequest) {
   try {
+    if (!verifySameOriginRequest(request)) {
+      return apiError('Forbidden: same-origin web request required.', 403, 'ORIGIN_MISMATCH');
+    }
+
     const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
     const { allowed } = rateLimit(`newsletter:${ip}`, 5, 60_000);
 
@@ -27,7 +33,7 @@ export async function POST(request: NextRequest) {
     }
 
     const normalizedEmail = email.trim().toLowerCase();
-    if (!emailRegex.test(normalizedEmail)) {
+    if (normalizedEmail.length > MAX_EMAIL_LEN || !emailRegex.test(normalizedEmail)) {
       return apiError('Please provide a valid email address', 400);
     }
 

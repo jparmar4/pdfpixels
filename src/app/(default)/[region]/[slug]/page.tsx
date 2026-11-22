@@ -1,9 +1,8 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { CheckCircle2, ChevronRight, HelpCircle, ShieldCheck, ArrowRight, BookOpen, Layers } from 'lucide-react';
-import { getRegionByCode } from '@/lib/geo-data';
-import { INDIAN_EXAM_PRESETS, getExamBySlug, type IndianExamPreset } from '@/lib/indian-exams-data';
+import { CheckCircle2, ChevronRight, HelpCircle, ArrowRight } from 'lucide-react';
+import { INDIAN_EXAM_PRESETS, getExamBySlug } from '@/lib/indian-exams-data';
 import { IndianExamBundleWorkspace } from '@/components/layout/indian-exam-bundle-workspace';
 import { siteConfig } from '@/lib/seo-config';
 import { absoluteUrl, DEFAULT_OG_IMAGE_URL, getRobotsMetadata } from '@/lib/seo';
@@ -148,10 +147,10 @@ export default async function IndianExamPage({ params }: IndianExamPageProps) {
   };
 
   return (
-    <div className={hasActiveSidebarAd ? 'min-h-screen bg-background xl:pr-[196px]' : 'min-h-screen bg-background'}>
+    <main id="main-content" className={hasActiveSidebarAd ? 'min-h-screen bg-background xl:pr-[196px]' : 'min-h-screen bg-background'}>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
       />
 
       {/* Breadcrumb Bar */}
@@ -190,6 +189,19 @@ export default async function IndianExamPage({ params }: IndianExamPageProps) {
               Every year thousands of candidates face application rejection during the scrutiny stage of {exam.authority} examinations due to minor discrepancies in photograph dimensions, lack of stamped date of photo (DOP), or oversized signature files. Here is the verified official criteria:
             </p>
           </div>
+
+          {exam.rulesSummary && exam.rulesSummary.length > 0 && (
+            <div className="p-4 rounded-2xl border border-primary/20 bg-primary/5 space-y-2">
+              <h3 className="font-bold text-sm text-foreground">
+                Verified {exam.shortName} ({exam.authority}) Scrutiny Rules
+              </h3>
+              <ul className="text-xs space-y-1.5 text-muted-foreground list-disc pl-4">
+                {exam.rulesSummary.map((rule, idx) => (
+                  <li key={idx}>{rule}</li>
+                ))}
+              </ul>
+            </div>
+          )}
 
           <div className="grid md:grid-cols-2 gap-4">
             <div className="p-4 rounded-2xl border bg-muted/20 space-y-2.5">
@@ -233,7 +245,7 @@ export default async function IndianExamPage({ params }: IndianExamPageProps) {
               </div>
               <h3 className="font-bold text-sm text-foreground">Upload Your Image</h3>
               <p className="text-xs text-muted-foreground leading-relaxed">
-                Choose any recent photo or selfie from your phone or PC. Our smart framing automatically aligns the 3.5x4.5 cm portrait ratio.
+                Choose any recent photo or selfie from your phone or PC. Our smart framing automatically aligns the {(exam.photoSpec.widthMm / 10).toFixed(1)}x{(exam.photoSpec.heightMm / 10).toFixed(1)} cm ({exam.photoSpec.widthMm}x{exam.photoSpec.heightMm} mm) ratio for {exam.shortName}.
               </p>
             </div>
             <div className="space-y-2.5">
@@ -290,7 +302,7 @@ export default async function IndianExamPage({ params }: IndianExamPageProps) {
           <section className="space-y-4">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-lg font-bold text-foreground">Other Popular Indian Exam Presets</h3>
+                <h2 className="text-lg font-bold text-foreground">Other Popular Indian Exam Presets</h2>
                 <p className="text-xs text-muted-foreground">One-click photo and signature formatting for major sarkari recruitments.</p>
               </div>
               <Link href="/in" className="text-xs font-semibold text-primary hover:underline flex items-center gap-1">
@@ -313,9 +325,9 @@ export default async function IndianExamPage({ params }: IndianExamPageProps) {
                       {rel.photoSpec.minKb}-{rel.photoSpec.maxKb} KB
                     </span>
                   </div>
-                  <h4 className="text-xs font-bold text-foreground line-clamp-2">
+                  <h3 className="text-xs font-bold text-foreground line-clamp-2">
                     {rel.name}
-                  </h4>
+                  </h3>
                   <p className="text-[11px] text-muted-foreground">
                     {rel.photoSpec.widthMm}x{rel.photoSpec.heightMm}mm · {rel.photoSpec.requiresNameAndDate ? 'Name & Date' : 'Direct crop'}
                   </p>
@@ -328,6 +340,6 @@ export default async function IndianExamPage({ params }: IndianExamPageProps) {
         <NativeAd className="my-8" />
       </div>
       <FooterAd className="my-6" />
-    </div>
+    </main>
   );
 }

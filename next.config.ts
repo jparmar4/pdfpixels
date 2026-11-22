@@ -111,15 +111,20 @@ const nextConfig: NextConfig = {
             value: 'nosniff',
           },
 
+          // Enforce HTTPS in production browsers (ignored on plain HTTP localhost)
+          {
+            key: 'Strict-Transport-Security',
+            value: 'max-age=31536000; includeSubDomains',
+          },
           // Referrer Policy for privacy
           {
             key: 'Referrer-Policy',
             value: 'origin-when-cross-origin',
           },
-          // Permissions Policy (Feature Policy)
+          // Permissions Policy (allow same-origin camera for /tools/scan-to-pdf)
           {
             key: 'Permissions-Policy',
-            value: 'camera=(), microphone=(), geolocation=(), interest-cohort=()',
+            value: 'camera=(self), microphone=(), geolocation=(), browsing-topics=()',
           },
           // Content Security Policy (configured for Adsterra, Google Analytics, and ad exchanges)
           {
@@ -307,10 +312,11 @@ const nextConfig: NextConfig = {
             key: 'Cache-Control',
             value: 'public, s-maxage=3600, stale-while-revalidate=604800',
           },
-          // Machine discovery for answer engines: advertise llms.txt at HTTP level
+          // Machine discovery for answer engines & AI agents (merged with /:path* Link relations
+          // because Next.js overwrites duplicate header keys in later matching rules)
           {
             key: 'Link',
-            value: '</llms.txt>; rel="alternate"; type="text/plain"; title="LLMs", </llms-full.txt>; rel="alternate"; type="text/plain"; title="LLMs Full"',
+            value: '</.well-known/api-catalog>; rel="api-catalog"; type="application/linkset+json", </.well-known/mcp/server-card.json>; rel="mcp-server"; type="application/json", </llms.txt>; rel="describedby"; type="text/plain", </openapi.json>; rel="service-desc"; type="application/openapi+json", </llms.txt>; rel="alternate"; type="text/plain"; title="LLMs", </llms-full.txt>; rel="alternate"; type="text/plain"; title="LLMs Full"',
           },
         ],
       },

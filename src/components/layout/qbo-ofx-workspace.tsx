@@ -179,6 +179,7 @@ export function QboOfxWorkspace() {
             ref={fileInputRef}
             type="file"
             accept=".qbo,.qfx,.ofx,.xml,.txt"
+            aria-label="Upload QBO, QFX, or OFX bank file"
             className="hidden"
             onChange={(e) => {
               const f = e.target.files?.[0];

@@ -99,9 +99,9 @@ function RelatedArticleCard({ slug, title, excerpt, date, readTime }: {
           <BookOpen className="h-4 w-4" />
         </div>
         <div className="min-w-0 flex-1">
-          <h4 className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-2 mb-1">
+          <h3 className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-2 mb-1">
             {title}
-          </h4>
+          </h3>
           <p className="text-xs text-muted-foreground line-clamp-2 mb-2">{excerpt}</p>
           <div className="flex items-center gap-3 text-[11px] text-muted-foreground">
             <span>{date}</span>
@@ -262,7 +262,7 @@ export function ToolContentSection({ toolSlug, toolName, isAI, processing }: {
     .filter((t): t is Tool => !!t);
 
   return (
-    <section className="container mx-auto px-4 lg:px-8 py-12 border-t border-border/30">
+    <section className="below-fold-auto container mx-auto px-4 lg:px-8 py-12 border-t border-border/30">
       <div className="max-w-4xl mx-auto space-y-10">
 
         {/* About Section */}
@@ -365,7 +365,7 @@ export function ToolContentSection({ toolSlug, toolName, isAI, processing }: {
             <div className="mt-4 space-y-4">
               {content.commonProblems.map((cp, i) => (
                 <div key={i} className="rounded-xl border border-border/50 bg-card/50 p-4">
-                  <h4 className="text-sm font-semibold text-foreground mb-1.5">{cp.problem}</h4>
+                  <h3 className="text-sm font-semibold text-foreground mb-1.5">{cp.problem}</h3>
                   <p className="text-sm text-muted-foreground">{cp.solution}</p>
                 </div>
               ))}

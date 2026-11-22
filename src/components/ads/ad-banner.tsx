@@ -4,10 +4,25 @@ import { useEffect, useRef, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { ExternalLink } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { adsenseConfig, adsterraConfig, adsConfig } from '@/lib/ads-config';
+import { adsenseConfig, adsterraConfig, adsConfig, hasAdvertisingConsent } from '@/lib/ads-config';
 import { OptimizationVerificationSummary } from '@/components/layout/optimization-verification-summary';
 import { WorkflowChainBar } from '@/components/layout/workflow-chain-bar';
 import { useWorkflowStore } from '@/store/workflow-store';
+
+const AD_IFRAME_SANDBOX = 'allow-scripts allow-popups allow-popups-to-escape-sandbox';
+
+function useAdvertisingConsent(): boolean {
+  const [consented, setConsented] = useState(false);
+
+  useEffect(() => {
+    const sync = () => setConsented(hasAdvertisingConsent());
+    sync();
+    window.addEventListener('cookie-consent-updated', sync);
+    return () => window.removeEventListener('cookie-consent-updated', sync);
+  }, []);
+
+  return consented;
+}
 
 type HorizontalTier = 'desktop' | 'tablet' | 'mobile' | null;
 type ResultTier = 'rect' | 'mobile' | null;
@@ -113,10 +128,11 @@ export function GoogleAdSenseUnit({
   style?: React.CSSProperties;
   className?: string;
 }) {
+  const adConsent = useAdvertisingConsent();
   const initialized = useRef(false);
 
   useEffect(() => {
-    if (initialized.current) return;
+    if (!adConsent || initialized.current) return;
     try {
       const w = window as unknown as { adsbygoogle?: unknown[] };
       w.adsbygoogle = w.adsbygoogle || [];
@@ -125,9 +141,9 @@ export function GoogleAdSenseUnit({
     } catch {
       // Ad blocker or adsbygoogle error handled safely
     }
-  }, []);
+  }, [adConsent]);
 
-  if (!adsenseConfig.enabled || (!slot && !adsConfig.testMode)) return null;
+  if (!adConsent || !adsenseConfig.enabled || (!slot && !adsConfig.testMode)) return null;
 
   return (
     <div className={cn('overflow-hidden flex items-center justify-center w-full min-h-[90px]', className)}>
@@ -144,11 +160,11 @@ export function GoogleAdSenseUnit({
 }
 
 /**
- * Isolated iframe container for Adsterra banner scripts.
- * Isolates atOptions on the iframe's own window to avoid race conditions,
- * eliminates CLS with explicit dimensions, supports refreshKey for multi-run tools,
- * and performs viewability-gated auto-refresh (every 55s while visible in viewport)
- * to maximize Adsterra eCPM and impressions during long user sessions.
+ * Isolated, sandboxed iframe container for Adsterra banner scripts.
+ * Runs in an opaque null origin (without allow-same-origin) so third-party ad
+ * creatives cannot access parent DOM, cookies, storage, or same-origin APIs,
+ * eliminates CLS with explicit dimensions, and refreshes cleanly on route or
+ * explicit tool refreshKey changes without background teardown churn.
  */
 export function AdsterraIframe({
   adKey,
@@ -170,42 +186,11 @@ export function AdsterraIframe({
   instanceId?: string;
 }) {
   const pathname = usePathname() || '/';
+  const adConsent = useAdvertisingConsent();
   const containerRef = useRef<HTMLDivElement>(null);
   const shouldMount = useAdLazyVisible(containerRef, loading === 'eager');
-  const [inView, setInView] = useState(false);
-  const [autoTick, setAutoTick] = useState(0);
 
-  useEffect(() => {
-    setAutoTick(0);
-  }, [pathname]);
-
-  useEffect(() => {
-    const el = containerRef.current;
-    if (!el || typeof IntersectionObserver === 'undefined') return;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const entry = entries[0];
-        if (entry) {
-          setInView(entry.isIntersecting && entry.intersectionRatio >= 0.5);
-        }
-      },
-      { threshold: [0, 0.5, 1] }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
-
-  useEffect(() => {
-    if (!inView) return;
-    const timer = window.setInterval(() => {
-      if (typeof document !== 'undefined' && document.visibilityState === 'visible') {
-        setAutoTick((prev) => (prev < 8 ? prev + 1 : prev));
-      }
-    }, 45000);
-    return () => window.clearInterval(timer);
-  }, [inView]);
-
-  if (!adsterraConfig.enabled || !adKey) return null;
+  if (!adConsent || !adsterraConfig.enabled || !adKey) return null;
 
   const scriptHost = adsterraConfig.scriptHost || 'https://bauval.org';
   const srcDoc = `<!DOCTYPE html>
@@ -233,7 +218,7 @@ export function AdsterraIframe({
   </body>
 </html>`;
 
-  const compositeKey = `${pathname}-${adKey}-${instanceId ?? 'slot'}-${refreshKey ?? 'init'}-${autoTick}`;
+  const compositeKey = `${pathname}-${adKey}-${instanceId ?? 'slot'}-${refreshKey ?? 'init'}`;
 
   return (
     <div
@@ -248,12 +233,12 @@ export function AdsterraIframe({
       {shouldMount ? (
         <iframe
           key={compositeKey}
-          title={unitId ? `adsterra-${unitId}-${adKey}` : `adsterra-${adKey}`}
+          title="Advertisement"
+          sandbox={AD_IFRAME_SANDBOX}
+          referrerPolicy="no-referrer-when-downgrade"
           width={width}
           height={height}
           loading={loading}
-          scrolling="no"
-          frameBorder="0"
           style={{ border: 'none', overflow: 'hidden', maxWidth: '100%', height }}
           srcDoc={srcDoc}
         />
@@ -268,9 +253,9 @@ export function AdsterraIframe({
 
 /**
  * Adsterra Native Banner container (4-item / responsive recommendation grid).
- * Rendered inside an isolated iframe to prevent ID collisions, eliminate CLS
- * via explicit responsive min-height skeleton, lazy-load below the fold via
- * IntersectionObserver (rootMargin: "200px"), and re-key per route for fresh impressions.
+ * Rendered inside a sandboxed iframe to prevent same-origin access and ID
+ * collisions, eliminate CLS via explicit responsive min-height reservation, and
+ * lazy-load below the fold after advertising consent.
  */
 export function AdsterraNativeBanner({
   className,
@@ -282,10 +267,11 @@ export function AdsterraNativeBanner({
   compact?: boolean;
 }) {
   const pathname = usePathname() || '/';
+  const adConsent = useAdvertisingConsent();
   const containerRef = useRef<HTMLDivElement>(null);
   const shouldMount = useAdLazyVisible(containerRef, eager);
 
-  if (!adsterraConfig.enabled || !adsterraConfig.slots.nativeBanner.scriptSrc) return null;
+  if (!adConsent || !adsterraConfig.enabled || !adsterraConfig.slots.nativeBanner.scriptSrc) return null;
 
   const srcDoc = `<!DOCTYPE html>
 <html>
@@ -311,9 +297,8 @@ export function AdsterraNativeBanner({
   return (
     <div
       ref={containerRef}
+      data-ad-slot="native-banner"
       className={cn('my-6 w-full flex flex-col items-center justify-center overflow-hidden', className)}
-      aria-label="Advertisement"
-      role="complementary"
     >
       <AdLabel />
       <div
@@ -325,12 +310,12 @@ export function AdsterraNativeBanner({
         {shouldMount ? (
           <iframe
             key={`${pathname}-native-${eager ? 'eager' : 'lazy'}`}
-            title="adsterra-native-banner"
+            title="Sponsored recommendations"
+            sandbox={AD_IFRAME_SANDBOX}
+            referrerPolicy="no-referrer-when-downgrade"
             width="100%"
             height="100%"
             loading={eager ? 'eager' : 'lazy'}
-            scrolling="no"
-            frameBorder="0"
             style={{ border: 'none', overflow: 'hidden', width: '100%', height: '100%', maxWidth: '960px' }}
             srcDoc={srcDoc}
           />
@@ -418,6 +403,9 @@ export function AdBanner({
   className,
   labeled = true,
 }: AdBannerProps) {
+  const adConsent = useAdvertisingConsent();
+  if (!adConsent) return null;
+
   if (adsenseConfig.enabled && (slot || adsConfig.testMode)) {
     const adsenseFormat = format === 'native' ? 'auto' : format;
     return (
@@ -475,13 +463,15 @@ export function AdBanner({
  * Top header leaderboard (728x90 desktop / 468x60 tablet / 320x50 mobile).
  */
 export function HeaderAd({ className }: { className?: string } = {}) {
+  const adConsent = useAdvertisingConsent();
+  if (!adConsent) return null;
+
   const slot = adsenseConfig.slots.header;
   if (adsenseConfig.enabled && (slot || adsConfig.testMode)) {
     return (
       <div
         className={cn('mx-auto w-full max-w-5xl px-4 py-3 lg:px-8 flex flex-col items-center', className)}
-        aria-label="Advertisement"
-        role="complementary"
+        data-ad-slot="header"
       >
         <AdLabel />
         <GoogleAdSenseUnit
@@ -502,11 +492,10 @@ export function HeaderAd({ className }: { className?: string } = {}) {
     return (
       <div
         className={cn('mx-auto w-full max-w-5xl px-4 py-3 lg:px-8 flex flex-col items-center', className)}
-        aria-label="Advertisement"
-        role="complementary"
+        data-ad-slot="header"
       >
         <AdLabel />
-        <ResponsiveHorizontalAdsterra loading="eager" />
+        <ResponsiveHorizontalAdsterra loading="lazy" />
       </div>
     );
   }
@@ -544,6 +533,7 @@ export function ResultScreenAd({
   dpiLabel?: string;
   fileName?: string;
 } = {}) {
+  const adConsent = useAdvertisingConsent();
   const resultTier = useResultTier();
   const downloadCount = useWorkflowStore((s) => s.downloadCount);
   const lastDownloadedUrl = useWorkflowStore((s) => s.lastDownloadedUrl);
@@ -571,12 +561,13 @@ export function ResultScreenAd({
   const resultUrlStr = typeof refreshKey === 'string' ? refreshKey : null;
 
   const renderPrimaryAdUnit = () => {
+    if (!adConsent) return null;
+
     if (adsenseConfig.enabled && (slot || adsConfig.testMode)) {
       return (
         <div
           className="w-full flex flex-col items-center justify-center"
-          aria-label="Advertisement"
-          role="complementary"
+          data-ad-slot="result"
         >
           <AdLabel />
           <div className="flex w-full items-center justify-center min-h-[250px] rounded-xl border border-border/25 bg-muted/15 overflow-hidden">
@@ -599,8 +590,7 @@ export function ResultScreenAd({
       return (
         <div
           className="w-full flex flex-col items-center justify-center"
-          aria-label="Advertisement"
-          role="complementary"
+          data-ad-slot="result"
           data-adsterra-unit-id={adsterraConfig.slots.banner300x250.unitId}
         >
           <AdLabel />
@@ -686,11 +676,14 @@ export function ResultScreenAd({
  * Desktop sidebar skyscraper (160x600 on tall viewports, 160x300 on shorter laptop screens).
  */
 export function SidebarAd({ className }: { className?: string } = {}) {
+  const adConsent = useAdvertisingConsent();
   const sidebarTier = useSidebarTier();
+  if (!adConsent) return null;
+
   const slot = adsenseConfig.slots.sidebar;
   if (adsenseConfig.enabled && (slot || adsConfig.testMode)) {
     return (
-      <div className={cn('w-full flex flex-col items-center justify-center', className)} aria-label="Advertisement" role="complementary">
+      <div className={cn('w-full flex flex-col items-center justify-center', className)} data-ad-slot="sidebar">
         <AdLabel />
         <GoogleAdSenseUnit
           slot={slot}
@@ -715,7 +708,7 @@ export function SidebarAd({ className }: { className?: string } = {}) {
         : sidebarTier === 'tall' && !adsterraConfig.slots.banner160x600.key && Boolean(adsterraConfig.slots.banner160x300.key);
 
     return (
-      <div className={cn('w-full flex flex-col items-center justify-center', className)} aria-label="Advertisement" role="complementary">
+      <div className={cn('w-full flex flex-col items-center justify-center', className)} data-ad-slot="sidebar">
         <AdLabel />
         <div className="flex w-[160px] items-center justify-center min-h-[300px] [@media(min-height:760px)]:min-h-[600px] rounded-xl border border-border/25 bg-muted/15 overflow-hidden">
           {showTall && (
@@ -723,7 +716,7 @@ export function SidebarAd({ className }: { className?: string } = {}) {
               adKey={adsterraConfig.slots.banner160x600.key}
               width={160}
               height={600}
-              loading="eager"
+              loading="lazy"
               className="border-0 bg-transparent rounded-none"
             />
           )}
@@ -732,7 +725,7 @@ export function SidebarAd({ className }: { className?: string } = {}) {
               adKey={adsterraConfig.slots.banner160x300.key}
               width={160}
               height={300}
-              loading="eager"
+              loading="lazy"
               className="border-0 bg-transparent rounded-none"
             />
           )}
@@ -758,8 +751,9 @@ export function DualRectangleAd({
   eager?: boolean;
   instanceId?: string;
 } = {}) {
+  const adConsent = useAdvertisingConsent();
   const isDesktop = useMediaQueryMatch('(min-width: 768px)');
-  if (!adsterraConfig.enabled || !adsterraConfig.slots.banner300x250.key) return null;
+  if (!adConsent || !adsterraConfig.enabled || !adsterraConfig.slots.banner300x250.key) return null;
 
   const { key, unitId } = adsterraConfig.slots.banner300x250;
   const loadingMode = eager ? 'eager' : 'lazy';
@@ -767,8 +761,7 @@ export function DualRectangleAd({
   return (
     <div
       className={cn('my-8 w-full min-h-[270px] flex flex-col items-center justify-center px-2', className)}
-      aria-label="Advertisement"
-      role="complementary"
+      data-ad-slot={`dual-${instanceId}`}
       data-adsterra-unit-id={unitId}
     >
       <AdLabel />
@@ -814,6 +807,9 @@ export function InContentAd({
   eager?: boolean;
   instanceId?: string;
 } = {}) {
+  const adConsent = useAdvertisingConsent();
+  if (!adConsent) return null;
+
   const slot = adsenseConfig.slots.inContent;
   const isResponsive = variant === 'responsive';
   const isDual = variant === 'dual-rectangle';
@@ -828,8 +824,7 @@ export function InContentAd({
             : 'min-h-[270px]',
           className
         )}
-        aria-label="Advertisement"
-        role="complementary"
+        data-ad-slot={`incontent-${instanceId}`}
       >
         <AdLabel />
         <GoogleAdSenseUnit
@@ -858,8 +853,7 @@ export function InContentAd({
             'my-8 w-full min-h-[72px] min-[520px]:min-h-[82px] md:min-h-[112px] flex flex-col items-center justify-center',
             className
           )}
-          aria-label="Advertisement"
-          role="complementary"
+          data-ad-slot={`incontent-responsive-${instanceId}`}
         >
           <AdLabel />
           <ResponsiveHorizontalAdsterra loading={eager ? 'eager' : 'lazy'} />
@@ -874,8 +868,7 @@ export function InContentAd({
     return (
       <div
         className={cn('my-8 w-full min-h-[270px] flex flex-col items-center justify-center', className)}
-        aria-label="Advertisement"
-        role="complementary"
+        data-ad-slot={`incontent-rect-${instanceId}`}
         data-adsterra-unit-id={adsterraConfig.slots.banner300x250.unitId}
       >
         <AdLabel />
@@ -898,13 +891,15 @@ export function InContentAd({
  * Footer leaderboard (728x90 desktop / 320x50 mobile).
  */
 export function FooterAd({ className }: { className?: string } = {}) {
+  const adConsent = useAdvertisingConsent();
+  if (!adConsent) return null;
+
   const slot = adsenseConfig.slots.footer;
   if (adsenseConfig.enabled && (slot || adsConfig.testMode)) {
     return (
       <div
         className={cn('mx-auto w-full max-w-5xl px-4 py-6 lg:px-8 flex flex-col items-center', className)}
-        aria-label="Advertisement"
-        role="complementary"
+        data-ad-slot="footer"
       >
         <AdLabel />
         <GoogleAdSenseUnit
@@ -925,8 +920,7 @@ export function FooterAd({ className }: { className?: string } = {}) {
     return (
       <div
         className={cn('mx-auto w-full max-w-5xl px-4 py-6 lg:px-8 flex flex-col items-center', className)}
-        aria-label="Advertisement"
-        role="complementary"
+        data-ad-slot="footer"
       >
         <AdLabel />
         <ResponsiveHorizontalAdsterra />
@@ -947,10 +941,13 @@ export function NativeAd({
   className?: string;
   eager?: boolean;
 } = {}) {
+  const adConsent = useAdvertisingConsent();
+  if (!adConsent) return null;
+
   const slot = adsenseConfig.slots.inContent;
   if (adsenseConfig.enabled && (slot || adsConfig.testMode)) {
     return (
-      <div className={cn('my-6 w-full flex flex-col items-center justify-center overflow-hidden', className)} aria-label="Advertisement" role="complementary">
+      <div className={cn('my-6 w-full flex flex-col items-center justify-center overflow-hidden', className)} data-ad-slot="native">
         <AdLabel />
         <GoogleAdSenseUnit slot={slot} format="auto" style={{ minHeight: 160 }} />
       </div>

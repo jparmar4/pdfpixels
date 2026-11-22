@@ -309,6 +309,7 @@ export function WorkflowPipelineRunner({ slug }: { slug: string }) {
               type="file"
               accept={recipe.accept}
               multiple={recipe.multiple}
+              aria-label={`Upload files for ${recipe.shortTitle} workflow`}
               className="hidden"
               onChange={(e) => {
                 handleAddFiles(e.target.files);

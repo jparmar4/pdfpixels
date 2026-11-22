@@ -56,7 +56,7 @@ export default function CompareIndexPage() {
             <script
                 id="compare-collection-schema"
                 type="application/ld+json"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
             />
 
             <main id="main-content" className="min-h-screen bg-background xl:pr-[196px]">

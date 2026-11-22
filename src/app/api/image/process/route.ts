@@ -15,6 +15,8 @@ const LOSSY_FORMATS = new Set(['jpg', 'jpeg']);
 // Maximum file sizes
 const MAX_IMAGE_SIZE = 25 * 1024 * 1024; // 25 MB (keeps base64 JSON responses manageable)
 const MAX_DIMENSION = 20_000;
+const MAX_OUTPUT_DIMENSION = 12_000;
+const MAX_OUTPUT_PIXELS = 50_000_000;
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
@@ -79,8 +81,27 @@ export async function POST(request: NextRequest) {
     }
 
     const totalPixels = (metadata.width || 0) * (metadata.height || 0);
-    if (totalPixels > 50_000_000) {
+    if (totalPixels > MAX_OUTPUT_PIXELS) {
       return apiError('Image has too many pixels (50MP max). Resize it to a smaller resolution first.', 413);
+    }
+
+    // Cap requested output dimensions to prevent OOM DoS via extreme upscaling
+    if (
+      (params.width && params.width > MAX_OUTPUT_DIMENSION) ||
+      (params.height && params.height > MAX_OUTPUT_DIMENSION)
+    ) {
+      return apiError(`Requested output dimensions exceed maximum (${MAX_OUTPUT_DIMENSION.toLocaleString()} px per side).`, 400);
+    }
+    if (params.width || params.height) {
+      const inW = metadata.width || params.width || 1;
+      const inH = metadata.height || params.height || 1;
+      const estW = params.width ?? Math.round((params.height! * inW) / Math.max(1, inH));
+      const estH = params.height ?? Math.round((params.width! * inH) / Math.max(1, inW));
+      const effectiveW = params.withoutEnlargement ? Math.min(estW, inW) : estW;
+      const effectiveH = params.withoutEnlargement ? Math.min(estH, inH) : estH;
+      if (effectiveW * effectiveH > MAX_OUTPUT_PIXELS) {
+        return apiError('Requested output resolution exceeds 50MP limit.', 400);
+      }
     }
 
     const image = prepareSharpPipeline(sharp, buffer, params, metadata, params.format);

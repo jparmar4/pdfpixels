@@ -56,7 +56,7 @@ export default function UseCasesIndexPage() {
       <script
         id="use-cases-collection-schema"
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
       />
       <main id="main-content" className="flex-1 xl:pr-[196px]">
         <HeaderAd className="my-4" />

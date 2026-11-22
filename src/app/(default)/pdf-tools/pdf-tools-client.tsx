@@ -1,9 +1,7 @@
 'use client';
 
-import { Suspense, useEffect, useMemo, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
-import { motion, AnimatePresence } from 'framer-motion';
 import {
   ArrowUpRight,
   CheckCircle2,
@@ -63,23 +61,19 @@ function getBadgeClasses(badge?: string) {
   }
 }
 
-function InitialQuerySync({ onQuery, onGroup }: { onQuery: (q: string) => void; onGroup: (g: string) => void }) {
-  const searchParams = useSearchParams();
-  const q = searchParams.get('q') || searchParams.get('search') || '';
-  const group = searchParams.get('group') || searchParams.get('category') || '';
-
-  useEffect(() => {
-    if (q) onQuery(q);
-    if (group) onGroup(group);
-  }, [q, group, onQuery, onGroup]);
-
-  return null;
-}
-
 export function PdfToolsClient() {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeGroupId, setActiveGroupId] = useState('all');
   const setActiveTool = useAppStore((state) => state.setActiveTool);
+
+  // Sync deep-link ?q= / ?group= client-side without triggering SSR Suspense bailout
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const q = params.get('q') || params.get('search') || '';
+    const group = params.get('group') || params.get('category') || '';
+    if (q) setSearchQuery(q);
+    if (group) setActiveGroupId(group);
+  }, []);
 
   const filteredTools = useMemo(() => {
     let tools: Tool[] = allPdfTools;
@@ -116,10 +110,6 @@ export function PdfToolsClient() {
 
   return (
     <>
-      <Suspense fallback={null}>
-        <InitialQuerySync onQuery={setSearchQuery} onGroup={setActiveGroupId} />
-      </Suspense>
-
       {/* Hero Section */}
       <section className="relative overflow-hidden border-b border-border/40 bg-gradient-to-b from-background via-background to-muted/20 pb-16 pt-20 md:pb-20 md:pt-28">
         <AnimatedMeshBg />
@@ -127,12 +117,7 @@ export function PdfToolsClient() {
         <div className="absolute inset-0 dot-pattern opacity-25 pointer-events-none" />
 
         <div className="container relative z-10 mx-auto px-4 text-center lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-            className="mx-auto max-w-4xl"
-          >
+          <div className="mx-auto max-w-4xl">
             <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.2em] text-primary shadow-sm">
               <Sparkles className="h-3.5 w-3.5" />
               All {allPdfTools.length} Free Online PDF Tools • Zero Signup
@@ -187,7 +172,7 @@ export function PdfToolsClient() {
                 ))}
               </div>
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
 
@@ -256,17 +241,12 @@ export function PdfToolsClient() {
           )}
         </div>
 
-        <AnimatePresence mode="wait">
-          {filteredTools.length > 0 ? (
-            <motion.div
-              key={`${activeGroupId}-${searchQuery}`}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.25 }}
-              className="grid gap-4 sm:grid-cols-2 md:gap-5 lg:grid-cols-3 xl:grid-cols-4"
-            >
-              {filteredTools.map((tool) => {
+        {filteredTools.length > 0 ? (
+          <div
+            key={`${activeGroupId}-${searchQuery}`}
+            className="grid gap-4 sm:grid-cols-2 md:gap-5 lg:grid-cols-3 xl:grid-cols-4"
+          >
+            {filteredTools.map((tool) => {
                 const Icon = tool.icon;
                 const colorClasses = getIconColorClass(tool.id);
 
@@ -334,8 +314,8 @@ export function PdfToolsClient() {
                   </Link>
                 );
               })}
-            </motion.div>
-          ) : (
+          </div>
+        ) : (
             <div className="flex flex-col items-center justify-center rounded-3xl border border-dashed border-border/80 bg-muted/10 py-16 text-center">
               <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-muted text-muted-foreground">
                 <Search className="h-6 w-6" />
@@ -354,18 +334,18 @@ export function PdfToolsClient() {
                 Show All {allPdfTools.length} PDF Tools
               </button>
             </div>
-          )}
-        </AnimatePresence>
+        )}
       </section>
 
       {/* Trust & Enterprise Quality Badges */}
       <section className="border-y border-border/40 bg-muted/20 py-12">
         <div className="container mx-auto px-4 lg:px-8">
+          <h2 className="sr-only">PdfPixels PDF Suite Highlights</h2>
           <div className="grid gap-6 md:grid-cols-4">
             <div className="flex items-start gap-3.5 rounded-2xl border border-border/50 bg-card/60 p-4 shadow-2xs">
               <ShieldCheck className="h-6 w-6 shrink-0 text-emerald-500" />
               <div>
-                <h4 className="text-sm font-bold text-foreground">100% Data Privacy</h4>
+                <h3 className="text-sm font-bold text-foreground">100% Data Privacy</h3>
                 <p className="mt-1 text-xs text-muted-foreground">
                   Browser-based execution or automatic server purge within 60 minutes. Zero tracking or retention.
                 </p>
@@ -375,7 +355,7 @@ export function PdfToolsClient() {
             <div className="flex items-start gap-3.5 rounded-2xl border border-border/50 bg-card/60 p-4 shadow-2xs">
               <Zap className="h-6 w-6 shrink-0 text-amber-500" />
               <div>
-                <h4 className="text-sm font-bold text-foreground">Instant Processing</h4>
+                <h3 className="text-sm font-bold text-foreground">Instant Processing</h3>
                 <p className="mt-1 text-xs text-muted-foreground">
                   Optimized WebAssembly & multithreaded cloud workers process gigabytes of PDF pages in seconds.
                 </p>
@@ -385,7 +365,7 @@ export function PdfToolsClient() {
             <div className="flex items-start gap-3.5 rounded-2xl border border-border/50 bg-card/60 p-4 shadow-2xs">
               <Star className="h-6 w-6 shrink-0 text-violet-500" />
               <div>
-                <h4 className="text-sm font-bold text-foreground">No Subscriptions</h4>
+                <h3 className="text-sm font-bold text-foreground">No Subscriptions</h3>
                 <p className="mt-1 text-xs text-muted-foreground">
                   Save hundreds per year over Adobe Acrobat Pro. All {allPdfTools.length} PDF tools are completely free to use.
                 </p>
@@ -395,7 +375,7 @@ export function PdfToolsClient() {
             <div className="flex items-start gap-3.5 rounded-2xl border border-border/50 bg-card/60 p-4 shadow-2xs">
               <CheckCircle2 className="h-6 w-6 shrink-0 text-sky-500" />
               <div>
-                <h4 className="text-sm font-bold text-foreground">Global Portal Ready</h4>
+                <h3 className="text-sm font-bold text-foreground">Global Portal Ready</h3>
                 <p className="mt-1 text-xs text-muted-foreground">
                   Outputs strictly adhere to ISO 32000-1 and PDF/A standards for IRS, USCIS, HMRC, and university uploads.
                 </p>

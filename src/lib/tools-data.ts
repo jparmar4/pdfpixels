@@ -1840,12 +1840,14 @@ export const popularTools = allTools.filter(tool => tool.popular);
 
 export const aiTools = allTools.filter(tool => tool.isAI);
 
+const EXTRA_PDF_TOOL_IDS = new Set(['image-to-pdf', 'scan-to-pdf', 'csv-to-pdf']);
+
 export const allPdfTools: Tool[] = allTools.filter(
-  t => t.category.startsWith('pdf') || t.id === 'image-to-pdf'
+  t => t.category.startsWith('pdf') || EXTRA_PDF_TOOL_IDS.has(t.id)
 );
 
 export const allImageTools: Tool[] = allTools.filter(
-  t => !t.category.startsWith('pdf') && t.id !== 'image-to-pdf'
+  t => !t.category.startsWith('pdf') && !EXTRA_PDF_TOOL_IDS.has(t.id)
 );
 
 export interface PdfToolGroup {

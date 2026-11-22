@@ -61,7 +61,7 @@ export default async function TemplateDetailPage({ params }: TemplatePageProps) 
         headline: `${template.name} — Free PDF Download`,
         description: template.metaDescription,
         author: { '@type': 'Person', name: 'Yuvi Parmar', url: absoluteUrl('/about#founder') },
-        publisher: { '@type': 'Organization', name: siteConfig.name, url: siteConfig.url },
+        publisher: { '@id': `${siteConfig.url}/#organization` },
         datePublished: SITE_CONTENT_UPDATED.toISOString(),
         dateModified: SITE_CONTENT_UPDATED.toISOString(),
         mainEntityOfPage: absoluteUrl(`/templates/${template.slug}`),
@@ -88,8 +88,8 @@ export default async function TemplateDetailPage({ params }: TemplatePageProps) 
 
   return (
     <>
-      <script id="template-jsonld" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <main id="main-content" className="min-h-screen bg-background">
+      <script id="template-jsonld" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }} />
+      <div className="min-h-screen bg-background">
         <SitePageShell
           eyebrow={template.category === 'invoice' ? 'Invoice template' : 'Resume template'}
           title={template.name}
@@ -205,7 +205,7 @@ export default async function TemplateDetailPage({ params }: TemplatePageProps) 
 
         <NativeAd className="my-10 max-w-5xl mx-auto px-4" />
         <FooterAd />
-      </main>
+      </div>
     </>
   );
 }

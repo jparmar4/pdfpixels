@@ -58,6 +58,7 @@ function buildHomepageMarkdown(): { markdown: string; canonical: string } {
 - **LLM Documentation:** [llms.txt](${absoluteUrl('/llms.txt')}) | [llms-full.txt](${absoluteUrl('/llms-full.txt')})
 - **MCP Server Card:** [/.well-known/mcp/server-card.json](${absoluteUrl('/.well-known/mcp/server-card.json')})
 - **MCP Endpoint:** [/api/mcp](${absoluteUrl('/api/mcp')})
+- **Google A2UI v1.0 Endpoint:** [/api/a2ui](${absoluteUrl('/api/a2ui')}) ([A2A Agent Card](${absoluteUrl('/.well-known/agent.json')}))
 
 ## Popular PDF & Image Tools
 
@@ -319,12 +320,11 @@ function buildPathMarkdown(rawPath: string): { markdown: string; canonical: stri
   if (path === '/in') {
     const canonical = absoluteUrl('/in');
     const list = INDIAN_EXAM_PRESETS
-      .slice(0, 20)
       .map((e) => `- [${e.name} photo & signature size rules](${absoluteUrl(`/in/${e.slug}`)}): ${e.photoSpec.widthMm}×${e.photoSpec.heightMm} mm, ${e.photoSpec.minKb}–${e.photoSpec.maxKb} KB`)
       .join('\n');
     return {
       canonical,
-      markdown: `# Indian Exam Photo & Signature Size Presets — PdfPixels\n\n> Exact photo and signature upload specifications for Indian government and competitive exams, with ready-to-use resize presets.\n\nCanonical URL: ${canonical}\n\n## Exams\n\n${list}\n`,
+      markdown: `# Indian Exam Photo & Signature Size Presets — PdfPixels\n\n> Exact photo and signature upload specifications for ${INDIAN_EXAM_PRESETS.length} Indian government and competitive exams, with ready-to-use resize presets.\n\nCanonical URL: ${canonical}\n\n## Exams\n\n${list}\n`,
     };
   }
 
@@ -343,12 +343,85 @@ function buildPathMarkdown(rawPath: string): { markdown: string; canonical: stri
     };
   }
 
+  // Static core & information pages
+  if (path === '/pricing') {
+    const canonical = absoluteUrl('/pricing');
+    return {
+      canonical,
+      markdown: `# PdfPixels Pricing — 100% Free ($0)\n\n> Every one of PdfPixels' ${allTools.length}+ PDF and image tools is completely free with no paid checkout, no watermarks, and no account required.\n\n- **Canonical URL:** [${canonical}](${canonical})\n- **Price:** $0 (Free Forever)\n- **Account / Credit Card:** None required\n- **Watermarks:** None added to exported files\n- **How PdfPixels is funded:** Non-intrusive, consent-gated display advertising\n- **Limits:** Up to 50 MB per PDF (100 MB combined for Merge PDF), up to 25 MB / 50 MP per image\n- **Full Limits API:** [${absoluteUrl('/api/limits')}](${absoluteUrl('/api/limits')})\n`,
+    };
+  }
+
+  if (path === '/about') {
+    const canonical = absoluteUrl('/about');
+    return {
+      canonical,
+      markdown: `# About PdfPixels\n\n> PdfPixels is a free, privacy-first online PDF and image processing platform offering ${allTools.length}+ specialized tools built for speed, accuracy, and zero-retention security.\n\n- **Canonical URL:** [${canonical}](${canonical})\n- **Founder:** Yuvi Parmar\n- **Contact:** ${organizationData.email}\n- **Architecture:** ~80% of tools execute locally inside the user's browser via WebAssembly (\`pdf-lib\`, \`pdfjs-dist\`, \`tesseract.js\`, HTML5 Canvas); server-assisted conversions run in ephemeral memory over TLS 1.3 and are deleted immediately.\n`,
+    };
+  }
+
+  if (path === '/privacy') {
+    const canonical = absoluteUrl('/privacy');
+    return {
+      canonical,
+      markdown: `# Privacy & Security Policy — PdfPixels\n\n> Zero-retention document processing: browser-native tools never upload files, and server-assisted tools process files in isolated temporary storage and purge them automatically.\n\n- **Canonical URL:** [${canonical}](${canonical})\n- **Transport Security:** TLS 1.3 HTTPS with HSTS\n- **Storage & Retention:** No permanent file storage, no indexing, and no AI model training on user uploads.\n- **Cookies & Consent:** Analytics and advertising cookies are opt-in and configurable at any time on the Privacy Policy page.\n- **Security Contact:** ${organizationData.email} | [/.well-known/security.txt](${absoluteUrl('/.well-known/security.txt')})\n`,
+    };
+  }
+
+  if (path === '/terms') {
+    const canonical = absoluteUrl('/terms');
+    return {
+      canonical,
+      markdown: `# Terms of Service — PdfPixels\n\n> Usage terms for PdfPixels' free online PDF and image tools.\n\n- **Canonical URL:** [${canonical}](${canonical})\n- **Service Model:** Free online utilities provided as-is for lawful document and image processing.\n- **User Ownership:** You retain 100% ownership and copyright over all files processed on PdfPixels.\n- **Contact:** ${organizationData.email}\n`,
+    };
+  }
+
+  if (path === '/contact') {
+    const canonical = absoluteUrl('/contact');
+    return {
+      canonical,
+      markdown: `# Contact PdfPixels Support\n\n> Reach the PdfPixels team for bug reports, feature requests, privacy inquiries, or partnerships.\n\n- **Canonical URL:** [${canonical}](${canonical})\n- **Support Email:** ${organizationData.email}\n`,
+    };
+  }
+
+  if (path === '/brand') {
+    const canonical = absoluteUrl('/brand');
+    return {
+      canonical,
+      markdown: `# PdfPixels Brand & Press Assets\n\n> Official brand name, logo usage guidelines, and platform facts for press and partner citations.\n\n- **Canonical URL:** [${canonical}](${canonical})\n- **Official Name:** PdfPixels\n- **Website:** [${absoluteUrl('/')}](${absoluteUrl('/')})\n- **Tool Count:** ${allTools.length}+ free PDF and image tools\n`,
+    };
+  }
+
+  if (path === '/mcp') {
+    const canonical = absoluteUrl('/mcp');
+    return {
+      canonical,
+      markdown: `# PdfPixels Model Context Protocol (MCP) Hub\n\n> Connect Claude Desktop, Cursor, Windsurf, or custom AI agents to PdfPixels via Streamable HTTP JSON-RPC 2.0.\n\n- **Canonical URL:** [${canonical}](${canonical})\n- **MCP Endpoint:** [${absoluteUrl('/api/mcp')}](${absoluteUrl('/api/mcp')})\n- **Server Card:** [${absoluteUrl('/.well-known/mcp/server-card.json')}](${absoluteUrl('/.well-known/mcp/server-card.json')})\n- **Available Tools:** \`search_tools\`, \`get_tool_details\`, \`recommend_workflow\`, \`get_platform_limits\`\n- **Available Resources:** \`llms.txt\`, \`llms-full.txt\`, \`openapi.json\`\n`,
+    };
+  }
+
+  if (path === '/api-docs') {
+    const canonical = absoluteUrl('/api-docs');
+    return {
+      canonical,
+      markdown: `# PdfPixels API & Agent Documentation\n\n> Machine-readable discovery endpoints, MCP JSON-RPC 2.0 server, and browser-session processing API specifications.\n\n- **Canonical URL:** [${canonical}](${canonical})\n- **OpenAPI 3.1 Spec:** [${absoluteUrl('/openapi.json')}](${absoluteUrl('/openapi.json')})\n- **API Catalog (RFC 9727):** [${absoluteUrl('/.well-known/api-catalog')}](${absoluteUrl('/.well-known/api-catalog')})\n- **Public Discovery Endpoints:** \`GET /api/health\`, \`GET /api/limits\`, \`GET|POST /api/mcp\`\n- **Browser-Session Processing Endpoints:** \`POST /api/pdf/*\` and \`POST /api/image/process\` require a same-origin session cookie obtained from \`GET /api/session\`.\n`,
+    };
+  }
+
   // Research studies
+  if (path === '/research/pdf-size-limits-2026') {
+    const canonical = absoluteUrl('/research/pdf-size-limits-2026');
+    return {
+      canonical,
+      markdown: `# 2026 PDF & Image Upload Size Limits Study\n\n> Empirical directory of strict PDF and image file-size ceilings across 50+ government, immigration (USCIS/IRCC), court (PACER), tax (IRS/HMRC), university, and email portals.\n\n- **Canonical URL:** [${canonical}](${canonical})\n- **Related Study:** [JPEG Quality Benchmark 2026](${absoluteUrl('/research/compression-benchmark-2026')})\n- **Recommended Tools:** [Compress PDF](${absoluteUrl('/tools/compress-pdf')}), [Compress PDF to 200KB](${absoluteUrl('/tools/compress-pdf-to-200kb')}), [Compress PDF Under 1MB](${absoluteUrl('/tools/compress-pdf-under-1mb')})\n`,
+    };
+  }
+
   if (path === '/research/compression-benchmark-2026') {
     const canonical = absoluteUrl('/research/compression-benchmark-2026');
     return {
       canonical,
-      markdown: `# JPEG Quality Benchmark 2026\n\n> 40 real web images re-compressed at JPEG qualities 95–50 and WebP 65–85 with the mozjpeg engine — exact byte counts and visual deltas.\n\nCanonical URL: ${canonical}\n\n## Key Data (average bytes per image)\n\n- JPEG 95: 170,654 bytes (master)\n- JPEG 90: 125,298 bytes (26.6% smaller)\n- JPEG 85: 99,830 bytes (41.5% smaller)\n- JPEG 80: 85,128 bytes (50.1% smaller)\n- JPEG 70: 64,413 bytes (62.2% smaller)\n- JPEG 60: 54,050 bytes (68.3% smaller)\n- JPEG 50: 46,906 bytes (72.5% smaller)\n- WebP 85: 71,283 bytes | WebP 75: 47,421 bytes | WebP 65: 42,266 bytes\n\n## Findings\n\n1. Quality 85 is the best single trade: 41.5% smaller with invisible pixel delta (<2/255).\n2. Quality 95→90 costs 26.6% of size for a 0.4 delta — pure waste.\n3. WebP 85 beats JPEG 80 by 16%; WebP 75 undercuts JPEG 70 by 26%.\n4. Below quality 70, degradation accelerates faster than savings.\n5. Target-size compression (iterate per image) beats guessing a fixed quality.\n\nMethodology: sharp 0.35 with mozjpeg over 40 real 1280px images; reproducible script in the repository.\n`,
+      markdown: `# JPEG Quality Benchmark 2026\n\n> 40 real web images re-compressed at JPEG qualities 95–50 and WebP 65–85 with sharp/mozjpeg — exact byte counts and visual deltas.\n\nCanonical URL: ${canonical}\n\n## Key Data (average bytes per image)\n\n- JPEG 95: 170,654 bytes (master)\n- JPEG 90: 125,298 bytes (26.6% smaller)\n- JPEG 85: 99,830 bytes (41.5% smaller)\n- JPEG 80: 85,128 bytes (50.1% smaller)\n- JPEG 70: 64,413 bytes (62.2% smaller)\n- JPEG 60: 54,050 bytes (68.3% smaller)\n- JPEG 50: 46,906 bytes (72.5% smaller)\n- WebP 85: 71,283 bytes | WebP 75: 47,421 bytes | WebP 65: 42,266 bytes\n\n## Findings\n\n1. Quality 85 is the best single trade: 41.5% smaller with invisible pixel delta (<2/255).\n2. Quality 95→90 costs 26.6% of size for a 0.4 delta — pure waste.\n3. WebP 85 beats JPEG 80 by 16%; WebP 75 undercuts JPEG 70 by 26%.\n4. Below quality 70, degradation accelerates faster than savings.\n5. Target-size compression (iterate per image) beats guessing a fixed quality.\n\nMethodology: sharp 0.35 benchmarked with mozjpeg over 40 real 1280px images (production /api/image/process uses sharp with libjpeg-turbo progressive encoding for universal compatibility); reproducible script in the repository.\n`,
     };
   }
 
@@ -370,12 +443,8 @@ function buildPathMarkdown(rawPath: string): { markdown: string; canonical: stri
     };
   }
 
-  // Fallback to homepage overview with canonical reference
-  const home = buildHomepageMarkdown();
-  return {
-    canonical: absoluteUrl(path),
-    markdown: home.markdown,
-  };
+  // Return null for unknown paths so GET() responds with HTTP 404 (no soft-404s)
+  return null;
 }
 
 export async function GET(request: NextRequest) {

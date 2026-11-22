@@ -435,6 +435,7 @@ export function LocalFolderBatchWorkspace() {
       <input
         ref={folderInputRef}
         type="file"
+        aria-label="Select local folder for batch processing"
         // @ts-expect-error webkitdirectory is supported by Chromium/Firefox/Safari directory pickers
         webkitdirectory=""
         multiple

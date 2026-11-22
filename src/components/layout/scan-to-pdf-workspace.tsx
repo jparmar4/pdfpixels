@@ -253,13 +253,24 @@ export function ScanToPdfWorkspace() {
     }
   }, [pages, pageMode, setIsProcessing, setProgress]);
 
+  useEffect(() => {
+    return () => {
+      if (resultUrl?.startsWith('blob:')) {
+        URL.revokeObjectURL(resultUrl);
+      }
+    };
+  }, [resultUrl]);
+
   const handleReset = useCallback(() => {
     reset();
     stopCamera();
     setPages([]);
     setEnhancement('boosted');
     setPageMode('fit');
-    setResultUrl(null);
+    setResultUrl((prev) => {
+      if (prev?.startsWith('blob:')) URL.revokeObjectURL(prev);
+      return null;
+    });
   }, [reset, stopCamera]);
 
   const download = () => {
@@ -342,6 +353,7 @@ export function ScanToPdfWorkspace() {
                     type="file"
                     accept="image/*"
                     multiple
+                    aria-label="Import document photos"
                     className="hidden"
                     onChange={(e) => {
                       if (e.target.files?.length) void importFiles(e.target.files);
@@ -401,7 +413,7 @@ export function ScanToPdfWorkspace() {
                       <span className="absolute top-1.5 left-1.5 w-6 h-6 rounded-full bg-background/90 text-foreground text-xs font-bold flex items-center justify-center shadow">
                         {index + 1}
                       </span>
-                      <div className="absolute inset-x-0 bottom-0 flex items-center justify-between bg-background/90 backdrop-blur px-1 py-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <div className="absolute inset-x-0 bottom-0 flex items-center justify-between bg-background/90 backdrop-blur px-1 py-1 opacity-95 sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100 transition-opacity">
                         <button type="button" aria-label="Move page earlier" onClick={() => movePage(index, -1)} disabled={index === 0} className="p-1 rounded disabled:opacity-30 hover:text-primary">
                           <MoveLeft className="w-4 h-4" />
                         </button>

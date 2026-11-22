@@ -89,6 +89,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.72,
     },
     {
+      url: absoluteUrl('/research/compression-benchmark-2026'),
+      lastModified: evergreen,
+      changeFrequency: 'monthly',
+      priority: 0.72,
+    },
+    {
       url: absoluteUrl('/contact'),
       lastModified: evergreen,
       changeFrequency: 'monthly',

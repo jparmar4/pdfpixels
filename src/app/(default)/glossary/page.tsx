@@ -43,8 +43,8 @@ export default function GlossaryHubPage() {
 
   return (
     <>
-      <script id="glossary-jsonld" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <main id="main-content" className="min-h-screen bg-background">
+      <script id="glossary-jsonld" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }} />
+      <div className="min-h-screen bg-background">
         <SitePageShell
           eyebrow="Knowledge hub"
           title="PDF & Image Glossary"
@@ -82,7 +82,7 @@ export default function GlossaryHubPage() {
         </SitePageShell>
 
         <FooterAd />
-      </main>
+      </div>
     </>
   );
 }

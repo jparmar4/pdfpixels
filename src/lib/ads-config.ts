@@ -113,6 +113,7 @@ export function triggerSmartlinkOncePerSession(): void {
   recordDownloadSuccess();
   if (typeof window === 'undefined') return;
   if (!adsterraConfig.enabled || !adsterraConfig.smartlink) return;
+  if (!hasAdvertisingConsent()) return;
   try {
     const visited = sessionStorage.getItem('pp_sl_seen');
     if (!visited) {
@@ -246,14 +247,33 @@ export function saveConsent(consent: Omit<CookieConsent, 'timestamp'>): void {
     const payload = encodeURIComponent(
       JSON.stringify({ a: consent.analytics ? 1 : 0, d: consent.advertising ? 1 : 0 }),
     );
-    document.cookie = `${cookieConfig.cookieName}=${granted}; path=/; max-age=${maxAge}; SameSite=Lax`;
-    document.cookie = `${cookieConfig.cookieName}-prefs=${payload}; path=/; max-age=${maxAge}; SameSite=Lax`;
+    const secureAttr = window.location.protocol === 'https:' ? '; Secure' : '';
+    document.cookie = `${cookieConfig.cookieName}=${granted}; path=/; max-age=${maxAge}; SameSite=Lax${secureAttr}`;
+    document.cookie = `${cookieConfig.cookieName}-prefs=${payload}; path=/; max-age=${maxAge}; SameSite=Lax${secureAttr}`;
   } catch {
     // ignore cookie write failures
   }
 
   // Dispatch event for other components to react
   window.dispatchEvent(new CustomEvent('cookie-consent-updated', { detail: fullConsent }));
+}
+
+// Clear stored consent (localStorage + companion cookies)
+export function clearConsent(): void {
+  if (typeof window === 'undefined') return;
+  try {
+    localStorage.removeItem(cookieConfig.cookieName);
+  } catch {
+    // ignore storage failures
+  }
+  try {
+    const secureAttr = window.location.protocol === 'https:' ? '; Secure' : '';
+    document.cookie = `${cookieConfig.cookieName}=; path=/; max-age=0; SameSite=Lax${secureAttr}`;
+    document.cookie = `${cookieConfig.cookieName}-prefs=; path=/; max-age=0; SameSite=Lax${secureAttr}`;
+  } catch {
+    // ignore cookie failures
+  }
+  window.dispatchEvent(new CustomEvent('cookie-consent-updated', { detail: null }));
 }
 
 // Get current consent

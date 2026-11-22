@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { Download, RotateCcw, Hash, CheckCircle2, Sliders, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -31,6 +31,14 @@ export function BatesNumberingWorkspace() {
   const [stampedFileName, setStampedFileName] = useState<string>('');
 
   const sampleLabel = `${prefix}${String(startNumber).padStart(padding, '0')}${suffix}`;
+
+  useEffect(() => {
+    return () => {
+      if (downloadUrl?.startsWith('blob:')) {
+        URL.revokeObjectURL(downloadUrl);
+      }
+    };
+  }, [downloadUrl]);
 
   const handleReset = useCallback(() => {
     reset();

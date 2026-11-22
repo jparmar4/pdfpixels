@@ -363,7 +363,9 @@ function getToolJsonLd(tool: ReturnType<typeof getToolBySlug>) {
       },
       speakable: {
         '@type': 'SpeakableSpecification',
-        cssSelector: ['.tool-hero-title', '.tool-hero-description', '#direct-answer'],
+        cssSelector: contentData?.directAnswer
+          ? ['.tool-hero-title', '.tool-hero-description', '#direct-answer']
+          : ['.tool-hero-title', '.tool-hero-description'],
       },
       mainEntity: {
         '@id': `${url}#software`,
@@ -459,9 +461,9 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
 
   return (
     <>
-      <div id="main-content" className={hasActiveSidebarAd ? 'xl:pr-[196px]' : undefined}>
+      <main id="main-content" className={hasActiveSidebarAd ? 'xl:pr-[196px]' : undefined}>
         {schemas?.map((schema, index) => (
-          <script key={index} type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
+          <script key={index} type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema).replace(/</g, '\\u003c') }} />
         ))}
 
         {/* Server-rendered breadcrumb. Mirrors the BreadcrumbList JSON-LD. */}
@@ -607,7 +609,7 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
 
         {/* Footer leaderboard ad */}
         <FooterAd className="my-6" />
-      </div>
+      </main>
     </>
   );
 }

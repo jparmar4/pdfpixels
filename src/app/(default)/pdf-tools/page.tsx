@@ -1,4 +1,3 @@
-import { Suspense } from 'react';
 import type { Metadata } from 'next';
 import { allPdfTools } from '@/lib/tools-data';
 import { SITE_URL, absoluteUrl, websiteId, DEFAULT_OG_IMAGE_URL } from '@/lib/seo';
@@ -201,34 +200,32 @@ export default function PdfToolsPage() {
       <script
         id="pdf-webapp-schema"
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(webAppSchema) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(webAppSchema).replace(/</g, '\\u003c') }}
       />
       <script
         id="pdf-collection-schema"
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionSchema) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionSchema).replace(/</g, '\\u003c') }}
       />
       <script
         id="pdf-breadcrumb-schema"
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema).replace(/</g, '\\u003c') }}
       />
       <script
         id="pdf-faq-schema"
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema).replace(/</g, '\\u003c') }}
       />
       <script
         id="pdf-howto-compress-schema"
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(howToCompressSchema) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(howToCompressSchema).replace(/</g, '\\u003c') }}
       />
 
       <main id="main-content" className="flex-1 xl:pr-[196px]">
         <HeaderAd className="my-4" />
-        <Suspense fallback={<div className="h-96 animate-pulse rounded-3xl bg-muted/20" />}>
-          <PdfToolsClient />
-        </Suspense>
+        <PdfToolsClient />
         <InContentAd variant="dual-rectangle" instanceId="pdf-tools-hub-mid" className="my-8" />
         <NativeAd className="my-10 max-w-5xl mx-auto px-4" />
         <FooterAd className="my-6" />

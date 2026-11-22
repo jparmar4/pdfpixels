@@ -325,6 +325,7 @@ export function PDFMergeWorkspace() {
               type="file"
               accept=".pdf,application/pdf,application/x-pdf"
               multiple
+              aria-label="Select PDF files to merge"
               onChange={handleFileSelect}
               className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
             />

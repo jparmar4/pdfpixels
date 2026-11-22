@@ -101,7 +101,7 @@ export default function WorkflowsHubPage() {
   return (
     <>
       {schemas.map((schema, i) => (
-        <script key={i} type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
+        <script key={i} type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema).replace(/</g, '\\u003c') }} />
       ))}
       <main id="main-content" className="min-h-screen bg-background text-foreground">
         <section className="relative overflow-hidden border-b border-border/40 py-14 md:py-20">

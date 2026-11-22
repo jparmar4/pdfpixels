@@ -318,6 +318,7 @@ export function PDFSplitWorkspace() {
                 ref={fileInputRef}
                 type="file"
                 accept=".pdf,application/pdf,application/x-pdf"
+                aria-label="Select PDF file to split"
                 onChange={handleFileSelect}
                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
               />

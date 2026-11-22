@@ -52,8 +52,8 @@ export default function CompressionBenchmarkPage() {
         headline: 'JPEG Quality Benchmark 2026: 40 Real Images, 7 Settings, Exact Numbers',
         description: 'Original compression benchmark data across JPEG quality 95–50 and WebP 65–85 using the mozjpeg engine on 40 real web images.',
         author: { '@type': 'Person', name: 'Yuvi Parmar', url: absoluteUrl('/about#founder') },
-        publisher: { '@type': 'Organization', name: siteConfig.name, url: siteConfig.url },
-        datePublished: '2026-11-20',
+        publisher: { '@id': `${siteConfig.url}/#organization` },
+        datePublished: '2026-11-18',
         dateModified: SITE_CONTENT_UPDATED.toISOString(),
         mainEntityOfPage: absoluteUrl('/research/compression-benchmark-2026'),
       },
@@ -61,7 +61,7 @@ export default function CompressionBenchmarkPage() {
         '@type': 'BreadcrumbList',
         itemListElement: [
           { '@type': 'ListItem', position: 1, name: 'Home', item: siteConfig.url },
-          { '@type': 'ListItem', position: 2, name: 'Research', item: absoluteUrl('/research/pdf-size-limits-2026') },
+          { '@type': 'ListItem', position: 2, name: 'Guides & Research', item: absoluteUrl('/blog') },
           { '@type': 'ListItem', position: 3, name: 'JPEG Quality Benchmark 2026', item: absoluteUrl('/research/compression-benchmark-2026') },
         ],
       },
@@ -70,8 +70,8 @@ export default function CompressionBenchmarkPage() {
 
   return (
     <>
-      <script id="benchmark-jsonld" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <main id="main-content" className="min-h-screen bg-background">
+      <script id="benchmark-jsonld" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }} />
+      <div className="min-h-screen bg-background">
         <SitePageShell
           eyebrow="Original research"
           title="JPEG Quality Benchmark 2026: The Real Cost of Every Quality Setting"
@@ -89,7 +89,7 @@ export default function CompressionBenchmarkPage() {
             <h2 className="text-2xl font-extrabold tracking-tight mb-4">Methodology (fully disclosed)</h2>
             <ul className="space-y-2 text-sm text-foreground/90 leading-relaxed list-disc pl-5">
               <li><strong>Source set:</strong> 40 real images shipped with this website — blog covers, step graphics, and photo compositions at 1280px width. Not synthetic samples.</li>
-              <li><strong>Engine:</strong> sharp 0.35 with the <em>mozjpeg</em> encoder — the same encoder family our production image pipeline uses.</li>
+              <li><strong>Engine:</strong> sharp 0.35 benchmarked with the <em>mozjpeg</em> encoder; our production <code>/api/image/process</code> pipeline uses sharp / libjpeg-turbo with progressive encoding for universal viewer compatibility.</li>
               <li><strong>Baseline ("master"):</strong> every image re-encoded once at JPEG quality 95 with mozjpeg, so all savings are measured against a consistent high-quality reference.</li>
               <li><strong>Measurements:</strong> exact byte counts per setting; visual degradation scored as the average absolute per-channel pixel delta between the master and each setting (0–255 scale, sampled across ~400k pixels).</li>
               <li><strong>Reproducibility:</strong> the benchmark script ships with the site (<code>scripts/compression-benchmark.mjs</code>) and can be re-run any time.</li>
@@ -223,7 +223,7 @@ export default function CompressionBenchmarkPage() {
             <div className="grid sm:grid-cols-3 gap-3">
               <Link href="/tools/compress-image" className="group rounded-xl border border-border/50 bg-card/50 p-4 hover:border-primary/30 transition-all">
                 <span className="flex items-center justify-between text-sm font-bold text-foreground group-hover:text-primary">Compress Image <ArrowRight className="w-4 h-4" /></span>
-                <p className="text-xs text-muted-foreground mt-1">Exact KB targets with the mozjpeg pipeline.</p>
+                <p className="text-xs text-muted-foreground mt-1">Exact KB targets with our sharp iterative JPEG/WebP pipeline.</p>
               </Link>
               <Link href="/tools/jpg-to-webp" className="group rounded-xl border border-border/50 bg-card/50 p-4 hover:border-primary/30 transition-all">
                 <span className="flex items-center justify-between text-sm font-bold text-foreground group-hover:text-primary">JPG to WebP <ArrowRight className="w-4 h-4" /></span>
@@ -247,7 +247,7 @@ export default function CompressionBenchmarkPage() {
 
         <NativeAd className="my-10 max-w-5xl mx-auto px-4" />
         <FooterAd />
-      </main>
+      </div>
     </>
   );
 }

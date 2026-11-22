@@ -1,4 +1,3 @@
-import { Suspense } from 'react';
 import { allTools } from '@/lib/tools-data';
 import { collectionItemListJsonLd } from '@/app/jsonld-helpers';
 import { SITE_URL } from '@/lib/seo';
@@ -24,13 +23,11 @@ export default function ToolsPage() {
       <script
         id="tools-collection-schema"
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
       />
       <main id="main-content" className="flex-1 xl:pr-[196px]">
         <HeaderAd className="my-6" />
-        <Suspense fallback={<div className="h-72 animate-pulse rounded-2xl bg-muted/20" />}>
-          <ToolsClient />
-        </Suspense>
+        <ToolsClient />
         <InContentAd variant="dual-rectangle" instanceId="tools-hub-mid" className="my-8" />
         <NativeAd className="my-12 max-w-5xl mx-auto px-4" />
         <FooterAd className="my-6" />

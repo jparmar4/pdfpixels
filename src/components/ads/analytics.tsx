@@ -49,16 +49,15 @@ function AIReferralTracker() {
 }
 
 export function Analytics() {
-  const [hasConsent, setHasConsent] = useState(() => {
-    if (typeof window === 'undefined') return false;
-    return hasAnalyticsConsent();
-  });
+  // Hydration-safe: match SSR initial render (`false`) and read localStorage after mount.
+  const [hasConsent, setHasConsent] = useState(false);
 
   useEffect(() => {
     const handleConsentUpdate = () => {
       setHasConsent(hasAnalyticsConsent());
     };
 
+    handleConsentUpdate();
     window.addEventListener('cookie-consent-updated', handleConsentUpdate);
     return () => {
       window.removeEventListener('cookie-consent-updated', handleConsentUpdate);

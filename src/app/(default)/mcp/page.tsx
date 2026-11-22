@@ -9,16 +9,16 @@ import { siteConfig } from '@/lib/seo-config';
 import { allTools } from '@/lib/tools-data';
 
 export const metadata: Metadata = {
-  title: 'Model Context Protocol (MCP) Server & OpenAPI Hub for AI Agents',
+  title: 'MCP Server, Google A2UI v1.0 & OpenAPI Hub for AI Agents',
   description:
-    'Connect Claude Desktop, Cursor, Windsurf, and autonomous AI agents to PdfPixels via zero-auth Streamable HTTP MCP (/api/mcp) and OpenAPI 3.1 (/openapi.json).',
+    'Connect Claude Desktop, Cursor, Windsurf, and A2A/A2UI v1.0 agents to PdfPixels via zero-auth Streamable HTTP MCP (/api/mcp), Google A2UI v1.0 (/api/a2ui), and OpenAPI 3.1 (/openapi.json).',
   alternates: {
     canonical: '/mcp',
   },
   openGraph: {
-    title: 'PdfPixels MCP Server & OpenAPI 3.1 Agent Hub',
+    title: 'PdfPixels MCP Server, Google A2UI v1.0 & OpenAPI 3.1 Hub',
     description:
-      'Copy Claude Desktop & Cursor MCP configs, inspect OpenAPI 3.1 schemas, and invoke JSON-RPC 2.0 tool discovery live.',
+      'Copy Claude Desktop & Cursor MCP configs, test live Google A2UI v1.0 interactive surfaces, and invoke JSON-RPC 2.0 tool discovery.',
     url: absoluteUrl('/mcp'),
     type: 'website',
     siteName: siteConfig.name,
@@ -27,14 +27,15 @@ export const metadata: Metadata = {
         url: DEFAULT_OG_IMAGE_URL,
         width: 1200,
         height: 630,
-        alt: 'PdfPixels MCP Server & Agent Hub',
+        alt: 'PdfPixels MCP Server, Google A2UI v1.0 & Agent Hub',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'PdfPixels MCP Server & OpenAPI 3.1 Hub',
-    description: 'Connect AI agents and editors to PdfPixels free PDF and image endpoints via Model Context Protocol.',
+    title: 'PdfPixels MCP Server & Google A2UI v1.0 Hub',
+    description:
+      'Connect AI agents and editors to PdfPixels via Streamable HTTP MCP (/api/mcp) and declarative Google A2UI v1.0 surfaces (/api/a2ui).',
     images: [DEFAULT_OG_IMAGE_URL],
   },
   robots: getRobotsMetadata(true),
@@ -67,7 +68,7 @@ export default function McpHubPage() {
   return (
     <>
       {schemas.map((s, idx) => (
-        <script key={idx} type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(s) }} />
+        <script key={idx} type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(s).replace(/</g, '\\u003c') }} />
       ))}
       <main id="main-content" className="min-h-screen bg-background text-foreground pb-16">
         <section className="relative overflow-hidden border-b border-border/40 py-14 md:py-18">
@@ -81,26 +82,29 @@ export default function McpHubPage() {
 
             <Badge className="badge-gradient rounded-full px-4 py-1 text-[11px] font-bold uppercase tracking-[0.18em] text-primary">
               <Bot className="w-3.5 h-3.5 mr-1.5" />
-              Model Context Protocol · Streamable HTTP
+              MCP Streamable HTTP · Google A2UI v1.0
             </Badge>
 
             <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight">
-              Connect Claude Desktop &amp; Cursor to PdfPixels via MCP
+              Connect AI Agents to PdfPixels via MCP &amp; Google A2UI v1.0
             </h1>
 
             <p className="text-base text-muted-foreground max-w-3xl leading-relaxed">
-              Give AI coding assistants and agents native access to {allTools.length}+ PDF/image capabilities, portal limit calculators, workflow recommendations, and OpenAPI 3.1 endpoints over zero-auth Streamable HTTP (<code className="font-mono text-primary">/api/mcp</code>).
+              Give Claude Desktop, Cursor, Windsurf, and A2A clients native access to {allTools.length}+ PDF/image capabilities, interactive declarative <strong>Google A2UI v1.0</strong> surfaces (<code className="font-mono text-primary">/api/a2ui</code>), workflow recommendations, and OpenAPI 3.1 endpoints over zero-auth Streamable HTTP (<code className="font-mono text-primary">/api/mcp</code>).
             </p>
 
             <div className="flex flex-wrap gap-3 pt-2 text-xs">
+              <Link href="/api/a2ui" className="inline-flex items-center gap-1.5 rounded-xl border border-border/70 bg-card px-3.5 py-2 font-semibold hover:border-primary/40">
+                <Cpu className="w-4 h-4 text-primary" /> A2UI v1.0 Endpoint (/api/a2ui)
+              </Link>
+              <Link href="/.well-known/agent.json" className="inline-flex items-center gap-1.5 rounded-xl border border-border/70 bg-card px-3.5 py-2 font-semibold hover:border-primary/40">
+                <Bot className="w-4 h-4 text-primary" /> A2A Agent Card
+              </Link>
               <Link href="/openapi.json" className="inline-flex items-center gap-1.5 rounded-xl border border-border/70 bg-card px-3.5 py-2 font-semibold hover:border-primary/40">
                 <FileJson className="w-4 h-4 text-primary" /> OpenAPI 3.1 Spec (/openapi.json)
               </Link>
               <Link href="/.well-known/mcp/server-card.json" className="inline-flex items-center gap-1.5 rounded-xl border border-border/70 bg-card px-3.5 py-2 font-semibold hover:border-primary/40">
-                <Cpu className="w-4 h-4 text-primary" /> MCP Server Card
-              </Link>
-              <Link href="/api-docs" className="inline-flex items-center gap-1.5 rounded-xl border border-border/70 bg-card px-3.5 py-2 font-semibold hover:border-primary/40">
-                <Code2 className="w-4 h-4 text-primary" /> REST API Reference
+                <Code2 className="w-4 h-4 text-primary" /> MCP Server Card
               </Link>
               <span className="inline-flex items-center gap-1.5 rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-3.5 py-2 font-semibold text-emerald-700 dark:text-emerald-300">
                 <ShieldCheck className="w-4 h-4" /> Zero Auth Required
@@ -122,12 +126,12 @@ export default function McpHubPage() {
             <h2 className="text-xl font-bold text-foreground">Discovery &amp; Machine-Readable Endpoints</h2>
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 text-xs">
               {[
-                { title: 'MCP Endpoint', path: '/api/mcp', desc: 'JSON-RPC 2.0 Streamable HTTP server' },
+                { title: 'A2UI v1.0 Endpoint', path: '/api/a2ui', desc: 'Declarative Google A2UI v1.0 surfaces & actions' },
+                { title: 'MCP Endpoint', path: '/api/mcp', desc: 'JSON-RPC 2.0 Streamable HTTP + A2UI resources' },
+                { title: 'A2A Agent Card', path: '/.well-known/agent.json', desc: 'A2A discovery with A2UI v1.0 extension' },
                 { title: 'OpenAPI 3.1 JSON', path: '/openapi.json', desc: 'Machine-readable REST endpoints' },
                 { title: 'Agent Index', path: '/llms.txt', desc: 'Concise site map for LLMs' },
-                { title: 'Full LLM Reference', path: '/llms-full.txt', desc: 'Complete tool specs & FAQs' },
-                { title: 'Workflow Recipes', path: '/workflows', desc: '8 chained B2B document pipelines' },
-                { title: 'Server Card', path: '/.well-known/mcp/server-card.json', desc: 'SEP-1649 discovery card' },
+                { title: 'Server Card', path: '/.well-known/mcp/server-card.json', desc: 'SEP-1649 MCP discovery card' },
               ].map((item) => (
                 <Link
                   key={item.path}

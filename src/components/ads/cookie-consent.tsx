@@ -9,6 +9,7 @@ import { Cookie, Settings, X } from 'lucide-react';
 import {
   cookieConfig,
   saveConsent,
+  clearConsent,
   getConsent,
   hasConsent,
   type CookieConsent,
@@ -164,12 +165,12 @@ export function CookieConsentBanner() {
                 <div className="space-y-3">
                   {/* Necessary */}
                   <div className="flex items-start gap-3 p-3 rounded-lg bg-muted/50">
-                    <Checkbox checked disabled className="mt-0.5" />
+                    <Checkbox id="necessary" checked disabled className="mt-0.5" aria-label="Necessary cookies (required)" />
                     <div className="flex-1">
                       <div className="flex items-center gap-2">
-                        <span className="font-medium text-sm">
+                        <label htmlFor="necessary" className="font-medium text-sm">
                           {cookieConfig.categories.necessary.name}
-                        </span>
+                        </label>
                         <span className="text-xs bg-muted px-2 py-0.5 rounded">Required</span>
                       </div>
                       <p className="text-xs text-muted-foreground mt-1">
@@ -253,7 +254,7 @@ export function CookieSettingsButton() {
   }, []);
 
   const handleReset = () => {
-    localStorage.removeItem(cookieConfig.cookieName);
+    clearConsent();
     window.location.reload();
   };
 
