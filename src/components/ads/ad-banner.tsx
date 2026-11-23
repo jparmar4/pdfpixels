@@ -10,7 +10,7 @@ import { WorkflowChainBar } from '@/components/layout/workflow-chain-bar';
 import { useWorkflowStore } from '@/store/workflow-store';
 
 function useAdvertisingConsent(): boolean {
-  const [consented, setConsented] = useState(false);
+  const [consented, setConsented] = useState(true);
 
   useEffect(() => {
     const sync = () => setConsented(hasAdvertisingConsent());
@@ -53,7 +53,7 @@ function useHorizontalTier(): HorizontalTier {
 }
 
 function useResultTier(): ResultTier {
-  const isWideEnough = useMediaQueryMatch('(min-width: 360px)');
+  const isWideEnough = useMediaQueryMatch('(min-width: 300px)');
   if (isWideEnough === null) return null;
   return isWideEnough ? 'rect' : 'mobile';
 }
@@ -74,11 +74,15 @@ interface AdBannerProps {
   labeled?: boolean;
 }
 
-function useAdLazyVisible(ref: React.RefObject<Element | null>, eager: boolean): boolean {
+function useAdLazyVisible(
+  ref: React.RefObject<Element | null>,
+  eager: boolean,
+  active: boolean = true,
+): boolean {
   const [visible, setVisible] = useState(() => eager);
 
   useEffect(() => {
-    if (eager || visible) return;
+    if (!active || eager || visible) return;
     if (typeof IntersectionObserver === 'undefined') {
       const timer = window.setTimeout(() => setVisible(true), 0);
       return () => window.clearTimeout(timer);
@@ -92,11 +96,11 @@ function useAdLazyVisible(ref: React.RefObject<Element | null>, eager: boolean):
           observer.disconnect();
         }
       },
-      { rootMargin: '350px', threshold: 0 }
+      { rootMargin: '900px', threshold: 0 }
     );
     observer.observe(el);
     return () => observer.disconnect();
-  }, [eager, visible, ref]);
+  }, [eager, visible, ref, active]);
 
   return eager || visible;
 }
@@ -240,6 +244,7 @@ export function AdsterraIframe({
   refreshKey,
   unitId,
   instanceId,
+  staggerMs = 0,
 }: {
   adKey: string;
   width: number;
@@ -249,11 +254,13 @@ export function AdsterraIframe({
   refreshKey?: string | number;
   unitId?: string;
   instanceId?: string;
+  staggerMs?: number;
 }) {
   const pathname = usePathname() || '/';
   const adConsent = useAdvertisingConsent();
   const containerRef = useRef<HTMLDivElement>(null);
-  const shouldMount = useAdLazyVisible(containerRef, loading === 'eager');
+  const shouldMount = useAdLazyVisible(containerRef, loading === 'eager', adConsent);
+  const [staggerReady, setStaggerReady] = useState(() => staggerMs <= 0);
   const [inView, setInView] = useState(false);
   const [tickState, setTickState] = useState<{ path: string; count: number }>({
     path: pathname,
@@ -261,37 +268,46 @@ export function AdsterraIframe({
   });
 
   useEffect(() => {
+    if (!shouldMount || staggerMs <= 0 || staggerReady) return;
+    const timer = window.setTimeout(() => setStaggerReady(true), staggerMs);
+    return () => window.clearTimeout(timer);
+  }, [shouldMount, staggerMs, staggerReady]);
+
+  const readyToMount = shouldMount && staggerReady;
+
+  useEffect(() => {
     const el = containerRef.current;
-    if (!el || typeof IntersectionObserver === 'undefined') return;
+    if (!adConsent || !el || typeof IntersectionObserver === 'undefined') return;
     const observer = new IntersectionObserver(
       (entries) => {
         const entry = entries[0];
         if (entry) {
-          setInView(entry.isIntersecting && entry.intersectionRatio >= 0.45);
+          setInView(entry.isIntersecting && entry.intersectionRatio >= 0.2);
         }
       },
-      { threshold: [0, 0.45, 1] }
+      { threshold: [0, 0.2, 1] }
     );
     observer.observe(el);
     return () => observer.disconnect();
-  }, [shouldMount]);
+  }, [readyToMount, adConsent]);
 
   useEffect(() => {
-    if (!inView || !shouldMount) return;
+    if (!adConsent || !inView || !readyToMount) return;
     const timer = window.setInterval(() => {
       if (typeof document !== 'undefined' && document.visibilityState === 'visible') {
         setTickState((prev) => {
           const base = prev.path === pathname ? prev.count : 0;
-          return base < 6 ? { path: pathname, count: base + 1 } : prev;
+          return base < 10 ? { path: pathname, count: base + 1 } : prev;
         });
       }
-    }, 55000);
+    }, 35000);
     return () => window.clearInterval(timer);
-  }, [inView, pathname, shouldMount]);
+  }, [adConsent, inView, pathname, readyToMount]);
 
   if (!adConsent || !adsterraConfig.enabled || !adKey) return null;
 
   const autoTick = tickState.path === pathname ? tickState.count : 0;
+  const safeSlotId = String(instanceId ?? unitId ?? adKey).replace(/[^a-zA-Z0-9_-]/g, '_');
   const scriptHost = adsterraConfig.scriptHost || 'https://bauval.org';
   const fallbackHost = adsterraConfig.fallbackScriptHost || 'https://www.highperformanceformat.com';
   const fallbackHtml = adsterraConfig.smartlink
@@ -309,6 +325,7 @@ export function AdsterraIframe({
       html, body { width: 100%; height: 100%; overflow: hidden; background: transparent; display: flex; align-items: center; justify-content: center; }
     </style>
     <script>
+      window.name = 'pp_ad_${safeSlotId}_${autoTick}';
       try {
         if (!document.referrer && window.top && window.top.location) {
           Object.defineProperty(document, 'referrer', {
@@ -370,7 +387,7 @@ export function AdsterraIframe({
             fb.style.display = 'flex';
           }
         }
-        setTimeout(syncFallback, 3200);
+        setTimeout(syncFallback, 2200);
         setTimeout(syncFallback, 5500);
         if (typeof MutationObserver !== 'undefined') {
           var obs = new MutationObserver(function() {
@@ -395,7 +412,7 @@ export function AdsterraIframe({
       )}
       style={{ width: '100%', maxWidth: width, minHeight: height }}
     >
-      {shouldMount ? (
+      {readyToMount ? (
         <iframe
           key={compositeKey}
           title={unitId ? `Sponsored slot ${unitId}` : 'Advertisement'}
@@ -433,7 +450,7 @@ export function AdsterraNativeBanner({
   const pathname = usePathname() || '/';
   const adConsent = useAdvertisingConsent();
   const containerRef = useRef<HTMLDivElement>(null);
-  const shouldMount = useAdLazyVisible(containerRef, eager);
+  const shouldMount = useAdLazyVisible(containerRef, eager, adConsent);
 
   if (!adConsent || !adsterraConfig.enabled || !adsterraConfig.slots.nativeBanner.scriptSrc) return null;
 
@@ -564,19 +581,13 @@ function ResponsiveHorizontalAdsterra({ loading = 'lazy' }: { loading?: 'lazy' |
   if (tier === 'desktop') {
     activeSlot = adsterraConfig.slots.banner728x90.key
       ? adsterraConfig.slots.banner728x90
-      : adsterraConfig.slots.banner468x60.key
-        ? adsterraConfig.slots.banner468x60
-        : adsterraConfig.slots.banner320x50;
-  } else if (tier === 'tablet') {
-    activeSlot = adsterraConfig.slots.banner468x60.key
-      ? adsterraConfig.slots.banner468x60
       : adsterraConfig.slots.banner320x50;
-  } else if (tier === 'mobile') {
+  } else if (tier === 'tablet' || tier === 'mobile') {
     activeSlot = adsterraConfig.slots.banner320x50;
   }
 
   return (
-    <div className="flex w-full max-w-[728px] items-center justify-center h-[52px] min-[520px]:h-[62px] md:h-[92px] rounded-xl border border-border/25 bg-muted/15 overflow-hidden">
+    <div className="flex w-full max-w-[728px] items-center justify-center h-[52px] md:h-[92px] rounded-xl border border-border/25 bg-muted/15 overflow-hidden">
       {activeSlot?.key ? (
         <AdsterraIframe
           adKey={activeSlot.key}
@@ -794,7 +805,10 @@ export function ResultScreenAd({
           data-adsterra-unit-id={adsterraConfig.slots.banner300x250.unitId}
         >
           <AdLabel />
-          <div className="flex w-full max-w-[320px] items-center justify-center min-h-[50px] min-[360px]:min-h-[250px] rounded-xl border border-border/25 bg-muted/15 overflow-hidden">
+          <div className={cn(
+            'flex w-full max-w-[320px] items-center justify-center rounded-xl border border-border/25 bg-muted/15 overflow-hidden',
+            showRect ? 'min-h-[250px]' : 'min-h-[50px]'
+          )}>
             {showRect && (
               <AdsterraIframe
                 adKey={adsterraConfig.slots.banner300x250.key}
@@ -861,6 +875,8 @@ export function ResultScreenAd({
         />
         {adNode ? <div className="min-w-0">{adNode}</div> : null}
       </div>
+
+      <DualRectangleAd eager instanceId="result-screen-dual" className="my-3" />
 
       {!suppressChainBar && (
         <WorkflowChainBar
@@ -983,6 +999,7 @@ export function DualRectangleAd({
               width={300}
               height={250}
               loading={loadingMode}
+              staggerMs={180}
             />
           ) : null}
         </div>
@@ -992,14 +1009,14 @@ export function DualRectangleAd({
 }
 
 /**
- * High-performing In-Content Ad Unit (supports single 300x250 Medium Rectangle,
- * dual desktop 300x250 Medium Rectangle pair [Adsterra ID 31811019], or
- * Zero-CLS responsive horizontal banner 728x90 / 468x60 / 320x50).
+ * High-performing In-Content Ad Unit (supports dual desktop 300x250 Medium Rectangle
+ * pair [Adsterra ID 31811019] by default, single 300x250 Medium Rectangle, or
+ * Zero-CLS responsive horizontal banner 728x90 / 320x50).
  */
 export function InContentAd({
   className,
-  variant = 'rectangle',
-  eager = false,
+  variant = 'dual-rectangle',
+  eager = true,
   instanceId = 'incontent',
 }: {
   className?: string;
@@ -1122,8 +1139,9 @@ export function FooterAd({ className }: { className?: string } = {}) {
         className={cn('mx-auto w-full max-w-5xl px-4 py-6 lg:px-8 flex flex-col items-center', className)}
         data-ad-slot="footer"
       >
+        <DualRectangleAd eager instanceId="footer-dual-300x250" className="mb-4 mt-1" />
         <AdLabel />
-        <ResponsiveHorizontalAdsterra />
+        <ResponsiveHorizontalAdsterra loading="eager" />
       </div>
     );
   }
@@ -1132,7 +1150,7 @@ export function FooterAd({ className }: { className?: string } = {}) {
 }
 
 /**
- * Native banner ad (responsive recommendation grid).
+ * Native banner ad (responsive recommendation grid) paired with high-CPM 300x250 (ID 31811019).
  */
 export function NativeAd({
   className,
@@ -1155,7 +1173,12 @@ export function NativeAd({
   }
 
   if (adsterraConfig.enabled && adsterraConfig.slots.nativeBanner.containerId) {
-    return <AdsterraNativeBanner className={className} eager={eager} />;
+    return (
+      <>
+        <DualRectangleAd eager={eager} instanceId="native-paired-300x250" className="mb-4 mt-1" />
+        <AdsterraNativeBanner className={className} eager={eager} />
+      </>
+    );
   }
 
   return null;

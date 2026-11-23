@@ -224,6 +224,7 @@ export default function ResearchPage() {
             <li><Link href="/blog/how-to-send-large-pdf-files-through-email" className="font-semibold text-primary hover:underline">How to send large PDFs through email</Link></li>
             <li><Link href="/blog/compress-pdf-under-1mb" className="font-semibold text-primary hover:underline">Compress PDF under 1MB</Link></li>
             <li><Link href="/blog/resize-signature-6x2-cm-300-dpi" className="font-semibold text-primary hover:underline">Resize signature to 6×2 cm (300 DPI) for government &amp; bank portals</Link></li>
+            <li><Link href="/blog/increase-image-size-in-kb-online" className="font-semibold text-primary hover:underline">Increase image file size in KB online (fix minimum upload limits)</Link></li>
             <li><Link href="/use-cases/compress-pdf-for-email" className="font-semibold text-primary hover:underline">Use case: compress PDF for email</Link></li>
           </ul>
         </section>

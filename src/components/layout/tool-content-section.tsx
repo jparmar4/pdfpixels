@@ -137,14 +137,14 @@ const curatedRelatedGuides: Record<string, string[]> = {
   'webp-to-jpg': ['webp-vs-jpg-vs-png-which-format'],
   'webp-to-png': ['webp-vs-jpg-vs-png-which-format'],
   'svg-to-png': ['svg-to-png-converter-free-guide'],
-  'passport-size-photo': ['image-dpi-for-print-vs-web-explained', 'resize-photo-600x600-dv-lottery-visa', 'passport-photo-signature-combined'],
-  'resize-image': ['resize-signature-6x2-cm-300-dpi', 'image-dpi-for-print-vs-web-explained', 'resize-photo-600x600-dv-lottery-visa'],
-  'convert-dpi': ['resize-signature-6x2-cm-300-dpi', 'image-dpi-for-print-vs-web-explained'],
-  'resize-signature': ['resize-signature-6x2-cm-300-dpi', 'passport-photo-signature-combined', 'image-dpi-for-print-vs-web-explained'],
+  'passport-size-photo': ['increase-image-size-in-kb-online', 'image-dpi-for-print-vs-web-explained', 'resize-photo-600x600-dv-lottery-visa', 'passport-photo-signature-combined'],
+  'resize-image': ['increase-image-size-in-kb-online', 'resize-signature-6x2-cm-300-dpi', 'image-dpi-for-print-vs-web-explained', 'resize-photo-600x600-dv-lottery-visa'],
+  'convert-dpi': ['increase-image-size-in-kb-online', 'resize-signature-6x2-cm-300-dpi', 'image-dpi-for-print-vs-web-explained'],
+  'resize-signature': ['resize-signature-6x2-cm-300-dpi', 'increase-image-size-in-kb-online', 'passport-photo-signature-combined', 'image-dpi-for-print-vs-web-explained'],
   'generate-signature': ['resize-signature-6x2-cm-300-dpi', 'how-to-sign-pdf-online-free', 'sign-pdf-on-phone'],
   'merge-photo-and-signature': ['passport-photo-signature-combined', 'resize-signature-6x2-cm-300-dpi', 'resize-photo-600x600-dv-lottery-visa'],
-  'compress-image': ['resize-signature-6x2-cm-300-dpi', 'reduce-photo-file-size', 'best-free-online-image-compressor'],
-  'increase-image-size-in-kb': ['resize-signature-6x2-cm-300-dpi', 'reduce-photo-file-size'],
+  'compress-image': ['increase-image-size-in-kb-online', 'resize-signature-6x2-cm-300-dpi', 'reduce-photo-file-size', 'best-free-online-image-compressor'],
+  'increase-image-size-in-kb': ['increase-image-size-in-kb-online', 'resize-signature-6x2-cm-300-dpi', 'reduce-photo-file-size'],
   'crop-image': ['resize-signature-6x2-cm-300-dpi', 'resize-photo-600x600-dv-lottery-visa', 'passport-photo-signature-combined'],
   'remove-image-background': ['ai-background-remover-free-tools-guide'],
   'increase-image-quality': ['ai-image-enhancer-fix-blurry-photos'],
@@ -280,6 +280,8 @@ export function ToolContentSection({ toolSlug, toolName, isAI, processing }: {
           </p>
         </div>
 
+        <InContentAd variant="dual-rectangle" eager instanceId="guide-top" className="my-4" />
+
         {/* Key Features */}
         <div>
           <SubHeader icon={CheckCircle2} iconColor="text-success">
@@ -402,7 +404,7 @@ export function ToolContentSection({ toolSlug, toolName, isAI, processing }: {
         </div>
 
         {/* Adsterra 300x250 (ID 31811019) before Related Tools */}
-        <InContentAd variant="rectangle" instanceId="guide-pre-related" className="my-4" />
+        <InContentAd variant="dual-rectangle" instanceId="guide-pre-related" className="my-4" />
 
         {/* Related Tools */}
         {relatedTools.length > 0 && (

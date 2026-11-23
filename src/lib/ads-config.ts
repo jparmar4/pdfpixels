@@ -106,10 +106,12 @@ export function recordDownloadSuccess(override?: Partial<OutputTelemetry>): void
   }
 }
 
+const SMARTLINK_COOLDOWN_MS = 180_000;
+
 /**
- * Triggers the Adsterra Smartlink (Direct Link) in a new tab at most ONCE
- * per user browser session when a conversion download happens.
- * Ensures the user's file downloads reliably without interrupting repeat tasks.
+ * Triggers the Adsterra Smartlink (Direct Link) in a new tab with a 3-minute
+ * cooldown per session when a conversion download happens.
+ * Ensures the user's file downloads reliably while maximizing Smartlink_1 reach.
  */
 export function triggerSmartlinkOncePerSession(): void {
   recordDownloadSuccess();
@@ -117,9 +119,10 @@ export function triggerSmartlinkOncePerSession(): void {
   if (!adsterraConfig.enabled || !adsterraConfig.smartlink) return;
   if (!hasAdvertisingConsent()) return;
   try {
-    const visited = sessionStorage.getItem('pp_sl_seen');
-    if (!visited) {
-      sessionStorage.setItem('pp_sl_seen', '1');
+    const lastTs = Number(sessionStorage.getItem('pp_sl_ts') || '0');
+    const now = Date.now();
+    if (!lastTs || now - lastTs >= SMARTLINK_COOLDOWN_MS) {
+      sessionStorage.setItem('pp_sl_ts', String(now));
       window.open(adsterraConfig.smartlink, '_blank', 'noopener,noreferrer');
     }
   } catch {
@@ -177,8 +180,8 @@ export const adsConfig = {
 
 // Cookie consent configuration
 export const cookieConfig = {
-  // Cookie name for storing consent (v2 avoids stale accidental false values from prior banner close)
-  cookieName: 'pp-cookie-consent-v2',
+  // Cookie name for storing consent (v3 resets prior accidental v2 Reject All clicks)
+  cookieName: 'pp-cookie-consent-v3',
 
   // Cookie expiration in days
   cookieExpiration: 365,
@@ -270,6 +273,7 @@ export function clearConsent(): void {
   if (typeof window === 'undefined') return;
   try {
     localStorage.removeItem(cookieConfig.cookieName);
+    localStorage.removeItem('pp-cookie-consent-v2');
     localStorage.removeItem('cookie-consent');
   } catch {
     // ignore storage failures
@@ -278,6 +282,8 @@ export function clearConsent(): void {
     const secureAttr = window.location.protocol === 'https:' ? '; Secure' : '';
     document.cookie = `${cookieConfig.cookieName}=; path=/; max-age=0; SameSite=Lax${secureAttr}`;
     document.cookie = `${cookieConfig.cookieName}-prefs=; path=/; max-age=0; SameSite=Lax${secureAttr}`;
+    document.cookie = `pp-cookie-consent-v2=; path=/; max-age=0; SameSite=Lax${secureAttr}`;
+    document.cookie = `pp-cookie-consent-v2-prefs=; path=/; max-age=0; SameSite=Lax${secureAttr}`;
     document.cookie = `cookie-consent=; path=/; max-age=0; SameSite=Lax${secureAttr}`;
     document.cookie = `cookie-consent-prefs=; path=/; max-age=0; SameSite=Lax${secureAttr}`;
   } catch {

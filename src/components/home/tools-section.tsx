@@ -5,7 +5,7 @@ import { ArrowRight, ArrowUpRight, Clock, FileImage, Files, Minimize2, Search, S
 import Link from 'next/link';
 import { CategorySection } from '@/components/layout/category-section';
 import { allTools, allPdfTools, allImageTools, toolCategories, ToolCategory, searchTools, searchPdfTools } from '@/lib/tools-data';
-import { HeaderAd } from '@/components/ads/ad-banner';
+import { HeaderAd, InContentAd } from '@/components/ads/ad-banner';
 import { TypingText } from './typing-text';
 import { GeoRegion } from '@/lib/geo-data';
 
@@ -331,6 +331,7 @@ function ToolsSectionInner({
       {/* Ad after primary content starts — better content-to-ad ratio for AdSense */}
       <div className="container mx-auto px-4 lg:px-8 py-4">
         <HeaderAd />
+        <InContentAd variant="dual-rectangle" eager instanceId="home-top-dual" className="mt-4" />
       </div>
 
       {/* Directory Category Filter Tabs */}

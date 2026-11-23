@@ -605,7 +605,7 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
         ) : null}
 
         {/* High-performing 300x250 (ID 31811019) above footer */}
-        <InContentAd variant="rectangle" instanceId="tool-bottom" className="my-6" />
+        <InContentAd variant="dual-rectangle" eager instanceId="tool-bottom" className="my-6" />
 
         {/* Footer leaderboard ad */}
         <FooterAd className="my-6" />

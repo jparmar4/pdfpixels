@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { AdsterraNativeBanner, ResultScreenAd, SmartlinkButton } from '@/components/ads/ad-banner';
+import { AdsterraNativeBanner, InContentAd, ResultScreenAd, SmartlinkButton } from '@/components/ads/ad-banner';
 import { adsterraConfig, recordDownloadSuccess, triggerDownloadWithSmartlink, triggerSmartlinkOncePerSession } from '@/lib/ads-config';
 import { OptimizationVerificationSummary } from './optimization-verification-summary';
 import { WorkflowChainBar } from './workflow-chain-bar';
@@ -92,6 +92,8 @@ export function ToolResultBar({
             </Button>
             <SmartlinkButton />
           </div>
+
+          <InContentAd variant="dual-rectangle" eager instanceId="tool-result-bar-dual" className="my-2" />
 
           <WorkflowChainBar
             visible={hasDownloaded}

@@ -5,8 +5,8 @@ import Link from 'next/link';
 import { ArrowRight, CheckCircle2, Download, ShieldCheck, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { normalizeDisplayText } from '@/lib/display-text';
-import { AdsterraNativeBanner, ResultScreenAd, SmartlinkButton } from '@/components/ads/ad-banner';
-import { adsterraConfig, triggerDownloadWithSmartlink } from '@/lib/ads-config';
+import { InContentAd, ResultScreenAd, SmartlinkButton } from '@/components/ads/ad-banner';
+import { triggerDownloadWithSmartlink } from '@/lib/ads-config';
 import { OptimizationVerificationSummary } from './optimization-verification-summary';
 import { WorkflowChainBar } from './workflow-chain-bar';
 import { useWorkflowStore } from '@/store/workflow-store';
@@ -69,8 +69,6 @@ export function ResultCard({
     });
   };
 
-  const hasNative = adsterraConfig.enabled && Boolean(adsterraConfig.slots.nativeBanner.scriptSrc);
-
   return (
     <div className="relative overflow-hidden rounded-[1.75rem] border border-success/25 bg-success/[0.06] p-6 shadow-premium dark:bg-success/[0.12]">
       <div className="absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-success/50 to-transparent" />
@@ -104,7 +102,7 @@ export function ResultCard({
           </div>
         </div>
 
-        {/* Optimization & Verification Summary paired beside the primary Adsterra Native unit before/alongside Download */}
+        {/* Optimization & Verification Summary paired beside the high-CPM 300x250 (ID 31811019) unit */}
         <div className="grid gap-4 lg:grid-cols-[minmax(0,1.25fr)_minmax(280px,1fr)] lg:items-start">
           <OptimizationVerificationSummary
             originalSize={originalSize}
@@ -116,15 +114,9 @@ export function ResultCard({
             resultUrl={effectiveUrl}
             fileName={resultFileName}
           />
-          {hasNative ? (
-            <div className="min-w-0">
-              <AdsterraNativeBanner eager compact className="my-0" />
-            </div>
-          ) : (
-            <div className="min-w-0">
-              <ResultScreenAd suppressSummary suppressChainBar className="border-t-0 pt-0 mt-0" />
-            </div>
-          )}
+          <div className="min-w-0">
+            <ResultScreenAd suppressSummary suppressChainBar refreshKey={runKey} className="border-t-0 pt-0 mt-0" />
+          </div>
         </div>
 
         <div className="flex flex-col gap-3 sm:flex-row">
@@ -152,6 +144,8 @@ export function ResultCard({
             </div>
           ) : null}
         </div>
+
+        <InContentAd variant="dual-rectangle" eager instanceId="result-card-dual" className="my-2" />
 
         <WorkflowChainBar
           visible={hasDownloaded}

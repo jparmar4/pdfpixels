@@ -387,6 +387,8 @@ const nextConfig: NextConfig = {
       { source: '/remove-image-background', destination: '/tools/remove-image-background', permanent: true },
       { source: '/passport-size-photo', destination: '/tools/passport-size-photo', permanent: true },
       { source: '/image-to-pdf', destination: '/tools/image-to-pdf', permanent: true },
+      { source: '/increase-image-size', destination: '/tools/increase-image-size-in-kb', permanent: true },
+      { source: '/tools/increase-image-size', destination: '/tools/increase-image-size-in-kb', permanent: true },
       { source: '/increase-image-size-in-kb', destination: '/tools/increase-image-size-in-kb', permanent: true },
       { source: '/increase-image-quality', destination: '/tools/increase-image-quality', permanent: true },
       { source: '/crop-image', destination: '/tools/crop-image', permanent: true },

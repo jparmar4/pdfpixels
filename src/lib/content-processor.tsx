@@ -436,10 +436,10 @@ export function processContent(content: string): React.ReactNode[] {
         if (trimmedLine.startsWith('## ') || htmlH2Match) {
             flushList(`list-${index}`);
             h2Count++;
-            if (h2Count === 2 || h2Count === 5) {
+            if (h2Count === 1 || h2Count === 3 || h2Count === 5 || h2Count === 7) {
                 elements.push(
                     <div key={`in-article-ad-${index}`} className="my-10 not-prose flex justify-center w-full">
-                        <InContentAd />
+                        <InContentAd variant="dual-rectangle" eager={h2Count <= 2} instanceId={`blog-h2-${h2Count}`} />
                     </div>
                 );
             }

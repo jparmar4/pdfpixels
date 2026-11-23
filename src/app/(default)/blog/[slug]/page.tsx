@@ -10,7 +10,7 @@ import { ReadingProgressBar } from "@/components/blog/ReadingProgressBar";
 import { ProcessContentWithToc } from "@/components/blog/ProcessContentWithToc";
 import { ShareButtons } from "@/components/blog/ShareButtons";
 import { ArticleNavigation } from "@/components/blog/ArticleNavigation";
-import { HeaderAd, InContentAd, FooterAd, NativeAd } from "@/components/ads/ad-banner";
+import { HeaderAd, InContentAd, FooterAd, NativeAd, SmartlinkButton } from "@/components/ads/ad-banner";
 import { ToolSidebarAd } from "@/components/ads/tool-sidebar-ad";
 import { adsConfig, adsenseConfig } from "@/lib/ads-config";
 import { ArrowLeft, Clock, Calendar, CalendarClock, ArrowRight, User } from "lucide-react";
@@ -211,6 +211,60 @@ export default async function BlogPostPage({
         })),
     } : null;
 
+    // HowTo Schema (optional, for step-by-step workflow tutorials)
+    const howToSchema = post.howTo && post.howTo.steps.length > 0 ? {
+        "@context": "https://schema.org",
+        "@type": "HowTo",
+        name: post.howTo.name,
+        description: post.howTo.description,
+        datePublished: isoDate,
+        dateModified: isoModifiedDate,
+        ...(post.howTo.totalTime ? { totalTime: post.howTo.totalTime } : {}),
+        ...(post.coverImage ? {
+            image: {
+                "@type": "ImageObject",
+                url: `${siteConfig.url}${post.coverImage}`,
+                width: coverDims.width,
+                height: coverDims.height,
+            },
+        } : {}),
+        step: post.howTo.steps.map((step, index) => ({
+            "@type": "HowToStep",
+            position: index + 1,
+            name: step.name,
+            text: step.text,
+            ...(step.url ? { url: step.url.startsWith("http") ? step.url : `${siteConfig.url}${step.url}` } : {}),
+        })),
+        tool: {
+            "@type": "HowToTool",
+            name: "PdfPixels",
+        },
+    } : null;
+
+    // SoftwareApplication Schema (optional, links tutorial directly to the web tool)
+    const softwareApplicationSchema = post.softwareApplication ? {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        name: post.softwareApplication.name,
+        description: post.softwareApplication.description,
+        url: post.softwareApplication.url.startsWith("http")
+            ? post.softwareApplication.url
+            : `${siteConfig.url}${post.softwareApplication.url}`,
+        applicationCategory: post.softwareApplication.applicationCategory ?? "UtilitiesApplication",
+        operatingSystem: post.softwareApplication.operatingSystem ?? "Any",
+        isAccessibleForFree: true,
+        inLanguage: "en-US",
+        offers: {
+            "@type": "Offer",
+            price: "0",
+            priceCurrency: "USD",
+            availability: "https://schema.org/InStock",
+        },
+        provider: {
+            "@id": organizationId(),
+        },
+    } : null;
+
     return (
         <>
             
@@ -243,6 +297,20 @@ export default async function BlogPostPage({
                     id="faq-schema"
                     type="application/ld+json"
                     dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema).replace(/</g, '\\u003c') }}
+                />
+            )}
+            {howToSchema && (
+                <script
+                    id="howto-schema"
+                    type="application/ld+json"
+                    dangerouslySetInnerHTML={{ __html: JSON.stringify(howToSchema).replace(/</g, '\\u003c') }}
+                />
+            )}
+            {softwareApplicationSchema && (
+                <script
+                    id="software-app-schema"
+                    type="application/ld+json"
+                    dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareApplicationSchema).replace(/</g, '\\u003c') }}
                 />
             )}
 
@@ -363,6 +431,7 @@ export default async function BlogPostPage({
 
                 {/* Top Leaderboard Ad */}
                 <HeaderAd className="my-8" />
+                <InContentAd variant="dual-rectangle" eager instanceId="blog-top-dual" className="my-6" />
 
                 {/* Main Content — full width (no sidebar) for easier reading */}
                 <div className="container mx-auto px-4 sm:px-6 lg:px-10 py-12 lg:py-16">
@@ -442,7 +511,7 @@ export default async function BlogPostPage({
 
                             {/* Adsterra 300x250 (ID 31811019) before FAQ */}
                             <div className="my-10">
-                                <InContentAd variant="rectangle" instanceId="blog-pre-faq" />
+                                <InContentAd variant="dual-rectangle" eager instanceId="blog-pre-faq" />
                             </div>
 
                             {/* FAQ Section */}
@@ -541,13 +610,16 @@ export default async function BlogPostPage({
                                 <p className="text-muted-foreground mb-8 max-w-lg mx-auto">
                                     Put these tips into action with our free image and PDF tools. No sign-up needed, no watermarks.
                                 </p>
-                                <Link
-                                    href="/"
-                                    className="inline-flex items-center gap-2 px-8 py-4 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl font-bold transition-all shadow-lg hover:shadow-xl hover:-translate-y-1 group"
-                                >
-                                    Explore Tools
-                                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                                </Link>
+                                <div className="flex flex-wrap items-center justify-center gap-3">
+                                    <Link
+                                        href="/"
+                                        className="inline-flex items-center gap-2 px-8 py-4 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl font-bold transition-all shadow-lg hover:shadow-xl hover:-translate-y-1 group"
+                                    >
+                                        Explore Tools
+                                        <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                                    </Link>
+                                    <SmartlinkButton className="min-h-12" />
+                                </div>
                             </div>
                         </div>
                     </div>

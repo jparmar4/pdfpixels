@@ -58,7 +58,9 @@ export function RootDocumentShell({
       <head>
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
         <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
-        <link rel="dns-prefetch" href="https://bauval.org" />
+        <link rel="preconnect" href="https://bauval.org" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://www.highperformanceformat.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://araplhn.org" />
         {adsenseConfig.clientId && (
           <meta name="google-adsense-account" content={adsenseConfig.clientId} />
         )}

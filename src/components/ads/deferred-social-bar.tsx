@@ -14,7 +14,7 @@ import { useWorkflowStore } from '@/store/workflow-store';
 export function DeferredSocialBar() {
   const hasDownloadedOnce = useWorkflowStore((s) => s.hasDownloadedOnce);
   const hydrateFromSession = useWorkflowStore((s) => s.hydrateFromSession);
-  const [adConsent, setAdConsent] = useState(false);
+  const [adConsent, setAdConsent] = useState(true);
 
   useEffect(() => {
     hydrateFromSession();
@@ -40,6 +40,18 @@ export function DeferredSocialBar() {
       script.setAttribute('data-cfasync', 'false');
       script.setAttribute('data-adsterra-unit-id', adsterraConfig.slots.socialBar.unitId);
       script.src = adsterraConfig.slots.socialBar.scriptSrc;
+      script.onerror = () => {
+        if (!hasAdvertisingConsent()) return;
+        if (document.getElementById('pp-adsterra-social-bar-fallback')) return;
+        const fallback = document.createElement('script');
+        fallback.id = 'pp-adsterra-social-bar-fallback';
+        fallback.type = 'text/javascript';
+        fallback.async = true;
+        fallback.setAttribute('data-cfasync', 'false');
+        fallback.setAttribute('data-adsterra-unit-id', adsterraConfig.slots.socialBar.unitId);
+        fallback.src = `${adsterraConfig.fallbackScriptHost}/14/4cb2c6ce7427559857aecec157fd016f`;
+        document.body.appendChild(fallback);
+      };
       document.body.appendChild(script);
     };
 
@@ -54,24 +66,28 @@ export function DeferredSocialBar() {
     const onUserEngage = () => {
       cleanupListeners();
       const elapsed = Date.now() - mountTime;
-      const delay = Math.max(0, 1200 - elapsed);
+      const delay = Math.max(0, 150 - elapsed);
       interactionTimer = window.setTimeout(injectSocialBar, delay);
     };
 
     const cleanupListeners = () => {
       window.removeEventListener('pointerdown', onUserEngage);
       window.removeEventListener('scroll', onUserEngage);
+      window.removeEventListener('touchstart', onUserEngage);
+      window.removeEventListener('mousemove', onUserEngage);
       window.removeEventListener('keydown', onUserEngage);
     };
 
     window.addEventListener('pointerdown', onUserEngage, { passive: true, once: true });
     window.addEventListener('scroll', onUserEngage, { passive: true, once: true });
+    window.addEventListener('touchstart', onUserEngage, { passive: true, once: true });
+    window.addEventListener('mousemove', onUserEngage, { passive: true, once: true });
     window.addEventListener('keydown', onUserEngage, { passive: true, once: true });
 
     const fallbackTimer = window.setTimeout(() => {
       cleanupListeners();
       injectSocialBar();
-    }, 3500);
+    }, 800);
 
     return () => {
       cleanupListeners();
