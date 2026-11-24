@@ -24,7 +24,7 @@ function readSignals(file) {
   return {
     canonical: links.find((link) => link.rel === 'canonical')?.href,
     noindex: metas.some((meta) => /^(robots|googlebot)$/i.test(meta.name ?? '') && /\bnoindex\b/i.test(meta.content ?? '')),
-    maxImagePreviewLarge: metas.some((meta) => /^(robots|googlebot)$/i.test(meta.name ?? '') && /max-image-preview:large/i.test(meta.content ?? '')),
+    maxImagePreviewLarge: metas.some((meta) => (meta.name ?? '').toLowerCase() === 'robots' && /max-image-preview:large/i.test(meta.content ?? '')),
     ogImage: metas.find((meta) => (meta.property ?? '').toLowerCase() === 'og:image')?.content,
     languages: links.filter((link) => link.rel === 'alternate' && link.hreflang),
   };

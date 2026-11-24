@@ -163,9 +163,17 @@ const curatedRelatedGuides: Record<string, string[]> = {
   'remove-image-metadata': ['remove-exif-gps-data-from-photos'],
   'photo-metadata-viewer': ['remove-exif-gps-data-from-photos'],
   'sign-pdf': ['pdf-automation-batch-workflow-business', 'enterprise-esignature-pdf-security-compared', 'document-management-software-small-business', 'how-to-sign-pdf-online-free'],
+  'edit-pdf': ['how-to-edit-pdf-online-free-adobe-alternative', 'free-pdf-editor-alternative-to-adobe', 'fill-sign-irs-tax-forms-online-free'],
   'fill-pdf': ['free-pdf-editor-alternative-to-adobe', 'how-to-edit-pdf-online-free-adobe-alternative'],
   'pdf-to-word': ['free-pdf-editor-alternative-to-adobe'],
   'word-to-pdf': ['convert-jpg-to-pdf-online-no-software', 'free-pdf-editor-alternative-to-adobe'],
+  'qbo-ofx-qfx-to-excel-csv': ['qbo-ofx-qfx-to-excel-csv-quickbooks-import-fix', 'convert-bank-statement-pdf-to-excel-quickbooks-xero', 'pdf-to-csv-converter-online-free'],
+  'uscis-pdf-packet-merger': ['uscis-immigration-court-pdf-upload-rules-2026', 'compress-pdf-complete-guide', 'how-to-properly-redact-a-pdf-without-leaking-hidden-text'],
+  'flatten-pdf': ['uscis-immigration-court-pdf-upload-rules-2026', 'fill-sign-irs-tax-forms-online-free', 'how-to-properly-redact-a-pdf-without-leaking-hidden-text'],
+  'pdf-to-pdfa': ['uscis-immigration-court-pdf-upload-rules-2026', 'document-management-software-small-business'],
+  'amazon-fba-thermal-label-converter': ['convert-8-5x11-pdf-shipping-labels-to-4x6-thermal-printer', 'pdf-automation-batch-workflow-business'],
+  'shipping-label-cropper': ['convert-8-5x11-pdf-shipping-labels-to-4x6-thermal-printer', 'pdf-automation-batch-workflow-business'],
+  'crop-pdf': ['convert-8-5x11-pdf-shipping-labels-to-4x6-thermal-printer', 'free-pdf-editor-alternative-to-adobe'],
 };
 
 /* ── Find related blog posts by matching tool slug keywords to blog post keywords ── */

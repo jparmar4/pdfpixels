@@ -1,6 +1,6 @@
 // Generate free template PDFs for /templates — real, downloadable files.
 // Run: node scripts/generate-templates.mjs   (reruns are idempotent)
-import { mkdirSync, writeFileSync, existsSync } from 'node:fs';
+import { mkdirSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
@@ -17,12 +17,11 @@ const softFill = rgb(0.955, 0.96, 0.985);
 
 const CREDIT = 'Free template by PdfPixels — pdfpixels.com/templates';
 
-function credit(doc, page, PH) {
-  const f = doc.structFont ?? null;
+function credit(_doc, page, _PH) {
   page.drawText(CREDIT, { x: 40, y: 24, size: 7.5, font: page._creditFont, color: rgb(0.62, 0.64, 0.7) });
 }
 
-async function makeInvoiceTemplate({ file, accentHeader = false, fields, sample = false, title }) {
+async function makeInvoiceTemplate({ file, accentHeader = false, sample = false, title }) {
   const doc = await PDFDocument.create();
   const helv = await doc.embedFont(StandardFonts.Helvetica);
   const bold = await doc.embedFont(StandardFonts.HelveticaBold);
@@ -131,7 +130,7 @@ async function makeInvoiceTemplate({ file, accentHeader = false, fields, sample 
   console.log(file, '→', bytes.length, 'bytes');
 }
 
-async function makeResumeTemplate({ file, accentHeading = false, sample = true, title }) {
+async function makeResumeTemplate({ file, accentHeading = false, sample = true }) {
   const doc = await PDFDocument.create();
   const helv = await doc.embedFont(StandardFonts.Helvetica);
   const bold = await doc.embedFont(StandardFonts.HelveticaBold);

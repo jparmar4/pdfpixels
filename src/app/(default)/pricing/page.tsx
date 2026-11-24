@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { siteConfig } from '@/lib/seo-config';
 import { DEFAULT_OG_IMAGE_URL, getRobotsMetadata } from '@/lib/seo';
 import { allTools } from '@/lib/tools-data';
+import { HeaderAd, InContentAd, FooterAd } from '@/components/ads/ad-banner';
 
 export const metadata: Metadata = {
   // Root layout appends `| PdfPixels` via the title template.
@@ -64,6 +65,8 @@ export default function PricingPage() {
           </p>
         </div>
 
+        <HeaderAd className="mb-10" />
+
         <div className="mx-auto max-w-xl">
           <div className="rounded-[2rem] border border-border/60 bg-card/70 p-8 shadow-soft backdrop-blur-sm lg:p-10">
             <div className="mb-6">
@@ -94,6 +97,8 @@ export default function PricingPage() {
           </div>
         </div>
 
+        <InContentAd variant="dual-rectangle" instanceId="pricing-mid" className="my-12" />
+
         <div className="mx-auto mt-16 max-w-3xl rounded-[2rem] border border-border/50 bg-muted/20 p-8 text-center lg:p-10">
           <ShieldCheck className="mx-auto mb-4 h-10 w-10 text-emerald-500" />
           <h2 className="mb-3 text-xl font-bold text-foreground">About limits & future paid features</h2>
@@ -118,6 +123,7 @@ export default function PricingPage() {
             </Button>
           </div>
         </div>
+        <FooterAd className="mt-12" />
       </div>
     </main>
   );

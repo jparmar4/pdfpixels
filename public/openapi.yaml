@@ -23,19 +23,19 @@ info:
     - 20 requests per minute per processing route per IP (pdf/*, image/*, ai)
     - 100 requests per minute global for other API routes
     - Contact (3/min) and newsletter (5/min) endpoints are stricter
-    - Limits verified against production code on 2026-09-29; see https://www.pdfpixels.com/llms-full.txt
+    - Limits verified against production code on 2026-11-24; see https://www.pdfpixels.com/llms-full.txt
     
     ## Support
     Email: support@pdfpixels.com
     Website: https://www.pdfpixels.com
-  version: 1.0.0
+  version: 1.1.0
   contact:
     name: PdfPixels Support
     email: support@pdfpixels.com
     url: https://www.pdfpixels.com
   license:
     name: Free to Use
-    url: https://www.pdfpixels.com/#terms
+    url: https://www.pdfpixels.com/terms
 
 servers:
   - url: https://www.pdfpixels.com/api

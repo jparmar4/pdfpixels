@@ -58,7 +58,7 @@ export default function UseCasesIndexPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
       />
-      <main id="main-content" className="flex-1 xl:pr-[196px]">
+      <main id="main-content" className="flex-1 xl:pr-[196px] 2xl:pr-[336px]">
         <HeaderAd className="my-4" />
         <UseCasesClient />
         <InContentAd variant="dual-rectangle" instanceId="usecases-hub-mid" className="my-8" />

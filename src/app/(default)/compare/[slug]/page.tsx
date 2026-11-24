@@ -10,7 +10,7 @@ import { HeaderAd, InContentAd, FooterAd, NativeAd, SmartlinkButton } from '@/co
 import { ToolSidebarAd } from '@/components/ads/tool-sidebar-ad';
 import { comparisonPages } from '@/lib/comparisons';
 import { getToolBySlug } from '@/lib/tools-data';
-import { ADSENSE_REVIEW_MODE, DEFAULT_OG_IMAGE_URL, SITE_CONTENT_UPDATED, absoluteUrl, getRobotsMetadata } from '@/lib/seo';
+import { ADSENSE_REVIEW_MODE, DEFAULT_OG_IMAGE_URL, SITE_CONTENT_UPDATED, absoluteUrl, getRobotsMetadata, organizationId } from '@/lib/seo';
 
 export function generateStaticParams() {
   return comparisonPages.map((comparison) => ({ slug: comparison.slug }));
@@ -75,6 +75,13 @@ export default async function ComparisonPage({ params }: { params: Promise<{ slu
       name: 'PdfPixels',
       url: absoluteUrl('/about'),
     },
+    publisher: {
+      '@id': organizationId(),
+    },
+    speakable: {
+      '@type': 'SpeakableSpecification',
+      cssSelector: ['h1', '.compare-summary'],
+    },
     about: [tool.name, ...item.alternatives],
     mentions: {
       '@type': 'SoftwareApplication',
@@ -121,7 +128,7 @@ export default async function ComparisonPage({ params }: { params: Promise<{ slu
       )}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema).replace(/</g, '\\u003c') }} />
 
-      <main id="main-content" className="min-h-screen bg-background xl:pr-[196px]">
+      <main id="main-content" className="min-h-screen bg-background xl:pr-[196px] 2xl:pr-[336px]">
         <section className="relative overflow-hidden border-b border-border/40">
           <AnimatedMeshBg />
           <div className="container relative z-10 mx-auto px-4 py-20 lg:px-8 md:py-28">
@@ -156,7 +163,7 @@ export default async function ComparisonPage({ params }: { params: Promise<{ slu
             <h1 className="mx-auto mb-6 max-w-4xl text-center text-3xl font-extrabold leading-tight tracking-tight text-foreground md:text-4xl lg:text-5xl">
               {item.title}
             </h1>
-            <p className="mx-auto max-w-2xl text-center text-lg font-medium leading-relaxed text-muted-foreground">
+            <p className="compare-summary mx-auto max-w-2xl text-center text-lg font-medium leading-relaxed text-muted-foreground">
               {item.description}
             </p>
           </div>

@@ -132,7 +132,7 @@ export default async function WorkflowDetailPage({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(schema).replace(/</g, '\\u003c') }}
         />
       ))}
-      <main id="main-content" className="min-h-screen bg-background text-foreground pb-14 xl:pr-[196px]">
+      <main id="main-content" className="min-h-screen bg-background text-foreground pb-14 xl:pr-[196px] 2xl:pr-[336px]">
         {/* Breadcrumb */}
         <nav aria-label="Breadcrumb" className="container mx-auto px-4 lg:px-8 pt-6">
           <ol className="flex flex-wrap items-center gap-1.5 text-xs text-muted-foreground">

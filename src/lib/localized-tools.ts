@@ -29,6 +29,8 @@ export const LOCALIZED_TOOL_SLUGS = [
   'excel-to-pdf',
   'redact-pdf',
   'fill-pdf',
+  'edit-pdf',
+  'pdf-to-pdfa',
 ] as const;
 
 export type LocalizedToolSlug = (typeof LOCALIZED_TOOL_SLUGS)[number];
@@ -470,6 +472,30 @@ const deTools: Record<LocalizedToolSlug, LocalizedToolCopy> = {
       'Ausgefülltes PDF herunterladen.',
     ],
   },
+  'edit-pdf': {
+    name: 'PDF bearbeiten',
+    title: 'PDF online bearbeiten – kostenlos, ohne Wasserzeichen & Anmeldung',
+    description: 'Text hinzufügen, Passagen weißen, Stellen markieren und Unterschriften direkt im Browser in jedes PDF einfügen.',
+    howTitle: 'PDF-Dokumente direkt im Browser bearbeiten',
+    intro: 'Ergänzen Sie Texte, überdecken Sie veraltete Angaben per Whiteout, heben Sie Vertragsstellen hervor und setzen Sie Ihre Signatur – ganz ohne Adobe-Abo oder Softwareinstallation.',
+    steps: [
+      'PDF-Datei (bis 50 MB) in den Editor laden.',
+      'Text, Markierungen, Whiteout oder Unterschrift auf den Seiten platzieren.',
+      'Das bearbeitete PDF ohne Wasserzeichen herunterladen.',
+    ],
+  },
+  'pdf-to-pdfa': {
+    name: 'PDF in PDF/A umwandeln',
+    title: 'PDF in PDF/A konvertieren – ISO-Langzeitarchivierung kostenlos',
+    description: 'Standard-PDFs für GoBD-konforme Archivierung, Behörden, Gerichte (beA) und Bibliotheken in ISO 19005 PDF/A-2b umwandeln.',
+    howTitle: 'PDF für die Langzeitarchivierung nach PDF/A konvertieren',
+    intro: 'PDF/A bettet sRGB-Farbprofile und normgerechte XMP-Metadaten ein, sodass Rechnungen, Steuerbelege und Schriftsätze auch nach Jahrzehnten identisch dargestellt werden.',
+    steps: [
+      'Ausgangs-PDF hochladen (maximal 50 MB).',
+      'Konvertierung in ISO-konformes PDF/A starten.',
+      'Archivierbares PDF/A-Dokument herunterladen.',
+    ],
+  },
 };
 
 const esTools: Record<LocalizedToolSlug, LocalizedToolCopy> = {
@@ -827,6 +853,30 @@ const esTools: Record<LocalizedToolSlug, LocalizedToolCopy> = {
       'Descarga el PDF ya rellenado.',
     ],
   },
+  'edit-pdf': {
+    name: 'Editar PDF',
+    title: 'Editar PDF online gratis – sin marca de agua ni registro',
+    description: 'Añade texto, corrige datos con corrector blanco, resalta cláusulas y firma tus archivos PDF directamente desde el navegador.',
+    howTitle: 'Cómo editar un archivo PDF en línea gratis',
+    intro: 'Inserta textos nuevos, oculta líneas antiguas, subraya párrafos importantes y estampa tu firma en contratos, facturas o trámites oficiales sin instalar programas.',
+    steps: [
+      'Sube tu documento PDF (hasta 50 MB).',
+      'Añade texto, resaltados, corrector blanco o tu firma sobre la página.',
+      'Descarga el PDF editado limpio y sin marcas de agua.',
+    ],
+  },
+  'pdf-to-pdfa': {
+    name: 'Convertir PDF a PDF/A',
+    title: 'Convertir PDF a PDF/A online – archivo ISO 19005 gratis',
+    description: 'Transforma documentos PDF estándar al formato ISO PDF/A para sedes electrónicas, juzgados (LexNET), universidades y archivo fiscal.',
+    howTitle: 'Pasar un PDF a formato de archivo PDF/A',
+    intro: 'El estándar PDF/A incrusta perfiles de color sRGB y metadatos XMP para garantizar la conservación legal y administrativa a largo plazo.',
+    steps: [
+      'Selecciona tu archivo PDF (máximo 50 MB).',
+      'Convierte automáticamente a PDF/A compatible con ISO 19005.',
+      'Descarga el documento listo para registro oficial o archivo.',
+    ],
+  },
 };
 
 const ptTools: Record<LocalizedToolSlug, LocalizedToolCopy> = {
@@ -1178,6 +1228,30 @@ const ptTools: Record<LocalizedToolSlug, LocalizedToolCopy> = {
       'Envie o formulário PDF.',
       'Preencha os campos necessários na página.',
       'Baixe o PDF preenchido.',
+    ],
+  },
+  'edit-pdf': {
+    name: 'Editar PDF',
+    title: 'Editar PDF online grátis – sem marca d’água e sem cadastro',
+    description: 'Adicione textos, apague trechos com corretivo branco, destaque cláusulas e assine documentos PDF direto no navegador.',
+    howTitle: 'Como editar um PDF online gratuitamente',
+    intro: 'Edite contratos, propostas, recibos e formulários inserindo texto, marcações, carimbos e assinatura eletrônica sem instalar softwares pagos.',
+    steps: [
+      'Envie o arquivo PDF (até 50 MB).',
+      'Use a barra de ferramentas para inserir texto, corretivo, destaques ou assinatura.',
+      'Baixe o PDF editado sem marca d’água.',
+    ],
+  },
+  'pdf-to-pdfa': {
+    name: 'Converter PDF em PDF/A',
+    title: 'Converter PDF para PDF/A online – padrão PJe, Gov.br e ISO grátis',
+    description: 'Converta arquivos PDF comuns para o padrão ISO 19005 PDF/A exigido por tribunais (PJe/e-SAJ), cartórios e órgãos públicos.',
+    howTitle: 'Gerar PDF/A para protocolo jurídico e arquivamento',
+    intro: 'Incorporamos perfil de cor sRGB e metadados XMP padronizados para garantir conformidade em peticionamentos eletrônicos e guarda documental.',
+    steps: [
+      'Envie o documento PDF (máximo de 50 MB).',
+      'Execute a conversão para o padrão PDF/A.',
+      'Baixe o PDF/A pronto para protocolo.',
     ],
   },
 };
@@ -1533,6 +1607,30 @@ const frTools: Record<LocalizedToolSlug, LocalizedToolCopy> = {
       'Téléchargez le PDF rempli.',
     ],
   },
+  'edit-pdf': {
+    name: 'Modifier un PDF',
+    title: 'Modifier un PDF en ligne gratuit – sans filigrane ni inscription',
+    description: 'Ajoutez du texte, masquez des mentions au correcteur blanc, surlignez et signez vos PDF directement dans le navigateur.',
+    howTitle: 'Éditer un document PDF gratuitement dans le navigateur',
+    intro: 'Annotez vos contrats, devis, baux et formulaires CERFA en ajoutant du texte net, des surlignages, des cases cochées et votre signature sans abonnement.',
+    steps: [
+      'Importez votre fichier PDF (50 Mo maximum).',
+      'Ajoutez du texte, du blanc correcteur, des surlignages ou votre signature.',
+      'Téléchargez le PDF modifié sans aucun filigrane.',
+    ],
+  },
+  'pdf-to-pdfa': {
+    name: 'Convertir PDF en PDF/A',
+    title: 'Convertir PDF en PDF/A en ligne – archivage légal ISO gratuit',
+    description: 'Convertissez vos PDF standards au format normé ISO 19005 PDF/A pour Chorus Pro, les marchés publics, les greffes et l’archivage probant.',
+    howTitle: 'Passer un PDF au format d’archivage PDF/A',
+    intro: 'Le profil colorimétrique sRGB et les métadonnées XMP conformes ISO 19005 sont intégrés pour garantir une lecture identique à long terme.',
+    steps: [
+      'Déposez votre PDF (jusqu’à 50 Mo).',
+      'Lancez la conversion vers PDF/A.',
+      'Téléchargez votre fichier PDF/A prêt à déposer.',
+    ],
+  },
 };
 
 const jpTools: Record<LocalizedToolSlug, LocalizedToolCopy> = {
@@ -1880,6 +1978,30 @@ const jpTools: Record<LocalizedToolSlug, LocalizedToolCopy> = {
       '入力したいPDFフォームをアップロード。',
       '入力欄をクリックして文字やチェックを記入。',
       '入力済みのPDFをダウンロード。',
+    ],
+  },
+  'edit-pdf': {
+    name: 'PDF編集',
+    title: 'PDF編集オンライン無料 – 文字追加・修正・ハイライト（登録不要・透かしなし）',
+    description: 'ブラウザ上でPDFにテキスト追記、白塗り修正、マーカー強調、チェックマークや電子サインを無料で追加できます。',
+    howTitle: 'インストール不要でPDFを直接編集する',
+    intro: '請求書や契約書、各種申請書PDFを開き、文字の追加や不要部分の白塗りマスク、ハイライト、署名の配置をワンストップで行えます。',
+    steps: [
+      '編集したいPDF（最大50MB）をアップロード。',
+      'ツールバーから文字入力・白塗り・マーカー・署名を選んで配置。',
+      '透かしなしの編集済みPDFをダウンロード。',
+    ],
+  },
+  'pdf-to-pdfa': {
+    name: 'PDFをPDF/Aに変換',
+    title: 'PDFからPDF/Aへの変換 – 長期保存・電子帳簿保存向けの無料ISO準拠ツール',
+    description: '通常のPDFをISO 19005準拠の長期保存用フォーマット「PDF/A」へ無料で変換します。官公庁提出や証憑保存に最適です。',
+    howTitle: '長期保存用のPDF/Aファイルを生成する',
+    intro: 'sRGBカラープロファイルと標準XMPメタデータを埋め込み、将来の環境変化でも表示崩れしないアーカイブ用PDF/Aを作成します。',
+    steps: [
+      '元のPDFファイルをアップロード（最大50MB）。',
+      'PDF/A変換を実行。',
+      'ISO準拠のPDF/Aファイルをダウンロード。',
     ],
   },
 };

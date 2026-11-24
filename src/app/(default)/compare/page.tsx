@@ -59,7 +59,7 @@ export default function CompareIndexPage() {
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
             />
 
-            <main id="main-content" className="min-h-screen bg-background xl:pr-[196px]">
+            <main id="main-content" className="min-h-screen bg-background xl:pr-[196px] 2xl:pr-[336px]">
                 {/* Hero Section */}
                 <section className="relative overflow-hidden border-b border-border/40 min-h-[35vh] flex flex-col justify-center">
                     <AnimatedMeshBg />

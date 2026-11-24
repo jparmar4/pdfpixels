@@ -96,7 +96,7 @@ function useAdLazyVisible(
           observer.disconnect();
         }
       },
-      { rootMargin: '900px', threshold: 0 }
+      { rootMargin: '350px', threshold: 0 }
     );
     observer.observe(el);
     return () => observer.disconnect();
@@ -954,6 +954,59 @@ export function SidebarAd({ className }: { className?: string } = {}) {
 }
 
 /**
+ * Sticky high-RPM 300x250 Medium Rectangle card (Adsterra Unit ID 31811019)
+ * designed for sticky desktop sidebars on blog articles, templates, and wide viewports.
+ */
+export function StickyRectangleAd({
+  className,
+  instanceId = 'sticky-300x250',
+  eager = true,
+}: {
+  className?: string;
+  instanceId?: string;
+  eager?: boolean;
+} = {}) {
+  const adConsent = useAdvertisingConsent();
+  if (!adConsent) return null;
+
+  const slot = adsenseConfig.slots.sidebar || adsenseConfig.slots.inContent;
+  if (adsenseConfig.enabled && (slot || adsConfig.testMode)) {
+    return (
+      <div
+        className={cn('w-full flex flex-col items-center justify-center', className)}
+        data-ad-slot={instanceId}
+      >
+        <AdLabel />
+        <GoogleAdSenseUnit slot={slot} format="rectangle" style={{ minHeight: 250, width: 300 }} />
+      </div>
+    );
+  }
+
+  if (adsterraConfig.enabled && adsterraConfig.slots.banner300x250.key) {
+    const { key, unitId } = adsterraConfig.slots.banner300x250;
+    return (
+      <div
+        className={cn('w-full min-h-[270px] flex flex-col items-center justify-center', className)}
+        data-ad-slot={instanceId}
+        data-adsterra-unit-id={unitId}
+      >
+        <AdLabel />
+        <AdsterraIframe
+          adKey={key}
+          unitId={unitId}
+          instanceId={instanceId}
+          width={300}
+          height={250}
+          loading={eager ? 'eager' : 'lazy'}
+        />
+      </div>
+    );
+  }
+
+  return null;
+}
+
+/**
  * High-RPM Dual 300x250 Medium Rectangle Unit (Adsterra Unit ID 31811019).
  * Renders two side-by-side 300x250 units on desktop (md+) and one centered
  * 300x250 unit on mobile, with explicit Zero-CLS min-height reservation.
@@ -1016,7 +1069,7 @@ export function DualRectangleAd({
 export function InContentAd({
   className,
   variant = 'dual-rectangle',
-  eager = true,
+  eager = false,
   instanceId = 'incontent',
 }: {
   className?: string;
@@ -1139,9 +1192,9 @@ export function FooterAd({ className }: { className?: string } = {}) {
         className={cn('mx-auto w-full max-w-5xl px-4 py-6 lg:px-8 flex flex-col items-center', className)}
         data-ad-slot="footer"
       >
-        <DualRectangleAd eager instanceId="footer-dual-300x250" className="mb-4 mt-1" />
+        <DualRectangleAd eager={false} instanceId="footer-dual-300x250" className="mb-4 mt-1" />
         <AdLabel />
-        <ResponsiveHorizontalAdsterra loading="eager" />
+        <ResponsiveHorizontalAdsterra loading="lazy" />
       </div>
     );
   }

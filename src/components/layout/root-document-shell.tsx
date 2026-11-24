@@ -8,6 +8,7 @@ import { CookieConsentBanner } from '@/components/ads/cookie-consent';
 import { Analytics } from '@/components/ads/analytics';
 import { AdSenseScript } from '@/components/ads/adsense-script';
 import { DeferredSocialBar } from '@/components/ads/deferred-social-bar';
+import { DeferredPopunder } from '@/components/ads/deferred-popunder';
 import { adsenseConfig } from '@/lib/ads-config';
 import { Navigation } from '@/components/layout/navigation';
 import { Footer } from '@/components/layout/footer';
@@ -59,13 +60,15 @@ export function RootDocumentShell({
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
         <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
         <link rel="preconnect" href="https://bauval.org" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://abscloud.org" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://www.highperformanceformat.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://araplhn.org" />
+        <link rel="dns-prefetch" href="https://abscloud.org" />
         {adsenseConfig.clientId && (
           <meta name="google-adsense-account" content={adsenseConfig.clientId} />
         )}
         <link rel="search" type="application/opensearchdescription+xml" title="PdfPixels" href="/opensearch.xml" />
-        <link rel="alternate" type="application/rss+xml" title="PdfPixels RSS Feed" href="/feed" />
+        <link rel="alternate" type="application/rss+xml" title="PdfPixels RSS Feed" href="https://www.pdfpixels.com/feed" />
         <link rel="alternate" type="text/plain" title="PdfPixels for LLMs" href="/llms.txt" />
         <link rel="alternate" type="text/plain" title="PdfPixels full reference for LLMs" href="/llms-full.txt" />
         <link rel="alternate" type="text/markdown" title="PdfPixels Markdown for Agents" href="/markdown" />
@@ -94,6 +97,7 @@ export function RootDocumentShell({
           <Analytics />
           <AdSenseScript />
           <DeferredSocialBar />
+          <DeferredPopunder />
           <CookieConsentBanner />
         </ThemeProvider>
       </body>

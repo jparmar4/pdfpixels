@@ -114,7 +114,7 @@ export function RegionPageView({ regionCode }: { regionCode: string }) {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      <main id="main-content" className="flex-1 xl:pr-[196px]">
+      <main id="main-content" className="flex-1 xl:pr-[196px] 2xl:pr-[336px]">
         {regionSchemas.map((schema, index) => (
           <script
             key={`region-schema-${index}`}

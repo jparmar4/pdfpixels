@@ -223,7 +223,7 @@ export default function PdfToolsPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(howToCompressSchema).replace(/</g, '\\u003c') }}
       />
 
-      <main id="main-content" className="flex-1 xl:pr-[196px]">
+      <main id="main-content" className="flex-1 xl:pr-[196px] 2xl:pr-[336px]">
         <HeaderAd className="my-4" />
         <PdfToolsClient />
         <InContentAd variant="dual-rectangle" instanceId="pdf-tools-hub-mid" className="my-8" />

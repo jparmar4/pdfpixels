@@ -147,7 +147,7 @@ export default async function IndianExamPage({ params }: IndianExamPageProps) {
   };
 
   return (
-    <main id="main-content" className={hasActiveSidebarAd ? 'min-h-screen bg-background xl:pr-[196px]' : 'min-h-screen bg-background'}>
+    <main id="main-content" className={hasActiveSidebarAd ? 'min-h-screen bg-background xl:pr-[196px] 2xl:pr-[336px]' : 'min-h-screen bg-background'}>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}

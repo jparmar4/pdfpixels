@@ -257,6 +257,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     robots: {
       index: true,
       follow: true,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+      'max-video-preview': -1,
       googleBot: {
         index: true,
         follow: true,
@@ -461,7 +464,7 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
 
   return (
     <>
-      <main id="main-content" className={hasActiveSidebarAd ? 'xl:pr-[196px]' : undefined}>
+      <main id="main-content" className={hasActiveSidebarAd ? 'xl:pr-[196px] 2xl:pr-[336px]' : undefined}>
         {schemas?.map((schema, index) => (
           <script key={index} type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema).replace(/</g, '\\u003c') }} />
         ))}
@@ -604,10 +607,7 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
           </section>
         ) : null}
 
-        {/* High-performing 300x250 (ID 31811019) above footer */}
-        <InContentAd variant="dual-rectangle" eager instanceId="tool-bottom" className="my-6" />
-
-        {/* Footer leaderboard ad */}
+        {/* Footer leaderboard & dual 300x250 ad */}
         <FooterAd className="my-6" />
       </main>
     </>

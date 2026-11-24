@@ -356,11 +356,15 @@ function coverSvg({ headline, kicker, icon }) {
 </svg>`);
 }
 
-for (const spec of COVERS) {
-  const out = path.join(outDir, spec.file);
-  await sharp(coverSvg(spec)).jpeg({ quality: 88, mozjpeg: true }).toFile(out);
-  const meta = await sharp(out).metadata();
-  console.log(`${spec.file} → ${meta.width}x${meta.height}`);
+const onlyTier12026 = process.argv.includes('--only-tier1-2026');
+
+if (!onlyTier12026) {
+  for (const spec of COVERS) {
+    const out = path.join(outDir, spec.file);
+    await sharp(coverSvg(spec)).jpeg({ quality: 88, mozjpeg: true }).toFile(out);
+    const meta = await sharp(out).metadata();
+    console.log(`${spec.file} → ${meta.width}x${meta.height}`);
+  }
 }
 
 // ─────────────────────────────────────────────────────────────────────────
@@ -459,7 +463,7 @@ function browserWindow(scale = 1) {
 }
 
 // Hero 1280x720 — clean scene, only a small corner brand mark (no watermark overlay)
-{
+if (!onlyTier12026) {
   const svg = Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
   <defs>${SKY_DEFS}${dropShadow(18, 14, 0.28)}${dropShadow(10, 8, 0.22)}${dropShadow(6, 6, 0.25)}</defs>
   <rect width="1280" height="720" fill="url(#heroBg)"/>
@@ -475,7 +479,7 @@ function browserWindow(scale = 1) {
 }
 
 // Pinterest 1000x1500 (2:3) — vertical pin with title overlay
-{
+if (!onlyTier12026) {
   const svg = Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1500" viewBox="0 0 1000 1500">
   <defs>${SKY_DEFS}${dropShadow(18, 14, 0.28)}${dropShadow(10, 8, 0.22)}${dropShadow(6, 6, 0.25)}</defs>
   <rect width="1000" height="1500" fill="url(#heroBg)"/>
@@ -497,4 +501,265 @@ function browserWindow(scale = 1) {
 </svg>`);
   await sharp(svg).jpeg({ quality: 90, mozjpeg: true }).toFile(path.join(outDir, 'webp-to-jpg-converter-pinterest.jpg'));
   console.log('webp-to-jpg-converter-pinterest.jpg → 1000x1500');
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// Tier-1 / Google Discover 1280x720 clean editorial workspace scenes
+// (low text-density product composites per Google Discover large-card guidance)
+// ─────────────────────────────────────────────────────────────────────────
+
+// 1. QBO / OFX / QFX to Excel & QuickBooks CSV (1280x720)
+{
+  const svg = Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <defs>
+    ${SKY_DEFS}
+    ${dropShadow(18, 14, 0.24)}${dropShadow(10, 8, 0.18)}${dropShadow(6, 6, 0.22)}
+    <linearGradient id="finBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ecfdf5"/><stop offset="52%" stop-color="#eff6ff"/><stop offset="100%" stop-color="#e0e7ff"/>
+    </linearGradient>
+    <linearGradient id="greenBtn" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#10b981"/><stop offset="100%" stop-color="#059669"/>
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="720" fill="url(#finBg)"/>
+  <circle cx="190" cy="110" r="240" fill="#a7f3d0" opacity="0.32"/>
+  <circle cx="1110" cy="620" r="260" fill="#bfdbfe" opacity="0.45"/>
+
+  <g transform="translate(90,78)" filter="url(#ds1814)">
+    <rect x="0" y="0" width="1100" height="564" rx="22" fill="#ffffff" stroke="#cbd5e1"/>
+    <path d="M0 22 Q0 0 22 0 H1078 Q1100 0 1100 22 V54 H0 Z" fill="url(#chrome)"/>
+    <rect x="0" y="54" width="1100" height="1.5" fill="#cbd5e1"/>
+    <circle cx="30" cy="27" r="7" fill="#ff5f57"/><circle cx="54" cy="27" r="7" fill="#febc2e"/><circle cx="78" cy="27" r="7" fill="#28c840"/>
+    <rect x="118" y="12" width="864" height="30" rx="15" fill="#f1f5f9" stroke="#e2e8f0"/>
+    <text x="150" y="32" font-family="Arial, sans-serif" font-size="14" fill="#475569">pdfpixels.com/tools/qbo-ofx-qfx-to-excel-csv</text>
+
+    <!-- Left card: raw SGML/XML Web Connect bank feed -->
+    <g transform="translate(56,96)" filter="url(#ds108)">
+      <rect x="0" y="0" width="380" height="398" rx="18" fill="#0f172a"/>
+      <rect x="24" y="24" width="128" height="30" rx="8" fill="#1e293b" stroke="#38bdf8"/>
+      <text x="88" y="44" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#7dd3fc">.QBO · .OFX · .QFX</text>
+      <rect x="246" y="24" width="110" height="30" rx="8" fill="#451a03"/>
+      <text x="301" y="44" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#fcd34d">OL-222 FIX</text>
+      <text x="26" y="92" font-family="Courier New, monospace" font-size="15" fill="#94a3b8">&lt;STMTTRN&gt;</text>
+      <text x="42" y="120" font-family="Courier New, monospace" font-size="15" fill="#cbd5e1">&lt;TRNTYPE&gt;DEBIT</text>
+      <text x="42" y="148" font-family="Courier New, monospace" font-size="15" fill="#38bdf8">&lt;DTPOSTED&gt;20261118120000</text>
+      <text x="42" y="176" font-family="Courier New, monospace" font-size="15" fill="#fca5a5">&lt;TRNAMT&gt;-248.50</text>
+      <text x="42" y="204" font-family="Courier New, monospace" font-size="15" fill="#cbd5e1">&lt;FITID&gt;2026111800941</text>
+      <text x="42" y="232" font-family="Courier New, monospace" font-size="15" fill="#fde68a">&lt;NAME&gt;AWS CLOUD SERVICES</text>
+      <text x="26" y="260" font-family="Courier New, monospace" font-size="15" fill="#94a3b8">&lt;/STMTTRN&gt;</text>
+      <rect x="24" y="294" width="332" height="78" rx="12" fill="#1e293b"/>
+      <text x="44" y="324" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#e2e8f0">Chase_Checking_2026.qbo</text>
+      <text x="44" y="350" font-family="Arial, sans-serif" font-size="13" fill="#94a3b8">SGML v102 + XML v2 · 412 txns</text>
+    </g>
+
+    <!-- Arrow -->
+    <g transform="translate(462,262)" filter="url(#ds66)">
+      <rect x="0" y="0" width="94" height="58" rx="29" fill="url(#greenBtn)"/>
+      <path d="M26 29 h38 M52 17 l14 12 l-14 12" stroke="#ffffff" stroke-width="5.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+
+    <!-- Right card: Clean XLSX / QuickBooks 3-col CSV -->
+    <g transform="translate(582,96)" filter="url(#ds108)">
+      <rect x="0" y="0" width="462" height="398" rx="18" fill="#ffffff" stroke="#d1fae5" stroke-width="2"/>
+      <rect x="0" y="0" width="462" height="62" rx="18" fill="#ecfdf5"/>
+      <rect x="22" y="16" width="136" height="30" rx="8" fill="#059669"/>
+      <text x="90" y="36" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#ffffff">XLSX &amp; QBO CSV</text>
+      <text x="438" y="37" text-anchor="end" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#047857">Balanced ✓</text>
+
+      <!-- Table header -->
+      <rect x="20" y="80" width="422" height="36" rx="8" fill="#f1f5f9"/>
+      <text x="36" y="103" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#334155">Date</text>
+      <text x="142" y="103" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#334155">Description / Payee</text>
+      <text x="424" y="103" text-anchor="end" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#334155">Amount</text>
+
+      <!-- Rows -->
+      <g font-family="Arial, sans-serif" font-size="14">
+        <text x="36" y="144" fill="#475569">11/18/2026</text><text x="142" y="144" fill="#0f172a">AWS Cloud Services</text><text x="424" y="144" text-anchor="end" font-weight="bold" fill="#dc2626">-248.50</text>
+        <line x1="22" y1="160" x2="440" y2="160" stroke="#e2e8f0"/>
+        <text x="36" y="190" fill="#475569">11/19/2026</text><text x="142" y="190" fill="#0f172a">Stripe Payout #8841</text><text x="424" y="190" text-anchor="end" font-weight="bold" fill="#059669">4,280.00</text>
+        <line x1="22" y1="206" x2="440" y2="206" stroke="#e2e8f0"/>
+        <text x="36" y="236" fill="#475569">11/20/2026</text><text x="142" y="236" fill="#0f172a">Gusto Payroll Run</text><text x="424" y="236" text-anchor="end" font-weight="bold" fill="#dc2626">-1,920.00</text>
+        <line x1="22" y1="252" x2="440" y2="252" stroke="#e2e8f0"/>
+        <text x="36" y="282" fill="#475569">11/21/2026</text><text x="142" y="282" fill="#0f172a">Client ACH Wire</text><text x="424" y="282" text-anchor="end" font-weight="bold" fill="#059669">2,650.00</text>
+      </g>
+
+      <rect x="22" y="314" width="418" height="60" rx="12" fill="#f0fdf4" stroke="#bbf7d0"/>
+      <text x="42" y="340" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#166534">FITID Deduplicated · Closing Balance Verified</text>
+      <text x="42" y="360" font-family="Arial, sans-serif" font-size="13" fill="#15803d">Ready for QuickBooks Online, Xero, Sage &amp; Excel</text>
+    </g>
+  </g>
+  <text x="1252" y="704" text-anchor="end" font-family="Arial, sans-serif" font-size="19" font-weight="bold" fill="#64748b">PdfPixels</text>
+</svg>`);
+  await sharp(svg).jpeg({ quality: 90, mozjpeg: true }).toFile(path.join(outDir, 'qbo-ofx-qfx-to-excel-csv-hero.jpg'));
+  console.log('qbo-ofx-qfx-to-excel-csv-hero.jpg → 1280x720');
+}
+
+// 2. USCIS / Immigration & Federal Court PDF Upload Rules (1280x720)
+{
+  const svg = Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <defs>
+    ${SKY_DEFS}
+    ${dropShadow(18, 14, 0.24)}${dropShadow(10, 8, 0.18)}${dropShadow(6, 6, 0.22)}
+    <linearGradient id="legalBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#eff6ff"/><stop offset="55%" stop-color="#eef2ff"/><stop offset="100%" stop-color="#f8fafc"/>
+    </linearGradient>
+    <linearGradient id="navyBtn" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#2563eb"/><stop offset="100%" stop-color="#1d4ed8"/>
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="720" fill="url(#legalBg)"/>
+  <circle cx="170" cy="610" r="240" fill="#bfdbfe" opacity="0.4"/>
+  <circle cx="1120" cy="110" r="220" fill="#c7d2fe" opacity="0.38"/>
+
+  <g transform="translate(90,78)" filter="url(#ds1814)">
+    <rect x="0" y="0" width="1100" height="564" rx="22" fill="#ffffff" stroke="#cbd5e1"/>
+    <path d="M0 22 Q0 0 22 0 H1078 Q1100 0 1100 22 V54 H0 Z" fill="url(#chrome)"/>
+    <rect x="0" y="54" width="1100" height="1.5" fill="#cbd5e1"/>
+    <circle cx="30" cy="27" r="7" fill="#ff5f57"/><circle cx="54" cy="27" r="7" fill="#febc2e"/><circle cx="78" cy="27" r="7" fill="#28c840"/>
+    <rect x="118" y="12" width="864" height="30" rx="15" fill="#f1f5f9" stroke="#e2e8f0"/>
+    <text x="150" y="32" font-family="Arial, sans-serif" font-size="14" fill="#475569">pdfpixels.com/tools/uscis-pdf-packet-merger</text>
+
+    <!-- Left stack of evidence files -->
+    <g transform="translate(58,96)">
+      <g filter="url(#ds108)">
+        <rect x="0" y="0" width="376" height="114" rx="16" fill="#ffffff" stroke="#cbd5e1"/>
+        <rect x="20" y="22" width="54" height="70" rx="10" fill="#dbeafe"/>
+        <text x="47" y="63" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#1d4ed8">PDF</text>
+        <text x="92" y="48" font-family="Arial, sans-serif" font-size="17" font-weight="bold" fill="#0f172a">Form I-130 / I-485 Signed</text>
+        <text x="92" y="74" font-family="Arial, sans-serif" font-size="14" fill="#64748b">XFA Flattened · Unencrypted</text>
+      </g>
+      <g transform="translate(0,136)" filter="url(#ds108)">
+        <rect x="0" y="0" width="376" height="114" rx="16" fill="#ffffff" stroke="#cbd5e1"/>
+        <rect x="20" y="22" width="54" height="70" rx="10" fill="#e0e7ff"/>
+        <text x="47" y="63" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#4338ca">SCAN</text>
+        <text x="92" y="48" font-family="Arial, sans-serif" font-size="17" font-weight="bold" fill="#0f172a">Civil Records + Translation</text>
+        <text x="92" y="74" font-family="Arial, sans-serif" font-size="14" fill="#64748b">Certified English · 150 DPI</text>
+      </g>
+      <g transform="translate(0,272)" filter="url(#ds108)">
+        <rect x="0" y="0" width="376" height="114" rx="16" fill="#ffffff" stroke="#cbd5e1"/>
+        <rect x="20" y="22" width="54" height="70" rx="10" fill="#dcfce7"/>
+        <text x="47" y="63" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#15803d">IRS</text>
+        <text x="92" y="48" font-family="Arial, sans-serif" font-size="17" font-weight="bold" fill="#0f172a">Tax Transcripts &amp; W-2s</text>
+        <text x="92" y="74" font-family="Arial, sans-serif" font-size="14" fill="#64748b">SSN Redacted Where Needed</text>
+      </g>
+    </g>
+
+    <!-- Arrow -->
+    <g transform="translate(464,262)" filter="url(#ds66)">
+      <rect x="0" y="0" width="92" height="58" rx="29" fill="url(#navyBtn)"/>
+      <path d="M26 29 h38 M52 17 l14 12 l-14 12" stroke="#ffffff" stroke-width="5.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+
+    <!-- Right verified compliance packet card -->
+    <g transform="translate(586,96)" filter="url(#ds108)">
+      <rect x="0" y="0" width="456" height="390" rx="20" fill="#0f172a"/>
+      <rect x="26" y="24" width="174" height="32" rx="16" fill="#064e3b" stroke="#10b981"/>
+      <text x="113" y="45" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#6ee7b7">PORTAL PREFLIGHT PASS</text>
+
+      <text x="28" y="96" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#ffffff">Exhibit_A_Evidence_Packet.pdf</text>
+      <text x="28" y="124" font-family="Arial, sans-serif" font-size="14" fill="#94a3b8">USCIS · IRCC · UKVI · EOIR · PACER CM/ECF</text>
+
+      <rect x="28" y="152" width="400" height="14" rx="7" fill="#1e293b"/>
+      <rect x="28" y="152" width="168" height="14" rx="7" fill="#10b981"/>
+      <text x="28" y="190" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#6ee7b7">3.8 MB final weight (clears 4 MB IRCC &amp; 12 MB USCIS caps)</text>
+
+      <g transform="translate(28,214)" font-family="Arial, sans-serif" font-size="15" fill="#e2e8f0">
+        <circle cx="12" cy="14" r="9" fill="#10b981"/><text x="32" y="19">No password encryption or owner lock</text>
+        <circle cx="12" cy="50" r="9" fill="#10b981"/><text x="32" y="55">AcroForm / XFA fields flattened to static PDF</text>
+        <circle cx="12" cy="86" r="9" fill="#10b981"/><text x="32" y="91">Zero active JavaScript or embedded attachments</text>
+        <circle cx="12" cy="122" r="9" fill="#10b981"/><text x="32" y="127">ASCII-safe filename &amp; PDF/A archival ready</text>
+      </g>
+    </g>
+  </g>
+  <text x="1252" y="704" text-anchor="end" font-family="Arial, sans-serif" font-size="19" font-weight="bold" fill="#64748b">PdfPixels</text>
+</svg>`);
+  await sharp(svg).jpeg({ quality: 90, mozjpeg: true }).toFile(path.join(outDir, 'uscis-immigration-court-pdf-rules-hero.jpg'));
+  console.log('uscis-immigration-court-pdf-rules-hero.jpg → 1280x720');
+}
+
+// 3. 8.5x11 PDF Shipping Labels to 4x6 Thermal Printer (1280x720)
+{
+  const barcodeBars = [0, 8, 14, 24, 30, 38, 48, 54, 64, 72, 78, 88, 96, 104, 114, 120, 130, 140, 146, 156, 164, 170, 180, 188, 198, 204, 214, 222]
+    .map((x, idx) => `<rect x="${x}" y="0" width="${idx % 3 === 0 ? 5 : 3}" height="68" fill="#0f172a"/>`)
+    .join('');
+
+  const svg = Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <defs>
+    ${SKY_DEFS}
+    ${dropShadow(18, 14, 0.24)}${dropShadow(10, 8, 0.18)}${dropShadow(6, 6, 0.22)}
+    <linearGradient id="shipBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fffbeb"/><stop offset="50%" stop-color="#f8fafc"/><stop offset="100%" stop-color="#e0f2fe"/>
+    </linearGradient>
+    <linearGradient id="amberBtn" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f59e0b"/><stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="720" fill="url(#shipBg)"/>
+  <circle cx="210" cy="120" r="230" fill="#fde68a" opacity="0.35"/>
+  <circle cx="1090" cy="610" r="250" fill="#bae6fd" opacity="0.45"/>
+
+  <g transform="translate(90,78)" filter="url(#ds1814)">
+    <rect x="0" y="0" width="1100" height="564" rx="22" fill="#ffffff" stroke="#cbd5e1"/>
+    <path d="M0 22 Q0 0 22 0 H1078 Q1100 0 1100 22 V54 H0 Z" fill="url(#chrome)"/>
+    <rect x="0" y="54" width="1100" height="1.5" fill="#cbd5e1"/>
+    <circle cx="30" cy="27" r="7" fill="#ff5f57"/><circle cx="54" cy="27" r="7" fill="#febc2e"/><circle cx="78" cy="27" r="7" fill="#28c840"/>
+    <rect x="118" y="12" width="864" height="30" rx="15" fill="#f1f5f9" stroke="#e2e8f0"/>
+    <text x="150" y="32" font-family="Arial, sans-serif" font-size="14" fill="#475569">pdfpixels.com/tools/amazon-fba-thermal-label-converter</text>
+
+    <!-- Left: 8.5 x 11 US Letter / A4 sheet with dashed crop box -->
+    <g transform="translate(92,92)" filter="url(#ds108)">
+      <rect x="0" y="0" width="310" height="402" rx="12" fill="#f8fafc" stroke="#94a3b8" stroke-width="2"/>
+      <rect x="22" y="22" width="266" height="176" rx="8" fill="#ffffff" stroke="#f59e0b" stroke-width="3" stroke-dasharray="10 7"/>
+      <rect x="38" y="38" width="64" height="22" rx="4" fill="#0f172a"/>
+      <text x="70" y="54" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#ffffff">FBA</text>
+      <rect x="38" y="72" width="180" height="8" rx="4" fill="#cbd5e1"/>
+      <rect x="38" y="88" width="140" height="8" rx="4" fill="#cbd5e1"/>
+      <g transform="translate(40,112) scale(0.82)">${barcodeBars}</g>
+      <text x="155" y="252" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#94a3b8">Empty Half-Sheet Margin</text>
+      <text x="155" y="278" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" fill="#94a3b8">(Wasted on 4×6 Roll)</text>
+      <rect x="78" y="346" width="154" height="32" rx="8" fill="#e2e8f0"/>
+      <text x="155" y="367" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#334155">8.5 × 11 in PDF</text>
+    </g>
+
+    <!-- Arrow -->
+    <g transform="translate(454,264)" filter="url(#ds66)">
+      <rect x="0" y="0" width="96" height="58" rx="29" fill="url(#amberBtn)"/>
+      <path d="M26 29 h40 M54 17 l14 12 l-14 12" stroke="#ffffff" stroke-width="5.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+
+    <!-- Right: Crisp 4x6 Thermal Label -->
+    <g transform="translate(612,88)" filter="url(#ds108)">
+      <rect x="0" y="0" width="290" height="412" rx="14" fill="#ffffff" stroke="#0f172a" stroke-width="3"/>
+      <rect x="18" y="18" width="66" height="44" rx="6" fill="#0f172a"/>
+      <text x="51" y="48" text-anchor="middle" font-family="Arial, sans-serif" font-size="26" font-weight="800" fill="#ffffff">P</text>
+      <text x="98" y="38" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#0f172a">PRIORITY 4 × 6"</text>
+      <text x="98" y="58" font-family="Arial, sans-serif" font-size="13" fill="#475569">203 / 300 DPI Vector</text>
+      <line x1="16" y1="78" x2="274" y2="78" stroke="#0f172a" stroke-width="2.5"/>
+
+      <text x="22" y="106" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#64748b">SHIP TO:</text>
+      <text x="22" y="128" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#0f172a">FBA ONT8 FULFILLMENT</text>
+      <text x="22" y="150" font-family="Arial, sans-serif" font-size="14" fill="#334155">24300 NANDINA AVE</text>
+      <text x="22" y="172" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#0f172a">MORENO VALLEY CA 92551</text>
+
+      <line x1="16" y1="194" x2="274" y2="194" stroke="#0f172a" stroke-width="2.5"/>
+      <g transform="translate(32,216)">${barcodeBars}</g>
+      <text x="145" y="308" text-anchor="middle" font-family="Courier New, monospace" font-size="14" font-weight="bold" fill="#0f172a">FBA18X992041U000001</text>
+
+      <rect x="20" y="334" width="250" height="56" rx="10" fill="#ecfdf5" stroke="#86efac"/>
+      <text x="145" y="358" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#065f46">Zebra · Rollo · DYMO 4XL</text>
+      <text x="145" y="378" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#047857">100 × 150 mm · Crisp Quiet Zone</text>
+    </g>
+
+    <!-- Badge stack on far right -->
+    <g transform="translate(926,154)" font-family="Arial, sans-serif" font-size="13" font-weight="bold">
+      <rect x="0" y="0" width="136" height="40" rx="10" fill="#0f172a"/><text x="68" y="25" text-anchor="middle" fill="#fbbf24">Amazon FBA</text>
+      <rect x="0" y="54" width="136" height="40" rx="10" fill="#1e293b"/><text x="68" y="79" text-anchor="middle" fill="#ffffff">UPS / USPS</text>
+      <rect x="0" y="108" width="136" height="40" rx="10" fill="#1e293b"/><text x="68" y="133" text-anchor="middle" fill="#93c5fd">Shopify / eBay</text>
+      <rect x="0" y="162" width="136" height="40" rx="10" fill="#1e293b"/><text x="68" y="187" text-anchor="middle" fill="#fca5a5">Royal Mail</text>
+    </g>
+  </g>
+  <text x="1252" y="704" text-anchor="end" font-family="Arial, sans-serif" font-size="19" font-weight="bold" fill="#64748b">PdfPixels</text>
+</svg>`);
+  await sharp(svg).jpeg({ quality: 90, mozjpeg: true }).toFile(path.join(outDir, 'thermal-shipping-label-8-5x11-to-4x6-hero.jpg'));
+  console.log('thermal-shipping-label-8-5x11-to-4x6-hero.jpg → 1280x720');
 }

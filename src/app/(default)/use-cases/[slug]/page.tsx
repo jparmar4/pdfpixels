@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { useCasePages } from '@/lib/use-cases';
 import { getToolBySlug } from '@/lib/tools-data';
-import { absoluteUrl, DEFAULT_OG_IMAGE_URL, SITE_CONTENT_UPDATED } from '@/lib/seo';
+import { absoluteUrl, DEFAULT_OG_IMAGE_URL, SITE_CONTENT_UPDATED, getRobotsMetadata } from '@/lib/seo';
 import { siteConfig } from '@/lib/seo-config';
 import { UseCaseDetailContent } from './use-case-detail-content';
 
@@ -37,16 +37,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
         },
       ],
     },
-    robots: {
-      index: true,
-      follow: true,
-      googleBot: {
-        index: true,
-        follow: true,
-        'max-image-preview': 'large',
-        'max-snippet': -1,
-      },
-    },
+    robots: getRobotsMetadata(true),
     other: {
       'article:tag': entry.intent,
     },

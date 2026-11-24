@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import NextImage from 'next/image';
 import { getAllBlogPosts } from '@/config/blog';
 
 /**
@@ -44,28 +45,42 @@ export function GuidesSection() {
           {posts.map((post) => (
             <article
               key={post.slug}
-              className="group flex h-full flex-col rounded-2xl border border-border/60 bg-card/80 p-5 shadow-soft transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-elevated"
+              className="group flex h-full flex-col overflow-hidden rounded-2xl border border-border/60 bg-card/80 shadow-soft transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-elevated"
             >
-              <div className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                <span className="h-1.5 w-1.5 rounded-full bg-primary" aria-hidden="true" />
-                {post.category}
-              </div>
-              <h3 className="mt-2.5 text-base font-bold leading-6 text-foreground">
-                <Link href={`/blog/${post.slug}`} className="transition-colors hover:text-primary">
-                  {post.title}
+              {post.coverImage && (
+                <Link href={`/blog/${post.slug}`} className="relative aspect-video w-full overflow-hidden border-b border-border/50 bg-muted/30">
+                  <NextImage
+                    src={post.coverImage}
+                    alt={post.imageAlt || post.title}
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    loading="lazy"
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
                 </Link>
-              </h3>
-              <p className="mt-2.5 flex-1 text-sm leading-6 text-muted-foreground line-clamp-3">
-                {post.excerpt}
-              </p>
-              <div className="mt-4 flex items-center justify-between text-xs text-muted-foreground">
-                <span>{post.readTime}</span>
-                <Link
-                  href={`/blog/${post.slug}`}
-                  className="inline-flex items-center gap-1 font-semibold text-primary hover:underline underline-offset-4"
-                >
-                  Read guide <span aria-hidden="true">→</span>
-                </Link>
+              )}
+              <div className="flex flex-1 flex-col p-5">
+                <div className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                  <span className="h-1.5 w-1.5 rounded-full bg-primary" aria-hidden="true" />
+                  {post.category}
+                </div>
+                <h3 className="mt-2.5 text-base font-bold leading-6 text-foreground">
+                  <Link href={`/blog/${post.slug}`} className="transition-colors hover:text-primary">
+                    {post.title}
+                  </Link>
+                </h3>
+                <p className="mt-2.5 flex-1 text-sm leading-6 text-muted-foreground line-clamp-3">
+                  {post.excerpt}
+                </p>
+                <div className="mt-4 flex items-center justify-between text-xs text-muted-foreground">
+                  <span>{post.readTime}</span>
+                  <Link
+                    href={`/blog/${post.slug}`}
+                    className="inline-flex items-center gap-1 font-semibold text-primary hover:underline underline-offset-4"
+                  >
+                    Read guide <span aria-hidden="true">→</span>
+                  </Link>
+                </div>
               </div>
             </article>
           ))}

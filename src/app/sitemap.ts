@@ -14,9 +14,13 @@ import { WORKFLOW_RECIPES } from '@/lib/workflow-recipes';
 export default function sitemap(): MetadataRoute.Sitemap {
   const evergreen = SITE_CONTENT_UPDATED;
   const blogPosts = getAllBlogPosts();
-  const latestBlogDate = blogPosts[0] && !Number.isNaN(Date.parse(blogPosts[0].date))
-    ? new Date(blogPosts[0].date)
-    : evergreen;
+  const latestBlogDate = blogPosts.reduce((latest, post) => {
+    const raw = post.dateModified ?? post.date;
+    const parsed = Date.parse(raw);
+    if (Number.isNaN(parsed)) return latest;
+    const d = new Date(parsed);
+    return d > latest ? d : latest;
+  }, evergreen);
 
   const geoAlternates = getGeoSitemapAlternates();
 
@@ -139,12 +143,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   const blogPages: MetadataRoute.Sitemap = blogPosts
     .filter((post) => !consolidatedBlogSlugs.has(post.slug))
-    .map((post) => ({
-      url: absoluteUrl(`/blog/${post.slug}`),
-      lastModified: Number.isNaN(Date.parse(post.date)) ? evergreen : new Date(post.date),
-      changeFrequency: 'weekly' as const,
-      priority: 0.78,
-    }));
+    .map((post) => {
+      const rawDate = post.dateModified ?? post.date;
+      return {
+        url: absoluteUrl(`/blog/${post.slug}`),
+        lastModified: Number.isNaN(Date.parse(rawDate)) ? evergreen : new Date(rawDate),
+        changeFrequency: 'weekly' as const,
+        priority: 0.82,
+      };
+    });
 
   // Topic index pages — crawl depth for the blog's category architecture
   const blogCategoryEntries: MetadataRoute.Sitemap = getAllBlogCategories().map((cat) => ({

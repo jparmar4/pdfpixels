@@ -46,7 +46,7 @@ export function UseCaseDetailContent({
   const categoryName = category?.name || 'Tools';
 
   return (
-    <div className="premium-page-bg min-h-screen bg-background text-foreground xl:pr-[196px]">
+    <div className="premium-page-bg min-h-screen bg-background text-foreground xl:pr-[196px] 2xl:pr-[336px]">
       <main id="main-content" className="flex-1">
         <section className="relative overflow-hidden border-b border-border/40">
           <div className="hero-grid absolute inset-0 opacity-60" />
@@ -81,7 +81,7 @@ export function UseCaseDetailContent({
               <h1 className="text-3xl font-extrabold tracking-tight text-foreground md:text-4xl lg:text-5xl">
                 {entry.title}
               </h1>
-              <p className="mx-auto mt-5 max-w-2xl text-lg leading-8 text-muted-foreground">
+              <p className="use-case-summary mx-auto mt-5 max-w-2xl text-lg leading-8 text-muted-foreground">
                 {entry.description}
               </p>
 

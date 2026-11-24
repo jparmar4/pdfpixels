@@ -7,12 +7,15 @@ export const DEFAULT_OG_IMAGE_URL = `${SITE_URL}${DEFAULT_OG_IMAGE_PATH}`;
 /** Stable sitemap lastmod for evergreen pages — do not use `new Date()` per request.
  *  Bump this only when evergreen pages (home/tools/use-cases) actually change,
  *  so lastmod stays truthful for crawlers. */
-export const SITE_CONTENT_UPDATED = new Date('2026-11-19T00:00:00.000Z');
+export const SITE_CONTENT_UPDATED = new Date('2026-11-24T00:00:00.000Z');
 
 export function getRobotsMetadata(index = true) {
   return {
     index,
     follow: true,
+    'max-video-preview': -1 as const,
+    'max-image-preview': 'large' as const,
+    'max-snippet': -1 as const,
     googleBot: {
       index,
       follow: true,

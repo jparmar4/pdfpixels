@@ -5,7 +5,7 @@ import { SitePageShell } from '@/components/layout/site-page-shell';
 import { absoluteUrl, getRobotsMetadata, DEFAULT_OG_IMAGE_URL } from '@/lib/seo';
 import { siteConfig } from '@/lib/seo-config';
 import { glossaryTerms, getGlossaryCategories } from '@/lib/glossary';
-import { HeaderAd, FooterAd } from '@/components/ads/ad-banner';
+import { HeaderAd, InContentAd, NativeAd, FooterAd } from '@/components/ads/ad-banner';
 
 export const metadata: Metadata = {
   title: 'PDF & Image Glossary - Every Term Explained Simply',
@@ -81,6 +81,8 @@ export default function GlossaryHubPage() {
         </div>
         </SitePageShell>
 
+        <InContentAd variant="dual-rectangle" instanceId="glossary-hub-mid" className="my-8" />
+        <NativeAd className="my-8 max-w-5xl mx-auto px-4" />
         <FooterAd />
       </div>
     </>

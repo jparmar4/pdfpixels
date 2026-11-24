@@ -7,7 +7,7 @@ import { absoluteUrl, getRobotsMetadata, DEFAULT_OG_IMAGE_URL, SITE_CONTENT_UPDA
 import { siteConfig } from '@/lib/seo-config';
 import { glossaryTerms, getGlossaryTerm, getRelatedGlossaryTerms, getGlossaryCategories } from '@/lib/glossary';
 import { getToolBySlug } from '@/lib/tools-data';
-import { HeaderAd, InContentAd, FooterAd } from '@/components/ads/ad-banner';
+import { HeaderAd, InContentAd, NativeAd, FooterAd } from '@/components/ads/ad-banner';
 
 interface GlossaryTermPageProps {
   params: Promise<{ slug: string }>;
@@ -104,7 +104,7 @@ export default async function GlossaryTermPage({ params }: GlossaryTermPageProps
           </article>
 
           {tools.length > 0 && (
-            <InContentAd variant="rectangle" instanceId={`glossary-${term.slug}`} className="my-8" />
+            <InContentAd variant="dual-rectangle" instanceId={`glossary-${term.slug}`} className="my-8" />
           )}
 
           {tools.length > 0 && (
@@ -150,6 +150,7 @@ export default async function GlossaryTermPage({ params }: GlossaryTermPageProps
         </div>
         </SitePageShell>
 
+        <NativeAd className="my-8 max-w-5xl mx-auto px-4" />
         <FooterAd />
       </div>
     </>

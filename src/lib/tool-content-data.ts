@@ -4332,5 +4332,40 @@ export const toolContentMap: Record<string, ToolContent> = {
         supportedFormats: 'Input: PNG (.png) | Output: WebP (.webp) with transparency',
         relatedTools: ['jpg-to-webp', 'webp-to-png', 'png-to-jpeg', 'compress-image'],
     },
+    'edit-pdf': {
+        about: 'Edit PDF is a browser-native PDF editor that lets you add crisp vector text, whiteout stale lines, highlight clauses, stamp dates or checkmarks, place images, and draw electronic signatures directly on any PDF page without installing desktop software or paying for an Adobe Acrobat subscription. Built on client-side canvas rendering and ISO 32000-2 PDF generation, your contracts, tax forms, invoices, and academic packets are edited interactively page by page with live zoom and instant clean download — zero watermarks and zero mandatory account walls.',
+        directAnswer: 'To edit a PDF online for free without watermarks, open PdfPixels Edit PDF, upload your document (up to 50 MB), add text annotations, whiteout boxes, highlights, checkmarks, or signatures directly on any page, and download your updated PDF immediately with no signup required.',
+        features: [
+            'Add custom text blocks with adjustable font size, color, and exact page placement',
+            'Cover outdated numbers, dates, or typos cleanly using opaque whiteout rectangles',
+            'Highlight contract clauses, add freehand ink annotations, checkmarks, and stamps',
+            'Embed handwritten, typed, or uploaded image signatures on any page in one pass',
+            '100% free export with zero watermarks, no trial walls, and no account registration',
+        ],
+        useCases: [
+            'Freelancers and small businesses updating invoice dates, PO numbers, and client billing details',
+            'Tenants, HR teams, and homebuyers filling, annotating, and signing leases or NDAs in one session',
+            'Students and researchers highlighting PDF journal articles and adding margin notes',
+            'Accountants and paralegals marking up tax schedules, W-9 forms, and exhibit packets before filing',
+        ],
+        faqs: [
+            { question: 'Can I edit a PDF online for free without Adobe Acrobat?', answer: 'Yes. PdfPixels Edit PDF runs directly in Chrome, Safari, Edge, and Firefox on Windows, Mac, iPhone, and Android with zero software installation, zero watermarks, and no subscription required.' },
+            { question: 'How do I replace or cover existing text in a PDF?', answer: 'Select the Whiteout / Rectangle tool to place a clean white mask over the old text or date, then use the Text tool to type the updated wording directly on top in a matching font size.' },
+            { question: 'What if I need to rewrite full paragraphs inside a multi-page PDF?', answer: 'PDF stores fixed coordinates rather than reflowing paragraphs like a word processor. For quick line edits, form entries, whiteout fixes, and signatures, use Edit PDF; for heavy paragraph rewriting, convert the file with PDF to Word (.docx), edit in Word or Google Docs, and export back via Word to PDF.' },
+            { question: 'Does Whiteout permanently redact confidential SSNs or bank numbers?', answer: 'No — visual whiteout covers text for everyday corrections, while underlying text streams can remain selectable. To permanently destroy confidential PII, SSNs, or account numbers before legal or public sharing, use Redact PDF instead.' },
+            { question: 'Are my documents private when using Edit PDF?', answer: 'Yes. Interactive page rendering and annotation run in your browser session over HTTPS, and PdfPixels never indexes, sells, or permanently stores your files.' },
+        ],
+        steps: [
+            { title: 'Upload your PDF document', description: 'Drag and drop any unencrypted PDF up to 50 MB into the Edit PDF workspace.' },
+            { title: 'Add text, whiteout, highlights, or signatures', description: 'Pick a tool from the editor toolbar, click anywhere on the page preview to type, mask old text, highlight lines, or place your signature.' },
+            { title: 'Download your clean edited PDF', description: 'Review each modified page and click Download to save your updated PDF with zero watermarks.' },
+        ],
+        commonProblems: [
+            { problem: 'PDF is locked or asks for an owner password', solution: 'Run the document through Unlock PDF first (using the known password if read-encrypted), then open it in Edit PDF.' },
+            { problem: 'Scanned PDF text cannot be selected or searched', solution: 'Camera or scanner PDFs are flat images. Run OCR PDF first to extract searchable text, or convert via PDF to Word if you need full document reflow.' },
+        ],
+        supportedFormats: 'Input: PDF (.pdf up to 50 MB) | Output: PDF (.pdf)',
+        relatedTools: ['fill-pdf', 'sign-pdf', 'redact-pdf', 'pdf-to-word'],
+    },
     ...TIER1_TOOL_CONTENT_MAP,
 };

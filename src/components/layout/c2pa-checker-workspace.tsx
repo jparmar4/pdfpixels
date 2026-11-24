@@ -19,7 +19,8 @@ import { PrivateModeBadge } from './private-mode-badge';
 import { FileUpload } from './file-upload';
 import { ToolLimitNotice } from './tool-limit-notice';
 import { ToolPageHeader } from './tool-page-header';
-import { ResultScreenAd } from '@/components/ads/ad-banner';
+import { ResultScreenAd, SmartlinkButton } from '@/components/ads/ad-banner';
+import { triggerDownloadWithSmartlink } from '@/lib/ads-config';
 import { WorkflowChainBar } from './workflow-chain-bar';
 import { useActiveTool } from '@/hooks/use-active-tool';
 
@@ -70,10 +71,16 @@ export function C2paCheckerWorkspace() {
     const blob = new Blob([JSON.stringify(report, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     setExportedReportUrl(url);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${report.fileName.replace(/\.[^.]+$/, '')}-c2pa-report.json`;
-    a.click();
+    const outName = `${report.fileName.replace(/\.[^.]+$/, '')}-c2pa-report.json`;
+    triggerDownloadWithSmartlink(
+      () => {
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = outName;
+        a.click();
+      },
+      { url, fileName: outName },
+    );
   };
 
   return (
@@ -136,6 +143,7 @@ export function C2paCheckerWorkspace() {
                   <Download className="w-3.5 h-3.5" />
                   Export JSON Report
                 </Button>
+                <SmartlinkButton className="min-h-8 px-3 py-1.5 text-xs" />
                 <Button size="sm" variant="ghost" onClick={handleReset} className="gap-1.5 text-xs">
                   <RotateCcw className="w-3.5 h-3.5" />
                   Scan Another File

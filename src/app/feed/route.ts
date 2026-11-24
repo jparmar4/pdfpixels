@@ -74,6 +74,7 @@ export async function GET() {
       <description>${escapeXml(item.description)}</description>
       <category>${escapeXml(item.category)}</category>
       <pubDate>${item.pubDate}</pubDate>
+      <atom:updated>${new Date(item.modifiedDate ?? item.pubDate).toISOString()}</atom:updated>
       <guid isPermaLink="true">${item.link}</guid>
       <dc:creator>${escapeXml(item.author)}</dc:creator>
       <media:content url="${baseUrl}${item.coverImage}" medium="image" width="${item.width}" height="${item.height}" type="${item.mimeType}" />

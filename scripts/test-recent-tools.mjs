@@ -732,7 +732,31 @@ assert.ok(adsterraConfig.scriptHost.startsWith('https://'), 'Adsterra anti-adblo
 assert.ok(adsterraConfig.smartlink.startsWith('https://'), 'Adsterra smartlink configured');
 assert.ok(adsterraConfig.slots.banner728x90.key && adsterraConfig.slots.banner300x250.key, 'Adsterra banner keys configured');
 assert.ok(adsterraConfig.slots.nativeBanner.scriptSrc && adsterraConfig.slots.socialBar.scriptSrc, 'Adsterra native and social bar configured');
+assert.ok(
+  adsterraConfig.slots.popunder.scriptSrc.includes('abscloud.org/1/893e27ddba5b4b20f76e839a457f8ca0') &&
+    adsConfig.slots.popunder.includes('abscloud.org/1/893e27ddba5b4b20f76e839a457f8ca0'),
+  'Adsterra popunder configured with abscloud.org script',
+);
 assert.ok(!adsenseConfig.clientId || adsenseConfig.clientId.startsWith('ca-pub-'), 'AdSense client ID format valid');
+
+// Verify 100% toolContentMap coverage + Tier-1 Discover blog guides & cover dimensions
+const { toolContentMap } = await import('../src/lib/tool-content-data.ts');
+const { allTools: allToolsRegistry } = await import('../src/lib/tools-data.ts');
+for (const tool of allToolsRegistry) {
+  assert.ok(toolContentMap[tool.slug], `toolContentMap missing content for tool slug: ${tool.slug}`);
+}
+const { getBlogPostBySlug, getCoverDimensions, getPostsForTool } = await import('../src/config/blog.ts');
+assert.ok(getPostsForTool('edit-pdf').length >= 2, 'edit-pdf maps to curated blog guides');
+for (const discoverSlug of [
+  'qbo-ofx-qfx-to-excel-csv-quickbooks-import-fix',
+  'uscis-immigration-court-pdf-upload-rules-2026',
+  'convert-8-5x11-pdf-shipping-labels-to-4x6-thermal-printer',
+]) {
+  const post = getBlogPostBySlug(discoverSlug);
+  assert.ok(post, `Discover guide ${discoverSlug} exists`);
+  const dims = getCoverDimensions(post.coverImage);
+  assert.ok(dims.width >= 1200, `Discover guide ${discoverSlug} cover must be >= 1200px wide`);
+}
 
 // Verify Google A2UI v1.0 surface builders, validator, /api/a2ui, /api/mcp, and discovery cards
 const {

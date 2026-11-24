@@ -11,8 +11,6 @@ const imgDir = path.join(root, 'public', 'images', 'blog');
 
 const QUALITIES = [95, 90, 85, 80, 70, 60, 50];
 
-async function fileBytes(buf) { return buf.length; }
-
 async function run() {
   const files = readdirSync(imgDir).filter((f) => /\.(jpe?g|png)$/i.test(f)).slice(0, 40);
   console.log(`Benchmarking ${files.length} real images (${QUALITIES.length} JPEG qualities + WebP)...`);

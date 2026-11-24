@@ -158,7 +158,7 @@ export function LocalizedToolPage({ locale, slug }: { locale: LocaleCode; slug: 
       lang={pack.htmlLang}
       className={[
         locale === 'jp' ? "[font-family:var(--font-inter),'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,sans-serif]" : '',
-        hasActiveSidebarAd ? 'xl:pr-[196px]' : '',
+        hasActiveSidebarAd ? 'xl:pr-[196px] 2xl:pr-[336px]' : '',
       ].filter(Boolean).join(' ') || undefined}
     >
       <SetHtmlLang lang={pack.htmlLang} />

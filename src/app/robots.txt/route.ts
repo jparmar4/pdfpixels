@@ -18,6 +18,8 @@ const SEARCH_AND_AI_RETRIEVAL_BOTS = [
   'AdsBot-Google',
   'AdsBot-Google-Mobile',
   'GoogleOther',
+  'Google-Extended',
+  'Google-CloudVertexBot',
   'Bingbot',
   'BingPreview',
   'Slurp',
@@ -34,6 +36,7 @@ const SEARCH_AND_AI_RETRIEVAL_BOTS = [
   'facebot',
   'ia_archiver',
   'Applebot',
+  'Applebot-Extended',
   'Amazonbot',
   // AI Search & Live User-Fetch Crawlers (AEO / GEO retrieval — allowed)
   'OAI-SearchBot',
@@ -55,12 +58,11 @@ const SEARCH_AND_AI_RETRIEVAL_BOTS = [
 ];
 
 // Dedicated model-training crawlers — disallowed to align with Content-Signal: ai-train=no
+// (Google-Extended and Applebot-Extended are allowed above so Gemini & Apple Intelligence can ground & cite PdfPixels)
 const AI_TRAINING_BOTS = [
   'GPTBot',
   'ClaudeBot',
   'anthropic-ai',
-  'Google-Extended',
-  'Applebot-Extended',
   'Meta-ExternalAgent',
   'CCBot',
   'Bytespider',

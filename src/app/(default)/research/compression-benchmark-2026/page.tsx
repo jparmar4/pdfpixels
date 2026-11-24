@@ -4,7 +4,7 @@ import { ArrowRight } from 'lucide-react';
 import { SitePageShell } from '@/components/layout/site-page-shell';
 import { absoluteUrl, getRobotsMetadata, DEFAULT_OG_IMAGE_URL, SITE_CONTENT_UPDATED } from '@/lib/seo';
 import { siteConfig } from '@/lib/seo-config';
-import { InContentAd, NativeAd, FooterAd } from '@/components/ads/ad-banner';
+import { HeaderAd, InContentAd, NativeAd, FooterAd } from '@/components/ads/ad-banner';
 
 export const metadata: Metadata = {
   title: 'JPEG Quality Benchmark 2026: We Compressed 40 Real Images Across 7 Settings',
@@ -83,6 +83,7 @@ export default function CompressionBenchmarkPage() {
             { label: 'Max saving', value: '72.5%' },
           ]}
         >
+        <HeaderAd className="my-6" />
         <div className="container mx-auto px-4 lg:px-8 max-w-4xl space-y-10 py-8">
           {/* Methodology */}
           <section>
@@ -96,7 +97,7 @@ export default function CompressionBenchmarkPage() {
             </ul>
           </section>
 
-          <InContentAd variant="rectangle" instanceId="benchmark-top" className="my-6" />
+          <InContentAd variant="dual-rectangle" instanceId="benchmark-top" className="my-6" />
 
           {/* Aggregate table */}
           <section>
@@ -213,7 +214,7 @@ export default function CompressionBenchmarkPage() {
             </div>
           </section>
 
-          <InContentAd variant="rectangle" instanceId="benchmark-mid" className="my-6" />
+          <InContentAd variant="dual-rectangle" instanceId="benchmark-mid" className="my-6" />
 
           <section>
             <h2 className="text-2xl font-extrabold tracking-tight mb-4">Apply this in 60 seconds</h2>

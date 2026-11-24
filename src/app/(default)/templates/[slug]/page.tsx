@@ -7,7 +7,7 @@ import { absoluteUrl, getRobotsMetadata, DEFAULT_OG_IMAGE_URL, SITE_CONTENT_UPDA
 import { siteConfig } from '@/lib/seo-config';
 import { templates, getTemplateBySlug } from '@/lib/templates';
 import { getToolBySlug } from '@/lib/tools-data';
-import { HeaderAd, InContentAd, NativeAd, FooterAd } from '@/components/ads/ad-banner';
+import { HeaderAd, InContentAd, NativeAd, FooterAd, StickyRectangleAd, SmartlinkButton } from '@/components/ads/ad-banner';
 
 interface TemplatePageProps {
   params: Promise<{ slug: string }>;
@@ -171,7 +171,12 @@ export default async function TemplateDetailPage({ params }: TemplatePageProps) 
               >
                 <Download className="w-4 h-4" /> Download PDF
               </a>
+              <SmartlinkButton className="w-full text-xs" />
               <p className="text-[11px] text-muted-foreground text-center">No signup · no watermark · works offline</p>
+            </div>
+
+            <div className="rounded-2xl border border-border/40 bg-card/60 backdrop-blur-md p-3 shadow-premium flex flex-col items-center">
+              <StickyRectangleAd instanceId={`template-sidebar-${template.slug}`} eager />
             </div>
 
             {funnelTool && (

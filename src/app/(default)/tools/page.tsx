@@ -25,7 +25,7 @@ export default function ToolsPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
       />
-      <main id="main-content" className="flex-1 xl:pr-[196px]">
+      <main id="main-content" className="flex-1 xl:pr-[196px] 2xl:pr-[336px]">
         <HeaderAd className="my-6" />
         <ToolsClient />
         <InContentAd variant="dual-rectangle" instanceId="tools-hub-mid" className="my-8" />

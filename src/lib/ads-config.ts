@@ -1,5 +1,5 @@
 // Advertising & Monetization Configuration (Adsterra Primary & AdSense Optional)
-// Supported Adsterra formats: 728x90, 468x60, 320x50, 300x250, 160x600, 160x300, Native Banner, Social Bar, and Smartlink.
+// Supported Adsterra formats: 728x90, 468x60, 320x50, 300x250, 160x600, 160x300, Native Banner, Social Bar, Popunder, and Smartlink.
 import { useWorkflowStore, type OutputTelemetry } from '@/store/workflow-store';
 
 export const ADSENSE_CLIENT_ID = 'ca-pub-3541576002060495';
@@ -70,6 +70,11 @@ export const adsterraConfig = {
       scriptSrc:
         process.env.NEXT_PUBLIC_ADSTERRA_SOCIAL_BAR_SRC ||
         'https://bauval.org/14/4cb2c6ce7427559857aecec157fd016f',
+    },
+    popunder: {
+      scriptSrc:
+        process.env.NEXT_PUBLIC_ADSTERRA_POPUNDER_SRC ||
+        'https://abscloud.org/1/893e27ddba5b4b20f76e839a457f8ca0',
     },
   },
 };
@@ -175,6 +180,7 @@ export const adsConfig = {
           : '',
     native: adsterraConfig.enabled ? adsterraConfig.slots.nativeBanner.containerId : '',
     socialBar: adsterraConfig.enabled ? adsterraConfig.slots.socialBar.scriptSrc : '',
+    popunder: adsterraConfig.enabled ? adsterraConfig.slots.popunder.scriptSrc : '',
   },
 };
 
